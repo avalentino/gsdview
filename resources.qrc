@@ -1,0 +1,15 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>images/open.svg</file>
+    <file>images/close.svg</file>
+    <file>images/quit.svg</file>
+    <file>images/zoom-in.svg</file>
+    <file>images/zoom-out.svg</file>
+    <file>images/zoom-fit.svg</file>
+    <file>images/zoom-100.svg</file>
+    <file>images/preferences.svg</file>
+    <file>images/help.svg</file>
+    <file>images/about.svg</file>
+    <file>images/qt-logo.png</file>
+</qresource>
+</RCC>
