@@ -2,9 +2,15 @@
 
 import os
 import logging
+import itertools
 
 import numpy
+import scipy.ndimage
 # @TODO: scipy.misc.bytescale
+
+import gdal
+
+import gdalsupport
 
 def compute_lin_LUT(min_, max_, lower, upper):
     lut = numpy.arange(round(max_) + 1, dtype=numpy.float)
@@ -48,44 +54,6 @@ def apply_LUT(data, lut):
     data = numpy.round(data)
     data = data.astype(numpy.uint32) # @TODO: check
     return lut[data]
-
-import gdal
-import itertools
-import scipy.ndimage
-
-GDT_to_dtype = {
-    #gdal.GDT_Unknown:   numpy.,             # --  0 --
-    gdal.GDT_Byte:      numpy.uint8,        # --  1 --
-    gdal.GDT_UInt16:    numpy.uint16,       # --  2 --
-    gdal.GDT_Int16:     numpy.int16,        # --  3 --
-    gdal.GDT_UInt32:    numpy.uint32,       # --  4 --
-    gdal.GDT_Int32:     numpy.int32,        # --  5 --
-    gdal.GDT_Float32:   numpy.float32,      # --  6 --
-    gdal.GDT_Float64:   numpy.float64,      # --  7 --
-    gdal.GDT_CInt16:    numpy.complex64,    # --  8 -- converted to (float32, float32)
-    gdal.GDT_CInt32:    numpy.complex64,    # --  9 -- converted to (float32, float32)
-    gdal.GDT_CFloat32:  numpy.complex64,    # -- 10 -- (float32, float32)
-    gdal.GDT_CFloat64:  numpy.complex128,   # -- 11 -- (float64, float64)
-    #gdal.GDT_to_dtype:  numpy.,             # -- 12 --
-}
-
-def get_gdal_prod_id(prod):
-    d = prod.GetDriver()
-    driver_name = d.GetDescription()
-    if driver_name == 'SAR_CEOS':
-        # 'CEOS_LOGICAL_VOLUME_ID'
-        metadata = prod.GetMetadata()
-        prod_id = '%s-%s' % (metadata['CEOS_SOFTWARE_ID'].strip(),
-                             metadata['CEOS_ACQUISITION_TIME'].strip())
-    elif driver_name == 'ESAT':
-        metadata = prod.GetMetadata()
-        prod_id = os.path.splitext(metadata ['MPH_PRODUCT'])[0]
-    #~ elif driver_name = 'GTiff':
-        #~ # ERS BTIF
-        #~ pass
-    else:
-        prod_id = os.path.basename(prod.GetDescription())
-    return prod_id
 
 def _quicklook_core_rebin(data, qlFact):
     sRow = sCol = qlFact//2
@@ -354,7 +322,7 @@ def quicklook_and_stats(prod, bufsize=5*1024**2, progress_callback=None):
     # checks
     if band.DataType in (gdal.GDT_CInt16, gdal.GDT_CInt32):
         logging.warning('complex integer dataset')
-    dtype = GDT_to_dtype[band.DataType]
+    dtype = gdalsupport.GDT_to_dtype[band.DataType]
     if numpy.iscomplex(dtype()):
         logging.warning('extract module from complex data')
     # @TODO: fix (raise an error if a overview file is opened)

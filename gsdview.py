@@ -14,6 +14,8 @@ from PyQt4 import Qwt5 as Qwt
 import resources
 
 import gsdtools
+import gdalsupport
+import gdalqt4
 
 def overrideCursor(func):
     def aux(*args, **kwargs):
@@ -23,25 +25,6 @@ def overrideCursor(func):
         finally:
             QtGui.QApplication.restoreOverrideCursor()
     return aux
-
-def gdalFilters():
-    # @TODO: move to gdalqt4
-    filters = []
-    filters.append('All files (*)')
-    for driver_index in xrange(gdal.GetDriverCount()):
-    #~ for driver in gdal.GetDriverList():
-        driver = gdal.GetDriver(driver_index)
-        metadata = driver.GetMetadata()
-        name = metadata['DMD_LONGNAME']
-        try:
-            ext = metadata['DMD_EXTENSION']
-            if ext:
-                if name.endswith(' (.%s)' % ext):
-                    name = name[0: -len(ext)-4]
-                filters.append('%s (*.%s)' % (name, ext))
-        except KeyError:
-            pass
-    return filters
 
 class GraphicsView(QtGui.QGraphicsView):
     def __init__(self, *args):
@@ -76,116 +59,7 @@ class GraphicsView(QtGui.QGraphicsView):
 #~ class QGdalCache(GdalCache,QObject):
     #~ pass
 
-class GdalGraphicsItem(QtGui.QGraphicsItem):
-    # @TODO:
-    #   * move to gdalqt4
-    #   * child class that uses the quicklook image as a low resolution cache
-    #     to speedup scrolling
-    def __init__(self, product, parent=None, scene=None):
-        QtGui.QGraphicsItem.__init__(self, parent, scene)
-        self.product = product
-        #~ self._boundingRect = QtCore.QRectF(-self.product.RasterXSize/2.,
-                                           #~ -self.product.RasterYSize/2.,
-                                           #~ self.product.RasterXSize,
-                                           #~ self.product.RasterYSize)
-        # @TODO: check (work like QPixmap)
-        self._boundingRect = QtCore.QRectF(0, 0,
-                                           self.product.RasterXSize,
-                                           self.product.RasterYSize)
 
-        self._lut = self.compute_default_LUT()
-
-        rasterBand = self.product.GetRasterBand(1) # @TODO: which band?
-        if rasterBand.DataType in (gdal.GDT_CInt16, gdal.GDT_CInt32):
-            logging.warning('complex integer dataset')
-        dtype = gsdtools.GDT_to_dtype[rasterBand.DataType]
-        if numpy.iscomplex(dtype()):
-            logging.warning('extract module from complex data')
-        if product.ReadAsArray(0, 0, 1, 1).ndim != 2:
-            logging.warning('the dataset is not bi-dimensional')
-
-    def compute_default_LUT(self):
-        # @TODO: fix for complex
-        rasterBand = self.product.GetRasterBand(1) # @TODO: which band?
-        # @TOOD: fix flags (approx, force)
-        #min_, max_, mean, stddev = rasterBand.GetStatistics(False, True)
-        min_, max_, mean, stddev = rasterBand.GetStatistics(True, True)
-
-        #~ lower = 0
-        #~ upper = round(max_)
-
-        #N = 3
-        N = 1
-        lower = round(max(mean - N * stddev, 0))
-        upper = round(min(mean + N * stddev, max_))
-
-        return gsdtools.compute_lin_LUT(min_, max_, lower, upper)
-
-    def boundingRect(self):
-        return self._boundingRect
-
-    # @overrideCursor
-    def paint(self, painter, option, widget):
-        '''options.levelOfDetail:
-        This simple metric provides an easy way to determine the level of
-        detail for an item. Its value represents the maximum value of the
-        height and width of a unity rectangle, mapped using the complete
-        transformation matrix of the painter used to draw the item.
-        By default, if no transformations are applied, its value is 1.
-        If zoomed out 1:2, the level of detail will be 0.5, and if zoomed
-        in 2:1, its value is 2.
-
-        '''
-
-        rect = option.exposedRect.toAlignedRect()
-
-        x = int(numpy.floor(rect.x() - self._boundingRect.x()))
-        y = int(numpy.floor(rect.y() - self._boundingRect.y()))
-        width = rect.width() + 1        # @TODO: check
-        height = rect.height() + 1      # @TODO: check
-
-        if x < 0:
-            x = 0
-        if y < 0:
-            y = 0
-        if x + width > self._boundingRect.width():
-            width = int(self._boundingRect.width()) - x
-        if y + height > self._boundingRect.height():
-            height = int(self._boundingRect.height()) - y
-
-        data = self.product.ReadAsArray(x, y, width, height)
-
-        if numpy.iscomplexobj(data):
-            data = numpy.abs(data)
-        if data.ndim > 2:
-            data = data[0]
-        try:
-            data = gsdtools.apply_LUT(data, self._lut)
-        except IndexError:
-            # Is use the gdal approx stats evaluation it is possible thet the
-            # image maximum is under-estimated. Fix the LUT.
-            new_max = int(numpy.ceil(data.max()))
-            assert new_max >= len(self._lut)
-            new_lut = numpy.ndarray(new_max+1, dtype=numpy.uint8)
-            new_lut[:len(self._lut)] = self._lut
-            new_lut[len(self._lut)] = 255
-            self._lut = new_lut
-            data = gsdtools.apply_LUT(data, self._lut)
-
-        image = Qwt.toQImage(data.transpose())
-        painter.drawImage(rect.x(), rect.y(), image)
-        #drawPixmap(self, QRectF targetRect, QPixmap pixmap, QRectF sourceRect)
-        #drawPixmap(self, QRect targetRect, QPixmap pixmap, QRect sourceRect)
-        #drawPixmap(self, QPointF p, QPixmap pm)
-        #drawPixmap(self, QPoint p, QPixmap pm)
-        #drawPixmap(self, QRect r, QPixmap pm)
-        #drawPixmap(self, int x, int y, QPixmap pm)
-        #drawPixmap(self, int x, int y, int w, int h, QPixmap pm)
-        #drawPixmap(self, int x, int y, int w, int h, QPixmap pm, int sx, int sy, int sw, int sh)
-        #drawPixmap(self, int x, int y, QPixmap pm, int sx, int sy, int sw, int sh)
-        #drawPixmap(self, QPointF p, QPixmap pm, QRectF sr)
-        #drawPixmap(self, QPoint p, QPixmap pm, QRect sr)
-        #painter->drawTiledPixmap()
 
 class Worker(QtCore.QThread):
     # @TODO: use a process instead
@@ -253,7 +127,7 @@ class GSDView(QtGui.QMainWindow):
         # File dialog
         self.filedialog = QtGui.QFileDialog(self)
         self.filedialog.setFileMode(QtGui.QFileDialog.ExistingFile)
-        self.filedialog.setFilters(gdalFilters())
+        self.filedialog.setFilters(gdalsupport.gdalFilters())
 
         # Quick-look panel
         qlPanel = QtGui.QDockWidget('Quick Look panel', self)
@@ -496,7 +370,7 @@ class GSDView(QtGui.QMainWindow):
         self.zoomActions.setEnabled(True)
 
         # Check the cache
-        prod_id = gsdtools.get_gdal_prod_id(prod)
+        prod_id = gdalsupport.uniqueProdID(prod)
         cachefilename = os.path.join(self.cachedir, prod_id + '.h5')
         if os.path.exists(cachefilename):
             # Retrieve data from cache
@@ -597,7 +471,7 @@ class GSDView(QtGui.QMainWindow):
     def setGraphicsItem(self, prod, lut):
         self.graphicsView.setUpdatesEnabled(False)
         try:
-            self.imageItem = GdalGraphicsItem(prod)
+            self.imageItem = gdalqt4.GdalGraphicsItem(prod)
             self.imageItem._lut = lut
 
             rect = self.imageItem.boundingRect()
@@ -637,7 +511,7 @@ class GSDView(QtGui.QMainWindow):
             ql, min_, max_, mean_, std_, histogram_ = result
 
             # Store tata in the cache file
-            prod_id = gsdtools.get_gdal_prod_id(self.prod)
+            prod_id = gdalsupport.uniqueProdID(self.prod)
             cachefilename = os.path.join(self.cachedir, prod_id + '.h5')
 
             h5file = tables.openFile(cachefilename, 'w')
