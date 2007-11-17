@@ -73,36 +73,3 @@ class DatasetProxy(object):
     # methods:
     #   - get the nearesr overview level between the available ones
     pass
-
-
-'''
-int GDALTermProgress(double dfComplete,
-                     const char *pszMessage,
-                     void *pProgressArg)
-
-Simple progress report to terminal.
-
-This progress reporter prints simple progress report to the terminal window.
-The progress report generally looks something like this:
-
-  "0...10...20...30...40...50...60...70...80...90...100 - done."
-
-Every 2.5% of progress another number or period is emitted.
-Note that GDALTermProgress() uses internal static data to keep track of the
-last percentage reported and will get confused if two terminal based progress
-reportings are active at the same time.
-
-The GDALTermProgress() function maintains an internal memory of the last
-percentage complete reported in a static variable, and this makes it
-unsuitable to have multiple GDALTermProgress()'s active eithin a single
-thread or across multiple threads.
-
-Parameters:
-    dfComplete      completion ratio from 0.0 to 1.0.
-    pszMessage      optional message.
-    pProgressArg    ignored callback data argument.
-
-Returns:
-    Always returns TRUE indicating the process should continue.
-
-'''

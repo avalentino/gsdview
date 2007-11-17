@@ -10,6 +10,7 @@ from PyQt4 import Qwt5 as Qwt
 import gdalsupport
 import gsdtools
 
+# @TODO: treeview showing GDAL datasets/bands attributes and metadata (read only)
 
 class GdalGraphicsItem(QtGui.QGraphicsItem):
     # @TODO:

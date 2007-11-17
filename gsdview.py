@@ -15,6 +15,12 @@ import gsdtools
 import gdalsupport
 import gdalqt4
 
+import exectools
+from exectools.qt4tools import Qt4OutputPlane, Qt4ToolController
+from exectools.qt4tools import Qt4DialogLoggingHandler, Qt4StreamLoggingHandler
+
+from gdalexectools import GdalAddOverviewDescriptor, GdalOutputHandler
+
 # @DEBUG
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -120,42 +126,11 @@ class GSDView(QtGui.QMainWindow):
         self.filedialog.setFileMode(QtGui.QFileDialog.ExistingFile)
         self.filedialog.setFilters(gdalsupport.gdalFilters())
 
-        # Quick-look panel
-        qlPanel = QtGui.QDockWidget('Quick Look panel', self)
-        qlPanel.setObjectName('quickLookPanel')
-        self.qlView = GraphicsView(QtGui.QGraphicsScene(self))
-        #self.qlView.setDragMode(QtGui.QGraphicsView.ScrollHandDrag) # @TODO: check
-        qlPanel.setWidget(self.qlView)
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, qlPanel)
-        #qlPanel.hide()              # @TODO: check
-        #~ self.connect(self.qlView, QtCore.SIGNAL('mousePositionUpdated(const QPoint&)'),
-                     #~ self.updatePosLabels)
-        self.connect(self.qlView, QtCore.SIGNAL('posMarked(const QPoint&)'),
-                     self.centerOn)
-
-        # @TODO: it is required that a custom widget re-imptement the
-        #        "mousePressEvent" evant handler
-        #self.connect(self.qlView, QtCore.SIGNAL('mousePressEvent(QMouseEvent*)'), self.centerOn)
-
-        # Map panel @TODO: use the marble widget
-        mapPanel = QtGui.QDockWidget('Map panel', self)
-        mapPanel.setObjectName('mapPanel')
-        self.mapView = QtGui.QGraphicsView(self)
-        mapPanel.setWidget(self.mapView)
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, mapPanel)
-        mapPanel.hide()             # @TODO: check
-
-        # Info panel
-        infoPanel = QtGui.QDockWidget('Info panel', self)
-        infoPanel.setObjectName('infoPanel')
-        self.infoTable = QtGui.QTableWidget(5, 2, self)
-        self.infoTable.verticalHeader().hide()
-        self.infoTable.setHorizontalHeaderLabels(['Key', 'Value'])
-        self.infoTable.horizontalHeader().setStretchLastSection(True)
-        #self.tableWidget.horizontalHeader().hide()
-        infoPanel.setWidget(self.infoTable)
-        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, infoPanel)
-        #infoPanel.hide()            # @TODO: check
+        # Panels
+        #~ self.quicklookView = None
+        #~ self.mapView = None
+        #~ self.infoTable = None
+        self.setupPanels()
 
         # Actions
         self.setupActions()
@@ -167,33 +142,6 @@ class GSDView(QtGui.QMainWindow):
 
         # @TODO: check
         gdal.SetCacheMax(150*1024**2)
-
-        # Set worker process object
-        self.subprocess = QtCore.QProcess(self)
-        self.subprocess.setProcessChannelMode(QtCore.QProcess.MergedChannels)
-        #~ self.connect(self.subprocess, QtCore.SIGNAL('finished(PyQt_PyObject)'),
-                     #~ self.quickLookGenerationCompleted)
-        #~ self.connect(self.subprocess, QtCore.SIGNAL('updateProgressBar(double)'),
-                     #~ self.updateProgressBar)
-
-        # Connect process handlers and I/O handlers
-        #~ self.connect(self.subprocess,
-                     #~ QtCore.SIGNAL('readyReadStandardOutput()'),
-                     #~ self.handle_stdout)
-        #~ self.connect(self.subprocess,
-                     #~ QtCore.SIGNAL('readyReadStandardError()'),
-                     #~ self.handle_stderr)
-        #~ self.connect(self.subprocess,
-                     #~ QtCore.SIGNAL('error(QProcess::ProcessError)'),
-                     #~ self.handle_error)
-        self.connect(self.subprocess,
-                     QtCore.SIGNAL('finished(int, QProcess::ExitStatus)'),
-                     self.quickLookGenerationCompleted)
-
-        #~ # @TODO: remove
-        #~ self.connect(self.subprocess,
-                     #~ QtCore.SIGNAL('error()'),
-                     #~ self.handle_error)
 
         # Set cache folder
         self.cachedir = os.path.abspath('cache')
@@ -211,9 +159,17 @@ class GSDView(QtGui.QMainWindow):
         self.connect(QtGui.qApp, QtCore.SIGNAL('aboutToQuit()'), self.saveSettings)
         self.loadSettings()
 
+        # Setup the log system
+        self.logger = self.setupLogging(self.outputplane)
+
+        # Setup external tool s controller
+        self.controller = self.setupController(self.outputplane,
+                                               self.statusBar(),
+                                               self.progressbar,
+                                               self.logger)
+
     ### Setup helpers #########################################################
-    def setupActions(self):
-        ### fileActions #######################################################
+    def _setupFileActions(self):
         self.fileActions = QtGui.QActionGroup(self)
 
         # Open
@@ -243,7 +199,9 @@ class GSDView(QtGui.QMainWindow):
                      self.close)
         self.fileActions.addAction(self.actionExit)
 
-        ### zoomActions #######################################################
+        return self.fileActions
+
+    def _setupZoomActions(self):
         self.zoomActions = QtGui.QActionGroup(self)
 
         # Zoom in
@@ -280,7 +238,9 @@ class GSDView(QtGui.QMainWindow):
                      self.zoom100)
         self.zoomActions.addAction(self.actionZoom100)
 
-        ### helpActions #######################################################
+        return self.zoomActions
+
+    def _setupHelpActions(self):
         self.helpActions = QtGui.QActionGroup(self)
 
         # About
@@ -298,6 +258,13 @@ class GSDView(QtGui.QMainWindow):
         self.connect(self.actionAboutQt, QtCore.SIGNAL('triggered()'),
                      self.aboutQt)
         self.helpActions.addAction(self.actionAboutQt)
+
+        return self.helpActions
+
+    def setupActions(self):
+        self.fileActions = self._setupFileActions()
+        self.zoomActions = self._setupZoomActions()
+        self.helpActions = self._setupHelpActions()
 
     def setupMenu(self):
         def actionGroupToMenu(actionGroup, label):
@@ -330,6 +297,108 @@ class GSDView(QtGui.QMainWindow):
         bar.insertSeparator(self.actionExit)
         bar = actionGroupToToolbar(self.zoomActions, self.tr('Zoom toolbar'))
         bar = actionGroupToToolbar(self.helpActions, self.tr('Help toolbar'))
+
+    def _setupOutputPanel(self):
+        # Output panel
+        outputPanel = QtGui.QDockWidget('Output panel', self)
+        outputPanel.setObjectName('outputPanel')
+        outputplane = Qt4OutputPlane()
+        outputPanel.setWidget(outputplane)
+        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, outputPanel)
+        self.connect(outputplane, QtCore.SIGNAL('planeHideRequest()'),
+                     outputPanel.toggleViewAction(), QtCore.SLOT('toggle()'))
+
+        return outputPanel
+
+    def _setupQuickLookPanel(self):
+        # Quick-look panel
+        quicklookPanel = QtGui.QDockWidget('Quick Look panel', self)
+        quicklookPanel.setObjectName('quickLookPanel')
+        quicklookView = GraphicsView(QtGui.QGraphicsScene(self))
+        #qlView.setDragMode(QtGui.QGraphicsView.ScrollHandDrag) # @TODO: check
+        quicklookPanel.setWidget(quicklookView)
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, quicklookPanel)
+        #quicklookPanel.hide()              # @TODO: check
+        #self.connect(quicklookView, QtCore.SIGNAL('mousePositionUpdated(const QPoint&)'),
+        #             self.updatePosLabels)
+        self.connect(quicklookView, QtCore.SIGNAL('posMarked(const QPoint&)'),
+                     self.centerOn)
+
+        # @TODO: it is required that a custom widget re-imptement the
+        #        "mousePressEvent" evant handler
+        #self.connect(quicklookView, QtCore.SIGNAL('mousePressEvent(QMouseEvent*)'), self.centerOn)
+        return quicklookPanel
+
+    def _setupMapPanel(self):
+        # Map panel @TODO: use the marble widget
+        mapPanel = QtGui.QDockWidget('Map panel', self)
+        mapPanel.setObjectName('mapPanel')
+        self.mapView = QtGui.QGraphicsView(self)
+        mapPanel.setWidget(self.mapView)
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, mapPanel)
+        mapPanel.hide()             # @TODO: check
+
+        return mapPanel
+
+    def _setupInfoPanel(self):
+        # Info panel
+        infoPanel = QtGui.QDockWidget('Info panel', self)
+        infoPanel.setObjectName('infoPanel')
+        self.infoTable = QtGui.QTableWidget(5, 2, self)
+        self.infoTable.verticalHeader().hide()
+        self.infoTable.setHorizontalHeaderLabels(['Key', 'Value'])
+        self.infoTable.horizontalHeader().setStretchLastSection(True)
+        #self.tableWidget.horizontalHeader().hide()
+        infoPanel.setWidget(self.infoTable)
+        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, infoPanel)
+        #infoPanel.hide()            # @TODO: check
+
+        return infoPanel
+
+    def setupPanels(self):
+        outputPanel = self._setupOutputPanel()
+        quicklookPanel = self._setupQuickLookPanel()
+        #mapPanel = self._setupMapPanel()      # @TODO: fix
+        infoPanel = self._setupInfoPanel()
+
+        self.outputplane = outputPanel.widget()
+        self.quicklookView = quicklookPanel.widget()
+
+    def setupLogging(self, outputplane):
+        debug=True
+        if debug:
+            level = logging.DEBUG
+            logging.basicConfig(level=level)
+        else:
+            level = logging.INFO
+
+        logger = logging.getLogger()
+
+        formatter = logging.Formatter('%(levelname)s: %(message)s')
+        handler = Qt4StreamLoggingHandler(outputplane)
+        handler.setLevel(level)
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+
+        formatter = logging.Formatter('%(message)s')
+        handler = Qt4DialogLoggingHandler(parent=self, dialog=None)
+        handler.setLevel(logging.WARNING)
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+
+        logger.setLevel(level)
+
+        return logger
+
+    def setupController(self, outputplane, statusbar, progressbar, logger):
+        handler = GdalOutputHandler(outputplane, statusbar, progressbar)
+        tool = GdalAddOverviewDescriptor(stdout_handler=handler)
+        controller = Qt4ToolController(logger, parent=self)
+        controller.tool = tool
+        controller.connect(controller, QtCore.SIGNAL('finished()'),
+                           self.processingDone)
+
+        return controller
 
     ### Settings ##############################################################
     def loadSettings(self):
@@ -475,25 +544,26 @@ class GSDView(QtGui.QMainWindow):
             #        after the worker process ending to loaf changes
             #del dataset
 
-            assert self.subprocess.state() == self.subprocess.NotRunning
+            subProc = self.controller.subprocess
+            assert subProc.state() == subProc.NotRunning
+            # @TODO: make parameters configurable
             # gdaladdo --config USE_RRD YES airphoto.jpg 3 9 27 81
             program = 'gdaladdo'
-            args = ['--config', 'USE_RRD', 'YES', virtualDatasetFilename]
+            args = [virtualDatasetFilename]
             args.extend(map(str, missingOverviewLevels))
 
             logging.debug('Run the subprocess.')
             logging.debug('%s %s' % (program, ' '.join(args)))
 
             #self.subprocess.setEnvironmet(...)
-            self.subprocess.setWorkingDirectory(datasetCacheDir)
-            self.subprocess.start(program, args)
-            self.subprocess.closeWriteChannel()
+            self.controller.subprocess.setWorkingDirectory(datasetCacheDir)
+            self.controller.run_tool(*args)
 
             ## ALTERNATIVE: run in a separate yhread
             # gdal.SetConfigOption('USE_RRD', 'YES')
             # ret = p.BuildOverviews('average', [2,4,8])
-            # ov2 = b.GetOverview(2)
-            # data2 = ov2.ReadAsArray()
+            # ovr = b.GetOverview(2)
+            # data = ovr.ReadAsArray()
 
     def openFile(self):
         if self.filedialog.exec_():
@@ -504,7 +574,7 @@ class GSDView(QtGui.QMainWindow):
 
     def closeFile(self):
         # Reset the scene and the view transformation matrix
-        for view in (self.graphicsView, self.qlView):
+        for view in (self.graphicsView, self.quicklookView):
             scene = view.scene()
             for item in scene.items():
                 scene.removeItem(item)
@@ -587,21 +657,22 @@ class GSDView(QtGui.QMainWindow):
             self.quicklook = pixmap
             self.qlFactor = self.dataset.RasterXSize // self.quicklook.width()
 
-            scene = self.qlView.scene()
+            scene = self.quicklookView.scene()
             item = scene.addPixmap(pixmap)
             rect = item.boundingRect()
             scene.setSceneRect(rect.x(), rect.y(), rect.width(), rect.height())
-            self.qlView.setSceneRect(scene.sceneRect())
-            self.qlView.ensureVisible(rect.x(), rect.y(), 1, 1, 0, 0)
+            self.quicklookView.setSceneRect(scene.sceneRect())
+            self.quicklookView.ensureVisible(rect.x(), rect.y(), 1, 1, 0, 0)
         finally:
             self.graphicsView.setUpdatesEnabled(True)
 
-    def quickLookGenerationCompleted(self, exitCode=None, exitStatus=None):
+    # @TODO: update this
+    def quickLookGenerationCompleted(self):
         try:
-            if exitCode != 0: # timeout 30000 ms
+            if self.controller.subprocess.exitCode() != 0: # timeout 30000 ms
                 msg = ('An error occurred during the quicklook generation.\n'
                        'Now close the dataset.')
-                QtGui.QMessageBox.warning(self, text=msg)
+                QtGui.QMessageBox.warning(self, '', msg)
                 self.closeFile()   # @TODO: check
                 return
 
@@ -632,9 +703,10 @@ class GSDView(QtGui.QMainWindow):
             except ValueError:
                 qlFactor = min(factors)
                 ovrIndex = factors.index(min(factors))
-                logging.warning('Overview with desired scale factor (%d) not '
-                                'found.\n'
-                                'Use scale factor %s instead.' %
+                #logging.warning(       # @TODO: check
+                logging.info('Overview with desired scale factor (%d) not '
+                              'found.\n'
+                              'Use scale factor %s instead.' %
                                                     (self.qlFactor, qlFactor))
                 # Fix the qlFactor
                 self.qlFactor = qlFactor
@@ -665,7 +737,7 @@ class GSDView(QtGui.QMainWindow):
 
     def centerOn(self, pos):
         if self.dataset:
-            pos = self.qlView.mapToScene(pos.x(), pos.y())
+            pos = self.quicklookView.mapToScene(pos.x(), pos.y())
             self.graphicsView.centerOn(pos.x()*self.qlFactor,
                                        pos.y()*self.qlFactor)
 
@@ -675,6 +747,10 @@ class GSDView(QtGui.QMainWindow):
         #~ w = self.graphicsView.viewport().width()
         #~ h = self.graphicsView.viewport().height()
         #~ print x,y,w,h
+
+    def processingDone(self):
+        self.controller.reset_controller()
+        self.quickLookGenerationCompleted()
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
