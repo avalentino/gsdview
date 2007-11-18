@@ -31,12 +31,10 @@ def overrideCursor(func):
             QtGui.QApplication.restoreOverrideCursor()
     return aux
 
+# @TODO: move to another file (??)
 # @TODO: maybe this is not the best solution. Maybe a custom GraphicsItem
 #        would be better
 class GraphicsView(QtGui.QGraphicsView):
-    def __init__(self, *args):
-        QtGui.QGraphicsView.__init__(self, *args)
-
     def mouseMoveEvent(self, event):
         if self.dragMode() == QtGui.QGraphicsView.NoDrag:
             self.emit(QtCore.SIGNAL('mousePositionUpdated(const QPoint&)'),
@@ -44,25 +42,18 @@ class GraphicsView(QtGui.QGraphicsView):
             if event.buttons() & QtCore.Qt.LeftButton:
                 self.emit(QtCore.SIGNAL('posMarked(const QPoint&)'), event.pos())
             #event.accept()
-        QtGui.QGraphicsView.mouseMoveEvent(self, event)
-        #event.ignore()
+        return QtGui.QGraphicsView.mouseMoveEvent(self, event)
 
     def mousePressEvent(self, event):
         if self.dragMode() == QtGui.QGraphicsView.NoDrag:
             if event.buttons() & QtCore.Qt.LeftButton:
                 self.emit(QtCore.SIGNAL('posMarked(const QPoint&)'), event.pos())
             #event.accept()
-        QtGui.QGraphicsView.mousePressEvent(self, event)
-        #event.ignore()
+        return QtGui.QGraphicsView.mousePressEvent(self, event)
 
-    #~ def mouseReleaseEvent(self, event):
-        #~ if self.dragMode() == QtGui.QGraphicsView.NoDrag:
-            #~ if event.buttons() & QtCore.Qt.LeftButton:
-                #~ self.emit(QtCore.SIGNAL('posMarked(const QPoint&)'), event.pos())
-            #~ #event.accept()
-        #~ QtGui.QGraphicsView.mouseReleaseEvent(self, event)
-        #~ #event.ignore()
-
+    def resizeEvent(self, event):
+        self.emit(QtCore.SIGNAL('newSize(const QSize&)'), event.size())
+        return QtGui.QGraphicsView.resizeEvent(self, event)
 
 class GSDView(QtGui.QMainWindow):
     # @TODO:
@@ -71,13 +62,10 @@ class GSDView(QtGui.QMainWindow):
     #   * show metadata in a tree
     #   * map panel
     #   * plugin architecture
-    #   * rectangle on ql window (rubberband connected to fullres viewport
-    #     motion --> requires a custom GraphicsView widget that re-implement
-    #     the mouse event handlers)
     #   * cache browser, cache cleanup
     #   * open internal product
     #   * stop button
-    #   * disable actions whenthe external tool is running
+    #   * disable actions when the external tool is running
 
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
@@ -86,19 +74,30 @@ class GSDView(QtGui.QMainWindow):
         self.resize(800, 600)
 
         scene = QtGui.QGraphicsScene(self)
-        self.graphicsView = QtGui.QGraphicsView(scene, self)
+        self.graphicsView = GraphicsView(scene, self)
         self.graphicsView.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
-        # @TODO: check
-        #~ self.connect(self.graphicsView.horizontalScrollBar(), QtCore.SIGNAL('valueChange(int)'), self.updateQuicklookBox)
-        #~ self.connect(self.graphicsView.verticalScrollBar(), QtCore.SIGNAL('valueChange(int)'), self.updateQuicklookBox)
         self.setCentralWidget(self.graphicsView)
 
+        # Connect signals for the quicklook box
+        # @TODO: check
+        # @TODO: connect only if the quicklook is present
+        self.connect(self.graphicsView.horizontalScrollBar(),
+                     QtCore.SIGNAL('valueChanged(int)'),
+                     self.updateQuicklookBox)
+        self.connect(self.graphicsView.verticalScrollBar(),
+                     QtCore.SIGNAL('valueChanged(int)'),
+                     self.updateQuicklookBox)
+        self.connect(self.graphicsView,
+                     QtCore.SIGNAL('newSize(const QSize&)'),
+                     self.updateQuicklookBox)
+
+        # Progressbar
         self.progressbar = QtGui.QProgressBar(self)
         self.progressbar.setTextVisible(True)
         self.statusBar().addPermanentWidget(self.progressbar)
         self.progressbar.hide()
 
-        # @TODO
+        # @TODO: improve scrolling performances
         #~ self.graphicsView.horizontalScrollBar.connect(QtCore.SIGNAL('sliderPressed()'), self.startScrolling)
         #~ self.graphicsView.horizontalScrollBar.connect(QtCore.SIGNAL('sliderReleased()'), self.stopScrolling)
         #~ self.graphicsView.verticalScrollBar.connect(QtCore.SIGNAL('sliderPressed()'), self.startScrolling)
@@ -114,7 +113,7 @@ class GSDView(QtGui.QMainWindow):
 
         # @TODO: encapsulate in a gdal.Dataset proxy (--> gdalsupport)
         self.dataset = None
-        self.qlFactor = None
+        self.qlFactor = None  # @TODO: check int/float (maybe it is not needed)
         self.virtualDatasetFilename = None
 
         # File dialog
@@ -306,7 +305,7 @@ class GSDView(QtGui.QMainWindow):
         quicklookPanel = QtGui.QDockWidget('Quick Look', self)
         quicklookPanel.setObjectName('quickLookPanel')
         quicklookView = GraphicsView(QtGui.QGraphicsScene(self))
-        #qlView.setDragMode(QtGui.QGraphicsView.ScrollHandDrag) # @TODO: check
+        #quicklookView.setDragMode(QtGui.QGraphicsView.ScrollHandDrag) # @TODO: check
         quicklookPanel.setWidget(quicklookView)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, quicklookPanel)
         #quicklookPanel.hide()              # @TODO: check
@@ -618,6 +617,7 @@ class GSDView(QtGui.QMainWindow):
         self.quicklook = None
         self.dataset = None
         self.qlFactor = None
+        self.qlselection = None
         self.virtualDatasetFilename = None
 
         # Disable zoom actions
@@ -627,18 +627,24 @@ class GSDView(QtGui.QMainWindow):
 
     ### Zoom actions ##########################################################
     def zoomIn(self):
-        factor = 1.2
+        #factor = 1.2
+        factor = 2.
         self.graphicsView.scale(factor, factor)
+        self.updateQuicklookBox()   # @TODO: use signals or decorators
 
     def zoomOut(self):
-        factor = 1./1.2
+        #factor = 1./1.2
+        factor = 0.5
         self.graphicsView.scale(factor, factor)
+        self.updateQuicklookBox()   # @TODO: use signals or decorators
 
     def zoomFit(self):
         self.graphicsView.fitInView(self.imageItem, QtCore.Qt.KeepAspectRatio)
+        self.updateQuicklookBox()   # @TODO: use signals or decorators
 
     def zoom100(self):
         self.graphicsView.setMatrix(QtGui.QMatrix())
+        self.updateQuicklookBox()   # @TODO: use signals or decorators
 
     ### Drag actions ##########################################################
     # @TODO:
@@ -687,6 +693,14 @@ class GSDView(QtGui.QMainWindow):
             scene.setSceneRect(rect.x(), rect.y(), rect.width(), rect.height())
             self.quicklookView.setSceneRect(scene.sceneRect())
             self.quicklookView.ensureVisible(rect.x(), rect.y(), 1, 1, 0, 0)
+
+            # Quicklook box
+            pen = QtGui.QPen(QtCore.Qt.SolidLine)
+            pen.setColor(QtGui.QColor(QtCore.Qt.red))
+            scene = self.quicklookView.scene()
+            self.qlselection = scene.addRect(QtCore.QRectF(), pen)
+            self.qlselection.setZValue(1)
+            self.updateQuicklookBox()
         finally:
             self.graphicsView.setUpdatesEnabled(True)
 
@@ -761,16 +775,46 @@ class GSDView(QtGui.QMainWindow):
 
     def centerOn(self, pos):
         if self.dataset:
+            qlfactor = float(self.dataset.RasterXSize) / self.quicklook.width()
             pos = self.quicklookView.mapToScene(pos.x(), pos.y())
-            self.graphicsView.centerOn(pos.x()*self.qlFactor,
-                                       pos.y()*self.qlFactor)
+            self.graphicsView.centerOn(pos.x()*qlfactor,
+                                       pos.y()*qlfactor)
 
-    #~ def updateQuicklookBox(self):
-        #~ x = self.graphicsView.horizontalScrollBar().value()
-        #~ y = self.graphicsView.verticalScrollBar().value()
-        #~ w = self.graphicsView.viewport().width()
-        #~ h = self.graphicsView.viewport().height()
-        #~ print x,y,w,h
+    def updateQuicklookBox(self):
+        if self.quicklook:
+            #~ print self.graphicsView.horizontalScrollBar().maximum(), \
+                  #~ self.graphicsView.verticalScrollBar().maximum()
+
+            #~ x = self.graphicsView.horizontalScrollBar().value()
+            #~ y = self.graphicsView.verticalScrollBar().value()
+            #~ w = self.graphicsView.viewport().width()
+            #~ h = self.graphicsView.viewport().height()
+            #~ polygon = self.graphicsView.mapToScene(x, y, w, h)
+            #~ rect = polygon.boundingRect()
+
+            #~ print self.dataset.RasterXSize, self.dataset.RasterYSize
+            #~ print x, y, w, h
+            #~ print rect.x(), rect.y(), rect.width(), rect.height()
+
+            #~ qlfactor = float(self.dataset.RasterXSize) / self.quicklook.width()
+            #~ x = rect.x() / qlfactor
+            #~ y = rect.y() / qlfactor
+            #~ w = rect.width() / qlfactor
+            #~ h = rect.height() / qlfactor
+
+            #~ print self.quicklook.width(), self.quicklook.height()
+            #~ print qlfactor
+            #~ print x, y, w, h
+            #~ print
+
+            qlfactor = float(self.dataset.RasterXSize) / self.quicklook.width()
+            x = self.graphicsView.horizontalScrollBar().value() / qlfactor
+            y = self.graphicsView.verticalScrollBar().value() / qlfactor
+            w = self.graphicsView.viewport().width() / qlfactor
+            h = self.graphicsView.viewport().height() / qlfactor
+
+            self.qlselection.setRect(x, y, w, h)
+
 
     def processingDone(self):
         self.controller.reset_controller()
