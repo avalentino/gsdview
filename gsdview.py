@@ -2,6 +2,7 @@
 
 import os
 import sys
+import logging
 
 import numpy
 import gdal
@@ -20,10 +21,6 @@ from exectools.qt4tools import Qt4OutputPlane, Qt4ToolController
 from exectools.qt4tools import Qt4DialogLoggingHandler, Qt4StreamLoggingHandler
 
 from gdalexectools import GdalAddOverviewDescriptor, GdalOutputHandler
-
-# @DEBUG
-import logging
-logging.basicConfig(level=logging.DEBUG)
 
 def overrideCursor(func):
     def aux(*args, **kwargs):
@@ -69,7 +66,6 @@ class GraphicsView(QtGui.QGraphicsView):
 
 class GSDView(QtGui.QMainWindow):
     # @TODO:
-    #   * set cache location from settings
     #   * set all icon (can use the iconset of BEAM)
     #   * fix the 'key' column width of info table
     #   * show metadata in a tree
@@ -78,19 +74,19 @@ class GSDView(QtGui.QMainWindow):
     #   * rectangle on ql window (rubberband connected to fullres viewport
     #     motion --> requires a custom GraphicsView widget that re-implement
     #     the mouse event handlers)
-    #   * click on ql --> update the fullres viewport --> requires a custom
-    #     GraphicsView widget that re-implement the mouse event handlers
     #   * cache browser, cache cleanup
     #   * open internal product
-    #   * use exectools (??)
-    #   * complete: progress of external workersub-process
+    #   * stop button
+    #   * disable actions whenthe external tool is running
 
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
         self.setWindowTitle(self.tr('GSDView'))
+        self.setWindowIcon(QtGui.QIcon(':/images/GDALLogoColor.svg'))
         self.resize(800, 600)
 
-        self.graphicsView = QtGui.QGraphicsView(QtGui.QGraphicsScene(self), self)
+        scene = QtGui.QGraphicsScene(self)
+        self.graphicsView = QtGui.QGraphicsView(scene, self)
         self.graphicsView.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
         # @TODO: check
         #~ self.connect(self.graphicsView.horizontalScrollBar(), QtCore.SIGNAL('valueChange(int)'), self.updateQuicklookBox)
@@ -140,15 +136,8 @@ class GSDView(QtGui.QMainWindow):
         self.zoomActions.setEnabled(False)
         self.statusBar().showMessage('Ready')
 
-        # @TODO: check
-        gdal.SetCacheMax(150*1024**2)
-
-        # Set cache folder
-        self.cachedir = os.path.abspath('cache')
-        if not os.path.exists(self.cachedir):
-            os.makedirs(self.cachedir)
-
         # Settings
+        # @TODO: fix filename
         #self.settings = QtCore.QSettings(QtCore.QSettings.IniFormat,
         #                                 QtCore.QSettings.UserScope,
         #                                 'gsdview-soft', 'gsdview', self)
@@ -156,7 +145,8 @@ class GSDView(QtGui.QMainWindow):
         self.settings = QtCore.QSettings('gsdview.ini',
                                          QtCore.QSettings.IniFormat,
                                          self)
-        self.connect(QtGui.qApp, QtCore.SIGNAL('aboutToQuit()'), self.saveSettings)
+        self.connect(QtGui.qApp, QtCore.SIGNAL('aboutToQuit()'),
+                     self.saveSettings)
         self.loadSettings()
 
         # Setup the log system
@@ -191,7 +181,7 @@ class GSDView(QtGui.QMainWindow):
         self.fileActions.addAction(self.actionFileClose)
 
         # Exit
-        self.actionExit = QtGui.QAction(QtGui.QIcon(':images/quit.svg'),
+        self.actionExit = QtGui.QAction(QtGui.QIcon(':/images/quit.svg'),
                                         self.tr('&Exit'), self)
         self.actionExit.setShortcut(self.tr('Ctrl+X'));
         self.actionExit.setStatusTip(self.tr('Exit the program'))
@@ -205,7 +195,7 @@ class GSDView(QtGui.QMainWindow):
         self.zoomActions = QtGui.QActionGroup(self)
 
         # Zoom in
-        self.actionZoomIn = QtGui.QAction(QtGui.QIcon(':images/zoom-in.svg'),
+        self.actionZoomIn = QtGui.QAction(QtGui.QIcon(':/images/zoom-in.svg'),
                                           self.tr('Zoom In'), self)
         self.actionZoomIn.setStatusTip(self.tr('Zoom In'))
         self.actionZoomIn.setShortcut(QtGui.QKeySequence(self.tr('Ctrl++')))
@@ -214,7 +204,7 @@ class GSDView(QtGui.QMainWindow):
         self.zoomActions.addAction(self.actionZoomIn)
 
         # Zoom out
-        self.actionZoomOut = QtGui.QAction(QtGui.QIcon(':images/zoom-out.svg'),
+        self.actionZoomOut = QtGui.QAction(QtGui.QIcon(':/images/zoom-out.svg'),
                                            self.tr('Zoom Out'), self)
         self.actionZoomOut.setStatusTip(self.tr('Zoom Out'))
         self.actionZoomOut.setShortcut(QtGui.QKeySequence(self.tr('Ctrl+-')))
@@ -223,7 +213,7 @@ class GSDView(QtGui.QMainWindow):
         self.zoomActions.addAction(self.actionZoomOut)
 
         # Zoom fit
-        self.actionZoomFit = QtGui.QAction(QtGui.QIcon(':images/zoom-fit.svg'),
+        self.actionZoomFit = QtGui.QAction(QtGui.QIcon(':/images/zoom-fit.svg'),
                                            self.tr('Zoom Fit'), self)
         self.actionZoomIn.setStatusTip(self.tr('Zoom to fit the window size'))
         self.connect(self.actionZoomFit, QtCore.SIGNAL('triggered()'),
@@ -231,7 +221,7 @@ class GSDView(QtGui.QMainWindow):
         self.zoomActions.addAction(self.actionZoomFit)
 
         # Zoom 100
-        self.actionZoom100 = QtGui.QAction(QtGui.QIcon(':images/zoom-100.svg'),
+        self.actionZoom100 = QtGui.QAction(QtGui.QIcon(':/images/zoom-100.svg'),
                                            self.tr('Zoom 100%'), self)
         self.actionZoom100.setStatusTip(self.tr('Original size'))
         self.connect(self.actionZoom100, QtCore.SIGNAL('triggered()'),
@@ -244,7 +234,7 @@ class GSDView(QtGui.QMainWindow):
         self.helpActions = QtGui.QActionGroup(self)
 
         # About
-        self.actionAbout = QtGui.QAction(QtGui.QIcon(':images/about.svg'),
+        self.actionAbout = QtGui.QAction(QtGui.QIcon(':/images/about.svg'),
                                         self.tr('&About'), self)
         self.actionAbout.setStatusTip(self.tr('Show program information'))
         self.connect(self.actionAbout, QtCore.SIGNAL('triggered()'),
@@ -252,7 +242,7 @@ class GSDView(QtGui.QMainWindow):
         self.helpActions.addAction(self.actionAbout)
 
         # AboutQt
-        self.actionAboutQt = QtGui.QAction(QtGui.QIcon(':images/qt-logo.png'),
+        self.actionAboutQt = QtGui.QAction(QtGui.QIcon(':/images/qt-logo.png'),
                                         self.tr('About &Qt'), self)
         self.actionAboutQt.setStatusTip(self.tr('Show information about Qt'))
         self.connect(self.actionAboutQt, QtCore.SIGNAL('triggered()'),
@@ -300,7 +290,7 @@ class GSDView(QtGui.QMainWindow):
 
     def _setupOutputPanel(self):
         # Output panel
-        outputPanel = QtGui.QDockWidget('Output panel', self)
+        outputPanel = QtGui.QDockWidget('Output', self)
         outputPanel.setObjectName('outputPanel')
         outputplane = Qt4OutputPlane()
         outputPanel.setWidget(outputplane)
@@ -312,7 +302,8 @@ class GSDView(QtGui.QMainWindow):
 
     def _setupQuickLookPanel(self):
         # Quick-look panel
-        quicklookPanel = QtGui.QDockWidget('Quick Look panel', self)
+        # @TODO: rename "overview"
+        quicklookPanel = QtGui.QDockWidget('Quick Look', self)
         quicklookPanel.setObjectName('quickLookPanel')
         quicklookView = GraphicsView(QtGui.QGraphicsScene(self))
         #qlView.setDragMode(QtGui.QGraphicsView.ScrollHandDrag) # @TODO: check
@@ -331,7 +322,7 @@ class GSDView(QtGui.QMainWindow):
 
     def _setupMapPanel(self):
         # Map panel @TODO: use the marble widget
-        mapPanel = QtGui.QDockWidget('Map panel', self)
+        mapPanel = QtGui.QDockWidget('Map', self)
         mapPanel.setObjectName('mapPanel')
         self.mapView = QtGui.QGraphicsView(self)
         mapPanel.setWidget(self.mapView)
@@ -342,7 +333,8 @@ class GSDView(QtGui.QMainWindow):
 
     def _setupInfoPanel(self):
         # Info panel
-        infoPanel = QtGui.QDockWidget('Info panel', self)
+        # @TODO: rename "metadata"
+        infoPanel = QtGui.QDockWidget('Info', self)
         infoPanel.setObjectName('infoPanel')
         self.infoTable = QtGui.QTableWidget(5, 2, self)
         self.infoTable.verticalHeader().hide()
@@ -365,18 +357,21 @@ class GSDView(QtGui.QMainWindow):
         self.quicklookView = quicklookPanel.widget()
 
     def setupLogging(self, outputplane):
-        debug=True
-        if debug:
-            level = logging.DEBUG
-            logging.basicConfig(level=level)
-        else:
-            level = logging.INFO
+        logger = logging.getLogger()    # 'gsdview' # @TODO: fix
 
-        logger = logging.getLogger()
+        # Set the log level from preferences
+        defaut = QtCore.QVariant(logging.getLevelName(logger.level))
+        level = self.settings.value('preferences/loglevel', defaut).toString()
+        level = logging.getLevelName(str(level))
+        if isinstance(level, int):
+            logger.setLevel(level)
+
+        if logger.level == logging.DEBUG:
+            logging.basicConfig(level=logging.DEBUG)
 
         formatter = logging.Formatter('%(levelname)s: %(message)s')
         handler = Qt4StreamLoggingHandler(outputplane)
-        handler.setLevel(level)
+        handler.setLevel(logger.level)
         handler.setFormatter(formatter)
         logger.addHandler(handler)
 
@@ -385,8 +380,6 @@ class GSDView(QtGui.QMainWindow):
         handler.setLevel(logging.WARNING)
         handler.setFormatter(formatter)
         logger.addHandler(handler)
-
-        logger.setLevel(level)
 
         return logger
 
@@ -402,6 +395,7 @@ class GSDView(QtGui.QMainWindow):
 
     ### Settings ##############################################################
     def loadSettings(self):
+        # mainwindow
         self.settings.beginGroup('mainwindow')
         position = self.settings.value('position')
         if not position.isNull():
@@ -412,14 +406,35 @@ class GSDView(QtGui.QMainWindow):
         state = self.settings.value('state')
         if not state.isNull():
             self.restoreState(state.toByteArray())
-        self.settings.endGroup() # mainwindow
+        self.settings.endGroup()
+
+        # preferences
+        self.settings.beginGroup('preferences')
+        #self.cachedir = self.settings.value('cachelocation')
+        # @TODO: check the default value
+        #default= QtCore.QVariant(150*1024**2)
+        #cachesize, ok = self.settings.value('gdalcachesize', default).toInt()
+        cachesize, ok = self.settings.value('gdalcachesize').toInt()
+        if ok:
+            gdal.SetCacheMax(cachesize)
+        self.settings.endGroup()
 
     def saveSettings(self):
+        # mainwindow
         self.settings.beginGroup('mainwindow')
         self.settings.setValue('position', QtCore.QVariant(self.pos()))
         self.settings.setValue('size', QtCore.QVariant(self.size()))
         self.settings.setValue('state', QtCore.QVariant(self.saveState()))
-        self.settings.endGroup() # mainwindow
+        self.settings.endGroup()
+
+        # preferences
+        self.settings.beginGroup('preferences')
+        level = QtCore.QVariant(logging.getLevelName(self.logger.level))
+        self.settings.setValue('loglevel', level)
+        #self.settings.setValue('cachelocation', self.cachedir)
+        self.settings.setValue('gdalcachesize',
+                               QtCore.QVariant(gdal.GetCacheMax()))
+        self.settings.endGroup()
 
     ### File actions ##########################################################
     @overrideCursor
@@ -428,8 +443,16 @@ class GSDView(QtGui.QMainWindow):
         inDataset = gdal.Open(str(filename))
 
         # Check the cache
+        # @TODO: fix
+        defaultcachedir = os.path.join('~', '.gsdview', 'cache')
+        defaultcachedir = os.path.expanduser(defaultcachedir)
+        defaultcachedir = QtCore.QVariant(defaultcachedir)
+        cachedir = self.settings.value('preferences/cachedir', defaultcachedir)
+        cachedir = cachedir.toString()
+        cachedir = os.path.expanduser(str(cachedir))
+
         datasetID = gdalsupport.uniqueDatasetID(inDataset)
-        datasetCacheDir = os.path.join(self.cachedir, datasetID)
+        datasetCacheDir = os.path.join(cachedir, datasetID)
         if not os.path.isdir(datasetCacheDir):
             os.makedirs(datasetCacheDir)
 
@@ -468,7 +491,7 @@ class GSDView(QtGui.QMainWindow):
 
         # Check for overviews and statistics
         # @TODO: move this to settings
-        maxQuicklookSize = 100 * 1024 # 800 KByte (about 320x320 8 bit pixels)
+        maxQuicklookSize = 100 * 1024 # 100 KByte (about 320x320 8 bit pixels)
 
         # @TODO: add a mechanism for band slection
         band = dataset.GetRasterBand(1)
@@ -480,13 +503,18 @@ class GSDView(QtGui.QMainWindow):
         self.qlFactor = numpy.sqrt(datasetMemSize/float(maxQuicklookSize))
         self.qlFactor = max(round(self.qlFactor), 2)
 
+        # @TODO: check GDALOvLevelAdjust
+        #int GDALOvLevelAdjust(int nOvLevel, int nXSize) {
+        #   int nOXSize = (nXSize + nOvLevel - 1) / nOvLevel;
+        #   return (int) (0.5 + nXSize / (double) nOXSize);
+        #}
+
         # @TODO: when the improved GraphicsView will be available more then
         #        one overview level will be needed
         overviewLevels = [int(self.qlFactor)]
 
         # Check existing overviews
         nOverviews = band.GetOverviewCount()
-        logging.debug(nOverviews)
         if nOverviews > 0:
             # Retrieve the scale factors
             factors = []
@@ -495,7 +523,7 @@ class GSDView(QtGui.QMainWindow):
                 factors.append(dataset.RasterXSize / ovrXSize)
                 logging.debug('RasterXSize = %d, ovrXSize = %d' % (dataset.RasterXSize, ovrXSize))
 
-            logging.debug('factors: %s' % map(str, factors))
+            logging.debug('factors: %s' % factors)
 
             # Criterion is too strict
             #~ missingOverviewLevels = set(overviewLevels).difference(factors)
@@ -514,8 +542,8 @@ class GSDView(QtGui.QMainWindow):
         else:
             missingOverviewLevels = overviewLevels
 
+        # @TODO: do this after choosing the band
         if not missingOverviewLevels:
-            logging.debug('no missingOverviewLevels')
             ovrIndex = factors.index(self.qlFactor)
             ovrBand = band.GetOverview(ovrIndex)
             quicklook = ovrBand.ReadAsArray()
@@ -546,20 +574,16 @@ class GSDView(QtGui.QMainWindow):
 
             subProc = self.controller.subprocess
             assert subProc.state() == subProc.NotRunning
-            # @TODO: make parameters configurable
-            # gdaladdo --config USE_RRD YES airphoto.jpg 3 9 27 81
-            program = 'gdaladdo'
-            args = [virtualDatasetFilename]
-            args.extend(map(str, missingOverviewLevels))
-
             logging.debug('Run the subprocess.')
-            logging.debug('%s %s' % (program, ' '.join(args)))
+
+            args = [os.path.basename(virtualDatasetFilename)] # @TODO: check
+            args.extend(map(str, missingOverviewLevels))
 
             #self.subprocess.setEnvironmet(...)
             self.controller.subprocess.setWorkingDirectory(datasetCacheDir)
             self.controller.run_tool(*args)
 
-            ## ALTERNATIVE: run in a separate yhread
+            ## ALTERNATIVE: run in a separate thread
             # gdal.SetConfigOption('USE_RRD', 'YES')
             # ret = p.BuildOverviews('average', [2,4,8])
             # ovr = b.GetOverview(2)
@@ -719,7 +743,7 @@ class GSDView(QtGui.QMainWindow):
             min_ = quicklook.min()
             max_ = quicklook.max()
             nbins = max_ - min_ + 1
-            range_ = (min_, max_+1)     # @NOTE: dtype = uint16
+            range_ = (min_, max_ + 1)     # @NOTE: dtype = uint16
             histogram_ = numpy.histogram(quicklook, nbins, range_)[0]
 
             # Display the image and the quick look
