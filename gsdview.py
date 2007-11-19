@@ -55,6 +55,17 @@ class GraphicsView(QtGui.QGraphicsView):
         self.emit(QtCore.SIGNAL('newSize(const QSize&)'), event.size())
         return QtGui.QGraphicsView.resizeEvent(self, event)
 
+    def scale(self, sx, sy):
+        QtGui.QGraphicsView.scale(self, sx, sy)
+        self.emit(QtCore.SIGNAL('scaled()'))
+
+    def resetMatrix(self):
+        if not self.matrix().isIdentity():
+            QtGui.QGraphicsView.resetMatrix(self, sx, sy)
+            self.emit(QtCore.SIGNAL('scaled()'))
+
+    # @TODO: check transform related functions
+
 class GSDView(QtGui.QMainWindow):
     # @TODO:
     #   * set all icon (can use the iconset of BEAM)
@@ -89,6 +100,9 @@ class GSDView(QtGui.QMainWindow):
                      self.updateQuicklookBox)
         self.connect(self.graphicsView,
                      QtCore.SIGNAL('newSize(const QSize&)'),
+                     self.updateQuicklookBox)
+        self.connect(self.graphicsView,
+                     QtCore.SIGNAL('scaled()'),
                      self.updateQuicklookBox)
 
         # Progressbar
@@ -627,24 +641,18 @@ class GSDView(QtGui.QMainWindow):
 
     ### Zoom actions ##########################################################
     def zoomIn(self):
-        #factor = 1.2
-        factor = 2.
+        factor = 1.2
         self.graphicsView.scale(factor, factor)
-        self.updateQuicklookBox()   # @TODO: use signals or decorators
 
     def zoomOut(self):
-        #factor = 1./1.2
-        factor = 0.5
+        factor = 1./1.2
         self.graphicsView.scale(factor, factor)
-        self.updateQuicklookBox()   # @TODO: use signals or decorators
 
     def zoomFit(self):
         self.graphicsView.fitInView(self.imageItem, QtCore.Qt.KeepAspectRatio)
-        self.updateQuicklookBox()   # @TODO: use signals or decorators
 
     def zoom100(self):
         self.graphicsView.setMatrix(QtGui.QMatrix())
-        self.updateQuicklookBox()   # @TODO: use signals or decorators
 
     ### Drag actions ##########################################################
     # @TODO:
@@ -782,39 +790,32 @@ class GSDView(QtGui.QMainWindow):
 
     def updateQuicklookBox(self):
         if self.quicklook:
-            #~ print self.graphicsView.horizontalScrollBar().maximum(), \
-                  #~ self.graphicsView.verticalScrollBar().maximum()
+            hbar = self.graphicsView.horizontalScrollBar()
+            vbar = self.graphicsView.verticalScrollBar()
+            x = hbar.value()
+            y = vbar.value()
+            w = hbar.pageStep()
+            h = vbar.pageStep()
 
-            #~ x = self.graphicsView.horizontalScrollBar().value()
-            #~ y = self.graphicsView.verticalScrollBar().value()
-            #~ w = self.graphicsView.viewport().width()
-            #~ h = self.graphicsView.viewport().height()
+            # @TODO: bug report: mapping to scene seems to introduce a
+            #        spurious offset "x1 = 2*x0"; this doesn't happen for "w"
             #~ polygon = self.graphicsView.mapToScene(x, y, w, h)
             #~ rect = polygon.boundingRect()
 
-            #~ print self.dataset.RasterXSize, self.dataset.RasterYSize
-            #~ print x, y, w, h
-            #~ print rect.x(), rect.y(), rect.width(), rect.height()
-
-            #~ qlfactor = float(self.dataset.RasterXSize) / self.quicklook.width()
+            qlfactor = float(self.dataset.RasterXSize) / self.quicklook.width()
             #~ x = rect.x() / qlfactor
             #~ y = rect.y() / qlfactor
             #~ w = rect.width() / qlfactor
             #~ h = rect.height() / qlfactor
 
-            #~ print self.quicklook.width(), self.quicklook.height()
-            #~ print qlfactor
-            #~ print x, y, w, h
-            #~ print
-
-            qlfactor = float(self.dataset.RasterXSize) / self.quicklook.width()
-            x = self.graphicsView.horizontalScrollBar().value() / qlfactor
-            y = self.graphicsView.verticalScrollBar().value() / qlfactor
-            w = self.graphicsView.viewport().width() / qlfactor
-            h = self.graphicsView.viewport().height() / qlfactor
+            # @NOTE: this is a workaround; mapToScene should be used instead
+            factor = qlfactor * self.graphicsView.matrix().m11()
+            x /= factor
+            y /= factor
+            w /= factor
+            h /= factor
 
             self.qlselection.setRect(x, y, w, h)
-
 
     def processingDone(self):
         self.controller.reset_controller()
