@@ -61,7 +61,7 @@ class GraphicsView(QtGui.QGraphicsView):
 
     def resetMatrix(self):
         if not self.matrix().isIdentity():
-            QtGui.QGraphicsView.resetMatrix(self, sx, sy)
+            QtGui.QGraphicsView.resetMatrix(self)
             self.emit(QtCore.SIGNAL('scaled()'))
 
     # @TODO: check transform related functions
@@ -77,6 +77,8 @@ class GSDView(QtGui.QMainWindow):
     #   * open internal product
     #   * stop button
     #   * disable actions when the external tool is running
+    #   * /usr/share/doc/python-qt4-doc/examples/mainwindows/recentfiles.py
+    #   * stretching tool
 
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
@@ -309,8 +311,7 @@ class GSDView(QtGui.QMainWindow):
         outputPanel.setWidget(outputplane)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, outputPanel)
         self.connect(outputplane, QtCore.SIGNAL('planeHideRequest()'),
-                     outputPanel.toggleViewAction(), QtCore.SLOT('toggle()'))
-
+                     outputPanel.hide)
         return outputPanel
 
     def _setupQuickLookPanel(self):
@@ -449,6 +450,23 @@ class GSDView(QtGui.QMainWindow):
                                QtCore.QVariant(gdal.GetCacheMax()))
         self.settings.endGroup()
 
+    # @TODO: check and move elseware
+    def closeEvent(self, event):
+        '''
+        void MainWindow::closeEvent(QCloseEvent *event)
+        {
+            if (maybeSave()) {
+                writeSettings();
+                event->accept();
+            } else {
+                event->ignore();
+            }
+        }
+
+        '''
+
+        self.showNormal()
+
     ### File actions ##########################################################
     @overrideCursor
     def _openFile(self, filename):
@@ -574,7 +592,6 @@ class GSDView(QtGui.QMainWindow):
             lut = gsdtools.compute_lin_LUT2(histogram_)
             self.setGraphicsItem(dataset, lut)
             self.setQuickLook(quicklook, lut)
-
         else:
             logging.debug('missingOverviewLevels: %s' % missingOverviewLevels)
             # Run an external process for overviews computation
@@ -740,7 +757,8 @@ class GSDView(QtGui.QMainWindow):
             for ovrIndex in range(nOverviews):
                 ovrXSize = band.GetOverview(ovrIndex).XSize
                 factors.append(dataset.RasterXSize / ovrXSize)
-                logging.debug('RasterXSize = %d, ovrXSize = %d' % (dataset.RasterXSize, ovrXSize))
+                logging.debug('RasterXSize = %d, ovrXSize = %d' %
+                                            (dataset.RasterXSize, ovrXSize))
 
             logging.debug('factors: %s' % map(str, factors))
 
