@@ -9,9 +9,5 @@
     <file>images/about.svg</file>
     <file>images/GDALLogoColor.svg</file>
     <file>images/qt-logo.png</file>
-        <file>images/zoom-in.svg</file>
-        <file>images/zoom-out.svg</file>
-        <file>images/zoom-fit.svg</file>
-        <file>images/zoom-100.svg</file>
 </qresource>
 </RCC>

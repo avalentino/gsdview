@@ -20,9 +20,11 @@ def compute_lin_LUT(min_, max_, lower, upper):
     return lut.astype(numpy.uint8)
 
 
-def compute_lin_LUT2(histogram_, lower=0.005, upper=0.99, max_=None):
+def compute_lin_LUT2(histogram_, lower=0.005, upper=0.99, min_=None, max_=None):
+    if min_ is None:
+        min_ = 0
     if max_ is None:
-        max_ = len(histogram_) - 1
+        max_ = min_ + len(histogram_) - 1
 
     # normalization
     histogram_ = histogram_.astype(numpy.float)

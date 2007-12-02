@@ -28,7 +28,7 @@ import gdal
 
 from PyQt4 import QtCore, QtGui
 
-import resources       # @TODO: fix
+import resources
 
 class GdalDatasetBrowser(QtGui.QDockWidget):
     def __init__(self, parent=None): #, flags=0):

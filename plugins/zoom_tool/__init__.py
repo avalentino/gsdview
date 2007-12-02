@@ -16,33 +16,35 @@
 ### along with GSDView; if not, write to the Free Software
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
 
-'''Browser component for GDAL datasets.'''
+'''Zoom tool.'''
 
 __author__  = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__    = '$Date$'
+__date__    = '$Date: 2007-12-02 17:26:44 +0100 (dom, 02 dic 2007) $'
 __version__ = (1,0,0)
-__revision__ = '$Revision$'
+__revision__ = '$Revision: 43 $'
 __requires__ = []
 
 from PyQt4 import QtCore
 
-from dataset_browser import GdalDatasetBrowser
+from zoom import ZoomTool
 
-__all__ = ['GdalDatasetBrowser', 'init', 'close']
+__all__ = ['ZoomTool', 'init', 'close']
 
 def init(mainwin):
-    datasetBrowser = GdalDatasetBrowser(mainwin)
-    datasetBrowser.setObjectName('datasetBrowserPanel') # @TODO: check
-    mainwin.addDockWidget(QtCore.Qt.LeftDockWidgetArea, datasetBrowser)
+    zoomTool = ZoomTool(mainwin)
+    mainwin.menuBar().addMenu(zoomTool.menu)
+    mainwin.addToolBar(zoomTool.toolbar)
 
-    mainwin.connect(mainwin, QtCore.SIGNAL('openGdalDataset(PyQt_PyObject)'),
-                    datasetBrowser.setDataset)
+    # @TODO: check the API
+    if mainwin.imageItem is None:
+        zoomTool.actions.setEnabled(False)
+
     # @TODO: improve for multiple datasets
-    mainwin.connect(mainwin, QtCore.SIGNAL('closeGdalDataset()'),
-                    datasetBrowser.treeWidget.clear)
-    # @TODO: actionFileClose could not be part of the api
-    #~ mainwin.connect(mainwin.actionFileClose, QtCore.SIGNAL('triggered()'),
-                    #~ datasetBrowser.treeWidget.clear)
+    zoomTool.connect(mainwin, QtCore.SIGNAL('openGdalDataset(PyQt_PyObject)'),
+                     lambda x: zoomTool.actions.setEnabled(True))
+    zoomTool.connect(mainwin, QtCore.SIGNAL('closeGdalDataset()'),
+                     lambda: zoomTool.actions.setEnabled(False))
+
 
 def close(mainwin):
     saveSettings()
@@ -55,3 +57,4 @@ def saveSettings():
 
 def getSettingsEditor():
     pass
+

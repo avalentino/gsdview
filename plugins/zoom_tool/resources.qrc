@@ -1,0 +1,8 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>images/zoom-in.svg</file>
+    <file>images/zoom-out.svg</file>
+    <file>images/zoom-fit.svg</file>
+    <file>images/zoom-100.svg</file>
+</qresource>
+</RCC>

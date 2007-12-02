@@ -42,21 +42,13 @@ import resources
 import gsdtools
 import gdalsupport
 import gdalqt4
+import qt4support
 
 import exectools
 from exectools.qt4tools import Qt4OutputPlane, Qt4ToolController
 from exectools.qt4tools import Qt4DialogLoggingHandler, Qt4StreamLoggingHandler
 
 from gdalexectools import GdalAddOverviewDescriptor, GdalOutputHandler
-
-def overrideCursor(func):
-    def aux(*args, **kwargs):
-        QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
-        try:
-            func(*args, **kwargs)
-        finally:
-            QtGui.QApplication.restoreOverrideCursor()
-    return aux
 
 # @TODO: move to another file (??)
 # @TODO: maybe this is not the best solution. Maybe a custom GraphicsItem
@@ -96,8 +88,6 @@ class GraphicsView(QtGui.QGraphicsView):
 class GSDView(QtGui.QMainWindow):
     # @TODO:
     #   * set all icon (can use the iconset of BEAM)
-    #   * fix the 'key' column width of info table
-    #   * show metadata in a tree
     #   * map panel
     #   * plugin architecture
     #   * cache browser, cache cleanup
@@ -175,7 +165,6 @@ class GSDView(QtGui.QMainWindow):
         self.setupMenu()
         self.setupToolbars()
 
-        self.zoomActions.setEnabled(False)
         self.statusBar().showMessage('Ready')
 
         # Settings
@@ -239,45 +228,6 @@ class GSDView(QtGui.QMainWindow):
 
         return self.fileActions
 
-    def _setupZoomActions(self):
-        self.zoomActions = QtGui.QActionGroup(self)
-
-        # Zoom in
-        self.actionZoomIn = QtGui.QAction(QtGui.QIcon(':/images/zoom-in.svg'),
-                                          self.tr('Zoom In'), self)
-        self.actionZoomIn.setStatusTip(self.tr('Zoom In'))
-        self.actionZoomIn.setShortcut(QtGui.QKeySequence(self.tr('Ctrl++')))
-        self.connect(self.actionZoomIn, QtCore.SIGNAL('triggered()'),
-                     self.zoomIn)
-        self.zoomActions.addAction(self.actionZoomIn)
-
-        # Zoom out
-        self.actionZoomOut = QtGui.QAction(QtGui.QIcon(':/images/zoom-out.svg'),
-                                           self.tr('Zoom Out'), self)
-        self.actionZoomOut.setStatusTip(self.tr('Zoom Out'))
-        self.actionZoomOut.setShortcut(QtGui.QKeySequence(self.tr('Ctrl+-')))
-        self.connect(self.actionZoomOut, QtCore.SIGNAL('triggered()'),
-                     self.zoomOut)
-        self.zoomActions.addAction(self.actionZoomOut)
-
-        # Zoom fit
-        self.actionZoomFit = QtGui.QAction(QtGui.QIcon(':/images/zoom-fit.svg'),
-                                           self.tr('Zoom Fit'), self)
-        self.actionZoomIn.setStatusTip(self.tr('Zoom to fit the window size'))
-        self.connect(self.actionZoomFit, QtCore.SIGNAL('triggered()'),
-                     self.zoomFit)
-        self.zoomActions.addAction(self.actionZoomFit)
-
-        # Zoom 100
-        self.actionZoom100 = QtGui.QAction(QtGui.QIcon(':/images/zoom-100.svg'),
-                                           self.tr('Zoom 100%'), self)
-        self.actionZoom100.setStatusTip(self.tr('Original size'))
-        self.connect(self.actionZoom100, QtCore.SIGNAL('triggered()'),
-                     self.zoom100)
-        self.zoomActions.addAction(self.actionZoom100)
-
-        return self.zoomActions
-
     def _setupHelpActions(self):
         self.helpActions = QtGui.QActionGroup(self)
 
@@ -301,40 +251,27 @@ class GSDView(QtGui.QMainWindow):
 
     def setupActions(self):
         self.fileActions = self._setupFileActions()
-        self.zoomActions = self._setupZoomActions()
         self.helpActions = self._setupHelpActions()
 
     def setupMenu(self):
-        def actionGroupToMenu(actionGroup, label):
-            menu = QtGui.QMenu(label, self)
-            for action in actionGroup.actions():
-                menu.addAction(action)
+        def addMenu(actions, name):
+            menu = qt4support.actionGroupToMenu(actions, name)
             self.menuBar().addMenu(menu)
             return menu
 
-        menu = actionGroupToMenu(self.fileActions, self.tr('&File'))
+        menu = addMenu(self.fileActions, self.tr('&File'))
         menu.insertSeparator(self.actionExit)
-        menu = actionGroupToMenu(self.zoomActions, self.tr('&Zoom'))
-        menu = actionGroupToMenu(self.helpActions, self.tr('&Help'))
+        addMenu(self.helpActions, self.tr('&Help'))
 
     def setupToolbars(self):
-        def actionGroupToToolbar(actionGroup, label, name=None):
-            if name is None:
-                # get camel case name
-                parts = str(label).title().split()
-                parts[0] = parts[0].lower()
-                name = ''.join(parts)
-            toolbar = QtGui.QToolBar(label, self)
-            toolbar.setObjectName(name)
-            for action in actionGroup.actions():
-                toolbar.addAction(action)
+        def addToolBar(actions, name):
+            toolbar = qt4support.actionGroupToToolbar(actions, name)
             self.addToolBar(toolbar)
             return toolbar
 
-        bar = actionGroupToToolbar(self.fileActions, self.tr('File toolbar'))
+        bar = addToolBar(self.fileActions, self.tr('File toolbar'))
         bar.insertSeparator(self.actionExit)
-        bar = actionGroupToToolbar(self.zoomActions, self.tr('Zoom toolbar'))
-        bar = actionGroupToToolbar(self.helpActions, self.tr('Help toolbar'))
+        addToolBar(self.helpActions, self.tr('Help toolbar'))
 
     def setupPlugins(self):
         plugins = {}
@@ -342,9 +279,6 @@ class GSDView(QtGui.QMainWindow):
         pluginsDir = os.path.join(os.path.dirname(__name__), 'plugins')
         sys.path.insert(0, pluginsDir)
         for dirpath, dirnames, filenames in os.walk(pluginsDir):
-            print 'dirpath', dirpath
-            print 'dirnames', '\n'.join(dirnames)
-            print 'filenames', '\n'.join(filenames)
             for name in dirnames:
                 if name.startswith('.'):
                     continue
@@ -546,7 +480,7 @@ class GSDView(QtGui.QMainWindow):
         self.showNormal()
 
     ### File actions ##########################################################
-    @overrideCursor
+    @qt4support.overrideCursor
     def _openFile(self, filename):
         assert filename
         inDataset = gdal.Open(str(filename))
@@ -597,8 +531,6 @@ class GSDView(QtGui.QMainWindow):
         header = self.infoTable.horizontalHeader()
         header.resizeSections(QtGui.QHeaderView.ResizeToContents)
         header.setStretchLastSection(True)
-
-        self.zoomActions.setEnabled(True)
 
         # Check for overviews and statistics
         # @TODO: move this to settings
@@ -662,6 +594,8 @@ class GSDView(QtGui.QMainWindow):
             # Compute the LUT
             # @TODO: use a function here
             min_ = quicklook.min()
+            if min_ > 0:        # @TODO: fix
+                min_ = 0
             max_ = quicklook.max()
             nbins = max_ - min_ + 1
             range_ = (min_, max_+1)     # @NOTE: dtype = uint16
@@ -707,6 +641,9 @@ class GSDView(QtGui.QMainWindow):
                 self._openFile(filename)
 
     def closeFile(self):
+        # @TODO: extend for multiple datasets
+        self.emit(QtCore.SIGNAL('closeGdalDataset()'))
+
         # Reset the scene and the view transformation matrix
         for view in (self.graphicsView, self.quicklookView):
             scene = view.scene()
@@ -731,28 +668,7 @@ class GSDView(QtGui.QMainWindow):
         self.qlselection = None
         self.virtualDatasetFilename = None
 
-        # Disable zoom actions
-        self.zoomActions.setEnabled(False)
-
         self.statusBar().showMessage('Ready.')
-
-    ### Zoom actions ##########################################################
-    def zoomIn(self):
-        factor = 1.2
-        self.graphicsView.scale(factor, factor)
-
-    def zoomOut(self):
-        factor = 1./1.2
-        self.graphicsView.scale(factor, factor)
-
-    def zoomFit(self):
-        self.graphicsView.fitInView(self.imageItem, QtCore.Qt.KeepAspectRatio)
-
-    def zoom100(self):
-        self.graphicsView.setMatrix(QtGui.QMatrix())
-
-    ### Drag actions ##########################################################
-    # @TODO:
 
     ### Help actions ##########################################################
     def about(self):
@@ -763,7 +679,7 @@ class GSDView(QtGui.QMainWindow):
         QtGui.QMessageBox.aboutQt(self)
 
     ### Auxiliaary methods ####################################################
-    @overrideCursor
+    @qt4support.overrideCursor
     def setGraphicsItem(self, dataset, lut):
         self.graphicsView.setUpdatesEnabled(False)
         try:
@@ -782,7 +698,7 @@ class GSDView(QtGui.QMainWindow):
         finally:
             self.graphicsView.setUpdatesEnabled(True)
 
-    @overrideCursor
+    @qt4support.overrideCursor
     def setQuickLook(self, data, lut):
         self.graphicsView.setUpdatesEnabled(False)
         try:
@@ -861,10 +777,13 @@ class GSDView(QtGui.QMainWindow):
             # Compute the LUT
             # @TODO: use a function here
             min_ = quicklook.min()
+            if min_ > 0:    # @TODO: fix
+                min_ = 0
             max_ = quicklook.max()
             nbins = max_ - min_ + 1
             range_ = (min_, max_ + 1)     # @NOTE: dtype = uint16
             histogram_ = numpy.histogram(quicklook, nbins, range_)[0]
+            print min_, max_, range_, nbins, histogram_[0], histogram_[-1]
 
             # Display the image and the quick look
             # @TODO: refactorize (the same code already in _openFile)
