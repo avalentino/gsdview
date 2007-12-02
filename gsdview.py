@@ -409,6 +409,10 @@ class GSDView(QtGui.QMainWindow):
 
     ### Settings ##############################################################
     def loadSettings(self):
+        # @TODO:
+        #   * restore window size and position
+        #   * restore windowState
+
         # mainwindow
         self.settings.beginGroup('mainwindow')
         position = self.settings.value('position')
@@ -434,6 +438,11 @@ class GSDView(QtGui.QMainWindow):
         self.settings.endGroup()
 
     def saveSettings(self):
+        # @TODO: remove closeEvent (??)
+        #   * save windowState (??)
+        #   * de-maximize --> showNormal()  --> only before exiting
+        #   * save window size and position
+
         # mainwindow
         self.settings.beginGroup('mainwindow')
         self.settings.setValue('position', QtCore.QVariant(self.pos()))
@@ -506,17 +515,17 @@ class GSDView(QtGui.QMainWindow):
         metadata = dataset.GetMetadata()
         self.infoTable.setHorizontalHeaderLabels(['Key', 'Value'])
         self.infoTable.setRowCount(len(metadata))
-        self.infoTable.horizontalHeader().setResizeMode(
-                                            QtGui.QHeaderView.ResizeToContents)
+
         for row, key in enumerate(metadata):
             value = str(metadata[key])
             self.infoTable.setItem(row, 0, QtGui.QTableWidgetItem(key))
             self.infoTable.setItem(row, 1, QtGui.QTableWidgetItem(value))
         self.infoTable.sortByColumn(0, QtCore.Qt.AscendingOrder)
 
-        # @TODO: check second time
-        self.infoTable.horizontalHeader().setResizeMode(
-                                                QtGui.QHeaderView.Interactive)
+        # Fix table header behaviour
+        header = self.infoTable.horizontalHeader()
+        header.resizeSections(QtGui.QHeaderView.ResizeToContents)
+        header.setStretchLastSection(True)
 
         self.zoomActions.setEnabled(True)
 

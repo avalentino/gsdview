@@ -1,0 +1,9 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>images/dataset.svg</file>
+    <file>images/driver.svg</file>
+    <file>images/raster-band.svg</file>
+    <file>images/gcp.svg</file>
+    <file>images/metadata.svg</file>
+</qresource>
+</RCC>
