@@ -1,5 +1,32 @@
 #!/usr/bin/env python
 
+# -*- coding: UTF8 -*-
+
+### Copyright (C) 2007 Antonio Valentino <a_valentino@users.sf.net>
+
+### This file is part of GSDView.
+
+### GSDView is free software; you can redistribute it and/or modify
+### it under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 2 of the License, or
+### (at your option) any later version.
+
+### GSDView is distributed in the hope that it will be useful,
+### but WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+### GNU General Public License for more details.
+
+### You should have received a copy of the GNU General Public License
+### along with GSDView; if not, write to the Free Software
+### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
+
+'''GUI front-end for the Geospatial Data Abstracton Library (GDAL).'''
+
+__author__  = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__    = '$Date: 2007-12-02 12:28:46 +0100 (dom, 02 dic 2007) $'
+__version__ = (1,0,0)
+__revision__ = '$Revision: 42 $'
+
 import os
 import sys
 import logging
@@ -162,16 +189,21 @@ class GSDView(QtGui.QMainWindow):
                                          self)
         self.connect(QtGui.qApp, QtCore.SIGNAL('aboutToQuit()'),
                      self.saveSettings)
-        self.loadSettings()
 
         # Setup the log system
         self.logger = self.setupLogging(self.outputplane)
 
-        # Setup external tool s controller
+        # Setup the external tools controller
         self.controller = self.setupController(self.outputplane,
                                                self.statusBar(),
                                                self.progressbar,
                                                self.logger)
+
+        # Setup plugins
+        self.setupPlugins() # @TODO: pass settings
+
+        # @NOTE: the window state setup must happen after the plugins loading
+        self.loadSettings() # @TODO: pass settings
 
     ### Setup helpers #########################################################
     def _setupFileActions(self):
@@ -180,6 +212,7 @@ class GSDView(QtGui.QMainWindow):
         # Open
         self.actionFileOpen = QtGui.QAction(QtGui.QIcon(':/images/open.svg'),
                                             self.tr('&Open'), self)
+        #self.actionFileOpen.setObjectName('actionFileOpen') # @TODO: complete
         self.actionFileOpen.setShortcut(self.tr('Ctrl+O'))
         self.actionFileOpen.setStatusTip(self.tr('Open an existing file'))
         self.connect(self.actionFileOpen, QtCore.SIGNAL('triggered()'),
@@ -302,6 +335,42 @@ class GSDView(QtGui.QMainWindow):
         bar.insertSeparator(self.actionExit)
         bar = actionGroupToToolbar(self.zoomActions, self.tr('Zoom toolbar'))
         bar = actionGroupToToolbar(self.helpActions, self.tr('Help toolbar'))
+
+    def setupPlugins(self):
+        plugins = {}
+        # @TODO: set from settings
+        pluginsDir = os.path.join(os.path.dirname(__name__), 'plugins')
+        sys.path.insert(0, pluginsDir)
+        for dirpath, dirnames, filenames in os.walk(pluginsDir):
+            print 'dirpath', dirpath
+            print 'dirnames', '\n'.join(dirnames)
+            print 'filenames', '\n'.join(filenames)
+            for name in dirnames:
+                if name.startswith('.'):
+                    continue
+                try:
+                    module = __import__(name)
+                    module.init(self)
+                    plugins[name] = module
+                    self.logger.debug('"%s" plugin loaded.' % name)
+                except ImportError, e:
+                    pass
+            del dirnames[:]
+
+            for name in filenames:
+                name, ext = os.path.splitext(name)
+                #~ if ext.lower() not in ('.py', '.pyc', '.pyo', '.pyd', '.dll', '.so', '.egg', '.zip'):
+                    #~ continue
+                if name in plugins:
+                    continue
+                try:
+                    module = __import__(name)
+                    module.init(self)
+                    plugins[name] = module
+                    self.logger.debug('"%s" plugin loaded.' % name)
+                except ImportError, e:
+                    pass
+        return plugins
 
     def _setupOutputPanel(self):
         # Output panel
@@ -481,6 +550,8 @@ class GSDView(QtGui.QMainWindow):
     def _openFile(self, filename):
         assert filename
         inDataset = gdal.Open(str(filename))
+        # @TODO: check
+        self.emit(QtCore.SIGNAL('openGdalDataset(PyQt_PyObject)'), inDataset)
 
         # Check the cache
         # @TODO: fix
