@@ -1,14 +1,40 @@
+### Copyright (C) 2007 Antonio Valentino <a_valentino@users.sf.net>
+
+### This file is part of GSDView.
+
+### GSDView is free software; you can redistribute it and/or modify
+### it under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 2 of the License, or
+### (at your option) any later version.
+
+### GSDView is distributed in the hope that it will be useful,
+### but WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+### GNU General Public License for more details.
+
+### You should have received a copy of the GNU General Public License
+### along with GSDView; if not, write to the Free Software
+### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
+
+'''Browser component for GDAL datasets.'''
+
+__author__  = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__    = '$Date$'
+__revision__ = '$Revision$'
+
 import os
+
+import gdal
 
 from PyQt4 import QtCore, QtGui
 
-#import resources       # @TODO: fix
+import resources       # @TODO: fix
 
 class GdalDatasetBrowser(QtGui.QDockWidget):
     def __init__(self, parent=None): #, flags=0):
         #title = self.tr('Dataset Browser')
-        QtGui.QDockWidget.__init__(self, 'Dataset Browser', parent) #, flags)
-        self.setObjectName('datasetBroeserPanel')
+        QtGui.QDockWidget.__init__(self, 'GDAL Dataset Browser', parent) #, flags)
+        #self.setObjectName('datasetBroeserPanel') # @TODO: check
 
         self.treeWidget = QtGui.QTreeWidget()
         self.treeWidget.setColumnCount(2)
@@ -18,7 +44,7 @@ class GdalDatasetBrowser(QtGui.QDockWidget):
 
     def _getMetadataItem(self, metadataList, metadataDict):
         rootItem = QtGui.QTreeWidgetItem()
-        rootItem.setIcon(0, QtGui.QIcon('images/metadata.svg'))
+        rootItem.setIcon(0, QtGui.QIcon(':/images/metadata.svg'))
         rootItem.setText(0, self.tr('Metadata'))
         rootItem.setFirstColumnSpanned(True)
 
@@ -43,7 +69,7 @@ class GdalDatasetBrowser(QtGui.QDockWidget):
 
     def _getDriverItem(self, driver):
         rootItem = QtGui.QTreeWidgetItem()
-        rootItem.setIcon(0, QtGui.QIcon('images/driver.svg'))
+        rootItem.setIcon(0, QtGui.QIcon(':/images/driver.svg'))
         rootItem.setText(0, self.tr('Driver'))
         rootItem.setToolTip(0, self.tr('GDAL driver.'))
         rootItem.setFirstColumnSpanned(True)
@@ -82,7 +108,7 @@ class GdalDatasetBrowser(QtGui.QDockWidget):
     # @TODO: separate dock widget
     #~ def _getGCPsItem(self, gcpList):
         #~ rootItem = QtGui.QTreeWidgetItem()
-        #~ rootItem.setIcon(0, QtGui.QIcon('images/gcp.svg'))
+        #~ rootItem.setIcon(0, QtGui.QIcon(':/images/gcp.svg'))
         #~ rootItem.setText(0, self.tr('GCPs'))
         #~ rootItem.setToolTip(0, self.tr('Ground Control Points.'))
         #~ rootItem.setFirstColumnSpanned(True)
@@ -112,7 +138,7 @@ class GdalDatasetBrowser(QtGui.QDockWidget):
     def _getGCPsItem(self, gcpList):
         # @TODO: improve
         rootItem = QtGui.QTreeWidgetItem()
-        rootItem.setIcon(0, QtGui.QIcon('images/gcp.svg'))
+        rootItem.setIcon(0, QtGui.QIcon(':/images/gcp.svg'))
         rootItem.setText(0, self.tr('GCPs'))
         rootItem.setToolTip(0, self.tr('Ground Control Points.'))
         rootItem.setFirstColumnSpanned(True)
@@ -122,7 +148,7 @@ class GdalDatasetBrowser(QtGui.QDockWidget):
         for gcp in gcpList:
             item = QtGui.QTreeWidgetItem()
             item.setText(0, 'GCP n. %s' % gcp.Id)
-            item.setIcon(0, QtGui.QIcon('images/item.svg'))
+            item.setIcon(0, QtGui.QIcon(':/images/item.svg'))
             item.setText(1, fmt % (gcp.GCPLine, gcp.GCPPixel,
                                    gcp.GCPX, gcp.GCPY, gcp.GCPZ))
             item.setToolTip(1, gcp.Info)
@@ -132,7 +158,7 @@ class GdalDatasetBrowser(QtGui.QDockWidget):
 
     def _getRasterBandItem(self, band):
         rootItem = QtGui.QTreeWidgetItem()
-        rootItem.setIcon(0, QtGui.QIcon('images/raster-band.svg'))
+        rootItem.setIcon(0, QtGui.QIcon(':/images/raster-band.svg'))
         rootItem.setText(0, self.tr('Raster band'))
         rootItem.setToolTip(0, self.tr('Raster band.'))
         rootItem.setFirstColumnSpanned(True)
@@ -305,7 +331,7 @@ depended on for long, nor should it ever be modified by the caller.'''))
 
     def _getDatasetItem(self, dataset):
         rootItem = QtGui.QTreeWidgetItem()
-        rootItem.setIcon(0, QtGui.QIcon('images/dataset.svg'))
+        rootItem.setIcon(0, QtGui.QIcon(':/images/dataset.svg'))
         rootItem.setText(0, self.tr('Dataset'))
         rootItem.setToolTip(0, self.tr('GDAL dataset.'))
         #rootItem.setText(1, os.path.basename(dataset.GetDescription()))

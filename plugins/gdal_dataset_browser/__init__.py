@@ -1,4 +1,4 @@
-### Copyright (C) 2006-2007 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2007 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -24,11 +24,25 @@ __version__ = (1,0,0)
 __revision__ = '$Revision$'
 __requires__ = []
 
+from PyQt4 import QtCore
+
+from dataset_browser import GdalDatasetBrowser
+
+__all__ = ['GdalDatasetBrowser', 'init', 'close']
+
 def init(mainWin):
-    pass
+    datasetBrowser = GdalDatasetBrowser(mainWin)
+    datasetBrowser.setObjectName('datasetBrowserPanel') # @TODO: check
+    mainWin.addDockWidget(QtCore.Qt.LeftDockWidgetArea, datasetBrowser)
+
+    mainWin.connect(mainWin, QtCore.SIGNAL('openGdalDataset(PyQt_PyObject)'),
+                    datasetBrowser.setDataset)
+    # @TODO: actionFileClose could not be part of the api
+    mainWin.connect(mainWin.actionFileClose, QtCore.SIGNAL('triggered()'),
+                    datasetBrowser.treeWidget.clear)
 
 def close(mainWin):
-    pass
+    saveSettings()
 
 def loadSettings():
     pass
