@@ -20,19 +20,24 @@ class GdalDatasetBrowser(QtGui.QDockWidget):
         rootItem = QtGui.QTreeWidgetItem()
         rootItem.setIcon(0, QtGui.QIcon('images/metadata.svg'))
         rootItem.setText(0, self.tr('Metadata'))
+        rootItem.setFirstColumnSpanned(True)
 
         # @TODO: group metadata by prefix (e.g. "MPH_", "SPH_", "DS_", "CEOS_"
         #        or "TIFFTAG_")
 
-        items = []
-        for name in metadataList:
-            name = name.split('=')[0]
+        if metadataList:
+            items = []
+            for name in metadataList:
+                name = name.split('=')[0]
+                item = QtGui.QTreeWidgetItem()
+                item.setText(0, name)
+                item.setText(1, metadataDict[name])
+                items.append(item)
+            rootItem.addChildren(items)
+        else:
             item = QtGui.QTreeWidgetItem()
-            item.setText(0, name)
-            item.setText(1, metadataDict[name])
-            items.append(item)
-
-        rootItem.addChildren(items)
+            item.setText(0, self.tr('None'))
+            rootItem.addChild(item)
 
         return rootItem
 
@@ -41,6 +46,7 @@ class GdalDatasetBrowser(QtGui.QDockWidget):
         rootItem.setIcon(0, QtGui.QIcon('images/driver.svg'))
         rootItem.setText(0, self.tr('Driver'))
         rootItem.setToolTip(0, self.tr('GDAL driver.'))
+        rootItem.setFirstColumnSpanned(True)
 
         item = QtGui.QTreeWidgetItem()
         item.setText(0, self.tr('Short name'))
@@ -79,6 +85,7 @@ class GdalDatasetBrowser(QtGui.QDockWidget):
         #~ rootItem.setIcon(0, QtGui.QIcon('images/gcp.svg'))
         #~ rootItem.setText(0, self.tr('GCPs'))
         #~ rootItem.setToolTip(0, self.tr('Ground Control Points.'))
+        #~ rootItem.setFirstColumnSpanned(True)
 
         #~ item = QtGui.QTreeWidgetItem()
         #~ item.setText(0, self.tr('Id'))
@@ -108,12 +115,13 @@ class GdalDatasetBrowser(QtGui.QDockWidget):
         rootItem.setIcon(0, QtGui.QIcon('images/gcp.svg'))
         rootItem.setText(0, self.tr('GCPs'))
         rootItem.setToolTip(0, self.tr('Ground Control Points.'))
+        rootItem.setFirstColumnSpanned(True)
 
         fmt = 'line=%f, pixel=%f, X=%f, Y=%f, Z=%f'
 
         for gcp in gcpList:
             item = QtGui.QTreeWidgetItem()
-            item.setText(0, gcp.Id)
+            item.setText(0, 'GCP n. %s' % gcp.Id)
             item.setIcon(0, QtGui.QIcon('images/item.svg'))
             item.setText(1, fmt % (gcp.GCPLine, gcp.GCPPixel,
                                    gcp.GCPX, gcp.GCPY, gcp.GCPZ))
@@ -123,39 +131,175 @@ class GdalDatasetBrowser(QtGui.QDockWidget):
         return rootItem
 
     def _getRasterBandItem(self, band):
-        '''
-            band.Checksum                   ??
-            band.ComputeBandStats           ??
-            band.ComputeRasterMinMax        ??
-            band.DataType                           --> to string
-            band.GetBlockSize
-            band.GetDescription
-            band.GetMaximum
-                band.GetMetadata
-                band.GetMetadata_Dict
-                band.GetMetadata_List
-            band.GetMinimum
-            band.GetNoDataValue
-            band.GetOffset
-            band.GetOverview                        --> rootItem
-            band.GetOverviewCount
-            band.GetRasterColorInterpretation       --> convert enum
-            band.GetRasterColorTable
-            band.GetScale
-            band.GetStatistics(approx_ok, force)    --> (min, max, mean, stddev)
-            band.XSize
-            band.YSize
-
-        '''
-
         rootItem = QtGui.QTreeWidgetItem()
         rootItem.setIcon(0, QtGui.QIcon('images/raster-band.svg'))
         rootItem.setText(0, self.tr('Raster band'))
         rootItem.setToolTip(0, self.tr('Raster band.'))
+        rootItem.setFirstColumnSpanned(True)
 
         metadataItem = self._getMetadataItem(band.GetMetadata_List(),
                                              band.GetMetadata_Dict())
         rootItem.addChild(metadataItem)
+
+        item = QtGui.QTreeWidgetItem()
+        item.setText(0, self.tr('Desctiption'))
+        item.setText(1, band.GetDescription().strip())
+        item.setToolTip(1, self.tr('Raster band description.'))
+        rootItem.addChild(item)
+
+        item = QtGui.QTreeWidgetItem()
+        item.setText(0, self.tr('XSize'))
+        item.setData(1, QtCore.Qt.DisplayRole, QtCore.QVariant(band.XSize))
+        item.setToolTip(1, self.tr('X size of the raster band.'))
+        rootItem.addChild(item)
+
+        item = QtGui.QTreeWidgetItem()
+        item.setText(0, self.tr('YSize'))
+        item.setData(1, QtCore.Qt.DisplayRole, QtCore.QVariant(band.YSize))
+        item.setToolTip(1, self.tr('Y size of the raster band.'))
+        rootItem.addChild(item)
+
+        item = QtGui.QTreeWidgetItem()
+        item.setText(0, self.tr('DataType'))
+        item.setText(1, gdal.GetDataTypeName(band.DataType))
+        item.setToolTip(1, self.tr('The pixel data type for this band.'))
+        rootItem.addChild(item)
+
+        item = QtGui.QTreeWidgetItem()
+        item.setText(0, self.tr('BlockSize'))
+        bandSize = band.GetBlockSize()
+        if bandSize:
+            bandSize = QtCore.QSize(bandSize[0], bandSize[1])
+        item.setData(1, QtCore.Qt.DisplayRole, QtCore.QVariant(bandSize))
+        item.setToolTip(1, self.tr('''The "natural" block size of this band.
+
+GDAL contains a concept of the natural block size of rasters so that
+applications can organized data access efficiently for some file formats.
+The natural block size is the block size that is most efficient for accessing
+the format. For many formats this is simple a whole scanline in which case
+*pnXSize is set to GetXSize(), and *pnYSize is set to 1.
+
+However, for tiled images this will typically be the tile size.
+
+Note that the X and Y block sizes don't have to divide the image size evenly,
+meaning that right and bottom edge blocks may be incomplete.'''))
+        rootItem.addChild(item)
+
+        item = QtGui.QTreeWidgetItem()
+        item.setText(0, self.tr('Minimum'))
+        minimum = band.GetMinimum()
+        if minimum is None:
+            minimum = self.tr('None')
+        item.setData(1, QtCore.Qt.DisplayRole, QtCore.QVariant(minimum))
+        item.setToolTip(1, self.tr('''The minimum value for this band.
+
+For file formats that don't know this intrinsically, the minimum supported
+value for the data type will generally be returned (or None).'''))
+        rootItem.addChild(item)
+
+        item = QtGui.QTreeWidgetItem()
+        item.setText(0, self.tr('Maximum'))
+        maximum = band.GetMaximum()
+        if maximum is None:
+            maximum = self.tr('None')
+        item.setData(1, QtCore.Qt.DisplayRole, QtCore.QVariant(maximum))
+        item.setToolTip(1, self.tr('''The maximum value for this band.
+
+For file formats that don't know this intrinsically, the maximum supported
+value for the data type will generally be returned (or None).'''))
+        rootItem.addChild(item)
+
+        item = QtGui.QTreeWidgetItem()
+        item.setText(0, self.tr('NoDataValue'))
+        noDataValue = band.GetNoDataValue()
+        if noDataValue is None:
+            noDataValue = self.tr('None')
+        item.setData(1, QtCore.Qt.DisplayRole, QtCore.QVariant(noDataValue))
+        item.setToolTip(1, self.tr('''The no data value for this band.
+
+If there is no out of data value, an out of range value will generally be
+returned. The no data value for a band is generally a special marker value
+used to mark pixels that are not valid data. Such pixels should generally
+not be displayed, nor contribute to analysis operations.'''))
+        rootItem.addChild(item)
+
+        item = QtGui.QTreeWidgetItem()
+        item.setText(0, self.tr('Offset'))
+        offset = band.GetOffset()
+        if offset is None:
+            offset = self.tr('None')
+        item.setData(1, QtCore.Qt.DisplayRole, QtCore.QVariant(offset))
+        item.setToolTip(1, self.tr('''The raster value offset.
+
+This value (in combination with the GetScale() value) is used to transform
+raw pixel values into the units returned by GetUnits().
+For example this might be used to store elevations in GUInt16 bands with a
+precision of 0.1, and starting from -100.
+
+  Units value = (raw value * scale) + offset
+
+For file formats that don't know this intrinsically a value of zero is
+returned.'''))
+        rootItem.addChild(item)
+
+        item = QtGui.QTreeWidgetItem()
+        item.setText(0, self.tr('Scale'))
+        scale = band.GetScale()
+        if scale is None:
+            scale = self.tr('None')
+        item.setData(1, QtCore.Qt.DisplayRole, QtCore.QVariant(scale))
+        item.setToolTip(1, self.tr('''The raster value scale.
+
+This value (in combination with the GetOffset() value) is used to transform
+raw pixel values into the units returned by GetUnits().
+For example this might be used to store elevations in GUInt16 bands with a
+precision of 0.1, and starting from -100.
+
+  Units value = (raw value * scale) + offset
+
+For file formats that don't know this intrinsically a value of one is
+returned.'''))
+        rootItem.addChild(item)
+
+        item = QtGui.QTreeWidgetItem()
+        item.setText(0, self.tr('ColorInterpretation'))
+        item.setText(1, gdal.GetColorInterpretationName(
+                                        band.GetRasterColorInterpretation()))
+        msg = '''How should this band be interpreted as color?
+
+CV_Undefined is returned when the format doesn't know anything about the color
+interpretation.'''
+        item.setToolTip(1, self.tr(msg))
+        rootItem.addChild(item)
+
+        # @TODO: handl color table
+        item = QtGui.QTreeWidgetItem()
+        item.setText(0, self.tr('ColorTable'))
+        item.setText(1, str(band.GetRasterColorTable()))
+        item.setToolTip(1, self.tr('''The color table associated with band.
+
+If there is no associated color table, the return result is NULL.
+The returned color table remains owned by the GDALRasterBand, and can't be
+depended on for long, nor should it ever be modified by the caller.'''))
+        rootItem.addChild(item)
+
+        #~ band.Checksum                   ??
+        #~ band.ComputeBandStats           ??
+        #~ band.ComputeRasterMinMax        ??
+        #~ band.GetStatistics(approx_ok, force)    --> (min, max, mean, stddev)
+
+        item = QtGui.QTreeWidgetItem()
+        item.setText(0, self.tr('OverviewCount'))
+        item.setData(1, QtCore.Qt.DisplayRole,
+                     QtCore.QVariant(band.GetOverviewCount()))
+        item.setToolTip(1, self.tr('The number of overview layers available.'))
+        rootItem.addChild(item)
+
+        for index in range(band.GetOverviewCount()):
+            ovrBand = band.GetOverview(index)
+            ovrItem = self._getRasterBandItem(ovrBand)
+            ovrItem.setText(0, '%s n. %d' % (self.tr('Overview'), index))
+            rootItem.addChild(ovrItem)
 
         return rootItem
 
@@ -165,6 +309,7 @@ class GdalDatasetBrowser(QtGui.QDockWidget):
         rootItem.setText(0, self.tr('Dataset'))
         rootItem.setToolTip(0, self.tr('GDAL dataset.'))
         #rootItem.setText(1, os.path.basename(dataset.GetDescription()))
+        rootItem.setFirstColumnSpanned(True)
 
         item = QtGui.QTreeWidgetItem()
         item.setText(0, self.tr('Desctiption'))
@@ -258,9 +403,10 @@ The projection string follows the normal rules from ProjectionRef.'''))
                                    'dataset.'))
         rootItem.addChild(item)
 
-        #~ for bandIndex in range(1, dataset.RasterCount+1):
-            #~ item = self._getRasterBandItem(dataset.GetRasterBand(bandIndex))
-            #~ rootItem.addChild(item)
+        for bandIndex in range(1, dataset.RasterCount+1):
+            item = self._getRasterBandItem(dataset.GetRasterBand(bandIndex))
+            item.setText(0, '%s n. %d' % (self.tr('Raster Band'), bandIndex))
+            rootItem.addChild(item)
 
         return rootItem
 
@@ -271,13 +417,12 @@ The projection string follows the normal rules from ProjectionRef.'''))
         header = self.treeWidget.header()
         header.resizeSections(QtGui.QHeaderView.ResizeToContents)
         rootItem.setText(0, os.path.basename(dataset.GetDescription()))
-        rootItem.setFirstColumnSpanned(True)
+        #rootItem.setFirstColumnSpanned(True)
 
 
 if __name__ == '__main__':
     import sys
     import gdal
-
 
     app = QtGui.QApplication(sys.argv)
     mainWin = QtGui.QMainWindow()
@@ -288,6 +433,6 @@ if __name__ == '__main__':
     datasetBrowser.setDataset(dataset)
 
     mainWin.addDockWidget(QtCore.Qt.LeftDockWidgetArea, datasetBrowser)
-    mainWin.show()
+    mainWin.showMaximized()
     sys.exit(app.exec_())
 
