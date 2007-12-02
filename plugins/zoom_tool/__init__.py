@@ -19,9 +19,9 @@
 '''Zoom tool.'''
 
 __author__  = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__    = '$Date: 2007-12-02 17:26:44 +0100 (dom, 02 dic 2007) $'
+__date__    = '$Date$'
 __version__ = (1,0,0)
-__revision__ = '$Revision: 43 $'
+__revision__ = '$Revision$'
 __requires__ = []
 
 from PyQt4 import QtCore
