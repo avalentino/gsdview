@@ -35,6 +35,10 @@ def init(mainwin):
     mainwin.menuBar().addMenu(zoomTool.menu)
     mainwin.addToolBar(zoomTool.toolbar)
 
+    # @TODO: check the API / use QWidget.findChild(name)
+    #mainwin.menuBar().insertMenu(mainwin.helpMenu, zoomTool.menu)
+    #mainwin.insertToolBar(mainwin.helpToolBar, zoomTool.toolbar)
+
     # @TODO: check the API
     if mainwin.imageItem is None:
         zoomTool.actions.setEnabled(False)

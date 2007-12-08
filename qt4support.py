@@ -24,8 +24,8 @@ __revision__ = '$Revision: 43 $'
 
 from PyQt4 import QtCore, QtGui
 
-def actionGroupToMenu(actionGroup, label):
-    menu = QtGui.QMenu(label)
+def actionGroupToMenu(actionGroup, label, mainwin):
+    menu = QtGui.QMenu(label, mainwin)
     for action in actionGroup.actions():
         menu.addAction(action)
     return menu

@@ -40,9 +40,9 @@ from PyQt4 import Qwt5 as Qwt
 import resources
 
 import gsdtools
+import qt4support
 import gdalsupport
 import gdalqt4
-import qt4support
 
 import exectools
 from exectools.qt4tools import Qt4OutputPlane, Qt4ToolController
@@ -254,14 +254,15 @@ class GSDView(QtGui.QMainWindow):
         self.helpActions = self._setupHelpActions()
 
     def setupMenu(self):
-        def addMenu(actions, name):
-            menu = qt4support.actionGroupToMenu(actions, name)
+        def addMenu(actions, name, parent):
+            menu = qt4support.actionGroupToMenu(actions, name, self)
             self.menuBar().addMenu(menu)
             return menu
 
-        menu = addMenu(self.fileActions, self.tr('&File'))
+        menu = addMenu(self.fileActions, self.tr('&File'), self)
         menu.insertSeparator(self.actionExit)
-        addMenu(self.helpActions, self.tr('&Help'))
+        # @TODO: insert menus of plugins
+        self.helpMenu = addMenu(self.helpActions, self.tr('&Help'), self)
 
     def setupToolbars(self):
         def addToolBar(actions, name):
@@ -271,6 +272,7 @@ class GSDView(QtGui.QMainWindow):
 
         bar = addToolBar(self.fileActions, self.tr('File toolbar'))
         bar.insertSeparator(self.actionExit)
+        # @TODO: insert toolbars of plugins
         addToolBar(self.helpActions, self.tr('Help toolbar'))
 
     def setupPlugins(self):
@@ -293,8 +295,8 @@ class GSDView(QtGui.QMainWindow):
 
             for name in filenames:
                 name, ext = os.path.splitext(name)
-                #~ if ext.lower() not in ('.py', '.pyc', '.pyo', '.pyd', '.dll', '.so', '.egg', '.zip'):
-                    #~ continue
+                #if ext.lower() not in ('.py', '.pyc', '.pyo', '.pyd', '.dll', '.so', '.egg', '.zip'):
+                    #continue
                 if name in plugins:
                     continue
                 try:
