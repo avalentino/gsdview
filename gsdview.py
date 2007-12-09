@@ -248,7 +248,7 @@ class GSDView(QtGui.QMainWindow):
         sys.path.insert(0, pluginsDir)
         for dirpath, dirnames, filenames in os.walk(pluginsDir):
             for name in dirnames:
-                if name.startswith('.'):
+                if name.startswith('.') or (name in sys.modules):
                     continue
                 try:
                     module = __import__(name)
@@ -263,7 +263,7 @@ class GSDView(QtGui.QMainWindow):
                 name, ext = os.path.splitext(name)
                 #if ext.lower() not in ('.py', '.pyc', '.pyo', '.pyd', '.dll', '.so', '.egg', '.zip'):
                     #continue
-                if name in plugins:
+                if name.startswith('.') or (name in sys.modules):
                     continue
                 try:
                     module = __import__(name)
