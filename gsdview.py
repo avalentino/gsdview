@@ -44,52 +44,21 @@ import qt4support
 import gdalsupport
 import gdalqt4
 
+from graphicsview import GraphicsView
+
 import exectools
+
 from exectools.qt4tools import Qt4OutputPlane, Qt4ToolController
 from exectools.qt4tools import Qt4DialogLoggingHandler, Qt4StreamLoggingHandler
 
 from gdalexectools import GdalAddOverviewDescriptor, GdalOutputHandler
 
-# @TODO: move to another file (??)
-# @TODO: maybe this is not the best solution. Maybe a custom GraphicsItem
-#        would be better
-class GraphicsView(QtGui.QGraphicsView):
-    def mouseMoveEvent(self, event):
-        if self.dragMode() == QtGui.QGraphicsView.NoDrag:
-            self.emit(QtCore.SIGNAL('mousePositionUpdated(const QPoint&)'),
-                      event.pos())
-            if event.buttons() & QtCore.Qt.LeftButton:
-                self.emit(QtCore.SIGNAL('posMarked(const QPoint&)'), event.pos())
-            #event.accept()
-        return QtGui.QGraphicsView.mouseMoveEvent(self, event)
-
-    def mousePressEvent(self, event):
-        if self.dragMode() == QtGui.QGraphicsView.NoDrag:
-            if event.buttons() & QtCore.Qt.LeftButton:
-                self.emit(QtCore.SIGNAL('posMarked(const QPoint&)'), event.pos())
-            #event.accept()
-        return QtGui.QGraphicsView.mousePressEvent(self, event)
-
-    def resizeEvent(self, event):
-        self.emit(QtCore.SIGNAL('newSize(const QSize&)'), event.size())
-        return QtGui.QGraphicsView.resizeEvent(self, event)
-
-    def scale(self, sx, sy):
-        QtGui.QGraphicsView.scale(self, sx, sy)
-        self.emit(QtCore.SIGNAL('scaled()'))
-
-    def resetMatrix(self):
-        if not self.matrix().isIdentity():
-            QtGui.QGraphicsView.resetMatrix(self)
-            self.emit(QtCore.SIGNAL('scaled()'))
-
-    # @TODO: check transform related functions
 
 class GSDView(QtGui.QMainWindow):
     # @TODO:
     #   * set all icon (can use the iconset of BEAM)
     #   * map panel
-    #   * plugin architecture
+    #   * plugin architecture (incomplete)
     #   * cache browser, cache cleanup
     #   * open internal product
     #   * stop button
@@ -157,15 +126,9 @@ class GSDView(QtGui.QMainWindow):
         # Panels
         #~ self.quicklookView = None
         #~ self.mapView = None
-        #~ self.infoTable = None
-        self.setupPanels()
-
-        # Actions
-        self.setupActions()
-        self.setupMenu()
-        self.setupToolbars()
-
-        self.statusBar().showMessage('Ready')
+        self.infoTable = None
+        self.outputplane = None
+        self.setupPanels()      # @TODO: rewrite
 
         # Settings
         # @TODO: fix filename
@@ -188,11 +151,28 @@ class GSDView(QtGui.QMainWindow):
                                                self.progressbar,
                                                self.logger)
 
+        # Actions
+        self.setupActions()
+
+        # File menu end toolbar
+        menu = self._addMenuFromActions(self.fileActions, self.tr('&File'))
+        menu.insertSeparator(self.actionExit)
+        bar = self._addToolBarFromActions(self.fileActions,
+                                          self.tr('File toolbar'))
+        bar.insertSeparator(self.actionExit)
+
         # Setup plugins
         self.setupPlugins() # @TODO: pass settings
 
+        # Help menu end toolbar
+        self._addMenuFromActions(self.helpActions, self.tr('&Help'))
+        self._addToolBarFromActions(self.helpActions, self.tr('Help toolbar'))
+
         # @NOTE: the window state setup must happen after the plugins loading
         self.loadSettings() # @TODO: pass settings
+                            # @TODO: rename setWinState or so
+
+        self.statusBar().showMessage('Ready')
 
     ### Setup helpers #########################################################
     def _setupFileActions(self):
@@ -253,27 +233,15 @@ class GSDView(QtGui.QMainWindow):
         self.fileActions = self._setupFileActions()
         self.helpActions = self._setupHelpActions()
 
-    def setupMenu(self):
-        def addMenu(actions, name, parent):
-            menu = qt4support.actionGroupToMenu(actions, name, self)
-            self.menuBar().addMenu(menu)
-            return menu
+    def _addMenuFromActions(self, actions, name):
+        menu = qt4support.actionGroupToMenu(actions, name, self)
+        self.menuBar().addMenu(menu)
+        return menu
 
-        menu = addMenu(self.fileActions, self.tr('&File'), self)
-        menu.insertSeparator(self.actionExit)
-        # @TODO: insert menus of plugins
-        self.helpMenu = addMenu(self.helpActions, self.tr('&Help'), self)
-
-    def setupToolbars(self):
-        def addToolBar(actions, name):
-            toolbar = qt4support.actionGroupToToolbar(actions, name)
-            self.addToolBar(toolbar)
-            return toolbar
-
-        bar = addToolBar(self.fileActions, self.tr('File toolbar'))
-        bar.insertSeparator(self.actionExit)
-        # @TODO: insert toolbars of plugins
-        addToolBar(self.helpActions, self.tr('Help toolbar'))
+    def _addToolBarFromActions(self, actions, name):
+        toolbar = qt4support.actionGroupToToolbar(actions, name)
+        self.addToolBar(toolbar)
+        return toolbar
 
     def setupPlugins(self):
         plugins = {}
