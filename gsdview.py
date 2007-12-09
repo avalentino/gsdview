@@ -57,7 +57,7 @@ from gdalexectools import GdalAddOverviewDescriptor, GdalOutputHandler
 class GSDView(QtGui.QMainWindow):
     # @TODO:
     #   * set all icon (can use the iconset of BEAM)
-    #   * map panel
+    #   * map panel (plugin)
     #   * plugin architecture (incomplete)
     #   * cache browser, cache cleanup
     #   * open internal product
@@ -125,8 +125,6 @@ class GSDView(QtGui.QMainWindow):
 
         # Panels
         #~ self.quicklookView = None
-        #~ self.mapView = None
-        self.infoTable = None
         self.outputplane = None
         self.setupPanels()      # @TODO: rewrite
 
@@ -258,7 +256,7 @@ class GSDView(QtGui.QMainWindow):
                     plugins[name] = module
                     self.logger.debug('"%s" plugin loaded.' % name)
                 except ImportError, e:
-                    pass
+                    self.logger.debug(str(e))
             del dirnames[:]
 
             for name in filenames:
@@ -273,7 +271,7 @@ class GSDView(QtGui.QMainWindow):
                     plugins[name] = module
                     self.logger.debug('"%s" plugin loaded.' % name)
                 except ImportError, e:
-                    pass
+                    self.logger.debug(str(e))
         return plugins
 
     def _setupOutputPanel(self):
@@ -307,39 +305,9 @@ class GSDView(QtGui.QMainWindow):
         #self.connect(quicklookView, QtCore.SIGNAL('mousePressEvent(QMouseEvent*)'), self.centerOn)
         return quicklookPanel
 
-    def _setupMapPanel(self):
-        # Map panel @TODO: use the marble widget
-        mapPanel = QtGui.QDockWidget('Map', self)
-        mapPanel.setObjectName('mapPanel')
-        self.mapView = QtGui.QGraphicsView(self)
-        mapPanel.setWidget(self.mapView)
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, mapPanel)
-        mapPanel.hide()             # @TODO: check
-
-        return mapPanel
-
-    def _setupInfoPanel(self):
-        # Info panel
-        # @TODO: rename "metadata"
-        infoPanel = QtGui.QDockWidget('Info', self)
-        infoPanel.setObjectName('infoPanel')
-        self.infoTable = QtGui.QTableWidget(5, 2, self)
-        self.infoTable.verticalHeader().hide()
-        self.infoTable.setHorizontalHeaderLabels(['Key', 'Value'])
-        self.infoTable.horizontalHeader().setStretchLastSection(True)
-        #self.tableWidget.horizontalHeader().hide()
-        infoPanel.setWidget(self.infoTable)
-        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, infoPanel)
-        #infoPanel.hide()            # @TODO: check
-
-        return infoPanel
-
     def setupPanels(self):
         outputPanel = self._setupOutputPanel()
         quicklookPanel = self._setupQuickLookPanel()
-        #mapPanel = self._setupMapPanel()      # @TODO: fix
-        infoPanel = self._setupInfoPanel()
-
         self.outputplane = outputPanel.widget()
         self.quicklookView = quicklookPanel.widget()
 
@@ -485,23 +453,6 @@ class GSDView(QtGui.QMainWindow):
         self.virtualDatasetFilename = virtualDatasetFilename
         self.dataset = dataset
 
-        # Update the info table
-        self.infoTable.clear()
-        metadata = dataset.GetMetadata()
-        self.infoTable.setHorizontalHeaderLabels(['Key', 'Value'])
-        self.infoTable.setRowCount(len(metadata))
-
-        for row, key in enumerate(metadata):
-            value = str(metadata[key])
-            self.infoTable.setItem(row, 0, QtGui.QTableWidgetItem(key))
-            self.infoTable.setItem(row, 1, QtGui.QTableWidgetItem(value))
-        self.infoTable.sortByColumn(0, QtCore.Qt.AscendingOrder)
-
-        # Fix table header behaviour
-        header = self.infoTable.horizontalHeader()
-        header.resizeSections(QtGui.QHeaderView.ResizeToContents)
-        header.setStretchLastSection(True)
-
         # Check for overviews and statistics
         # @TODO: move this to settings
         maxQuicklookSize = 100 * 1024 # 100 KByte (about 320x320 8 bit pixels)
@@ -624,11 +575,6 @@ class GSDView(QtGui.QMainWindow):
             scene.setSceneRect(0, 0, 1, 1)
             view.setSceneRect(scene.sceneRect())
             view.resetMatrix()
-
-        # Reset the info table
-        self.infoTable.clear()
-        self.infoTable.setHorizontalHeaderLabels(['Key', 'Value'])
-        self.infoTable.setRowCount(0)
 
         # Reset attributes
         self.imageItem = None
