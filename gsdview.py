@@ -111,11 +111,11 @@ class GSDView(QtGui.QMainWindow):
         #~ self.graphicsView.connect(QtCore.SIGNAL('mouseReleaseEvent()'), self.stopScrolling)
 
         self.imageItem = None
-        self.quicklook = None
+        #~ self.quicklook = None
 
         # @TODO: encapsulate in a gdal.Dataset proxy (--> gdalsupport)
         self.dataset = None
-        self.qlFactor = None  # @TODO: check int/float (maybe it is not needed)
+        #~ self.qlFactor = None  # @TODO: check int/float (maybe it is not needed)
         self.virtualDatasetFilename = None
 
         # File dialog
@@ -242,6 +242,7 @@ class GSDView(QtGui.QMainWindow):
         return toolbar
 
     def setupPlugins(self):
+        # @TODO: move to the PluginManager
         plugins = {}
         # @TODO: set from settings
         pluginsDir = os.path.join(os.path.dirname(__name__), 'plugins')
@@ -285,31 +286,31 @@ class GSDView(QtGui.QMainWindow):
                      outputPanel.hide)
         return outputPanel
 
-    def _setupQuickLookPanel(self):
-        # Quick-look panel
-        # @TODO: rename "overview"
-        quicklookPanel = QtGui.QDockWidget('Quick Look', self)
-        quicklookPanel.setObjectName('quickLookPanel')
-        quicklookView = GraphicsView(QtGui.QGraphicsScene(self))
-        #quicklookView.setDragMode(QtGui.QGraphicsView.ScrollHandDrag) # @TODO: check
-        quicklookPanel.setWidget(quicklookView)
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, quicklookPanel)
-        #quicklookPanel.hide()              # @TODO: check
-        #self.connect(quicklookView, QtCore.SIGNAL('mousePositionUpdated(const QPoint&)'),
-        #             self.updatePosLabels)
-        self.connect(quicklookView, QtCore.SIGNAL('posMarked(const QPoint&)'),
-                     self.centerOn)
+    #~ def _setupQuickLookPanel(self):
+        #~ # Quick-look panel
+        #~ # @TODO: rename "overview"
+        #~ quicklookPanel = QtGui.QDockWidget('Quick Look', self)
+        #~ quicklookPanel.setObjectName('quickLookPanel')
+        #~ quicklookView = GraphicsView(QtGui.QGraphicsScene(self))
+        #~ #quicklookView.setDragMode(QtGui.QGraphicsView.ScrollHandDrag) # @TODO: check
+        #~ quicklookPanel.setWidget(quicklookView)
+        #~ self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, quicklookPanel)
+        #~ #quicklookPanel.hide()              # @TODO: check
+        #~ #self.connect(quicklookView, QtCore.SIGNAL('mousePositionUpdated(const QPoint&)'),
+        #~ #             self.updatePosLabels)
+        #~ self.connect(quicklookView, QtCore.SIGNAL('posMarked(const QPoint&)'),
+                     #~ self.centerOn)
 
-        # @TODO: it is required that a custom widget re-imptement the
-        #        "mousePressEvent" evant handler
-        #self.connect(quicklookView, QtCore.SIGNAL('mousePressEvent(QMouseEvent*)'), self.centerOn)
-        return quicklookPanel
+        #~ # @TODO: it is required that a custom widget re-imptement the
+        #~ #        "mousePressEvent" evant handler
+        #~ #self.connect(quicklookView, QtCore.SIGNAL('mousePressEvent(QMouseEvent*)'), self.centerOn)
+        #~ return quicklookPanel
 
     def setupPanels(self):
         outputPanel = self._setupOutputPanel()
         quicklookPanel = self._setupQuickLookPanel()
         self.outputplane = outputPanel.widget()
-        self.quicklookView = quicklookPanel.widget()
+        #self.quicklookView = quicklookPanel.widget()
 
     def setupLogging(self, outputplane):
         logger = logging.getLogger()    # 'gsdview' # @TODO: fix
@@ -467,7 +468,7 @@ class GSDView(QtGui.QMainWindow):
         self.qlFactor = numpy.sqrt(datasetMemSize/float(maxQuicklookSize))
         self.qlFactor = max(round(self.qlFactor), 2)
 
-        # @TODO: check GDALOvLevelAdjust
+        # @TODO: check GDALOvLevelAdjust (gdal-1.4.4/gcore/gdaldefaultoverviews.cpp)
         #int GDALOvLevelAdjust(int nOvLevel, int nXSize) {
         #   int nOXSize = (nXSize + nOvLevel - 1) / nOvLevel;
         #   return (int) (0.5 + nXSize / (double) nOXSize);
@@ -566,19 +567,13 @@ class GSDView(QtGui.QMainWindow):
         self.emit(QtCore.SIGNAL('closeGdalDataset()'))
 
         # Reset the scene and the view transformation matrix
-        for view in (self.graphicsView, self.quicklookView):
-            scene = view.scene()
-            for item in scene.items():
-                scene.removeItem(item)
-                del item
-
-            scene.setSceneRect(0, 0, 1, 1)
-            view.setSceneRect(scene.sceneRect())
-            view.resetMatrix()
+        #for view in (self.graphicsView, self.quicklookView):
+        #    view.clearScene()
+        self.graphicsView.clearScene()
 
         # Reset attributes
         self.imageItem = None
-        self.quicklook = None
+        #~ self.quicklook = None
         self.dataset = None
         self.qlFactor = None
         self.qlselection = None
@@ -614,32 +609,32 @@ class GSDView(QtGui.QMainWindow):
         finally:
             self.graphicsView.setUpdatesEnabled(True)
 
-    @qt4support.overrideCursor
-    def setQuickLook(self, data, lut):
-        self.graphicsView.setUpdatesEnabled(False)
-        try:
-            data = gsdtools.apply_LUT(data, lut)
-            image = Qwt.toQImage(data.transpose())
-            pixmap = QtGui.QPixmap.fromImage(image)
-            self.quicklook = pixmap
-            self.qlFactor = self.dataset.RasterXSize // self.quicklook.width()
+    #~ @qt4support.overrideCursor
+    #~ def setQuickLook(self, data, lut):
+        #~ self.graphicsView.setUpdatesEnabled(False)
+        #~ try:
+            #~ data = gsdtools.apply_LUT(data, lut)
+            #~ image = Qwt.toQImage(data.transpose())
+            #~ pixmap = QtGui.QPixmap.fromImage(image)
+            #~ self.quicklook = pixmap
+            #~ self.qlFactor = self.dataset.RasterXSize // self.quicklook.width()
 
-            scene = self.quicklookView.scene()
-            item = scene.addPixmap(pixmap)
-            rect = item.boundingRect()
-            scene.setSceneRect(rect.x(), rect.y(), rect.width(), rect.height())
-            self.quicklookView.setSceneRect(scene.sceneRect())
-            self.quicklookView.ensureVisible(rect.x(), rect.y(), 1, 1, 0, 0)
+            #~ scene = self.quicklookView.scene()
+            #~ item = scene.addPixmap(pixmap)
+            #~ rect = item.boundingRect()
+            #~ scene.setSceneRect(rect.x(), rect.y(), rect.width(), rect.height())
+            #~ self.quicklookView.setSceneRect(scene.sceneRect())
+            #~ self.quicklookView.ensureVisible(rect.x(), rect.y(), 1, 1, 0, 0)
 
-            # Quicklook box
-            pen = QtGui.QPen(QtCore.Qt.SolidLine)
-            pen.setColor(QtGui.QColor(QtCore.Qt.red))
-            scene = self.quicklookView.scene()
-            self.qlselection = scene.addRect(QtCore.QRectF(), pen)
-            self.qlselection.setZValue(1)
-            self.updateQuicklookBox()
-        finally:
-            self.graphicsView.setUpdatesEnabled(True)
+            #~ # Quicklook box
+            #~ pen = QtGui.QPen(QtCore.Qt.SolidLine)
+            #~ pen.setColor(QtGui.QColor(QtCore.Qt.red))
+            #~ scene = self.quicklookView.scene()
+            #~ self.qlselection = scene.addRect(QtCore.QRectF(), pen)
+            #~ self.qlselection.setZValue(1)
+            #~ self.updateQuicklookBox()
+        #~ finally:
+            #~ self.graphicsView.setUpdatesEnabled(True)
 
     # @TODO: update this
     def quickLookGenerationCompleted(self):
@@ -714,41 +709,41 @@ class GSDView(QtGui.QMainWindow):
         self.progressbar.show()
         self.progressbar.setValue(int(100.*fract))
 
-    def centerOn(self, pos):
-        if self.dataset:
-            qlfactor = float(self.dataset.RasterXSize) / self.quicklook.width()
-            pos = self.quicklookView.mapToScene(pos.x(), pos.y())
-            self.graphicsView.centerOn(pos.x()*qlfactor,
-                                       pos.y()*qlfactor)
+    #~ def centerOn(self, pos):
+        #~ if self.dataset:
+            #~ qlfactor = float(self.dataset.RasterXSize) / self.quicklook.width()
+            #~ pos = self.quicklookView.mapToScene(pos.x(), pos.y())
+            #~ self.graphicsView.centerOn(pos.x()*qlfactor,
+                                       #~ pos.y()*qlfactor)
 
-    def updateQuicklookBox(self):
-        if self.quicklook:
-            hbar = self.graphicsView.horizontalScrollBar()
-            vbar = self.graphicsView.verticalScrollBar()
-            x = hbar.value()
-            y = vbar.value()
-            w = hbar.pageStep()
-            h = vbar.pageStep()
+    #~ def updateQuicklookBox(self):
+        #~ if self.quicklook:
+            #~ hbar = self.graphicsView.horizontalScrollBar()
+            #~ vbar = self.graphicsView.verticalScrollBar()
+            #~ x = hbar.value()
+            #~ y = vbar.value()
+            #~ w = hbar.pageStep()
+            #~ h = vbar.pageStep()
 
-            # @TODO: bug report: mapping to scene seems to introduce a
-            #        spurious offset "x1 = 2*x0"; this doesn't happen for "w"
-            #~ polygon = self.graphicsView.mapToScene(x, y, w, h)
-            #~ rect = polygon.boundingRect()
+            #~ # @TODO: bug report: mapping to scene seems to introduce a
+            #~ #        spurious offset "x1 = 2*x0"; this doesn't happen for "w"
+            #~ #polygon = self.graphicsView.mapToScene(x, y, w, h)
+            #~ #rect = polygon.boundingRect()
 
-            qlfactor = float(self.dataset.RasterXSize) / self.quicklook.width()
-            #~ x = rect.x() / qlfactor
-            #~ y = rect.y() / qlfactor
-            #~ w = rect.width() / qlfactor
-            #~ h = rect.height() / qlfactor
+            #~ qlfactor = float(self.dataset.RasterXSize) / self.quicklook.width()
+            #~ #x = rect.x() / qlfactor
+            #~ #y = rect.y() / qlfactor
+            #~ #w = rect.width() / qlfactor
+            #~ #h = rect.height() / qlfactor
 
-            # @NOTE: this is a workaround; mapToScene should be used instead
-            factor = qlfactor * self.graphicsView.matrix().m11()
-            x /= factor
-            y /= factor
-            w /= factor
-            h /= factor
+            #~ # @NOTE: this is a workaround; mapToScene should be used instead
+            #~ factor = qlfactor * self.graphicsView.matrix().m11()
+            #~ x /= factor
+            #~ y /= factor
+            #~ w /= factor
+            #~ h /= factor
 
-            self.qlselection.setRect(x, y, w, h)
+            #~ self.qlselection.setRect(x, y, w, h)
 
     def processingDone(self):
         self.controller.reset_controller()

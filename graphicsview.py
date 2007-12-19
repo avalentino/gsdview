@@ -34,3 +34,12 @@ class GraphicsView(QtGui.QGraphicsView):
             self.emit(QtCore.SIGNAL('scaled()'))
 
     # @TODO: check transform related functions
+
+    def clearScene(self):
+        scene = view.scene()
+        for item in scene.items():
+            scene.removeItem(item)
+
+        scene.setSceneRect(0, 0, 1, 1)
+        view.setSceneRect(scene.sceneRect())
+        view.resetTransform()
