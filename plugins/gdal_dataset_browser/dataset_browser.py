@@ -30,6 +30,11 @@ from PyQt4 import QtCore, QtGui
 
 import resources
 
+# @TODO: context menu
+#~ class TreeWidget(QtGui.QTreeWidget):
+    #~ def __init__(self, parent=0):
+        #~ QtGui.QTreeWidget.__init__(self, parent)
+
 class GdalDatasetBrowser(QtGui.QDockWidget):
     def __init__(self, parent=None): #, flags=0):
         #title = self.tr('Dataset Browser')
@@ -41,6 +46,26 @@ class GdalDatasetBrowser(QtGui.QDockWidget):
         self.treeWidget.header().setStretchLastSection(True)
         self.setWidget(self.treeWidget)
         self.treeWidget.setHeaderLabels([self.tr('Name'), self.tr('Value')])
+
+        self.item_to_dataset = {}
+        self.dataset_to_item = {}
+
+        self.connect(
+            self.treeWidget,
+            QtCore.SIGNAL('itemDoubleClicked(QTreeWidgetItem*, int)'),
+            self.emitOpenBandRequest)
+
+    def emitOpenBandRequest(self, item, col):
+        parent = self.parent()
+        if parent:
+            text = str(item.text(0))
+            if text.startswith(self.tr('Raster Band')):       # @TODO: check
+                rootItem = item.parent()
+                dataset = self.item_to_dataset[rootItem]
+                band_id = int(text.split('n.')[-1])
+                band = dataset.GetRasterBand(band_id)
+                parent.emit(QtCore.SIGNAL('openBandRequest(PyQt_PyObject)'),
+                            band)
 
     def _getMetadataItem(self, metadataList, metadataDict):
         rootItem = QtGui.QTreeWidgetItem()
@@ -158,6 +183,7 @@ class GdalDatasetBrowser(QtGui.QDockWidget):
 
     def _getRasterBandItem(self, band):
         rootItem = QtGui.QTreeWidgetItem()
+        #rootItem.setObjectName('rasterBand%d' % band_id)
         rootItem.setIcon(0, QtGui.QIcon(':/images/raster-band.svg'))
         rootItem.setText(0, self.tr('Raster band'))
         rootItem.setToolTip(0, self.tr('Raster band.'))
@@ -444,7 +470,21 @@ The projection string follows the normal rules from ProjectionRef.'''))
         header.resizeSections(QtGui.QHeaderView.ResizeToContents)
         rootItem.setText(0, os.path.basename(dataset.GetDescription()))
         #rootItem.setFirstColumnSpanned(True)
+        self.dataset_to_item[dataset] = rootItem
+        self.item_to_dataset[rootItem] = dataset
 
+    def remveDataset(self, dataset):
+        try:
+            item = self.dataset_to_item.pop()
+            index = self.treeWidget.indexOfTopLevelItem(item)
+            self.treeWidget.takeTopLevelItem(index)
+        except KeyError:
+            pass
+
+    def clear(self):
+        self.treeWidget.clear()
+        self.dataset_to_item.clear()
+        self.item_to_dataset.clear()
 
 if __name__ == '__main__':
     import sys

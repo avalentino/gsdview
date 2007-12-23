@@ -17,35 +17,30 @@ class GdalGraphicsItem(QtGui.QGraphicsItem):
     #   * move to gdalqt4
     #   * child class that uses the quicklook image as a low resolution cache
     #     to speedup scrolling
-    def __init__(self, product, parent=None, scene=None):
+    def __init__(self, band, parent=None, scene=None):
         QtGui.QGraphicsItem.__init__(self, parent, scene)
-        self.product = product
-        #~ self._boundingRect = QtCore.QRectF(-self.product.RasterXSize/2.,
-                                           #~ -self.product.RasterYSize/2.,
-                                           #~ self.product.RasterXSize,
-                                           #~ self.product.RasterYSize)
+        self.band = band
+        #~ self._boundingRect = QtCore.QRectF(-self.band.XSize/2.,
+                                           #~ -self.band.YSize/2.,
+                                           #~ self.band.XSize,
+                                           #~ self.band.YSize)
         # @TODO: check (work like QPixmap)
         self._boundingRect = QtCore.QRectF(0, 0,
-                                           self.product.RasterXSize,
-                                           self.product.RasterYSize)
+                                           self.band.XSize,
+                                           self.band.YSize)
 
         self._lut = self.compute_default_LUT()
 
-        rasterBand = self.product.GetRasterBand(1) # @TODO: which band?
-        if rasterBand.DataType in (gdal.GDT_CInt16, gdal.GDT_CInt32):
+        if band.DataType in (gdal.GDT_CInt16, gdal.GDT_CInt32):
             logging.warning('complex integer dataset')
-        dtype = gdalsupport.GDT_to_dtype[rasterBand.DataType]
+        dtype = gdalsupport.GDT_to_dtype[band.DataType]
         if numpy.iscomplex(dtype()):
             logging.warning('extract module from complex data')
-        if product.ReadAsArray(0, 0, 1, 1).ndim != 2:
-            logging.warning('the dataset is not bi-dimensional')
 
     def compute_default_LUT(self):
-        # @TODO: fix for complex
-        rasterBand = self.product.GetRasterBand(1) # @TODO: which band?
         # @TOOD: fix flags (approx, force)
-        #min_, max_, mean, stddev = rasterBand.GetStatistics(False, True)
-        min_, max_, mean, stddev = rasterBand.GetStatistics(True, True)
+        #min_, max_, mean, stddev = self.band.GetStatistics(False, True)
+        min_, max_, mean, stddev = self.band.GetStatistics(True, True)
 
         #~ lower = 0
         #~ upper = round(max_)
@@ -89,7 +84,7 @@ class GdalGraphicsItem(QtGui.QGraphicsItem):
         if y + height > self._boundingRect.height():
             height = int(self._boundingRect.height()) - y
 
-        data = self.product.ReadAsArray(x, y, width, height)
+        data = self.band.ReadAsArray(x, y, width, height)
 
         if numpy.iscomplexobj(data):
             data = numpy.abs(data)

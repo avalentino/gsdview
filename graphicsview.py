@@ -36,10 +36,10 @@ class GraphicsView(QtGui.QGraphicsView):
     # @TODO: check transform related functions
 
     def clearScene(self):
-        scene = view.scene()
+        scene = self.scene()
         for item in scene.items():
             scene.removeItem(item)
 
         scene.setSceneRect(0, 0, 1, 1)
-        view.setSceneRect(scene.sceneRect())
-        view.resetTransform()
+        self.setSceneRect(scene.sceneRect())
+        self.resetTransform()

@@ -39,7 +39,7 @@ def init(mainwin):
                     datasetBrowser.setDataset)
     # @TODO: improve for multiple datasets
     mainwin.connect(mainwin, QtCore.SIGNAL('closeGdalDataset()'),
-                    datasetBrowser.treeWidget.clear)
+                    datasetBrowser.clear)
     # @TODO: actionFileClose could not be part of the api
     #~ mainwin.connect(mainwin.actionFileClose, QtCore.SIGNAL('triggered()'),
                     #~ datasetBrowser.treeWidget.clear)

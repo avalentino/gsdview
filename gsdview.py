@@ -66,32 +66,18 @@ class GSDView(QtGui.QMainWindow):
     #   * /usr/share/doc/python-qt4-doc/examples/mainwindows/recentfiles.py
     #   * stretching tool
 
+    defaultcachedir = os.path.expanduser(os.path.join('~', '.gsdview', 'cache'))
+
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
         self.setWindowTitle(self.tr('GSDView'))
         self.setWindowIcon(QtGui.QIcon(':/images/GDALLogoColor.svg'))
-        self.resize(800, 600)
+        #self.resize(800, 600)
 
         scene = QtGui.QGraphicsScene(self)
         self.graphicsView = GraphicsView(scene, self)
         self.graphicsView.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
         self.setCentralWidget(self.graphicsView)
-
-        # Connect signals for the quicklook box
-        # @TODO: check
-        # @TODO: connect only if the quicklook is present
-        self.connect(self.graphicsView.horizontalScrollBar(),
-                     QtCore.SIGNAL('valueChanged(int)'),
-                     self.updateQuicklookBox)
-        self.connect(self.graphicsView.verticalScrollBar(),
-                     QtCore.SIGNAL('valueChanged(int)'),
-                     self.updateQuicklookBox)
-        self.connect(self.graphicsView,
-                     QtCore.SIGNAL('newSize(const QSize&)'),
-                     self.updateQuicklookBox)
-        self.connect(self.graphicsView,
-                     QtCore.SIGNAL('scaled()'),
-                     self.updateQuicklookBox)
 
         # Progressbar
         self.progressbar = QtGui.QProgressBar(self)
@@ -111,12 +97,9 @@ class GSDView(QtGui.QMainWindow):
         #~ self.graphicsView.connect(QtCore.SIGNAL('mouseReleaseEvent()'), self.stopScrolling)
 
         self.imageItem = None
-        #~ self.quicklook = None
 
         # @TODO: encapsulate in a gdal.Dataset proxy (--> gdalsupport)
         self.dataset = None
-        #~ self.qlFactor = None  # @TODO: check int/float (maybe it is not needed)
-        self.virtualDatasetFilename = None
 
         # File dialog
         self.filedialog = QtGui.QFileDialog(self)
@@ -169,6 +152,10 @@ class GSDView(QtGui.QMainWindow):
         # @NOTE: the window state setup must happen after the plugins loading
         self.loadSettings() # @TODO: pass settings
                             # @TODO: rename setWinState or so
+
+        # Connect signals
+        self.connect(self, QtCore.SIGNAL('openBandRequest(PyQt_PyObject)'),
+                     self.openRasterBand)
 
         self.statusBar().showMessage('Ready')
 
@@ -286,31 +273,9 @@ class GSDView(QtGui.QMainWindow):
                      outputPanel.hide)
         return outputPanel
 
-    #~ def _setupQuickLookPanel(self):
-        #~ # Quick-look panel
-        #~ # @TODO: rename "overview"
-        #~ quicklookPanel = QtGui.QDockWidget('Quick Look', self)
-        #~ quicklookPanel.setObjectName('quickLookPanel')
-        #~ quicklookView = GraphicsView(QtGui.QGraphicsScene(self))
-        #~ #quicklookView.setDragMode(QtGui.QGraphicsView.ScrollHandDrag) # @TODO: check
-        #~ quicklookPanel.setWidget(quicklookView)
-        #~ self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, quicklookPanel)
-        #~ #quicklookPanel.hide()              # @TODO: check
-        #~ #self.connect(quicklookView, QtCore.SIGNAL('mousePositionUpdated(const QPoint&)'),
-        #~ #             self.updatePosLabels)
-        #~ self.connect(quicklookView, QtCore.SIGNAL('posMarked(const QPoint&)'),
-                     #~ self.centerOn)
-
-        #~ # @TODO: it is required that a custom widget re-imptement the
-        #~ #        "mousePressEvent" evant handler
-        #~ #self.connect(quicklookView, QtCore.SIGNAL('mousePressEvent(QMouseEvent*)'), self.centerOn)
-        #~ return quicklookPanel
-
     def setupPanels(self):
         outputPanel = self._setupOutputPanel()
-        quicklookPanel = self._setupQuickLookPanel()
         self.outputplane = outputPanel.widget()
-        #self.quicklookView = quicklookPanel.widget()
 
     def setupLogging(self, outputplane):
         logger = logging.getLogger()    # 'gsdview' # @TODO: fix
@@ -401,6 +366,12 @@ class GSDView(QtGui.QMainWindow):
                                QtCore.QVariant(gdal.GetCacheMax()))
         self.settings.endGroup()
 
+    def _getCacheDir(self):
+        defaultcachedir = QtCore.QVariant(self.defaultcachedir)
+        cachedir = self.settings.value('preferences/cachedir', defaultcachedir)
+        cachedir = cachedir.toString()
+        return os.path.expanduser(str(cachedir))
+
     # @TODO: check and move elseware
     def closeEvent(self, event):
         '''
@@ -421,114 +392,28 @@ class GSDView(QtGui.QMainWindow):
     ### File actions ##########################################################
     @qt4support.overrideCursor
     def _openFile(self, filename):
-        assert filename
-        inDataset = gdal.Open(str(filename))
-        # @TODO: check
-        self.emit(QtCore.SIGNAL('openGdalDataset(PyQt_PyObject)'), inDataset)
-
-        # Check the cache
-        # @TODO: fix
-        defaultcachedir = os.path.join('~', '.gsdview', 'cache')
-        defaultcachedir = os.path.expanduser(defaultcachedir)
-        defaultcachedir = QtCore.QVariant(defaultcachedir)
-        cachedir = self.settings.value('preferences/cachedir', defaultcachedir)
-        cachedir = cachedir.toString()
-        cachedir = os.path.expanduser(str(cachedir))
-
-        datasetID = gdalsupport.uniqueDatasetID(inDataset)
-        datasetCacheDir = os.path.join(cachedir, datasetID)
-        if not os.path.isdir(datasetCacheDir):
-            os.makedirs(datasetCacheDir)
-
-        # Check the cache
-        virtualDatasetFilename = os.path.join(datasetCacheDir,
-                                              'virtual-dataset.vrt')
-        if not os.path.exists(virtualDatasetFilename):
-            driver = gdal.GetDriverByName('VRT')
-            dataset = driver.CreateCopy(virtualDatasetFilename, inDataset)
-        else:
-            # @TODO: check if opening the dataset in update mode
-            #        (gdal.GA_Update) is a better solution
-            dataset = gdal.Open(virtualDatasetFilename)
-        del inDataset
-        self.virtualDatasetFilename = virtualDatasetFilename
-        self.dataset = dataset
-
-        # Check for overviews and statistics
-        # @TODO: move this to settings
-        maxQuicklookSize = 100 * 1024 # 100 KByte (about 320x320 8 bit pixels)
-
-        # @TODO: add a mechanism for band slection
-        band = dataset.GetRasterBand(1)
-
-        # Compute the desires quicklook factor
-        #bytePerPixel = gdal.GetDataTypeSize(band.DataType) / 8
-        bytePerPixel = 1    # the quicklook image is always converted to byte
-        datasetMemSize = dataset.RasterXSize*dataset.RasterYSize*bytePerPixel
-        self.qlFactor = numpy.sqrt(datasetMemSize/float(maxQuicklookSize))
-        self.qlFactor = max(round(self.qlFactor), 2)
-
-        # @TODO: check GDALOvLevelAdjust (gdal-1.4.4/gcore/gdaldefaultoverviews.cpp)
-        #int GDALOvLevelAdjust(int nOvLevel, int nXSize) {
-        #   int nOXSize = (nXSize + nOvLevel - 1) / nOvLevel;
-        #   return (int) (0.5 + nXSize / (double) nOXSize);
-        #}
+        cachedir = self._getCacheDir()
+        self.dataset = gdalsupport.DatasetProxy(filename, cachedir)
 
         # @TODO: when the improved GraphicsView will be available more then
         #        one overview level will be needed
-        overviewLevels = [int(self.qlFactor)]
-
-        # Check existing overviews
-        nOverviews = band.GetOverviewCount()
-        if nOverviews > 0:
-            # Retrieve the scale factors
-            factors = []
-            for ovrIndex in range(nOverviews):
-                ovrXSize = band.GetOverview(ovrIndex).XSize
-                factors.append(dataset.RasterXSize / ovrXSize)
-                logging.debug('RasterXSize = %d, ovrXSize = %d' % (dataset.RasterXSize, ovrXSize))
-
-            logging.debug('factors: %s' % factors)
-
-            # Criterion is too strict
-            #~ missingOverviewLevels = set(overviewLevels).difference(factors)
-            #~ missingOverviewLevels = sorted(overviewLevels)
-            factorsArray = numpy.asarray(sorted(factors))
-            missingOverviewLevels = []
+        band = self.dataset.GetRasterBand(1)
+        ovrLevel = band.compute_ovr_level()
+        missingOverviewLevels = []
+        try:
+            ovrIndex = band.best_ovr_index(ovrLevel)
+            levels = band.available_ovr_levels()
             distance = 1
-            for level in overviewLevels:
-                if numpy.min(numpy.abs(factorsArray - level)) > distance:
-                    missingOverviewLevels.append(level)
-
-            # Fix the qlFactor
-            aux = list(numpy.abs(factorsArray - self.qlFactor))
-            index = aux.index(min(aux))
-            self.qlFactor = factorsArray[index]
-        else:
-            missingOverviewLevels = overviewLevels
+            if numpy.abs(levels[ovrIndex] - ovrLevel) > distance:
+                missingOverviewLevels = [ovrLevel]
+            else:
+                ovrLevel = levels[ovrIndex]
+        except MissingOvrError:
+            missingOverviewLevels = [ovrLevel]
+       #self.ovrlevel = ovrLevel
 
         # @TODO: do this after choosing the band
-        if not missingOverviewLevels:
-            ovrIndex = factors.index(self.qlFactor)
-            ovrBand = band.GetOverview(ovrIndex)
-            quicklook = ovrBand.ReadAsArray()
-
-            # Compute the LUT
-            # @TODO: use a function here
-            min_ = quicklook.min()
-            if min_ > 0:        # @TODO: fix
-                min_ = 0
-            max_ = quicklook.max()
-            nbins = max_ - min_ + 1
-            range_ = (min_, max_+1)     # @NOTE: dtype = uint16
-            histogram_ = numpy.histogram(quicklook, nbins, range_)[0]
-
-            # Display the image and the quick look
-            # @TODO: refactorize (the same code already in _openFile)
-            lut = gsdtools.compute_lin_LUT2(histogram_)
-            self.setGraphicsItem(dataset, lut)
-            self.setQuickLook(quicklook, lut)
-        else:
+        if missingOverviewLevels:
             logging.debug('missingOverviewLevels: %s' % missingOverviewLevels)
             # Run an external process for overviews computation
             self.progressbar.show()
@@ -542,10 +427,11 @@ class GSDView(QtGui.QMainWindow):
             assert subProc.state() == subProc.NotRunning
             logging.debug('Run the subprocess.')
 
-            args = [os.path.basename(virtualDatasetFilename)] # @TODO: check
+            args = [os.path.basename(self.dataset.vrtfilename)] # @TODO: check
             args.extend(map(str, missingOverviewLevels))
 
             #self.subprocess.setEnvironmet(...)
+            datasetCacheDir = os.path.dirname(self.dataset.vrtfilename)
             self.controller.subprocess.setWorkingDirectory(datasetCacheDir)
             self.controller.run_tool(*args)
 
@@ -555,9 +441,12 @@ class GSDView(QtGui.QMainWindow):
             # ovr = b.GetOverview(2)
             # data = ovr.ReadAsArray()
 
+        # @TODO: check
+        self.emit(QtCore.SIGNAL('openGdalDataset(PyQt_PyObject)'), self.dataset)
+
     def openFile(self):
         if self.filedialog.exec_():
-            filename = self.filedialog.selectedFiles()[0]
+            filename = str(self.filedialog.selectedFiles()[0])
             if filename:
                 self.closeFile()
                 self._openFile(filename)
@@ -575,7 +464,6 @@ class GSDView(QtGui.QMainWindow):
         self.imageItem = None
         #~ self.quicklook = None
         self.dataset = None
-        self.qlFactor = None
         self.qlselection = None
         self.virtualDatasetFilename = None
 
@@ -609,35 +497,18 @@ class GSDView(QtGui.QMainWindow):
         finally:
             self.graphicsView.setUpdatesEnabled(True)
 
-    #~ @qt4support.overrideCursor
-    #~ def setQuickLook(self, data, lut):
-        #~ self.graphicsView.setUpdatesEnabled(False)
-        #~ try:
-            #~ data = gsdtools.apply_LUT(data, lut)
-            #~ image = Qwt.toQImage(data.transpose())
-            #~ pixmap = QtGui.QPixmap.fromImage(image)
-            #~ self.quicklook = pixmap
-            #~ self.qlFactor = self.dataset.RasterXSize // self.quicklook.width()
+    def openRasterBand(self, band):
+        #band = self.dataset.GetRasterBand(band_id)     # @TODO: remove
+        if band.lut is None:
+            band.lut = gsdtools.compute_band_lut(band)
+        self.setGraphicsItem(band, band.lut)
 
-            #~ scene = self.quicklookView.scene()
-            #~ item = scene.addPixmap(pixmap)
-            #~ rect = item.boundingRect()
-            #~ scene.setSceneRect(rect.x(), rect.y(), rect.width(), rect.height())
-            #~ self.quicklookView.setSceneRect(scene.sceneRect())
-            #~ self.quicklookView.ensureVisible(rect.x(), rect.y(), 1, 1, 0, 0)
+    def updateProgressBar(self, fract):
+        self.progressbar.show()
+        self.progressbar.setValue(int(100.*fract))
 
-            #~ # Quicklook box
-            #~ pen = QtGui.QPen(QtCore.Qt.SolidLine)
-            #~ pen.setColor(QtGui.QColor(QtCore.Qt.red))
-            #~ scene = self.quicklookView.scene()
-            #~ self.qlselection = scene.addRect(QtCore.QRectF(), pen)
-            #~ self.qlselection.setZValue(1)
-            #~ self.updateQuicklookBox()
-        #~ finally:
-            #~ self.graphicsView.setUpdatesEnabled(True)
-
-    # @TODO: update this
-    def quickLookGenerationCompleted(self):
+    def processingDone(self):
+        self.controller.reset_controller()
         try:
             if self.controller.subprocess.exitCode() != 0: # timeout 30000 ms
                 msg = ('An error occurred during the quicklook generation.\n'
@@ -648,106 +519,11 @@ class GSDView(QtGui.QMainWindow):
 
             # @TODO: check if opening the dataset in update mode
             #        (gdal.GA_Update) is a better solution
-            dataset = gdal.Open(self.virtualDatasetFilename)
-            band = dataset.GetRasterBand(1)
-            nOverviews = band.GetOverviewCount()
-            if nOverviews < 1:
-                msg = ('Unable to retrieve the quicklook image.\n'
-                       'Now close the dataset.')
-                QtGui.QMessageBox.warning(self, text=msg)
-                self.closeFile()   # @TODO: check
-                return
-
-            self.dataset = dataset
-
-            factors = []
-            for ovrIndex in range(nOverviews):
-                ovrXSize = band.GetOverview(ovrIndex).XSize
-                factors.append(dataset.RasterXSize / ovrXSize)
-                logging.debug('RasterXSize = %d, ovrXSize = %d' %
-                                            (dataset.RasterXSize, ovrXSize))
-
-            logging.debug('factors: %s' % map(str, factors))
-
-            try:
-                ovrIndex = factors.index(self.qlFactor)
-            except ValueError:
-                qlFactor = min(factors)
-                ovrIndex = factors.index(min(factors))
-                #logging.warning(       # @TODO: check
-                logging.info('Overview with desired scale factor (%d) not '
-                              'found.\n'
-                              'Use scale factor %s instead.' %
-                                                    (self.qlFactor, qlFactor))
-                # Fix the qlFactor
-                self.qlFactor = qlFactor
-
-            ovrBand = band.GetOverview(ovrIndex)
-            quicklook = ovrBand.ReadAsArray()
-
-            # Compute the LUT
-            # @TODO: use a function here
-            min_ = quicklook.min()
-            if min_ > 0:    # @TODO: fix
-                min_ = 0
-            max_ = quicklook.max()
-            nbins = max_ - min_ + 1
-            range_ = (min_, max_ + 1)     # @NOTE: dtype = uint16
-            histogram_ = numpy.histogram(quicklook, nbins, range_)[0]
-            print min_, max_, range_, nbins, histogram_[0], histogram_[-1]
-
-            # Display the image and the quick look
-            # @TODO: refactorize (the same code already in _openFile)
-            lut = gsdtools.compute_lin_LUT2(histogram_)
-            self.setGraphicsItem(dataset, lut)
-            self.setQuickLook(quicklook, lut)
+            self.dataset.reopen()
         finally:
             self.progressbar.hide()
             self.statusBar().showMessage('Ready.')
 
-    def updateProgressBar(self, fract):
-        self.progressbar.show()
-        self.progressbar.setValue(int(100.*fract))
-
-    #~ def centerOn(self, pos):
-        #~ if self.dataset:
-            #~ qlfactor = float(self.dataset.RasterXSize) / self.quicklook.width()
-            #~ pos = self.quicklookView.mapToScene(pos.x(), pos.y())
-            #~ self.graphicsView.centerOn(pos.x()*qlfactor,
-                                       #~ pos.y()*qlfactor)
-
-    #~ def updateQuicklookBox(self):
-        #~ if self.quicklook:
-            #~ hbar = self.graphicsView.horizontalScrollBar()
-            #~ vbar = self.graphicsView.verticalScrollBar()
-            #~ x = hbar.value()
-            #~ y = vbar.value()
-            #~ w = hbar.pageStep()
-            #~ h = vbar.pageStep()
-
-            #~ # @TODO: bug report: mapping to scene seems to introduce a
-            #~ #        spurious offset "x1 = 2*x0"; this doesn't happen for "w"
-            #~ #polygon = self.graphicsView.mapToScene(x, y, w, h)
-            #~ #rect = polygon.boundingRect()
-
-            #~ qlfactor = float(self.dataset.RasterXSize) / self.quicklook.width()
-            #~ #x = rect.x() / qlfactor
-            #~ #y = rect.y() / qlfactor
-            #~ #w = rect.width() / qlfactor
-            #~ #h = rect.height() / qlfactor
-
-            #~ # @NOTE: this is a workaround; mapToScene should be used instead
-            #~ factor = qlfactor * self.graphicsView.matrix().m11()
-            #~ x /= factor
-            #~ y /= factor
-            #~ w /= factor
-            #~ h /= factor
-
-            #~ self.qlselection.setRect(x, y, w, h)
-
-    def processingDone(self):
-        self.controller.reset_controller()
-        self.quickLookGenerationCompleted()
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
