@@ -89,5 +89,3 @@ class ZoomTool(QtCore.QObject):
     def zoom100(self):
         # @TODO: check the API
         self.parent().graphicsView.setMatrix(QtGui.QMatrix())
-
-
