@@ -35,33 +35,33 @@ def init(mainwin):
     overviewPanel.setObjectName('bandOverviewPanel') # @TODO: check
     mainwin.addDockWidget(QtCore.Qt.LeftDockWidgetArea, overviewPanel)
 
+    # Connect signals
     mainwin.connect(mainwin, QtCore.SIGNAL('openBandRequest(PyQt_PyObject)'),
                     overviewPanel.setBand)
     # @TODO: improve for multiple datasets
     mainwin.connect(mainwin, QtCore.SIGNAL('closeGdalDataset()'),
-                    overviewPanel.graphicsview.clearScene)
+                    overviewPanel.reset)
     # @TODO: actionFileClose could not be part of the api
     #~ mainwin.connect(mainwin.actionFileClose, QtCore.SIGNAL('triggered()'),
                     #~ datasetBrowser.treeWidget.clear)
 
-    # Connect signals
-    overviewPanel.connect(mainwin.graphicsView,
-                 QtCore.SIGNAL('posMarked(const QPoint&)'),
-                 overviewPanel.centerOn)
+    QtCore.QObject.connect(overviewPanel.graphicsview,
+                           QtCore.SIGNAL('posMarked(const QPoint&)'),
+                           overviewPanel.centerOn)
 
     # @TODO: check API
-    overviewPanel.connect(mainwin.graphicsView.horizontalScrollBar(),
-                          QtCore.SIGNAL('valueChanged(int)'),
-                          overviewPanel.updateBox)
-    overviewPanel.connect(mainwin.graphicsView.verticalScrollBar(),
-                          QtCore.SIGNAL('valueChanged(int)'),
-                          overviewPanel.updateBox)
-    overviewPanel.connect(mainwin.graphicsView,
-                          QtCore.SIGNAL('newSize(const QSize&)'),
-                          overviewPanel.updateBox)
-    overviewPanel.connect(mainwin.graphicsView,
-                          QtCore.SIGNAL('scaled()'),
-                          overviewPanel.updateBox)
+    QtCore.QObject.connect(mainwin.graphicsView.horizontalScrollBar(),
+                           QtCore.SIGNAL('valueChanged(int)'),
+                           overviewPanel.updateBox)
+    QtCore.QObject.connect(mainwin.graphicsView.verticalScrollBar(),
+                           QtCore.SIGNAL('valueChanged(int)'),
+                           overviewPanel.updateBox)
+    QtCore.QObject.connect(mainwin.graphicsView,
+                           QtCore.SIGNAL('newSize(const QSize&)'),
+                           overviewPanel.updateBox)
+    QtCore.QObject.connect(mainwin.graphicsView,
+                           QtCore.SIGNAL('scaled()'),
+                           overviewPanel.updateBox)
 
 def close(mainwin):
     saveSettings()

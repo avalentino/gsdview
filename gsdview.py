@@ -408,7 +408,7 @@ class GSDView(QtGui.QMainWindow):
                 missingOverviewLevels = [ovrLevel]
             else:
                 ovrLevel = levels[ovrIndex]
-        except MissingOvrError:
+        except gdalsupport.MissingOvrError:
             missingOverviewLevels = [ovrLevel]
        #self.ovrlevel = ovrLevel
 

@@ -61,6 +61,7 @@ class GdalBandOverview(QtGui.QDockWidget):
         self.graphicsview.setUpdatesEnabled(False)
         try:
             self.reset()
+            self.band = band
 
             if band.lut is None:
                 band.lut = gsdtools.compute_band_lut(band)
@@ -133,7 +134,7 @@ class GdalBandOverview(QtGui.QDockWidget):
             #~ h = rect.height() / qlfactor
 
             # @NOTE: this is a workaround; mapToScene should be used instead
-            factor = self.ovrlevel * self.graphicsView.matrix().m11()
+            factor = self.ovrlevel * view.matrix().m11()
             x /= factor
             y /= factor
             w /= factor
@@ -142,15 +143,8 @@ class GdalBandOverview(QtGui.QDockWidget):
             self.boxItem.setRect(x, y, w, h)
 
     def reset(self):
-        scene = self.graphicsview.scene()
-
-        if self.boxItem:
-            scene.remove(self.boxItem)
-            self.boxItem = None
-
-        if self.pixmapItem:
-            scene.remove(self.pixmapItem)
-            self.pixmapItem = None
-
+        self.graphicsview.clearScene()
+        self.boxItem = None
+        self.pixmapItem = None
         self.ovrlevel = None
         self.band = None
