@@ -1,9 +1,20 @@
 from PyQt4 import QtCore, QtGui
 
-# @TODO: move to another file (??)
 # @TODO: maybe this is not the best solution. Maybe a custom GraphicsItem
 #        would be better
 class GraphicsView(QtGui.QGraphicsView):
+    # @TODO: improve scrolling performances
+    #
+    #self.graphicsView.horizontalScrollBar.connect(QtCore.SIGNAL('sliderPressed()'), self.startScrolling)
+    #self.graphicsView.horizontalScrollBar.connect(QtCore.SIGNAL('sliderReleased()'), self.stopScrolling)
+    #self.graphicsView.verticalScrollBar.connect(QtCore.SIGNAL('sliderPressed()'), self.startScrolling)
+    #self.graphicsView.verticalScrollBar.connect(QtCore.SIGNAL('sliderReleased()'), self.stopScrolling)
+    #self.graphicsView.connect(QtCore.SIGNAL('dragMoveEvent()'), self.startScrolling)
+    #self.graphicsView.connect(QtCore.SIGNAL('dropEvent()'), self.stopScrolling)
+    #
+    #self.graphicsView.connect(QtCore.SIGNAL('mousePressEvent()'), self.startScrolling)
+    #self.graphicsView.connect(QtCore.SIGNAL('mouseReleaseEvent()'), self.stopScrolling)
+
     def mouseMoveEvent(self, event):
         if self.dragMode() == QtGui.QGraphicsView.NoDrag:
             self.emit(QtCore.SIGNAL('mousePositionUpdated(const QPoint&)'),

@@ -24,6 +24,14 @@ __revision__ = '$Revision: 43 $'
 
 from PyQt4 import QtCore, QtGui
 
+intToWinState = {
+    int(QtCore.Qt.WindowNoState):       QtCore.Qt.WindowNoState,
+    int(QtCore.Qt.WindowMinimized):     QtCore.Qt.WindowMinimized,
+    int(QtCore.Qt.WindowMaximized):     QtCore.Qt.WindowMaximized,
+    int(QtCore.Qt.WindowFullScreen):    QtCore.Qt.WindowFullScreen,
+    int(QtCore.Qt.WindowActive):        QtCore.Qt.WindowActive,
+}
+
 def actionGroupToMenu(actionGroup, label, mainwin):
     menu = QtGui.QMenu(label, mainwin)
     for action in actionGroup.actions():

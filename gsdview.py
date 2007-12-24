@@ -65,6 +65,7 @@ class GSDView(QtGui.QMainWindow):
     #   * disable actions when the external tool is running
     #   * /usr/share/doc/python-qt4-doc/examples/mainwindows/recentfiles.py
     #   * stretching tool
+    #   * allow to open multiple bands/datasets --> band/dataset regiter + current
 
     defaultcachedir = os.path.expanduser(os.path.join('~', '.gsdview', 'cache'))
 
@@ -72,7 +73,6 @@ class GSDView(QtGui.QMainWindow):
         QtGui.QMainWindow.__init__(self, parent)
         self.setWindowTitle(self.tr('GSDView'))
         self.setWindowIcon(QtGui.QIcon(':/images/GDALLogoColor.svg'))
-        #self.resize(800, 600)
 
         scene = QtGui.QGraphicsScene(self)
         self.graphicsView = GraphicsView(scene, self)
@@ -85,20 +85,7 @@ class GSDView(QtGui.QMainWindow):
         self.statusBar().addPermanentWidget(self.progressbar)
         self.progressbar.hide()
 
-        # @TODO: improve scrolling performances
-        #~ self.graphicsView.horizontalScrollBar.connect(QtCore.SIGNAL('sliderPressed()'), self.startScrolling)
-        #~ self.graphicsView.horizontalScrollBar.connect(QtCore.SIGNAL('sliderReleased()'), self.stopScrolling)
-        #~ self.graphicsView.verticalScrollBar.connect(QtCore.SIGNAL('sliderPressed()'), self.startScrolling)
-        #~ self.graphicsView.verticalScrollBar.connect(QtCore.SIGNAL('sliderReleased()'), self.stopScrolling)
-        #~ self.graphicsView.connect(QtCore.SIGNAL('dragMoveEvent()'), self.startScrolling)
-        #~ self.graphicsView.connect(QtCore.SIGNAL('dropEvent()'), self.stopScrolling)
-
-        #~ self.graphicsView.connect(QtCore.SIGNAL('mousePressEvent()'), self.startScrolling)
-        #~ self.graphicsView.connect(QtCore.SIGNAL('mouseReleaseEvent()'), self.stopScrolling)
-
         self.imageItem = None
-
-        # @TODO: encapsulate in a gdal.Dataset proxy (--> gdalsupport)
         self.dataset = None
 
         # File dialog
@@ -107,9 +94,8 @@ class GSDView(QtGui.QMainWindow):
         self.filedialog.setFilters(gdalsupport.gdalFilters())
 
         # Panels
-        #~ self.quicklookView = None
-        self.outputplane = None
-        self.setupPanels()      # @TODO: rewrite
+        self.outputplane = None     # @TODO: move to plugin
+        self.setupPanels()          # @TODO: rewrite
 
         # Settings
         # @TODO: fix filename
@@ -120,8 +106,6 @@ class GSDView(QtGui.QMainWindow):
         self.settings = QtCore.QSettings('gsdview.ini',
                                          QtCore.QSettings.IniFormat,
                                          self)
-        self.connect(QtGui.qApp, QtCore.SIGNAL('aboutToQuit()'),
-                     self.saveSettings)
 
         # Setup the log system
         self.logger = self.setupLogging(self.outputplane)
@@ -150,14 +134,31 @@ class GSDView(QtGui.QMainWindow):
         self._addToolBarFromActions(self.helpActions, self.tr('Help toolbar'))
 
         # @NOTE: the window state setup must happen after the plugins loading
+        self.restoreWindowState()
         self.loadSettings() # @TODO: pass settings
-                            # @TODO: rename setWinState or so
 
         # Connect signals
         self.connect(self, QtCore.SIGNAL('openBandRequest(PyQt_PyObject)'),
                      self.openRasterBand)
 
         self.statusBar().showMessage('Ready')
+
+    ### Event handlers ########################################################
+    # @TODO: check and move elseware
+    def closeEvent(self, event):
+        '''
+        void MainWindow::closeEvent(QCloseEvent *event) {
+            if (maybeSave()) {
+                writeSettings();
+                event->accept();
+            } else {
+                event->ignore();
+            }
+        }
+
+        '''
+
+        self.saveWindowState()
 
     ### Setup helpers #########################################################
     def _setupFileActions(self):
@@ -263,6 +264,7 @@ class GSDView(QtGui.QMainWindow):
         return plugins
 
     def _setupOutputPanel(self):
+        # @TODO: move to plugin
         # Output panel
         outputPanel = QtGui.QDockWidget('Output', self)
         outputPanel.setObjectName('outputPanel')
@@ -305,6 +307,7 @@ class GSDView(QtGui.QMainWindow):
         return logger
 
     def setupController(self, outputplane, statusbar, progressbar, logger):
+        # @TODO: move to plugin
         handler = GdalOutputHandler(outputplane, statusbar, progressbar)
         tool = GdalAddOverviewDescriptor(stdout_handler=handler)
         controller = Qt4ToolController(logger, parent=self)
@@ -315,79 +318,81 @@ class GSDView(QtGui.QMainWindow):
         return controller
 
     ### Settings ##############################################################
-    def loadSettings(self):
-        # @TODO:
-        #   * restore window size and position
-        #   * restore windowState
-
-        # mainwindow
+    def restoreWindowState(self):
         self.settings.beginGroup('mainwindow')
+
         position = self.settings.value('position')
         if not position.isNull():
             self.move(position.toPoint())
         size = self.settings.value('size')
         if not size.isNull():
             self.resize(size.toSize())
+        else:
+            # default size
+            self.resize(800, 600)
+
+        winstate = self.settings.value('winstate',
+                                       QtCore.QVariant(QtCore.Qt.WindowNoState))
+        winstate, ok = winstate.toInt()
+        if winstate != QtCore.Qt.WindowNoState:
+            winstate = qt4support.intToWinState[winstate]
+            self.setWindowState(winstate)
+            QtGui.qApp.processEvents()
+
+        # State of toolbars ad docks
         state = self.settings.value('state')
         if not state.isNull():
             self.restoreState(state.toByteArray())
+
         self.settings.endGroup()
 
-        # preferences
-        self.settings.beginGroup('preferences')
-        #self.cachedir = self.settings.value('cachelocation')
-        # @TODO: check the default value
-        #default= QtCore.QVariant(150*1024**2)
-        #cachesize, ok = self.settings.value('gdalcachesize', default).toInt()
-        cachesize, ok = self.settings.value('gdalcachesize').toInt()
-        if ok:
-            gdal.SetCacheMax(cachesize)
-        self.settings.endGroup()
-
-    def saveSettings(self):
-        # @TODO: remove closeEvent (??)
-        #   * save windowState (??)
-        #   * de-maximize --> showNormal()  --> only before exiting
-        #   * save window size and position
-
-        # mainwindow
+    def saveWindowState(self):
         self.settings.beginGroup('mainwindow')
+
+        self.settings.setValue('winstate', QtCore.QVariant(self.windowState()))
+
+        self.showNormal()
+        QtGui.qApp.processEvents()
+
         self.settings.setValue('position', QtCore.QVariant(self.pos()))
         self.settings.setValue('size', QtCore.QVariant(self.size()))
         self.settings.setValue('state', QtCore.QVariant(self.saveState()))
+
         self.settings.endGroup()
 
-        # preferences
+    def loadSettings(self):
         self.settings.beginGroup('preferences')
-        level = QtCore.QVariant(logging.getLevelName(self.logger.level))
-        self.settings.setValue('loglevel', level)
-        #self.settings.setValue('cachelocation', self.cachedir)
-        self.settings.setValue('gdalcachesize',
-                               QtCore.QVariant(gdal.GetCacheMax()))
+
+        #self.cachedir = self.settings.value('cachelocation')
+        cachesize, ok = self.settings.value('gdalcachesize').toInt()
+        if ok:
+            gdal.SetCacheMax(cachesize)
+
         self.settings.endGroup()
+
+    # @TODO: check (unused at the moment)
+    #~ def saveSettings(self):
+        #~ self.settings.beginGroup('preferences')
+
+        #~ level = QtCore.QVariant(logging.getLevelName(self.logger.level))
+        #~ self.settings.setValue('loglevel', level)
+        #~ self.settings.setValue('cachedir', self.cachedir)
+        #~ self.settings.setValue('gdalcachesize',
+                               #~ QtCore.QVariant(gdal.GetCacheMax()))
+
+        #~ self.settings.endGroup()
 
     def _getCacheDir(self):
+        #defaultcachedir = './cache'
         defaultcachedir = QtCore.QVariant(self.defaultcachedir)
         cachedir = self.settings.value('preferences/cachedir', defaultcachedir)
         cachedir = cachedir.toString()
+
+        # @TODO: improve
+        gsdviewroot = os.path.abspath(os.path.dirname(__file__))
+        cachedir.replace('$GSDVIEWROOT', gsdviewroot)
+
         return os.path.expanduser(str(cachedir))
-
-    # @TODO: check and move elseware
-    def closeEvent(self, event):
-        '''
-        void MainWindow::closeEvent(QCloseEvent *event)
-        {
-            if (maybeSave()) {
-                writeSettings();
-                event->accept();
-            } else {
-                event->ignore();
-            }
-        }
-
-        '''
-
-        self.showNormal()
 
     ### File actions ##########################################################
     @qt4support.overrideCursor
@@ -410,9 +415,11 @@ class GSDView(QtGui.QMainWindow):
                 ovrLevel = levels[ovrIndex]
         except gdalsupport.MissingOvrError:
             missingOverviewLevels = [ovrLevel]
-       #self.ovrlevel = ovrLevel
 
-        # @TODO: do this after choosing the band
+        # @NOTE: overviews are computed for all bands so I do this at
+        #        application level, before a specific band is choosen.
+        #        Maybe ths is not the best policy and overviews should be
+        #        computed only when needed instead
         if missingOverviewLevels:
             logging.debug('missingOverviewLevels: %s' % missingOverviewLevels)
             # Run an external process for overviews computation
@@ -454,23 +461,23 @@ class GSDView(QtGui.QMainWindow):
     def closeFile(self):
         # @TODO: extend for multiple datasets
         self.emit(QtCore.SIGNAL('closeGdalDataset()'))
-
-        # Reset the scene and the view transformation matrix
-        #for view in (self.graphicsView, self.quicklookView):
-        #    view.clearScene()
-        self.graphicsView.clearScene()
-
-        # Reset attributes
-        self.imageItem = None
-        #~ self.quicklook = None
+        self.closeRasterBand()
         self.dataset = None
-        self.qlselection = None
-        self.virtualDatasetFilename = None
-
         self.statusBar().showMessage('Ready.')
+
+    def openRasterBand(self, band):
+        self.closeRasterBand()
+        if band.lut is None:
+            band.lut = gsdtools.compute_band_lut(band)
+        self.setGraphicsItem(band, band.lut)
+
+    def closeRasterBand(self):
+        self.graphicsView.clearScene()
+        self.imageItem = None
 
     ### Help actions ##########################################################
     def about(self):
+        # @TODO: improve
         QtGui.QMessageBox.about(self, self.tr('GSDView'),
                                 self.tr('GeoSpatial Data Viewer'))
 
@@ -480,6 +487,7 @@ class GSDView(QtGui.QMainWindow):
     ### Auxiliaary methods ####################################################
     @qt4support.overrideCursor
     def setGraphicsItem(self, dataset, lut):
+        # @TODO: update vor multiple view
         self.graphicsView.setUpdatesEnabled(False)
         try:
             self.imageItem = gdalqt4.GdalGraphicsItem(dataset)
@@ -496,12 +504,6 @@ class GSDView(QtGui.QMainWindow):
 
         finally:
             self.graphicsView.setUpdatesEnabled(True)
-
-    def openRasterBand(self, band):
-        #band = self.dataset.GetRasterBand(band_id)     # @TODO: remove
-        if band.lut is None:
-            band.lut = gsdtools.compute_band_lut(band)
-        self.setGraphicsItem(band, band.lut)
 
     def updateProgressBar(self, fract):
         self.progressbar.show()
