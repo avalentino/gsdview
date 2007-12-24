@@ -48,13 +48,54 @@ class GdalBandOverview(QtGui.QDockWidget):
         #self.setObjectName('datasetBroeserPanel') # @TODO: check
 
         self.band = None
-        self.ovrlevel = None
+        self._transform = None
         self.pixmapItem = None
         self.boxItem = None
         self.graphicsview = GraphicsView(QtGui.QGraphicsScene(self))
         # @TODO: check
         #graphicsview.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
         self.setWidget(self.graphicsview)
+
+        self.autoscale = True
+
+    def fitInView(self):
+        if self.pixmapItem is not None:
+            self.graphicsview.fitInView(self.pixmapItem,
+                                        QtCore.Qt.KeepAspectRatio)
+
+    def _getAutoscale(self):
+        return self._autoscale
+
+    def _setAutoscale(self, flag):
+        if self.graphicsview:
+            if flag:
+                self.connect(self.graphicsview,
+                             QtCore.SIGNAL('newSize(const QSize&)'),
+                             self.fitInView)
+                self.fitInView()
+            else:
+                self.disconnect(self.graphicsview,
+                                QtCore.SIGNAL('newSize(const QSize&)'),
+                                self.fitInView)
+                self.graphicsview.setMatrix(QtGui.QMatrix())
+        self._autoscale = bool(flag)
+
+    autoscale = property(_getAutoscale, _setAutoscale)
+
+    def _getOvrLevel(self):
+        if self._transform is not None:
+            return self._transform.m11()
+        else:
+            return None
+
+    def _setOvrLevel(self, ovrlevel):
+        if ovrlevel is None:
+            self._transform = None
+        else:
+            self._transform = QtGui.QTransform(ovrlevel, 0, 0, ovrlevel,
+                                               ovrlevel/2., ovrlevel/2.)
+
+    ovrlevel = property(_getOvrLevel, _setOvrLevel)
 
     @overrideCursor
     def setBand(self, band):
@@ -96,20 +137,25 @@ class GdalBandOverview(QtGui.QDockWidget):
             scene = self.graphicsview.scene()
             self.boxItem = scene.addRect(QtCore.QRectF(), pen)
             self.boxItem.setZValue(1)
+
+            if self.autoscale:
+                self.fitInView()
+                self.connect(self.graphicsview,
+                             QtCore.SIGNAL('newSize(const QSize&)'),
+                             self.fitInView)
+
             self.updateBox()
         finally:
             self.graphicsview.setUpdatesEnabled(True)
 
     def centerOn(self, pos):
         if self.band:
-            #qlfactor = float(self.band.XSize) / self.quicklook.width()
-            pos = self.graphicsview.mapToScene(pos.x(), pos.y())
-            x = pos.x() * self.ovrlevel
-            y = pos.y() * self.ovrlevel
-
             # @TODO: check API
             view = self.parent().graphicsView
-            view.centerOn(x, y)
+
+            pos = self.graphicsview.mapToScene(pos.x(), pos.y())
+            pos = self._transform.map(pos)
+            view.centerOn(pos)
 
     def updateBox(self):
         if self.band:
@@ -117,32 +163,29 @@ class GdalBandOverview(QtGui.QDockWidget):
             view = self.parent().graphicsView
             hbar = view.horizontalScrollBar()
             vbar = view.verticalScrollBar()
-            x = hbar.value()
-            y = vbar.value()
-            w = hbar.pageStep()
-            h = vbar.pageStep()
 
             # @TODO: bug report: mapping to scene seems to introduce a
             #        spurious offset "x1 = 2*x0"; this doesn't happen for "w"
-            #~ polygon = self.graphicsView.mapToScene(x, y, w, h)
-            #~ rect = polygon.boundingRect()
-
-            #qlfactor = float(self.band.XSize) / self.quicklook.width()
-            #~ x = rect.x() / qlfactor
-            #~ y = rect.y() / qlfactor
-            #~ w = rect.width() / qlfactor
-            #~ h = rect.height() / qlfactor
+            #polygon = view.mapToScene(hbar.value(), vbar.value(),
+            #                          hbar.pageStep(), vbar.pageStep())
+            #rect = polygon.boundingRect()
 
             # @NOTE: this is a workaround; mapToScene should be used instead
-            factor = self.ovrlevel * view.matrix().m11()
-            x /= factor
-            y /= factor
-            w /= factor
-            h /= factor
+            rect = QtCore.QRectF(hbar.value(), vbar.value(),
+                                 hbar.pageStep(), vbar.pageStep())
+            transform = view.transform().inverted()[0]
+            rect = transform.mapRect(rect)
 
-            self.boxItem.setRect(x, y, w, h)
+            transform = self._transform.inverted()[0]
+            rect = transform.mapRect(rect)
+
+            self.boxItem.setRect(rect)
 
     def reset(self):
+        if self.autoscale and self.graphicsview:
+            self.disconnect(self.graphicsview,
+                            QtCore.SIGNAL('newSize(const QSize&)'),
+                            self.fitInView)
         self.graphicsview.clearScene()
         self.boxItem = None
         self.pixmapItem = None
