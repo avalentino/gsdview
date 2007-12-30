@@ -8,9 +8,6 @@ import numpy
 import scipy.ndimage
 # @TODO: scipy.misc.bytescale
 
-import gdal
-
-import gdalsupport
 
 def compute_lin_LUT(min_, max_, lower, upper):
     lut = numpy.arange(round(max_) + 1, dtype=numpy.float)
@@ -52,20 +49,18 @@ def compute_lin_LUT2(histogram_, lower=0.005, upper=0.99, min_=None, max_=None):
     return lut
 
 
-def compute_band_lut(band):
-    ovrindex = band.best_ovr_index()
-    ovrBand = band.GetOverview(ovrindex)
-    overview = ovrBand.ReadAsArray()
+def ovr_lut(data):
+    if numpy.iscomplexobj(data):
+        data = numpy.abs(data)
 
     # Compute the LUT
-    # @TODO: use a function here
-    min_ = overview.min()
+    min_ = data.min()
     if min_ > 0:    # @TODO: fix
         min_ = 0
-    max_ = overview.max()
+    max_ = data.max()
     nbins = max_ - min_ + 1
     range_ = (min_, max_ + 1)     # @NOTE: dtype = uint16
-    histogram_ = numpy.histogram(overview, nbins, range_)[0]
+    histogram_ = numpy.histogram(data, nbins, range_)[0]
     lut = compute_lin_LUT2(histogram_)
     return lut
 

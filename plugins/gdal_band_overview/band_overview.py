@@ -22,13 +22,6 @@ __author__  = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__    = '$Date: 2007-12-02 20:30:11 +0100 (dom, 02 dic 2007) $'
 __revision__ = '$Revision: 47 $'
 
-#~ import os
-#~ import gdal
-
-#~ import os, sys
-#~ path = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir
-#~ sys.path.append(os.path.normpath(path))
-
 import logging
 import numpy
 
@@ -39,7 +32,6 @@ import gsdtools
 from graphicsview import GraphicsView
 from qt4support import overrideCursor
 
-#import resources
 
 class GdalBandOverview(QtGui.QDockWidget):
     def __init__(self, parent=None): #, flags=0):
@@ -104,12 +96,14 @@ class GdalBandOverview(QtGui.QDockWidget):
             self.reset()
             self.band = band
 
-            if band.lut is None:
-                band.lut = gsdtools.compute_band_lut(band)
-
             ovrindex = band.best_ovr_index()
             ovrBand = band.GetOverview(ovrindex)
             data = ovrBand.ReadAsArray()
+            if numpy.iscomplexobj(data):
+                data = numpy.abs(data)
+
+            if band.lut is None:
+                band.lut = gsdtools.ovr_lut(data)
 
             data = gsdtools.apply_LUT(data, band.lut)
             image = Qwt.toQImage(data.transpose())

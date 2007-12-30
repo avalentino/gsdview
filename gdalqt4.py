@@ -88,8 +88,6 @@ class GdalGraphicsItem(QtGui.QGraphicsItem):
 
         if numpy.iscomplexobj(data):
             data = numpy.abs(data)
-        if data.ndim > 2:
-            data = data[0]
         try:
             data = gsdtools.apply_LUT(data, self._lut)
         except IndexError:

@@ -44,13 +44,10 @@ import qt4support
 import gdalsupport
 import gdalqt4
 
-from graphicsview import GraphicsView
-
 import exectools
+from exectools.qt4tools import Qt4ToolController, Qt4DialogLoggingHandler
 
-from exectools.qt4tools import Qt4OutputPlane, Qt4ToolController
-from exectools.qt4tools import Qt4DialogLoggingHandler, Qt4StreamLoggingHandler
-
+from graphicsview import GraphicsView
 from gdalexectools import GdalAddOverviewDescriptor, GdalOutputHandler
 
 
@@ -66,6 +63,7 @@ class GSDView(QtGui.QMainWindow):
     #   * /usr/share/doc/python-qt4-doc/examples/mainwindows/recentfiles.py
     #   * stretching tool
     #   * allow to open multiple bands/datasets --> band/dataset regiter + current
+    #   * make toolbars and docs controls available in the main menu
 
     defaultcachedir = os.path.expanduser(os.path.join('~', '.gsdview', 'cache'))
 
@@ -93,10 +91,6 @@ class GSDView(QtGui.QMainWindow):
         self.filedialog.setFileMode(QtGui.QFileDialog.ExistingFile)
         self.filedialog.setFilters(gdalsupport.gdalFilters())
 
-        # Panels
-        self.outputplane = None     # @TODO: move to plugin
-        self.setupPanels()          # @TODO: rewrite
-
         # Settings
         # @TODO: fix filename
         #self.settings = QtCore.QSettings(QtCore.QSettings.IniFormat,
@@ -107,14 +101,10 @@ class GSDView(QtGui.QMainWindow):
                                          QtCore.QSettings.IniFormat,
                                          self)
 
-        # Setup the log system
-        self.logger = self.setupLogging(self.outputplane)
-
-        # Setup the external tools controller
-        self.controller = self.setupController(self.outputplane,
-                                               self.statusBar(),
-                                               self.progressbar,
-                                               self.logger)
+        # Setup the log system and the external tools controller
+        self.logger = self.setupLogging()
+        self.controller = self.setupController(self.logger, self.statusBar(),
+                                               self.progressbar)
 
         # Actions
         self.setupActions()
@@ -245,7 +235,7 @@ class GSDView(QtGui.QMainWindow):
                     plugins[name] = module
                     self.logger.debug('"%s" plugin loaded.' % name)
                 except ImportError, e:
-                    self.logger.debug(str(e))
+                    self.logger.debug('"%s" module not loaded: %s' % (name, e))
             del dirnames[:]
 
             for name in filenames:
@@ -260,26 +250,10 @@ class GSDView(QtGui.QMainWindow):
                     plugins[name] = module
                     self.logger.debug('"%s" plugin loaded.' % name)
                 except ImportError, e:
-                    self.logger.debug(str(e))
+                    self.logger.debug('"%s" module not loaded: %s' % (name, e))
         return plugins
 
-    def _setupOutputPanel(self):
-        # @TODO: move to plugin
-        # Output panel
-        outputPanel = QtGui.QDockWidget('Output', self)
-        outputPanel.setObjectName('outputPanel')
-        outputplane = Qt4OutputPlane()
-        outputPanel.setWidget(outputplane)
-        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, outputPanel)
-        self.connect(outputplane, QtCore.SIGNAL('planeHideRequest()'),
-                     outputPanel.hide)
-        return outputPanel
-
-    def setupPanels(self):
-        outputPanel = self._setupOutputPanel()
-        self.outputplane = outputPanel.widget()
-
-    def setupLogging(self, outputplane):
+    def setupLogging(self):
         logger = logging.getLogger()    # 'gsdview' # @TODO: fix
 
         # Set the log level from preferences
@@ -292,12 +266,6 @@ class GSDView(QtGui.QMainWindow):
         if logger.level == logging.DEBUG:
             logging.basicConfig(level=logging.DEBUG)
 
-        formatter = logging.Formatter('%(levelname)s: %(message)s')
-        handler = Qt4StreamLoggingHandler(outputplane)
-        handler.setLevel(logger.level)
-        handler.setFormatter(formatter)
-        logger.addHandler(handler)
-
         formatter = logging.Formatter('%(message)s')
         handler = Qt4DialogLoggingHandler(parent=self, dialog=None)
         handler.setLevel(logging.WARNING)
@@ -306,9 +274,9 @@ class GSDView(QtGui.QMainWindow):
 
         return logger
 
-    def setupController(self, outputplane, statusbar, progressbar, logger):
-        # @TODO: move to plugin
-        handler = GdalOutputHandler(outputplane, statusbar, progressbar)
+    def setupController(self, logger, statusbar, progressbar):
+        # @TODO: move to plugin (??)
+        handler = GdalOutputHandler(None, statusbar, progressbar)
         tool = GdalAddOverviewDescriptor(stdout_handler=handler)
         controller = Qt4ToolController(logger, parent=self)
         controller.tool = tool
@@ -467,8 +435,13 @@ class GSDView(QtGui.QMainWindow):
 
     def openRasterBand(self, band):
         self.closeRasterBand()
+
         if band.lut is None:
-            band.lut = gsdtools.compute_band_lut(band)
+            ovrindex = band.best_ovr_index()
+            ovrBand = band.GetOverview(ovrindex)
+            data = ovrBand.ReadAsArray()
+            band.lut = gsdtools.ovr_lut(data)
+
         self.setGraphicsItem(band, band.lut)
 
     def closeRasterBand(self):
