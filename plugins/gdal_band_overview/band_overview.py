@@ -99,6 +99,7 @@ class GdalBandOverview(QtGui.QDockWidget):
             ovrindex = band.best_ovr_index()
             ovrBand = band.GetOverview(ovrindex)
             data = ovrBand.ReadAsArray()
+
             if numpy.iscomplexobj(data):
                 data = numpy.abs(data)
 

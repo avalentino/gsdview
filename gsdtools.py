@@ -54,10 +54,10 @@ def ovr_lut(data):
         data = numpy.abs(data)
 
     # Compute the LUT
-    min_ = data.min()
+    min_ = numpy.floor(data.min())
     if min_ > 0:    # @TODO: fix
         min_ = 0
-    max_ = data.max()
+    max_ = numpy.ceil(data.max())
     nbins = max_ - min_ + 1
     range_ = (min_, max_ + 1)     # @NOTE: dtype = uint16
     histogram_ = numpy.histogram(data, nbins, range_)[0]
