@@ -74,6 +74,7 @@ class ZoomTool(QtCore.QObject):
     def zoomIn(self):
         # @TODO: check the API
         factor = 1.2    # @TODO: make this configurable
+        # @TODO: set explicitally self.parent().graphicsView
         self.parent().graphicsView.scale(factor, factor)
 
     def zoomOut(self):
