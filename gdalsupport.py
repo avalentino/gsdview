@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 
 import os
+
 import numpy
+from scipy.interpolate import interp2d
+
 import gdal
+import osr
+
 
 GDT_to_dtype = {
     #gdal.GDT_Unknown:   numpy.,             # --  0 --
@@ -74,6 +79,139 @@ class MissingOvrError(Exception):
         self.message =\
             'Overview with level %s is not available in the product' % ovrlevel
 
+class CoordinateMapper(object):
+    geogCS = 'WGS84'
+
+    #~ def __init__(self, dataset):
+        #~ self._dataset = dataset
+
+    def imgToGeo(self, points):
+        raise NotImplementedError('Abstract class "CoordinateMapper" '
+                                  'do not implements the "imgToGeo" method.')
+
+    def geoToImg(self, points):
+        raise NotImplementedError('Abstract class "CoordinateMapper" '
+                                  'do not implements the "geoToImg" method.')
+
+class GridCoordinateMapper(CoordinateMapper):
+
+    def __init__(self, dataset):
+        super(GridCoordinateMapper, self).__init__(dataset)
+
+        ngcp = dataset.GetGCPCount()
+
+        assert ngcp > 4, 'Insufficient number of points'
+
+        # Extract (row, col) and (lat, lon) data
+        lines = numpy.zeros(ngcp, dtype=numpy.float64)
+        pixels = numpy.zeros(ngcp, dtype=numpy.float64)
+        lats = numpy.zeros(ngcp, dtype=numpy.float64)
+        lons = numpy.zeros(ngcp, dtype=numpy.float64)
+
+        sref = osr.SpatialReference(dataset.GetGCPProjection())
+        if not sref.IsGeographic():
+            sref_target = osr.SpatialReference()
+            sref_target.SetWellKnownGeogCS(self.geogCS)
+            ct = osr.CoordinateTransformation(sref, sref_target)
+            for row, gcp in enumerate(dataset.GetGCPs()):
+                lines[row], pixels[row] = gcp.GCPLine, gcp.GCPPixel
+                # discard gcp.GCPZ
+                lons[row], lats[row], dummy =
+                                ct.TransformPoint(gcp.GCPX, gcp.GCPY, gcp.GCPZ)
+        else:
+            for row, gcp in enumerate(dataset.GetGCPs()):
+                lines[row], pixels[row] = gcp.GCPLine, gcp.GCPPixel
+                lons[row], lats[row] = gcp.GCPX, gcp.GCPY
+                # discard gcp.GCPZ
+
+        # Set interpolators @TODO: use bivariate splines
+        self._imgToLat = interp2d(lines, pixels, lats)
+        self._imgToLon = interp2d(lines, pixels, lons)
+        self._geoToLine = interp2d(lons, lats, lines)
+        self._geoToPixel = interp2d(lons, lats, pixels)
+
+    def imgToGeo(self, line, pixel):
+        '''Coordinate conversion: (line,pixel) --> (lat,lon).'''
+
+        return self._imgToLat(line, pixel), self._imgToLon(line, pixel)
+
+    def geoToImg(self, lat, lon):
+        '''Coordinate conversion: (lat,lon) --> (line,pixel).'''
+
+        return self._geoToLine(lat, lon), self._geoToPixel(lat, lon)
+
+class GeoTransformCoordinateMapper(object):
+
+    def __init__(self, dataset):
+        super(GeoTransformCoordinateMapper, self).__init__(dataset)
+        assert dataset.GetProjection() or dataset.GetProjectionRef()
+
+        sref = osr.SpatialReference(dataset.GetProjection())
+        if not sref.IsGeographic():
+            sref_target = osr.SpatialReference()
+            sref_target.SetWellKnownGeogCS(self.geogCS)
+            self._srTransform = osr.CoordinateTransformation(sref, sref_target)
+        else:
+            self._srTransform = None
+
+        # Xgeo = GT(0) + Xpixel*GT(1) + Yline*GT(2)
+        # Ygeo = GT(3) + Xpixel*GT(4) + Yline*GT(5)
+        #
+        # --    --   --       --   --      --   --       --
+        # | Xgeo |   | m11 m12 |   | Xpixel |   | xoffset |
+        # |      | = |         | * |        | + |         |
+        # | Ygeo |   | m21 m22 |   | Yline  |   | yoffset |
+        # --    --   --       --   --      --   --       --
+        xoffset, m11, m12, yoffset, m21, m22 = dataset.GetGeoTransform()
+
+        # Direct transform
+        M = numpy.matrix(((m11, m12), (m21, m22)))
+        C = numpy.array(([xoffset], [yoffset]))
+        self._direct_transform = (M, C)
+
+        # Invrse transform
+        M = numpy.linalg.inv(M)
+        C = -numpy.dot(M, C)
+        self._inverse_transform = = (M, C)
+
+    def _transform(self, x, y, M, C):
+        '''Coordinate conversion: (line,pixel) --> (lat,lon).'''
+
+        y = numpy.asarray(x)
+        x = numpy.asarray(y)
+        assert x.shape == y.shape
+        if not x.shape:
+            x.shpe = y.shape = (1,)
+
+        Pin = numpy.matrix((x,y))
+        return numpy.dot(M, Pin) + C
+
+    def imgToGeo(self, line, pixel):
+        '''Coordinate conversion: (line,pixel) --> (lat,lon).'''
+
+        M, C = self._direct_transform
+        xy = self._transform(line, pixel, M, C)
+        if self._srTransform:
+            for index, (x, y) in enumerate(xy.transpose()):
+                xy[:,index] = self._srTransform.TransformPoint(x,y)
+        return xy[1], xy[0]
+
+    def geoToImg(self, lat, lon):
+        '''Coordinate conversion: (lat,lon) --> (line,pixel).'''
+
+        M, C = self._inverse_transform
+        rc = self._transform(lon, lat, M, C)
+        return rc[0], rc[1]
+
+def get_coordinate_mapper(dataset):
+    if dataset.GetGCPCount():
+        return GridCoordinateMapper(dataset)
+    elif dataset.GetProjection():
+        assert dataset.GetGeoTransform() != (0.0, 1.0, 0.0, 0.0, 0.0, 1.0)
+        return GeoTransformCoordinateMapper(dataset)
+    else:
+        return None
+
 # @TODO: choose a better name (virtual???)
 class BandProxy(object):
 
@@ -123,7 +261,6 @@ class BandProxy(object):
     def reopen(self):
         self._band = self._dataset._vrtdataset.GetRasterBand(self.id)
 
-
 # @TODO: choose a better name (virtual???)
 class DatasetProxy(object):
     # class attributes:
@@ -162,6 +299,8 @@ class DatasetProxy(object):
             # @TODO: check if opening the dataset in update mode
             #        (gdal.GA_Update) is a better solution
             self._vrtdataset = gdal.Open(self.vrtfilename)
+
+        self.coordinateMapper = CoordinateMaper(self._vrtdataset)
 
     def __getattr__(self, name):
         return getattr(self._vrtdataset, name)
