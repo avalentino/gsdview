@@ -42,7 +42,7 @@ class WorldmapPanel(QtGui.QDockWidget):
 
     def __init__(self, parent=None): #, flags=0):
         #title = self.tr('Worldmap Panel')
-        QtGui.QDockWidget.__init__(self, 'Worldmap Panel', parent) #, flags)
+        QtGui.QDockWidget.__init__(self, 'World Map Panel', parent) #, flags)
         #self.setObjectName('worldmapPanel') # @TODO: check
 
         scene = QtGui.QGraphicsScene(self)
@@ -50,7 +50,8 @@ class WorldmapPanel(QtGui.QDockWidget):
         self.graphicsview = GraphicsView(scene)
         self.graphicsview.scale(2., -2.)
 
-        self.worldmapitem = self.setWorldmapItem()
+        self.worldmapitem = None
+        self.setWorldmapItem('high')
 
         # Zoom in
         self.actionZoomIn = QtGui.QAction(QtGui.QIcon(':/images/zoom-in.svg'),
@@ -92,6 +93,8 @@ class WorldmapPanel(QtGui.QDockWidget):
 
     def setWorldmapItem(self, resolution='low'):
         scene = self.graphicsview.scene()
+        if self.worldmapitem is not None:
+            scene.removeItem(self.worldmapitem)
 
         resMap = {
             'low':  'WorldmapLowRes.jpg',
@@ -110,7 +113,8 @@ class WorldmapPanel(QtGui.QDockWidget):
         worldmapitem.scale(360./worldmap.width(), -180./worldmap.height())
         worldmapitem.setOffset(-worldmap.width()/2.+0.5,
                                -worldmap.height()/2.+0.5)
-        return worldmapitem
+        self.worldmapitem = worldmapitem
+        #~ return worldmapitem
 
     def _zoom(self, increment):
         items = (self.worldmapitem, self.bigbox, self.box)
@@ -178,6 +182,7 @@ class WorldmapPanel(QtGui.QDockWidget):
                     # discard gcp.GCPZ
             intLat = interpolate.interp2d(rcMatrix[:,0], rcMatrix[:,1], llMatrix[:,1])
             intLon = interpolate.interp2d(rcMatrix[:,0], rcMatrix[:,1], llMatrix[:,0])
+
             px = [0, dataset.RasterXSize-1]
             py = [0, dataset.RasterYSize-1]
             lat = intLat(px, py)

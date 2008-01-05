@@ -136,19 +136,8 @@ class GSDView(QtGui.QMainWindow):
     ### Event handlers ########################################################
     # @TODO: check and move elseware
     def closeEvent(self, event):
-        '''
-        void MainWindow::closeEvent(QCloseEvent *event) {
-            if (maybeSave()) {
-                writeSettings();
-                event->accept();
-            } else {
-                event->ignore();
-            }
-        }
-
-        '''
-
         self.saveWindowState()
+        event.accept()
 
     ### Setup helpers #########################################################
     def _setupFileActions(self):
@@ -189,7 +178,7 @@ class GSDView(QtGui.QMainWindow):
 
         # About
         self.actionAbout = QtGui.QAction(QtGui.QIcon(':/images/about.svg'),
-                                        self.tr('&About'), self)
+                                         self.tr('&About'), self)
         self.actionAbout.setStatusTip(self.tr('Show program information'))
         self.connect(self.actionAbout, QtCore.SIGNAL('triggered()'),
                      self.about)
@@ -197,7 +186,7 @@ class GSDView(QtGui.QMainWindow):
 
         # AboutQt
         self.actionAboutQt = QtGui.QAction(QtGui.QIcon(':/images/qt-logo.png'),
-                                        self.tr('About &Qt'), self)
+                                           self.tr('About &Qt'), self)
         self.actionAboutQt.setStatusTip(self.tr('Show information about Qt'))
         self.connect(self.actionAboutQt, QtCore.SIGNAL('triggered()'),
                      self.aboutQt)
@@ -227,7 +216,7 @@ class GSDView(QtGui.QMainWindow):
         sys.path.insert(0, pluginsDir)
         for dirpath, dirnames, filenames in os.walk(pluginsDir):
             for name in dirnames:
-                if name.startswith('.') or (name in sys.modules):
+                if name.startswith(('.', '_')) or (name in sys.modules):
                     continue
                 try:
                     module = __import__(name)
@@ -242,7 +231,7 @@ class GSDView(QtGui.QMainWindow):
                 name, ext = os.path.splitext(name)
                 #if ext.lower() not in ('.py', '.pyc', '.pyo', '.pyd', '.dll', '.so', '.egg', '.zip'):
                     #continue
-                if name.startswith('.') or (name in sys.modules):
+                if name.startswith(('.', '_')) or (name in sys.modules):
                     continue
                 try:
                     module = __import__(name)
