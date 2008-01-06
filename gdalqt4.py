@@ -14,7 +14,6 @@ import gsdtools
 
 class GdalGraphicsItem(QtGui.QGraphicsItem):
     # @TODO:
-    #   * move to gdalqt4
     #   * child class that uses the quicklook image as a low resolution cache
     #     to speedup scrolling
     def __init__(self, band, parent=None, scene=None):
