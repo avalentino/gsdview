@@ -19,8 +19,8 @@
 '''Utility functions and classes for Qt4 applicaions.'''
 
 __author__  = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__    = '$Date: 2007-12-02 17:26:44 +0100 (dom, 02 dic 2007) $'
-__revision__ = '$Revision: 43 $'
+__date__    = '$Date$'
+__revision__ = '$Revision$'
 
 from PyQt4 import QtCore, QtGui
 

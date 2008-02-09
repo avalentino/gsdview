@@ -19,8 +19,8 @@
 '''Overview pannel for GDAL raster bands.'''
 
 __author__  = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__    = '$Date: 2007-12-02 20:30:11 +0100 (dom, 02 dic 2007) $'
-__revision__ = '$Revision: 47 $'
+__date__    = '$Date$'
+__revision__ = '$Revision$'
 
 import logging
 import numpy

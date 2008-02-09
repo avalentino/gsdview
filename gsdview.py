@@ -23,9 +23,9 @@
 '''GUI front-end for the Geospatial Data Abstracton Library (GDAL).'''
 
 __author__  = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__    = '$Date: 2007-12-02 12:28:46 +0100 (dom, 02 dic 2007) $'
+__date__    = '$Date$'
 __version__ = (1,0,0)
-__revision__ = '$Revision: 42 $'
+__revision__ = '$Revision$'
 
 import os
 import sys
