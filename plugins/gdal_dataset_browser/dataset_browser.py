@@ -24,7 +24,10 @@ __revision__ = '$Revision$'
 
 import os
 
-import gdal
+try:
+    from osgeo import gdal
+except ImportError:
+    import gdal
 
 from PyQt4 import QtCore, QtGui
 
@@ -488,7 +491,11 @@ The projection string follows the normal rules from ProjectionRef.'''))
 
 if __name__ == '__main__':
     import sys
-    import gdal
+
+    try:
+        from osgeo import gdal
+    except ImportError:
+        import gdal
 
     app = QtGui.QApplication(sys.argv)
     mainWin = QtGui.QMainWindow()

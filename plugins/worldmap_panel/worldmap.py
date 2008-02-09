@@ -156,7 +156,11 @@ class WorldmapPanel(QtGui.QDockWidget):
 
     def setDataset(self, dataset):
         # @TODO: move
-        import osr
+        try:
+            from osgeo import osr
+        except ImportError:
+            import osr
+
         import numpy
         from scipy import interpolate
 
@@ -220,7 +224,11 @@ class WorldmapPanel(QtGui.QDockWidget):
 
 if __name__ == '__main__':
     import sys
-    import gdal
+
+    try:
+        from osgeo import gdal
+    except ImportError:
+        import gdal
 
     app = QtGui.QApplication(sys.argv)
     mainWin = QtGui.QMainWindow()

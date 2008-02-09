@@ -2,7 +2,11 @@
 import logging
 
 import numpy
-import gdal
+
+try:
+    from osgeo import gdal
+except ImportError:
+    import gdal
 
 from PyQt4 import QtCore, QtGui
 from PyQt4 import Qwt5 as Qwt

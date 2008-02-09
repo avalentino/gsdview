@@ -5,8 +5,12 @@ import os
 import numpy
 from scipy.interpolate import interp2d
 
-import gdal
-import osr
+try:
+    from osgeo import gdal
+    from osgeo import osr
+except ImportError:
+    import gdal
+    import osr
 
 
 GDT_to_dtype = {
