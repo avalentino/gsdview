@@ -256,8 +256,11 @@ class GSDView(QtGui.QMainWindow):
         if isinstance(level, int):
             logger.setLevel(level)
 
-        if logger.level == logging.DEBUG:
-            logging.basicConfig(level=logging.DEBUG)
+        if logger.level <= logging.DEBUG:
+            fmt = ('%(levelname)s: '
+                   '%(filename)s line %(lineno)d in %(funcName)s: '
+                   '%(message)s')
+            logging.basicConfig(level=logger.level, format=fmt)
 
         formatter = logging.Formatter('%(message)s')
         handler = Qt4DialogLoggingHandler(parent=self, dialog=None)
