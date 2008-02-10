@@ -28,8 +28,11 @@ import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
 
+import numpy
+
 from PyQt4 import QtCore, QtGui
 
+import gdalsupport
 from graphicsview import GraphicsView
 
 import resources
@@ -47,11 +50,12 @@ class WorldmapPanel(QtGui.QDockWidget):
 
         scene = QtGui.QGraphicsScene(self)
         scene.setSceneRect(-180, -90, 360, 180)
+        #self.graphicsview = QtGui.QGraphicsView(scene) # Non more auto size
         self.graphicsview = GraphicsView(scene)
         self.graphicsview.scale(2., -2.)
 
         self.worldmapitem = None
-        self.setWorldmapItem('high')
+        self.setWorldmapItem()
 
         # Zoom in
         self.actionZoomIn = QtGui.QAction(QtGui.QIcon(':/images/zoom-in.svg'),
@@ -155,50 +159,23 @@ class WorldmapPanel(QtGui.QDockWidget):
         return item
 
     def setDataset(self, dataset):
-        # @TODO: move
-        try:
-            from osgeo import osr
-        except ImportError:
-            import osr
-
-        import numpy
-        from scipy import interpolate
-
-        ngcp = dataset.GetGCPCount()
-        if ngcp > 0:
-            rcMatrix = numpy.zeros((ngcp, 2), dtype=numpy.float64)
-            llMatrix = numpy.zeros((ngcp, 2), dtype=numpy.float64)
-
-            sref_wgs84 = osr.SpatialReference()
-            sref_wgs84.SetWellKnownGeogCS('WGS84')
-            sref = osr.SpatialReference(dataset.GetGCPProjection())
-            if sref.IsSame(sref_wgs84):
-                ct = osr.CoordinateTransformation(sref, sref_wgs84)
-                for row, gcp in enumerate(dataset.GetGCPs()):
-                    rcMatrix[row] = gcp.GCPLine, gcp.GCPPixel
-                    point = ct.TransformPoint(gcp.GCPX, gcp.GCPY, gcp.GCPZ)
-                    llMatrix[row] = point[0:2]
-                    # discard gcp.GCPZ
-            else:
-                for row, gcp in enumerate(dataset.GetGCPs()):
-                    rcMatrix[row] = gcp.GCPLine, gcp.GCPPixel
-                    llMatrix[row] = gcp.GCPX, gcp.GCPY
-                    # discard gcp.GCPZ
-            intLat = interpolate.interp2d(rcMatrix[:,0], rcMatrix[:,1], llMatrix[:,1])
-            intLon = interpolate.interp2d(rcMatrix[:,0], rcMatrix[:,1], llMatrix[:,0])
-
-            px = [0, dataset.RasterXSize-1]
-            py = [0, dataset.RasterYSize-1]
-            lat = intLat(px, py)
-            lon = intLon(px, py)
-            points = [
-                (lon[0][0], lat[0][0]),
-                (lon[0][1], lat[0][1]),
-                (lon[1][1], lat[1][1]),
-                (lon[1][0], lat[1][0]),
-            ]
+        if hasattr(dataset, 'coordinateMapper'):
+            cmapper = dataset.coordinateMapper
         else:
-            pass
+            # It is not a dateset proxy
+            cmapper = gdalsupport.get_coordinate_mapper(dataset)
+
+        if cmapper is None:
+            return
+
+        lat, lon = cmapper.imgToGeoGrid([0, dataset.RasterXSize-1],
+                                        [0, dataset.RasterYSize-1])
+        points = [
+            (lon[0,0], lat[0,0]),
+            (lon[0,1], lat[0,1]),
+            (lon[1,1], lat[1,1]),
+            (lon[1,0], lat[1,0]),
+        ]
 
         self.box = self.plot(points)
 
@@ -221,6 +198,8 @@ class WorldmapPanel(QtGui.QDockWidget):
                 scene.removeItem(item)
         self.actionZoomIn.setEnabled(False)
         self.actionZoomOut.setEnabled(False)
+        self.fitItem = self.worldmapitem
+        self._fitInView()
 
 if __name__ == '__main__':
     import sys

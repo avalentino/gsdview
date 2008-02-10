@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import itertools
 
 import numpy
 from scipy.interpolate import interp2d
@@ -14,7 +15,7 @@ except ImportError:
 
 
 GDT_to_dtype = {
-    #gdal.GDT_Unknown:   numpy.,             # --  0 --
+    #gdal.GDT_Unknown:   numpy.,            # --  0 --
     gdal.GDT_Byte:      numpy.uint8,        # --  1 --
     gdal.GDT_UInt16:    numpy.uint16,       # --  2 --
     gdal.GDT_Int16:     numpy.int16,        # --  3 --
@@ -26,8 +27,9 @@ GDT_to_dtype = {
     gdal.GDT_CInt32:    numpy.complex64,    # --  9 -- converted to (float32, float32)
     gdal.GDT_CFloat32:  numpy.complex64,    # -- 10 -- (float32, float32)
     gdal.GDT_CFloat64:  numpy.complex128,   # -- 11 -- (float64, float64)
-    #gdal.GDT_to_dtype:  numpy.,             # -- 12 --
+    #gdal.GDT_to_dtype:  numpy.,            # -- 12 --
 }
+
 
 def uniqueDatasetID(prod):
     d = prod.GetDriver()
@@ -46,6 +48,7 @@ def uniqueDatasetID(prod):
     else:
         prod_id = os.path.basename(prod.GetDescription())
     return prod_id
+
 
 def gdalFilters():
     # @TODO: move to gdalqt4
@@ -66,6 +69,7 @@ def gdalFilters():
             pass
     return filters
 
+
 def gdalOvLevelAdjust(ovrlevel, xsize):
     '''Adjust the overview level
 
@@ -76,6 +80,7 @@ def gdalOvLevelAdjust(ovrlevel, xsize):
 
     oxsize = int(xsize + ovrlevel - 1) // ovrlevel
     return round(xsize / float(oxsize))
+
 
 class MissingOvrError(Exception):
     def __init__(self, ovrlevel):
@@ -89,13 +94,39 @@ class CoordinateMapper(object):
     #~ def __init__(self, dataset):
         #~ self._dataset = dataset
 
-    def imgToGeo(self, points):
-        raise NotImplementedError('Abstract class "CoordinateMapper" '
-                                  'do not implements the "imgToGeo" method.')
+    def imgToGeoGrid(self, line, pixel):
+        '''Coordinate conversion: (line,pixel) --> (lat,lon) on regular grids.
 
-    def geoToImg(self, points):
-        raise NotImplementedError('Abstract class "CoordinateMapper" '
-                                  'do not implements the "geoToImg" method.')
+        Elements of the return (lat, lon) touple are 2D array with shape
+        (len(line), len(pixels)).
+
+        '''
+
+        raise NotImplementedError('Abstract class "CoordinateMapper" do not '
+                                  'implements the "imgToGeoGrid" method.')
+
+    def geoToImgGrid(self, lat, lon):
+        '''Coordinate conversion: (lat,lon) --> (line,pixel) on regular grids.
+
+        Elements of the return (line, pixel) touple are 2D array with shape
+        (len(lon), len(lat)).
+
+        '''
+        raise NotImplementedError('Abstract class "CoordinateMapper" do not '
+                                  'implements the "geoToImgGrid" method.')
+
+    def imgToGeoPoints(self, line, pixel):
+        '''Coordinate conversion: (line,pixel) --> (lat,lon).'''
+
+        raise NotImplementedError('Abstract class "CoordinateMapper" do not '
+                                      'implements the "imgToGeoPoints" method.')
+
+    def geoToImgPoints(self, lat, lon):
+        '''Coordinate conversion: (lat,lon) --> (line,pixel).'''
+
+        raise NotImplementedError('Abstract class "CoordinateMapper" do not '
+                                  'implements the "geoToImgPoints" method.')
+
 
 class GridCoordinateMapper(CoordinateMapper):
 
@@ -104,7 +135,7 @@ class GridCoordinateMapper(CoordinateMapper):
 
         ngcp = dataset.GetGCPCount()
 
-        assert ngcp > 4, 'Insufficient number of points'
+        assert ngcp > 3, 'Insufficient number of points'
 
         # Extract (row, col) and (lat, lon) data
         lines = numpy.zeros(ngcp, dtype=numpy.float64)
@@ -120,8 +151,8 @@ class GridCoordinateMapper(CoordinateMapper):
             for row, gcp in enumerate(dataset.GetGCPs()):
                 lines[row], pixels[row] = gcp.GCPLine, gcp.GCPPixel
                 # discard gcp.GCPZ
-                lons[row], lats[row], dummy =
-                                ct.TransformPoint(gcp.GCPX, gcp.GCPY, gcp.GCPZ)
+                lons[row], lats[row], dummy = ct.TransformPoint(
+                                                gcp.GCPX, gcp.GCPY, gcp.GCPZ)
         else:
             for row, gcp in enumerate(dataset.GetGCPs()):
                 lines[row], pixels[row] = gcp.GCPLine, gcp.GCPPixel
@@ -134,17 +165,45 @@ class GridCoordinateMapper(CoordinateMapper):
         self._geoToLine = interp2d(lons, lats, lines)
         self._geoToPixel = interp2d(lons, lats, pixels)
 
-    def imgToGeo(self, line, pixel):
-        '''Coordinate conversion: (line,pixel) --> (lat,lon).'''
+    def imgToGeoGrid(self, line, pixel):
+        __doc__ = CoordinateMapper.imgToGeoGrid.__doc__
 
         return self._imgToLat(line, pixel), self._imgToLon(line, pixel)
 
-    def geoToImg(self, lat, lon):
-        '''Coordinate conversion: (lat,lon) --> (line,pixel).'''
+    def geoToImgGrid(self, lat, lon):
+        __doc__ = CoordinateMapper.geoToImgGrid.__doc__
 
         return self._geoToLine(lat, lon), self._geoToPixel(lat, lon)
 
-class GeoTransformCoordinateMapper(object):
+    def imgToGeoPoints(self, line, pixel):
+        __doc__ = CoordinateMapper.imgToGeoPoints.__doc__
+
+        line, pixel = map(numpy.asarray, (line, pixel))
+        np = min(line.size, pixel.size)
+        lat = numpy.zeros(np, numpy.dtype.float64)
+        lon = numpy.zeros(np, numpy.dtype.float64)
+        for intex, (l, p) in enumerate(itertools.izip(line.float, pixel.flat)):
+            lat[index] = self._imgToLat(line, pixel)
+            lon[index] = self._imgToLon(line, pixel)
+        # @TODO: check single point
+        return lat, lon
+
+    def geoToImgPoints(self, lat, lon):
+        __doc__ = CoordinateMapper.geoToImgPoints.__doc__
+
+        lat, lon = map(numpy.asarray, (lat, lon))
+        np = min(lat.size, lon.size)
+        line = numpy.zeros(np, numpy.dtype.float64)
+        pixel = numpy.zeros(np, numpy.dtype.float64)
+        for intex, (x, y) in enumerate(itertools.izip(lon.float, lat.flat)):
+            line[index] = self._geoToLine(x, y)
+            pixel[index] = self._geoToPixel(x, y)
+
+        # @TODO: check single point
+        return line, pixel
+
+
+class GeoTransformCoordinateMapper(CoordinateMapper):
 
     def __init__(self, dataset):
         super(GeoTransformCoordinateMapper, self).__init__(dataset)
@@ -169,43 +228,60 @@ class GeoTransformCoordinateMapper(object):
         xoffset, m11, m12, yoffset, m21, m22 = dataset.GetGeoTransform()
 
         # Direct transform
-        M = numpy.matrix(((m11, m12), (m21, m22)))
+        M = numpy.array(((m11, m12), (m21, m22)))
         C = numpy.array(([xoffset], [yoffset]))
         self._direct_transform = (M, C)
 
         # Invrse transform
         M = numpy.linalg.inv(M)
         C = -numpy.dot(M, C)
-        self._inverse_transform = = (M, C)
+        self._inverse_transform = (M, C)
 
     def _transform(self, x, y, M, C):
         '''Coordinate conversion: (line,pixel) --> (lat,lon).'''
 
-        y = numpy.asarray(x)
-        x = numpy.asarray(y)
-        assert x.shape == y.shape
-        if not x.shape:
-            x.shpe = y.shape = (1,)
+        x, y = map(numpy.ravel, (x, y))
 
-        Pin = numpy.matrix((x,y))
+        Pin = numpy.array((x,y))
         return numpy.dot(M, Pin) + C
 
-    def imgToGeo(self, line, pixel):
-        '''Coordinate conversion: (line,pixel) --> (lat,lon).'''
+    def imgToGeoPoints(self, line, pixel):
+        __doc__ = CoordinateMapper.imgToGeoPoints.__doc__
 
         M, C = self._direct_transform
         xy = self._transform(line, pixel, M, C)
         if self._srTransform:
             for index, (x, y) in enumerate(xy.transpose()):
-                xy[:,index] = self._srTransform.TransformPoint(x,y)
+                xy[:,index] = self._srTransform.TransformPoint(x,y)[:2]
+        # @TODO: check single point
         return xy[1], xy[0]
 
-    def geoToImg(self, lat, lon):
-        '''Coordinate conversion: (lat,lon) --> (line,pixel).'''
+    def geoToImgPoints(self, lat, lon):
+        __doc__ = CoordinateMapper.geoToImgPoints.__doc__
 
         M, C = self._inverse_transform
         rc = self._transform(lon, lat, M, C)
+        # @TODO: check single point
         return rc[0], rc[1]
+
+    def imgToGeoGrid(self, line, pixel):
+        __doc__ = CoordinateMapper.imgToGeoGrid.__doc__
+        #~ # @TODO: check single point
+        px, py = numpy.meshgrid(line, pixel)
+        lat, lon = self.imgToGeoPoints(px, py)
+        lat.shape = lon.shape = (len(line), len(pixel)) # @TODO: check
+
+        return lat, lon
+
+    def geoToImgGrid(self, lat, lon):
+        __doc__ = CoordinateMapper.geoToImgGrid.__doc__
+        #~ # @TODO: check single point
+        px, py = numpy.meshgrid(lon, lat)
+        line, pixel = self.geoToImgPoints(px, py)
+        line.shape = pixel.shape = (len(lon), len(lat)) # @TODO: check
+
+        return line, pixel
+
 
 def get_coordinate_mapper(dataset):
     if dataset.GetGCPCount():
@@ -224,6 +300,8 @@ class BandProxy(object):
         self.id = band_id
         self._band = dataset._vrtdataset.GetRasterBand(self.id)
         self.lut = None
+
+    coordinateMapper = property(lambda self: self._dataset.coordinateMapper)
 
     def __getattr__(self, name):
         return getattr(self._band, name)
@@ -265,6 +343,7 @@ class BandProxy(object):
     def reopen(self):
         self._band = self._dataset._vrtdataset.GetRasterBand(self.id)
 
+
 # @TODO: choose a better name (virtual???)
 class DatasetProxy(object):
     # class attributes:
@@ -304,7 +383,7 @@ class DatasetProxy(object):
             #        (gdal.GA_Update) is a better solution
             self._vrtdataset = gdal.Open(self.vrtfilename)
 
-        self.coordinateMapper = CoordinateMaper(self._vrtdataset)
+        self.coordinateMapper = get_coordinate_mapper(self._vrtdataset)
 
     def __getattr__(self, name):
         return getattr(self._vrtdataset, name)
