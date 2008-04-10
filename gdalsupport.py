@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
 import os
+import logging
 import itertools
 
 import numpy
-from scipy.interpolate import interp2d
+from scipy import interpolate
 
 try:
     from osgeo import gdal
@@ -35,10 +36,13 @@ def uniqueDatasetID(prod):
     d = prod.GetDriver()
     driver_name = d.GetDescription()
     if driver_name == 'SAR_CEOS':
-        # 'CEOS_LOGICAL_VOLUME_ID'
-        metadata = prod.GetMetadata()
-        prod_id = '%s-%s' % (metadata['CEOS_SOFTWARE_ID'].strip(),
-                             metadata['CEOS_ACQUISITION_TIME'].strip())
+        try:
+            # 'CEOS_LOGICAL_VOLUME_ID'
+            metadata = prod.GetMetadata()
+            prod_id = '%s-%s' % (metadata['CEOS_SOFTWARE_ID'].strip(),
+                                 metadata['CEOS_ACQUISITION_TIME'].strip())
+        except KeyError:
+            prod_id = os.path.basename(prod.GetDescription())
     elif driver_name == 'ESAT':
         metadata = prod.GetMetadata()
         prod_id = os.path.splitext(metadata ['MPH_PRODUCT'])[0]
@@ -131,6 +135,8 @@ class CoordinateMapper(object):
 class GridCoordinateMapper(CoordinateMapper):
 
     def __init__(self, dataset):
+        # @TODO: time this; it seems to be too slow in reading 3443 GCPs from
+        #        SAR_IMM_1PXESA20080116_095222_00000471A133_00122_66609_0269.E2
         super(GridCoordinateMapper, self).__init__(dataset)
 
         ngcp = dataset.GetGCPCount()
@@ -159,11 +165,57 @@ class GridCoordinateMapper(CoordinateMapper):
                 lons[row], lats[row] = gcp.GCPX, gcp.GCPY
                 # discard gcp.GCPZ
 
-        # Set interpolators @TODO: use bivariate splines
-        self._imgToLat = interp2d(lines, pixels, lats)
-        self._imgToLon = interp2d(lines, pixels, lons)
-        self._geoToLine = interp2d(lons, lats, lines)
-        self._geoToPixel = interp2d(lons, lats, pixels)
+        # @TODO: fix
+        # Quick and dirty fix for a gdal bug in ENVISAT driver.
+        # The bug causes the line field in GCP structure is not correctly
+        # handled for multi-slice products
+        #if dataset.GetDriver().ShortName == 'ESAT':
+        if numpy.alltrue(lines != numpy.sort(lines)):
+            # For products with multiple slices the GCPLine coordinate
+            # refers to the one of the slice so we need to fix it in order
+            # to have the image coordinate
+            #
+            # @WARNING: here we are assuming that the geolocation grid
+            #           has at least 2 lines
+            # @WARNING: here we are assuming a particular order of GCPs
+            upstepslocation = numpy.where(lines[1:] > lines[0:-1])[0] + 1
+            upsteps = lines[upstepslocation] - lines[upstepslocation-1]
+
+            # @WARNING: here we are assuming that the distance between geolocation
+            #           grid linse is constant
+            assert upsteps.max() == upsteps[:-1].min(), 'max = %f, min = %f' % (upsteps.max(), upsteps.min())
+            linespacing = int(upsteps[0])
+
+            downstepslocation = numpy.where(lines[1:] < lines[0:-1])[0] + 1
+            for index in downstepslocation:
+                jumpsize = int(lines[index - 1] - lines[index]) + linespacing
+                lines[index:] += jumpsize
+
+        # Set interpolators
+        kx = ky = min(5, int(numpy.sqrt(len(lines)))-1) # @TODO: check
+        logging.debug('spline deg = %d' % kx)
+        try:
+            self._imgToLat = interpolate.SmoothBivariateSpline(lines, pixels, lats, kx=kx, ky=ky)
+            self._imgToLon = interpolate.SmoothBivariateSpline(lines, pixels, lons, kx=kx, ky=ky)
+            print 'bivarite spline' # @TODO: remove
+
+            # @TODO: use delaunay from scikits for irregular grid intepolation
+            self._geoToLine = interpolate.SmoothBivariateSpline(lons, lats, lines, kx=kx, ky=ky)
+            self._geoToPixel = interpolate.SmoothBivariateSpline(lons, lats, pixels, kx=kx, ky=ky)
+        except dfitpack.error:
+            logging.debug('fallback to splines of degree 1')
+            self._imgToLat = interpolate.SmoothBivariateSpline(lines, pixels, lats, kx=1, ky=1)
+            self._imgToLon = interpolate.SmoothBivariateSpline(lines, pixels, lons, kx=1, ky=1)
+
+            # @TODO: use delaunay from scikits for irregular grid intepolation
+            self._geoToLine = interpolate.SmoothBivariateSpline(lons, lats, lines, kx=1, ky=1)
+            self._geoToPixel = interpolate.SmoothBivariateSpline(lons, lats, pixels, kx=1, ky=1)
+
+        #~ # Set interpolators @TODO: use bivariate splines
+        #~ self._imgToLat = interpolate.interp2d(lines, pixels, lats)
+        #~ self._imgToLon = interpolate.interp2d(lines, pixels, lons)
+        #~ self._geoToLine = interpolate.interp2d(lons, lats, lines)
+        #~ self._geoToPixel = interpolate.interp2d(lons, lats, pixels)
 
     def imgToGeoGrid(self, line, pixel):
         __doc__ = CoordinateMapper.imgToGeoGrid.__doc__
@@ -360,6 +412,7 @@ class DatasetProxy(object):
     def __init__(self, filename, cachedir=None):
         self.filename = filename
         self._rodataset = gdal.Open(filename)
+        assert(self._rodataset)
         self.id = uniqueDatasetID(self._rodataset)
         self._bandcache = {}
 
@@ -374,14 +427,18 @@ class DatasetProxy(object):
 
         # Create the virtual dataset
         # @TODO: check 'openshared'
-        if not os.path.exists(self.vrtfilename):
-            driver = gdal.GetDriverByName('VRT')
-            self._vrtdataset = driver.CreateCopy(self.vrtfilename,
-                                                 self._rodataset)
-        else:
+        self._vrtdataset = None
+        if os.path.exists(self.vrtfilename):
             # @TODO: check if opening the dataset in update mode
             #        (gdal.GA_Update) is a better solution
             self._vrtdataset = gdal.Open(self.vrtfilename)
+
+        if self._vrtdataset is None:
+            # Hendle both non existing self.vrtfilename and errors in opening
+            # existing self.vrtfilename
+            driver = gdal.GetDriverByName('VRT')
+            self._vrtdataset = driver.CreateCopy(self.vrtfilename,
+                                                 self._rodataset)
 
         self.coordinateMapper = get_coordinate_mapper(self._vrtdataset)
 
