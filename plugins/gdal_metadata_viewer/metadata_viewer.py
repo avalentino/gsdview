@@ -39,6 +39,8 @@ class MetadataViewer(QtGui.QDockWidget):
 
     def setMetadata(self, metadataList):
         self.clear()
+        if not metadataList:
+            return
 
         self.infoTable.setRowCount(len(metadataList))
 
