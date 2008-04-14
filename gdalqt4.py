@@ -37,7 +37,7 @@ class GdalGraphicsItem(QtGui.QGraphicsItem):
         if band.DataType in (gdal.GDT_CInt16, gdal.GDT_CInt32):
             logging.warning('complex integer dataset')
         dtype = gdalsupport.GDT_to_dtype[band.DataType]
-        if numpy.iscomplex(dtype()):
+        if numpy.iscomplexobj(dtype()):
             logging.warning('extract module from complex data')
 
     def compute_default_LUT(self):
