@@ -35,6 +35,7 @@ GDT_to_dtype = {
 def uniqueDatasetID(prod):
     d = prod.GetDriver()
     driver_name = d.GetDescription()
+    logging.debug('driver_name = %s' % driver_name)
     if driver_name == 'SAR_CEOS':
         try:
             # 'CEOS_LOGICAL_VOLUME_ID'
@@ -49,8 +50,22 @@ def uniqueDatasetID(prod):
     #~ elif driver_name = 'GTiff':
         #~ # ERS BTIF
         #~ pass
+    elif driver_name.startswith('HDF5'):
+        prod_id = prod.GetDescription()
+        parts = prod_id.split(':')
+        if len(parts) == 4:
+            fiename = ':'.join(parts[1:3])
+            parts = (parts[0], filename, parts[2])
+        if len(parts) == 3:
+            filename = os.path.basename(parts[1].strip('"'))
+            h5path = parts[2].replace('//', '/')
+            prod_id = '_'.join([filename, h5path])
+        else:
+            prod_id = os.path.basename(prod_id)
     else:
         prod_id = os.path.basename(prod.GetDescription())
+
+    logging.debug('prod_id = %s' % prod_id)
     return prod_id
 
 
@@ -339,7 +354,9 @@ def get_coordinate_mapper(dataset):
     if dataset.GetGCPCount():
         return GridCoordinateMapper(dataset)
     elif dataset.GetProjection():
-        assert dataset.GetGeoTransform() != (0.0, 1.0, 0.0, 0.0, 0.0, 1.0)
+        # @TODO: fix
+        # Assertion temporary removed o support CSK
+        #assert dataset.GetGeoTransform() != (0.0, 1.0, 0.0, 0.0, 0.0, 1.0)
         return GeoTransformCoordinateMapper(dataset)
     else:
         return None
@@ -413,6 +430,23 @@ class DatasetProxy(object):
         self.filename = filename
         self._rodataset = gdal.Open(filename)
         assert(self._rodataset)
+
+        # Handle CSK data @TODO: fix
+        subdataset = self._rodataset.GetSubDatasets()
+        logging.debug('subdataset = %s' % subdataset)
+        if subdataset:
+            subdataset = [sd for sd in subdataset
+                            if ('/S01/SBI' in sd[0]) or ('/S01/MBI' in sd[0])]
+            logging.debug('subdataset = %s' % subdataset)
+            if subdataset:
+                sdfilename = subdataset[0][0]
+                logging.debug('sdfilename = %s' % sdfilename)
+                dataset = gdal.Open(sdfilename)
+                logging.debug('dataset = %s' % dataset)
+                if dataset:
+                    self._rodataset = dataset
+        # END: CSK data handling
+
         self.id = uniqueDatasetID(self._rodataset)
         self._bandcache = {}
 

@@ -23,6 +23,7 @@ __date__    = '$Date$'
 __revision__ = '$Revision$'
 
 import os
+import logging
 
 try:
     from osgeo import gdal
@@ -82,11 +83,18 @@ class GdalDatasetBrowser(QtGui.QDockWidget):
         if metadataList:
             items = []
             for name in metadataList:
-                name = name.split('=')[0]
-                item = QtGui.QTreeWidgetItem()
-                item.setText(0, name)
-                item.setText(1, metadataDict[name])
-                items.append(item)
+                try:
+                    name = name.split('=')[0]
+                    item = QtGui.QTreeWidgetItem()
+                    item.setText(0, name)
+                    item.setText(1, metadataDict[name])
+                    items.append(item)
+                except KeyError, e:
+                    # @TODO: fix
+                    # This is needed to handle a strange behaviour I get
+                    # trying to use the HDF5 driver
+                    logging.debug(str(e))
+                    pass
             rootItem.addChildren(items)
         else:
             item = QtGui.QTreeWidgetItem()
