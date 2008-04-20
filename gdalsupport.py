@@ -5,7 +5,6 @@ import logging
 import itertools
 
 import numpy
-from scipy import interpolate
 
 try:
     from osgeo import gdal
@@ -130,14 +129,52 @@ class CoordinateMapper(object):
                                   'implements the "geoToImgPoints" method.')
 
 
+# @TODO: remove
+def _fixedGCPs(gcps):
+    '''For products with multiple slices the GCPLine coordinate
+    refers to the one of the slice so we need to fix it in order
+    to have the image coordinate.
+
+    '''
+
+    lines = [gcp.GCPLine for gcp in gcps]
+
+    # @TODO: this is a weak check; improve it
+    if numpy.alltrue(lines != numpy.sort(lines)):
+        # @WARNING: here we are assuming that the geolocation grid
+        #           has at least 2 lines
+        # @WARNING: here we are assuming a particular order of GCPs
+        upstepslocation = numpy.where(lines[1:] > lines[0:-1])[0] + 1
+        upsteps = lines[upstepslocation] - lines[upstepslocation-1]
+
+        # @WARNING: here we are assuming that the distance between geolocation
+        #           grid linse is constant
+        assert upsteps.max() == upsteps[:-1].min(), 'max = %f, min = %f' % (upsteps.max(), upsteps.min())
+        linespacing = int(upsteps[0])
+
+        downstepslocation = numpy.where(lines[1:] < lines[0:-1])[0] + 1
+        for index in downstepslocation:
+            jumpsize = int(lines[index - 1] - lines[index]) + linespacing
+            lines[index:] += jumpsize
+
+        import copy
+        gcps = copy.deepcopy(gcps)
+        for indx, gcp in enumerate(gcps):
+            gcp.GCPLine = lines[index]
+
+    return gcps
+
+
 class GridCoordinateMapper(CoordinateMapper):
 
     def __init__(self, dataset):
         # @TODO: time this; it seems to be too slow in reading 3443 GCPs from
         #        SAR_IMM_1PXESA20080116_095222_00000471A133_00122_66609_0269.E2
-        super(GridCoordinateMapper, self).__init__(dataset)
+        super(GridCoordinateMapper2, self).__init__(dataset)
 
         ngcp = dataset.GetGCPCount()
+        gcps = dataset.GetGCPs()
+        gcps = _fixedGCPs(gcps)      # @TODO remove
 
         assert ngcp > 3, 'Insufficient number of points'
 
@@ -152,44 +189,19 @@ class GridCoordinateMapper(CoordinateMapper):
             sref_target = osr.SpatialReference()
             sref_target.SetWellKnownGeogCS(self.geogCS)
             ct = osr.CoordinateTransformation(sref, sref_target)
-            for row, gcp in enumerate(dataset.GetGCPs()):
+            for row, gcp in enumerate(gcps):
                 lines[row], pixels[row] = gcp.GCPLine, gcp.GCPPixel
                 # discard gcp.GCPZ
                 lons[row], lats[row], dummy = ct.TransformPoint(
                                                 gcp.GCPX, gcp.GCPY, gcp.GCPZ)
         else:
-            for row, gcp in enumerate(dataset.GetGCPs()):
+            for row, gcp in enumerate(gcps):
                 lines[row], pixels[row] = gcp.GCPLine, gcp.GCPPixel
                 lons[row], lats[row] = gcp.GCPX, gcp.GCPY
                 # discard gcp.GCPZ
 
-        # @TODO: fix
-        # Quick and dirty fix for a gdal bug in ENVISAT driver.
-        # The bug causes the line field in GCP structure is not correctly
-        # handled for multi-slice products
-        #if dataset.GetDriver().ShortName == 'ESAT':
-        if numpy.alltrue(lines != numpy.sort(lines)):
-            # For products with multiple slices the GCPLine coordinate
-            # refers to the one of the slice so we need to fix it in order
-            # to have the image coordinate
-            #
-            # @WARNING: here we are assuming that the geolocation grid
-            #           has at least 2 lines
-            # @WARNING: here we are assuming a particular order of GCPs
-            upstepslocation = numpy.where(lines[1:] > lines[0:-1])[0] + 1
-            upsteps = lines[upstepslocation] - lines[upstepslocation-1]
-
-            # @WARNING: here we are assuming that the distance between geolocation
-            #           grid linse is constant
-            assert upsteps.max() == upsteps[:-1].min(), 'max = %f, min = %f' % (upsteps.max(), upsteps.min())
-            linespacing = int(upsteps[0])
-
-            downstepslocation = numpy.where(lines[1:] < lines[0:-1])[0] + 1
-            for index in downstepslocation:
-                jumpsize = int(lines[index - 1] - lines[index]) + linespacing
-                lines[index:] += jumpsize
-
         # Set interpolators
+        from scipy import interpolate                   # @TODO: check
         kx = ky = min(5, int(numpy.sqrt(len(lines)))-1) # @TODO: check
         logging.debug('spline deg = %d' % kx)
         try:
@@ -257,9 +269,20 @@ class GeoTransformCoordinateMapper(CoordinateMapper):
 
     def __init__(self, dataset):
         super(GeoTransformCoordinateMapper, self).__init__(dataset)
-        assert dataset.GetProjection() or dataset.GetProjectionRef()
+        if dataset.GetGCPCount():
+            projection = dataset.GetGCPProjection()
+            assert projection
+            gcps = dataset.GetGCPs()
+            gcps = _fixedGCPs(gcps)      # @TODO: remove
+            self._geotransform = gdal.GCPsToGeoTransform(gcps)
+        else:
+            projection = dataset.GetProjection()
+            if not projection:
+                projection = dataset.GetProjectionRef()
+            assert projection
+            self._geotransform = dataset.GetGeoTransform()
 
-        sref = osr.SpatialReference(dataset.GetProjection())
+        sref = osr.SpatialReference(projection)
         if not sref.IsGeographic():
             sref_target = osr.SpatialReference()
             sref_target.SetWellKnownGeogCS(self.geogCS)
@@ -275,7 +298,8 @@ class GeoTransformCoordinateMapper(CoordinateMapper):
         # |      | = |         | * |        | + |         |
         # | Ygeo |   | m21 m22 |   | Yline  |   | yoffset |
         # --    --   --       --   --      --   --       --
-        xoffset, m11, m12, yoffset, m21, m22 = dataset.GetGeoTransform()
+        xoffset, m11, m12, yoffset, m21, m22 = self._geotransform
+        logging.debug('geotransform = %s' % str(self._geotransform))
 
         # Direct transform
         M = numpy.array(((m11, m12), (m21, m22)))
@@ -333,16 +357,17 @@ class GeoTransformCoordinateMapper(CoordinateMapper):
         return line, pixel
 
 
-def get_coordinate_mapper(dataset):
-    if dataset.GetGCPCount():
-        return GridCoordinateMapper(dataset)
-    elif dataset.GetProjection():
-        # @TODO: fix
-        # Assertion temporary removed o support CSK
-        #assert dataset.GetGeoTransform() != (0.0, 1.0, 0.0, 0.0, 0.0, 1.0)
-        return GeoTransformCoordinateMapper(dataset)
+def get_coordinate_mapper(dataset, precise=False):
+    mapper = None
+    if dataset.GetGCPCount() and precise:
+        mapper = GridCoordinateMapper(dataset)
     else:
-        return None
+        #if dataset.GetProjection():
+        mapper = GeoTransformCoordinateMapper(dataset)
+        # @TODO: check
+        if mapper._geotransform == (0.0, 1.0, 0.0, 0.0, 0.0, 1.0):
+            mapper = None
+    return mapper
 
 # @TODO: choose a better name (virtual???)
 class BandProxy(object):
