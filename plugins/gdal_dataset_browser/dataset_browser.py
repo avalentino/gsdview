@@ -93,7 +93,7 @@ class GdalDatasetBrowser(QtGui.QDockWidget):
                     # @TODO: fix
                     # This is needed to handle a strange behaviour I get
                     # trying to use the HDF5 driver
-                    logging.debug(str(e))
+                    logging.debug('exceptin caught setting metadata: "%s"' % e)
                     pass
             rootItem.addChildren(items)
         else:

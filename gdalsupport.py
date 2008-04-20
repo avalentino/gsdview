@@ -437,12 +437,9 @@ class DatasetProxy(object):
         if subdataset:
             subdataset = [sd for sd in subdataset
                             if ('/S01/SBI' in sd[0]) or ('/S01/MBI' in sd[0])]
-            logging.debug('subdataset = %s' % subdataset)
             if subdataset:
                 sdfilename = subdataset[0][0]
-                logging.debug('sdfilename = %s' % sdfilename)
                 dataset = gdal.Open(sdfilename)
-                logging.debug('dataset = %s' % dataset)
                 if dataset:
                     self._rodataset = dataset
         # END: CSK data handling
