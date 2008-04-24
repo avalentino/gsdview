@@ -264,6 +264,8 @@ class GridCoordinateMapper(CoordinateMapper):
         # @TODO: check single point
         return line, pixel
 
+class InvalidProjection(ValueError):
+    pass
 
 class GeoTransformCoordinateMapper(CoordinateMapper):
 
@@ -271,7 +273,6 @@ class GeoTransformCoordinateMapper(CoordinateMapper):
         super(GeoTransformCoordinateMapper, self).__init__(dataset)
         if dataset.GetGCPCount():
             projection = dataset.GetGCPProjection()
-            assert projection
             gcps = dataset.GetGCPs()
             gcps = _fixedGCPs(gcps)      # @TODO: remove
             self._geotransform = gdal.GCPsToGeoTransform(gcps)
@@ -279,8 +280,10 @@ class GeoTransformCoordinateMapper(CoordinateMapper):
             projection = dataset.GetProjection()
             if not projection:
                 projection = dataset.GetProjectionRef()
-            assert projection
             self._geotransform = dataset.GetGeoTransform()
+
+        if not projection:
+            raise InvalidProjection('unable to get a valid projection')
 
         sref = osr.SpatialReference(projection)
         if not sref.IsGeographic():
@@ -359,14 +362,21 @@ class GeoTransformCoordinateMapper(CoordinateMapper):
 
 def get_coordinate_mapper(dataset, precise=False):
     mapper = None
-    if dataset.GetGCPCount() and precise:
-        mapper = GridCoordinateMapper(dataset)
+    try:
+        if dataset.GetGCPCount() and precise:
+            mapper = GridCoordinateMapper(dataset)
+        else:
+            #if dataset.GetProjection():
+            mapper = GeoTransformCoordinateMapper(dataset)
+    except ValueError, e:
+        logging.debug('exception caught', exc_info=True)
+        mapper = None
     else:
-        #if dataset.GetProjection():
-        mapper = GeoTransformCoordinateMapper(dataset)
         # @TODO: check
         if mapper._geotransform == (0.0, 1.0, 0.0, 0.0, 0.0, 1.0):
             mapper = None
+    if mapper is None:
+        logging.debug('unable to setup the coordinate maper')
     return mapper
 
 # @TODO: choose a better name (virtual???)
