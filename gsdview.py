@@ -74,7 +74,7 @@ class GSDView(QtGui.QMainWindow):
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
         self.setWindowTitle(self.tr('GSDView'))
-        self.setWindowIcon(QtGui.QIcon(':/images/GDALLogoColor.svg'))
+        self.setWindowIcon(QtGui.QIcon(':/images/GSDView.svg'))
 
         scene = QtGui.QGraphicsScene(self)
         self.graphicsView = GraphicsView(scene, self)
