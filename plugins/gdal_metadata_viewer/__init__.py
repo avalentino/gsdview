@@ -35,9 +35,12 @@ def init(mainwin):
     metadataViewer.setObjectName('metadataViewerPanel') # @TODO: check
     mainwin.addDockWidget(QtCore.Qt.BottomDockWidgetArea, metadataViewer)
 
+    def auxfun(dataset):
+        metadataViewer.setMetadata(dataset.GetMetadata_List())
+
     mainwin.connect(mainwin, QtCore.SIGNAL('openGdalDataset(PyQt_PyObject)'),
-                    lambda dataset: metadataViewer.setMetadata(
-                                                    dataset.GetMetadata_List()))
+                    auxfun)
+
     # @TODO: improve for multiple datasets
     mainwin.connect(mainwin, QtCore.SIGNAL('closeGdalDataset()'),
                     metadataViewer.clear)
