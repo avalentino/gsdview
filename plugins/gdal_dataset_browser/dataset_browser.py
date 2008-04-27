@@ -225,13 +225,15 @@ class GdalDatasetBrowser(QtGui.QDockWidget):
         item.setToolTip(1, self.tr('The pixel data type for this band.'))
         rootItem.addChild(item)
 
-        item = QtGui.QTreeWidgetItem()
-        item.setText(0, self.tr('BlockSize'))
-        bandSize = band.GetBlockSize()
-        if bandSize:
-            bandSize = QtCore.QSize(bandSize[0], bandSize[1])
-        item.setData(1, QtCore.Qt.DisplayRole, QtCore.QVariant(bandSize))
-        item.setToolTip(1, self.tr('''The "natural" block size of this band.
+        # @COMPATIBILITY: NG/pymod API
+        try:
+            item = QtGui.QTreeWidgetItem()
+            item.setText(0, self.tr('BlockSize'))
+            bandSize = band.GetBlockSize()
+            if bandSize:
+                bandSize = QtCore.QSize(bandSize[0], bandSize[1])
+            item.setData(1, QtCore.Qt.DisplayRole, QtCore.QVariant(bandSize))
+            item.setToolTip(1, self.tr('''The "natural" block size of this band.
 
 GDAL contains a concept of the natural block size of rasters so that
 applications can organized data access efficiently for some file formats.
@@ -243,7 +245,9 @@ However, for tiled images this will typically be the tile size.
 
 Note that the X and Y block sizes don't have to divide the image size evenly,
 meaning that right and bottom edge blocks may be incomplete.'''))
-        rootItem.addChild(item)
+            rootItem.addChild(item)
+        except AttributeError:
+            logging.debug('exception caught', exc_info=True)
 
         item = QtGui.QTreeWidgetItem()
         item.setText(0, self.tr('Minimum'))
