@@ -301,7 +301,10 @@ class GeoTransformCoordinateMapper(CoordinateMapper):
         if not projection:
             raise InvalidProjection('unable to get a valid projection')
 
-        sref = osr.SpatialReference(projection)
+        #sref = osr.SpatialReference(projection) # do not work for Pymod API
+        sref = osr.SpatialReference()
+        sref.ImportFromWkt(projection)
+
         if not sref.IsGeographic():
             sref_target = osr.SpatialReference()
             sref_target.SetWellKnownGeogCS(self.geogCS)
