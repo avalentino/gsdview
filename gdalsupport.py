@@ -480,6 +480,52 @@ class BandProxy(MajorObjectProxy):
 
         return BandProxy(self._obj.GetOverview(ov_index))
 
+    # @COMPATIBILITY: NG/pymod API
+    def ReadAsArray(self, xoff=0, yoff=0, win_xsize=None, win_ysize=None,
+                    **kwargs):
+        # xoff, yoff, xsize, ysize, buf_xsize=None, buf_ysize=None, buf_type=None
+        __doc__ = self._obj.ReadAsArray.__doc__
+
+        # This is a workaround for a bug in python-gdal_1.4.4 that raises::
+        #
+        #   TypeError: Unaligned buffer
+        #
+        # any time one tries to use ReadAsArray
+
+        try:
+            self._obj.ReadAsArray(xoff, yoff, win_xsize, win_ysize, **kwargs)
+        except TypeError, e:
+            logging.debug(str(e))
+            if win_xsize is None:
+                win_xsize = self.XSize
+            if win_ysize is None:
+                win_ysize = self.YSize
+
+            # @TODO: handle complex data types
+            import numpy.numarray
+
+            data = self._obj.ReadRaster(xoff, yoff, win_xsize, win_ysize,
+                                        **kwargs)
+            if self._obj.DataType == gdal.GDT_CInt16:
+                dtype = numpy.int16
+                shape = (win_ysize, win_xsize, 2)
+            elif self._obj.DataType == gdal.GDT_CInt32:
+                dtype = numpy.int32
+                shape = (win_ysize, win_xsize, 2)
+            else:
+                dtype = GDALTypeCodeToNumericTypeCode(self._obj.DataType)
+                shape = (win_ysize, win_xsize)
+            logging.debug('dtype = %s' % dtype)
+            logging.debug('len(databuffer) = %d' % len(data))
+            data = numpy.fromstring(data, dtype=dtype)
+            data.shape = shape
+            if data.ndim == 3:
+                tmp = data
+                data = numpy.ndarray(shape[:2], numpy.complex64)
+                data.real = tmp[:,:,0]
+                data.imag = tmp[:,:,1]
+            return data
+
 
 # @TODO: choose a better name (virtual???)
 class DatasetProxy(MajorObjectProxy):
