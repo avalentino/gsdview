@@ -7,13 +7,20 @@ import itertools
 
 import numpy
 
-# API compatibility
+# @COMPATIBILITY: NG/pymod API
 try:
     from osgeo import gdal
     from osgeo import osr
+    from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
 except ImportError:
     import gdal
     import osr
+    import gdalnumeric
+
+    import numpy.numarray
+    def GDALTypeCodeToNumericTypeCode(gdal_code):
+        typecode = gdalnumeric.GDALTypeCodeToNumericTypeCode(gdal_code)
+        return numpy.numarray.typeDict[typecode].name
 
 try:
     # pymod API

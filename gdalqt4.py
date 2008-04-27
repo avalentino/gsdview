@@ -8,7 +8,7 @@ try:
     from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
 except ImportError:
     import gdal
-    from gdalnumeric import GDALTypeCodeToNumericTypeCode
+    from gdalsupport import GDALTypeCodeToNumericTypeCode
 
 from PyQt4 import QtCore, QtGui
 from PyQt4 import Qwt5 as Qwt
