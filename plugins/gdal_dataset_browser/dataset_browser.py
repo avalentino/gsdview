@@ -71,7 +71,7 @@ class GdalDatasetBrowser(QtGui.QDockWidget):
                 parent.emit(QtCore.SIGNAL('openBandRequest(PyQt_PyObject)'),
                             band)
 
-    def _getMetadataItem(self, metadataList, metadataDict):
+    def _getMetadataItem(self, metadataList):
         rootItem = QtGui.QTreeWidgetItem()
         rootItem.setIcon(0, QtGui.QIcon(':/images/metadata.svg'))
         rootItem.setText(0, self.tr('Metadata'))
