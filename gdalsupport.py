@@ -223,7 +223,6 @@ class GridCoordinateMapper(CoordinateMapper):
         try:
             self._imgToLat = interpolate.SmoothBivariateSpline(lines, pixels, lats, kx=kx, ky=ky)
             self._imgToLon = interpolate.SmoothBivariateSpline(lines, pixels, lons, kx=kx, ky=ky)
-            print 'bivarite spline' # @TODO: remove
 
             # @TODO: use delaunay from scikits for irregular grid intepolation
             self._geoToLine = interpolate.SmoothBivariateSpline(lons, lats, lines, kx=kx, ky=ky)
@@ -498,7 +497,7 @@ class BandProxy(MajorObjectProxy):
         try:
             self._obj.ReadAsArray(xoff, yoff, win_xsize, win_ysize, **kwargs)
         except TypeError, e:
-            logging.debug(str(e))
+            logging.debug('exception caught', exc_info=True)
             if win_xsize is None:
                 win_xsize = self.XSize
             if win_ysize is None:
