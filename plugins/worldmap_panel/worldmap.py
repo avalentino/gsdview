@@ -50,7 +50,7 @@ class WorldmapPanel(QtGui.QDockWidget):
 
         scene = QtGui.QGraphicsScene(self)
         scene.setSceneRect(-180, -90, 360, 180)
-        #self.graphicsview = QtGui.QGraphicsView(scene) # Non more auto size
+        #self.graphicsview = QtGui.QGraphicsView(scene) # No more auto size
         self.graphicsview = GraphicsView(scene)
         self.graphicsview.scale(2., -2.)
 
@@ -117,6 +117,14 @@ class WorldmapPanel(QtGui.QDockWidget):
         worldmapitem.scale(360./worldmap.width(), -180./worldmap.height())
         worldmapitem.setOffset(-worldmap.width()/2.+0.5,
                                -worldmap.height()/2.+0.5)
+        #~ transform = QtGui.QTransform(360./worldmap.width(),
+                                     #~ 0,
+                                     #~ 0,
+                                     #~ 180./worldmap.height(),
+                                     #~ -worldmap.width()/2.+0.5,
+                                     #~ -worldmap.height()/2.+0.5)
+        #~ worldmapitem.setTransform(transform)
+        #~ worldmapitem.update()
         self.worldmapitem = worldmapitem
         #~ return worldmapitem
 
