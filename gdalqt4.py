@@ -8,8 +8,7 @@ try:
     from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
 except ImportError:
     import gdal
-    from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
-    #from gdalnumeric import GDALTypeCodeToNumericTypeCode # old generation python bindings
+    from gdalnumeric import GDALTypeCodeToNumericTypeCode
 
 from PyQt4 import QtCore, QtGui
 from PyQt4 import Qwt5 as Qwt
@@ -40,7 +39,7 @@ class GdalGraphicsItem(QtGui.QGraphicsItem):
         if band.DataType in (gdal.GDT_CInt16, gdal.GDT_CInt32):
             logging.warning('complex integer dataset')
         dtype = GDALTypeCodeToNumericTypeCode(band.DataType)
-        if numpy.iscomplexobj(dtype()):
+        if numpy.iscomplex(dtype):     # @TODO: check
             logging.warning('extract module from complex data')
 
     def compute_default_LUT(self):

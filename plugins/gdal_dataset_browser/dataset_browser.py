@@ -82,19 +82,18 @@ class GdalDatasetBrowser(QtGui.QDockWidget):
 
         if metadataList:
             items = []
-            for name in metadataList:
+            for metadataitem in metadataList:
                 try:
-                    name = name.split('=')[0]
+                    name, value = metadataitem.split('=', 1)
                     item = QtGui.QTreeWidgetItem()
                     item.setText(0, name)
-                    item.setText(1, metadataDict[name])
+                    item.setText(1, value.rstrip())
                     items.append(item)
                 except KeyError, e:
                     # @TODO: fix
                     # This is needed to handle a strange behaviour I get
                     # trying to use the HDF5 driver
                     logging.debug('exceptin caught setting metadata: "%s"' % e)
-                    pass
             rootItem.addChildren(items)
         else:
             item = QtGui.QTreeWidgetItem()
@@ -135,8 +134,7 @@ class GdalDatasetBrowser(QtGui.QDockWidget):
                                    'documentation.'))
         rootItem.addChild(item)
 
-        metadataItem = self._getMetadataItem(driver.GetMetadata_List(),
-                                             driver.GetMetadata_Dict())
+        metadataItem = self._getMetadataItem(driver.GetMetadata_List())
         rootItem.addChild(metadataItem)
 
         return rootItem
@@ -200,8 +198,7 @@ class GdalDatasetBrowser(QtGui.QDockWidget):
         rootItem.setToolTip(0, self.tr('Raster band.'))
         rootItem.setFirstColumnSpanned(True)
 
-        metadataItem = self._getMetadataItem(band.GetMetadata_List(),
-                                             band.GetMetadata_Dict())
+        metadataItem = self._getMetadataItem(band.GetMetadata_List())
         rootItem.addChild(metadataItem)
 
         item = QtGui.QTreeWidgetItem()
@@ -422,10 +419,8 @@ don't support transformation to projection coordinates.'''
         item.setToolTip(1, self.tr(msg))
         rootItem.addChild(item)
 
-        metadataItem = self._getMetadataItem(dataset.GetMetadata_List(),
-                                             dataset.GetMetadata_Dict())
+        metadataItem = self._getMetadataItem(dataset.GetMetadata_List())
         rootItem.addChild(metadataItem)
-
 
         item = QtGui.QTreeWidgetItem()
         item.setText(0, self.tr('GCPProjection'))

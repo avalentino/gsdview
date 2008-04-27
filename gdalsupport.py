@@ -1,17 +1,27 @@
 #!/usr/bin/env python
 
 import os
+import types
 import logging
 import itertools
 
 import numpy
 
+# API compatibility
 try:
     from osgeo import gdal
     from osgeo import osr
 except ImportError:
     import gdal
     import osr
+
+try:
+    # pymod API
+    getDriverList = gdal.GetDriverList
+except AttributeError:
+    # NG API
+    def getDriverList():
+        return [gdal.GetDriver(index) for index in range(gdal.GetDriverCount())]
 
 
 def uniqueDatasetID(prod):
@@ -55,9 +65,8 @@ def gdalFilters():
     # @TODO: move to gdalqt4
     filters = []
     filters.append('All files (*)')
-    for driver_index in xrange(gdal.GetDriverCount()):
-    #~ for driver in gdal.GetDriverList():
-        driver = gdal.GetDriver(driver_index)
+
+    for driver in getDriverList():
         metadata = driver.GetMetadata()
         name = metadata['DMD_LONGNAME']
         try:
@@ -380,18 +389,50 @@ def get_coordinate_mapper(dataset, precise=False):
     return mapper
 
 # @TODO: choose a better name (virtual???)
-class BandProxy(object):
-
-    def __init__(self, dataset, band_id):
-        self._dataset = dataset
-        self.id = band_id
-        self._band = dataset._vrtdataset.GetRasterBand(self.id)
-        self.lut = None
-
-    coordinateMapper = property(lambda self: self._dataset.coordinateMapper)
+class MajorObjectProxy(object):
+    def __init__(self, gdalobj):
+        if isinstance(gdalobj, MajorObjectProxy):
+            self._obj = gdalobj._obj
+        else:
+            self._obj = gdalobj
 
     def __getattr__(self, name):
-        return getattr(self._band, name)
+        return getattr(self._obj, name)
+
+    # @COMPATIBILITY: NG/pymod API
+    if not hasattr(gdal.MajorObject, 'GetMetadata_List'):
+        def GetMetadata_List(self):
+            metadata = self._obj.GetMetadata()
+            return ['%s=%s' % (key, metadata[key])
+                                            for key in sorted(metadata.keys())]
+
+    # @COMPATIBILITY: NG/pymod API
+    #if not hasattr(gdal.MajorObject, 'GetMetadata_Dict'):
+    #    def GetMetadata_Dict(self):
+    #        return self._obj.GetMetadata()
+
+class DriverProxy(MajorObjectProxy):
+    def __init__(self, driver):
+        super(DriverProxy, self).__init__(driver)
+
+# @TODO: choose a better name (virtual???)
+class BandProxy(MajorObjectProxy):
+
+    def __init__(self, band, parent=None):
+        super(BandProxy, self).__init__(band)
+
+        assert isinstance(parent, (gdal.Dataset, DatasetProxy,
+                                   gdal.Band, BandProxy, types.NoneType)), \
+               'invalid parent type: %s' % type(parent)
+
+        self.parent = parent
+        self.lut = None
+
+    def _get_coordinateMapper(self):
+        if self.parent:
+            return self.parent.coordinateMapper
+
+    coordinateMapper = property(_get_coordinateMapper)
 
     def compute_ovr_level(self, ovrsize=100*1024):
         '''Compute the overview factor that fits the ovrsize request.'''
@@ -427,12 +468,14 @@ class BandProxy(object):
 
         return distances.index(mindist)
 
-    def reopen(self):
-        self._band = self._dataset._vrtdataset.GetRasterBand(self.id)
+    def GetOverview(self, ov_index):
+        __doc__ = self._obj.GetOverview.__doc__
+
+        return BandProxy(self._obj.GetOverview(ov_index))
 
 
 # @TODO: choose a better name (virtual???)
-class DatasetProxy(object):
+class DatasetProxy(MajorObjectProxy):
     # class attributes:
     #   - cache basedir
     # instance attributes:
@@ -446,11 +489,11 @@ class DatasetProxy(object):
 
     def __init__(self, filename, cachedir=None):
         self.filename = filename
-        self._rodataset = gdal.Open(filename)
-        assert(self._rodataset)
+        self._readonly_dataset = gdal.Open(filename)
+        assert(self._readonly_dataset)
 
         # Handle CSK data @TODO: fix
-        subdataset = self._rodataset.GetSubDatasets()
+        subdataset = self._readonly_dataset.GetSubDatasets()
         logging.debug('subdataset = %s' % subdataset)
         if subdataset:
             subdataset = [sd for sd in subdataset
@@ -459,11 +502,10 @@ class DatasetProxy(object):
                 sdfilename = subdataset[0][0]
                 dataset = gdal.Open(sdfilename)
                 if dataset:
-                    self._rodataset = dataset
+                    self._readonly_dataset = dataset
         # END: CSK data handling
 
-        self.id = uniqueDatasetID(self._rodataset)
-        self._bandcache = {}
+        self.id = uniqueDatasetID(self._readonly_dataset)
 
         # Build the virtual dataset filename
         if cachedir is None:
@@ -476,33 +518,36 @@ class DatasetProxy(object):
 
         # Create the virtual dataset
         # @TODO: check 'openshared'
-        self._vrtdataset = None
+        _vrtdataset = None
         if os.path.exists(self.vrtfilename):
             # @TODO: check if opening the dataset in update mode
             #        (gdal.GA_Update) is a better solution
-            self._vrtdataset = gdal.Open(self.vrtfilename)
+            _vrtdataset = gdal.Open(self.vrtfilename)
 
-        if self._vrtdataset is None:
+        if _vrtdataset is None:
             # Hendle both non existing self.vrtfilename and errors in opening
             # existing self.vrtfilename
             driver = gdal.GetDriverByName('VRT')
-            self._vrtdataset = driver.CreateCopy(self.vrtfilename,
-                                                 self._rodataset)
+            _vrtdataset = driver.CreateCopy(self.vrtfilename,
+                                            self._readonly_dataset)
 
-        self.coordinateMapper = get_coordinate_mapper(self._vrtdataset)
+        super(DatasetProxy, self).__init__(_vrtdataset)
 
-    def __getattr__(self, name):
-        return getattr(self._vrtdataset, name)
+        self.coordinateMapper = get_coordinate_mapper(self._obj)
 
-    def GetRasterBand(self, nBand):
-        __doc__ = self._vrtdataset.GetRasterBand.__doc__
+    def GetRasterBand(self, band_index):
+        __doc__ = self._obj.GetRasterBand.__doc__
 
-        if nBand not in self._bandcache:
-            self._bandcache[nBand] = BandProxy(self, nBand)
+        return BandProxy(self._obj.GetRasterBand(band_index),
+                         parent=self)
 
-        return self._bandcache[nBand]
+    def GetOverview(self, ov_index):
+        __doc__ = self._obj.GetOverview.__doc__
+
+        return BandProxy(self._obj.GetOverview(ov_index), parent=self)
+
+    def GetDriver(self):
+        return DriverProxy(self._obj.GetDriver())
 
     def reopen(self):
-        self._vrtdataset = gdal.Open(self.vrtfilename)
-        for band in self._bandcache.values():
-            band.reopen()
+        self._obj = gdal.Open(self.vrtfilename)
