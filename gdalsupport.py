@@ -495,7 +495,8 @@ class BandProxy(MajorObjectProxy):
         # any time one tries to use ReadAsArray
 
         try:
-            self._obj.ReadAsArray(xoff, yoff, win_xsize, win_ysize, **kwargs)
+            data = self._obj.ReadAsArray(xoff, yoff, win_xsize, win_ysize,
+                                         **kwargs)
         except TypeError, e:
             logging.debug('exception caught', exc_info=True)
             if win_xsize is None:
@@ -526,7 +527,8 @@ class BandProxy(MajorObjectProxy):
                 data = numpy.ndarray(shape[:2], numpy.complex64)
                 data.real = tmp[:,:,0]
                 data.imag = tmp[:,:,1]
-            return data
+
+        return data
 
 
 # @TODO: choose a better name (virtual???)
