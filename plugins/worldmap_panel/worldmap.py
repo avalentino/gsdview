@@ -1,4 +1,4 @@
-### Copyright (C) 2007 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -21,6 +21,7 @@
 __author__  = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__    = '$Date$'
 __revision__ = '$Revision$'
+
 
 import os
 

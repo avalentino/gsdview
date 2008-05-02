@@ -1,4 +1,4 @@
-### Copyright (C) 2007 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -20,15 +20,16 @@
 
 __author__  = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__    = '$Date$'
-__version__ = (1,0,0)
+__version__ = (0,3,0)
 __revision__ = '$Revision$'
 __requires__ = []
+__all__ = ['GdalDatasetBrowser', 'init', 'close']
+
 
 from PyQt4 import QtCore
 
 from dataset_browser import GdalDatasetBrowser
 
-__all__ = ['GdalDatasetBrowser', 'init', 'close']
 
 def init(mainwin):
     datasetBrowser = GdalDatasetBrowser(mainwin)

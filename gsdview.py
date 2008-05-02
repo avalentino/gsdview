@@ -2,7 +2,7 @@
 
 # -*- coding: UTF8 -*-
 
-### Copyright (C) 2007 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -24,8 +24,9 @@
 
 __author__  = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__    = '$Date$'
-__version__ = (1,0,0)
 __revision__ = '$Revision$'
+__version__ = (0,3,0)
+
 
 import os
 import sys
