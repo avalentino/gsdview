@@ -7,7 +7,7 @@
     <file>images/clear.svg</file>
     <file>images/help.svg</file>
     <file>images/about.svg</file>
-    <file>images/GSDView.svg</file>
+    <file>images/GSDView.png</file>
     <file>images/qt-logo.png</file>
 </qresource>
 </RCC>
