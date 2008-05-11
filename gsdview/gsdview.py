@@ -42,7 +42,7 @@ except ImportError:
 from PyQt4 import QtCore, QtGui
 from PyQt4 import Qwt5 as Qwt
 
-import resources
+import gsdview_resources
 
 import gsdtools
 import qt4support
