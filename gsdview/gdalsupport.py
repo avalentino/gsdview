@@ -522,7 +522,6 @@ class BandProxy(MajorObjectProxy):
             data = self._obj.ReadAsArray(xoff, yoff, win_xsize, win_ysize,
                                          **kwargs)
         except TypeError, e:
-            logging.debug('exception caught', exc_info=True)
             if win_xsize is None:
                 win_xsize = self.XSize
             if win_ysize is None:
@@ -542,8 +541,6 @@ class BandProxy(MajorObjectProxy):
             else:
                 dtype = GDALTypeCodeToNumericTypeCode(self._obj.DataType)
                 shape = (win_ysize, win_xsize)
-            logging.debug('dtype = %s' % dtype)
-            logging.debug('len(databuffer) = %d' % len(data))
             data = numpy.fromstring(data, dtype=dtype)
             data.shape = shape
             if data.ndim == 3:

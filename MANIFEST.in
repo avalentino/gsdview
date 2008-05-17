@@ -1,0 +1,8 @@
+include MANIFEST MANIFEST.in
+#include AUTHORS
+include Makefile
+include gsdviewer
+recursive-include gsdview *.py
+recursive-include images *.svg *.png
+#recursive-include doc Makefile *.txt *.html *.pdf *.css tutorial-*.png
+#recursive-include debian *

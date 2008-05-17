@@ -98,11 +98,14 @@ class GSDView(QtGui.QMainWindow):
 
         # Settings
         # @TODO: fix filename
+        #self.settings = QtCore.QSettings('gsdview-soft', 'gsdview', self)
         #self.settings = QtCore.QSettings(QtCore.QSettings.IniFormat,
         #                                 QtCore.QSettings.UserScope,
-        #                                 'gsdview-soft', 'gsdview', self)
-        #self.settings = QtCore.QSettings('gsdview-soft', 'gsdview', self)
-        self.settings = QtCore.QSettings('gsdview.ini',
+        #                                 'gsdview', 'gsdview', self)
+
+        cfgfile = os.path.join('~', '.gsdview', 'gsdview.ini')
+        cfgfile = os.path.expanduser(cfgfile)
+        self.settings = QtCore.QSettings(cfgfile,
                                          QtCore.QSettings.IniFormat,
                                          self)
 
@@ -217,8 +220,9 @@ class GSDView(QtGui.QMainWindow):
         # @TODO: move to the PluginManager
         plugins = {}
         # @TODO: set from settings
-        pluginsDir = os.path.join(os.path.dirname(__name__), 'plugins')
+        pluginsDir = os.path.join(os.path.dirname(__file__), 'plugins')
         sys.path.insert(0, pluginsDir)
+        sys.path.insert(0, os.path.dirname(__file__)) # @TODO: fix
         for dirpath, dirnames, filenames in os.walk(pluginsDir):
             for name in dirnames:
                 if name.startswith(('.', '_')) or (name in sys.modules):
@@ -497,8 +501,12 @@ class GSDView(QtGui.QMainWindow):
             self.statusBar().showMessage('Ready.')
 
 
-if __name__ == "__main__":
+def main():
     app = QtGui.QApplication(sys.argv)
     mainWin = GSDView()
     mainWin.show()
     sys.exit(app.exec_())
+
+
+if __name__ == "__main__":
+    main()
