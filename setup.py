@@ -86,8 +86,6 @@ for dir_ in os.listdir(plugindir):
     if os.path.isdir(os.path.join(plugindir,dir_)) and not dir_.startswith('.'):
         packages.append('gsdview.plugins.%s' % dir_)
 
-print packages
-
 datafiles = [
     (os.path.join('share', 'doc', PKGNAME), ['README.txt']),
 ]
