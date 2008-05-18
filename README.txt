@@ -7,8 +7,8 @@ GSDView
 :Author: Antonio Valentino
 :Contact: a_valentino@users.sf.net
 :URL: http://gsdview.sourceforge.net
-:Revision: $Revision: 778 $
-:Date: $Date: 2008-04-12 12:45:09 +0200 (sab, 12 apr 2008) $
+:Revision: $Revision$
+:Date: $Date$
 :License: `GNU General Public License`__ (GPL)
 :Copyright (C): 2008 Antonio Valentino <a_valentino@users.sf.net>
 
