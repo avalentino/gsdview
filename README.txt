@@ -15,6 +15,9 @@ GSDView
 __ http://www.gnu.org/licenses/gpl.html
 
 
+.. contents::
+
+
 Introduction
 ============
 
@@ -29,7 +32,9 @@ At the moment GSDView is at a very early development stage.
 Downloads
 =========
 
-http://sourceforge.net/projects/gsdview
+Please refer to the `SourceForge project`_ page.
+
+.. _`SourceForge project`: http://sourceforge.net/projects/gsdview
 
 
 Requirements
