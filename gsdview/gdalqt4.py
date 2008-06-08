@@ -136,6 +136,9 @@ class GdalGraphicsItem(QtGui.QGraphicsItem):
             data = gsdtools.apply_LUT(data, self._lut)
 
         image = Qwt.toQImage(data.transpose())
+        # @TODO: SIP v4.7.5
+        #image = QtGui.QImage(data.data, height, width, QtGui.QImage.Format_Indexed8)
+
         painter.drawImage(rect.x(), rect.y(), image)
         #drawPixmap(self, QRectF targetRect, QPixmap pixmap, QRectF sourceRect)
         #drawPixmap(self, QRect targetRect, QPixmap pixmap, QRect sourceRect)
