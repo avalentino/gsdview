@@ -40,7 +40,6 @@ except ImportError:
     import gdal
 
 from PyQt4 import QtCore, QtGui
-from PyQt4 import Qwt5 as Qwt
 
 import gsdview_resources
 
@@ -113,6 +112,9 @@ class GSDView(QtGui.QMainWindow):
         self.logger = self.setupLogging()
         self.controller = self.setupController(self.logger, self.statusBar(),
                                                self.progressbar)
+
+        # @TODO: check
+        self.setEnv()
 
         # Actions
         self.setupActions()
@@ -286,6 +288,33 @@ class GSDView(QtGui.QMainWindow):
 
         return controller
 
+    def setEnv(self):
+        GDAL_DRIVER_PATH = self.settings.value('gdal/GDAL_DRIVER_PATH').toString()
+        GDAL_SKIP = self.settings.value('gdal/GDAL_SKIP').toString()
+
+        env = dict()
+        if GDAL_DRIVER_PATH:
+            try:
+                env['GDAL_DRIVER_PATH'] = os.path.expandvars(str(GDAL_DRIVER_PATH))
+            except TypeError, e:
+                logging.exception(e)
+                pass
+
+        if GDAL_SKIP:
+            try:
+                env['GDAL_SKIP'] = str(GDAL_SKIP)
+            except TypeError, e:
+                logging.exception(e)
+                pass
+
+        if env and not 'GSDVIEW' in os.environ:
+            env['GSDVIEW'] = 'yes'
+            os.environ.update(env)
+            logging.debug('set environment to: %s' % str(env))
+            logging.debug('respawn the process: %s' % ' '.join([sys.executable, '-u'] + sys.argv))
+            os.execvpe(sys.executable, [sys.executable, '-u'] + sys.argv, os.environ)
+
+
     ### Settings ##############################################################
     def restoreWindowState(self):
         self.settings.beginGroup('mainwindow')
@@ -373,17 +402,17 @@ class GSDView(QtGui.QMainWindow):
         #        one overview level will be needed
         band = self.dataset.GetRasterBand(1)
         ovrLevel = band.compute_ovr_level()
-        missingOverviewLevels = []
+        missingOverviewLevels = [] # [4,8,12]
         try:
             ovrIndex = band.best_ovr_index(ovrLevel)
             levels = band.available_ovr_levels()
             distance = 1
             if numpy.abs(levels[ovrIndex] - ovrLevel) > distance:
-                missingOverviewLevels = [ovrLevel]
+                missingOverviewLevels.append(ovrLevel)
             else:
                 ovrLevel = levels[ovrIndex]
         except gdalsupport.MissingOvrError:
-            missingOverviewLevels = [ovrLevel]
+            missingOverviewLevels.append(ovrLevel)
 
         # @NOTE: overviews are computed for all bands so I do this at
         #        application level, before a specific band is choosen.
@@ -410,12 +439,6 @@ class GSDView(QtGui.QMainWindow):
             datasetCacheDir = os.path.dirname(self.dataset.vrtfilename)
             self.controller.subprocess.setWorkingDirectory(datasetCacheDir)
             self.controller.run_tool(*args)
-
-            ## ALTERNATIVE: run in a separate thread
-            # gdal.SetConfigOption('USE_RRD', 'YES')
-            # ret = p.BuildOverviews('average', [2,4,8])
-            # ovr = b.GetOverview(2)
-            # data = ovr.ReadAsArray()
 
         # @TODO: check
         self.emit(QtCore.SIGNAL('openGdalDataset(PyQt_PyObject)'), self.dataset)
