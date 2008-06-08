@@ -42,13 +42,21 @@ class GraphicsView(QtGui.QGraphicsView):
     #self.graphicsView.connect(QtCore.SIGNAL('mousePressEvent()'), self.startScrolling)
     #self.graphicsView.connect(QtCore.SIGNAL('mouseReleaseEvent()'), self.stopScrolling)
 
+    def enterEvent(self, event):
+        self.emit(QtCore.SIGNAL('enter()'))
+        return QtGui.QGraphicsView.enterEvent(self, event)
+
+    def leaveEvent(self, event):
+        self.emit(QtCore.SIGNAL('leave()'))
+        return QtGui.QGraphicsView.leaveEvent(self, event)
+
     def mouseMoveEvent(self, event):
-        if self.dragMode() == QtGui.QGraphicsView.NoDrag:
-            self.emit(QtCore.SIGNAL('mousePositionUpdated(const QPoint&)'),
-                      event.pos())
-            if event.buttons() & QtCore.Qt.LeftButton:
-                self.emit(QtCore.SIGNAL('posMarked(const QPoint&)'), event.pos())
-            #event.accept()
+        #~ if self.dragMode() == QtGui.QGraphicsView.NoDrag:
+        self.emit(QtCore.SIGNAL('mousePositionUpdated(const QPoint&)'),
+                  event.pos())
+        if event.buttons() & QtCore.Qt.LeftButton:
+            self.emit(QtCore.SIGNAL('posMarked(const QPoint&)'), event.pos())
+        #event.accept()
         return QtGui.QGraphicsView.mouseMoveEvent(self, event)
 
     def mousePressEvent(self, event):
