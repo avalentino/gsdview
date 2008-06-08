@@ -73,7 +73,7 @@ def uniqueDatasetID(prod):
     #~ elif driver_name = 'GTiff':
         #~ # ERS BTIF
         #~ pass
-    elif driver_name.startswith('HDF5'):
+    elif driver_name.startswith('HDF5') or driver_name.startswith('CSK'):
         prod_id = prod.GetDescription()
         parts = prod_id.split(':')
         if len(parts) == 4:
@@ -82,7 +82,7 @@ def uniqueDatasetID(prod):
         if len(parts) == 3:
             filename = os.path.basename(parts[1].strip('"'))
             h5path = parts[2].replace('//', '/')
-            prod_id = '_'.join([filename, h5path])
+            prod_id = filename + h5path.replace('/', '_')
         else:
             prod_id = os.path.basename(prod_id)
     else:
@@ -120,7 +120,7 @@ def gdalOvLevelAdjust(ovrlevel, xsize):
     '''
 
     oxsize = int(xsize + ovrlevel - 1) // ovrlevel
-    return round(xsize / float(oxsize))
+    return int(round(xsize / float(oxsize)))
 
 
 class MissingOvrError(Exception):
@@ -493,7 +493,7 @@ class BandProxy(MajorObjectProxy):
         if ovrlevel is None:
             ovrlevel = self.compute_ovr_level()
         ovrlevels = numpy.asarray(self.available_ovr_levels())
-        if not ovrlevels:
+        if len(ovrlevels) == 0:
             raise MissingOvrError(ovrlevel)
         distances = numpy.abs(ovrlevels - ovrlevel)
         mindist = distances.min()
@@ -571,16 +571,19 @@ class DatasetProxy(MajorObjectProxy):
         assert(self._readonly_dataset)
 
         # Handle CSK data @TODO: fix
-        subdataset = self._readonly_dataset.GetSubDatasets()
-        logging.debug('subdataset = %s' % subdataset)
-        if subdataset:
-            subdataset = [sd for sd in subdataset
-                            if ('/S01/SBI' in sd[0]) or ('/S01/MBI' in sd[0])]
+        try:
+            subdataset = self._readonly_dataset.GetSubDatasets()
+            logging.debug('subdataset = %s' % subdataset)
             if subdataset:
-                sdfilename = subdataset[0][0]
-                dataset = gdal.Open(sdfilename)
-                if dataset:
-                    self._readonly_dataset = dataset
+                subdataset = [sd for sd in subdataset
+                                if ('/S01/SBI' in sd[0]) or ('/S01/MBI' in sd[0])]
+                if subdataset:
+                    sdfilename = subdataset[0][0]
+                    dataset = gdal.Open(sdfilename)
+                    if dataset:
+                        self._readonly_dataset = dataset
+        except AttributeError:
+            pass
         # END: CSK data handling
 
         self.id = uniqueDatasetID(self._readonly_dataset)
