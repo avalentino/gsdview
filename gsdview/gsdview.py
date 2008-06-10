@@ -289,6 +289,7 @@ class GSDView(QtGui.QMainWindow):
         return controller
 
     def setEnv(self):
+        #os.environ['GSDVEWROOT'] = os.path.abspath(os.path.dirname(__file__))
         GDAL_DRIVER_PATH = self.settings.value('gdal/GDAL_DRIVER_PATH').toString()
         GDAL_SKIP = self.settings.value('gdal/GDAL_SKIP').toString()
 

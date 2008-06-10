@@ -22,12 +22,59 @@
 
 '''Launcher script for gsdview.'''
 
+import datetime
+
+class Timer(object):
+    def __init__(self):
+        self.start = datetime.datetime.now()
+        self.last = self.start
+
+    def elapsed(self):
+        return datetime.datetime.now() - self.start
+
+    def update(self):
+        now = datetime.datetime.now()
+        delta = now - self.last
+        self.last = now
+        return delta.seconds, delta.microseconds
+
+t = Timer()
+
+import logging
+fmt = '%(levelname)s: %(filename)s line %(lineno)d in %(funcName)s: %(message)s'
+logging.basicConfig(level=logging.DEBUG, format=fmt)
+
+logging.debug('logging setup done after %d.%06ds: start logging' % t.update())
+
+import os
 import sys
+import logging
+
+logging.debug('stdlib imports: %d.%06ds' % t.update())
+
+import numpy
+
+logging.debug('numpy import: %d.%06ds' % t.update())
+
+import scipy
+
+logging.debug('scipy import: %d.%06ds' % t.update())
+
+try:
+    from osgeo import gdal, osr
+except ImportError:
+    import gdal, osr
+
+logging.debug('gdal/osr import %d.%06ds' % t.update())
+
+from PyQt4 import QtCore, QtGui
+
+logging.debug('Qt4 import %d.%06ds' % t.update())
+
+
+#~ import sys
 from gsdview.gsdview import main
 
+logging.debug('gsdview import %d.%06ds' % t.update())
+
 sys.exit(main())
-
-#~ #!/bin/sh
-
-#~ cd $(dirname $0)/gsdview
-#~ python gsdview.py

@@ -80,7 +80,6 @@ class GraphicsView(QtGui.QGraphicsView):
             self.emit(QtCore.SIGNAL('scaled()'))
 
     # @TODO: check transform related functions
-
     def clearScene(self):
         scene = self.scene()
         for item in scene.items():
