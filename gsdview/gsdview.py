@@ -25,7 +25,6 @@
 __author__  = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__    = '$Date$'
 __revision__ = '$Revision$'
-__version__ = (0,3,0)
 
 
 import os
