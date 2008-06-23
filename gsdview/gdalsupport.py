@@ -616,11 +616,13 @@ class DatasetProxy(MajorObjectProxy):
 
         self.coordinateMapper = get_coordinate_mapper(self._obj)
 
+    def GetDescription(self):
+        return self._readonly_dataset.GetDescription()
+
     def GetRasterBand(self, band_index):
         __doc__ = self._obj.GetRasterBand.__doc__
 
-        return BandProxy(self._obj.GetRasterBand(band_index),
-                         parent=self)
+        return BandProxy(self._obj.GetRasterBand(band_index), parent=self)
 
     def GetOverview(self, ov_index):
         __doc__ = self._obj.GetOverview.__doc__
@@ -628,7 +630,8 @@ class DatasetProxy(MajorObjectProxy):
         return BandProxy(self._obj.GetOverview(ov_index), parent=self)
 
     def GetDriver(self):
-        return DriverProxy(self._obj.GetDriver())
+        #return DriverProxy(self._obj.GetDriver())
+        return DriverProxy(self._readonly_dataset.GetDriver())
 
     def reopen(self):
         self._obj = gdal.Open(self.vrtfilename)
