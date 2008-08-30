@@ -20,11 +20,15 @@ Introduction
 
 GSDView (Geo-Spatial Data Viewer) is a lightweight viewer for geo-spatial
 data and products.
-It is written in python and Qt4 and it is mainly intended to be a graphical
-front-end for the GDAL library and tools.
+It is written in python_ and Qt4_ and it is mainly intended to be a graphical
+front-end for the GDAL__ library and tools.
 GSDView is modular and has a simple plug-in architecture.
 
 At the moment GSDView is at a very early development stage.
+
+.. _Python: http://www.python.org
+.. _Qt4: http://trolltech.com/products/qt
+__ gdal_
 
 
 Downloads
@@ -47,7 +51,6 @@ In order to run GSDView you should have the following software installed:
 * scipy_ 0.6  or higher
 * gdal_ 1.4.4 or higher
 
-.. _Python: http://www.python.org
 .. _PyQt: http://www.riverbankcomputing.co.uk
 .. _PyQwt: http://pyqwt.sourceforge.net
 .. _numpy: http://www.numpy.org
@@ -107,5 +110,4 @@ GSDview is released under the terms of the `GNU General Public License`__
 version 2.
 
 __ GPL_
-
 .. _GPL: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
