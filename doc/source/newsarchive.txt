@@ -1,0 +1,12 @@
+.. _news-archive:
+
+News archive
+============
+
+This page contains the complete news archive of the `GSDView project`__.
+
+__ `GSDView project page`_
+
+.. include:: latestnews.txt
+
+.. _`GSDView project page`: http://sourceforge.net/projects/gsdview

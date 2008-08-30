@@ -1,0 +1,21 @@
+{% extends "!layout.html" %}
+
+{% set sourceforge_groupid = '226458' %}
+
+{% block relbar1 %}
+{% if pagename == master_doc %}
+<div style="color: white; text-align: right; padding-right: 1em;"><h1>{{ docstitle }}</h1></div>
+{% endif %}
+{{ super() }}
+{% endblock %}
+
+{% block sidebarlogo %}
+    {{ super() }}
+    {% if 1 %}
+    <p>
+        <a href="http://sourceforge.net">
+            <img src="http://sflogo.sourceforge.net/sflogo.php?group_id={{ sourceforge_groupid }}&amp;type=3" width="125" height="37" border="0" alt="SourceForge.net Logo" />
+        </a>
+    </p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,36 @@
+:16/07/2008: New Home Page.
+
+             The project Home Page has been completely rewritten.
+             Now the sphinx_ tool is used to generate the entire
+             documentation set.
+
+..  :01/07/2008: GSDView presented at "Scuola estiva sulle tecniche di
+                 Telerilevamento da satellite".
+
+                 ASI (the Italian Space Agency), Politecnico di Bari,
+                 Università di Bari, Università della Basilicata and Telespazio
+                 S.p.A. organized a remote sensing summer school in Matera 1-11
+                 July 2008.
+
+                 During of the opening session GSDView was presented to the
+                 audience.
+
+    :20/05/2008: ASI and INNOVA use GSDView.
+
+                 ASI_ (the Italian Space Agency) and `INNOVA Consorzio per
+                 l'Informatica e la Telematica`_ adopt GSDView as base for the
+                 development of SAR WorkBench 2.
+
+:18/05/2008: First public release available.
+
+             The first public release of GSDView is available for download_
+             on SourceForge_.
+
+             This is still an alpha release with a minimal set of features.
+
+
+.. _sphinx: http://sphinx.pocoo.org
+.. _ASI: http://www.asi.it
+.. _`INNOVA Consorzio per l'Informatica e la Telematica`: http://www.consorzio-innova.com
+.. _download: http://sourceforge.net/project/showfiles.php?group_id=226458
+.. _SourceForge: http://sourceforge.net
