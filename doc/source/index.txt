@@ -13,16 +13,9 @@ News
 The complete :ref:`news-archive` is also available.
 
 
-.. ?? contents ??
-
-.. include:: ../../README.txt
-
 .. GSDView documentation master file, created by sphinx-quickstart on Sat Aug 30 12:12:25 2008.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
-
-   Welcome to GSDView's documentation!
-   ===================================
 
    Contents:
 
@@ -35,4 +28,7 @@ The complete :ref:`news-archive` is also available.
    * :ref:`genindex`
    * :ref:`modindex`
    * :ref:`search`
+   * :ref:`glossary`
+
+.. include:: ../../README.txt
 

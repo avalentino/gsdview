@@ -1,4 +1,4 @@
-:16/07/2008: New Home Page.
+:30/08/2008: New Home Page.
 
              The project Home Page has been completely rewritten.
              Now the sphinx_ tool is used to generate the entire
