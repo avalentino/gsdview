@@ -22,8 +22,8 @@
 
 '''GUI front-end for the Geospatial Data Abstracton Library (GDAL).'''
 
-__author__  = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__    = '$Date$'
+__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__     = '$Date$'
 __revision__ = '$Revision$'
 
 
@@ -147,6 +147,17 @@ class GSDView(QtGui.QMainWindow):
     def closeEvent(self, event):
         self.saveWindowState()
         event.accept()
+
+    def changeEvent(self, event):
+        try:
+            if event.oldState() == QtCore.Qt.WindowNoState:
+                self.settings.beginGroup('mainwindow')
+                self.settings.setValue('position', QtCore.QVariant(self.pos()))
+                self.settings.setValue('size', QtCore.QVariant(self.size()))
+                self.settings.endGroup()
+                event.accept()
+        except AttributeError:
+            pass
 
     ### Setup helpers #########################################################
     def _setupFileActions(self):
@@ -335,7 +346,6 @@ class GSDView(QtGui.QMainWindow):
         if winstate != QtCore.Qt.WindowNoState:
             winstate = qt4support.intToWinState[winstate]
             self.setWindowState(winstate)
-            QtGui.qApp.processEvents()
 
         # State of toolbars ad docks
         state = self.settings.value('state')
@@ -349,11 +359,9 @@ class GSDView(QtGui.QMainWindow):
 
         self.settings.setValue('winstate', QtCore.QVariant(self.windowState()))
 
-        self.showNormal()
-        QtGui.qApp.processEvents()
-
-        self.settings.setValue('position', QtCore.QVariant(self.pos()))
-        self.settings.setValue('size', QtCore.QVariant(self.size()))
+        if self.windowState() == QtCore.Qt.WindowNoState:
+            self.settings.setValue('position', QtCore.QVariant(self.pos()))
+            self.settings.setValue('size', QtCore.QVariant(self.size()))
         self.settings.setValue('state', QtCore.QVariant(self.saveState()))
 
         self.settings.endGroup()
