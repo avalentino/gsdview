@@ -18,10 +18,10 @@
 
 '''Package info.'''
 
-__author__  = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__    = '$Date$'
+__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__     = '$Date$'
 __revision__ = '$Revision$'
-__version__ = (0,3,0)
+__version__  = (0,3,0)
 
 __all__ = ['name', 'version', 'short_description', 'description',
            'author', 'author_email', 'copyright', 'license_type',
