@@ -4,5 +4,5 @@ include Makefile
 include gsdviewer
 recursive-include gsdview *.py
 recursive-include images *.svg *.png
-#recursive-include doc Makefile *.txt *.html *.pdf *.css tutorial-*.png
+recursive-include doc/source Makefile *.txt *.html *.pdf *.css *.png *.svg *.py
 #recursive-include debian *

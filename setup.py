@@ -57,7 +57,7 @@ Programming Language :: Python
 Topic :: Education
 Topic :: Scientific/Engineering :: Astronomy
 Topic :: Scientific/Engineering :: GIS
-Topic :: Scientific/Engineering :: Image Recognition
+Topic :: Scientific/Engineering :: Visualization
 '''
 
 if has_setuptools:
