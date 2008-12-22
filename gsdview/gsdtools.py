@@ -83,11 +83,16 @@ def ovr_lut(data):
     max_ = numpy.ceil(data.max())
     nbins = max_ - min_ + 1
     range_ = (min_, max_ + 1)     # @NOTE: dtype = uint16
-    histogram_ = numpy.histogram(data, nbins, range_, new=True)[0]
+    try:
+        histogram_ = numpy.histogram(data, nbins, range_, new=True)[0]
+    except TypeError:
+        histogram_ = numpy.histogram(data, nbins, range_)[0]
+
     lut = compute_lin_LUT2(histogram_)
     return lut
 
 
+# @TODO: use numpy.take if the case
 def apply_LUT(data, lut):
     data = numpy.round(data)
     data = data.astype(numpy.uint32) # @TODO: check

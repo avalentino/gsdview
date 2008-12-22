@@ -29,6 +29,7 @@ from PyQt4 import QtCore, QtGui
 # @TODO: move to gdalqt4.py
 # @TODO: maybe this is not the best solution. Maybe a custom GraphicsItem
 #        would be better
+# @TODO: use event filters instead
 class GraphicsView(QtGui.QGraphicsView):
     # @TODO: improve scrolling performances
     #
