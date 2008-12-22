@@ -83,7 +83,7 @@ def ovr_lut(data):
     max_ = numpy.ceil(data.max())
     nbins = max_ - min_ + 1
     range_ = (min_, max_ + 1)     # @NOTE: dtype = uint16
-    histogram_ = numpy.histogram(data, nbins, range_)[0]
+    histogram_ = numpy.histogram(data, nbins, range_, new=True)[0]
     lut = compute_lin_LUT2(histogram_)
     return lut
 

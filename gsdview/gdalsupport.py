@@ -445,8 +445,7 @@ class MajorObjectProxy(object):
     #        return self._obj.GetMetadata()
 
 class DriverProxy(MajorObjectProxy):
-    def __init__(self, driver):
-        super(DriverProxy, self).__init__(driver)
+    pass
 
 # @TODO: choose a better name (virtual???)
 class BandProxy(MajorObjectProxy):
@@ -566,6 +565,8 @@ class DatasetProxy(MajorObjectProxy):
     #   - cache opened bands
 
     def __init__(self, filename, cachedir=None):
+        filename = os.path.abspath(filename)
+        filename = os.path.normpath(filename)
         self.filename = filename
         self._readonly_dataset = gdal.Open(filename)
         assert(self._readonly_dataset)
@@ -576,7 +577,8 @@ class DatasetProxy(MajorObjectProxy):
             logging.debug('subdataset = %s' % subdataset)
             if subdataset:
                 subdataset = [sd for sd in subdataset
-                                if ('/S01/SBI' in sd[0]) or ('/S01/MBI' in sd[0])]
+                                                if ('/S01/SBI' in sd[0])
+                                                    or ('/S01/MBI' in sd[0])]
                 if subdataset:
                     sdfilename = subdataset[0][0]
                     dataset = gdal.Open(sdfilename)
