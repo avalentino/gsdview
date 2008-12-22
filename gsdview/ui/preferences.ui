@@ -1,0 +1,331 @@
+<ui version="4.0" >
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>586</width>
+    <height>416</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Dialog</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="../resources.qrc" >
+    <normaloff>:/images/preferences.svg</normaloff>:/images/preferences.svg</iconset>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout" >
+     <item>
+      <widget class="QListWidget" name="listWidget" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Expanding" hsizetype="Minimum" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize" >
+        <size>
+         <width>128</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="iconSize" >
+        <size>
+         <width>96</width>
+         <height>84</height>
+        </size>
+       </property>
+       <property name="verticalScrollMode" >
+        <enum>QAbstractItemView::ScrollPerPixel</enum>
+       </property>
+       <property name="movement" >
+        <enum>QListView::Static</enum>
+       </property>
+       <property name="flow" >
+        <enum>QListView::TopToBottom</enum>
+       </property>
+       <property name="isWrapping" stdset="0" >
+        <bool>false</bool>
+       </property>
+       <property name="resizeMode" >
+        <enum>QListView::Adjust</enum>
+       </property>
+       <property name="spacing" >
+        <number>12</number>
+       </property>
+       <property name="viewMode" >
+        <enum>QListView::IconMode</enum>
+       </property>
+       <item>
+        <property name="text" >
+         <string>General</string>
+        </property>
+        <property name="icon" >
+         <iconset resource="../resources.qrc" >
+          <normaloff>:/images/preferences.svg</normaloff>:/images/preferences.svg</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>GDAL</string>
+        </property>
+        <property name="icon" >
+         <iconset resource="../resources.qrc" >
+          <normaloff>:/images/GDALLogoColor.svg</normaloff>:/images/GDALLogoColor.svg</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>Cache</string>
+        </property>
+        <property name="icon" >
+         <iconset resource="../resources.qrc" >
+          <normaloff>:/images/harddisk.svg</normaloff>:/images/harddisk.svg</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>Misc</string>
+        </property>
+        <property name="icon" >
+         <iconset resource="../resources.qrc" >
+          <normaloff>:/images/misc-preferences.svg</normaloff>:/images/misc-preferences.svg</iconset>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QStackedWidget" name="stackedWidget" >
+       <widget class="QWidget" name="general_page" >
+        <layout class="QVBoxLayout" name="verticalLayout_4" >
+         <item>
+          <widget class="QGroupBox" name="groupBox" >
+           <property name="title" >
+            <string>General</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_3" >
+            <item>
+             <widget class="QGroupBox" name="groupBox_2" >
+              <property name="title" >
+               <string>Debug Level</string>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_3" >
+               <item>
+                <widget class="QComboBox" name="comboBox" >
+                 <item>
+                  <property name="text" >
+                   <string>DEBUG</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text" >
+                   <string>INFO</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text" >
+                   <string>WARNING</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text" >
+                   <string>ERROR</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text" >
+                   <string>CRITICAL</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer" >
+                 <property name="orientation" >
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0" >
+                  <size>
+                   <width>188</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton" >
+                 <property name="text" >
+                  <string>Reset</string>
+                 </property>
+                 <property name="icon" >
+                  <iconset resource="../resources.qrc" >
+                   <normaloff>:/images/clear.svg</normaloff>:/images/clear.svg</iconset>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupBox_3" >
+              <property name="title" >
+               <string>Working Directory</string>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_2" >
+               <item>
+                <widget class="QLineEdit" name="lineEdit" />
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_2" >
+                 <property name="icon" >
+                  <iconset resource="../resources.qrc" >
+                   <normaloff>:/images/open.svg</normaloff>:/images/open.svg</iconset>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupBox_4" >
+              <property name="title" >
+               <string>Favorite Folders</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_2" >
+               <item>
+                <widget class="QListWidget" name="listWidget_2" />
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_4" >
+                 <item>
+                  <widget class="QPushButton" name="pushButton_3" >
+                   <property name="text" >
+                    <string>Add</string>
+                   </property>
+                   <property name="icon" >
+                    <iconset resource="../resources.qrc" >
+                     <normaloff>:/images/add.svg</normaloff>:/images/add.svg</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButton_5" >
+                   <property name="text" >
+                    <string>Edit</string>
+                   </property>
+                   <property name="icon" >
+                    <iconset resource="../resources.qrc" >
+                     <normaloff>:/images/edit.svg</normaloff>:/images/edit.svg</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButton_4" >
+                   <property name="text" >
+                    <string>Remove</string>
+                   </property>
+                   <property name="icon" >
+                    <iconset resource="../resources.qrc" >
+                     <normaloff>:/images/remove.svg</normaloff>:/images/remove.svg</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+        <zorder>multipagewidget</zorder>
+        <zorder>groupBox</zorder>
+        <zorder>lineEdit</zorder>
+       </widget>
+       <widget class="QWidget" name="gdal_page" />
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok|QDialogButtonBox::RestoreDefaults</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+  <action name="action_add_favorite" >
+   <property name="icon" >
+    <iconset resource="../resources.qrc" >
+     <normaloff>:/images/add.svg</normaloff>:/images/add.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Add</string>
+   </property>
+  </action>
+  <action name="action_remove_favorite" >
+   <property name="icon" >
+    <iconset resource="../resources.qrc" >
+     <normaloff>:/images/remove.svg</normaloff>:/images/remove.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Remove</string>
+   </property>
+  </action>
+  <action name="action_edit_favorite" >
+   <property name="icon" >
+    <iconset resource="../resources.qrc" >
+     <normaloff>:/images/edit.svg</normaloff>:/images/edit.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Edit</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../resources.qrc" />
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>Dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>Dialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -1,5 +1,6 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
+    <file>images/GSDView.png</file>
     <file>images/open.svg</file>
     <file>images/save-as.svg</file>
     <file>images/close.svg</file>
@@ -7,7 +8,13 @@
     <file>images/clear.svg</file>
     <file>images/help.svg</file>
     <file>images/about.svg</file>
-    <file>images/GSDView.png</file>
     <file>images/qt-logo.png</file>
+    <file>images/add.svg</file>
+    <file>images/edit.svg</file>
+    <file>images/remove.svg</file>
+    <file>images/misc-preferences.svg</file>
+    <file>images/harddisk.svg</file>
+    <file>images/preferences.svg</file>
+    <file>images/GDALLogoColor.svg</file>
 </qresource>
 </RCC>
