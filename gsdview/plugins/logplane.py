@@ -18,11 +18,12 @@
 
 '''Log plane.'''
 
-__author__  = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__    = '$Date$'
-__version__ = (0,3,0)
+__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__     = '$Date$'
+__version__  = (0,3,0)
 __revision__ = '$Revision$'
 __requires__ = []
+
 __all__ = ['init', 'close']
 
 
