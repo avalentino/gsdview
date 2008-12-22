@@ -50,14 +50,15 @@ import gdalqt4
 import exectools
 from exectools.qt4tools import Qt4ToolController, Qt4DialogLoggingHandler
 
-from graphicsview import GraphicsView
 from gdalexectools import GdalAddOverviewDescriptor, GdalOutputHandler
+
+from widgets import AboutDialog
+from graphicsview import GraphicsView
 
 
 class GSDView(QtGui.QMainWindow):
     # @TODO:
     #   * set all icon (can use the iconset of BEAM)
-    #   * map panel (plugin)
     #   * plugin architecture (incomplete)
     #   * cache browser, cache cleanup
     #   * open internal product
@@ -94,6 +95,8 @@ class GSDView(QtGui.QMainWindow):
         self.filedialog.setFileMode(QtGui.QFileDialog.ExistingFile)
         self.filedialog.setFilters(gdalsupport.gdalFilters())
         self.filedialog.setViewMode(QtGui.QFileDialog.Detail)
+
+        self.aboutdialog = AboutDialog(self)
 
         self.imageItem = None
         self.dataset = None
@@ -556,8 +559,7 @@ class GSDView(QtGui.QMainWindow):
 
     ### Help actions ##########################################################
     def about(self):
-        QtGui.QMessageBox.about(self, self.tr('GSDView'),
-                                self.tr('GeoSpatial Data Viewer'))
+        self.aboutdialog.exec_()
 
     def aboutQt(self):
         QtGui.QMessageBox.aboutQt(self)
