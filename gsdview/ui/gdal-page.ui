@@ -1,0 +1,314 @@
+<ui version="4.0" >
+ <class>gdalPreferencesWidget</class>
+ <widget class="QWidget" name="gdalPreferencesWidget" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>591</width>
+    <height>453</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <layout class="QHBoxLayout" name="infoHorizontalLayout" >
+     <item>
+      <spacer name="infoHorizontalSpacer" >
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>188</width>
+         <height>24</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="infoButton" >
+       <property name="text" >
+        <string>Show detailed GDAL info</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../../resources.qrc" >
+         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="optionsGroupBox" >
+     <property name="title" >
+      <string>Configuration options</string>
+     </property>
+     <layout class="QGridLayout" name="optionsGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QCheckBox" name="debugCheckBox" >
+        <property name="text" >
+         <string>CPL_DEBUG</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <layout class="QHBoxLayout" name="debugHorizontalLayout" >
+        <item>
+         <widget class="QComboBox" name="debugComboBox" >
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+          <item>
+           <property name="text" >
+            <string>OFF</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>ON</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <spacer name="debugHorizontalSpacer" >
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QCheckBox" name="pamCheckBox" >
+        <property name="text" >
+         <string>GDAL_PAM_ENABLED</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QLineEdit" name="pamLineEdit" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>NULL</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QCheckBox" name="gdalDataCheckBox" >
+        <property name="text" >
+         <string>GDAL_DATA</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" >
+       <layout class="QHBoxLayout" name="horizontalLayout" >
+        <item>
+         <widget class="QLineEdit" name="gdalDataLineEdit" >
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="dataDirButton" >
+          <property name="text" >
+           <string/>
+          </property>
+          <property name="icon" >
+           <iconset resource="../../resources.qrc" >
+            <normaloff>:/images/open.svg</normaloff>:/images/open.svg</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0" >
+       <widget class="QCheckBox" name="cacheCheckBox" >
+        <property name="text" >
+         <string>GDAL_CACHEMAX</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" >
+       <layout class="QHBoxLayout" name="cacheHorizontalLayout" >
+        <item>
+         <widget class="QSpinBox" name="cacheSpinBox" >
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+          <property name="maximum" >
+           <number>1000000</number>
+          </property>
+          <property name="singleStep" >
+           <number>10000</number>
+          </property>
+          <property name="value" >
+           <number>40000</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="cacheHorizontalSpacer" >
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="environmentGroupBox" >
+     <property name="title" >
+      <string>Environment</string>
+     </property>
+     <property name="checkable" >
+      <bool>true</bool>
+     </property>
+     <property name="checked" >
+      <bool>false</bool>
+     </property>
+     <layout class="QVBoxLayout" name="envitonmentVerticalLayout" >
+      <item>
+       <widget class="QTableWidget" name="envTableWidget" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="horizontalScrollMode" >
+         <enum>QAbstractItemView::ScrollPerPixel</enum>
+        </property>
+        <row>
+         <property name="text" >
+          <string>GDAL_DATA</string>
+         </property>
+        </row>
+        <row>
+         <property name="text" >
+          <string>GDAL_DRIVER_PATH</string>
+         </property>
+        </row>
+        <row>
+         <property name="text" >
+          <string>GDAL_SKIP</string>
+         </property>
+        </row>
+        <row>
+         <property name="text" >
+          <string>PATH</string>
+         </property>
+        </row>
+        <row>
+         <property name="text" >
+          <string>LD_LIBRARY_PATH</string>
+         </property>
+        </row>
+        <column>
+         <property name="text" >
+          <string>Value</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer" >
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0" >
+      <size>
+       <width>20</width>
+       <height>8</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+  <action name="actionAddEnvVar" >
+   <property name="icon" >
+    <iconset resource="../../resources.qrc" >
+     <normaloff>:/images/add.svg</normaloff>:/images/add.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Add</string>
+   </property>
+   <property name="toolTip" >
+    <string>Add a new item</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="actionRemoveEnvVar" >
+   <property name="icon" >
+    <iconset resource="../../resources.qrc" >
+     <normaloff>:/images/remove.svg</normaloff>:/images/remove.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Remove</string>
+   </property>
+   <property name="toolTip" >
+    <string>Remove selected items</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionEditEnvVar" >
+   <property name="icon" >
+    <iconset resource="../../resources.qrc" >
+     <normaloff>:/images/edit.svg</normaloff>:/images/edit.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Edit</string>
+   </property>
+   <property name="toolTip" >
+    <string>Edit current item</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="actionClearEnv" >
+   <property name="icon" >
+    <iconset resource="../../resources.qrc" >
+     <normaloff>:/images/clear.svg</normaloff>:/images/clear.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Clear</string>
+   </property>
+   <property name="toolTip" >
+    <string>Clear all items</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../../resources.qrc" />
+ </resources>
+ <connections/>
+</ui>

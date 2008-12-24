@@ -26,6 +26,7 @@ __revision__ = '$Revision: 621 $'
 
 import os
 import sys
+import logging
 
 try:
     from osgeo import gdal
@@ -146,6 +147,293 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview"><span style="tex
             #~ tableWidget.setItem(row, 2,
                 #~ QtGui.QTableWidgetItem('<a href="%s">%s</a>' % (link, link)))
 
+
+#~ class FileEntryWidget(QtGui.QWidget):
+    #~ def __init__(self, *args):
+        #~ QtGui.QWidget.__init__(self, *args): #, multple=False, directory=False):
+
+        #~ self.filemode = None
+
+        #~ self.completer = QtGui.QCompleter(self)
+        #~ model = QtGui.QDirModel(self.completer)
+        #~ model.setFilter(QtCore.QDir.AllDirs)
+        #~ #self.completer.setCompletionMode(QtGui.QCompleter.InlineCompletion)
+        #~ self.completer.setModel(model)
+
+        #~ self.lineEdit = QtGui.QLineEdit()
+        #~ self.lineEdit.setCompleter(completer)
+
+        #~ self.button = QtGui.QPushButton()
+
+        #~ layout = QtGui.QHBoxLayout()
+        #~ layout.addWidget(self.lineEdit)
+        #~ layout.addWidget(self.button)
+
+        #~ self.addLayout(layout)
+
+        #~ self.connect(self.button, QtCore.SIGNAL('clicked()'), self.choose)
+
+    #~ def _choose(self, filename='', directory=False, multiple=False):
+        #~ try:
+            #~ mainwin = self.window()
+            #~ filedialog = mainwin.filedialog
+            #~ oldmode = filedialog.fileMode()
+            #~ if filename:
+                #~ filedialog.setDirectory(os.path.dirname(filename))
+            #~ try:
+                #~ if self.filemode is not None:
+                    #~ filedialog.setFileMode(self.filemode)
+                #~ if filedialog.exec_():
+                    #~ filename = str(filedialog.selectedFiles()[0])
+            #~ finally:
+                #~ fiedialog.setFileMode(oldmode)
+        #~ except AttributeError:
+            #~ if filename:
+                #~ dirname = os.path.dirname(filename)
+            #~ else:
+                #~ dirname = None
+
+            #~ if self.filemode is None:
+                #~ filemode = QtGui.QFileDialog.AnyFile
+            #~ else:
+                #~ filemode = self.filemode
+
+            #~ if filemode == QtGui.QFileDialog.AnyFile:
+                #~ filename = QtGui.QFileDialog.getSaveFileName(
+                                    #~ self,
+                                    #~ self.tr('Choose a file'),
+                                    #~ dirname)
+                                    #~ #const QString & filter = QString(),
+                                    #~ #QString * selectedFilter = 0,
+                                    #~ #Options options = 0)
+            #~ elif filemode == QtGui.QFileDialog.ExistingFile:
+                #~ filename = QtGui.QFileDialog.getOpenFileName(
+                                    #~ self,
+                                    #~ self.tr('Choose a file'),
+                                    #~ dirname)
+                                    #~ #const QString & filter = QString(),
+                                    #~ #QString * selectedFilter = 0,
+                                    #~ #Options options = 0)
+            #~ elif filemode == QtGui.QFileDialog.ExistingFiles:
+                #~ filename = QtGui.QFileDialog.getOpenFileNames(
+                                    #~ self,
+                                    #~ self.tr('Choose a file'),
+                                    #~ dirname)
+                                    #~ #const QString & filter = QString(),
+                                    #~ #QString * selectedFilter = 0,
+                                    #~ #Options options = 0)
+            #~ elif (filemode == QtGui.QFileDialog.Directory) or
+                                #~ (filemode == QtGui.QFileDialog.DirectoryOnly):
+                #~ filename = QtGui.QFileDialog.getExistingDirectory(
+                                    #~ self,
+                                    #~ self.tr('Choose a file'),
+                                    #~ dirname)
+                                    #~ #Options options = ShowDirsOnly)
+            #~ else:
+                #~ raise TypeError('invalid file mode: "%s"' % filemode)
+        #~ return filename
+
+    #~ def choose(self):
+        #~ filename = self.lineEdit.text()
+        #~ filename = self._choose(filename)
+        #~ if filename:
+            #~ self.lineEdit.setText(filename)
+
+
+class GeneralPreferencesPage(QtGui.QWidget):
+    uifile = os.path.join(os.path.dirname(__file__), 'ui', 'general-page.ui')
+
+    def __init__(self, *args):
+        QtGui.QWidget.__init__(self, *args)
+        uic.loadUi(self.uifile, self)
+
+        self.loglevelComboBox.setFocus()
+
+        # Log level
+        logger = logging.getLogger() # @TODO: fix
+        level = logging.getLevelName(logger.level)
+        self.setLoglevel(level)
+
+        self.connect(self.resetLoglevelButton,
+                     QtCore.SIGNAL('clicked()'),
+                     self.setLoglevel)
+
+        #~ self.connect(self.loglevelComboBox,
+                     #~ QtCore.SIGNAL('currentIndexChanged(const QString&)'),
+                     #~ self.changeLoglevel)
+
+        # Work directory
+        completer = QtGui.QCompleter(self.workdirLineEdit)
+        model = QtGui.QDirModel(completer)
+        model.setFilter(QtCore.QDir.AllDirs)
+        completer.setModel(model)
+        #completer.setCompletionMode(QtGui.QCompleter.InlineCompletion)
+        self.workdirLineEdit.setCompleter(completer)
+        self._workdir_completer = completer # needed to keep the completer alive
+
+        self.connect(self.chooseWorkdirButton,
+                     QtCore.SIGNAL('clicked()'),
+                     self.chooseWorkdir)
+
+        # Favorite editor
+        self.foldersListWidget.addAction(self.actionAddFavorite)
+        self.foldersListWidget.addAction(self.actionEditFavorite)
+        self.foldersListWidget.addAction(self.actionRemoveFavorite)
+        self.foldersListWidget.addAction(self.actionClearFavorites)
+
+        self.setFavoriteActions()
+        self.enableClearAction()
+
+        self.connect(self.actionAddFavorite,
+                    QtCore.SIGNAL('triggered()'),
+                    self.addFavorite)
+
+        self.connect(self.actionEditFavorite,
+                    QtCore.SIGNAL('triggered()'),
+                    self.editFavorite)
+
+        self.connect(self.actionRemoveFavorite,
+                    QtCore.SIGNAL('triggered()'),
+                    self.removeFavorite)
+
+        self.connect(self.actionClearFavorites,
+                    QtCore.SIGNAL('triggered()'),
+                    self.clearFavorites)
+
+        self.connect(self.foldersListWidget,
+                     QtCore.SIGNAL('itemSelectionChanged()'),
+                     self.setFavoriteActions)
+
+        self.connect(self.foldersListWidget.model(),
+                     QtCore.SIGNAL('rowsInserted(const QModelIndex&, int, int)'),
+                     self.enableClearAction)
+
+        self.connect(self.foldersListWidget.model(),
+                     QtCore.SIGNAL('rowsRemoved(const QModelIndex&, int, int)'),
+                     self.enableClearAction)
+
+    def apply():
+        # Log level
+        # Work directory
+        # Favorite foldes
+        pass
+
+    def _chooseDir(self, dirname=''):
+        try:
+            mainwin = self.window()
+            filedialog = mainwin.filedialog
+            oldmode = filedialog.fileMode()
+            if dirname:
+                filedialog.setDirectory(dirname)
+            try:
+                filedialog.setFileMode(QtGui.QFileDialog.Directory)
+                if filedialog.exec_():
+                    dirname = str(filedialog.selectedFiles()[0])
+            finally:
+                fiedialog.setFileMode(oldmode)
+        except AttributeError:
+            if not dirname:
+                if sys.platform[:3] == 'win':
+                    dirname = 'C:\\'
+                else:
+                    dirname = os.path.expanduser('~')
+            dirname = QtGui.QFileDialog.getExistingDirectory(
+                                    self,
+                                    self.tr('Choose the work directory'),
+                                    dirname)
+        return dirname
+
+    # Log level
+    def setLoglevel(self, level='INFO'):
+        index = self.loglevelComboBox.findText(level)
+        self.loglevelComboBox.setCurrentIndex(index)
+
+    #~ def changeLoglevel(self, level):
+        #~ # @TODO: mark as changed an apply changes only when "Apply" or "OK"
+        #~ #        are pressed
+        #~ logger = logging.getLogger()    # @TODO: fix
+        #~ logger.setLevel(logging.getLevelName(level))
+
+    # Workdir
+    def chooseWorkdir(self):
+        dirname = self.workdirLineEdit.text()
+        dirname = self._chooseDir(dirname)
+        if dirname:
+            self.workdirLineEdit.setText(dirname)
+
+    # Favorite foldes
+    def addFavorite(self):
+        dirname = self._chooseDir()
+        if dirname:
+            item = QtGui.QListWidgetItem(dirname)
+            item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
+            self.foldersListWidget.addItem(item)
+            #self.foldersListWidget.addItem(newdir)
+
+    def editFavorite(self, item=None):
+        if item is None:
+            item = self.foldersListWidget.currentItem()
+        self.foldersListWidget.clearSelection()
+        dirname = self._chooseDir(dirname=item.text())
+        if dirname:
+            item.setText(dirname)
+
+    def removeFavorite(self):
+        for item in self.foldersListWidget.selectedItems():
+            model = self.foldersListWidget.model()
+            row = self.foldersListWidget.row(item)
+            model.removeRow(row)
+
+    def clearFavorites(self):
+        self.foldersListWidget.clear()
+        self.enableClearAction()
+
+    def setFavoriteActions(self):
+        if len(self.foldersListWidget.selectedItems()):
+            enabled = True
+        else:
+            enabled = False
+        self.actionEditFavorite.setEnabled(enabled)
+        self.actionRemoveFavorite.setEnabled(enabled)
+
+        self.editFolderButton.setEnabled(enabled)
+        self.removeFolderButton.setEnabled(enabled)
+
+    def enableClearAction(self):
+        if self.foldersListWidget.count():
+            enabled = True
+        else:
+            enabled = False
+        self.actionClearFavorites.setEnabled(enabled)
+        self.clearFoldersButton.setEnabled(enabled)
+
+
+class GDALPreferencesPage(QtGui.QWidget):
+    uifile = os.path.join(os.path.dirname(__file__), 'ui', 'gdal-page.ui')
+
+    def __init__(self, *args):
+        QtGui.QWidget.__init__(self, *args)
+        uic.loadUi(self.uifile, self)
+
+        # environment
+        hheader = self.envTableWidget.horizontalHeader()
+        hheader.hide()
+        hheader.resizeSections(QtGui.QHeaderView.ResizeToContents)
+        hheader.setStretchLastSection(True)
+
+        for row in range(self.envTableWidget.rowCount()):
+            item = QtGui.QTableWidgetItem('')
+            item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
+            self.envTableWidget.setItem(row, 0, item)
+
+        # config options
+        #~ gdal.GetConfigOption('CPL_DEBUG', 'OFF')
+        #~ gdal.GetConfigOption('GDAL_PAM_ENABLED', "NULL")
+        #~ gdal.GetConfigOption(GDAL_DATA) (path of the GDAL "data" directory)
+        #~ #gdal.GetConfigOption(GDAL_CACHEMAX) (memory used internally for caching in megabytes)
+
+
+
 class PreferencesDialog(QtGui.QDialog):
 
     uifile = os.path.join(os.path.dirname(__file__), 'ui', 'preferences.ui')
@@ -154,7 +442,16 @@ class PreferencesDialog(QtGui.QDialog):
         QtGui.QDialog.__init__(self, *args)
         uic.loadUi(self.uifile, self)
 
-        #~ self.titleLabel.setText('%s v. %s' % (self.tr(info.name), info.version))
+        self.connect(
+            self.listWidget,
+            QtCore.SIGNAL('currentItemChanged(QListWidgetItem*, QListWidgetItem*)'),
+            self.changePage)
+
+    def changePage(self, current, previous):
+        if not current:
+            current = previous
+
+        self.stackedWidget.setCurrentIndex(self.listWidget.row(current))
 
 if __name__ == '__main__':
     def test_gdalinfowidget():
@@ -172,12 +469,32 @@ if __name__ == '__main__':
         d.show()
         app.exec_()
 
+    def test_generalpreferencespage():
+        app = QtGui.QApplication(sys.argv)
+        d = QtGui.QDialog()
+        layout = QtGui.QVBoxLayout()
+        layout.addWidget(GeneralPreferencesPage())
+        d.setLayout(layout)
+        d.show()
+        app.exec_()
+
+    def test_gdalpreferencespage():
+        app = QtGui.QApplication(sys.argv)
+        d = QtGui.QDialog()
+        layout = QtGui.QVBoxLayout()
+        layout.addWidget(GDALPreferencesPage())
+        d.setLayout(layout)
+        d.show()
+        app.exec_()
+
     def test_preferencesdialog():
         app = QtGui.QApplication(sys.argv)
-        d = AboutDialog()
+        d = PreferencesDialog()
         d.show()
         app.exec_()
 
     #~ test_gdalinfowidget()
-    test_aboutdialog()
-    #~ test_preferencesdialog()
+    #~ test_aboutdialog()
+    #~ test_generalpreferencespage()
+    #~ test_gdalpreferencespage()
+    test_preferencesdialog()

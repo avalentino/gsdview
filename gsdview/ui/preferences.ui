@@ -5,15 +5,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>586</width>
-    <height>416</height>
+    <width>712</width>
+    <height>533</height>
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Dialog</string>
+   <string>Preferences</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="../resources.qrc" >
+   <iconset resource="../../resources.qrc" >
     <normaloff>:/images/preferences.svg</normaloff>:/images/preferences.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" >
@@ -32,6 +32,9 @@
          <width>128</width>
          <height>16777215</height>
         </size>
+       </property>
+       <property name="toolTip" >
+        <string/>
        </property>
        <property name="iconSize" >
         <size>
@@ -65,7 +68,7 @@
          <string>General</string>
         </property>
         <property name="icon" >
-         <iconset resource="../resources.qrc" >
+         <iconset resource="../../resources.qrc" >
           <normaloff>:/images/preferences.svg</normaloff>:/images/preferences.svg</iconset>
         </property>
        </item>
@@ -74,7 +77,7 @@
          <string>GDAL</string>
         </property>
         <property name="icon" >
-         <iconset resource="../resources.qrc" >
+         <iconset resource="../../resources.qrc" >
           <normaloff>:/images/GDALLogoColor.svg</normaloff>:/images/GDALLogoColor.svg</iconset>
         </property>
        </item>
@@ -83,7 +86,7 @@
          <string>Cache</string>
         </property>
         <property name="icon" >
-         <iconset resource="../resources.qrc" >
+         <iconset resource="../../resources.qrc" >
           <normaloff>:/images/harddisk.svg</normaloff>:/images/harddisk.svg</iconset>
         </property>
        </item>
@@ -92,7 +95,7 @@
          <string>Misc</string>
         </property>
         <property name="icon" >
-         <iconset resource="../resources.qrc" >
+         <iconset resource="../../resources.qrc" >
           <normaloff>:/images/misc-preferences.svg</normaloff>:/images/misc-preferences.svg</iconset>
         </property>
        </item>
@@ -100,154 +103,60 @@
      </item>
      <item>
       <widget class="QStackedWidget" name="stackedWidget" >
-       <widget class="QWidget" name="general_page" >
-        <layout class="QVBoxLayout" name="verticalLayout_4" >
+       <widget class="QWidget" name="generalPage" >
+        <layout class="QVBoxLayout" name="generalVerticalLayout" >
          <item>
-          <widget class="QGroupBox" name="groupBox" >
+          <widget class="QGroupBox" name="generalGroupBox" >
            <property name="title" >
             <string>General</string>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout_3" >
+           <layout class="QVBoxLayout" name="generalGroupVerticalLayout" >
             <item>
-             <widget class="QGroupBox" name="groupBox_2" >
-              <property name="title" >
-               <string>Debug Level</string>
-              </property>
-              <layout class="QHBoxLayout" name="horizontalLayout_3" >
-               <item>
-                <widget class="QComboBox" name="comboBox" >
-                 <item>
-                  <property name="text" >
-                   <string>DEBUG</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text" >
-                   <string>INFO</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text" >
-                   <string>WARNING</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text" >
-                   <string>ERROR</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text" >
-                   <string>CRITICAL</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer" >
-                 <property name="orientation" >
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0" >
-                  <size>
-                   <width>188</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QPushButton" name="pushButton" >
-                 <property name="text" >
-                  <string>Reset</string>
-                 </property>
-                 <property name="icon" >
-                  <iconset resource="../resources.qrc" >
-                   <normaloff>:/images/clear.svg</normaloff>:/images/clear.svg</iconset>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
-             <widget class="QGroupBox" name="groupBox_3" >
-              <property name="title" >
-               <string>Working Directory</string>
-              </property>
-              <layout class="QHBoxLayout" name="horizontalLayout_2" >
-               <item>
-                <widget class="QLineEdit" name="lineEdit" />
-               </item>
-               <item>
-                <widget class="QPushButton" name="pushButton_2" >
-                 <property name="icon" >
-                  <iconset resource="../resources.qrc" >
-                   <normaloff>:/images/open.svg</normaloff>:/images/open.svg</iconset>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
-             <widget class="QGroupBox" name="groupBox_4" >
-              <property name="title" >
-               <string>Favorite Folders</string>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_2" >
-               <item>
-                <widget class="QListWidget" name="listWidget_2" />
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_4" >
-                 <item>
-                  <widget class="QPushButton" name="pushButton_3" >
-                   <property name="text" >
-                    <string>Add</string>
-                   </property>
-                   <property name="icon" >
-                    <iconset resource="../resources.qrc" >
-                     <normaloff>:/images/add.svg</normaloff>:/images/add.svg</iconset>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="pushButton_5" >
-                   <property name="text" >
-                    <string>Edit</string>
-                   </property>
-                   <property name="icon" >
-                    <iconset resource="../resources.qrc" >
-                     <normaloff>:/images/edit.svg</normaloff>:/images/edit.svg</iconset>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="pushButton_4" >
-                   <property name="text" >
-                    <string>Remove</string>
-                   </property>
-                   <property name="icon" >
-                    <iconset resource="../resources.qrc" >
-                     <normaloff>:/images/remove.svg</normaloff>:/images/remove.svg</iconset>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </widget>
+             <widget class="GeneralPreferencesPage" native="1" name="generalPreferencesPage" />
             </item>
            </layout>
           </widget>
          </item>
         </layout>
-        <zorder>multipagewidget</zorder>
-        <zorder>groupBox</zorder>
-        <zorder>lineEdit</zorder>
        </widget>
-       <widget class="QWidget" name="gdal_page" />
+       <widget class="QWidget" name="gdalPage" >
+        <layout class="QVBoxLayout" name="gdalVerticalLayout" >
+         <item>
+          <widget class="QGroupBox" name="gdalGroupBox" >
+           <property name="title" >
+            <string>GDAL</string>
+           </property>
+           <layout class="QVBoxLayout" name="gdalGroupVerticalLayout" >
+            <item>
+             <widget class="GDALPreferencesPage" native="1" name="gdalPreferencesPage" />
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="cachePage" >
+        <layout class="QVBoxLayout" name="verticalLayout_3" >
+         <item>
+          <widget class="QGroupBox" name="cacheGroupBox" >
+           <property name="title" >
+            <string>Cache</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="miscPage" >
+        <layout class="QVBoxLayout" name="verticalLayout_4" >
+         <item>
+          <widget class="QGroupBox" name="miscGroupBox" >
+           <property name="title" >
+            <string>Misc</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </item>
     </layout>
@@ -263,36 +172,23 @@
     </widget>
    </item>
   </layout>
-  <action name="action_add_favorite" >
-   <property name="icon" >
-    <iconset resource="../resources.qrc" >
-     <normaloff>:/images/add.svg</normaloff>:/images/add.svg</iconset>
-   </property>
-   <property name="text" >
-    <string>Add</string>
-   </property>
-  </action>
-  <action name="action_remove_favorite" >
-   <property name="icon" >
-    <iconset resource="../resources.qrc" >
-     <normaloff>:/images/remove.svg</normaloff>:/images/remove.svg</iconset>
-   </property>
-   <property name="text" >
-    <string>Remove</string>
-   </property>
-  </action>
-  <action name="action_edit_favorite" >
-   <property name="icon" >
-    <iconset resource="../resources.qrc" >
-     <normaloff>:/images/edit.svg</normaloff>:/images/edit.svg</iconset>
-   </property>
-   <property name="text" >
-    <string>Edit</string>
-   </property>
-  </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GeneralPreferencesPage</class>
+   <extends>QWidget</extends>
+   <header>widgets.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GDALPreferencesPage</class>
+   <extends>QWidget</extends>
+   <header>widgets.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
-  <include location="../resources.qrc" />
+  <include location="../../resources.qrc" />
  </resources>
  <connections>
   <connection>
