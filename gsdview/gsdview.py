@@ -40,20 +40,19 @@ except ImportError:
 
 from PyQt4 import QtCore, QtGui
 
-import gsdview_resources
-
+import utils
+import gdalqt4
 import gsdtools
+import exectools
 import qt4support
 import gdalsupport
-import gdalqt4
-
-import exectools
-from exectools.qt4tools import Qt4ToolController, Qt4DialogLoggingHandler
-
-from gdalexectools import GdalAddOverviewDescriptor, GdalOutputHandler
 
 from widgets import AboutDialog
 from graphicsview import GraphicsView
+from gdalexectools import GdalAddOverviewDescriptor, GdalOutputHandler
+from exectools.qt4tools import Qt4ToolController, Qt4DialogLoggingHandler
+
+import gsdview_resources
 
 
 class GSDView(QtGui.QMainWindow):
@@ -74,7 +73,7 @@ class GSDView(QtGui.QMainWindow):
     GSDVIEWROOT = os.path.dirname(os.path.abspath(__file__))
 
     def __init__(self, parent=None):
-        QtGui.qApp.setWindowIcon(QtGui.QIcon(':/images/GSDView.svg'))
+        QtGui.qApp.setWindowIcon(QtGui.QIcon(':/images/GSDView.png'))
 
         QtGui.QMainWindow.__init__(self, parent)
         self.setWindowTitle(self.tr('GSDView'))
@@ -301,7 +300,7 @@ class GSDView(QtGui.QMainWindow):
 
         position = settings.value('position')
         if not position.isNull():
-            move(position.toPoint())
+            self.move(position.toPoint())
         size = settings.value('size')
         if not size.isNull():
             self.resize(size.toSize())
@@ -376,7 +375,7 @@ class GSDView(QtGui.QMainWindow):
         settings.beginGroup('preferences')
 
         # log level
-        level = settings.value('loglevel', 'INFO').toString()
+        level = settings.value('loglevel', QtCore.QVariant('INFO')).toString()
         levelno = logging.getLevelName(str(level))
         if isinstance(levelno, int):
             self.logger.setLevel(levelno)
@@ -446,7 +445,6 @@ class GSDView(QtGui.QMainWindow):
             logging.debug('unable to save sidebar URLs of the file dialog')
         settings.endGroup()
 
-    # @TODO: check (unused at the moment)
     def saveSettings(self, settings=None):
         if settings is None:
             settings = self.settings
@@ -458,10 +456,11 @@ class GSDView(QtGui.QMainWindow):
         settings.beginGroup('preferences')
 
         level = QtCore.QVariant(logging.getLevelName(self.logger.level))
-        settings.setValue('loglevel', level)
+        settings.setValue('loglevel', QtCore.QVariant(level))
 
-        settings.setValue('cachedir', self.cachedir)
-        settings.setValue('gdalcachesize', QtCore.QVariant(gdal.GetCacheMax()))
+        # only changed via preferences
+        #settings.setValue('cachedir', QtCore.QVariant(self.cachedir))
+        #settings.setValue('gdalcachesize', QtCore.QVariant(gdal.GetCacheMax()))
 
         settings.endGroup()
         # GDAL
