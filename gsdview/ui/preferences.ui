@@ -111,6 +111,9 @@
             <string>General</string>
            </property>
            <layout class="QVBoxLayout" name="generalGroupVerticalLayout" >
+            <property name="spacing" >
+             <number>3</number>
+            </property>
             <item>
              <widget class="GeneralPreferencesPage" native="1" name="generalPreferencesPage" />
             </item>
@@ -121,6 +124,9 @@
        </widget>
        <widget class="QWidget" name="gdalPage" >
         <layout class="QVBoxLayout" name="gdalVerticalLayout" >
+         <property name="spacing" >
+          <number>3</number>
+         </property>
          <item>
           <widget class="QGroupBox" name="gdalGroupBox" >
            <property name="title" >
@@ -137,6 +143,9 @@
        </widget>
        <widget class="QWidget" name="cachePage" >
         <layout class="QVBoxLayout" name="verticalLayout_3" >
+         <property name="spacing" >
+          <number>3</number>
+         </property>
          <item>
           <widget class="QGroupBox" name="cacheGroupBox" >
            <property name="title" >
@@ -148,6 +157,9 @@
        </widget>
        <widget class="QWidget" name="miscPage" >
         <layout class="QVBoxLayout" name="verticalLayout_4" >
+         <property name="spacing" >
+          <number>3</number>
+         </property>
          <item>
           <widget class="QGroupBox" name="miscGroupBox" >
            <property name="title" >

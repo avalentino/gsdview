@@ -12,207 +12,191 @@
   <property name="windowTitle" >
    <string>Form</string>
   </property>
-  <widget class="QGroupBox" name="optionsGroupBox" >
-   <property name="geometry" >
-    <rect>
-     <x>9</x>
-     <y>44</y>
-     <width>573</width>
-     <height>195</height>
-    </rect>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <property name="spacing" >
+    <number>0</number>
    </property>
-   <property name="title" >
-    <string>Configuration options</string>
-   </property>
-   <widget class="QCheckBox" name="gdalDataCheckBox" >
-    <property name="geometry" >
-     <rect>
-      <x>11</x>
-      <y>62</y>
-      <width>143</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>GDAL_DATA</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cacheCheckBox" >
-    <property name="geometry" >
-     <rect>
-      <x>11</x>
-      <y>29</y>
-      <width>143</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>GDAL_CACHEMAX</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox" >
-    <property name="geometry" >
-     <rect>
-      <x>11</x>
-      <y>93</y>
-      <width>143</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>GDAL_SKIP</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit" >
-    <property name="geometry" >
-     <rect>
-      <x>160</x>
-      <y>93</y>
-      <width>402</width>
-      <height>23</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_2" >
-    <property name="geometry" >
-     <rect>
-      <x>11</x>
-      <y>125</y>
-      <width>143</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>GDAL_DRIVER_PATH</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_3" >
-    <property name="geometry" >
-     <rect>
-      <x>11</x>
-      <y>159</y>
-      <width>143</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>OGR_DRIVER_PATH</string>
-    </property>
-   </widget>
-   <widget class="QWidget" name="" >
-    <property name="geometry" >
-     <rect>
-      <x>160</x>
-      <y>28</y>
-      <width>402</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout" >
+   <item>
+    <layout class="QHBoxLayout" name="infoHorizontalLayout" >
      <item>
-      <widget class="QSpinBox" name="cacheSpinBox" >
-       <property name="enabled" >
-        <bool>false</bool>
-       </property>
-       <property name="maximum" >
-        <number>1000000</number>
-       </property>
-       <property name="singleStep" >
-        <number>10000</number>
-       </property>
-       <property name="value" >
-        <number>40000</number>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer" >
+      <spacer name="infoHorizontalSpacer" >
        <property name="orientation" >
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0" >
         <size>
-         <width>40</width>
-         <height>20</height>
+         <width>188</width>
+         <height>24</height>
         </size>
        </property>
       </spacer>
      </item>
+     <item>
+      <widget class="QPushButton" name="infoButton" >
+       <property name="text" >
+        <string>Show detailed GDAL info</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../../resources.qrc" >
+         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
+       </property>
+      </widget>
+     </item>
     </layout>
-   </widget>
-  </widget>
-  <widget class="QGroupBox" name="extraOptGroupBox" >
-   <property name="geometry" >
-    <rect>
-     <x>9</x>
-     <y>245</y>
-     <width>573</width>
-     <height>327</height>
-    </rect>
-   </property>
-   <property name="title" >
-    <string>Extra optons</string>
-   </property>
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="checked" >
-    <bool>false</bool>
-   </property>
-   <layout class="QVBoxLayout" name="extraOptVerticalLayout" >
-    <item>
-     <widget class="QTableWidget" name="extraOptTableWidget" >
-      <property name="sizePolicy" >
-       <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="optionsGroupBox" >
+     <property name="title" >
+      <string>Configuration options</string>
+     </property>
+     <layout class="QGridLayout" name="optionsGridLayout" >
+      <property name="verticalSpacing" >
+       <number>2</number>
       </property>
-      <property name="horizontalScrollMode" >
-       <enum>QAbstractItemView::ScrollPerPixel</enum>
-      </property>
-      <column>
-       <property name="text" >
-        <string>Key</string>
-       </property>
-      </column>
-      <column>
-       <property name="text" >
-        <string>Value</string>
-       </property>
-      </column>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="" >
-   <layout class="QHBoxLayout" name="infoHorizontalLayout" >
-    <item>
-     <spacer name="infoHorizontalSpacer" >
-      <property name="orientation" >
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0" >
-       <size>
-        <width>188</width>
-        <height>24</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item>
-     <widget class="QPushButton" name="infoButton" >
-      <property name="text" >
-       <string>Show detailed GDAL info</string>
-      </property>
-      <property name="icon" >
-       <iconset resource="../../resources.qrc" >
-        <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
+      <item row="0" column="0" >
+       <widget class="QCheckBox" name="cacheCheckBox" >
+        <property name="text" >
+         <string>GDAL_CACHEMAX</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <layout class="QHBoxLayout" name="cacheHorizontalLayout" >
+        <item>
+         <widget class="QSpinBox" name="cacheSpinBox" >
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+          <property name="suffix" >
+           <string> MB</string>
+          </property>
+          <property name="maximum" >
+           <number>1000</number>
+          </property>
+          <property name="singleStep" >
+           <number>10</number>
+          </property>
+          <property name="value" >
+           <number>40</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="cacheHorizontalSpacer" >
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QCheckBox" name="gdalDataCheckBox" >
+        <property name="text" >
+         <string>GDAL_DATA</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="FileEntryWidget" native="1" name="gdalDataDirEntryWidget" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QCheckBox" name="skipCheckBox" >
+        <property name="text" >
+         <string>GDAL_SKIP</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" >
+       <widget class="QLineEdit" name="skipLineEdit" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" >
+       <widget class="QCheckBox" name="gdalDriverPathCheckBox" >
+        <property name="text" >
+         <string>GDAL_DRIVER_PATH</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" >
+       <widget class="FileEntryWidget" native="1" name="gdalDriverPathEntryWidget" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" >
+       <widget class="QCheckBox" name="ogrDriverPathCheckBox" >
+        <property name="text" >
+         <string>OGR_DRIVER_PATH</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1" >
+       <widget class="FileEntryWidget" native="1" name="ogrDriverPathEntryWidget" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="extraOptGroupBox" >
+     <property name="title" >
+      <string>Extra configuration optons</string>
+     </property>
+     <property name="checkable" >
+      <bool>true</bool>
+     </property>
+     <property name="checked" >
+      <bool>false</bool>
+     </property>
+     <layout class="QVBoxLayout" name="extraOptVerticalLayout" >
+      <item>
+       <widget class="QTableWidget" name="extraOptTableWidget" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="verticalScrollMode" >
+         <enum>QAbstractItemView::ScrollPerPixel</enum>
+        </property>
+        <property name="horizontalScrollMode" >
+         <enum>QAbstractItemView::ScrollPerPixel</enum>
+        </property>
+        <column>
+         <property name="text" >
+          <string>Key</string>
+         </property>
+        </column>
+        <column>
+         <property name="text" >
+          <string>Value</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
   <action name="actionAddEnvVar" >
    <property name="icon" >
     <iconset resource="../../resources.qrc" >
@@ -271,6 +255,14 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>FileEntryWidget</class>
+   <extends>QWidget</extends>
+   <header>widgets.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../resources.qrc" />
  </resources>
@@ -282,12 +274,76 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>94</x>
-     <y>176</y>
+     <x>114</x>
+     <y>94</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>217</x>
-     <y>177</y>
+     <x>251</x>
+     <y>95</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gdalDataCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>gdalDataDirEntryWidget</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>136</x>
+     <y>114</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>188</x>
+     <y>115</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>skipCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>skipLineEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>100</x>
+     <y>147</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>206</x>
+     <y>151</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gdalDriverPathCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>gdalDriverPathEntryWidget</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>102</x>
+     <y>166</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>228</x>
+     <y>170</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ogrDriverPathCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>ogrDriverPathEntryWidget</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>116</x>
+     <y>203</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>212</x>
+     <y>201</y>
     </hint>
    </hints>
   </connection>

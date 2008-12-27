@@ -42,6 +42,41 @@ import gdalsupport
 import gsdview_resources
 
 
+def _get_filedialog(parent=None):
+    try:
+        #mainwin = QtGui.qApp.findChild(QtGui.QMainWindow,  'gsdview-mainwin')
+        for mainwin in QtGui.qApp.topLevelWidgets():
+            if mainwin.objectName() == 'gsdview-mainwin':
+                break
+        else:
+            # if no widget with the searched name is found then reset
+            mainwin = None
+        dialog = mainwin.filedialog
+    except AttributeError:
+        logging.debug('unable to find the GDSView main window widget')
+        dialog = QtGui.QFileDialog(parent)
+        print 'unable to find the GDSView main window widget'
+    return dialog
+
+def _choosefile(filename='', dialog=None, mode=None):
+    if not dialog:
+        dialog = _get_filedialog()
+
+    oldmode = dialog.fileMode()
+    if filename:
+        dialog.setDirectory(os.path.dirname(str(filename)))
+    try:
+        if mode is not None:
+            dialog.setFileMode(mode)
+        if dialog.exec_():
+            filename = str(dialog.selectedFiles()[0])
+    finally:
+        dialog.setFileMode(oldmode)
+    return filename
+
+def _choosedir(dirname, dialog=None,):
+    return _choosefile(dirname, dialog, QtGui.QFileDialog.DirectoryOnly)
+
 class GDALInfoWidget(QtGui.QWidget):
     uifile = os.path.join(os.path.dirname(__file__), 'ui', 'gdalinfo.ui')
 
@@ -169,11 +204,15 @@ class FileEntryWidget(QtGui.QWidget):
         layout = QtGui.QHBoxLayout()
         layout.addWidget(self.lineEdit)
         layout.addWidget(self.button)
+        layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
 
         self._mode = None
         self.mode = mode
         self.dialog = dialog
+
+        #~ if not self.dialog:
+            #~ self.dialog = _get_filedialog(self)
 
         self.connect(self.button, QtCore.SIGNAL('clicked()'), self.choose)
 
@@ -181,7 +220,6 @@ class FileEntryWidget(QtGui.QWidget):
         return self._mode
 
     def _set_mode(self, mode):
-        print 'ppp'
         if mode == QtGui.QFileDialog.ExistingFiles:
             raise ValueError('"QtGui.QFileDialog.ExistingFiles": multiple '
                              'files selection not allowed')
@@ -198,25 +236,9 @@ class FileEntryWidget(QtGui.QWidget):
 
     mode = property(_get_mode, _set_mode)
 
-    def _choose(self, filename='', directory=False):
-        if not self.dialog:
-            self.dialog = QtGui.QFileDialog(self)
-
-        oldmode = self.dialog.fileMode()
-        if filename:
-            self.dialog.setDirectory(os.path.dirname(str(filename)))
-        try:
-            if self.mode is not None:
-                self.dialog.setFileMode(self.mode)
-            if self.dialog.exec_():
-                filename = str(self.dialog.selectedFiles()[0])
-        finally:
-            self.dialog.setFileMode(oldmode)
-        return filename
-
     def choose(self):
         filename = self.lineEdit.text()
-        filename = self._choose(filename)
+        filename = _choosefile(filename, self.dialog, self.mode)
         if filename:
             self.lineEdit.setText(filename)
 
@@ -229,6 +251,8 @@ class GeneralPreferencesPage(QtGui.QWidget):
     def __init__(self, parent=None, flags=QtCore.Qt.Widget):
         QtGui.QWidget.__init__(self, parent, flags)
         uic.loadUi(self.uifile, self)
+
+        self._dialog = _get_filedialog(self)
 
         self.loglevelComboBox.setFocus()
 
@@ -246,17 +270,9 @@ class GeneralPreferencesPage(QtGui.QWidget):
                      #~ self.changeLoglevel)
 
         # Work directory
-        completer = QtGui.QCompleter(self.workdirLineEdit)
-        model = QtGui.QDirModel(completer)
-        model.setFilter(QtCore.QDir.AllDirs)
-        completer.setModel(model)
-        #completer.setCompletionMode(QtGui.QCompleter.InlineCompletion)
-        self.workdirLineEdit.setCompleter(completer)
-        self._workdir_completer = completer # needed to keep the completer alive
-
-        self.connect(self.chooseWorkdirButton,
-                     QtCore.SIGNAL('clicked()'),
-                     self.chooseWorkdir)
+        self.workdirEntryWidget.dialog = self._dialog
+        self.workdirEntryWidget.mode = QtGui.QFileDialog.Directory
+        #self.workdirEntryWidget.mode = QtGui.QFileDialog.DirectoryOnly
 
         # Favorite editor
         self.foldersListWidget.addAction(self.actionAddFavorite)
@@ -358,28 +374,6 @@ class GeneralPreferencesPage(QtGui.QWidget):
             logging.debug('unable to save sidebar URLs of the file dialog')
         settings.endGroup()
 
-    def _chooseDir(self, dirname=''):
-        try:
-            mainwin = self.window()
-            filedialog = mainwin.filedialog
-            oldmode = filedialog.fileMode()
-            if dirname:
-                filedialog.setDirectory(dirname)
-            try:
-                filedialog.setFileMode(QtGui.QFileDialog.Directory)
-                if filedialog.exec_():
-                    dirname = str(filedialog.selectedFiles()[0])
-            finally:
-                fiedialog.setFileMode(oldmode)
-        except AttributeError:
-            if not dirname:
-                dirname = utils.default_workdir()
-            dirname = QtGui.QFileDialog.getExistingDirectory(
-                                    self,
-                                    self.tr('Choose the work directory'),
-                                    dirname)
-        return dirname
-
     # Log level
     def setLoglevel(self, level='INFO'):
         index = self.loglevelComboBox.findText(level)
@@ -394,7 +388,7 @@ class GeneralPreferencesPage(QtGui.QWidget):
     # Workdir
     def chooseWorkdir(self):
         dirname = self.workdirLineEdit.text()
-        dirname = self._chooseDir(dirname)
+        dirname = _choosedir(dirname, self._dialog)
         if dirname:
             self.workdirLineEdit.setText(dirname)
 
@@ -405,7 +399,7 @@ class GeneralPreferencesPage(QtGui.QWidget):
         self.foldersListWidget.addItem(item)
 
     def addFavorite(self):
-        dirname = self._chooseDir()
+        dirname = _choosedir(dirname='', dialog=self._dialog)
         if dirname:
             self._addFavorite(dirname)
 
@@ -413,7 +407,7 @@ class GeneralPreferencesPage(QtGui.QWidget):
         if item is None:
             item = self.foldersListWidget.currentItem()
         self.foldersListWidget.clearSelection()
-        dirname = self._chooseDir(dirname=item.text())
+        dirname = _choosedir(dirname=item.text(), dialog=self._dialog)
         if dirname:
             item.setText(dirname)
 
@@ -457,150 +451,47 @@ class GDALPreferencesPage(QtGui.QWidget):
         # info button
         self.connect(self.infoButton, QtCore.SIGNAL('clicked()'), self.showinfo)
 
-        # GDAL config
-        self.connect(self.gdalDataChooseDirButton,
-                     QtCore.SIGNAL('clicked()'),
-                     self.debugComboBox.setEnabled)
+        # standard options
+        cachesize = gdal.GetCacheMax()
+        self.cacheSpinBox.setValue(cachesize/1024**2)
+        dialog = _get_filedialog(self)
+        for name in ('gdalDataDir', 'gdalDriverPath', 'ogrDriverPath'):
+            widget = getattr(self, name + 'EntryWidget')
+            widget.dialog = dialog
+            widget.mode = QtGui.QFileDialog.Directory
 
-        # environment
-        hheader = self.envTableWidget.horizontalHeader()
-        hheader.hide()
+        # extra options
+        self._extraoptions = {}
+        stdoptions = set(('GDAL_DATA', 'GDAL_SKIP', 'GDAL_DRIVER_PATH',
+                          'OGR_DRIVER_PATH', 'GDAL_CACHEMAX', ''))
+
+        extraoptions = gdalsupport.GDAL_CONFIG_OPTIONS.splitlines()
+        extraoptions = [opt for opt in extraoptions if opt not in stdoptions]
+        self.extraOptTableWidget.setRowCount(len(extraoptions))
+
+        for row, key in enumerate(extraoptions):
+            item = QtGui.QTableWidgetItem(key)
+            item.setFlags(item.flags() ^ QtCore.Qt.ItemIsEditable)
+            self.extraOptTableWidget.setItem(row, 0, item)
+            value = gdal.GetConfigOption(key, '')
+            item = QtGui.QTableWidgetItem(value)
+            self.extraOptTableWidget.setItem(row, 1, item)
+            if value:
+                self._extraoptions[key] = value
+
+        hheader = self.extraOptTableWidget.horizontalHeader()
+        #hheader.hide()
         hheader.resizeSections(QtGui.QHeaderView.ResizeToContents)
         hheader.setStretchLastSection(True)
 
-        #~ for row in range(self.envTableWidget.rowCount()):
-            #~ item = QtGui.QTableWidgetItem('')
-            #~ item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
-            #~ self.envTableWidget.setItem(row, 0, item)
-
-        # config options
-        #~ gdal.GetConfigOption('CPL_DEBUG', 'OFF')
-        #~ gdal.GetConfigOption('GDAL_PAM_ENABLED', "NULL")
-        #~ gdal.GetConfigOption('GDAL_PAM_MODE', "NULL")
-        #~ gdal.GetConfigOption(GDAL_DATA) (path of the GDAL "data" directory)
-        #~ #gdal.GetConfigOption(GDAL_CACHEMAX) (memory used internally for caching in megabytes)
-    '''
-    GDAL_DATA
-    GDAL_SKIP
-    GDAL_DRIVER_PATH
-    OGR_DRIVER_PATH
-
-    #GDAL_CACHEMAX
-    GDAL_FORCE_CACHING
-    GDAL_DISABLE_READDIR_ON_OPEN
-    GDAL_MAX_DATASET_POOL_SIZE
-    GDAL_IGNORE_AXIS_ORIENTATION
-    GDAL_SWATH_SIZE
-    GDAL_DISABLE_READDIR_ON_OPEN
-    GDAL_VALIDATE_CREATION_OPTIONS
-    GDAL_ONE_BIG_READ
-    GDAL_DTED_SINGLE_BLOCK
-
-    GDAL_PAM_ENABLED
-    GDAL_PAM_MODE
-    GDAL_PAM_PROXY_DIR
-
-    GDAL_TIFF_INTERNAL_MASK
-    GDAL_TIFF_ENDIANNESS
-
-    GDAL_JPEG_TO_RGB
-    GDAL_ECW_CACHE_MAXMEM
-
-    OGR_XPLANE_READ_WHOLE_FILE
-    OGR_SDE_GETLAYERTYPE
-    OGR_SDE_SEARCHORDER
-    OGR_S57_OPTIONS
-    OGR_DEBUG_ORGANIZE_POLYGONS
-    OGR_ORGANIZE_POLYGONS
-
-    CPL_DEBUG
-    CPL_LOG
-    CPL_LOG_ERRORS
-    CPL_ACCUM_ERROR_MSG
-    CPL_MAX_ERROR_REPORTS
-    CPL_TIMESTAMP
-    CPL_TMPDIR
-
-    COMPRESS_OVERVIEW
-    INTERLEAVE_OVERVIEW
-    PHOTOMETRIC_OVERVIEW
-
-    TMPDIR
-    TEMP
-
-    USE_RRD
-    USE_SPILL
-
-    PROJSO
-
-    GMLJP2OVERRIDE
-    GEOTIFF_CSV
-    JPEGMEM
-
-    DODS_CONF
-    DODS_AIS_FILE
-
-    BSB_PALETTE
-
-    CONVERT_YCBCR_TO_RGB
-    ECW_LARGE_OK
-    IDRISIDIR
-    DTED_VERIFY_CHECKSUM
-    IDA_COLOR_FILE
-    RPFTOC_FORCE_RGBA
-    HFA_USE_RRD", "NO" ) ) )
-    ADRG_SIMULATE_MULTI_GEN
-    HDF4_BLOCK_PIXELS
-    GEOL_AS_GCPS
-
-    CENTER_LONG
-
-    OCI_FID
-    OCI_DEFAULT_DIM
-
-    MDBDRIVER_PATH
-    ODBC_OGR_FID
-    DGN_LINK_FORMAT
-
-    TIGER_VERSION
-    TIGER_LFIELD_AS_STRING
-
-    PGSQL_OGR_FID
-    PGCLIENTENCODING
-    PG_USE_COPY
-    PG_USE_POSTGIS
-    PG_LIST_ALL_TABLES
-
-    S57_CSV
-    S57_PROFILE
-
-    INGRES_INSERT_SUB
-
-    IDB_OGR_FID
-
-    GPX_N_MAX_LINKS
-    GPX_ELE_AS_25D
-    GPX_USE_EXTENSIONS
-
-    SDE_VERSIONEDITS
-    SDE_VERSIONOVERWRITE
-    SDE_DESCRIPTION
-    SDE_FID
-
-    GML_FIELDTYPES
-    MYSQL_TIMEOUT
-    GEOMETRY_AS_COLLECTION
-    ATTRIBUTES_SKIP
-    KML_DEBUG
-    '''
-
     def showinfo(self):
         try:
-            dialog = self.window().aboutdialog
-            print 'global AboutDialog'
+            mainwin = QtGui.qApp.findChild(QtGui.QMainWindow,  'gsdview-minwin')
+            dialog = mainwin.aboutdialog
         except AttributeError:
+            logging.debug('unable to find the GDSView main window widget')
             dialog = AboutDialog(self)
-            print 'new AboutDialog'
+
         currentpage = dialog.tabWidget.currentIndex()
         try:
             gdalTab = dialog.tabWidget.findChild(QtGui.QWidget, 'gdalTab')
@@ -612,9 +503,97 @@ class GDALPreferencesPage(QtGui.QWidget):
         finally:
             dialog.tabWidget.setCurrentIndex(currentpage)
 
-    def updateConfigToolTips(self):
-        #~ void setToolTip ( const QString & )
-        self.debugComboBox.setToolTip()
+    def load(self, settings):
+        settings.beginGroup('gdal')
+
+        # cache size
+        cachesize = settings.getValue('GDAL_CACHEMAX')
+        if not cachesize.isNull():
+            cachesize = cachesize.toULongLong()
+            self.cacheCheckBox.setChecked(True)
+            self.cacheSpinBox.setValue(cachesize/1024**2)
+        else:
+            self.cacheCheckBox.setChecked(False)
+
+        # GDAL data dir
+        datadir = settings.getValue('GDAL_DATA').toString()
+        if datadir:
+            self.gdalDataCheckBox.setChecked(True)
+            self.gdalDataDirEntryWidget.setText(datadir)
+        else:
+            self.gdalDataCheckBox.setChecked(False)
+
+        # GDAL_SKIP
+        gdalskip = settings.getValue('GDAL_SKIP').toString()
+        if gdalskip:
+            self.skipCheckBox.setChecked(True)
+            self.skipLineEdit.setText(gdalskip)
+        else:
+            self.skipCheckBox.setChecked(False)
+
+        # GDAL driver path
+        gdaldriverpath = settings.getValue('GDAL_DRIVER_PATH').toString()
+        if gdaldriverpath:
+            self.gdalDriverPathCheckBox.setChecked(True)
+            self.gdalDriverPathEntryWidget.setText(gdaldriverpath)
+        else:
+            self.gdalDriverPathCheckBox.setChecked(False)
+
+        # OGR driver path
+        ogrdriverpath = settings.getValue('OGR_DRIVER_PATH').toString()
+        if ogrdriverpath:
+            self.ogrDriverPathCheckBox.setChecked(True)
+            self.ogrDriverPathEntryWidget.setText(ogrdriverpath)
+        else:
+            self.ogrDriverPathCheckBox.setChecked(False)
+
+        # extra options
+        # @TODO
+
+        settings.endGroup()
+
+    def save(self, settings):
+        settings.beginGroup('gdal')
+
+        # cache
+        if self.cacheCheckBox.isChecked():
+            value = self.cacheSpinBox.value() * 1024**2
+            settings.setalue('GDAL_CACHEMAX', QtCore.QVariant(value))
+        else:
+            settings.remove('GDAL_CACHEMAX')
+
+        # GDAL data dir
+        if self.gdalDataCheckBox.isChecked():
+            value = self.gdalDataDirEntryWidget.text()
+            settings.setValue('GDAL_DATA', QtCore.QVariant(value))
+        else:
+            settings.remove('GDAL_DATA')
+
+        # GDAL_SKIP
+        if self.skipCheckBox.isChecked():
+            value = self.skipLineEdit.text()
+            settings.setValue('GDAL_SKIP', QtCore.QVariant(value))
+        else:
+            settings.remove('GDAL_SKIP')
+
+        # GDAL driver path
+        if self.gdalDriverPathCheckBox.isChecked():
+            value = self.gdalDriverPathEntryWidget.text()
+            settings.setValue('GDAL_DRIVER_PATH', QtCore.QVariant(value))
+        else:
+            settings.remove('GDAL_DRIVER_PATH')
+
+        # OGR driver path
+        if self.ogrDriverPathCheckBox.isChecked():
+            value = self.ogrDriverPathEntryWidget.text()
+            settings.setValue('OGR_DRIVER_PATH', QtCore.QVariant(value))
+        else:
+            settings.remove('OGR_DRIVER_PATH')
+
+        # extra options
+        # @TODO
+
+        settings.endGroup()
 
 
 class PreferencesDialog(QtGui.QDialog):
@@ -687,9 +666,10 @@ if __name__ == '__main__':
         d.show()
         app.exec_()
 
+    logging.basicConfig(level=logging.DEBUG)
     #~ test_gdalinfowidget()
     #~ test_aboutdialog()
-    test_fileentrywidget()
+    #~ test_fileentrywidget()
     #~ test_generalpreferencespage()
-    #~ test_gdalpreferencespage()
+    test_gdalpreferencespage()
     #~ test_preferencesdialog()
