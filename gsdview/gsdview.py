@@ -47,7 +47,7 @@ import exectools
 import qt4support
 import gdalsupport
 
-from widgets import AboutDialog
+from widgets import AboutDialog, PreferencesDialog
 from graphicsview import GraphicsView
 from gdalexectools import GdalAddOverviewDescriptor, GdalOutputHandler
 from exectools.qt4tools import Qt4ToolController, Qt4DialogLoggingHandler
@@ -77,6 +77,7 @@ class GSDView(QtGui.QMainWindow):
 
         QtGui.QMainWindow.__init__(self, parent)
         self.setWindowTitle(self.tr('GSDView'))
+        self.setObjectName('gsdview-mainwin')
 
         scene = QtGui.QGraphicsScene(self)
         self.graphicsView = GraphicsView(scene, self)
@@ -95,6 +96,7 @@ class GSDView(QtGui.QMainWindow):
         self.filedialog.setFilters(gdalsupport.gdalFilters())
         self.filedialog.setViewMode(QtGui.QFileDialog.Detail)
 
+        self.preferencesdialog = PreferencesDialog(self)
         self.aboutdialog = AboutDialog(self)
 
         self.imageItem = None
@@ -130,6 +132,11 @@ class GSDView(QtGui.QMainWindow):
 
         # Setup plugins
         self.setupPlugins() # @TODO: pass settings
+
+        # Settings menu end toolbar
+        self._addMenuFromActions(self.settingsActions, self.tr('&Settings'))
+        self._addToolBarFromActions(self.settingsActions,
+                                    self.tr('Settings toolbar'))
 
         # Help menu end toolbar
         self._addMenuFromActions(self.helpActions, self.tr('&Help'))
@@ -198,6 +205,21 @@ class GSDView(QtGui.QMainWindow):
 
         return self.fileActions
 
+    def _setupSettingsActions(self):
+        self.settingsActions = QtGui.QActionGroup(self)
+
+        # Preferences
+        self.actionPreferences = QtGui.QAction(
+                                    QtGui.QIcon(':/images/preferences.svg'),
+                                    self.tr('&Preferences'), self)
+        self.actionPreferences.setStatusTip(
+                                    self.tr('Show program preferences dialog'))
+        self.connect(self.actionPreferences, QtCore.SIGNAL('triggered()'),
+                     self.showPreferencesDialog)
+        self.settingsActions.addAction(self.actionPreferences)
+
+        return self.settingsActions
+
     def _setupHelpActions(self):
         self.helpActions = QtGui.QActionGroup(self)
 
@@ -221,6 +243,7 @@ class GSDView(QtGui.QMainWindow):
 
     def setupActions(self):
         self.fileActions = self._setupFileActions()
+        self.settingsActions = self._setupSettingsActions()
         self.helpActions = self._setupHelpActions()
 
     def _addMenuFromActions(self, actions, name):
@@ -289,7 +312,6 @@ class GSDView(QtGui.QMainWindow):
                            self.processingDone)
 
         return controller
-
 
     ### Settings ##############################################################
     def _restoreWindowState(self, settings=None):
@@ -479,6 +501,18 @@ class GSDView(QtGui.QMainWindow):
 
         return os.path.expanduser(str(cachedir))
 
+    ### Settings actions ######################################################
+    def showPreferencesDialog(self):
+        # @TODO: complete
+        self.preferencesdialog.exec_()
+
+    ### Help actions ##########################################################
+    def about(self):
+        self.aboutdialog.exec_()
+
+    def aboutQt(self):
+        QtGui.QMessageBox.aboutQt(self)
+
     ### File actions ##########################################################
     @qt4support.overrideCursor
     def _openFile(self, filename):
@@ -558,13 +592,6 @@ class GSDView(QtGui.QMainWindow):
     def closeRasterBand(self):
         self.graphicsView.clearScene()
         self.imageItem = None
-
-    ### Help actions ##########################################################
-    def about(self):
-        self.aboutdialog.exec_()
-
-    def aboutQt(self):
-        QtGui.QMessageBox.aboutQt(self)
 
     ### Auxiliaary methods ####################################################
     @qt4support.overrideCursor
