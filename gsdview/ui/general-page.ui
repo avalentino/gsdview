@@ -14,61 +14,79 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
-    <widget class="QGroupBox" name="loglevelGroupBox" >
+    <widget class="QGroupBox" name="preferencesGroupBox" >
      <property name="title" >
-      <string>Log Level</string>
+      <string>Preferences</string>
      </property>
-     <layout class="QHBoxLayout" name="loglevelHorizontalLayout" >
-      <item>
-       <widget class="QComboBox" name="loglevelComboBox" >
-        <item>
-         <property name="text" >
-          <string>DEBUG</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>INFO</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>WARNING</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>ERROR</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>CRITICAL</string>
-         </property>
-        </item>
+     <layout class="QGridLayout" name="preferencesGridLayout" >
+      <property name="horizontalSpacing" >
+       <number>12</number>
+      </property>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="loglevelLabel" >
+        <property name="text" >
+         <string>Log level</string>
+        </property>
        </widget>
       </item>
-      <item>
-       <spacer name="horizontalSpacer" >
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0" >
-         <size>
-          <width>188</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
+      <item row="0" column="1" >
+       <layout class="QHBoxLayout" name="loglevelHorizontalLayout" >
+        <item>
+         <widget class="QComboBox" name="loglevelComboBox" >
+          <item>
+           <property name="text" >
+            <string>DEBUG</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>INFO</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>WARNING</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>ERROR</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>CRITICAL</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <spacer name="loglevelHorizontalSpacer" >
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>138</width>
+            <height>24</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
-      <item>
-       <widget class="QPushButton" name="resetLoglevelButton" >
+      <item row="1" column="0" >
+       <widget class="QLabel" name="cachedirLabel" >
         <property name="text" >
-         <string>Reset</string>
+         <string>Cache directory location</string>
         </property>
-        <property name="icon" >
-         <iconset resource="../../resources.qrc" >
-          <normaloff>:/images/clear.svg</normaloff>:/images/clear.svg</iconset>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="FileEntryWidget" native="1" name="cachedirEntryWidget" >
+        <property name="toolTip" >
+         <string>Location of the directory for file cache.
+Default: "$HOME/.gsdview".</string>
         </property>
        </widget>
       </item>
@@ -80,18 +98,46 @@
      <property name="title" >
       <string>File DIalog</string>
      </property>
-     <layout class="QVBoxLayout" name="fileDialogVerticalLayout" >
+     <layout class="QVBoxLayout" name="filedialogVerticalLayout" >
       <item>
-       <widget class="QGroupBox" name="workdirGroupBox" >
-        <property name="title" >
-         <string>Working Directory</string>
+       <layout class="QHBoxLayout" name="workdirHorizontalLayout" >
+        <property name="spacing" >
+         <number>12</number>
         </property>
-        <layout class="QVBoxLayout" name="workdirVerticalLayout" >
-         <item>
-          <widget class="FileEntryWidget" native="1" name="workdirEntryWidget" />
-         </item>
-        </layout>
-       </widget>
+        <item>
+         <widget class="QLabel" name="workdirLabel" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text" >
+           <string>Working directory</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="FileEntryWidget" native="1" name="workdirEntryWidget" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="sizeIncrement" >
+           <size>
+            <width>1</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="toolTip" >
+           <string>Base directory for files and directories selection.
+Default: "$HOME".</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
        <widget class="QGroupBox" name="foldersGroupBox" >
@@ -251,8 +297,8 @@
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>326</x>
-     <y>355</y>
+     <x>313</x>
+     <y>459</y>
     </hint>
     <hint type="destinationlabel" >
      <x>-1</x>
@@ -267,8 +313,8 @@
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>407</x>
-     <y>355</y>
+     <x>394</x>
+     <y>459</y>
     </hint>
     <hint type="destinationlabel" >
      <x>-1</x>
@@ -283,8 +329,8 @@
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>489</x>
-     <y>355</y>
+     <x>477</x>
+     <y>459</y>
     </hint>
     <hint type="destinationlabel" >
      <x>-1</x>
@@ -299,8 +345,8 @@
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>490</x>
-     <y>355</y>
+     <x>558</x>
+     <y>459</y>
     </hint>
     <hint type="destinationlabel" >
      <x>-1</x>

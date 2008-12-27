@@ -200,6 +200,7 @@ class FileEntryWidget(QtGui.QWidget):
         self.lineEdit.setCompleter(self.__completer)
 
         self.button = QtGui.QPushButton(QtGui.QIcon (':/images/open.svg'), '')
+        self.button.setToolTip(self.tr('select from file dialog'))
 
         layout = QtGui.QHBoxLayout()
         layout.addWidget(self.lineEdit)
@@ -242,8 +243,11 @@ class FileEntryWidget(QtGui.QWidget):
         if filename:
             self.lineEdit.setText(filename)
 
-    text = QtGui.QLineEdit.text
-    setText = QtGui.QLineEdit.setText
+    def text(self):
+        return self.lineEdit.text()
+
+    def setText(self, text):
+        self.lineEdit.setText(text)
 
 class GeneralPreferencesPage(QtGui.QWidget):
     uifile = os.path.join(os.path.dirname(__file__), 'ui', 'general-page.ui')
@@ -260,14 +264,6 @@ class GeneralPreferencesPage(QtGui.QWidget):
         logger = logging.getLogger() # @TODO: fix
         level = logging.getLevelName(logger.level)
         self.setLoglevel(level)
-
-        self.connect(self.resetLoglevelButton,
-                     QtCore.SIGNAL('clicked()'),
-                     self.setLoglevel)
-
-        #~ self.connect(self.loglevelComboBox,
-                     #~ QtCore.SIGNAL('currentIndexChanged(const QString&)'),
-                     #~ self.changeLoglevel)
 
         # Work directory
         self.workdirEntryWidget.dialog = self._dialog
@@ -314,76 +310,91 @@ class GeneralPreferencesPage(QtGui.QWidget):
     def load(self, settings):
         # general
         settings.beginGroup('preferences')
+        try:
+            # log level
+            level = settings.value('loglevel').toString()
+            index = self.loglevelComboBox.findText(level)
+            if 0 <= index < self.loglevelComboBox.count():
+                self.loglevelComboBox.setCurrentIndex(index)
+            else:
+                logging.debug('invalid log level: "%s"' % level)
 
-        # log level
-        level = settings.value('loglevel').toString()
-        index = self.loglevelComboBox.findText(level)
-        if 0 <= index < self.loglevelComboBox.count():
-            self.loglevelComboBox.setCurrentIndex(index)
-        else:
-            logging.debug('invalid log level: "%s"' % level)
-
-        settings.endGroup()
+            # cache directory
+            cachedir = settings.value('cachedir').toString()
+            self.cachedirEntryWidget.setText(cachedir)
+        finally:
+            settings.endGroup()
 
         # filedialog
         settings.beginGroup('filedialog')
-
-        # workdir
-        workdir = settings.value('workdir').toString()
-        self.workdirLineEdit.setText(workdir)
-
-        # sidebar urls
-        self.foldersListWidget.clear()
         try:
-            # QFileDialog.setSidebarUrls is new in Qt 4.3
-            sidebarurls = settings.value('sidebarurls')
-            if not sidebarurls.isNull():
-                sidebarurls = sidebarurls.toStringList()
-                self.foldersListWidget.addItems(sidebarurls)
-        except AttributeError:
-            logging.debug('unable to restore sidebar URLs of the file dialog')
+            # workdir
+            workdir = settings.value('workdir').toString()
+            self.workdirEntryWidget.setText(workdir)
 
-        settings.endGroup()
+            # sidebar urls
+            self.foldersListWidget.clear()
+            try:
+                # QFileDialog.setSidebarUrls is new in Qt 4.3
+                sidebarurls = settings.value('sidebarurls')
+                if not sidebarurls.isNull():
+                    sidebarurls = sidebarurls.toStringList()
+                    self.foldersListWidget.addItems(sidebarurls)
+            except AttributeError:
+                logging.debug('unable to restore sidebar URLs of the '
+                              'file dialog')
+        finally:
+            settings.endGroup()
 
     def save(self, settings):
         # general
         settings.beginGroup('preferences')
+        try:
+            # log level
+            level = self.loglevelComboBox.currentText()
+            settings.setValue('loglevel', QtCore.QVariant(level))
 
-        # log level
-        level = self.loglevelComboBox.setCurrentText()
-        settings.SetValue('loglevel', QtCore.QVariant(level))
+            # cache directory
+            cachedir = self.cachedirEntryWidget.text()
+            if cachedir:
+                settings.setValue('cachedir', QtCore.QVariant(cachedir))
+            else:
+                settings.remove('cachedir')
 
-        settings.endGroup()
+            self.cachedirEntryWidget.setText(cachedir)
+
+        finally:
+            settings.endGroup()
 
         # file dialog
         settings.beginGroup('filedialog')
-        # @TODO: clear state
-
-        # workdir
-        workdir = self.workdirLineEdit.text()
-        workdir = settings.setValue('workdir', QtCore.QVariant(workdir))
-
-        # @TODO: clear history
-
-        # sidebat urls
         try:
-            sidebarurls = [self.foldersListWidget.item(row).text()
-                              for row in range(self.foldersListWidget.count())]
-            settings.setValue('sidebarurls', QtCore.QVariant(sidebarurls))
-        except AttributeError:
-            logging.debug('unable to save sidebar URLs of the file dialog')
-        settings.endGroup()
+            # @TODO: clear state
+
+            # workdir
+            workdir = self.workdirEntryWidget.text()
+            if workdir:
+                workdir = settings.setValue('workdir', QtCore.QVariant(workdir))
+            else:
+                settings.remove('workdir')
+
+            # @TODO: clear history
+
+            # sidebat urls
+            try:
+                sidebarurls = QtCore.QStringList()
+                for row in range(self.foldersListWidget.count()):
+                    sidebarurls.append(self.foldersListWidget.item(row).text())
+                settings.setValue('sidebarurls', QtCore.QVariant(sidebarurls))
+            except AttributeError:
+                logging.debug('unable to save sidebar URLs of the file dialog')
+        finally:
+            settings.endGroup()
 
     # Log level
     def setLoglevel(self, level='INFO'):
         index = self.loglevelComboBox.findText(level)
         self.loglevelComboBox.setCurrentIndex(index)
-
-    #~ def changeLoglevel(self, level):
-        #~ # @TODO: mark as changed an apply changes only when "Apply" or "OK"
-        #~ #        are pressed
-        #~ logger = logging.getLogger()    # @TODO: fix
-        #~ logger.setLevel(logging.getLevelName(level))
 
     # Workdir
     def chooseWorkdir(self):
@@ -505,99 +516,103 @@ class GDALPreferencesPage(QtGui.QWidget):
 
     def load(self, settings):
         settings.beginGroup('gdal')
+        try:
 
-        # cache size
-        cachesize = settings.getValue('GDAL_CACHEMAX')
-        if not cachesize.isNull():
-            cachesize = cachesize.toULongLong()
-            self.cacheCheckBox.setChecked(True)
-            self.cacheSpinBox.setValue(cachesize/1024**2)
-        else:
-            self.cacheCheckBox.setChecked(False)
+            # cache size
+            cachesize = settings.value('GDAL_CACHEMAX')
+            if not cachesize.isNull():
+                cachesize, ok = cachesize.toULongLong()
+                if ok:
+                    self.cacheCheckBox.setChecked(True)
+                    self.cacheSpinBox.setValue(cachesize/1024**2)
+            else:
+                self.cacheCheckBox.setChecked(False)
 
-        # GDAL data dir
-        datadir = settings.getValue('GDAL_DATA').toString()
-        if datadir:
-            self.gdalDataCheckBox.setChecked(True)
-            self.gdalDataDirEntryWidget.setText(datadir)
-        else:
-            self.gdalDataCheckBox.setChecked(False)
+            # GDAL data dir
+            datadir = settings.value('GDAL_DATA').toString()
+            if datadir:
+                self.gdalDataCheckBox.setChecked(True)
+                self.gdalDataDirEntryWidget.setText(datadir)
+            else:
+                self.gdalDataCheckBox.setChecked(False)
 
-        # GDAL_SKIP
-        gdalskip = settings.getValue('GDAL_SKIP').toString()
-        if gdalskip:
-            self.skipCheckBox.setChecked(True)
-            self.skipLineEdit.setText(gdalskip)
-        else:
-            self.skipCheckBox.setChecked(False)
+            # GDAL_SKIP
+            gdalskip = settings.value('GDAL_SKIP').toString()
+            if gdalskip:
+                self.skipCheckBox.setChecked(True)
+                self.skipLineEdit.setText(gdalskip)
+            else:
+                self.skipCheckBox.setChecked(False)
 
-        # GDAL driver path
-        gdaldriverpath = settings.getValue('GDAL_DRIVER_PATH').toString()
-        if gdaldriverpath:
-            self.gdalDriverPathCheckBox.setChecked(True)
-            self.gdalDriverPathEntryWidget.setText(gdaldriverpath)
-        else:
-            self.gdalDriverPathCheckBox.setChecked(False)
+            # GDAL driver path
+            gdaldriverpath = settings.value('GDAL_DRIVER_PATH').toString()
+            if gdaldriverpath:
+                self.gdalDriverPathCheckBox.setChecked(True)
+                self.gdalDriverPathEntryWidget.setText(gdaldriverpath)
+            else:
+                self.gdalDriverPathCheckBox.setChecked(False)
 
-        # OGR driver path
-        ogrdriverpath = settings.getValue('OGR_DRIVER_PATH').toString()
-        if ogrdriverpath:
-            self.ogrDriverPathCheckBox.setChecked(True)
-            self.ogrDriverPathEntryWidget.setText(ogrdriverpath)
-        else:
-            self.ogrDriverPathCheckBox.setChecked(False)
+            # OGR driver path
+            ogrdriverpath = settings.value('OGR_DRIVER_PATH').toString()
+            if ogrdriverpath:
+                self.ogrDriverPathCheckBox.setChecked(True)
+                self.ogrDriverPathEntryWidget.setText(ogrdriverpath)
+            else:
+                self.ogrDriverPathCheckBox.setChecked(False)
 
-        # extra options
-        # @TODO
+            # extra options
+            # @TODO
 
-        settings.endGroup()
+        finally:
+            settings.endGroup()
 
     def save(self, settings):
         settings.beginGroup('gdal')
+        try:
 
-        # cache
-        if self.cacheCheckBox.isChecked():
-            value = self.cacheSpinBox.value() * 1024**2
-            settings.setalue('GDAL_CACHEMAX', QtCore.QVariant(value))
-        else:
-            settings.remove('GDAL_CACHEMAX')
+            # cache
+            if self.cacheCheckBox.isChecked():
+                value = self.cacheSpinBox.value() * 1024**2
+                settings.setValue('GDAL_CACHEMAX', QtCore.QVariant(value))
+            else:
+                settings.remove('GDAL_CACHEMAX')
 
-        # GDAL data dir
-        if self.gdalDataCheckBox.isChecked():
-            value = self.gdalDataDirEntryWidget.text()
-            settings.setValue('GDAL_DATA', QtCore.QVariant(value))
-        else:
-            settings.remove('GDAL_DATA')
+            # GDAL data dir
+            if self.gdalDataCheckBox.isChecked():
+                value = self.gdalDataDirEntryWidget.text()
+                settings.setValue('GDAL_DATA', QtCore.QVariant(value))
+            else:
+                settings.remove('GDAL_DATA')
 
-        # GDAL_SKIP
-        if self.skipCheckBox.isChecked():
-            value = self.skipLineEdit.text()
-            settings.setValue('GDAL_SKIP', QtCore.QVariant(value))
-        else:
-            settings.remove('GDAL_SKIP')
+            # GDAL_SKIP
+            if self.skipCheckBox.isChecked():
+                value = self.skipLineEdit.text()
+                settings.setValue('GDAL_SKIP', QtCore.QVariant(value))
+            else:
+                settings.remove('GDAL_SKIP')
 
-        # GDAL driver path
-        if self.gdalDriverPathCheckBox.isChecked():
-            value = self.gdalDriverPathEntryWidget.text()
-            settings.setValue('GDAL_DRIVER_PATH', QtCore.QVariant(value))
-        else:
-            settings.remove('GDAL_DRIVER_PATH')
+            # GDAL driver path
+            if self.gdalDriverPathCheckBox.isChecked():
+                value = self.gdalDriverPathEntryWidget.text()
+                settings.setValue('GDAL_DRIVER_PATH', QtCore.QVariant(value))
+            else:
+                settings.remove('GDAL_DRIVER_PATH')
 
-        # OGR driver path
-        if self.ogrDriverPathCheckBox.isChecked():
-            value = self.ogrDriverPathEntryWidget.text()
-            settings.setValue('OGR_DRIVER_PATH', QtCore.QVariant(value))
-        else:
-            settings.remove('OGR_DRIVER_PATH')
+            # OGR driver path
+            if self.ogrDriverPathCheckBox.isChecked():
+                value = self.ogrDriverPathEntryWidget.text()
+                settings.setValue('OGR_DRIVER_PATH', QtCore.QVariant(value))
+            else:
+                settings.remove('OGR_DRIVER_PATH')
 
-        # extra options
-        # @TODO
-
-        settings.endGroup()
+            # extra options
+            # @TODO
+        finally:
+            settings.endGroup()
 
 
 class PreferencesDialog(QtGui.QDialog):
-    # @TODO: aloso loook at
+    # @TODO: also look at
     # /usr/share/doc/python-qt4-doc/examples/tools/settingseditor/settingseditor.py
 
     uifile = os.path.join(os.path.dirname(__file__), 'ui', 'preferences.ui')
@@ -606,6 +621,24 @@ class PreferencesDialog(QtGui.QDialog):
         QtGui.QDialog.__init__(self, parent, flags)
         uic.loadUi(self.uifile, self)
 
+        # remove empty page
+        page = self.stackedWidget.widget(0)
+        self.stackedWidget.removeWidget(page)
+
+        # app pages
+        self.addPage(GeneralPreferencesPage(),
+                     QtGui.QIcon(':/images/preferences.svg'),
+                     self.tr('General'))
+
+        self.addPage(GDALPreferencesPage(),
+                     QtGui.QIcon(':/images/GDALLogoColor.svg'),
+                     self.tr('GDAL'))
+
+        #~ self.addPage(CachePreferencesPage(),
+                     #~ QtGui.QIcon(':/images/harddisk.svg'),
+                     #~ self.tr('Cache'))
+
+        assert self.listWidget.count() == self.stackedWidget.count()
         self.connect(
             self.listWidget,
             QtCore.SIGNAL('currentItemChanged(QListWidgetItem*, QListWidgetItem*)'),
@@ -616,6 +649,37 @@ class PreferencesDialog(QtGui.QDialog):
             current = previous
 
         self.stackedWidget.setCurrentIndex(self.listWidget.row(current))
+
+    def addPage(self, page, icon, label=None):
+        if not (hasattr(page, 'load') and hasattr(page, 'save')):
+            raise TypeError('preference pages must have both "load" and '
+                            '"save" methods')
+        index = self.stackedWidget.addWidget(page)
+        item = QtGui.QListWidgetItem(icon, label)
+        self.listWidget.addItem(item)
+        assert self.listWidget.row(item) == index
+
+    def removePageIndex(self, index):
+        if 0 <= index < self.stackedWidget.count():
+            page = self.stackedWidget.widget(index)
+            self.stackedWidget.removeWidget(page)
+            self.listWidget.model().removeRow(index)
+
+    def removePage(self, page):
+        index = self.stackedWidget.indexOf(page)
+        if 0 <= index < self.stackedWidget.count():
+            self.stackedWidget.removeWidget(page)
+            self.listWidget.model().removeRow(index)
+
+    def load(self, settings):
+        for index in range(self.stackedWidget.count()):
+            page = self.stackedWidget.widget(index)
+            page.load(settings)
+
+    def save(self, settings):
+        for index in range(self.stackedWidget.count()):
+            page = self.stackedWidget.widget(index)
+            page.save(settings)
 
 if __name__ == '__main__':
     def test_gdalinfowidget():
@@ -671,5 +735,5 @@ if __name__ == '__main__':
     #~ test_aboutdialog()
     #~ test_fileentrywidget()
     #~ test_generalpreferencespage()
-    test_gdalpreferencespage()
-    #~ test_preferencesdialog()
+    #~ test_gdalpreferencespage()
+    test_preferencesdialog()

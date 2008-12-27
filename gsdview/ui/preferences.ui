@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>712</width>
-    <height>533</height>
+    <height>434</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -29,7 +29,7 @@
        </property>
        <property name="maximumSize" >
         <size>
-         <width>128</width>
+         <width>112</width>
          <height>16777215</height>
         </size>
        </property>
@@ -38,8 +38,8 @@
        </property>
        <property name="iconSize" >
         <size>
-         <width>96</width>
-         <height>84</height>
+         <width>64</width>
+         <height>64</height>
         </size>
        </property>
        <property name="verticalScrollMode" >
@@ -63,110 +63,18 @@
        <property name="viewMode" >
         <enum>QListView::IconMode</enum>
        </property>
-       <item>
-        <property name="text" >
-         <string>General</string>
-        </property>
-        <property name="icon" >
-         <iconset resource="../../resources.qrc" >
-          <normaloff>:/images/preferences.svg</normaloff>:/images/preferences.svg</iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text" >
-         <string>GDAL</string>
-        </property>
-        <property name="icon" >
-         <iconset resource="../../resources.qrc" >
-          <normaloff>:/images/GDALLogoColor.svg</normaloff>:/images/GDALLogoColor.svg</iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text" >
-         <string>Cache</string>
-        </property>
-        <property name="icon" >
-         <iconset resource="../../resources.qrc" >
-          <normaloff>:/images/harddisk.svg</normaloff>:/images/harddisk.svg</iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text" >
-         <string>Misc</string>
-        </property>
-        <property name="icon" >
-         <iconset resource="../../resources.qrc" >
-          <normaloff>:/images/misc-preferences.svg</normaloff>:/images/misc-preferences.svg</iconset>
-        </property>
-       </item>
       </widget>
      </item>
      <item>
       <widget class="QStackedWidget" name="stackedWidget" >
+       <property name="currentIndex" >
+        <number>0</number>
+       </property>
        <widget class="QWidget" name="generalPage" >
         <layout class="QVBoxLayout" name="generalVerticalLayout" >
-         <item>
-          <widget class="QGroupBox" name="generalGroupBox" >
-           <property name="title" >
-            <string>General</string>
-           </property>
-           <layout class="QVBoxLayout" name="generalGroupVerticalLayout" >
-            <property name="spacing" >
-             <number>3</number>
-            </property>
-            <item>
-             <widget class="GeneralPreferencesPage" native="1" name="generalPreferencesPage" />
-            </item>
-           </layout>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="gdalPage" >
-        <layout class="QVBoxLayout" name="gdalVerticalLayout" >
          <property name="spacing" >
           <number>3</number>
          </property>
-         <item>
-          <widget class="QGroupBox" name="gdalGroupBox" >
-           <property name="title" >
-            <string>GDAL</string>
-           </property>
-           <layout class="QVBoxLayout" name="gdalGroupVerticalLayout" >
-            <item>
-             <widget class="GDALPreferencesPage" native="1" name="gdalPreferencesPage" />
-            </item>
-           </layout>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="cachePage" >
-        <layout class="QVBoxLayout" name="verticalLayout_3" >
-         <property name="spacing" >
-          <number>3</number>
-         </property>
-         <item>
-          <widget class="QGroupBox" name="cacheGroupBox" >
-           <property name="title" >
-            <string>Cache</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="miscPage" >
-        <layout class="QVBoxLayout" name="verticalLayout_4" >
-         <property name="spacing" >
-          <number>3</number>
-         </property>
-         <item>
-          <widget class="QGroupBox" name="miscGroupBox" >
-           <property name="title" >
-            <string>Misc</string>
-           </property>
-          </widget>
-         </item>
         </layout>
        </widget>
       </widget>
@@ -185,20 +93,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>GeneralPreferencesPage</class>
-   <extends>QWidget</extends>
-   <header>widgets.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>GDALPreferencesPage</class>
-   <extends>QWidget</extends>
-   <header>widgets.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="../../resources.qrc" />
  </resources>
@@ -210,8 +104,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>248</x>
-     <y>254</y>
+     <x>257</x>
+     <y>424</y>
     </hint>
     <hint type="destinationlabel" >
      <x>157</x>
@@ -226,8 +120,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>316</x>
-     <y>260</y>
+     <x>325</x>
+     <y>424</y>
     </hint>
     <hint type="destinationlabel" >
      <x>286</x>

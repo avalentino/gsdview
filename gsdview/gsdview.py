@@ -137,6 +137,7 @@ class GSDView(QtGui.QMainWindow):
         self._addMenuFromActions(self.settingsActions, self.tr('&Settings'))
         self._addToolBarFromActions(self.settingsActions,
                                     self.tr('Settings toolbar'))
+        # @TODO: add menus for show/hide toolbars and docks
 
         # Help menu end toolbar
         self._addMenuFromActions(self.helpActions, self.tr('&Help'))
@@ -416,8 +417,6 @@ class GSDView(QtGui.QMainWindow):
             gdal.SetCacheMax(cachesize)
         settings.endGroup()
 
-        # misc
-
     def _saveWindowState(self, settings=None):
         if settings is None:
             settings = self.settings
@@ -448,7 +447,7 @@ class GSDView(QtGui.QMainWindow):
             logging.debug('unable to save the file dialog state')
 
         # workdir
-        # NOTE: uncomment to preserve the session value
+        # @NOTE: uncomment to preserve the session value
         #workdir = self.filedialog.directory()
         #workdir = settings.setValue('workdir', QtCore.QVariant(workdir))
 
@@ -459,10 +458,11 @@ class GSDView(QtGui.QMainWindow):
         # sidebat urls
         try:
             sidebarurls = self.filedialog.sidebarUrls()
-            qsidebarurls = QtCore.QStringList()
-            for item in sidebarurls:
-                qsidebarurls.append(QtCore.QString(item.toString()))
-            settings.setValue('sidebarurls', QtCore.QVariant(qsidebarurls))
+            if sidebarurls:
+                qsidebarurls = QtCore.QStringList()
+                for item in sidebarurls:
+                    qsidebarurls.append(QtCore.QString(item.toString()))
+                settings.setValue('sidebarurls', QtCore.QVariant(qsidebarurls))
         except AttributeError:
             logging.debug('unable to save sidebar URLs of the file dialog')
         settings.endGroup()
@@ -487,7 +487,6 @@ class GSDView(QtGui.QMainWindow):
         settings.endGroup()
         # GDAL
         # cache
-        # misc
 
     def _getCacheDir(self):
         #defaultcachedir = './cache'
@@ -502,9 +501,18 @@ class GSDView(QtGui.QMainWindow):
         return os.path.expanduser(str(cachedir))
 
     ### Settings actions ######################################################
+    def applySettings(self):
+        # @TODO: connect to preferencedsdialog signal
+        self.preferencesdialog.save(self.settings)
+        self.loadSettings()
+
     def showPreferencesDialog(self):
         # @TODO: complete
-        self.preferencesdialog.exec_()
+        self.saveSettings()
+        self.preferencesdialog.load(self.settings)
+        if self.preferencesdialog.exec_():
+            self.preferencesdialog.save(self.settings)
+            self.loadSettings()
 
     ### Help actions ##########################################################
     def about(self):
