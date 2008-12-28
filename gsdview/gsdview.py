@@ -421,9 +421,9 @@ class GSDView(QtGui.QMainWindow):
             self.filedialog.setDirectory(workdir)
 
             # history
-            #~ history = settings.value('history')
-            #~ if not history.isNull():
-                #~ self.filedialog.setHistory(history.toStringList())
+            #history = settings.value('history')
+            #if not history.isNull():
+            #    self.filedialog.setHistory(history.toStringList())
 
             # sidebar urls
             try:
@@ -491,6 +491,7 @@ class GSDView(QtGui.QMainWindow):
                     register = True
             if register:
                 gdal.AllRegister()
+                self.logger.debug('run "gdal.AllRegister()"')
         finally:
             settings.endGroup()
 
@@ -531,11 +532,12 @@ class GSDView(QtGui.QMainWindow):
             #workdir = settings.setValue('workdir', QtCore.QVariant(workdir))
 
             # history
-            #~ settings.setValue('history',
-                              #~ QtCore.QVariant(self.filedialog.history()))
+            #settings.setValue('history',
+            #                  QtCore.QVariant(self.filedialog.history()))
 
-            # sidebat urls
+            # sidebar urls
             try:
+                # QFileDialog.sidebarUrls is new in Qt 4.3
                 sidebarurls = self.filedialog.sidebarUrls()
                 if sidebarurls:
                     qsidebarurls = QtCore.QStringList()
@@ -568,11 +570,6 @@ class GSDView(QtGui.QMainWindow):
 
         # @NOTE: GDAL preferences are only modified via preferences dialog
         # @NOTE: cache preferences are only modified via preferences dialog
-
-    def applySettings(self):
-        # @TODO: connect to preferencedsdialog signal
-        self.preferencesdialog.save(self.settings)
-        self.loadSettings()
 
     def updateSettingsMenu(self):
         self.viewsubmenu.clear()

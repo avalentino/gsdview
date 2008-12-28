@@ -338,15 +338,6 @@ class GeneralPreferencesPage(QtGui.QWidget):
                 settings.remove('workdir')
 
             # @TODO: clear history
-
-            # sidebat urls
-            try:
-                sidebarurls = QtCore.QStringList()
-                for row in range(self.foldersListWidget.count()):
-                    sidebarurls.append(self.foldersListWidget.item(row).text())
-                settings.setValue('sidebarurls', QtCore.QVariant(sidebarurls))
-            except AttributeError:
-                logging.debug('unable to save sidebar URLs of the file dialog')
         finally:
             settings.endGroup()
 
