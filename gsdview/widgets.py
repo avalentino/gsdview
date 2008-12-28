@@ -91,8 +91,7 @@ class GDALInfoWidget(QtGui.QWidget):
         except AttributeError:
             self.gdalVersionGroupBox.hide()
 
-        self.gdalCacheMaxValue.setText('%.3f MB' % (gdal.GetCacheMax()/1024.**2))
-        self.gdalCacheUsedValue.setText('%.3f MB' % (gdal.GetCacheUsed()/1024.**2))
+        self.updateCacheInfo()
 
         #~ gdal.GetConfigOption('CPL_DEBUG', 'OFF')
         #~ gdal.GetConfigOption('GDAL_PAM_ENABLED', "NULL")
@@ -147,6 +146,13 @@ class GDALInfoWidget(QtGui.QWidget):
         tableWidget.setSortingEnabled(sortingenabled)
         tableWidget.sortItems(0, QtCore.Qt.AscendingOrder)
 
+    def updateCacheInfo(self):
+        self.gdalCacheMaxValue.setText('%.3f MB' % (gdal.GetCacheMax()/1024.**2))
+        self.gdalCacheUsedValue.setText('%.3f MB' % (gdal.GetCacheUsed()/1024.**2))
+
+    def showEvent(self, event):
+        self.updateCacheInfo()
+        QtGui.QWidget.showEvent(self, event)
 
 class AboutDialog(QtGui.QDialog):
 
@@ -612,6 +618,14 @@ class GDALPreferencesPage(QtGui.QWidget):
 
 
 class PreferencesDialog(QtGui.QDialog):
+    '''Extendible preferences dialogg for GSDView.
+
+    :signals:
+
+    - apply
+
+    '''
+
     # @TODO: also look at
     # /usr/share/doc/python-qt4-doc/examples/tools/settingseditor/settingseditor.py
 
@@ -639,10 +653,20 @@ class PreferencesDialog(QtGui.QDialog):
                      #~ self.tr('Cache'))
 
         assert self.listWidget.count() == self.stackedWidget.count()
+
         self.connect(
             self.listWidget,
             QtCore.SIGNAL('currentItemChanged(QListWidgetItem*, QListWidgetItem*)'),
             self.changePage)
+
+        self.connect(self.buttonBox,
+                     QtCore.SIGNAL('clicked(QAbstractButton*)'),
+                     self._onButtonClicked)
+
+    def _onButtonClicked(self, button):
+        role = self.buttonBox.buttonRole(button)
+        if role == QtGui.QDialogButtonBox.ApplyRole:
+            self.emit(QtCore.SIGNAL('apply()'))
 
     def changePage(self, current, previous):
         if not current:
@@ -680,6 +704,10 @@ class PreferencesDialog(QtGui.QDialog):
         for index in range(self.stackedWidget.count()):
             page = self.stackedWidget.widget(index)
             page.save(settings)
+
+    def apply(self):
+        self.emit(QtCore.SIGNAL('apply()'))
+
 
 if __name__ == '__main__':
     def test_gdalinfowidget():
