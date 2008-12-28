@@ -50,7 +50,7 @@ def init(mainwin):
     formatter = logging.Formatter(fmt)
     #formatter = logging.Formatter('%(levelname)s: %(message)s')
     handler = Qt4StreamLoggingHandler(logplane)
-    handler.setLevel(mainwin.logger.level)
+    #handler.setLevel(mainwin.logger.level) # NOTSET
     handler.setFormatter(formatter)
     mainwin.logger.addHandler(handler)
 
