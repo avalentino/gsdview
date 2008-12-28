@@ -421,9 +421,9 @@ class GSDView(QtGui.QMainWindow):
             self.filedialog.setDirectory(workdir)
 
             # history
-            history = settings.value('history')
-            if not history.isNull():
-                self.filedialog.setHistory(history.toStringList())
+            #~ history = settings.value('history')
+            #~ if not history.isNull():
+                #~ self.filedialog.setHistory(history.toStringList())
 
             # sidebar urls
             try:
@@ -531,8 +531,8 @@ class GSDView(QtGui.QMainWindow):
             #workdir = settings.setValue('workdir', QtCore.QVariant(workdir))
 
             # history
-            settings.setValue('history',
-                              QtCore.QVariant(self.filedialog.history()))
+            #~ settings.setValue('history',
+                              #~ QtCore.QVariant(self.filedialog.history()))
 
             # sidebat urls
             try:

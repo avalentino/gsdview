@@ -262,8 +262,6 @@ class GeneralPreferencesPage(QtGui.QWidget):
         QtGui.QWidget.__init__(self, parent, flags)
         uic.loadUi(self.uifile, self)
 
-        self._dialog = _get_filedialog(self)
-
         self.loglevelComboBox.setFocus()
 
         # Log level
@@ -272,46 +270,13 @@ class GeneralPreferencesPage(QtGui.QWidget):
         self.setLoglevel(level)
 
         # Work directory
-        self.workdirEntryWidget.dialog = self._dialog
+        dialog = _get_filedialog(self)
+        self.workdirEntryWidget.dialog = dialog
         self.workdirEntryWidget.mode = QtGui.QFileDialog.Directory
         #self.workdirEntryWidget.mode = QtGui.QFileDialog.DirectoryOnly
-
-        # Favorite editor
-        self.foldersListWidget.addAction(self.actionAddFavorite)
-        self.foldersListWidget.addAction(self.actionEditFavorite)
-        self.foldersListWidget.addAction(self.actionRemoveFavorite)
-        self.foldersListWidget.addAction(self.actionClearFavorites)
-
-        self.setFavoriteActions()
-        self.enableClearAction()
-
-        self.connect(self.actionAddFavorite,
-                    QtCore.SIGNAL('triggered()'),
-                    self.addFavorite)
-
-        self.connect(self.actionEditFavorite,
-                    QtCore.SIGNAL('triggered()'),
-                    self.editFavorite)
-
-        self.connect(self.actionRemoveFavorite,
-                    QtCore.SIGNAL('triggered()'),
-                    self.removeFavorite)
-
-        self.connect(self.actionClearFavorites,
-                    QtCore.SIGNAL('triggered()'),
-                    self.clearFavorites)
-
-        self.connect(self.foldersListWidget,
-                     QtCore.SIGNAL('itemSelectionChanged()'),
-                     self.setFavoriteActions)
-
-        self.connect(self.foldersListWidget.model(),
-                     QtCore.SIGNAL('rowsInserted(const QModelIndex&, int, int)'),
-                     self.enableClearAction)
-
-        self.connect(self.foldersListWidget.model(),
-                     QtCore.SIGNAL('rowsRemoved(const QModelIndex&, int, int)'),
-                     self.enableClearAction)
+        self.cachedirEntryWidget.dialog = dialog
+        self.cachedirEntryWidget.mode = QtGui.QFileDialog.Directory
+        #self.cachedirEntryWidget.mode = QtGui.QFileDialog.DirectoryOnly
 
     def load(self, settings):
         # general
@@ -337,18 +302,6 @@ class GeneralPreferencesPage(QtGui.QWidget):
             # workdir
             workdir = settings.value('workdir').toString()
             self.workdirEntryWidget.setText(workdir)
-
-            # sidebar urls
-            self.foldersListWidget.clear()
-            try:
-                # QFileDialog.setSidebarUrls is new in Qt 4.3
-                sidebarurls = settings.value('sidebarurls')
-                if not sidebarurls.isNull():
-                    sidebarurls = sidebarurls.toStringList()
-                    self.foldersListWidget.addItems(sidebarurls)
-            except AttributeError:
-                logging.debug('unable to restore sidebar URLs of the '
-                              'file dialog')
         finally:
             settings.endGroup()
 
@@ -401,61 +354,6 @@ class GeneralPreferencesPage(QtGui.QWidget):
     def setLoglevel(self, level='INFO'):
         index = self.loglevelComboBox.findText(level)
         self.loglevelComboBox.setCurrentIndex(index)
-
-    # Workdir
-    def chooseWorkdir(self):
-        dirname = self.workdirLineEdit.text()
-        dirname = _choosedir(dirname, self._dialog)
-        if dirname:
-            self.workdirLineEdit.setText(dirname)
-
-    # Favorite foldes
-    def _addFavorite(self, dirname):
-        item = QtGui.QListWidgetItem(dirname)
-        item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
-        self.foldersListWidget.addItem(item)
-
-    def addFavorite(self):
-        dirname = _choosedir(dirname='', dialog=self._dialog)
-        if dirname:
-            self._addFavorite(dirname)
-
-    def editFavorite(self, item=None):
-        if item is None:
-            item = self.foldersListWidget.currentItem()
-        self.foldersListWidget.clearSelection()
-        dirname = _choosedir(dirname=item.text(), dialog=self._dialog)
-        if dirname:
-            item.setText(dirname)
-
-    def removeFavorite(self):
-        for item in self.foldersListWidget.selectedItems():
-            model = self.foldersListWidget.model()
-            row = self.foldersListWidget.row(item)
-            model.removeRow(row)
-
-    def clearFavorites(self):
-        self.foldersListWidget.clear()
-        self.enableClearAction()
-
-    def setFavoriteActions(self):
-        if len(self.foldersListWidget.selectedItems()):
-            enabled = True
-        else:
-            enabled = False
-        self.actionEditFavorite.setEnabled(enabled)
-        self.actionRemoveFavorite.setEnabled(enabled)
-
-        self.editFolderButton.setEnabled(enabled)
-        self.removeFolderButton.setEnabled(enabled)
-
-    def enableClearAction(self):
-        if self.foldersListWidget.count():
-            enabled = True
-        else:
-            enabled = False
-        self.actionClearFavorites.setEnabled(enabled)
-        self.clearFoldersButton.setEnabled(enabled)
 
 
 class GDALPreferencesPage(QtGui.QWidget):
