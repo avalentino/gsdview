@@ -102,8 +102,6 @@ class GSDView(QtGui.QMainWindow):
         self.setWindowTitle(self.tr('GSDView'))
         self.setObjectName('gsdview-mainwin')
 
-        os.environ['GSDVIEWROOT'] = GSDVIEWROOT
-
         scene = QtGui.QGraphicsScene(self)
         self.graphicsView = GraphicsView(scene, self)
         self.graphicsView.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
@@ -721,6 +719,12 @@ class GSDView(QtGui.QMainWindow):
 
 
 def main():
+    # @NOTE: needed for ui building of promoted widgets
+    sys.path.insert(0, GSDVIEWROOT)
+
+    # @NOTE: needed for path names variables expansion
+    os.environ['GSDVIEWROOT'] = GSDVIEWROOT
+
     app = QtGui.QApplication(sys.argv)
     mainwin = GSDView()
     mainwin.show()
