@@ -1,6 +1,6 @@
 # Makefile
 
-.PHONY: all docs resources deb
+.PHONY: all docs resources deb clean
 
 all: docs resources
 
@@ -14,5 +14,11 @@ resources: gsdview/gsdview_resources.py
 gsdview/gsdview_resources.py: resources.qrc images/*
 	pyrcc4 -o $@ $<
 
-deb:
+clean:
+	cd doc && $(MAKE) clean
+	$(RM) -r build dist *~
+	cd debian && $(RM) gsdview.* files pycompat stamp-makefile-build
+	$(RM) python-build-stamp-*
+
+deb: all
 	dpkg-buildpackage -us -uc
