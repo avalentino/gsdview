@@ -29,6 +29,21 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="cachedirLabel" >
+        <property name="text" >
+         <string>Cache directory location</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="FileEntryWidget" native="1" name="cachedirEntryWidget" >
+        <property name="toolTip" >
+         <string>Location of the directory for file cache.
+Default: "$HOME/.gsdview".</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="1" >
        <layout class="QHBoxLayout" name="loglevelHorizontalLayout" >
         <item>
@@ -75,28 +90,11 @@
         </item>
        </layout>
       </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="cachedirLabel" >
-        <property name="text" >
-         <string>Cache directory location</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" >
-       <widget class="FileEntryWidget" native="1" name="cachedirEntryWidget" >
-        <property name="toolTip" >
-         <string>Location of the directory for file cache.
-Default: "$HOME/.gsdview".</string>
-        </property>
-       </widget>
-      </item>
      </layout>
      <zorder>loglevelLabel</zorder>
      <zorder>cachedirLabel</zorder>
      <zorder>cachedirEntryWidget</zorder>
      <zorder></zorder>
-     <zorder>workdirEntryWidget</zorder>
-     <zorder>workdirLabel</zorder>
     </widget>
    </item>
    <item>
