@@ -166,8 +166,6 @@ class GSDView(QtGui.QMainWindow):
         self.connect(self.viewsubmenu, QtCore.SIGNAL('aboutToShow()'),
                      self.updateSettingsMenu)
 
-        # @TODO: add menus for show/hide toolbars and docks
-
         # Help menu end toolbar
         self._addMenuFromActions(self.helpActions, self.tr('&Help'))
         self._addToolBarFromActions(self.helpActions, self.tr('Help toolbar'))
@@ -193,6 +191,7 @@ class GSDView(QtGui.QMainWindow):
     def changeEvent(self, event):
         try:
             if event.oldState() == QtCore.Qt.WindowNoState:
+                # save window size and position
                 self.settings.beginGroup('mainwindow')
                 self.settings.setValue('position', QtCore.QVariant(self.pos()))
                 self.settings.setValue('size', QtCore.QVariant(self.size()))
@@ -203,78 +202,73 @@ class GSDView(QtGui.QMainWindow):
 
     ### Setup helpers #########################################################
     def _setupFileActions(self):
-        self.fileActions = QtGui.QActionGroup(self)
+        actionsgroup = QtGui.QActionGroup(self)
 
         # Open
-        self.actionFileOpen = QtGui.QAction(QtGui.QIcon(':/images/open.svg'),
-                                            self.tr('&Open'), self)
-        #self.actionFileOpen.setObjectName('actionFileOpen') # @TODO: complete
-        self.actionFileOpen.setShortcut(self.tr('Ctrl+O'))
-        self.actionFileOpen.setStatusTip(self.tr('Open an existing file'))
-        self.connect(self.actionFileOpen, QtCore.SIGNAL('triggered()'),
-                     self.openFile)
-        self.fileActions.addAction(self.actionFileOpen)
+        action = QtGui.QAction(QtGui.QIcon(':/images/open.svg'),
+                               self.tr('&Open'), actionsgroup)
+        #action.setObjectName('actionFileOpen') # @TODO: complete
+        action.setShortcut(self.tr('Ctrl+O'))
+        action.setStatusTip(self.tr('Open an existing file'))
+        self.connect(action, QtCore.SIGNAL('triggered()'), self.openFile)
+        actionsgroup.addAction(action)
 
         # Close
-        self.actionFileClose = QtGui.QAction(QtGui.QIcon(':/images/close.svg'),
-                                             self.tr('&Close'), self)
-        self.actionFileClose.setShortcut(self.tr('Ctrl+W'))
-        self.actionFileClose.setStatusTip(self.tr('Close an open file'))
-        self.connect(self.actionFileClose, QtCore.SIGNAL('triggered()'),
-                     self.closeFile)
-        self.fileActions.addAction(self.actionFileClose)
+        action = QtGui.QAction(QtGui.QIcon(':/images/close.svg'),
+                               self.tr('&Close'), actionsgroup)
+        action.setShortcut(self.tr('Ctrl+W'))
+        action.setStatusTip(self.tr('Close an open file'))
+        self.connect(action, QtCore.SIGNAL('triggered()'), self.closeFile)
+        actionsgroup.addAction(action)
 
         # Separator
-        action = QtGui.QAction(self.fileActions)
+        action = QtGui.QAction(actionsgroup)
         action.setSeparator(True)
-        self.fileActions.addAction(action)
+        actionsgroup.addAction(action)
 
         # Exit
-        self.actionExit = QtGui.QAction(QtGui.QIcon(':/images/quit.svg'),
-                                        self.tr('&Exit'), self)
-        self.actionExit.setShortcut(self.tr('Ctrl+X'));
-        self.actionExit.setStatusTip(self.tr('Exit the program'))
-        self.connect(self.actionExit, QtCore.SIGNAL('triggered()'),
-                     self.close)
-        self.fileActions.addAction(self.actionExit)
+        action = QtGui.QAction(QtGui.QIcon(':/images/quit.svg'),
+                               self.tr('&Exit'), actionsgroup)
+        action.setShortcut(self.tr('Ctrl+X'));
+        action.setStatusTip(self.tr('Exit the program'))
+        self.connect(action, QtCore.SIGNAL('triggered()'), self.close)
+        actionsgroup.addAction(action)
 
-        return self.fileActions
+        return actionsgroup
 
     def _setupSettingsActions(self):
-        self.settingsActions = QtGui.QActionGroup(self)
+        actionsgroup = QtGui.QActionGroup(self)
 
         # Preferences
-        self.actionPreferences = QtGui.QAction(
-                                    QtGui.QIcon(':/images/preferences.svg'),
-                                    self.tr('&Preferences'), self)
-        self.actionPreferences.setStatusTip(
-                                    self.tr('Show program preferences dialog'))
-        self.connect(self.actionPreferences, QtCore.SIGNAL('triggered()'),
+        action = QtGui.QAction(QtGui.QIcon(':/images/preferences.svg'),
+                               self.tr('&Preferences'), actionsgroup)
+        action.setStatusTip(self.tr('Show program preferences dialog'))
+        self.connect(action, QtCore.SIGNAL('triggered()'),
                      self.showPreferencesDialog)
-        self.settingsActions.addAction(self.actionPreferences)
+        actionsgroup.addAction(action)
 
-        return self.settingsActions
+        return actionsgroup
 
     def _setupHelpActions(self):
-        self.helpActions = QtGui.QActionGroup(self)
+        actionsgroup = QtGui.QActionGroup(self)
 
         # About
-        self.actionAbout = QtGui.QAction(QtGui.QIcon(':/images/about.svg'),
-                                         self.tr('&About'), self)
-        self.actionAbout.setStatusTip(self.tr('Show program information'))
-        self.connect(self.actionAbout, QtCore.SIGNAL('triggered()'),
-                     self.about)
-        self.helpActions.addAction(self.actionAbout)
+        action = QtGui.QAction(QtGui.QIcon(':/images/about.svg'),
+                               self.tr('&About'), actionsgroup)
+        action.setStatusTip(self.tr('Show program information'))
+        self.connect(action, QtCore.SIGNAL('triggered()'),
+                     self.aboutdialog.exec_)
+        actionsgroup.addAction(action)
 
         # AboutQt
-        self.actionAboutQt = QtGui.QAction(QtGui.QIcon(':/images/qt-logo.png'),
-                                           self.tr('About &Qt'), self)
-        self.actionAboutQt.setStatusTip(self.tr('Show information about Qt'))
-        self.connect(self.actionAboutQt, QtCore.SIGNAL('triggered()'),
-                     self.aboutQt)
-        self.helpActions.addAction(self.actionAboutQt)
+        action = QtGui.QAction(QtGui.QIcon(':/images/qt-logo.png'),
+                               self.tr('About &Qt'), actionsgroup)
+        action.setStatusTip(self.tr('Show information about Qt'))
+        self.connect(action, QtCore.SIGNAL('triggered()'),
+                     lambda: QtGui.QMessageBox.aboutQt(self))
+        actionsgroup.addAction(action)
 
-        return self.helpActions
+        return actionsgroup
 
     def setupActions(self):
         self.fileActions = self._setupFileActions()
@@ -327,14 +321,15 @@ class GSDView(QtGui.QMainWindow):
         return plugins
 
     def setupLogging(self):
+        # @TODO: move to launcher
         logging.basicConfig(format='%(levelname)s: %(message)s')
 
         logger = logging.getLogger()    # 'gsdview' # @TODO: fix
 
-        fmt = ('%(levelname)s: %(filename)s line %(lineno)d in %(funcName)s: '
-               '%(message)s')
-        formatter = logging.Formatter(fmt)
 
+        fmt = ('%(levelname)s: %(asctime)s %(filename)s line %(lineno)d in '
+               '%(funcName)s: %(message)s')
+        formatter = logging.Formatter(fmt)
         logfile = os.path.join(USERCONFIGDIR, 'gsdview.log')
         handler = logging.FileHandler(logfile, 'w')
         handler.setLevel(logging.DEBUG)
@@ -589,13 +584,6 @@ class GSDView(QtGui.QMainWindow):
             self.preferencesdialog.save(self.settings)
             self.loadSettings()
 
-    ### Help actions ##########################################################
-    def about(self):
-        self.aboutdialog.exec_()
-
-    def aboutQt(self):
-        QtGui.QMessageBox.aboutQt(self)
-
     ### File actions ##########################################################
     @qt4support.overrideCursor
     def _openFile(self, filename):
@@ -729,6 +717,7 @@ def main():
     mainwin = GSDView()
     mainwin.show()
     sys.exit(app.exec_())
+
 
 if __name__ == '__main__':
     main()
