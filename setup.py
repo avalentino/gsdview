@@ -26,7 +26,7 @@ __date__    = '$Date$'
 __revision__ = '$Revision$'
 
 import os
-import glob
+import fnmatch
 
 from gsdview import info
 
@@ -88,10 +88,6 @@ packages = ['gsdview', 'gsdview.exectools', 'gsdview.plugins',
             'gsdview.plugins.zoom_tools',
 ]
 
-#~ plugindir = os.path.join('gsdview', 'plugins')
-#~ for dir_ in os.listdir(plugindir):
-    #~ if os.path.isdir(os.path.join(plugindir,dir_)) and not dir_.startswith('.'):
-        #~ packages.append('gsdview.plugins.%s' % dir_)
 def datatree(root, include=None, exclude=None):
     datafiles = []
     for path, dirs, files in os.walk(root):
@@ -109,6 +105,9 @@ datafiles = [
                     datatree(os.path.join('doc', 'build', 'html'))),
     (os.path.join('share', 'doc', PKGNAME),
                     [os.path.join('doc', 'build', 'latex', 'GSDView.pdf')]),
+    # @TODO: unix only
+    ('share/applications', ['gsdview.desktop']),
+    ('share/pixmaps', ['images/GSDView.png']),
 ]
 
 setup(name             = PKGNAME,

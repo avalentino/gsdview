@@ -1,6 +1,6 @@
 # Makefile
 
-.PHONY: all docs resources
+.PHONY: all docs resources deb
 
 all: docs resources
 
@@ -13,3 +13,6 @@ resources: gsdview/gsdview_resources.py
 
 gsdview/gsdview_resources.py: resources.qrc images/*
 	pyrcc4 -o $@ $<
+
+deb:
+	dpkg-buildpackage -us -uc
