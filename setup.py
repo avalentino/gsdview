@@ -79,33 +79,57 @@ if has_setuptools:
 else:
     setuptools_kwargs = {}
 
-packages = ['gsdview', 'gsdview.exectools', 'gsdview.plugins']
+packages = ['gsdview', 'gsdview.exectools', 'gsdview.plugins',
+            'gsdview.plugins.gdal_band_overview',
+            'gsdview.plugins.gdal_dataset_browser',
+            'gsdview.plugins.gdal_metadata_viewer',
+            'gsdview.plugins.position_tracker',
+            'gsdview.plugins.worldmap_panel',
+            'gsdview.plugins.zoom_tools',
+]
 
-plugindir = os.path.join('gsdview', 'plugins')
-for dir_ in os.listdir(plugindir):
-    if os.path.isdir(os.path.join(plugindir,dir_)) and not dir_.startswith('.'):
-        packages.append('gsdview.plugins.%s' % dir_)
+#~ plugindir = os.path.join('gsdview', 'plugins')
+#~ for dir_ in os.listdir(plugindir):
+    #~ if os.path.isdir(os.path.join(plugindir,dir_)) and not dir_.startswith('.'):
+        #~ packages.append('gsdview.plugins.%s' % dir_)
+def datatree(root, include=None, exclude=None):
+    datafiles = []
+    for path, dirs, files in os.walk(root):
+        datafiles.extend([os.path.join(path, file_) for file_ in files])
+    if include:
+        files = fnmatch.filter(files, include)
+    if exclude:
+        excludefiles = fnmatch.filter(datafiles, exclude)
+        datafiles = list(set(datafiles).difference(excludefiles))
+    return datafiles
 
 datafiles = [
     (os.path.join('share', 'doc', PKGNAME), ['README.txt']),
+    (os.path.join('share', 'doc', PKGNAME, 'html'),
+                    datatree(os.path.join('doc', 'build', 'html'))),
+    (os.path.join('share', 'doc', PKGNAME),
+                    [os.path.join('doc', 'build', 'latex', 'GSDView.pdf')]),
 ]
 
 setup(name             = PKGNAME,
       version          = info.version,
       description      = info.short_description,
       long_description = info.description,
-      author           = ', '.join(info.author),
-      author_email     = ', '.join(info.author_email),
-      maintainer       = ', '.join(info.author),
-      maintainer_email = ', '.join(info.author_email),
+      author           = info.author,
+      author_email     = info.author_email,
+      maintainer       = info.author,
+      maintainer_email = info.author_email,
       url              = info.website,
       #download_url = "http://www.pytables.org/download/stable/pytables-%s.tar.gz" % VERSION,
       packages         = packages,
+      package_data     = {'gsdview': ['ui/*.ui'],
+                          'gsdview.plugins.gdal_dataset_browser': ['*.ui'],
+                         },
       scripts          = ['gsdviewer'],
       classifiers      = filter(None, classifiers.split('\n')),
       license          = info.license_type,
       platforms        = ['any'],
-      #data_files       = datafiles,
+      data_files       = datafiles,
       #cmdclass         = cmdclass,
       **setuptools_kwargs
      )
