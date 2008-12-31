@@ -54,9 +54,11 @@ from exectools.qt4tools import Qt4ToolController, Qt4DialogLoggingHandler
 
 import gsdview_resources
 
+
 # @TODO: move elseware (site.py ??)
 USERCONFIGDIR = os.path.expanduser(os.path.join('~', '.gsdview'))
 GSDVIEWROOT = os.path.dirname(os.path.abspath(__file__))
+
 
 class GSDView(QtGui.QMainWindow):
     # @TODO:
@@ -75,18 +77,19 @@ class GSDView(QtGui.QMainWindow):
 
     :attributes:
 
-    - graphicsView
-    - progressbar
     - filedialog
     - aboutdialog
     - preferencedsdialog
-    - imageItem
-    - dataset
-    - cachedir
+    - progressbar
+    - settings_submenu
     - settings
     - logger
     - controller
-    - viewsubmenu
+    - cachedir
+
+    - graphicsView
+    - imageItem
+    - dataset
 
     :signals:
 
@@ -102,17 +105,6 @@ class GSDView(QtGui.QMainWindow):
         self.setWindowTitle(self.tr('GSDView'))
         self.setObjectName('gsdview-mainwin')
 
-        scene = QtGui.QGraphicsScene(self)
-        self.graphicsView = GraphicsView(scene, self)
-        self.graphicsView.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
-        self.setCentralWidget(self.graphicsView)
-
-        # Progressbar
-        self.progressbar = QtGui.QProgressBar(self)
-        self.progressbar.setTextVisible(True)
-        self.statusBar().addPermanentWidget(self.progressbar)
-        self.progressbar.hide()
-
         # Dialogs
         self.filedialog = QtGui.QFileDialog(self)
         self.filedialog.setFileMode(QtGui.QFileDialog.ExistingFile)
@@ -124,9 +116,22 @@ class GSDView(QtGui.QMainWindow):
         self.connect(self.preferencesdialog, QtCore.SIGNAL('apply()'),
                      self.loadSettings)
 
+        # Progressbar
+        self.progressbar = QtGui.QProgressBar(self)
+        self.progressbar.setTextVisible(True)
+        self.statusBar().addPermanentWidget(self.progressbar)
+        self.progressbar.hide()
+
+        self.cachedir = None
+
+        scene = QtGui.QGraphicsScene(self)
+        graphicsview = GraphicsView(scene, self)
+        graphicsview.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
+        self.setCentralWidget(graphicsview)
+
+        self.graphicsView = graphicsview
         self.imageItem = None
         self.dataset = None
-        self.cachedir = None
 
         # Settings
         # @TODO: fix filename
@@ -160,10 +165,10 @@ class GSDView(QtGui.QMainWindow):
                                         self.tr('&Settings'))
         self._addToolBarFromActions(self.settingsActions,
                                     self.tr('Settings toolbar'))
-        self.viewsubmenu = QtGui.QMenu(self.tr('&View'))
+        self.settings_submenu = QtGui.QMenu(self.tr('&View'))
         menu.addSeparator()
-        menu.addMenu(self.viewsubmenu)
-        self.connect(self.viewsubmenu, QtCore.SIGNAL('aboutToShow()'),
+        menu.addMenu(self.settings_submenu)
+        self.connect(self.settings_submenu, QtCore.SIGNAL('aboutToShow()'),
                      self.updateSettingsMenu)
 
         # Help menu end toolbar
@@ -565,16 +570,16 @@ class GSDView(QtGui.QMainWindow):
         # @NOTE: cache preferences are only modified via preferences dialog
 
     def updateSettingsMenu(self):
-        self.viewsubmenu.clear()
+        self.settings_submenu.clear()
         menu = self.createPopupMenu()
 
         for action in menu.actions():
             if self.tr('toolbar') in action.text():
-                self.viewsubmenu.addAction(action)
-        self.viewsubmenu.addSeparator()
+                self.settings_submenu.addAction(action)
+        self.settings_submenu.addSeparator()
         for action in menu.actions():
             if self.tr('toolbar') not in action.text():
-                self.viewsubmenu.addAction(action)
+                self.settings_submenu.addAction(action)
 
     def showPreferencesDialog(self):
         # @TODO: complete
@@ -707,7 +712,7 @@ class GSDView(QtGui.QMainWindow):
 
 
 def main():
-    # @NOTE: needed for ui building of promoted widgets
+    # @NOTE: needed for UI building of promoted widgets
     sys.path.insert(0, GSDVIEWROOT)
 
     # @NOTE: needed for path names variables expansion

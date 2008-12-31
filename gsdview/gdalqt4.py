@@ -152,7 +152,3 @@ class GdalGraphicsItem(QtGui.QGraphicsItem):
         #drawPixmap(self, QPointF p, QPixmap pm, QRectF sr)
         #drawPixmap(self, QPoint p, QPixmap pm, QRect sr)
         #painter->drawTiledPixmap()
-
-
-#class GdalDatasetBrowser(object):
-#    pass

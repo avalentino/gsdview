@@ -37,6 +37,8 @@ from exectools.qt4tools import Qt4OStream, Qt4OutputPlane, \
 
 def init(mainwin):
     panel = QtGui.QDockWidget('Output Log', mainwin)
+    # @TODO: try to add actions to a QTextEdit widget instead of using a
+    #        custom widget
     logplane = Qt4OutputPlane()
     panel.setWidget(logplane)
 
