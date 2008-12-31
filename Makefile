@@ -16,8 +16,9 @@ gsdview/gsdview_resources.py: resources.qrc images/*
 
 clean:
 	cd doc && $(MAKE) clean
-	$(RM) -r build dist *~
-	cd debian && $(RM) gsdview.* files pycompat stamp-makefile-build
+	$(RM) -r MANIFEST build dist *~
+	$(RM) $(find . '*.pyc')
+	cd debian && $(RM) -r gsdview gsdview.* files pycompat stamp-makefile-build
 	$(RM) python-build-stamp-*
 
 deb: all

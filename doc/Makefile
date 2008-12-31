@@ -24,7 +24,7 @@ help:
 	@echo "  linkcheck to check all external links for integrity"
 
 clean:
-	-rm -rf build/*
+	-rm -rf build
 
 html:
 	mkdir -p build/html build/doctrees
