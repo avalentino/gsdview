@@ -1,4 +1,4 @@
-### Copyright (C) 2008 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2009 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
