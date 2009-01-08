@@ -213,6 +213,7 @@ class GSDView(QtGui.QMainWindow):
                                self.tr('&Open'), actionsgroup)
         #action.setObjectName('actionFileOpen') # @TODO: complete
         action.setShortcut(self.tr('Ctrl+O'))
+        action.setToolTip(self.tr('Open an existing file'))
         action.setStatusTip(self.tr('Open an existing file'))
         self.connect(action, QtCore.SIGNAL('triggered()'), self.openFile)
         actionsgroup.addAction(action)
@@ -221,19 +222,19 @@ class GSDView(QtGui.QMainWindow):
         action = QtGui.QAction(QtGui.QIcon(':/images/close.svg'),
                                self.tr('&Close'), actionsgroup)
         action.setShortcut(self.tr('Ctrl+W'))
-        action.setStatusTip(self.tr('Close an open file'))
+        action.setToolTip(self.tr('Close an open file'))
+        action.setStatusTip(self.tr('Close'))
         self.connect(action, QtCore.SIGNAL('triggered()'), self.closeFile)
         actionsgroup.addAction(action)
 
         # Separator
-        action = QtGui.QAction(actionsgroup)
-        action.setSeparator(True)
-        actionsgroup.addAction(action)
+        QtGui.QAction(actionsgroup).setSeparator(True)
 
         # Exit
         action = QtGui.QAction(QtGui.QIcon(':/images/quit.svg'),
                                self.tr('&Exit'), actionsgroup)
-        action.setShortcut(self.tr('Ctrl+X'));
+        action.setShortcut(self.tr('Ctrl+X'))
+        action.setToolTip(self.tr('Exit the program'))
         action.setStatusTip(self.tr('Exit the program'))
         self.connect(action, QtCore.SIGNAL('triggered()'), self.close)
         actionsgroup.addAction(action)
@@ -246,7 +247,8 @@ class GSDView(QtGui.QMainWindow):
         # Preferences
         action = QtGui.QAction(QtGui.QIcon(':/images/preferences.svg'),
                                self.tr('&Preferences'), actionsgroup)
-        action.setStatusTip(self.tr('Show program preferences dialog'))
+        action.setToolTip(self.tr('Open the program preferences dialog'))
+        action.setStatusTip(self.tr('Open the program preferences dialog'))
         self.connect(action, QtCore.SIGNAL('triggered()'),
                      self.showPreferencesDialog)
         actionsgroup.addAction(action)
@@ -259,6 +261,7 @@ class GSDView(QtGui.QMainWindow):
         # About
         action = QtGui.QAction(QtGui.QIcon(':/images/about.svg'),
                                self.tr('&About'), actionsgroup)
+        action.setToolTip(self.tr('Show program information'))
         action.setStatusTip(self.tr('Show program information'))
         self.connect(action, QtCore.SIGNAL('triggered()'),
                      self.aboutdialog.exec_)
@@ -267,6 +270,7 @@ class GSDView(QtGui.QMainWindow):
         # AboutQt
         action = QtGui.QAction(QtGui.QIcon(':/images/qt-logo.png'),
                                self.tr('About &Qt'), actionsgroup)
+        action.setToolTip(self.tr('Show information about Qt'))
         action.setStatusTip(self.tr('Show information about Qt'))
         self.connect(action, QtCore.SIGNAL('triggered()'),
                      lambda: QtGui.QMessageBox.aboutQt(self))
