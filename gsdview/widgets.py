@@ -42,25 +42,29 @@ import gdalsupport
 import gsdview_resources
 
 
-def _get_filedialog(parent=None):
+def get_mainwin():
+    #mainwin = QtGui.qApp.findChild(QtGui.QMainWindow,  'gsdview-mainwin')
+    for mainwin in QtGui.qApp.topLevelWidgets():
+        if mainwin.objectName() == 'gsdview-mainwin':
+            break
+    else:
+        # if no widget with the searched name is found then reset
+        mainwin = None
+    return mainwin
+
+def get_filedialog(parent=None):
     try:
         #mainwin = QtGui.qApp.findChild(QtGui.QMainWindow,  'gsdview-mainwin')
-        for mainwin in QtGui.qApp.topLevelWidgets():
-            if mainwin.objectName() == 'gsdview-mainwin':
-                break
-        else:
-            # if no widget with the searched name is found then reset
-            mainwin = None
+        mainwin = get_mainwin()
         dialog = mainwin.filedialog
     except AttributeError:
         logging.debug('unable to find the GDSView main window widget')
         dialog = QtGui.QFileDialog(parent)
-        print 'unable to find the GDSView main window widget'
     return dialog
 
 def _choosefile(filename='', dialog=None, mode=None):
     if not dialog:
-        dialog = _get_filedialog()
+        dialog = get_filedialog()
 
     oldmode = dialog.fileMode()
     if filename:
@@ -177,16 +181,16 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview"><span style="tex
 
 
     def setVersions(self):
-        tableWidget = self.versionsTableWidget
+        tablewidget = self.versionsTableWidget
         #tableWidget.clear()
         #tableWidget.setHorizontalHeaderLabels(['Software', 'Version', 'Home Page'])
-        tableWidget.verticalHeader().hide()
-        tableWidget.horizontalHeader().setStretchLastSection(True)
-        tableWidget.setRowCount(len(info.all_versions))
+        tablewidget.verticalHeader().hide()
+        tablewidget.horizontalHeader().setStretchLastSection(True)
+        tablewidget.setRowCount(len(info.all_versions))
         for row, (sw, version_, link) in enumerate(info.all_versions):
-            tableWidget.setItem(row, 0, QtGui.QTableWidgetItem(sw))
-            tableWidget.setItem(row, 1, QtGui.QTableWidgetItem(version_))
-            tableWidget.setItem(row, 2, QtGui.QTableWidgetItem(link))
+            tablewidget.setItem(row, 0, QtGui.QTableWidgetItem(sw))
+            tablewidget.setItem(row, 1, QtGui.QTableWidgetItem(version_))
+            tablewidget.setItem(row, 2, QtGui.QTableWidgetItem(link))
             #~ tableWidget.setItem(row, 2,
                 #~ QtGui.QTableWidgetItem('<a href="%s">%s</a>' % (link, link)))
 
@@ -219,7 +223,7 @@ class FileEntryWidget(QtGui.QWidget):
         self.dialog = dialog
 
         #~ if not self.dialog:
-            #~ self.dialog = _get_filedialog(self)
+            #~ self.dialog = get_filedialog(self)
 
         self.connect(self.button, QtCore.SIGNAL('clicked()'), self.choose)
 
@@ -270,7 +274,7 @@ class GeneralPreferencesPage(QtGui.QWidget):
         self.setLoglevel(level)
 
         # Work directory
-        dialog = _get_filedialog(self)
+        dialog = get_filedialog(self)
         self.workdirEntryWidget.dialog = dialog
         self.workdirEntryWidget.mode = QtGui.QFileDialog.Directory
         #self.workdirEntryWidget.mode = QtGui.QFileDialog.DirectoryOnly
@@ -360,7 +364,7 @@ class GDALPreferencesPage(QtGui.QWidget):
         # standard options
         cachesize = gdal.GetCacheMax()
         self.cacheSpinBox.setValue(cachesize/1024**2)
-        dialog = _get_filedialog(self)
+        dialog = get_filedialog(self)
         for name in ('gdalDataDir', 'gdalDriverPath', 'ogrDriverPath'):
             widget = getattr(self, name + 'EntryWidget')
             widget.dialog = dialog
@@ -421,6 +425,9 @@ class GDALPreferencesPage(QtGui.QWidget):
                     self.cacheCheckBox.setChecked(True)
                     self.cacheSpinBox.setValue(cachesize/1024**2)
             else:
+                # show the current value and disable the control
+                cachesize = gdal.GetCacheMax()
+                self.cacheSpinBox.setValue(cachesize/1024**2)
                 self.cacheCheckBox.setChecked(False)
 
             # GDAL data dir
@@ -429,6 +436,9 @@ class GDALPreferencesPage(QtGui.QWidget):
                 self.gdalDataCheckBox.setChecked(True)
                 self.gdalDataDirEntryWidget.setText(datadir)
             else:
+                # show the current value and disable the control
+                datadir = gdal.GetConfigOption('GDAL_DATA', '')
+                self.gdalDataDirEntryWidget.setText(datadir)
                 self.gdalDataCheckBox.setChecked(False)
 
             # GDAL_SKIP
@@ -437,6 +447,9 @@ class GDALPreferencesPage(QtGui.QWidget):
                 self.skipCheckBox.setChecked(True)
                 self.skipLineEdit.setText(gdalskip)
             else:
+                # show the current value and disable the control
+                gdalskip = gdal.GetConfigOption('GDAL_SKIP', '')
+                self.skipLineEdit.setText(gdalskip)
                 self.skipCheckBox.setChecked(False)
 
             # GDAL driver path
@@ -445,6 +458,9 @@ class GDALPreferencesPage(QtGui.QWidget):
                 self.gdalDriverPathCheckBox.setChecked(True)
                 self.gdalDriverPathEntryWidget.setText(gdaldriverpath)
             else:
+                # show the current value and disable the control
+                gdaldriverpath = gdal.GetConfigOption('GDAL_DRIVER_PATH', '')
+                self.gdalDriverPathEntryWidget.setText(gdaldriverpath)
                 self.gdalDriverPathCheckBox.setChecked(False)
 
             # OGR driver path
@@ -453,6 +469,9 @@ class GDALPreferencesPage(QtGui.QWidget):
                 self.ogrDriverPathCheckBox.setChecked(True)
                 self.ogrDriverPathEntryWidget.setText(ogrdriverpath)
             else:
+                # show the current value and disable the control
+                ogrdriverpath = gdal.GetConfigOption('OGR_DRIVER_PATH', '')
+                self.ogrDriverPathEntryWidget.setText(ogrdriverpath)
                 self.ogrDriverPathCheckBox.setChecked(False)
 
             # extra options

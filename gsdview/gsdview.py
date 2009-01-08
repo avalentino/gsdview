@@ -71,7 +71,6 @@ class GSDView(QtGui.QMainWindow):
     #   * /usr/share/doc/python-qt4-doc/examples/mainwindows/recentfiles.py
     #   * stretching tool
     #   * allow to open multiple bands/datasets --> band/dataset regiter + current
-    #   * make toolbars and docs controls available in the main menu
 
     '''Main window class for GSDView application.
 
@@ -114,7 +113,7 @@ class GSDView(QtGui.QMainWindow):
         self.aboutdialog = AboutDialog(self)
         self.preferencesdialog = PreferencesDialog(self)
         self.connect(self.preferencesdialog, QtCore.SIGNAL('apply()'),
-                     self.loadSettings)
+                     self.applySettings)
 
         # Progressbar
         self.progressbar = QtGui.QProgressBar(self)
@@ -494,6 +493,11 @@ class GSDView(QtGui.QMainWindow):
             settings.endGroup()
 
         # cache
+        # @TODO
+
+        # plugins
+        for plugin in self.plugins.values():
+            plugin.loadSettings(settings)
 
     def _saveWindowState(self, settings=None):
         if settings is None:
@@ -569,6 +573,9 @@ class GSDView(QtGui.QMainWindow):
         # @NOTE: GDAL preferences are only modified via preferences dialog
         # @NOTE: cache preferences are only modified via preferences dialog
 
+        for plugin in self.plugins.values():
+            plugin.saveSettings(settings)
+
     def updateSettingsMenu(self):
         self.settings_submenu.clear()
         menu = self.createPopupMenu()
@@ -581,13 +588,16 @@ class GSDView(QtGui.QMainWindow):
             if self.tr('toolbar') not in action.text():
                 self.settings_submenu.addAction(action)
 
+    def applySettings(self):
+        self.preferencesdialog.save(self.settings)
+        self.loadSettings()
+
     def showPreferencesDialog(self):
         # @TODO: complete
         self.saveSettings()
         self.preferencesdialog.load(self.settings)
         if self.preferencesdialog.exec_():
-            self.preferencesdialog.save(self.settings)
-            self.loadSettings()
+            self.applySettings()
 
     ### File actions ##########################################################
     @qt4support.overrideCursor
