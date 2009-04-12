@@ -35,7 +35,7 @@ from exectools.qt4tools import Qt4OStream, Qt4OutputPlane, \
                                Qt4StreamLoggingHandler
 
 # Info
-name = 'gdalbackend'
+name = 'logplane'
 version = '.'.join(map(str, __version__)) + 'a'
 
 short_description = 'GDAL backend for GSDView'
@@ -85,13 +85,10 @@ def init(mainwin):
                            panel.hide)
 
 def close(mainwin):
-    saveSettings()
+    saveSettings(mainwin.settings)
 
-def loadSettings():
+def loadSettings(settings):
     pass
 
-def saveSettings():
-    pass
-
-def getSettingsEditor():
+def saveSettings(settings):
     pass
