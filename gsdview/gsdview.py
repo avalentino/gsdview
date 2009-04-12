@@ -157,7 +157,7 @@ class GSDView(QtGui.QMainWindow):
         self._addToolBarFromActions(self.fileActions, self.tr('File toolbar'))
 
         # Setup plugins
-        self.setupPlugins() # @TODO: pass settings
+        self.plugins = self.setupPlugins() # @TODO: pass settings
 
         # Settings menu end toolbar
         menu = self._addMenuFromActions(self.settingsActions,

@@ -35,7 +35,74 @@ except ImportError:
     from gdalsupport import GDALTypeCodeToNumericTypeCode
 
 from PyQt4 import QtCore, QtGui
-from PyQt4 import Qwt5 as Qwt
+
+try:
+    from PyQt4.Qwt5 import toQImage
+    def numpy2qimage(image):
+        return toQImage(image.transpose())
+
+    del toQImage
+
+except ImportError:
+    GRAY_COLORTABLE = [QtGui.QColor(i, i, i).rgb() for i in range(256)]
+
+    def numpy2qimage(data):
+        '''Convert a numpy array into a QImage'''
+
+        colortable = None
+
+        if data.dtype in (numpy.uint8, numpy.ubyte):
+            if data.ndim == 2:
+                h, w = data.shape
+
+                shape = (h, numpy.ceil(w / 4.) * 4)
+                if shape != data.shape:
+                    # build aigned matrix
+                    image = numpy.zeros(shape, numpy.ubyte)
+                    image[:,:w] = data
+                else:
+                    image = numpy.require(data, numpy.uint8, 'CO') # 'CAO'
+                format = QtGui.QImage.Format_Indexed8
+
+                # @TODO: check
+                #~ colortable = [QtGui.QColor(i, i, i).rgb() for i in range(256)]
+                colortable = GRAY_COLORTABLE
+
+            elif data.ndim == 3 and data.shape[2] == 3:
+                image = numpy.require(data, numpy.uint8, 'CO') # 'CAO'
+                format = QtGui.QImage.Format_RGB
+
+            elif data.ndim == 3 and data.shape[2] == 4:
+                image = numpy.require(data, numpy.uint8, 'CO') # 'CAO'
+                format = QtGui.QImage.Format_ARGB32
+
+        elif data.dtype == numpy.uint16 and data.ndim == 2:
+            # @TODO: check
+            h, w = data.shape
+
+            shape = (h, numpy.ceil(w / 2.) * 2)
+            if shape != data.shape:
+                # build aigned matrix
+                image = numpy.zeros(shape, numpy.ubyte)
+                image[:,:w] = data
+            else:
+                image = numpy.require(data, numpy.uint16, 'CO') # 'CAO'
+            format = QtGui.QImage.Format_RGB16
+
+        elif data.dtype == numpy.uint32 and data.ndim == 2:
+            image = numpy.require(data, numpy.uint32, 'CO') # 'CAO'
+            format = QtGui.QImage.Format_ARGB32
+
+        else:
+            raise ValueError('unable to convert data: shape=%s, '
+                        'dtype="%s"' % (data.shape, numpy.dtypr(data.dtype)))
+
+        result = QtGui.QImage(image.data, w, h, format)
+        result.ndarray = image
+        if colortable:
+            result.setColorTable(colortable)
+
+        return result
 
 import gdalsupport
 import gsdtools
@@ -135,20 +202,19 @@ class GdalGraphicsItem(QtGui.QGraphicsItem):
             self._lut = new_lut
             data = gsdtools.apply_LUT(data, self._lut)
 
-        image = Qwt.toQImage(data.transpose())
-        # @TODO: SIP v4.7.5
-        #image = QtGui.QImage(data.data, height, width, QtGui.QImage.Format_Indexed8)
+        image = numpy2qimage(data)
 
         painter.drawImage(rect.x(), rect.y(), image)
-        #drawPixmap(self, QRectF targetRect, QPixmap pixmap, QRectF sourceRect)
-        #drawPixmap(self, QRect targetRect, QPixmap pixmap, QRect sourceRect)
-        #drawPixmap(self, QPointF p, QPixmap pm)
-        #drawPixmap(self, QPoint p, QPixmap pm)
-        #drawPixmap(self, QRect r, QPixmap pm)
-        #drawPixmap(self, int x, int y, QPixmap pm)
-        #drawPixmap(self, int x, int y, int w, int h, QPixmap pm)
-        #drawPixmap(self, int x, int y, int w, int h, QPixmap pm, int sx, int sy, int sw, int sh)
-        #drawPixmap(self, int x, int y, QPixmap pm, int sx, int sy, int sw, int sh)
-        #drawPixmap(self, QPointF p, QPixmap pm, QRectF sr)
-        #drawPixmap(self, QPoint p, QPixmap pm, QRect sr)
-        #painter->drawTiledPixmap()
+
+
+#class GdalDatasetBrowser(object):
+#    pass
+
+if __name__ == '__main__':
+    image = numpy.zeros((257,513), numpy.ubyte)
+    image[64:193, 256:741] = 255
+    qimage = numpy2qimage(image)
+    h, w = image.shape
+    for r in range(h):
+        for c in range(w):
+            assert image[r, c] == qimage.pixelIndex(c, r)
