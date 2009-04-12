@@ -73,9 +73,9 @@ class GdalOutputHandler(Qt4OutputHandler):
                 self.percentage = min(100, self.percentage + 2.5)
                 self._handle_percentage(self.percentage)
         if percentage is not None:
-            assert(percentage >= self.percentage,
-                        'percentage = %d, self.percentage = %f' %
-                                                (percentage, self.percentage))
+            assert percentage >= self.percentage, 'percentage = %d, ' \
+                        'self.percentage = %f' % (percentage, self.percentage)
+
             self.percentage = percentage
             self._handle_percentage(percentage)
         if text and not pulse and percentage is None:

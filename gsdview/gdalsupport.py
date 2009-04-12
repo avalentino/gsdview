@@ -323,7 +323,8 @@ class GridCoordinateMapper(CoordinateMapper):
     def __init__(self, dataset):
         # @TODO: time this; it seems to be too slow in reading 3443 GCPs from
         #        SAR_IMM_1PXESA20080116_095222_00000471A133_00122_66609_0269.E2
-        super(GridCoordinateMapper, self).__init__(dataset)
+        #super(GridCoordinateMapper, self).__init__(dataset)
+        super(GridCoordinateMapper, self).__init__()
 
         ngcp = dataset.GetGCPCount()
         gcps = dataset.GetGCPs()
@@ -422,7 +423,7 @@ class InvalidProjection(ValueError):
 class GeoTransformCoordinateMapper(CoordinateMapper):
 
     def __init__(self, dataset):
-        super(GeoTransformCoordinateMapper, self).__init__(dataset)
+        super(GeoTransformCoordinateMapper, self).__init__()
         if dataset.GetGCPCount():
             projection = dataset.GetGCPProjection()
             gcps = dataset.GetGCPs()
