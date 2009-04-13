@@ -179,7 +179,6 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview"><span style="tex
 
         self.setVersions()
 
-
     def setVersions(self):
         tablewidget = self.versionsTableWidget
         #tableWidget.clear()
@@ -187,9 +186,9 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview"><span style="tex
         tablewidget.verticalHeader().hide()
         tablewidget.horizontalHeader().setStretchLastSection(True)
         tablewidget.setRowCount(len(info.all_versions))
-        for row, (sw, version_, link) in enumerate(info.all_versions):
+        for row, (sw, version, link) in enumerate(info.all_versions):
             tablewidget.setItem(row, 0, QtGui.QTableWidgetItem(sw))
-            tablewidget.setItem(row, 1, QtGui.QTableWidgetItem(version_))
+            tablewidget.setItem(row, 1, QtGui.QTableWidgetItem(version))
             tablewidget.setItem(row, 2, QtGui.QTableWidgetItem(link))
             #~ tableWidget.setItem(row, 2,
                 #~ QtGui.QTableWidgetItem('<a href="%s">%s</a>' % (link, link)))

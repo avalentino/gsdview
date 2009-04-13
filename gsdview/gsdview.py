@@ -100,7 +100,7 @@ class GSDView(QtGui.QMainWindow):
     def __init__(self, parent=None):
         QtGui.qApp.setWindowIcon(QtGui.QIcon(':/images/GSDView.png'))
 
-        QtGui.QMainWindow.__init__(self, parent)
+        super(GSDView, self).__init__(parent)
         self.setWindowTitle(self.tr('GSDView'))
         self.setObjectName('gsdview-mainwin')
 
@@ -370,7 +370,6 @@ class GSDView(QtGui.QMainWindow):
 
         settings.beginGroup('mainwindow')
         try:
-
             position = settings.value('position')
             if not position.isNull():
                 self.move(position.toPoint())
@@ -509,11 +508,16 @@ class GSDView(QtGui.QMainWindow):
 
         settings.beginGroup('mainwindow')
         try:
-            settings.setValue('winstate', QtCore.QVariant(self.windowState()))
+            # @TODO: check
+            # @NOTE: workaround for silencing Qt warning
+            winstate = int(self.windowState())
+            settings.setValue('winstate', QtCore.QVariant(winstate))
+            #settings.setValue('winstate', QtCore.QVariant(self.windowState()))
 
             if self.windowState() == QtCore.Qt.WindowNoState:
                 settings.setValue('position', QtCore.QVariant(self.pos()))
                 settings.setValue('size', QtCore.QVariant(self.size()))
+
             settings.setValue('state', QtCore.QVariant(self.saveState()))
         finally:
             settings.endGroup()
