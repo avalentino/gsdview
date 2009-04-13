@@ -302,7 +302,8 @@ def _fixedGCPs(gcps):
 
         # @WARNING: here we are assuming that the distance between geolocation
         #           grid linse is constant
-        assert upsteps.max() == upsteps[:-1].min(), 'max = %f, min = %f' % (upsteps.max(), upsteps.min())
+        assert upsteps.max() == upsteps[:-1].min(), ('max = %f, min = %f' %
+                                                (upsteps.max(), upsteps.min()))
         linespacing = int(upsteps[0])
 
         downstepslocation = numpy.where(lines[1:] < lines[0:-1])[0] + 1
@@ -538,6 +539,7 @@ def get_coordinate_mapper(dataset, precise=False):
 # @TODO: choose a better name (virtual???)
 class MajorObjectProxy(object):
     def __init__(self, gdalobj):
+        super(MajorObjectProxy, self).__init__()
         if isinstance(gdalobj, MajorObjectProxy):
             self._obj = gdalobj._obj
         else:
