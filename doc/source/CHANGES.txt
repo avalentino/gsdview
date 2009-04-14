@@ -1,0 +1,25 @@
+..  :Source: doc/source/CHANGES.txt
+    :Version: 0.5.2
+    :Author: Antonio Valentino
+    :Contact: a_valentino@users.sf.net
+    :URL: http://gsdview.sourceforge.net
+    :Revision: $Revision: 0 $
+    :Date: $Date: 2009-04-14 18:12:01 $
+    :Copyright (C): 2008-2009 Antonio Valentino
+
+
+ChangeLog
+=========
+
+
+Changes from 0.3.0 to 0.3.1 (14/04/2009)
+----------------------------------------
+
+@TBW
+
+
+Version 0.3.0 (18/05/2008)
+--------------------------
+
+First public release
+
