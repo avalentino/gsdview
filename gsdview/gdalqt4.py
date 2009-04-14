@@ -104,13 +104,14 @@ except ImportError:
 
         return result
 
-import gdalsupport
 import gsdtools
+import gdalsupport
 
 
 # @TODO: move GraphicsView here
 # @TODO: treeview showing GDAL datasets/bands attributes and metadata (read only)
 
+# @TODO: use a factory function
 class GdalGraphicsItem(QtGui.QGraphicsItem):
     # @TODO:
     #   * child class that uses the quicklook image as a low resolution cache
@@ -132,10 +133,13 @@ class GdalGraphicsItem(QtGui.QGraphicsItem):
         #~ if band.DataType in (gdal.GDT_CInt16, gdal.GDT_CInt32):
             #~ logging.warning('complex integer dataset')
 
+        # @TODO: gdal.DataTypeIsComplex (??)
         dtype = GDALTypeCodeToNumericTypeCode(band.DataType)
         if isinstance(dtype, basestring):
             dtype = numpy.typeDict[dtype]
         if numpy.iscomplexobj(dtype()):
+            # @TODO: raise ItemTypeError or NotImplementedError
+            #raise NotImplementedError('support for "%s" data type not avalable')
             logging.warning('extract module from complex data')
 
     def compute_default_LUT(self):

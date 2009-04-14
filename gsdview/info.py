@@ -25,7 +25,7 @@ __version__  = (0,3,1)
 
 __all__ = ['name', 'version', 'short_description', 'description',
            'author', 'author_email', 'copyright', 'license_type',
-           'website', 'website_label']
+           'website', 'website_label', 'all_versions']
 
 import sys
 

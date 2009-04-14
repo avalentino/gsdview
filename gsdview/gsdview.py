@@ -55,9 +55,10 @@ from exectools.qt4tools import Qt4ToolController, Qt4DialogLoggingHandler
 import gsdview_resources
 
 
-# @TODO: move elseware (site.py ??)
-USERCONFIGDIR = os.path.expanduser(os.path.join('~', '.gsdview'))
+# @TODO: move elsewhere (site.py ??)
+# @NOTE: this should happen before any os.chdir
 GSDVIEWROOT = os.path.dirname(os.path.abspath(__file__))
+USERCONFIGDIR = os.path.expanduser(os.path.join('~', '.gsdview'))
 
 
 class GSDView(QtGui.QMainWindow):
@@ -211,7 +212,7 @@ class GSDView(QtGui.QMainWindow):
         # Open
         action = QtGui.QAction(QtGui.QIcon(':/images/open.svg'),
                                self.tr('&Open'), actionsgroup)
-        #action.setObjectName('actionFileOpen') # @TODO: complete
+        action.setObjectName('open')
         action.setShortcut(self.tr('Ctrl+O'))
         action.setToolTip(self.tr('Open an existing file'))
         action.setStatusTip(self.tr('Open an existing file'))
@@ -221,18 +222,21 @@ class GSDView(QtGui.QMainWindow):
         # Close
         action = QtGui.QAction(QtGui.QIcon(':/images/close.svg'),
                                self.tr('&Close'), actionsgroup)
+        action.setObjectName('close')
         action.setShortcut(self.tr('Ctrl+W'))
-        action.setToolTip(self.tr('Close an open file'))
-        action.setStatusTip(self.tr('Close'))
+        action.setToolTip(self.tr('Close the current file'))
+        action.setStatusTip(self.tr('Close the current file'))
         self.connect(action, QtCore.SIGNAL('triggered()'), self.closeFile)
         actionsgroup.addAction(action)
 
         # Separator
         QtGui.QAction(actionsgroup).setSeparator(True)
+        #action.setObjectName('separator')
 
         # Exit
         action = QtGui.QAction(QtGui.QIcon(':/images/quit.svg'),
                                self.tr('&Exit'), actionsgroup)
+        action.setObjectName('exit')
         action.setShortcut(self.tr('Ctrl+X'))
         action.setToolTip(self.tr('Exit the program'))
         action.setStatusTip(self.tr('Exit the program'))
@@ -247,6 +251,7 @@ class GSDView(QtGui.QMainWindow):
         # Preferences
         action = QtGui.QAction(QtGui.QIcon(':/images/preferences.svg'),
                                self.tr('&Preferences'), actionsgroup)
+        action.setObjectName('preferences')
         action.setToolTip(self.tr('Open the program preferences dialog'))
         action.setStatusTip(self.tr('Open the program preferences dialog'))
         self.connect(action, QtCore.SIGNAL('triggered()'),
@@ -261,6 +266,7 @@ class GSDView(QtGui.QMainWindow):
         # About
         action = QtGui.QAction(QtGui.QIcon(':/images/about.svg'),
                                self.tr('&About'), actionsgroup)
+        action.setObjectName('about')
         action.setToolTip(self.tr('Show program information'))
         action.setStatusTip(self.tr('Show program information'))
         self.connect(action, QtCore.SIGNAL('triggered()'),
@@ -270,6 +276,7 @@ class GSDView(QtGui.QMainWindow):
         # AboutQt
         action = QtGui.QAction(QtGui.QIcon(':/images/qt-logo.png'),
                                self.tr('About &Qt'), actionsgroup)
+        action.setObjectName('aboutQt')
         action.setToolTip(self.tr('Show information about Qt'))
         action.setStatusTip(self.tr('Show information about Qt'))
         self.connect(action, QtCore.SIGNAL('triggered()'),
@@ -282,6 +289,7 @@ class GSDView(QtGui.QMainWindow):
         self.fileActions = self._setupFileActions()
         self.settingsActions = self._setupSettingsActions()
         self.helpActions = self._setupHelpActions()
+        # @TODO: tree view actions: expand/collapse all, expand/collapse subtree
 
     def _addMenuFromActions(self, actions, name):
         menu = qt4support.actionGroupToMenu(actions, name, self)
@@ -294,12 +302,16 @@ class GSDView(QtGui.QMainWindow):
         return toolbar
 
     def setupPlugins(self):
+        # @TODO: fix
+        sys.path.insert(0, os.path.normpath(os.path.join(GSDVIEWROOT, os.pardir)))
+
         # @TODO: move to the PluginManager
         plugins = {}
+
         # @TODO: set from settings
         pluginsDir = os.path.join(os.path.dirname(__file__), 'plugins')
         sys.path.insert(0, pluginsDir)
-        sys.path.insert(0, os.path.dirname(__file__)) # @TODO: fix
+
         for dirpath, dirnames, filenames in os.walk(pluginsDir):
             for name in dirnames:
                 if name.startswith(('.', '_')) or (name in sys.modules):
@@ -582,6 +594,7 @@ class GSDView(QtGui.QMainWindow):
         # @NOTE: cache preferences are only modified via preferences dialog
 
         for plugin in self.plugins.values():
+            #logging.debug('save %s plugin preferences' % plugin.name)
             plugin.saveSettings(settings)
 
     def updateSettingsMenu(self):

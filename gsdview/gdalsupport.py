@@ -168,6 +168,7 @@ GEOMETRY_AS_COLLECTION
 ATTRIBUTES_SKIP
 KML_DEBUG'''
 
+
 def uniqueDatasetID(prod):
     d = prod.GetDriver()
     driver_name = d.GetDescription()
@@ -203,6 +204,10 @@ def uniqueDatasetID(prod):
 
     logging.debug('prod_id = %s' % prod_id)
     return prod_id
+
+
+def getDriverList():
+    return [gdal.GetDriver(index) for index in range(gdal.GetDriverCount())]
 
 
 def gdalFilters():
@@ -284,7 +289,9 @@ class CoordinateMapper(object):
 
 # @TODO: remove
 def _fixedGCPs(gcps):
-    '''For products with multiple slices the GCPLine coordinate
+    '''Fix Envisat GCPs
+
+    For products with multiple slices the GCPLine coordinate
     refers to the one of the slice so we need to fix it in order
     to have the image coordinate.
 
@@ -382,18 +389,12 @@ class GridCoordinateMapper(CoordinateMapper):
         #~ self._geoToPixel = interpolate.interp2d(lons, lats, pixels)
 
     def imgToGeoGrid(self, line, pixel):
-        __doc__ = CoordinateMapper.imgToGeoGrid.__doc__
-
         return self._imgToLat(line, pixel), self._imgToLon(line, pixel)
 
     def geoToImgGrid(self, lat, lon):
-        __doc__ = CoordinateMapper.geoToImgGrid.__doc__
-
         return self._geoToLine(lat, lon), self._geoToPixel(lat, lon)
 
     def imgToGeoPoints(self, line, pixel):
-        __doc__ = CoordinateMapper.imgToGeoPoints.__doc__
-
         line, pixel = map(numpy.asarray, (line, pixel))
         np = min(line.size, pixel.size)
         lat = numpy.zeros(np, numpy.dtype.float64)
@@ -405,8 +406,6 @@ class GridCoordinateMapper(CoordinateMapper):
         return lat, lon
 
     def geoToImgPoints(self, lat, lon):
-        __doc__ = CoordinateMapper.geoToImgPoints.__doc__
-
         lat, lon = map(numpy.asarray, (lat, lon))
         np = min(lat.size, lon.size)
         line = numpy.zeros(np, numpy.dtype.float64)
@@ -472,15 +471,13 @@ class GeoTransformCoordinateMapper(CoordinateMapper):
         self._inverse_transform = (M, C)
 
     def _transform(self, x, y, M, C):
-        '''Coordinate conversion: (line,pixel) --> (lat,lon).'''
-
         x, y = map(numpy.ravel, (x, y))
 
         Pin = numpy.array((x,y))
         return numpy.dot(M, Pin) + C
 
     def imgToGeoPoints(self, line, pixel):
-        __doc__ = CoordinateMapper.imgToGeoPoints.__doc__
+        '''Coordinate conversion: (line,pixel) --> (lat,lon).'''
 
         M, C = self._direct_transform
         xy = self._transform(line, pixel, M, C)
@@ -491,7 +488,7 @@ class GeoTransformCoordinateMapper(CoordinateMapper):
         return xy[1], xy[0]
 
     def geoToImgPoints(self, lat, lon):
-        __doc__ = CoordinateMapper.geoToImgPoints.__doc__
+        '''Coordinate conversion: (lat,lon) --> (line,pixel).'''
 
         M, C = self._inverse_transform
         rc = self._transform(lon, lat, M, C)
@@ -499,8 +496,14 @@ class GeoTransformCoordinateMapper(CoordinateMapper):
         return rc[0], rc[1]
 
     def imgToGeoGrid(self, line, pixel):
-        __doc__ = CoordinateMapper.imgToGeoGrid.__doc__
-        #~ # @TODO: check single point
+        '''Coordinate conversion: (line,pixel) --> (lat,lon) on regular grids.
+
+        Elements of the return (lat, lon) touple are 2D array with shape
+        (len(line), len(pixels)).
+
+        '''
+
+        # @TODO: check single point
         px, py = numpy.meshgrid(line, pixel)
         lat, lon = self.imgToGeoPoints(px, py)
         lat.shape = lon.shape = (len(line), len(pixel)) # @TODO: check
@@ -508,8 +511,14 @@ class GeoTransformCoordinateMapper(CoordinateMapper):
         return lat, lon
 
     def geoToImgGrid(self, lat, lon):
-        __doc__ = CoordinateMapper.geoToImgGrid.__doc__
-        #~ # @TODO: check single point
+        '''Coordinate conversion: (lat,lon) --> (line,pixel) on regular grids.
+
+        Elements of the return (line, pixel) touple are 2D array with shape
+        (len(lon), len(lat)).
+
+        '''
+
+        # @TODO: check single point
         px, py = numpy.meshgrid(lon, lat)
         line, pixel = self.geoToImgPoints(px, py)
         line.shape = pixel.shape = (len(lon), len(lat)) # @TODO: check
@@ -526,14 +535,14 @@ def get_coordinate_mapper(dataset, precise=False):
             #if dataset.GetProjection():
             mapper = GeoTransformCoordinateMapper(dataset)
     except ValueError, e:
-        logging.debug('exception caught', exc_info=True)
         mapper = None
     else:
         # @TODO: check
         if mapper._geotransform == (0.0, 1.0, 0.0, 0.0, 0.0, 1.0):
             mapper = None
+
     if mapper is None:
-        logging.debug('unable to setup the coordinate maper')
+        logging.debug('unable to setup the coordinate mapper')
     return mapper
 
 # @TODO: choose a better name (virtual???)

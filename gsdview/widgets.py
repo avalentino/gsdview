@@ -105,8 +105,7 @@ class GDALInfoWidget(QtGui.QWidget):
         self.setGdalDriversTab()
 
     def setGdalDriversTab(self):
-        driverlist = gdalsupport.getDriverList()
-        self.gdalDriversNumValue.setText(str(len(driverlist)))
+        self.gdalDriversNumValue.setText(str(gdal.GetDriverCount()))
 
         tableWidget = self.gdalDriversTableWidget
         #tableWidget.clear()
@@ -115,11 +114,11 @@ class GDALInfoWidget(QtGui.QWidget):
         hheader = tableWidget.horizontalHeader()
         hheader.resizeSections(QtGui.QHeaderView.ResizeToContents)
         hheader.setStretchLastSection(True)
-        tableWidget.setRowCount(len(driverlist))
+        tableWidget.setRowCount(gdal.GetDriverCount())
         sortingenabled = tableWidget.isSortingEnabled()
         tableWidget.setSortingEnabled(False)
 
-        for row, driver in enumerate(driverlist):
+        for row in range(gdal.GetDriverCount()):
             driver = gdalsupport.DriverProxy(driver)
             # @TODO: check for available ingo in gdal 1.5 and above
             tableWidget.setItem(row, 0, QtGui.QTableWidgetItem(driver.ShortName))
@@ -169,11 +168,11 @@ class AboutDialog(QtGui.QDialog):
         self.titleLabel.setText('%s v. %s' % (self.tr(info.name), info.version))
 
         description = '''<p>%s</p>
-<p>Home Page: <a href="%s"><span style="text-decoration: underline; color:#0000ff;">%s</span></a>
+<p>Home Page: <a href="%s">%s</a>
 <BR>
-Project Page: <a href="http://sourceforge.net/projects/gsdview"><span style="text-decoration: underline; color:#0000ff;">http://sourceforge.net/projects/gsdview</span></a></p>
+Project Page: <a href="http://sourceforge.net/projects/gsdview">http://sourceforge.net/projects/gsdview</a></p>
 <par>
-<p><span style="font-size:8pt; font-style:italic;">%s</span></p>
+<p><span style="font-size:9pt; font-style:italic;">%s</span></p>
 ''' % (self.tr(info.description), info.website, info.website_label, info.copyright)
         self.aboutTextBrowser.setText(description)
 
@@ -193,6 +192,14 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview"><span style="tex
             #~ tableWidget.setItem(row, 2,
                 #~ QtGui.QTableWidgetItem('<a href="%s">%s</a>' % (link, link)))
 
+    def addSoftwareVersion(self, sw, version, link=''):
+        tablewidget = self.versionsTableWidget
+        index = tablewidget.rowCount()
+        tablewidget.setRowCount(index+1)
+
+        tablewidget.setItem(index, 0, QtGui.QTableWidgetItem(sw))
+        tablewidget.setItem(index, 1, QtGui.QTableWidgetItem(version))
+        tablewidget.setItem(index, 2, QtGui.QTableWidgetItem(link))
 
 class FileEntryWidget(QtGui.QWidget):
     def __init__(self, contents='', mode=QtGui.QFileDialog.AnyFile,
