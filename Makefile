@@ -1,11 +1,20 @@
-# Makefile
+### :Source: Makefile
+### :Author: Antonio Valentino
+### :Contact: a_valentino@users.sf.net
+### :URL: http://gsdview.sourceforge.net
+### :Revision: $Revision$
+### :Date: $Date$
 
-.PHONY: all docs resources deb clean
+.PHONY: default docs html pdf resources clean sdist bdist deb rpmspec rpm
 
-all: docs resources
+default: docs resources
 
-docs:
+docs: html pdf
+
+html:
 	cd doc && make html
+
+pdf:
 	cd doc && make latex
 	cd doc/build/latex && make
 
@@ -21,5 +30,21 @@ clean:
 	cd debian && $(RM) -r gsdview gsdview.* files pycompat stamp-makefile-build
 	$(RM) python-build-stamp-*
 
-deb: all
+sdist: docs resources
+	python setup.py sdist --manifest-only
+	python setup.py sdist --force-manifest
+
+bdist: sdist deb #rpm
+
+deb: docs resources
 	dpkg-buildpackage -us -uc
+
+rpmspec:
+	python setup.py bdist_rpm --spec-only
+
+rpm: sdist
+	#@sudo tools/build-rpm.sh
+	python setup.py bdist_rpm
+
+#debian/bestgui.1:: debian/manpage.xml
+#	$(XP) -o $@ $(DB2MAN) $<

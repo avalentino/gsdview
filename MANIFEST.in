@@ -1,10 +1,10 @@
 include MANIFEST MANIFEST.in
 include LICENSE.txt
 #include AUTHORS
-include Makefile doc/Makefile
+include Makefile doc/Makefile doc/make.bat
 include gsdviewer
 include resources.qrc
 recursive-include gsdview *.py *.ui
 recursive-include images *.svg *.png
 recursive-include doc/source *.txt *.html *.pdf *.css *.png *.svg *.py
-#recursive-include debian *
+recursive-include debian *
