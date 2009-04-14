@@ -119,6 +119,7 @@ class GDALInfoWidget(QtGui.QWidget):
         tableWidget.setSortingEnabled(False)
 
         for row in range(gdal.GetDriverCount()):
+            driver = gdal.GetDriver(row)
             driver = gdalsupport.DriverProxy(driver)
             # @TODO: check for available ingo in gdal 1.5 and above
             tableWidget.setItem(row, 0, QtGui.QTableWidgetItem(driver.ShortName))
