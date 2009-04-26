@@ -45,7 +45,7 @@ GSDView is modular and has a simple plug-in architecture.
 
 author = 'Antonio Valentino'
 author_email = 'a_valentino@users.sf.net'
-copyright = 'Copytight (C) 2008-2009 %s <%s>' % (author, author_email)
+copyright = 'Copyright (C) 2008-2009 %s <%s>' % (author, author_email)
 #license = _get_license()
 license_type = 'GNU GPL'
 website = 'http://gsdview.sourceforge.net'

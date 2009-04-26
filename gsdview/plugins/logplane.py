@@ -43,7 +43,7 @@ description = __doc__
 
 author = ('Antonio Valentino',)
 author_email = ('a_valentino@users.sf.net',)
-copyright = 'Copytight (C) 2008-2009 %s <%s>' % (author, author_email)
+copyright = 'Copyright (C) 2008-2009 %s <%s>' % (author, author_email)
 license_type = 'GNU GPL'
 website = 'http://gsdview.sourceforge.net'
 website_label = website
