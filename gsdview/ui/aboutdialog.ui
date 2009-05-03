@@ -144,7 +144,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;">Home Page: &lt;a href="http://gsdview.sourceforge.net">&lt;span style=" text-decoration: underline; color:#0000ff;">http://gsdview.sourceforge.net&lt;/span>&lt;/a>&lt;/p>
 &lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;">Project Page: &lt;a href="http://sourceforge.net/projects/gsdview">&lt;span style=" text-decoration: underline; color:#0000ff;">http://sourceforge.net/projects/gsdview&lt;/span>&lt;/a>&lt;/p>
 &lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt; text-decoration: underline; color:#0000ff;">&lt;/p>
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt; text-decoration: underline; color:#0000ff;">&lt;span style=" font-size:8pt; text-decoration:none; color:#000000;">Copytight (C) 2008 Antonio Valentino &amp;lt;a_valentino@users.sf.net&amp;gt;&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt; text-decoration: underline; color:#0000ff;">&lt;span style=" font-size:8pt; text-decoration:none; color:#000000;">Copyright (C) 2008-2009 Antonio Valentino &amp;lt;a_valentino@users.sf.net&amp;gt;&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
            </property>
            <property name="openExternalLinks" >
             <bool>true</bool>
