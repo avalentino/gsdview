@@ -21,7 +21,7 @@
 __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
-__version__  = (0,3,1)
+__version__  = (0,5,9)
 
 __all__ = ['name', 'version', 'short_description', 'description',
            'author', 'author_email', 'copyright', 'license_type',
@@ -30,7 +30,7 @@ __all__ = ['name', 'version', 'short_description', 'description',
 import sys
 
 name = 'GSDView'
-version = '.'.join(map(str, __version__))
+version = '.'.join(map(str, __version__)) + 'a'
 
 short_description = 'Geo-Spatial Data Viewer'
 description = '''GSDView (Geo-Spatial Data Viewer) is a lightweight
@@ -59,10 +59,6 @@ website_label = website
 # @TODO: check (too many imports)
 from PyQt4 import QtCore
 import numpy
-try:
-    from osgeo import gdal
-except ImportError:
-    import gdal
 
 all_versions = [
     ('GSDView', version, website),
@@ -72,16 +68,11 @@ all_versions = [
     ('numpy', numpy.version.version, 'http://www.scipy.org'),
 ]
 
-try:
-    gdalversion = gdal.VersionInfo('RELEASE_NAME')
-except AttributeError:
-    gdalversion = 'Unknown'
-all_versions.append(('GDAL', gdalversion, 'http://www.gdal.org'))
-
-all_versions_str = '\n'.join('%s v. %s, (%s)' % (sw, version_, link)
-                                        for sw, version_, link in all_versions)
 
 if __name__ == '__main__':
+    all_versions_str = '\n'.join('%s v. %s, (%s)' % (sw, version_, link)
+                                        for sw, version_, link in all_versions)
+
     print 'name',name
     print 'version:', version
     print 'short_description:', short_description

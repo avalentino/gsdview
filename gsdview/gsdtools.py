@@ -28,8 +28,6 @@ import logging
 import itertools
 
 import numpy
-import scipy.ndimage
-# @TODO: scipy.misc.bytescale
 
 
 def compute_lin_LUT(min_, max_, lower, upper):
@@ -97,3 +95,13 @@ def apply_LUT(data, lut):
     data = numpy.round(data)
     data = data.astype(numpy.uint32) # @TODO: check
     return lut[data]
+
+
+def fix_LUT(data, lut):
+    new_max = int(numpy.ceil(data.max()))
+    assert new_max >= len(lut)
+    new_lut = numpy.ndarray(new_max+1, dtype=numpy.uint8)
+    new_lut[:len(lut)] = lut
+    new_lut[len(lut)] = 255
+
+    return new_lut

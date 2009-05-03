@@ -28,16 +28,9 @@ import os
 import sys
 import logging
 
-try:
-    from osgeo import gdal
-except ImportError:
-    import gdal
-
 from PyQt4 import QtCore, QtGui, uic
 
 import info
-import utils
-import gdalsupport
 
 import gsdview_resources
 
@@ -81,82 +74,6 @@ def _choosefile(filename='', dialog=None, mode=None):
 def _choosedir(dirname, dialog=None,):
     return _choosefile(dirname, dialog, QtGui.QFileDialog.DirectoryOnly)
 
-class GDALInfoWidget(QtGui.QWidget):
-    uifile = os.path.join(os.path.dirname(__file__), 'ui', 'gdalinfo.ui')
-
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget):
-        QtGui.QWidget.__init__(self, parent, flags)
-        uic.loadUi(self.uifile, self)
-
-        # @TODO: check for available info in gdal 1.5 and above
-        try:
-            self.gdalReleaseNameValue.setText(gdal.VersionInfo('RELEASE_NAME'))
-            self.gdalReleaseDateValue.setText(gdal.VersionInfo('RELEASE_DATE'))
-        except AttributeError:
-            self.gdalVersionGroupBox.hide()
-
-        self.updateCacheInfo()
-
-        #~ gdal.GetConfigOption('CPL_DEBUG', 'OFF')
-        #~ gdal.GetConfigOption('GDAL_PAM_ENABLED', "NULL")
-        #~ gdal.GetConfigOption(GDAL_DATA) (path of the GDAL "data" directory)
-        #~ #gdal.GetConfigOption(GDAL_CACHEMAX) (memory used internally for caching in megabytes)
-
-        self.setGdalDriversTab()
-
-    def setGdalDriversTab(self):
-        self.gdalDriversNumValue.setText(str(gdal.GetDriverCount()))
-
-        tableWidget = self.gdalDriversTableWidget
-        #tableWidget.clear()
-        #tableWidget.setHorizontalHeaderLabels(['Software', 'Version', 'Home Page'])
-        tableWidget.verticalHeader().hide()
-        hheader = tableWidget.horizontalHeader()
-        hheader.resizeSections(QtGui.QHeaderView.ResizeToContents)
-        hheader.setStretchLastSection(True)
-        tableWidget.setRowCount(gdal.GetDriverCount())
-        sortingenabled = tableWidget.isSortingEnabled()
-        tableWidget.setSortingEnabled(False)
-
-        for row in range(gdal.GetDriverCount()):
-            driver = gdal.GetDriver(row)
-            driver = gdalsupport.DriverProxy(driver)
-            # @TODO: check for available ingo in gdal 1.5 and above
-            tableWidget.setItem(row, 0, QtGui.QTableWidgetItem(driver.ShortName))
-            tableWidget.setItem(row, 1, QtGui.QTableWidgetItem(driver.LongName))
-            tableWidget.setItem(row, 2, QtGui.QTableWidgetItem(driver.GetDescription()))
-            tableWidget.setItem(row, 3, QtGui.QTableWidgetItem(str(driver.HelpTopic)))
-
-            metadata = driver.GetMetadata()
-            if metadata:
-                tableWidget.setItem(row, 4, QtGui.QTableWidgetItem(str(metadata.pop(gdal.DMD_EXTENSION, ''))))
-                tableWidget.setItem(row, 5, QtGui.QTableWidgetItem(str(metadata.pop(gdal.DMD_MIMETYPE, ''))))
-                tableWidget.setItem(row, 6, QtGui.QTableWidgetItem(str(metadata.pop(gdal.DMD_CREATIONDATATYPES, ''))))
-
-                data = metadata.pop(gdal.DMD_CREATIONOPTIONLIST, '')
-                # @TODO: parse xml
-                tableItem = QtGui.QTableWidgetItem(data)
-                tableItem.setToolTip(data)
-                tableWidget.setItem(row, 7, tableItem)
-
-                metadata.pop(gdal.DMD_HELPTOPIC, '')
-                metadata.pop(gdal.DMD_LONGNAME, '')
-
-                metadatalist = ['%s=%s' % (k, v) for k, v in metadata.items()]
-                tableItem = QtGui.QTableWidgetItem(', '.join(metadatalist))
-                tableItem.setToolTip('\n'.join(metadatalist))
-                tableWidget.setItem(row, 8, tableItem)
-
-        tableWidget.setSortingEnabled(sortingenabled)
-        tableWidget.sortItems(0, QtCore.Qt.AscendingOrder)
-
-    def updateCacheInfo(self):
-        self.gdalCacheMaxValue.setText('%.3f MB' % (gdal.GetCacheMax()/1024.**2))
-        self.gdalCacheUsedValue.setText('%.3f MB' % (gdal.GetCacheUsed()/1024.**2))
-
-    def showEvent(self, event):
-        self.updateCacheInfo()
-        QtGui.QWidget.showEvent(self, event)
 
 class AboutDialog(QtGui.QDialog):
 
@@ -190,8 +107,6 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview">http://sourcefor
             tablewidget.setItem(row, 0, QtGui.QTableWidgetItem(sw))
             tablewidget.setItem(row, 1, QtGui.QTableWidgetItem(version))
             tablewidget.setItem(row, 2, QtGui.QTableWidgetItem(link))
-            #~ tableWidget.setItem(row, 2,
-                #~ QtGui.QTableWidgetItem('<a href="%s">%s</a>' % (link, link)))
 
     def addSoftwareVersion(self, sw, version, link=''):
         tablewidget = self.versionsTableWidget
@@ -358,180 +273,6 @@ class GeneralPreferencesPage(QtGui.QWidget):
         self.loglevelComboBox.setCurrentIndex(index)
 
 
-class GDALPreferencesPage(QtGui.QWidget):
-    uifile = os.path.join(os.path.dirname(__file__), 'ui', 'gdal-page.ui')
-
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget):
-        QtGui.QWidget.__init__(self, parent, flags)
-        uic.loadUi(self.uifile, self)
-
-        # info button
-        self.connect(self.infoButton, QtCore.SIGNAL('clicked()'), self.showinfo)
-
-        # standard options
-        cachesize = gdal.GetCacheMax()
-        self.cacheSpinBox.setValue(cachesize/1024**2)
-        dialog = get_filedialog(self)
-        for name in ('gdalDataDir', 'gdalDriverPath', 'ogrDriverPath'):
-            widget = getattr(self, name + 'EntryWidget')
-            widget.dialog = dialog
-            widget.mode = QtGui.QFileDialog.Directory
-
-        # extra options
-        self._extraoptions = {}
-        stdoptions = set(('GDAL_DATA', 'GDAL_SKIP', 'GDAL_DRIVER_PATH',
-                          'OGR_DRIVER_PATH', 'GDAL_CACHEMAX', ''))
-
-        extraoptions = gdalsupport.GDAL_CONFIG_OPTIONS.splitlines()
-        extraoptions = [opt for opt in extraoptions if opt not in stdoptions]
-        self.extraOptTableWidget.setRowCount(len(extraoptions))
-
-        for row, key in enumerate(extraoptions):
-            item = QtGui.QTableWidgetItem(key)
-            item.setFlags(item.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.extraOptTableWidget.setItem(row, 0, item)
-            value = gdal.GetConfigOption(key, '')
-            item = QtGui.QTableWidgetItem(value)
-            self.extraOptTableWidget.setItem(row, 1, item)
-            if value:
-                self._extraoptions[key] = value
-
-        hheader = self.extraOptTableWidget.horizontalHeader()
-        #hheader.hide()
-        hheader.resizeSections(QtGui.QHeaderView.ResizeToContents)
-        hheader.setStretchLastSection(True)
-
-    def showinfo(self):
-        try:
-            mainwin = QtGui.qApp.findChild(QtGui.QMainWindow,  'gsdview-minwin')
-            dialog = mainwin.aboutdialog
-        except AttributeError:
-            logging.debug('unable to find the GDSView main window widget')
-            dialog = AboutDialog(self)
-
-        currentpage = dialog.tabWidget.currentIndex()
-        try:
-            gdalTab = dialog.tabWidget.findChild(QtGui.QWidget, 'gdalTab')
-            if not gdalTab:
-                raise RuntimeError('unable to locate the "gdalTab" widget in '
-                                   'the "AboutDialog"')
-            dialog.tabWidget.setCurrentWidget(gdalTab)
-            dialog.exec_()
-        finally:
-            dialog.tabWidget.setCurrentIndex(currentpage)
-
-    def load(self, settings):
-        settings.beginGroup('gdal')
-        try:
-
-            # cache size
-            cachesize = settings.value('GDAL_CACHEMAX')
-            if not cachesize.isNull():
-                cachesize, ok = cachesize.toULongLong()
-                if ok:
-                    self.cacheCheckBox.setChecked(True)
-                    self.cacheSpinBox.setValue(cachesize/1024**2)
-            else:
-                # show the current value and disable the control
-                cachesize = gdal.GetCacheMax()
-                self.cacheSpinBox.setValue(cachesize/1024**2)
-                self.cacheCheckBox.setChecked(False)
-
-            # GDAL data dir
-            datadir = settings.value('GDAL_DATA').toString()
-            if datadir:
-                self.gdalDataCheckBox.setChecked(True)
-                self.gdalDataDirEntryWidget.setText(datadir)
-            else:
-                # show the current value and disable the control
-                datadir = gdal.GetConfigOption('GDAL_DATA', '')
-                self.gdalDataDirEntryWidget.setText(datadir)
-                self.gdalDataCheckBox.setChecked(False)
-
-            # GDAL_SKIP
-            gdalskip = settings.value('GDAL_SKIP').toString()
-            if gdalskip:
-                self.skipCheckBox.setChecked(True)
-                self.skipLineEdit.setText(gdalskip)
-            else:
-                # show the current value and disable the control
-                gdalskip = gdal.GetConfigOption('GDAL_SKIP', '')
-                self.skipLineEdit.setText(gdalskip)
-                self.skipCheckBox.setChecked(False)
-
-            # GDAL driver path
-            gdaldriverpath = settings.value('GDAL_DRIVER_PATH').toString()
-            if gdaldriverpath:
-                self.gdalDriverPathCheckBox.setChecked(True)
-                self.gdalDriverPathEntryWidget.setText(gdaldriverpath)
-            else:
-                # show the current value and disable the control
-                gdaldriverpath = gdal.GetConfigOption('GDAL_DRIVER_PATH', '')
-                self.gdalDriverPathEntryWidget.setText(gdaldriverpath)
-                self.gdalDriverPathCheckBox.setChecked(False)
-
-            # OGR driver path
-            ogrdriverpath = settings.value('OGR_DRIVER_PATH').toString()
-            if ogrdriverpath:
-                self.ogrDriverPathCheckBox.setChecked(True)
-                self.ogrDriverPathEntryWidget.setText(ogrdriverpath)
-            else:
-                # show the current value and disable the control
-                ogrdriverpath = gdal.GetConfigOption('OGR_DRIVER_PATH', '')
-                self.ogrDriverPathEntryWidget.setText(ogrdriverpath)
-                self.ogrDriverPathCheckBox.setChecked(False)
-
-            # extra options
-            # @TODO
-
-        finally:
-            settings.endGroup()
-
-    def save(self, settings):
-        settings.beginGroup('gdal')
-        try:
-
-            # cache
-            if self.cacheCheckBox.isChecked():
-                value = self.cacheSpinBox.value() * 1024**2
-                settings.setValue('GDAL_CACHEMAX', QtCore.QVariant(value))
-            else:
-                settings.remove('GDAL_CACHEMAX')
-
-            # GDAL data dir
-            if self.gdalDataCheckBox.isChecked():
-                value = self.gdalDataDirEntryWidget.text()
-                settings.setValue('GDAL_DATA', QtCore.QVariant(value))
-            else:
-                settings.remove('GDAL_DATA')
-
-            # GDAL_SKIP
-            if self.skipCheckBox.isChecked():
-                value = self.skipLineEdit.text()
-                settings.setValue('GDAL_SKIP', QtCore.QVariant(value))
-            else:
-                settings.remove('GDAL_SKIP')
-
-            # GDAL driver path
-            if self.gdalDriverPathCheckBox.isChecked():
-                value = self.gdalDriverPathEntryWidget.text()
-                settings.setValue('GDAL_DRIVER_PATH', QtCore.QVariant(value))
-            else:
-                settings.remove('GDAL_DRIVER_PATH')
-
-            # OGR driver path
-            if self.ogrDriverPathCheckBox.isChecked():
-                value = self.ogrDriverPathEntryWidget.text()
-                settings.setValue('OGR_DRIVER_PATH', QtCore.QVariant(value))
-            else:
-                settings.remove('OGR_DRIVER_PATH')
-
-            # extra options
-            # @TODO
-        finally:
-            settings.endGroup()
-
-
 class PreferencesDialog(QtGui.QDialog):
     '''Extendible preferences dialogg for GSDView.
 
@@ -558,10 +299,6 @@ class PreferencesDialog(QtGui.QDialog):
         self.addPage(GeneralPreferencesPage(),
                      QtGui.QIcon(':/images/preferences.svg'),
                      self.tr('General'))
-
-        self.addPage(GDALPreferencesPage(),
-                     QtGui.QIcon(':/images/GDALLogoColor.svg'),
-                     self.tr('GDAL'))
 
         #~ self.addPage(CachePreferencesPage(),
                      #~ QtGui.QIcon(':/images/harddisk.svg'),
@@ -625,15 +362,6 @@ class PreferencesDialog(QtGui.QDialog):
 
 
 if __name__ == '__main__':
-    def test_gdalinfowidget():
-        app = QtGui.QApplication(sys.argv)
-        d = QtGui.QDialog()
-        layout = QtGui.QVBoxLayout()
-        layout.addWidget(GDALInfoWidget())
-        d.setLayout(layout)
-        d.show()
-        app.exec_()
-
     def test_aboutdialog():
         app = QtGui.QApplication(sys.argv)
         d = AboutDialog()
@@ -658,15 +386,6 @@ if __name__ == '__main__':
         d.show()
         app.exec_()
 
-    def test_gdalpreferencespage():
-        app = QtGui.QApplication(sys.argv)
-        d = QtGui.QDialog()
-        layout = QtGui.QVBoxLayout()
-        layout.addWidget(GDALPreferencesPage())
-        d.setLayout(layout)
-        d.show()
-        app.exec_()
-
     def test_preferencesdialog():
         app = QtGui.QApplication(sys.argv)
         d = PreferencesDialog()
@@ -674,9 +393,7 @@ if __name__ == '__main__':
         app.exec_()
 
     logging.basicConfig(level=logging.DEBUG)
-    #~ test_gdalinfowidget()
-    #~ test_aboutdialog()
+    test_aboutdialog()
     #~ test_fileentrywidget()
     #~ test_generalpreferencespage()
-    #~ test_gdalpreferencespage()
-    test_preferencesdialog()
+    #~ test_preferencesdialog()

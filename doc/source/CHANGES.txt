@@ -1,5 +1,5 @@
 ..  :Source: doc/source/CHANGES.txt
-    :Version: 0.5.2
+    :Version: 0.5.9
     :Author: Antonio Valentino
     :Contact: a_valentino@users.sf.net
     :URL: http://gsdview.sourceforge.net
@@ -12,10 +12,18 @@ ChangeLog
 =========
 
 
-Changes from 0.3.0 to 0.3.1 (14/04/2009)
+Changes from 0.3.0 to 0.5.9 (03/05/2009)
 ----------------------------------------
 
-@TBW
+* Complete application rewrite:
+  - pluggable about dilalog (plugins can add their own tab)
+  - preference dialog
+  - new architecture that allows multiple backends for actual data access
+    (currently only GDAL backend is provided)
+  - now the application uses a Multiple Document Interface (MDI)
+* Improved GDAL configuration handling (without application respawning)
+* New function for converting a numpy array into a QImage: now PyQwt is no
+  more a strong dependency
 
 
 Version 0.3.0 (18/05/2008)

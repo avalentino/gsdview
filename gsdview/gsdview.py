@@ -33,45 +33,37 @@ import logging
 
 import numpy
 
-try:
-    from osgeo import gdal
-except ImportError:
-    import gdal
-
 from PyQt4 import QtCore, QtGui
 
 import utils
-import gdalqt4
 import gsdtools
 import exectools
 import qt4support
-import gdalsupport
+import graphicsview
 
 from widgets import AboutDialog, PreferencesDialog
-from graphicsview import GraphicsView
-from gdalexectools import GdalAddOverviewDescriptor, GdalOutputHandler
+#~ from gdalexectools import GdalAddOverviewDescriptor, GdalOutputHandler
 from exectools.qt4tools import Qt4ToolController, Qt4DialogLoggingHandler
 
 import gsdview_resources
-
 
 # @TODO: move elsewhere (site.py ??)
 # @NOTE: this should happen before any os.chdir
 GSDVIEWROOT = os.path.dirname(os.path.abspath(__file__))
 USERCONFIGDIR = os.path.expanduser(os.path.join('~', '.gsdview'))
 
+from mainwin import ItemModelMainWindow
 
-class GSDView(QtGui.QMainWindow):
+
+class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
     # @TODO:
-    #   * set all icon (can use the iconset of BEAM)
     #   * plugin architecture (incomplete)
     #   * cache browser, cache cleanup
     #   * open internal product
     #   * stop button
     #   * disable actions when the external tool is running
-    #   * /usr/share/doc/python-qt4-doc/examples/mainwindows/recentfiles.py
     #   * stretching tool
-    #   * allow to open multiple bands/datasets --> band/dataset regiter + current
+    #   * /usr/share/doc/python-qt4-doc/examples/mainwindows/recentfiles.py
 
     '''Main window class for GSDView application.
 
@@ -84,17 +76,20 @@ class GSDView(QtGui.QMainWindow):
     - settings_submenu
     - settings
     - logger
-    - controller
     - cachedir
+    - fileActions
+    - settingsActions
+    - helpActions
 
-    - graphicsView
-    - imageItem
-    - dataset
+    - plugins
+    - backends
 
-    :signals:
+    - controller
+    - montior
 
-    - openGdalDataset(PyQt_PyObject)
-    - closeGdalDataset()
+    - mdiarea           (inherited from MdiMainWindow)
+    - datamodel         (inherited from ItemModelMainWindow)
+    - treeview          (inherited from ItemModelMainWindow)
 
     '''
 
@@ -105,10 +100,12 @@ class GSDView(QtGui.QMainWindow):
         self.setWindowTitle(self.tr('GSDView'))
         self.setObjectName('gsdview-mainwin')
 
+        # GraphicsViewMonitor
+        self.monitor = graphicsview.GraphicsViewMonitor()
+
         # Dialogs
         self.filedialog = QtGui.QFileDialog(self)
         self.filedialog.setFileMode(QtGui.QFileDialog.ExistingFile)
-        self.filedialog.setFilters(gdalsupport.gdalFilters())
         self.filedialog.setViewMode(QtGui.QFileDialog.Detail)
 
         self.aboutdialog = AboutDialog(self)
@@ -124,14 +121,8 @@ class GSDView(QtGui.QMainWindow):
 
         self.cachedir = None
 
-        scene = QtGui.QGraphicsScene(self)
-        graphicsview = GraphicsView(scene, self)
-        graphicsview.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
-        self.setCentralWidget(graphicsview)
-
-        self.graphicsView = graphicsview
-        self.imageItem = None
-        self.dataset = None
+        self.plugins = {}
+        self.backends = []
 
         # Settings
         # @TODO: fix filename
@@ -171,6 +162,8 @@ class GSDView(QtGui.QMainWindow):
         self.connect(self.settings_submenu, QtCore.SIGNAL('aboutToShow()'),
                      self.updateSettingsMenu)
 
+        self.menuBar().addMenu(self.windowmenu)
+
         # Help menu end toolbar
         self._addMenuFromActions(self.helpActions, self.tr('&Help'))
         self._addToolBarFromActions(self.helpActions, self.tr('Help toolbar'))
@@ -180,17 +173,38 @@ class GSDView(QtGui.QMainWindow):
         # @TODO: force the log level set from command line
         #self.logger.setLevel(level)
 
-        # Connect signals
-        self.connect(self, QtCore.SIGNAL('openBandRequest(PyQt_PyObject)'),
-                     self.openRasterBand)
-
         self.statusBar().showMessage('Ready')
+
+    ### Model/View utils ######################################################
+    def currentGraphicsView(self):
+        window = self.mdiarea.activeSubWindow()
+        if window:
+            widget = window.widget()
+            if isinstance(widget, QtGui.QGraphicsView):
+                return widget
+        return None
+
+    def itemContextMenu(self, pos):
+        modelindex = self.treeview.indexAt(pos)
+        if not modelindex.isValid():
+            return
+        # @TODO: check
+        # @NOTE: set the current index so that action calback can retrieve
+        #        the cottect item
+        self.treeview.setCurrentIndex(modelindex)
+        item = self.datamodel.itemFromIndex(modelindex)
+        backend = self.plugins[item.backend]
+        menu = backend.itemContextMenu(item)
+        if menu:
+            menu.exec_(self.treeview.mapToGlobal(pos))
 
     ### Event handlers ########################################################
     def closeEvent(self, event):
         self.controller.stop_tool()
         # @TODO: whait for finished (??)
+        # @TODO: save opened datasets (??)
         self.saveSettings()
+        self.closeAll()
         event.accept()
 
     def changeEvent(self, event):
@@ -207,6 +221,7 @@ class GSDView(QtGui.QMainWindow):
 
     ### Setup helpers #########################################################
     def _setupFileActions(self):
+        # @TODO: add a "close all" (items) action
         actionsgroup = QtGui.QActionGroup(self)
 
         # Open
@@ -308,6 +323,12 @@ class GSDView(QtGui.QMainWindow):
         # @TODO: move to the PluginManager
         plugins = {}
 
+        # load backends
+        import gdalbackend
+        gdalbackend.init(self)
+        plugins['gdalbackend'] = gdalbackend
+        self.logger.debug('"gdalbackend" plugin loaded.')
+
         # @TODO: set from settings
         pluginsDir = os.path.join(os.path.dirname(__file__), 'plugins')
         sys.path.insert(0, pluginsDir)
@@ -366,8 +387,11 @@ class GSDView(QtGui.QMainWindow):
 
     def setupController(self, logger, statusbar, progressbar):
         # @TODO: move to plugin (??)
-        handler = GdalOutputHandler(None, statusbar, progressbar)
-        tool = GdalAddOverviewDescriptor(stdout_handler=handler)
+        #~ handler = GdalOutputHandler(None, statusbar, progressbar)
+        #~ tool = GdalAddOverviewDescriptor(stdout_handler=handler)
+
+        # @TODO: rewrite and remove this workaround
+        tool = exectools.GenericToolDescriptor('echo')  # ummy tool
         controller = Qt4ToolController(logger, parent=self)
         controller.tool = tool
         controller.connect(controller, QtCore.SIGNAL('finished()'),
@@ -478,35 +502,6 @@ class GSDView(QtGui.QMainWindow):
         finally:
             settings.endGroup()
 
-        # GDAL
-        settings.beginGroup('gdal')
-        try:
-            cachesize, ok = settings.value('GDAL_CACHEMAX').toULongLong()
-            if ok:
-                gdal.SetCacheMax(cachesize)
-                self.logger.debug('GDAL cache size det to %d' % cachesize)
-
-            value = settings.value('GDAL_DATA').toString()
-            if value:
-                value = os.path.expanduser(os.path.expandvars(str(value)))
-                gdal.SetConfigOption('GDAL_DATA', value)
-                self.logger.debug('GDAL_DATA directory set to "%s"' % value)
-
-            register = False
-            for optname in ('GDAL_SKIP', 'GDAL_DRIVER_PATH', 'OGR_DRIVER_PATH'):
-                value = settings.value(optname).toString()
-                if value:
-                    value = os.path.expanduser(os.path.expandvars(str(value)))
-                    gdal.SetConfigOption(optname, value)
-                    self.logger.debug('%s directory set to "%s"' %
-                                                            (optname, value))
-                    register = True
-            if register:
-                gdal.AllRegister()
-                self.logger.debug('run "gdal.AllRegister()"')
-        finally:
-            settings.endGroup()
-
         # cache
         # @TODO
 
@@ -590,7 +585,6 @@ class GSDView(QtGui.QMainWindow):
         finally:
             settings.endGroup()
 
-        # @NOTE: GDAL preferences are only modified via preferences dialog
         # @NOTE: cache preferences are only modified via preferences dialog
 
         for plugin in self.plugins.values():
@@ -621,105 +615,64 @@ class GSDView(QtGui.QMainWindow):
             self.applySettings()
 
     ### File actions ##########################################################
-    @qt4support.overrideCursor
-    def _openFile(self, filename):
-        self.dataset = gdalsupport.DatasetProxy(filename, self.cachedir)
-
-        # @TODO: when the improved GraphicsView will be available more then
-        #        one overview level will be needed
-        band = self.dataset.GetRasterBand(1)
-        ovrLevel = band.compute_ovr_level()
-        missingOverviewLevels = [] # [4,8,12]
-        try:
-            ovrIndex = band.best_ovr_index(ovrLevel)
-            levels = band.available_ovr_levels()
-            distance = 1
-            if numpy.abs(levels[ovrIndex] - ovrLevel) > distance:
-                missingOverviewLevels.append(ovrLevel)
-            else:
-                ovrLevel = levels[ovrIndex]
-        except gdalsupport.MissingOvrError:
-            missingOverviewLevels.append(ovrLevel)
-
-        # @NOTE: overviews are computed for all bands so I do this at
-        #        application level, before a specific band is choosen.
-        #        Maybe ths is not the best policy and overviews should be
-        #        computed only when needed instead
-        if missingOverviewLevels:
-            logging.debug('missingOverviewLevels: %s' % missingOverviewLevels)
-            # Run an external process for overviews computation
-            self.progressbar.show()
-            self.statusBar().showMessage('Quick look image generation ...')
-
-            # @TODO: temporary close the dataset; il will be re-opened
-            #        after the worker process ending to loaf changes
-            #del dataset
-
-            subProc = self.controller.subprocess
-            assert subProc.state() == subProc.NotRunning
-            logging.debug('Run the subprocess.')
-
-            args = [os.path.basename(self.dataset.vrtfilename)] # @TODO: check
-            args.extend(map(str, missingOverviewLevels))
-
-            #self.subprocess.setEnvironmet(...)
-            datasetCacheDir = os.path.dirname(self.dataset.vrtfilename)
-            self.controller.subprocess.setWorkingDirectory(datasetCacheDir)
-            self.controller.run_tool(*args)
-
-        # @TODO: check
-        self.emit(QtCore.SIGNAL('openGdalDataset(PyQt_PyObject)'), self.dataset)
-
     def openFile(self):
+        # @TODO: allow multiple file selection
         if self.filedialog.exec_():
             filename = str(self.filedialog.selectedFiles()[0])
             if filename:
-                self.closeFile()
-                self._openFile(filename)
+                for backendname in self.backends:
+                    backend = self.plugins[backendname]
+                    try:
+                        item = backend.openFile(filename)
+                        if item:
+                            self.datamodel.appendRow(item)
+                            self.treeview.expand(item.index())
+                            self.logger.debug('File "%s" opened with backend '
+                                              '"%s"' % (filename, backendname))
+                        else:
+                            self.logger.info('file %s" already open' % filename)
+                        break
+                    except ValueError:
+                        #self.logger.exception('exception caught')
+                        self.logger.debug('Backend "%s" failed to open file '
+                                          '"%s"' % (backendname, filename))
+                else:
+                    self.logger.error('Unable to open file "%s"' % filename)
+
+        #~ # @TODO: check
+        #~ self.emit(QtCore.SIGNAL('openGdalDataset(PyQt_PyObject)'), self.dataset)
 
     def closeFile(self):
         # @TODO: extend for multiple datasets
-        self.emit(QtCore.SIGNAL('closeGdalDataset()'))
-        self.closeRasterBand()
-        self.dataset = None
+        #~ self.emit(QtCore.SIGNAL('closeGdalDataset()'))
+
+        item = self.currentItem()
+        if item:
+            # find the toplevel item
+            while item.parent():
+                item = item.parent()
+
+            try:
+                #~ backend = self.plugins[item.backend]
+                #~ backend.closeFile(item)
+                item.close()
+            except AttributeError:
+                self.datamodel.invisibleRootItem().removeRow(item.row())
+
         self.statusBar().showMessage('Ready.')
 
-    def openRasterBand(self, band):
-        self.closeRasterBand()
+    def closeAll(self):
+        root = self.datamodel.invisibleRootItem()
+        while root.hasChildren():
+            item = root.child(0)
+            try:
+                #~ backend = self.plugins[item.backend]
+                #~ backend.closeFile(item)
+                item.close()
+            except AttributeError:
+                root.removeRow(item.row())
 
-        if band.lut is None:
-            ovrindex = band.best_ovr_index()
-            ovrBand = band.GetOverview(ovrindex)
-            data = ovrBand.ReadAsArray()
-            band.lut = gsdtools.ovr_lut(data)
-
-        self.setGraphicsItem(band, band.lut)
-
-    def closeRasterBand(self):
-        self.graphicsView.clearScene()
-        self.imageItem = None
-
-    ### Auxiliaary methods ####################################################
-    @qt4support.overrideCursor
-    def setGraphicsItem(self, dataset, lut):
-        # @TODO: update for multiple view
-        self.graphicsView.setUpdatesEnabled(False)
-        try:
-            self.imageItem = gdalqt4.GdalGraphicsItem(dataset)
-            self.imageItem._lut = lut
-
-            rect = self.imageItem.boundingRect()
-
-            scene = self.graphicsView.scene()
-            scene.addItem(self.imageItem)
-            scene.setSceneRect(rect)
-
-            self.graphicsView.setSceneRect(scene.sceneRect())
-            self.graphicsView.ensureVisible(rect.x(), rect.y(), 1, 1, 0, 0)
-
-        finally:
-            self.graphicsView.setUpdatesEnabled(True)
-
+    ### Auxiliary methods ####################################################
     def updateProgressBar(self, fract):
         self.progressbar.show()
         self.progressbar.setValue(int(100.*fract))
@@ -733,10 +686,6 @@ class GSDView(QtGui.QMainWindow):
                 QtGui.QMessageBox.warning(self, '', msg)
                 self.closeFile()   # @TODO: check
                 return
-
-            # @TODO: check if opening the dataset in update mode
-            #        (gdal.GA_Update) is a better solution
-            self.dataset.reopen()
         finally:
             self.progressbar.hide()
             self.statusBar().showMessage('Ready.')

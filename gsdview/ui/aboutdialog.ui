@@ -566,19 +566,6 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="gdalTab" >
-      <property name="toolTip" >
-       <string>Information about GDAL</string>
-      </property>
-      <attribute name="title" >
-       <string>GDAL</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout" >
-       <item>
-        <widget class="GDALInfoWidget" native="1" name="gdalInfoWidget" />
-       </item>
-      </layout>
-     </widget>
     </widget>
    </item>
    <item>
@@ -593,14 +580,6 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>GDALInfoWidget</class>
-   <extends>QWidget</extends>
-   <header>widgets.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="../../resources.qrc" />
   <include location="../../resources.qrc" />
