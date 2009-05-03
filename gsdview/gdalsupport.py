@@ -246,8 +246,8 @@ class MissingOvrError(Exception):
         super(MissingOvrError, self).__init__(ovrlevel)
 
         def __str__(self):
-            return 'Overview with level "%s" is not available in the '
-                   'product' % self.args[0]
+            return ('Overview with level "%s" is not available in the '
+                    'product' % self.args[0])
 
 class CoordinateMapper(object):
     geogCS = 'WGS84'
