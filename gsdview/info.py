@@ -32,7 +32,7 @@ import sys
 name = 'GSDView'
 version = '.'.join(map(str, __version__)) + 'a'
 
-short_description = 'Geo-Spatial Data Viewer'
+short_description = 'Geo-Spatial Data Viewer Open Source Edition'
 description = '''GSDView (Geo-Spatial Data Viewer) is a lightweight
 viewer for geo-spatial data and products.
 

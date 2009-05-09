@@ -35,6 +35,7 @@ import numpy
 
 from PyQt4 import QtCore, QtGui
 
+import info
 import utils
 import gsdtools
 import exectools
@@ -42,7 +43,6 @@ import qt4support
 import graphicsview
 
 from widgets import AboutDialog, PreferencesDialog
-#~ from gdalexectools import GdalAddOverviewDescriptor, GdalOutputHandler
 from exectools.qt4tools import Qt4ToolController, Qt4DialogLoggingHandler
 
 import gsdview_resources
@@ -97,7 +97,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         QtGui.qApp.setWindowIcon(QtGui.QIcon(':/images/GSDView.png'))
 
         super(GSDView, self).__init__(parent)
-        self.setWindowTitle(self.tr('GSDView'))
+        self.setWindowTitle(self.tr('GSDView Open Source Edition v. %1').arg(info.version))
         self.setObjectName('gsdview-mainwin')
 
         # GraphicsViewMonitor
@@ -638,9 +638,6 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
                                           '"%s"' % (backendname, filename))
                 else:
                     self.logger.error('Unable to open file "%s"' % filename)
-
-        #~ # @TODO: check
-        #~ self.emit(QtCore.SIGNAL('openGdalDataset(PyQt_PyObject)'), self.dataset)
 
     def closeFile(self):
         # @TODO: extend for multiple datasets
