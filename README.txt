@@ -3,7 +3,7 @@
     =======
 
     :Source: README.txt
-    :Version: 0.3
+    :Version: 0.5.9
     :Author: Antonio Valentino
     :Contact: a_valentino@users.sf.net
     :URL: http://gsdview.sourceforge.net
@@ -45,9 +45,9 @@ Requirements
 In order to run GSDView you should have the following software installed:
 
 * Python_ 2.5 or higher
-* PyQt_ 4.0  or higher
-* numpy_ 1.0.4  or higher
-* gdal_ 1.4.4 or higher
+* PyQt_ 4.3  or higher
+* numpy_ 1.1.0  or higher
+* gdal_ 1.5.2 or higher
 * PyQwt_ 5.0  or higher (recommended)
 
 .. _PyQt: http://www.riverbankcomputing.co.uk
@@ -60,7 +60,7 @@ In order to run GSDView you should have the following software installed:
    Ubuntu_ and Debian_ users can resolve all dependencies by running the
    following command as superuser::
 
-     # apt-get python-qt4 python-qwt5-qt4 python-gdal gdal-bin python-numpy python-scipy
+     # apt-get install python-qt4 python-gdal gdal-bin python-qwt5-qt4
 
 .. _Ubuntu: http://www.ubuntu.com
 .. _Debian: http://www.debian.org

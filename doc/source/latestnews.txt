@@ -1,3 +1,12 @@
+:10/05/2009: GSDView Open Source Edition v. 0.6.0 alpha 1 released.
+
+             Almost complete application re-write: 
+             new architecture that allows multiple data access backends
+             (currently only GDAL backend is provided), updated dataset 
+             browser with new contextual actions, Multiple Document 
+             Interface (MDI), new preference dialog, improved GDAL 
+             configuration handling.
+
 :30/08/2008: New Home Page.
 
              The project Home Page has been completely rewritten.

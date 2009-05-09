@@ -12,16 +12,17 @@ ChangeLog
 =========
 
 
-Changes from 0.3.0 to 0.5.9 (03/05/2009)
+Changes from 0.3.0 to 0.5.9 (10/05/2009)
 ----------------------------------------
 
 * Complete application rewrite:
-  - pluggable about dilalog (plugins can add their own tab)
+  - pluggable about dialog (plugins can add their own tab)
   - preference dialog
   - new architecture that allows multiple backends for actual data access
     (currently only GDAL backend is provided)
+  - updated dataset browser with new contextual actions
   - now the application uses a Multiple Document Interface (MDI)
-* Improved GDAL configuration handling (without application respawning)
+* Improved GDAL configuration handling (without application re-spawning)
 * New function for converting a numpy array into a QImage: now PyQwt is no
   more a strong dependency
 
