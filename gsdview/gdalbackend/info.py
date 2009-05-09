@@ -30,7 +30,7 @@ __all__ = ['name', 'version', 'short_description', 'description',
 
 
 name = 'gdalbackend'
-version = '0.3a'
+version = '.'.join(map(str, __version__))
 
 short_description = 'GDAL backend for GSDView'
 description = __doc__
