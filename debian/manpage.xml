@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+
+<!--
+
+Process this file with an XSLT processor: `xsltproc \
+-''-nonet /usr/share/sgml/docbook/stylesheet/xsl/nwalsh/\
+manpages/docbook.xsl manpage.dbk'.  A manual page
+<package>.<section> will be generated.  You may view the
+manual page with: nroff -man <package>.<section> | less'.  A
+typical entry in a Makefile or Makefile.am is:
+
+DB2MAN=/usr/share/sgml/docbook/stylesheet/xsl/nwalsh/\
+manpages/docbook.xsl
+XP=xsltproc -''-nonet
+
+manpage.1: manpage.dbk
+        $(XP) $(DB2MAN) $<
+
+The xsltproc binary is found in the xsltproc package.  The
+XSL files are in docbook-xsl.  Please remember that if you
+create the nroff version in one of the debian/rules file
+targets (such as build), you will need to include xsltproc
+and docbook-xsl in your Build-Depends control field.
+
+-->
+
+  <!ENTITY dhfirstname "<firstname>Antonio</firstname>">
+  <!ENTITY dhsurname   "<surname>Valentino</surname>">
+  <!ENTITY dhdate      "<date>may 10, 2009</date>">
+  <!ENTITY dhsection   "<manvolnum>1</manvolnum>">
+  <!ENTITY dhemail     "<email>a_valentino@users.sf.net</email>">
+  <!ENTITY dhusername  "Antonio Valentino">
+  <!ENTITY dhucpackage "<refentrytitle>GSDView</refentrytitle>">
+  <!ENTITY dhpackage   "gsdview">
+  <!ENTITY dhproduct   "&dhpackage;">
+  <!ENTITY dhversion   "0.5.9;">
+  <!ENTITY debian      "<productname>Debian</productname>">
+  <!ENTITY gnu         "<acronym>GNU</acronym>">
+  <!ENTITY gpl         "&gnu; <acronym>GPL</acronym>">
+]>
+
+<refentry>
+  <refentryinfo>
+    <title>&dhpackage;</title>
+    <productname>&dhproduct;</productname>
+    <productnumber>&dhversion;</productnumber>
+    <date>$Date: 2009-05-09 12:54:43 +0100 (sab, 09 mag 2009) $</date>
+    <address>
+      &dhemail;
+    </address>
+    <author>
+      &dhfirstname;
+      &dhsurname;
+      &dhemail;
+    </author>
+    <copyright>
+      <year>2008-2009</year>
+      <holder>&dhusername;</holder>
+    </copyright>
+    &dhdate;
+  </refentryinfo>
+  <refmeta>
+    &dhucpackage;
+
+    &dhsection;
+  </refmeta>
+  <refnamediv>
+    <refname>&dhpackage;</refname>
+
+    <refpurpose>Geo-Spatial Data Viewer Open Source Edition</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>&dhpackage;</command>
+
+      <arg><option>options</option></arg>
+
+      <arg><replaceable>parameters file</replaceable></arg>
+
+    </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+    <title>DESCRIPTION</title>
+
+    <para><command>&dhpackage;</command> (Geo-Spatial Data Viewer) is a
+      lightweight viewer for geo-spatial data and products.
+    </para>
+
+    <para>It is written in python and Qt4 and it is mainly intended to be a
+      graphical frotend for the GDAL library and tools.
+    </para>
+
+    <para>
+      GSDView is modular and has a simple plug-in architecture.
+    </para>
+  </refsect1>
+  <refsect1>
+    <title>SEE ALSO</title>
+
+    <para>The <ulink url="http://gsdview.sourceforge.net">GSDView Homepage</ulink>
+    </para>
+
+  </refsect1>
+</refentry>
+

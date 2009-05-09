@@ -4,7 +4,8 @@ Priority: extra
 Maintainer: Antonio Valentino <a_valentino@users.sf.net>
 XS-Python-Version: >= 2.4
 Build-Depends: cdbs (>= 0.4.49), debhelper (>= 7) , python-central (>= 0.6.0),
-               python-sphinx
+               python-sphinx, texlive-base-bin, xsltproc, docbook-xsl
+
 Standards-Version: 3.7.3
 Homepage: http://sourceforge.net/projects/gsdview
 
@@ -12,8 +13,8 @@ Package: gsdview
 Architecture: any
 Depends: ${python:Depends}, python-qt4, python-gdal, ${misc:Depends}
 XB-Python-Version: ${python:Versions}
-Description: GSDView (Geo-Spatial Data Viewer) is a lightweight
- viewer for geo-spatial data and products.
+Description: Geo-Spatial Data Viewer is a lightweight viewer for geo-spatial
+ data and products.
  .
  It is written in python and Qt4 and it is mainly intended to be a graphical
  frotend for the GDAL library and tools.
