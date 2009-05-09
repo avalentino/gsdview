@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>gdalPreferencesWidget</class>
- <widget class="QWidget" name="gdalPreferencesWidget" >
-  <property name="geometry" >
+ <widget class="QWidget" name="gdalPreferencesWidget">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,21 +10,21 @@
     <height>581</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
-   <property name="spacing" >
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
     <number>0</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" name="infoHorizontalLayout" >
+    <layout class="QHBoxLayout" name="infoHorizontalLayout">
      <item>
-      <spacer name="infoHorizontalSpacer" >
-       <property name="orientation" >
+      <spacer name="infoHorizontalSpacer">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>188</width>
          <height>24</height>
@@ -32,61 +33,61 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="infoButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="infoButton">
+       <property name="text">
         <string>Show detailed GDAL info</string>
        </property>
-       <property name="icon" >
-        <iconset resource="../../resources.qrc" >
-         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
+       <property name="icon">
+        <iconset resource="../images/resources.qrc">
+         <normaloff>:/gdalbackend/info.svg</normaloff>:/gdalbackend/info.svg</iconset>
        </property>
       </widget>
      </item>
     </layout>
    </item>
    <item>
-    <widget class="QGroupBox" name="optionsGroupBox" >
-     <property name="title" >
+    <widget class="QGroupBox" name="optionsGroupBox">
+     <property name="title">
       <string>Configuration options</string>
      </property>
-     <layout class="QGridLayout" name="optionsGridLayout" >
-      <property name="verticalSpacing" >
+     <layout class="QGridLayout" name="optionsGridLayout">
+      <property name="verticalSpacing">
        <number>2</number>
       </property>
-      <item row="0" column="0" >
-       <widget class="QCheckBox" name="cacheCheckBox" >
-        <property name="text" >
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="cacheCheckBox">
+        <property name="text">
          <string>GDAL_CACHEMAX</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <layout class="QHBoxLayout" name="cacheHorizontalLayout" >
+      <item row="0" column="1">
+       <layout class="QHBoxLayout" name="cacheHorizontalLayout">
         <item>
-         <widget class="QSpinBox" name="cacheSpinBox" >
-          <property name="enabled" >
+         <widget class="QSpinBox" name="cacheSpinBox">
+          <property name="enabled">
            <bool>false</bool>
           </property>
-          <property name="suffix" >
+          <property name="suffix">
            <string> MB</string>
           </property>
-          <property name="maximum" >
+          <property name="maximum">
            <number>1000</number>
           </property>
-          <property name="singleStep" >
+          <property name="singleStep">
            <number>10</number>
           </property>
-          <property name="value" >
+          <property name="value">
            <number>40</number>
           </property>
          </widget>
         </item>
         <item>
-         <spacer name="cacheHorizontalSpacer" >
-          <property name="orientation" >
+         <spacer name="cacheHorizontalSpacer">
+          <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeHint" stdset="0" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>40</width>
             <height>20</height>
@@ -96,58 +97,58 @@
         </item>
        </layout>
       </item>
-      <item row="1" column="0" >
-       <widget class="QCheckBox" name="gdalDataCheckBox" >
-        <property name="text" >
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="gdalDataCheckBox">
+        <property name="text">
          <string>GDAL_DATA</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" >
-       <widget class="FileEntryWidget" native="1" name="gdalDataDirEntryWidget" >
-        <property name="enabled" >
+      <item row="1" column="1">
+       <widget class="FileEntryWidget" name="gdalDataDirEntryWidget" native="true">
+        <property name="enabled">
          <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" >
-       <widget class="QCheckBox" name="skipCheckBox" >
-        <property name="text" >
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="skipCheckBox">
+        <property name="text">
          <string>GDAL_SKIP</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1" >
-       <widget class="QLineEdit" name="skipLineEdit" >
-        <property name="enabled" >
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="skipLineEdit">
+        <property name="enabled">
          <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="3" column="0" >
-       <widget class="QCheckBox" name="gdalDriverPathCheckBox" >
-        <property name="text" >
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="gdalDriverPathCheckBox">
+        <property name="text">
          <string>GDAL_DRIVER_PATH</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1" >
-       <widget class="FileEntryWidget" native="1" name="gdalDriverPathEntryWidget" >
-        <property name="enabled" >
+      <item row="3" column="1">
+       <widget class="FileEntryWidget" name="gdalDriverPathEntryWidget" native="true">
+        <property name="enabled">
          <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="4" column="0" >
-       <widget class="QCheckBox" name="ogrDriverPathCheckBox" >
-        <property name="text" >
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="ogrDriverPathCheckBox">
+        <property name="text">
          <string>OGR_DRIVER_PATH</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1" >
-       <widget class="FileEntryWidget" native="1" name="ogrDriverPathEntryWidget" >
-        <property name="enabled" >
+      <item row="4" column="1">
+       <widget class="FileEntryWidget" name="ogrDriverPathEntryWidget" native="true">
+        <property name="enabled">
          <bool>false</bool>
         </property>
        </widget>
@@ -156,38 +157,38 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="extraOptGroupBox" >
-     <property name="title" >
+    <widget class="QGroupBox" name="extraOptGroupBox">
+     <property name="title">
       <string>Extra configuration optons</string>
      </property>
-     <property name="checkable" >
+     <property name="checkable">
       <bool>true</bool>
      </property>
-     <property name="checked" >
+     <property name="checked">
       <bool>false</bool>
      </property>
-     <layout class="QVBoxLayout" name="extraOptVerticalLayout" >
+     <layout class="QVBoxLayout" name="extraOptVerticalLayout">
       <item>
-       <widget class="QTableWidget" name="extraOptTableWidget" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+       <widget class="QTableWidget" name="extraOptTableWidget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="verticalScrollMode" >
+        <property name="verticalScrollMode">
          <enum>QAbstractItemView::ScrollPerPixel</enum>
         </property>
-        <property name="horizontalScrollMode" >
+        <property name="horizontalScrollMode">
          <enum>QAbstractItemView::ScrollPerPixel</enum>
         </property>
         <column>
-         <property name="text" >
+         <property name="text">
           <string>Key</string>
          </property>
         </column>
         <column>
-         <property name="text" >
+         <property name="text">
           <string>Value</string>
          </property>
         </column>
@@ -197,63 +198,6 @@
     </widget>
    </item>
   </layout>
-  <action name="actionAddEnvVar" >
-   <property name="icon" >
-    <iconset resource="../../resources.qrc" >
-     <normaloff>:/images/add.svg</normaloff>:/images/add.svg</iconset>
-   </property>
-   <property name="text" >
-    <string>Add</string>
-   </property>
-   <property name="toolTip" >
-    <string>Add a new item</string>
-   </property>
-   <property name="shortcut" >
-    <string>Ctrl+A</string>
-   </property>
-  </action>
-  <action name="actionRemoveEnvVar" >
-   <property name="icon" >
-    <iconset resource="../../resources.qrc" >
-     <normaloff>:/images/remove.svg</normaloff>:/images/remove.svg</iconset>
-   </property>
-   <property name="text" >
-    <string>Remove</string>
-   </property>
-   <property name="toolTip" >
-    <string>Remove selected items</string>
-   </property>
-   <property name="shortcut" >
-    <string>Ctrl+R</string>
-   </property>
-  </action>
-  <action name="actionEditEnvVar" >
-   <property name="icon" >
-    <iconset resource="../../resources.qrc" >
-     <normaloff>:/images/edit.svg</normaloff>:/images/edit.svg</iconset>
-   </property>
-   <property name="text" >
-    <string>Edit</string>
-   </property>
-   <property name="toolTip" >
-    <string>Edit current item</string>
-   </property>
-   <property name="shortcut" >
-    <string>Ctrl+E</string>
-   </property>
-  </action>
-  <action name="actionClearEnv" >
-   <property name="icon" >
-    <iconset resource="../../resources.qrc" >
-     <normaloff>:/images/clear.svg</normaloff>:/images/clear.svg</iconset>
-   </property>
-   <property name="text" >
-    <string>Clear</string>
-   </property>
-   <property name="toolTip" >
-    <string>Clear all items</string>
-   </property>
-  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -264,7 +208,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../resources.qrc" />
+  <include location="../images/resources.qrc"/>
  </resources>
  <connections>
   <connection>
@@ -273,11 +217,11 @@
    <receiver>cacheSpinBox</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>114</x>
      <y>94</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>251</x>
      <y>95</y>
     </hint>
@@ -289,11 +233,11 @@
    <receiver>gdalDataDirEntryWidget</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>136</x>
      <y>114</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>188</x>
      <y>115</y>
     </hint>
@@ -305,11 +249,11 @@
    <receiver>skipLineEdit</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>100</x>
      <y>147</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>206</x>
      <y>151</y>
     </hint>
@@ -321,11 +265,11 @@
    <receiver>gdalDriverPathEntryWidget</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>102</x>
      <y>166</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>228</x>
      <y>170</y>
     </hint>
@@ -337,11 +281,11 @@
    <receiver>ogrDriverPathEntryWidget</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>116</x>
      <y>203</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>212</x>
      <y>201</y>
     </hint>

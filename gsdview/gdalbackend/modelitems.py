@@ -31,13 +31,13 @@ from PyQt4 import QtCore, QtGui
 import info
 import gdalqt4
 import gdalsupport
+import gdalbackend_resources
 
 from gsdview import utils
-from gsdview import gsdview_resources
 
 
 class MajorObjectItem(QtGui.QStandardItem):
-    iconfile = os.path.join(os.path.dirname(__file__), 'images/generic.svg')
+    iconfile = ':/gdalbackend/generic.svg'
     _typeoffset = 100
     backend = info.name
 
@@ -89,7 +89,7 @@ class BandItem(MajorObjectItem):
 
     '''
 
-    iconfile = os.path.join(os.path.dirname(__file__), 'images/rasterband.svg')
+    iconfile = ':/gdalbackend/rasterband.svg'
     _typeoffset = MajorObjectItem._typeoffset + 10
 
     def __init__(self, band):
@@ -154,11 +154,11 @@ class BandItem(MajorObjectItem):
 
 
 class OverviewItem(BandItem):
-    iconfile = os.path.join(os.path.dirname(__file__), 'images/overview.svg')
+    iconfile = ':/gdalbackend/overview.svg'
     _typeoffset = BandItem._typeoffset + 1
 
 #~ class VirtualBandItem(BandItem):
-    #~ iconfile = os.path.join(os.path.dirname(__file__), 'images/virtualband.svg')
+    #~ iconfile = ':/gdalbackend/virtualband.svg'
     #~ _typeoffset = BandItem._typeoffset + 2
     # @TODO: remove
     #~ actions = BandItem.actions + ('Delete',)
@@ -178,7 +178,7 @@ class BaseDatasetItem(MajorObjectItem):
 
     '''
 
-    iconfile = os.path.join(os.path.dirname(__file__), 'images/dataset.svg')
+    iconfile = ':/gdalbackend/dataset.svg'
     _typeoffset = MajorObjectItem._typeoffset + 100
 
     def _open_gdal_dataset(self, filename, mode=gdal.GA_ReadOnly):
@@ -371,7 +371,7 @@ class DatasetItem(CachedDatasetItem):
     pass
 
 class SubDatasetItem(DatasetItem):
-    iconfile = os.path.join(os.path.dirname(__file__), 'images/subdataset.svg')
+    iconfile = ':/gdalbackend/subdataset.svg'
     _typeoffset = DatasetItem._typeoffset + 10
 
     def __init__(self, gdalfilename, extrainfo=''):

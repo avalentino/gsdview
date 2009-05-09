@@ -33,6 +33,8 @@ import gdalqt4
 import widgets
 import modelitems
 
+import gdalbackend_resources
+
 
 class GDALBackend(QtCore.QObject):
     # @TODO:
@@ -151,8 +153,7 @@ class GDALBackend(QtCore.QObject):
             actionsgroup = QtGui.QActionGroup(self)
 
         # open metadata view
-        iconfile = os.path.join(os.path.dirname(__file__), 'images/metadata.svg')
-        action = QtGui.QAction(QtGui.QIcon(iconfile),
+        action = QtGui.QAction(QtGui.QIcon(':/gdalbackend/metadata.svg'),
                                self.tr('Open &Metadata View'), actionsgroup)
         action.setObjectName('actionOpenItemMetadataView')
         action.setShortcut(self.tr('Ctrl+M'))
@@ -163,8 +164,7 @@ class GDALBackend(QtCore.QObject):
         action.setEnabled(False)    # @TODO: remove
 
         # show properties
-        iconfile = os.path.join(os.path.dirname(__file__), 'images/info.svg')
-        action = QtGui.QAction(QtGui.QIcon(iconfile),
+        action = QtGui.QAction(QtGui.QIcon(':/gdalbackend/info.svg'),
                                self.tr('&Show Properties'), actionsgroup)
         action.setObjectName('actionShowItemProperties')
         action.setShortcut(self.tr('Ctrl+S'))
@@ -181,8 +181,7 @@ class GDALBackend(QtCore.QObject):
             actionsgroup = QtGui.QActionGroup(self)
 
         # open image view
-        iconfile = os.path.join(os.path.dirname(__file__), 'images/open.svg')
-        action = QtGui.QAction(QtGui.QIcon(iconfile),
+        action = QtGui.QAction(QtGui.QIcon(':/gdalbackend/open.svg'),
                                self.tr('&Open Image View'), actionsgroup)
         action.setObjectName('actionOpenImageView')
         action.setShortcut(self.tr('Ctrl+O'))
@@ -225,8 +224,7 @@ class GDALBackend(QtCore.QObject):
         QtGui.QAction(actionsgroup).setSeparator(True)
 
         # build overviews
-        iconfile = os.path.join(os.path.dirname(__file__), 'images/overview.svg')
-        action = QtGui.QAction(QtGui.QIcon(iconfile),
+        action = QtGui.QAction(QtGui.QIcon(':/gdalbackend/overview.svg'),
                                self.tr('&Build overviews for all raster bands'),
                                actionsgroup)
         action.setObjectName('actionBuidOverviews')
@@ -242,9 +240,8 @@ class GDALBackend(QtCore.QObject):
         QtGui.QAction(actionsgroup).setSeparator(True)
 
         # close
-        iconfile = os.path.join(os.path.dirname(__file__), 'images/close.svg')
-        action = QtGui.QAction(QtGui.QIcon(iconfile), self.tr('Close'),
-                               actionsgroup)
+        action = QtGui.QAction(QtGui.QIcon(':/gdalbackend/close.svg'),
+                               self.tr('Close'), actionsgroup)
         action.setObjectName('actionCloseItem') # @TODO: complete
         action.setShortcut(self.tr('Ctrl+W'))
         action.setToolTip(self.tr('Close the current item'))
@@ -258,8 +255,7 @@ class GDALBackend(QtCore.QObject):
             actionsgroup = QtGui.QActionGroup(self)
 
         # open
-        iconfile = os.path.join(os.path.dirname(__file__), 'images/open.svg')
-        action = QtGui.QAction(QtGui.QIcon(iconfile),
+        action = QtGui.QAction(QtGui.QIcon(':/gdalbackend/open.svg'),
                                self.tr('Open Sub Dataset'), actionsgroup)
         action.setObjectName('actionOpenSubDatasetItem')
         action.setShortcut(self.tr('Ctrl+O'))

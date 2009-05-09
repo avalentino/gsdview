@@ -16,6 +16,5 @@
     <file>images/misc-preferences.svg</file>
     <file>images/harddisk.svg</file>
     <file>images/preferences.svg</file>
-    <file>images/GDALLogoColor.svg</file>
   </qresource>
 </RCC>

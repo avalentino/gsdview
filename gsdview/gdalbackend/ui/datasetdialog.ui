@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>datasetDialog</class>
- <widget class="QDialog" name="datasetDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="datasetDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,73 +10,73 @@
     <height>513</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>GDAL Dataset</string>
   </property>
-  <layout class="QVBoxLayout" name="mainVerticalLayout" >
+  <layout class="QVBoxLayout" name="mainVerticalLayout">
    <item>
-    <widget class="QTabWidget" name="tabWidgetm" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+    <widget class="QTabWidget" name="tabWidgetm">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="currentIndex" >
+     <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="infoTab" >
-      <attribute name="title" >
+     <widget class="QWidget" name="infoTab">
+      <attribute name="icon">
+       <iconset resource="../images/resources.qrc">
+        <normaloff>:/gdalbackend/info.svg</normaloff>:/gdalbackend/info.svg</iconset>
+      </attribute>
+      <attribute name="title">
        <string>Info</string>
       </attribute>
-      <attribute name="icon" >
-       <iconset resource="../resources.qrc" >
-        <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
-      </attribute>
-      <attribute name="toolTip" >
+      <attribute name="toolTip">
        <string>General information about the dataset.</string>
       </attribute>
-      <layout class="QVBoxLayout" name="infoTabVerticalLayout" >
+      <layout class="QVBoxLayout" name="infoTabVerticalLayout">
        <item>
-        <layout class="QHBoxLayout" name="infoHorizontalLayout" >
-         <property name="sizeConstraint" >
+        <layout class="QHBoxLayout" name="infoHorizontalLayout">
+         <property name="sizeConstraint">
           <enum>QLayout::SetMinimumSize</enum>
          </property>
          <item>
-          <layout class="QGridLayout" name="infoGridLayout" >
-           <item row="0" column="0" >
-            <widget class="QLabel" name="descriptionLabel" >
-             <property name="text" >
+          <layout class="QGridLayout" name="infoGridLayout">
+           <item row="0" column="0">
+            <widget class="QLabel" name="descriptionLabel">
+             <property name="text">
               <string>Description:</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="1" >
-            <widget class="QLabel" name="descriptionValue" >
-             <property name="text" >
+           <item row="0" column="1">
+            <widget class="QLabel" name="descriptionValue">
+             <property name="text">
               <string>description value</string>
              </property>
-             <property name="wordWrap" >
+             <property name="wordWrap">
               <bool>true</bool>
              </property>
-             <property name="textInteractionFlags" >
+             <property name="textInteractionFlags">
               <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
              </property>
             </widget>
            </item>
-           <item row="1" column="0" >
-            <widget class="QLabel" name="rasterCountLabel" >
-             <property name="text" >
+           <item row="1" column="0">
+            <widget class="QLabel" name="rasterCountLabel">
+             <property name="text">
               <string>Raster count:</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="1" >
-            <widget class="QLabel" name="rasterCountValue" >
-             <property name="text" >
+           <item row="1" column="1">
+            <widget class="QLabel" name="rasterCountValue">
+             <property name="text">
               <string>raster count value</string>
              </property>
-             <property name="textInteractionFlags" >
+             <property name="textInteractionFlags">
               <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
              </property>
             </widget>
@@ -83,11 +84,11 @@
           </layout>
          </item>
          <item>
-          <spacer name="infoHorizontalSpacer" >
-           <property name="orientation" >
+          <spacer name="infoHorizontalSpacer">
+           <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" stdset="0" >
+           <property name="sizeHint" stdset="0">
             <size>
              <width>40</width>
              <height>20</height>
@@ -98,46 +99,46 @@
         </layout>
        </item>
        <item>
-        <widget class="QGroupBox" name="rasterGroupBox" >
-         <property name="title" >
+        <widget class="QGroupBox" name="rasterGroupBox">
+         <property name="title">
           <string>Raster</string>
          </property>
-         <property name="checkable" >
+         <property name="checkable">
           <bool>false</bool>
          </property>
-         <layout class="QHBoxLayout" name="rasterHorizontalLayout" >
+         <layout class="QHBoxLayout" name="rasterHorizontalLayout">
           <item>
-           <layout class="QGridLayout" name="rasterGridLayout" >
-            <item row="0" column="0" >
-             <widget class="QLabel" name="xSizeLabel" >
-              <property name="text" >
+           <layout class="QGridLayout" name="rasterGridLayout">
+            <item row="0" column="0">
+             <widget class="QLabel" name="xSizeLabel">
+              <property name="text">
                <string>X Size:</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="1" >
-             <widget class="QLabel" name="xSizeValue" >
-              <property name="text" >
+            <item row="0" column="1">
+             <widget class="QLabel" name="xSizeValue">
+              <property name="text">
                <string>x size value</string>
               </property>
-              <property name="textInteractionFlags" >
+              <property name="textInteractionFlags">
                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
               </property>
              </widget>
             </item>
-            <item row="1" column="0" >
-             <widget class="QLabel" name="ySizeLabel" >
-              <property name="text" >
+            <item row="1" column="0">
+             <widget class="QLabel" name="ySizeLabel">
+              <property name="text">
                <string>Y Size:</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="1" >
-             <widget class="QLabel" name="ySizeValue" >
-              <property name="text" >
+            <item row="1" column="1">
+             <widget class="QLabel" name="ySizeValue">
+              <property name="text">
                <string>y size value</string>
               </property>
-              <property name="textInteractionFlags" >
+              <property name="textInteractionFlags">
                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
               </property>
              </widget>
@@ -145,11 +146,11 @@
            </layout>
           </item>
           <item>
-           <spacer name="rasterHorizontalSpacer" >
-            <property name="orientation" >
+           <spacer name="rasterHorizontalSpacer">
+            <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" stdset="0" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>195</width>
               <height>20</height>
@@ -161,231 +162,231 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="transformGroupBox" >
-         <property name="title" >
+        <widget class="QGroupBox" name="transformGroupBox">
+         <property name="title">
           <string>Transform</string>
          </property>
-         <layout class="QHBoxLayout" name="transformHorizontalLayout" >
+         <layout class="QHBoxLayout" name="transformHorizontalLayout">
           <item>
-           <layout class="QGridLayout" name="transformGridLayout" >
-            <item row="0" column="0" >
-             <widget class="QLabel" name="xLabel" >
-              <property name="text" >
+           <layout class="QGridLayout" name="transformGridLayout">
+            <item row="0" column="0">
+             <widget class="QLabel" name="xLabel">
+              <property name="text">
                <string>x</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="1" colspan="2" >
-             <widget class="QLabel" name="eqLabel1" >
-              <property name="text" >
+            <item row="0" column="1" colspan="2">
+             <widget class="QLabel" name="eqLabel1">
+              <property name="text">
                <string>=</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="3" >
-             <widget class="QLabel" name="xOffsetValue" >
-              <property name="toolTip" >
+            <item row="0" column="3">
+             <widget class="QLabel" name="xOffsetValue">
+              <property name="toolTip">
                <string>X offset</string>
               </property>
-              <property name="whatsThis" >
+              <property name="whatsThis">
                <string>X offset</string>
               </property>
-              <property name="text" >
+              <property name="text">
                <string>xoffset</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="4" >
-             <widget class="QLabel" name="plus11Label" >
-              <property name="text" >
+            <item row="0" column="4">
+             <widget class="QLabel" name="plus11Label">
+              <property name="text">
                <string>+</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="5" >
-             <widget class="QLabel" name="pix1Value" >
-              <property name="text" >
+            <item row="0" column="5">
+             <widget class="QLabel" name="pix1Value">
+              <property name="text">
                <string>pixel</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="6" >
-             <widget class="QLabel" name="mul11Label" >
-              <property name="text" >
+            <item row="0" column="6">
+             <widget class="QLabel" name="mul11Label">
+              <property name="text">
                <string>x</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="7" >
-             <widget class="QLabel" name="a11Value" >
-              <property name="toolTip" >
-               <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
-&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+            <item row="0" column="7">
+             <widget class="QLabel" name="a11Value">
+              <property name="toolTip">
+               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-size:12pt;">A&lt;/span>&lt;span style=" font-size:12pt; vertical-align:sub;">11&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;A&lt;/span&gt;&lt;span style=&quot; font-size:12pt; vertical-align:sub;&quot;&gt;11&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
-              <property name="whatsThis" >
-               <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
-&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+              <property name="whatsThis">
+               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-size:12pt;">A&lt;/span>&lt;span style=" font-size:12pt; vertical-align:sub;">11&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;A&lt;/span&gt;&lt;span style=&quot; font-size:12pt; vertical-align:sub;&quot;&gt;11&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
-              <property name="text" >
+              <property name="text">
                <string>a11</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="8" >
-             <widget class="QLabel" name="plus12Label" >
-              <property name="text" >
+            <item row="0" column="8">
+             <widget class="QLabel" name="plus12Label">
+              <property name="text">
                <string>+</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="9" >
-             <widget class="QLabel" name="line1Value" >
-              <property name="text" >
+            <item row="0" column="9">
+             <widget class="QLabel" name="line1Value">
+              <property name="text">
                <string>line</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="10" >
-             <widget class="QLabel" name="mul12Label" >
-              <property name="text" >
+            <item row="0" column="10">
+             <widget class="QLabel" name="mul12Label">
+              <property name="text">
                <string>x</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="11" >
-             <widget class="QLabel" name="a12Value" >
-              <property name="toolTip" >
-               <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
-&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+            <item row="0" column="11">
+             <widget class="QLabel" name="a12Value">
+              <property name="toolTip">
+               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-size:12pt;">A&lt;/span>&lt;span style=" font-size:12pt; vertical-align:sub;">12&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;A&lt;/span&gt;&lt;span style=&quot; font-size:12pt; vertical-align:sub;&quot;&gt;12&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
-              <property name="whatsThis" >
-               <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
-&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+              <property name="whatsThis">
+               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-size:12pt;">A&lt;/span>&lt;span style=" font-size:12pt; vertical-align:sub;">12&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;A&lt;/span&gt;&lt;span style=&quot; font-size:12pt; vertical-align:sub;&quot;&gt;12&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
-              <property name="text" >
+              <property name="text">
                <string>a12</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="0" >
-             <widget class="QLabel" name="yLabel" >
-              <property name="text" >
+            <item row="1" column="0">
+             <widget class="QLabel" name="yLabel">
+              <property name="text">
                <string>y</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="1" colspan="2" >
-             <widget class="QLabel" name="eqLabel2" >
-              <property name="text" >
+            <item row="1" column="1" colspan="2">
+             <widget class="QLabel" name="eqLabel2">
+              <property name="text">
                <string>=</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="3" >
-             <widget class="QLabel" name="yOffsetValue" >
-              <property name="toolTip" >
+            <item row="1" column="3">
+             <widget class="QLabel" name="yOffsetValue">
+              <property name="toolTip">
                <string>Y offset</string>
               </property>
-              <property name="whatsThis" >
+              <property name="whatsThis">
                <string>Y offset</string>
               </property>
-              <property name="text" >
+              <property name="text">
                <string>yoffset</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="4" >
-             <widget class="QLabel" name="plus21Label" >
-              <property name="text" >
+            <item row="1" column="4">
+             <widget class="QLabel" name="plus21Label">
+              <property name="text">
                <string>+</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="5" >
-             <widget class="QLabel" name="pix2Value" >
-              <property name="text" >
+            <item row="1" column="5">
+             <widget class="QLabel" name="pix2Value">
+              <property name="text">
                <string>pixel</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="6" >
-             <widget class="QLabel" name="mul21Label" >
-              <property name="text" >
+            <item row="1" column="6">
+             <widget class="QLabel" name="mul21Label">
+              <property name="text">
                <string>x</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="7" >
-             <widget class="QLabel" name="a21Value" >
-              <property name="toolTip" >
-               <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
-&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+            <item row="1" column="7">
+             <widget class="QLabel" name="a21Value">
+              <property name="toolTip">
+               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-size:12pt;">A&lt;/span>&lt;span style=" font-size:12pt; vertical-align:sub;">21&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;A&lt;/span&gt;&lt;span style=&quot; font-size:12pt; vertical-align:sub;&quot;&gt;21&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
-              <property name="whatsThis" >
-               <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
-&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+              <property name="whatsThis">
+               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-size:12pt;">A&lt;/span>&lt;span style=" font-size:12pt; vertical-align:sub;">21&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;A&lt;/span&gt;&lt;span style=&quot; font-size:12pt; vertical-align:sub;&quot;&gt;21&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
-              <property name="text" >
+              <property name="text">
                <string>a21</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="8" >
-             <widget class="QLabel" name="plus22Label" >
-              <property name="text" >
+            <item row="1" column="8">
+             <widget class="QLabel" name="plus22Label">
+              <property name="text">
                <string>+</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="9" >
-             <widget class="QLabel" name="line2Value" >
-              <property name="text" >
+            <item row="1" column="9">
+             <widget class="QLabel" name="line2Value">
+              <property name="text">
                <string>line</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="10" >
-             <widget class="QLabel" name="mul22Label" >
-              <property name="text" >
+            <item row="1" column="10">
+             <widget class="QLabel" name="mul22Label">
+              <property name="text">
                <string>x</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="11" >
-             <widget class="QLabel" name="a22Value" >
-              <property name="toolTip" >
-               <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
-&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+            <item row="1" column="11">
+             <widget class="QLabel" name="a22Value">
+              <property name="toolTip">
+               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-size:12pt;">A&lt;/span>&lt;span style=" font-size:12pt; vertical-align:sub;">22&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;A&lt;/span&gt;&lt;span style=&quot; font-size:12pt; vertical-align:sub;&quot;&gt;22&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
-              <property name="whatsThis" >
-               <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
-&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+              <property name="whatsThis">
+               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-size:12pt;">A&lt;/span>&lt;span style=" font-size:12pt; vertical-align:sub;">22&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;A&lt;/span&gt;&lt;span style=&quot; font-size:12pt; vertical-align:sub;&quot;&gt;22&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
-              <property name="text" >
+              <property name="text">
                <string>a22</string>
               </property>
              </widget>
@@ -393,11 +394,11 @@ p, li { white-space: pre-wrap; }
            </layout>
           </item>
           <item>
-           <spacer name="transformHorizontalSpacer" >
-            <property name="orientation" >
+           <spacer name="transformHorizontalSpacer">
+            <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" stdset="0" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>53</width>
               <height>20</height>
@@ -409,92 +410,92 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="projectionGroupBox" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="MinimumExpanding" hsizetype="Preferred" >
+        <widget class="QGroupBox" name="projectionGroupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="maximumSize" >
+         <property name="maximumSize">
           <size>
            <width>16777215</width>
            <height>200</height>
           </size>
          </property>
-         <property name="title" >
+         <property name="title">
           <string>Projection</string>
          </property>
-         <property name="checkable" >
+         <property name="checkable">
           <bool>false</bool>
          </property>
-         <layout class="QGridLayout" name="projectionGridLayout" >
-          <item row="0" column="0" >
-           <widget class="QLabel" name="projectionLabel" >
-            <property name="text" >
+         <layout class="QGridLayout" name="projectionGridLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="projectionLabel">
+            <property name="text">
              <string>Projection:</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1" >
-           <widget class="QTextBrowser" name="projectionValue" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="MinimumExpanding" hsizetype="Expanding" >
+          <item row="0" column="1">
+           <widget class="QTextBrowser" name="projectionValue">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="sizeIncrement" >
+            <property name="sizeIncrement">
              <size>
               <width>0</width>
               <height>10</height>
              </size>
             </property>
-            <property name="baseSize" >
+            <property name="baseSize">
              <size>
               <width>0</width>
               <height>30</height>
              </size>
             </property>
-            <property name="toolTip" >
+            <property name="toolTip">
              <string>The projection reference string for this dataset in OGC WKT or PROJ.4 format.</string>
             </property>
-            <property name="whatsThis" >
+            <property name="whatsThis">
              <string>The projection reference string for this dataset in OGC WKT or PROJ.4 format.</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" >
-           <widget class="QLabel" name="projectionRefLabel" >
-            <property name="text" >
+          <item row="1" column="0">
+           <widget class="QLabel" name="projectionRefLabel">
+            <property name="text">
              <string>ProjectionRef:</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1" >
-           <widget class="QTextBrowser" name="projectionRefValue" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="MinimumExpanding" hsizetype="Expanding" >
+          <item row="1" column="1">
+           <widget class="QTextBrowser" name="projectionRefValue">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="sizeIncrement" >
+            <property name="sizeIncrement">
              <size>
               <width>0</width>
               <height>10</height>
              </size>
             </property>
-            <property name="baseSize" >
+            <property name="baseSize">
              <size>
               <width>0</width>
               <height>30</height>
              </size>
             </property>
-            <property name="toolTip" >
+            <property name="toolTip">
              <string>The projection definition string for this dataset.</string>
             </property>
-            <property name="whatsThis" >
+            <property name="whatsThis">
              <string>The projection definition string for this dataset.
 
 The returned string defines the projection coordinate system of the image in
@@ -507,51 +508,51 @@ OpenGIS WKT format.</string>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="metadataTab" >
-      <attribute name="title" >
+     <widget class="QWidget" name="metadataTab">
+      <attribute name="icon">
+       <iconset resource="../images/resources.qrc">
+        <normaloff>:/gdalbackend/metadata.svg</normaloff>:/gdalbackend/metadata.svg</iconset>
+      </attribute>
+      <attribute name="title">
        <string>Metadata</string>
       </attribute>
-      <attribute name="icon" >
-       <iconset resource="../resources.qrc" >
-        <normaloff>:/images/metadata.svg</normaloff>:/images/metadata.svg</iconset>
-      </attribute>
-      <attribute name="toolTip" >
+      <attribute name="toolTip">
        <string>Dataset metadata.</string>
       </attribute>
-      <layout class="QVBoxLayout" name="metadataTabVerticalLayout" >
+      <layout class="QVBoxLayout" name="metadataTabVerticalLayout">
        <item>
-        <layout class="QHBoxLayout" name="metadataNumHorizontalLayout" >
+        <layout class="QHBoxLayout" name="metadataNumHorizontalLayout">
          <item>
-          <widget class="QLabel" name="metadataNumLabel" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Minimum" hsizetype="Minimum" >
+          <widget class="QLabel" name="metadataNumLabel">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="text" >
+           <property name="text">
             <string>Number of metadata:</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="metadataNumValue" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
+          <widget class="QLabel" name="metadataNumValue">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
              <horstretch>1</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="sizeIncrement" >
+           <property name="sizeIncrement">
             <size>
              <width>1</width>
              <height>0</height>
             </size>
            </property>
-           <property name="text" >
+           <property name="text">
             <string>0</string>
            </property>
-           <property name="textInteractionFlags" >
+           <property name="textInteractionFlags">
             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
            </property>
           </widget>
@@ -559,26 +560,26 @@ OpenGIS WKT format.</string>
         </layout>
        </item>
        <item>
-        <widget class="QTableWidget" name="metadataTableWidget" >
-         <property name="editTriggers" >
+        <widget class="QTableWidget" name="metadataTableWidget">
+         <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
-         <property name="horizontalScrollMode" >
+         <property name="horizontalScrollMode">
           <enum>QAbstractItemView::ScrollPerPixel</enum>
          </property>
-         <property name="sortingEnabled" >
+         <property name="sortingEnabled">
           <bool>true</bool>
          </property>
-         <property name="columnCount" >
+         <property name="columnCount">
           <number>2</number>
          </property>
          <column>
-          <property name="text" >
+          <property name="text">
            <string>Name</string>
           </property>
          </column>
          <column>
-          <property name="text" >
+          <property name="text">
            <string>Value</string>
           </property>
          </column>
@@ -586,57 +587,57 @@ OpenGIS WKT format.</string>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="gcpsTab" >
-      <attribute name="title" >
+     <widget class="QWidget" name="gcpsTab">
+      <attribute name="icon">
+       <iconset resource="../images/resources.qrc">
+        <normaloff>:/gdalbackend/gcp.svg</normaloff>:/gdalbackend/gcp.svg</iconset>
+      </attribute>
+      <attribute name="title">
        <string>GCPs</string>
       </attribute>
-      <attribute name="icon" >
-       <iconset resource="../resources.qrc" >
-        <normaloff>:/images/gcp.svg</normaloff>:/images/gcp.svg</iconset>
-      </attribute>
-      <attribute name="toolTip" >
+      <attribute name="toolTip">
        <string>Ground Control Points (GCPs).</string>
       </attribute>
-      <layout class="QVBoxLayout" name="gcpsTabVerticalLayout" >
+      <layout class="QVBoxLayout" name="gcpsTabVerticalLayout">
        <item>
-        <widget class="QGroupBox" name="gcpsProjectionGroupBox" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
+        <widget class="QGroupBox" name="gcpsProjectionGroupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
            <horstretch>0</horstretch>
            <verstretch>1</verstretch>
           </sizepolicy>
          </property>
-         <property name="maximumSize" >
+         <property name="maximumSize">
           <size>
            <width>16777215</width>
            <height>100</height>
           </size>
          </property>
-         <property name="sizeIncrement" >
+         <property name="sizeIncrement">
           <size>
            <width>0</width>
            <height>1</height>
           </size>
          </property>
-         <property name="title" >
+         <property name="title">
           <string>GCPs Projection</string>
          </property>
-         <layout class="QVBoxLayout" name="gcpsProjectionVerticalLayout" >
+         <layout class="QVBoxLayout" name="gcpsProjectionVerticalLayout">
           <item>
-           <widget class="QTextEdit" name="gcpsProjectionValue" >
-            <property name="toolTip" >
+           <widget class="QTextEdit" name="gcpsProjectionValue">
+            <property name="toolTip">
              <string>The projection definition string for this dataset.
 
 The returned string defines the projection coordinate system of the image in
 OpenGIS WKT format.</string>
             </property>
-            <property name="whatsThis" >
+            <property name="whatsThis">
              <string>The projection definition string for this dataset.
 
 The returned string defines the projection coordinate system of the image in
 OpenGIS WKT format.</string>
             </property>
-            <property name="readOnly" >
+            <property name="readOnly">
              <bool>true</bool>
             </property>
            </widget>
@@ -645,44 +646,44 @@ OpenGIS WKT format.</string>
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="gcpsGoupBox" >
-         <property name="title" >
+        <widget class="QGroupBox" name="gcpsGoupBox">
+         <property name="title">
           <string>GCPs</string>
          </property>
-         <layout class="QVBoxLayout" name="gcpsVerticalLayout" >
+         <layout class="QVBoxLayout" name="gcpsVerticalLayout">
           <item>
-           <layout class="QHBoxLayout" name="gcpsNumHorizontalLayout" >
+           <layout class="QHBoxLayout" name="gcpsNumHorizontalLayout">
             <item>
-             <widget class="QLabel" name="gcpsNumLabel" >
-              <property name="sizePolicy" >
-               <sizepolicy vsizetype="Minimum" hsizetype="Minimum" >
+             <widget class="QLabel" name="gcpsNumLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="text" >
+              <property name="text">
                <string>Number of metadata:</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="gcpsNumValue" >
-              <property name="sizePolicy" >
-               <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
+             <widget class="QLabel" name="gcpsNumValue">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
                 <horstretch>1</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="sizeIncrement" >
+              <property name="sizeIncrement">
                <size>
                 <width>1</width>
                 <height>0</height>
                </size>
               </property>
-              <property name="text" >
+              <property name="text">
                <string>0</string>
               </property>
-              <property name="textInteractionFlags" >
+              <property name="textInteractionFlags">
                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
               </property>
              </widget>
@@ -690,52 +691,52 @@ OpenGIS WKT format.</string>
            </layout>
           </item>
           <item>
-           <widget class="QTableWidget" name="gcpsTableWidget" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+           <widget class="QTableWidget" name="gcpsTableWidget">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>10</verstretch>
              </sizepolicy>
             </property>
-            <property name="sizeIncrement" >
+            <property name="sizeIncrement">
              <size>
               <width>0</width>
               <height>10</height>
              </size>
             </property>
-            <property name="editTriggers" >
+            <property name="editTriggers">
              <set>QAbstractItemView::NoEditTriggers</set>
             </property>
-            <property name="horizontalScrollMode" >
+            <property name="horizontalScrollMode">
              <enum>QAbstractItemView::ScrollPerPixel</enum>
             </property>
             <column>
-             <property name="text" >
+             <property name="text">
               <string>Pixel</string>
              </property>
             </column>
             <column>
-             <property name="text" >
+             <property name="text">
               <string>Line</string>
              </property>
             </column>
             <column>
-             <property name="text" >
+             <property name="text">
               <string>X</string>
              </property>
             </column>
             <column>
-             <property name="text" >
+             <property name="text">
               <string>Y</string>
              </property>
             </column>
             <column>
-             <property name="text" >
+             <property name="text">
               <string>Height</string>
              </property>
             </column>
             <column>
-             <property name="text" >
+             <property name="text">
               <string>Info</string>
              </property>
             </column>
@@ -746,114 +747,114 @@ OpenGIS WKT format.</string>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="driverTab" >
-      <attribute name="title" >
+     <widget class="QWidget" name="driverTab">
+      <attribute name="icon">
+       <iconset resource="../images/resources.qrc">
+        <normaloff>:/gdalbackend/driver.svg</normaloff>:/gdalbackend/driver.svg</iconset>
+      </attribute>
+      <attribute name="title">
        <string>Driver</string>
       </attribute>
-      <attribute name="icon" >
-       <iconset resource="../resources.qrc" >
-        <normaloff>:/images/driver.svg</normaloff>:/images/driver.svg</iconset>
-      </attribute>
-      <layout class="QVBoxLayout" name="driverTabVerticalLayout" >
+      <layout class="QVBoxLayout" name="driverTabVerticalLayout">
        <item>
-        <layout class="QHBoxLayout" name="driverHorizontalLayout" >
+        <layout class="QHBoxLayout" name="driverHorizontalLayout">
          <item>
-          <layout class="QGridLayout" name="driverGridLayout" >
-           <item row="0" column="0" >
-            <widget class="QLabel" name="driverShortNameLabel" >
-             <property name="text" >
+          <layout class="QGridLayout" name="driverGridLayout">
+           <item row="0" column="0">
+            <widget class="QLabel" name="driverShortNameLabel">
+             <property name="text">
               <string>Short Name:</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="1" >
-            <widget class="QLabel" name="driverShortNameValue" >
-             <property name="toolTip" >
+           <item row="0" column="1">
+            <widget class="QLabel" name="driverShortNameValue">
+             <property name="toolTip">
               <string>Short name of the driver.</string>
              </property>
-             <property name="whatsThis" >
+             <property name="whatsThis">
               <string>Short name of the driver.</string>
              </property>
-             <property name="text" >
+             <property name="text">
               <string>short name</string>
              </property>
-             <property name="textInteractionFlags" >
+             <property name="textInteractionFlags">
               <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
              </property>
             </widget>
            </item>
-           <item row="1" column="0" >
-            <widget class="QLabel" name="driverLongNameLabel" >
-             <property name="text" >
+           <item row="1" column="0">
+            <widget class="QLabel" name="driverLongNameLabel">
+             <property name="text">
               <string>Long Name:</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="1" >
-            <widget class="QLabel" name="driverLongNameValue" >
-             <property name="toolTip" >
+           <item row="1" column="1">
+            <widget class="QLabel" name="driverLongNameValue">
+             <property name="toolTip">
               <string>Long name of the driver.</string>
              </property>
-             <property name="whatsThis" >
+             <property name="whatsThis">
               <string>Long name of the driver.</string>
              </property>
-             <property name="text" >
+             <property name="text">
               <string>long name</string>
              </property>
-             <property name="textInteractionFlags" >
+             <property name="textInteractionFlags">
               <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
              </property>
             </widget>
            </item>
-           <item row="2" column="0" >
-            <widget class="QLabel" name="driverDescriptionLabel" >
-             <property name="text" >
+           <item row="2" column="0">
+            <widget class="QLabel" name="driverDescriptionLabel">
+             <property name="text">
               <string>Description:</string>
              </property>
             </widget>
            </item>
-           <item row="2" column="1" >
-            <widget class="QLabel" name="driverDescriptionValue" >
-             <property name="toolTip" >
+           <item row="2" column="1">
+            <widget class="QLabel" name="driverDescriptionValue">
+             <property name="toolTip">
               <string>Driver description.</string>
              </property>
-             <property name="whatsThis" >
+             <property name="whatsThis">
               <string>Driver description.</string>
              </property>
-             <property name="text" >
+             <property name="text">
               <string>description text</string>
              </property>
-             <property name="textInteractionFlags" >
+             <property name="textInteractionFlags">
               <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
              </property>
             </widget>
            </item>
-           <item row="3" column="0" >
-            <widget class="QLabel" name="driverHelpTopicLabel" >
-             <property name="text" >
+           <item row="3" column="0">
+            <widget class="QLabel" name="driverHelpTopicLabel">
+             <property name="text">
               <string>Help topic:</string>
              </property>
             </widget>
            </item>
-           <item row="3" column="1" >
-            <widget class="QLabel" name="driverHelpTopicValue" >
-             <property name="toolTip" >
+           <item row="3" column="1">
+            <widget class="QLabel" name="driverHelpTopicValue">
+             <property name="toolTip">
               <string>Help topic in the GDAL library documentation.</string>
              </property>
-             <property name="whatsThis" >
+             <property name="whatsThis">
               <string>Help topic in the GDAL library documentation.</string>
              </property>
-             <property name="text" >
-              <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
-&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+             <property name="text">
+              <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;a href="http://www.gdal.org/">&lt;span style=" text-decoration: underline; color:#0000ff;">help topic&lt;/span>&lt;/a>&lt;/p>&lt;/body>&lt;/html></string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.gdal.org/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;help topic&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
-             <property name="openExternalLinks" >
+             <property name="openExternalLinks">
               <bool>true</bool>
              </property>
-             <property name="textInteractionFlags" >
+             <property name="textInteractionFlags">
               <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
              </property>
             </widget>
@@ -861,11 +862,11 @@ p, li { white-space: pre-wrap; }
           </layout>
          </item>
          <item>
-          <spacer name="driverHorizontalSpacer" >
-           <property name="orientation" >
+          <spacer name="driverHorizontalSpacer">
+           <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" stdset="0" >
+           <property name="sizeHint" stdset="0">
             <size>
              <width>40</width>
              <height>20</height>
@@ -876,50 +877,50 @@ p, li { white-space: pre-wrap; }
         </layout>
        </item>
        <item>
-        <widget class="QGroupBox" name="driverMetadataGroupBox" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+        <widget class="QGroupBox" name="driverMetadataGroupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>4</verstretch>
           </sizepolicy>
          </property>
-         <property name="title" >
+         <property name="title">
           <string>Metadata</string>
          </property>
-         <layout class="QVBoxLayout" name="driverMetadataVerticalLayout" >
+         <layout class="QVBoxLayout" name="driverMetadataVerticalLayout">
           <item>
-           <layout class="QHBoxLayout" name="driverMetadataNumHorizontalLayout" >
+           <layout class="QHBoxLayout" name="driverMetadataNumHorizontalLayout">
             <item>
-             <widget class="QLabel" name="driverMetadataNumLabel" >
-              <property name="sizePolicy" >
-               <sizepolicy vsizetype="Minimum" hsizetype="Minimum" >
+             <widget class="QLabel" name="driverMetadataNumLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="text" >
+              <property name="text">
                <string>Number of metadata:</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="driverMetadataNumValue" >
-              <property name="sizePolicy" >
-               <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
+             <widget class="QLabel" name="driverMetadataNumValue">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
                 <horstretch>1</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="sizeIncrement" >
+              <property name="sizeIncrement">
                <size>
                 <width>1</width>
                 <height>0</height>
                </size>
               </property>
-              <property name="text" >
+              <property name="text">
                <string>0</string>
               </property>
-              <property name="textInteractionFlags" >
+              <property name="textInteractionFlags">
                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
               </property>
              </widget>
@@ -927,35 +928,35 @@ p, li { white-space: pre-wrap; }
            </layout>
           </item>
           <item>
-           <widget class="QTableWidget" name="driverMetadataTableWidget" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+           <widget class="QTableWidget" name="driverMetadataTableWidget">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>4</verstretch>
              </sizepolicy>
             </property>
-            <property name="toolTip" >
+            <property name="toolTip">
              <string>GDAL driver metadata.</string>
             </property>
-            <property name="whatsThis" >
+            <property name="whatsThis">
              <string>GDAL driver metadata.</string>
             </property>
-            <property name="editTriggers" >
+            <property name="editTriggers">
              <set>QAbstractItemView::NoEditTriggers</set>
             </property>
-            <property name="horizontalScrollMode" >
+            <property name="horizontalScrollMode">
              <enum>QAbstractItemView::ScrollPerPixel</enum>
             </property>
-            <property name="sortingEnabled" >
+            <property name="sortingEnabled">
              <bool>true</bool>
             </property>
             <column>
-             <property name="text" >
+             <property name="text">
               <string>Name</string>
              </property>
             </column>
             <column>
-             <property name="text" >
+             <property name="text">
               <string>Value</string>
              </property>
             </column>
@@ -971,7 +972,7 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <resources>
-  <include location="../resources.qrc" />
+  <include location="../images/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

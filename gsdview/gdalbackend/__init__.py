@@ -44,6 +44,8 @@ def init(mainwin):
     import widgets
     import gdalsupport
 
+    import gdalbackend_resources
+
     # @TODO: check
     #UseExceptions()
 
@@ -57,16 +59,14 @@ def init(mainwin):
 
     # add a new page in the about dialog
     page = widgets.GDALInfoWidget(mainwin.aboutdialog)
-    icon = QtGui.QIcon(os.path.join(os.path.dirname(__file__),
-                       'images/GDALLogoColor.svg'))
+    icon = QtGui.QIcon(':/gdalbackend/GDALLogoColor.svg')
     tabindex = mainwin.aboutdialog.tabWidget.addTab(page, icon, 'GDAL')
     widget = mainwin.aboutdialog.tabWidget.widget(tabindex)
     widget.setObjectName('gdalTab')
 
     # update the settings dialog
     page = widgets.GDALPreferencesPage(mainwin.preferencesdialog)
-    icon = QtGui.QIcon(os.path.join(os.path.dirname(__file__),
-                       'images/GDALLogoColor.svg'))
+    icon = QtGui.QIcon(':/gdalbackend/GDALLogoColor.svg')
     mainwin.preferencesdialog.addPage(page, icon, 'GDAL')
 
     ### BEGIN #################################################################
