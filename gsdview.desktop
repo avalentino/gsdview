@@ -10,6 +10,6 @@ X-GNOME-Bugzilla-Bugzilla=
 X-GNOME-Bugzilla-Product=
 X-GNOME-Bugzilla-Component=
 X-GNOME-Bugzilla-Version=
-Categories=Education;Science;Astronomy;Qt;OSGeo;
+Categories=Education;Science;Astronomy;Qt;
 StartupNotify=true
 X-Ubuntu-Gettext-Domain=gsdview

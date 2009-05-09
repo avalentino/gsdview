@@ -5,30 +5,49 @@
 ### :Revision: $Revision$
 ### :Date: $Date$
 
-.PHONY: default docs html pdf resources clean sdist bdist deb rpmspec rpm
+XP=xsltproc -''-nonet
+DB2MAN=/usr/share/sgml/docbook/stylesheet/xsl/nwalsh/manpages/docbook.xsl
+
+.PHONY: default docs html pdf man resources clean sdist bdist deb rpmspec rpm
 
 default: docs resources
 
-docs: html pdf
+docs: html man
+#docs: html pdf man
 
 html:
 	cd doc && make html
 
-pdf:
+pdf: doc/GSDView.pdf
 	cd doc && make latex
 	cd doc/build/latex && make
+	cp doc/build/latex/GSDView.pdf doc
 
-resources: gsdview/gsdview_resources.py
+man: debian/gsdview.1 debian/gsdviewer.1
+
+debian/gsdview.1: debian/manpage.xml
+	$(XP) -o $@ $(DB2MAN) $<
+
+debian/gsdviewer.1: debian/gsdview.1
+	cp debian/gsdview.1 debian/gsdviewer.1
+
+resources: gsdview/gsdview_resources.py \
+           gsdview/gdalbackend/gdalbackend_resources.py
 
 gsdview/gsdview_resources.py: resources.qrc images/*
 	pyrcc4 -o $@ $<
 
+gsdview/gdalbackend/gdalbackend_resources.py: \
+                            gsdview/gdalbackend/images/resources.qrc \
+                            gsdview/gdalbackend/images/*
+	pyrcc4 -o $@ $<
+
 clean:
 	cd doc && $(MAKE) clean
-	$(RM) -r MANIFEST build dist *~
-	$(RM) $(find . '*.pyc')
-	cd debian && $(RM) -r gsdview gsdview.* files pycompat stamp-makefile-build
-	$(RM) python-build-stamp-*
+	$(RM) -r MANIFEST build dist
+	$(RM) $(shell find . -name '*.pyc') $(shell find . -name '*~')
+	cd debian && $(RM) -r gsdview gsdview.* gsdview*.1 files pycompat
+	$(RM) python-build-stamp-* debian/stamp-makefile-build
 
 sdist: docs resources
 	python setup.py sdist --manifest-only

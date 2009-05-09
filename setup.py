@@ -27,6 +27,7 @@ __revision__ = '$Revision$'
 
 import os
 import fnmatch
+import platform
 
 from gsdview import info
 
@@ -62,16 +63,14 @@ Topic :: Scientific/Engineering :: Visualization
 
 if has_setuptools:
     setuptools_kwargs = dict(
-        #install_requires = ['GDAL >= 1.4.4',
-        #                    'numpy >= 1.0.4',
-        #                    'scipy >= 0.6.0',
-        #                    #'PyQt4 >= 4.3.3',
+        #install_requires = ['GDAL >= 1.5.2',
+        #                    'numpy >= 1.1.0',
+        #                    'PyQt4 >= 4.3',
         #                   ],
         #extras_require = {},
         keywords = 'gsdview gdal',
         zip_safe = True,
         #entry_points = {
-        #    #'console_scripts': ['gsdview = gsdview.gsdview.main'],
         #    'gui_scripts': ['gsdview = gsdview.gsdview.main'],
         #    #'setuptools.installation': ['eggsecutable = gsdview.gsdview.main',]
         #}
@@ -79,13 +78,13 @@ if has_setuptools:
 else:
     setuptools_kwargs = {}
 
-packages = ['gsdview', 'gsdview.exectools', 'gsdview.plugins',
-            'gsdview.plugins.gdal_band_overview',
-            'gsdview.plugins.gdal_dataset_browser',
-            'gsdview.plugins.gdal_metadata_viewer',
-            'gsdview.plugins.position_tracker',
-            'gsdview.plugins.worldmap_panel',
-            'gsdview.plugins.zoom_tools',
+packages = ['gsdview', 'gsdview.exectools', 'gsdview.gdalbackend',
+            'gsdview.plugins',
+            'gsdview.plugins.overview',
+            'gsdview.plugins.metadata',
+            'gsdview.plugins.positiontracker',
+            'gsdview.plugins.worldmap',
+            'gsdview.plugins.zoom',
 ]
 
 def datatree(root, include=None, exclude=None):
@@ -102,13 +101,25 @@ def datatree(root, include=None, exclude=None):
 datafiles = [
     (os.path.join('share', 'doc', PKGNAME), ['README.txt']),
     (os.path.join('share', 'doc', PKGNAME, 'html'),
-                    datatree(os.path.join('doc', 'build', 'html'))),
-    (os.path.join('share', 'doc', PKGNAME),
-                    [os.path.join('doc', 'build', 'latex', 'GSDView.pdf')]),
-    # @TODO: unix only
-    ('share/applications', ['gsdview.desktop']),
-    ('share/pixmaps', ['images/GSDView.png']),
+                    datatree(os.path.join('doc', 'html'))),
+    #(os.path.join('share', 'doc', PKGNAME),
+    #                [os.path.join('doc', 'GSDView.pdf')]),
 ]
+
+if os.name == 'posix':
+    if platform.system() == 'FreeBSD':
+        mandir = 'man'
+    else:
+        mandir = os.path.join('share', 'man')
+    datafiles.append((os.path.join(mandir, 'man1'), ['debian/gsdview.1']))
+    datafiles.append((os.path.join(mandir, 'man1'), ['debian/gsdviewer.1']))
+    datafiles.append((os.path.join('share', 'applications'),
+                        ['gsdview.desktop']))
+    datafiles.append((os.path.join('share', 'pixmaps'),
+                        [os.path.join('images', 'GSDView.png')]))
+
+if not platform.dist()[0] in ('Dabian', 'Ubuntu'):
+    datafiles.append((os.path.join('share', 'doc', PKGNAME), ['LICENSE.txt']))
 
 setup(name             = PKGNAME,
       version          = info.version,
@@ -119,10 +130,10 @@ setup(name             = PKGNAME,
       maintainer       = info.author,
       maintainer_email = info.author_email,
       url              = info.website,
-      #download_url = "http://www.pytables.org/download/stable/pytables-%s.tar.gz" % VERSION,
+      download_url     = info.download_url,
       packages         = packages,
       package_data     = {'gsdview': ['ui/*.ui'],
-                          'gsdview.plugins.gdal_dataset_browser': ['*.ui'],
+                          'gsdview.gdalbackend': ['ui/*.ui'],
                          },
       scripts          = ['gsdviewer'],
       classifiers      = filter(None, classifiers.split('\n')),

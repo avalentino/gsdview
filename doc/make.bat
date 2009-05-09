@@ -29,6 +29,7 @@ if "%1" == "help" (
 if "%1" == "clean" (
 	for /d %%i in (build\*) do rmdir /q /s %%i
 	del /q /s build\*
+	rmdir /q /s html
 	goto end
 )
 
