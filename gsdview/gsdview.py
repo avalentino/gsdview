@@ -97,7 +97,8 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         QtGui.qApp.setWindowIcon(QtGui.QIcon(':/images/GSDView.png'))
 
         super(GSDView, self).__init__(parent)
-        self.setWindowTitle(self.tr('GSDView Open Source Edition v. %1').arg(info.version))
+        title = self.tr('GSDView Open Source Edition v. %1').arg(info.version)
+        self.setWindowTitle(title)
         self.setObjectName('gsdview-mainwin')
 
         # GraphicsViewMonitor
