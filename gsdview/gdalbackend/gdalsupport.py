@@ -24,7 +24,6 @@ __revision__ = '$Revision$'
 
 
 import os
-import types
 import logging
 import itertools
 
