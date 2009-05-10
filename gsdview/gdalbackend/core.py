@@ -394,7 +394,7 @@ class GDALBackend(QtCore.QObject):
                     self._mainwin.datamodel,
                     QtCore.SIGNAL('rowsAboutToBeRemoved(const QModelIndex&, '
                                   'int, int)'),
-                    subwin.itemsClosed)
+                    subwin.onItemsClosed)
             self._mainwin.mdiarea.addSubWindow(subwin)
             self._mainwin.monitor.register(subwin.widget())
 
@@ -509,9 +509,8 @@ class GraphicsViewSubWindow(ItemSubWindow): #QtGui.QMdiSubWindow):
         graphicsview.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
         self.setWidget(graphicsview)
 
-
     # @TODO: move elsewhere
-    def itemsClosed(self, modelindex, start, end):
+    def onItemsClosed(self, modelindex, start, end):
         if not modelindex.isValid():
             return
         parentitem = modelindex.model().itemFromIndex(modelindex)

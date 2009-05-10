@@ -211,6 +211,7 @@ class ItemSubWindow(QtGui.QMdiSubWindow):
 
         self.item = item
 
+
 class ItemModelMainWindow(MdiMainWindow):
 
     def __init__(self, parent=None):

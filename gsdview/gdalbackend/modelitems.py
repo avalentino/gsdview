@@ -71,7 +71,7 @@ class MajorObjectItem(QtGui.QStandardItem):
             try:
                 self.child(0)._close()
             except AttributeError:
-                self._mainwin.logger.debug('unexpected child  item class: '
+                self._mainwin.logger.debug('unexpected child item class: '
                                 '"%s"' % type(self.child(index)).__name__)
             self.removeRow(0)
 
@@ -146,9 +146,22 @@ class BandItem(MajorObjectItem):
     ###########################################################################
     ### BEGIN #################################################################
     # @TODO: check
-    def _reopen(self):
-        self._close()
+    def _reopen(self, gdalobj=None):
+        if not gdalobj:
+            # assume self._obj has already been set from caller
+            gdalobj = self._obj
+        else:
+            self._obj = gdalobj
+        if self.rowCount() > gdalobj.GetOverviewCount():
+            logging.warning('unable to reopen raster band: '
+                            'unexpected number of overviews')
+            return
+
+        #~ self._close()    # @TODO: remove
         self._setup_children()
+        #self.model().itemChanged(self)
+        self.model().emit(QtCore.SIGNAL('itemChanged(QStandardItem*)'), self)
+
     ### END ###################################################################
     ###########################################################################
 
@@ -357,11 +370,13 @@ class CachedDatasetItem(BaseDatasetItem):
         for index in range(1, self.RasterCount+1):
             item = self.GetRasterBand(index)
             # @WARNING: using private interface
-            item._obj = gdalobj.GetRasterBand(index)
-            item._reopen()
-            #item._reopen(gdalobj.GetRasterBand(index)) # alternative solution
+            #item._obj = gdalobj.GetRasterBand(index)
+            #item._reopen()
+            item._reopen(gdalobj.GetRasterBand(index))
 
         self._obj = gdalobj
+        #self.model().itemChanged(self)
+        self.model().emit(QtCore.SIGNAL('itemChanged(QStandardItem*)'), self)
 
     ### END ###################################################################
     ###########################################################################
