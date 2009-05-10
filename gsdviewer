@@ -99,7 +99,7 @@ if __name__ == '__main__':
 
     import sys
     app = QtGui.QApplication(sys.argv)
-    pixmap = QtGui.QPixmap(':images/splash.svg')
+    pixmap = QtGui.QPixmap(':images/splash.png')
     splash = QtGui.QSplashScreen(pixmap)
     splash.show()
     app.processEvents()
