@@ -62,7 +62,7 @@ release = RELEASE
 #today_fmt = '%B %d, %Y'
 
 # List of documents that shouldn't be included in the build.
-#unused_docs = []
+unused_docs = ['latestnews']
 
 # List of directories, relative to source directory, that shouldn't be searched
 # for source files.
@@ -105,10 +105,10 @@ html_theme = 'default'
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = 'GSDView Home Page'
+html_title = 'GSDView Open Edition Home Page'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
-#html_short_title = None
+html_short_title = 'GSDView'
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
@@ -171,7 +171,7 @@ htmlhelp_basename = 'GSDViewdoc'
 latex_paper_size = 'a4'
 
 # The font size ('10pt', '11pt' or '12pt').
-latex_font_size = '11pt'
+latex_font_size = '12pt'
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
