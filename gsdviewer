@@ -38,43 +38,103 @@ class Timer(object):
         self.last = now
         return delta.seconds, delta.microseconds
 
-t = Timer()
+def perform_imports(timer, splash):
+    from PyQt4 import QtGui
+    qApp = QtGui.qApp
 
-import logging
-fmt = '%(levelname)s: %(filename)s line %(lineno)d in %(funcName)s: %(message)s'
-logging.basicConfig(level=logging.DEBUG, format=fmt)
+    splash.showMessage(splash.tr('Import stdlib modules ...'))
+    qApp.processEvents()
+    for module in ('os', 're', 'sys', 'itertools'):
+        __import__(module)
+    logging.debug('stdlib imports: %d.%06ds' % timer.update())
 
-logging.debug('logging setup done after %d.%06ds: start logging' % t.update())
+    splash.showMessage(splash.tr('Import numpy module ...'))
+    qApp.processEvents()
+    import numpy
+    logging.debug('numpy import: %d.%06ds' % timer.update())
 
-import os
-import sys
-import logging
-
-logging.debug('stdlib imports: %d.%06ds' % t.update())
-
-import numpy
-
-logging.debug('numpy import: %d.%06ds' % t.update())
-
-import scipy
-
-logging.debug('scipy import: %d.%06ds' % t.update())
-
-try:
+    splash.showMessage(splash.tr('Import GDAL related modules ...'))
+    qApp.processEvents()
     from osgeo import gdal, osr
-except ImportError:
-    import gdal, osr
+    logging.debug('gdal/osr import %d.%06ds' % timer.update())
 
-logging.debug('gdal/osr import %d.%06ds' % t.update())
+    splash.showMessage(splash.tr('Import PyQt4 modules ...'))
+    qApp.processEvents()
+    from PyQt4 import QtCore, QtGui
+    logging.debug('Qt4 import %d.%06ds' % timer.update())
 
-from PyQt4 import QtCore, QtGui
+    splash.showMessage(splash.tr('Import GSDView modules ...'))
+    qApp.processEvents()
+    for module in ('info', 'utils', 'widgets', 'mainwin', 'gsdtools',
+                   'qt4support', 'graphicsview',
+                   'exectools', 'exectools.qt4tools',
+                   'gdalbackend', #'gdalbackend.core', 'gdalbackend.gdalqt4',
+                   #~ 'gdalbackend.widgets', 'gdalbackend.modelitems',
+                   #~ 'gdalbackend.gdalsupport', 'gdalbackend.gdalexectools',
+                   #~ 'gdalbackend.gdalbackend_resources',
+                   ):
+        __import__(module)
 
-logging.debug('Qt4 import %d.%06ds' % t.update())
+    from gsdview.gsdview import main
+    logging.debug('gsdview import %d.%06ds' % timer.update())
 
 
-#~ import sys
-from gsdview.gsdview import main
+if __name__ == '__main__':
+    timer = Timer()
 
-logging.debug('gsdview import %d.%06ds' % t.update())
+    ### logging ###############################################################
+    import logging
+    fmt = '%(levelname)s: %(filename)s line %(lineno)d in %(funcName)s: %(message)s'
+    logging.basicConfig(level=logging.DEBUG, format=fmt)
 
-sys.exit(main())
+    logging.debug('logging setup done after %d.%06ds: '
+                  'start logging' % timer.update())
+
+    ### splash screen #########################################################
+    from PyQt4 import QtGui
+    logging.debug('Qt4 import %d.%06ds' % timer.update())
+
+    import gsdview.splash_resources
+    logging.debug('splash resources import %d.%06ds' % timer.update())
+
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    pixmap = QtGui.QPixmap(':images/splash.svg')
+    splash = QtGui.QSplashScreen(pixmap)
+    splash.show()
+    app.processEvents()
+
+    logging.debug('splash screen setup %d.%06ds' % timer.update())
+    splash.showMessage(app.tr('Splash screen setup completed'))
+    app.processEvents()
+
+    ### environment setup #####################################################
+    splash.showMessage(app.tr('Setup environment ...'))
+    app.processEvents()
+
+    import os
+    GSDVIEWROOT = os.path.dirname(os.path.abspath(
+                                            gsdview.splash_resources.__file__))
+
+    # @NOTE: needed for UI building of promoted widgets
+    sys.path.insert(0, GSDVIEWROOT)
+
+    # @NOTE: needed for path names variables expansion
+    os.environ['GSDVIEWROOT'] = GSDVIEWROOT
+    logging.debug('environment setup %d.%06ds' % timer.update())
+
+    ### modules loading #######################################################
+    perform_imports(timer, splash)
+
+    ### GUI ###################################################################
+    splash.showMessage(app.tr('Build GUI ...'))
+    app.processEvents()
+    from gsdview.gsdview import GSDView
+    mainwin = GSDView()
+    mainwin.show()
+    logging.debug('GUI setup %d.%06ds' % timer.update())
+
+    ### close splash and run app ##############################################
+    splash.finish(mainwin)
+    app.processEvents()
+    sys.exit(app.exec_())

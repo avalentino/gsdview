@@ -31,10 +31,13 @@ debian/gsdview.1: debian/manpage.xml
 debian/gsdviewer.1: debian/gsdview.1
 	cp debian/gsdview.1 debian/gsdviewer.1
 
-resources: gsdview/gsdview_resources.py \
+resources: gsdview/gsdview_resources.py gsdview/splash_resources.py \
            gsdview/gdalbackend/gdalbackend_resources.py
 
 gsdview/gsdview_resources.py: resources.qrc images/*
+	pyrcc4 -o $@ $<
+
+gsdview/splash_resources.py: images/splash.qrc images/splash.svg
 	pyrcc4 -o $@ $<
 
 gsdview/gdalbackend/gdalbackend_resources.py: \
