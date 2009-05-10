@@ -12,11 +12,12 @@ Package: gsdview
 Architecture: any
 Depends: ${python:Depends}, python-qt4, python-gdal, gdal-bin
 XB-Python-Version: ${python:Versions}
-Description: Geo-Spatial Data Viewer is a lightweight viewer for geo-spatial
- data and products.
- .
- It is written in Python and Qt4 and it is mainly intended to be a graphical
- frotend for the GDAL library and tools.
+Description: Geo-Spatial Data Viewer
+ It is a lightweight viewer for geo-spatial data and products written in
+ Python and Qt4.
  .
  GSDView is modular and has a simple plug-in architecture.
+ .
+ It is mainly intended to be a graphical front-end for the GDAL library
+ and tools.
  .
