@@ -26,8 +26,8 @@ __date__    = '$Date$'
 __revision__ = '$Revision$'
 
 import os
-import fnmatch
 import platform
+from glob import glob
 
 from gsdview import info
 
@@ -87,21 +87,18 @@ packages = ['gsdview', 'gsdview.exectools', 'gsdview.gdalbackend',
             'gsdview.plugins.zoom',
 ]
 
-def datatree(root, include=None, exclude=None):
-    datafiles = []
-    for path, dirs, files in os.walk(root):
-        datafiles.extend([os.path.join(path, file_) for file_ in files])
-    if include:
-        files = fnmatch.filter(files, include)
-    if exclude:
-        excludefiles = fnmatch.filter(datafiles, exclude)
-        datafiles = list(set(datafiles).difference(excludefiles))
-    return datafiles
-
 datafiles = [
     (os.path.join('share', 'doc', PKGNAME), ['README.txt']),
     (os.path.join('share', 'doc', PKGNAME, 'html'),
-                    datatree(os.path.join('doc', 'html'))),
+        [name for name in glob(os.path.join('doc', 'html', '*'))
+                                                if not os.path.isdir(name)]),
+    (os.path.join('share', 'doc', PKGNAME, 'html', '_sources'),
+        [name for name in glob(os.path.join('doc', 'html', '_sources', '*'))
+                                                if not os.path.isdir(name)]),
+    (os.path.join('share', 'doc', PKGNAME, 'html', '_static'),
+        [name for name in glob(os.path.join('doc', 'html', '_static', '*'))
+                                                if not os.path.isdir(name)]),
+
     #(os.path.join('share', 'doc', PKGNAME),
     #                [os.path.join('doc', 'GSDView.pdf')]),
 ]
