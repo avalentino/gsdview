@@ -126,6 +126,9 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         self.backends = []
 
         # Settings
+        if not os.path.isdir(USERCONFIGDIR):
+            os.makedirs(USERCONFIGDIR)
+
         # @TODO: fix filename
         #self.settings = QtCore.QSettings('gsdview-soft', 'gsdview', self)
         #self.settings = QtCore.QSettings(QtCore.QSettings.IniFormat,
