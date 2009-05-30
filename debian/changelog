@@ -1,3 +1,13 @@
+gsdview (0.5.9-2) unstable; urgency=low
+
+  * Architecture field set to "all" in control file (closes: #3)
+  * Added recommended package: python-qwt5-qt4
+  * Updated "Standards-Version" field in control file
+  * Fixed copyright file to silence lintian
+
+ -- Antonio Valentino <a_valentino@users.sf.net>  Sat, 30 May 2009 18:50:30 +0200
+
+
 gsdview (0.5.9-1) unstable; urgency=low
 
   * New upstream release
