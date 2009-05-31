@@ -23,8 +23,8 @@
 # @TODO: move this to widgets sub-package or qt4freesolutions subpackage
 
 __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date: 2009-01-12 22:46:23 +0100 (lun, 12 gen 2009) $'
-__revision__ = '$Revision: 324 $'
+__date__     = '$Date$'
+__revision__ = '$Revision$'
 
 import sys
 

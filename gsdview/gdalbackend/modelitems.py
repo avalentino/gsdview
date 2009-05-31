@@ -19,8 +19,8 @@
 '''GDAL items for PyQt4 QStandardItemModel.'''
 
 __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date: 2008-12-22 16:52:46 +0100 (lun, 22 dic 2008) $'
-__revision__ = '$Revision: 274 $'
+__date__     = '$Date$'
+__revision__ = '$Revision$'
 
 import os
 import re

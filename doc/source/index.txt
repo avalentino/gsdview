@@ -1,9 +1,18 @@
-.. ================= ..
-.. GSDView Home Page ..
-.. ================= ..
-.. ---------------------------------------------------------------
-.. A lightweight Geo-Spatial Data Viewer written in Python and Qt4
-.. ---------------------------------------------------------------
+..  =================
+    GSDView Home Page
+    =================
+    ---------------------------------------------------------------
+    A lightweight Geo-Spatial Data Viewer written in Python and Qt4
+    ---------------------------------------------------------------
+
+..  :Source: doc/source/index.txt
+    :Version: 0.5.9
+    :Author: Antonio Valentino
+    :Contact: a_valentino@users.sf.net
+    :URL: http://gsdview.sourceforge.net
+    :Revision: $Revision$
+    :Date: $Date$
+    :Copyright (C): 2008-2009 Antonio Valentino
 
 News
 ====
@@ -19,11 +28,11 @@ Documents
 
 .. toctree::
   :maxdepth: 2
-  
+
   CHANGES
   News archive <newsarchive>
-  
-  
+
+
 .. comment
 
    Indices and tables

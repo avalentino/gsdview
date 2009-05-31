@@ -20,8 +20,8 @@
 
 
 __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date: 2008-12-22 17:01:51 +0100 (lun, 22 dic 2008) $'
-__revision__ = '$Revision: 276 $'
+__date__     = '$Date$'
+__revision__ = '$Revision$'
 __version__  = (0,1,0)
 
 __all__ = ['name', 'version', 'short_description', 'description',

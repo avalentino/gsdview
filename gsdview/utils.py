@@ -20,9 +20,9 @@
 
 '''Utility functions and classes for GSDView.'''
 
-__author__   = '$Author: valentino $'
-__date__     = '$Date: 2008-11-25 17:02:03 +0100 (mar, 25 nov 2008) $'
-__revision__ = '$Revision: 621 $'
+__author__   = '$Author$'
+__date__     = '$Date$'
+__revision__ = '$Revision$'
 
 import os
 import sys
