@@ -8,7 +8,7 @@ include resources.qrc
 recursive-include gsdview *.py *.ui
 recursive-include images *.svg *.png *.qrc
 recursive-include gsdview/gdalbackend/images *.svg *.png *.qrc
-recursive-include plugins/worldmap/images *.svg *.png *.qrc
-recursive-include doc/source *.txt *.html *.pdf *.css *.png *.svg *.py
+recursive-include gsdview/plugins/worldmap/images *.svg *.jpg *.qrc
+recursive-include doc/source *.txt *.html *.pdf *.css *.png *.svg *.ico *.py
 recursive-include doc/html *
 recursive-include debian *
