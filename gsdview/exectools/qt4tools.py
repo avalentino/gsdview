@@ -36,7 +36,7 @@ class Qt4Blinker(QtGui.QLabel):
     def __init__(self, filename=None):
         QtGui.QLabel.__init__(self)
         if not filename:
-            filename = ':/images/red-circle.svg'
+            filename = ':/red-circle.svg'
         pixmap = QtGui.QPixmap()
         pixmap.load(filename)
         self.setPixmap(pixmap)
@@ -129,7 +129,7 @@ class Qt4OutputPlane(QtGui.QTextEdit):
         self.actions = QtGui.QActionGroup(self)
 
         # Save As
-        self.actionSaveAs = QtGui.QAction(QtGui.QIcon(':/images/save-as.svg'),
+        self.actionSaveAs = QtGui.QAction(QtGui.QIcon(':/save-as.svg'),
                                           self.tr('&Save As'), self)
         self.actionSaveAs.setShortcut(self.tr('Ctrl+S'))
         self.actionSaveAs.setStatusTip(self.tr('Save text to file'))
@@ -138,7 +138,7 @@ class Qt4OutputPlane(QtGui.QTextEdit):
         self.actions.addAction(self.actionSaveAs)
 
         # Clear
-        self.actionClear = QtGui.QAction(QtGui.QIcon(':/images/clear.svg'),
+        self.actionClear = QtGui.QAction(QtGui.QIcon(':/clear.svg'),
                                          self.tr('&Clear'), self)
         self.actionClear.setShortcut(self.tr('Shift+F5'));
         self.actionClear.setStatusTip(self.tr('Clear the text'))
@@ -147,7 +147,7 @@ class Qt4OutputPlane(QtGui.QTextEdit):
         self.actions.addAction(self.actionClear)
 
         # Close
-        self.actionHide = QtGui.QAction(QtGui.QIcon(':/images/close.svg'),
+        self.actionHide = QtGui.QAction(QtGui.QIcon(':/close.svg'),
                                         self.tr('&Hide'), self)
         self.actionHide.setShortcut(self.tr('Ctrl+W'))
         self.actionHide.setStatusTip(self.tr('Hide the text plane'))

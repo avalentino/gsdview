@@ -27,7 +27,7 @@ from PyQt4 import QtCore, QtGui
 
 from qt4support import actionGroupToMenu, actionGroupToToolbar
 
-import resources
+from gsdview import gsdview_resources
 
 
 class ZoomTool(QtCore.QObject):
@@ -43,7 +43,7 @@ class ZoomTool(QtCore.QObject):
         actions = QtGui.QActionGroup(self)
 
         # Zoom in
-        actionZoomIn = QtGui.QAction(QtGui.QIcon(':/images/zoom-in.svg'),
+        actionZoomIn = QtGui.QAction(QtGui.QIcon(':/zoom-in.svg'),
                                      self.tr('Zoom In'), self)
         actionZoomIn.setStatusTip(self.tr('Zoom In'))
         actionZoomIn.setShortcut(QtGui.QKeySequence(self.tr('Ctrl++')))
@@ -51,7 +51,7 @@ class ZoomTool(QtCore.QObject):
         actions.addAction(actionZoomIn)
 
         # Zoom out
-        actionZoomOut = QtGui.QAction(QtGui.QIcon(':/images/zoom-out.svg'),
+        actionZoomOut = QtGui.QAction(QtGui.QIcon(':/zoom-out.svg'),
                                       self.tr('Zoom Out'), self)
         actionZoomOut.setStatusTip(self.tr('Zoom Out'))
         actionZoomOut.setShortcut(QtGui.QKeySequence(self.tr('Ctrl+-')))
@@ -59,14 +59,14 @@ class ZoomTool(QtCore.QObject):
         actions.addAction(actionZoomOut)
 
         # Zoom fit
-        actionZoomFit = QtGui.QAction(QtGui.QIcon(':/images/zoom-fit.svg'),
+        actionZoomFit = QtGui.QAction(QtGui.QIcon(':/zoom-fit.svg'),
                                       self.tr('Zoom Fit'), self)
         actionZoomIn.setStatusTip(self.tr('Zoom to fit the window size'))
         self.connect(actionZoomFit, QtCore.SIGNAL('triggered()'), self.zoomFit)
         actions.addAction(actionZoomFit)
 
         # Zoom 100
-        actionZoom100 = QtGui.QAction(QtGui.QIcon(':/images/zoom-100.svg'),
+        actionZoom100 = QtGui.QAction(QtGui.QIcon(':/zoom-100.svg'),
                                       self.tr('Zoom 100%'), self)
         actionZoom100.setStatusTip(self.tr('Original size'))
         self.connect(actionZoom100, QtCore.SIGNAL('triggered()'), self.zoom100)

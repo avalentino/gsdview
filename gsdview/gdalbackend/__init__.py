@@ -43,8 +43,7 @@ def init(mainwin):
 
     import widgets
     import gdalsupport
-
-    import gdalbackend_resources
+    import resources
 
     # @TODO: check
     #UseExceptions()

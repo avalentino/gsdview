@@ -32,7 +32,7 @@ from PyQt4 import QtCore, QtGui, uic
 
 import info
 
-import gsdview_resources
+import resources
 
 
 def get_mainwin():
@@ -131,7 +131,7 @@ class FileEntryWidget(QtGui.QWidget):
         self.lineEdit = QtGui.QLineEdit()
         self.lineEdit.setCompleter(self.__completer)
 
-        self.button = QtGui.QPushButton(QtGui.QIcon (':/images/open.svg'), '')
+        self.button = QtGui.QPushButton(QtGui.QIcon (':/open.svg'), '')
         self.button.setToolTip(self.tr('select from file dialog'))
 
         layout = QtGui.QHBoxLayout()
@@ -297,11 +297,10 @@ class PreferencesDialog(QtGui.QDialog):
 
         # app pages
         self.addPage(GeneralPreferencesPage(),
-                     QtGui.QIcon(':/images/preferences.svg'),
-                     self.tr('General'))
+                     QtGui.QIcon(':/preferences.svg'), self.tr('General'))
 
         #~ self.addPage(CachePreferencesPage(),
-                     #~ QtGui.QIcon(':/images/harddisk.svg'),
+                     #~ QtGui.QIcon(':/harddisk.svg'),
                      #~ self.tr('Cache'))
 
         assert self.listWidget.count() == self.stackedWidget.count()

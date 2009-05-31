@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 import info
 import gdalqt4
 import gdalsupport
-import gdalbackend_resources
+import resources
 
 from gsdview import utils
 

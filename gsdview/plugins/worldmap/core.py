@@ -28,6 +28,8 @@ import numpy
 
 from PyQt4 import QtCore, QtGui
 
+from gsdview import resources
+
 import resources
 
 
@@ -50,7 +52,7 @@ class WorldmapPanel(QtGui.QDockWidget):
         self.setWorldmapItem()
 
         # Zoom in
-        self.actionZoomIn = QtGui.QAction(QtGui.QIcon(':/images/zoom-in.svg'),
+        self.actionZoomIn = QtGui.QAction(QtGui.QIcon(':/zoom-in.svg'),
                                           self.tr('Zoom In'), self)
         self.actionZoomIn.setStatusTip(self.tr('Zoom In'))
         self.actionZoomIn.setShortcut(QtGui.QKeySequence(self.tr('Ctrl++')))
@@ -59,7 +61,7 @@ class WorldmapPanel(QtGui.QDockWidget):
                      lambda: self._zoom(+1))
 
         # Zoom out
-        self.actionZoomOut = QtGui.QAction(QtGui.QIcon(':/images/zoom-out.svg'),
+        self.actionZoomOut = QtGui.QAction(QtGui.QIcon(':/zoom-out.svg'),
                                            self.tr('Zoom Out'), self)
         self.actionZoomOut.setStatusTip(self.tr('Zoom Out'))
         self.actionZoomOut.setShortcut(QtGui.QKeySequence(self.tr('Ctrl+-')))
@@ -97,17 +99,9 @@ class WorldmapPanel(QtGui.QDockWidget):
         if self.worldmapitem is not None:
             scene.removeItem(self.worldmapitem)
 
-        resMap = {
-            'low':  'WorldmapLowRes.jpg',
-            'high': 'WorldmapHighRes.jpg',
-        }
-
-        filename = resMap.get(resolution, 'WorldmapLowRes.jpg')
-
-        # @TODO: improve resources handling
-        basedir = os.path.dirname(__file__)
-
-        worldmap = QtGui.QPixmap(os.path.join(':/images', filename))
+        #~ worldmap = QtGui.QPixmap(':/worldmap/world_2160x1080.jpg')
+        worldmap = QtGui.QPixmap(':/worldmap/world_4320x2160.jpg')
+        #~ worldmap = QtGui.QPixmap(':/worldmap/world_5400x2700.jpg')
         worldmapitem = scene.addPixmap(worldmap)
         worldmapitem.setTransformationMode(QtCore.Qt.SmoothTransformation)
         # @NOTE: reverse the y axis

@@ -484,21 +484,21 @@ if __name__ == "__main__":
                 return child
 
             def createActions(self):
-                self.newAct = QtGui.QAction(QtGui.QIcon(":/images/new.png"),
-                                    self.tr("&New"), self)
+                self.newAct = QtGui.QAction(QtGui.QIcon(":/new.png"),
+                                            self.tr("&New"), self)
                 self.newAct.setShortcut(self.tr("Ctrl+N"))
                 self.newAct.setStatusTip(self.tr("Create a new file"))
                 self.connect(self.newAct, QtCore.SIGNAL("triggered()"),
                              self.newFile)
 
-                self.openAct = QtGui.QAction(QtGui.QIcon(":/images/open.png"),
+                self.openAct = QtGui.QAction(QtGui.QIcon(":/open.png"),
                                 self.tr("&Open..."), self)
                 self.openAct.setShortcut(self.tr("Ctrl+O"))
                 self.openAct.setStatusTip(self.tr("Open an existing file"))
                 self.connect(self.openAct, QtCore.SIGNAL("triggered()"),
                              self.open)
 
-                self.saveAct = QtGui.QAction(QtGui.QIcon(":/images/save.png"),
+                self.saveAct = QtGui.QAction(QtGui.QIcon(":/save.png"),
                                 self.tr("&Save"), self)
                 self.saveAct.setShortcut(self.tr("Ctrl+S"))
                 self.saveAct.setStatusTip(self.tr("Save the document to disk"))
@@ -517,14 +517,14 @@ if __name__ == "__main__":
                 self.connect(self.exitAct, QtCore.SIGNAL("triggered()"),
                              self.close)
 
-                self.cutAct = QtGui.QAction(QtGui.QIcon(":/images/cut.png"),
+                self.cutAct = QtGui.QAction(QtGui.QIcon(":/cut.png"),
                                 self.tr("Cu&t"), self)
                 self.cutAct.setShortcut(self.tr("Ctrl+X"))
                 self.cutAct.setStatusTip(self.tr("Cut the current selection's "
                                                  "contents to the clipboard"))
                 self.connect(self.cutAct, QtCore.SIGNAL("triggered()"), self.cut)
 
-                self.copyAct = QtGui.QAction(QtGui.QIcon(":/images/copy.png"),
+                self.copyAct = QtGui.QAction(QtGui.QIcon(":/copy.png"),
                                 self.tr("&Copy"), self)
                 self.copyAct.setShortcut(self.tr("Ctrl+C"))
                 self.copyAct.setStatusTip(self.tr("Copy the current selection's "
@@ -532,7 +532,7 @@ if __name__ == "__main__":
                 self.connect(self.copyAct, QtCore.SIGNAL("triggered()"),
                              self.copy)
 
-                self.pasteAct = QtGui.QAction(QtGui.QIcon(":/images/paste.png"),
+                self.pasteAct = QtGui.QAction(QtGui.QIcon(":/paste.png"),
                                 self.tr("&Paste"), self)
                 self.pasteAct.setShortcut(self.tr("Ctrl+V"))
                 self.pasteAct.setStatusTip(self.tr("Paste the clipboard's contents "

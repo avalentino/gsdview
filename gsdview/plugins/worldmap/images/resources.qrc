@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="/worldmap">
+    <!-- <file>world_2160x1080.jpg</file> -->
+    <file>world_4320x2160.jpg</file>
+    <!-- <file>world_5400x2700.jpg</file> -->
+  </qresource>
+</RCC>

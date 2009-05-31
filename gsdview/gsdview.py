@@ -45,7 +45,7 @@ import graphicsview
 from widgets import AboutDialog, PreferencesDialog
 from exectools.qt4tools import Qt4ToolController, Qt4DialogLoggingHandler
 
-import gsdview_resources
+import resources
 
 # @TODO: move elsewhere (site.py ??)
 # @NOTE: this should happen before any os.chdir
@@ -94,7 +94,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
     '''
 
     def __init__(self, parent=None):
-        QtGui.qApp.setWindowIcon(QtGui.QIcon(':/images/GSDView.png'))
+        QtGui.qApp.setWindowIcon(QtGui.QIcon(':/GSDView.png'))
 
         super(GSDView, self).__init__(parent)
         title = self.tr('GSDView Open Source Edition v. %1').arg(info.version)
@@ -229,7 +229,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         actionsgroup = QtGui.QActionGroup(self)
 
         # Open
-        action = QtGui.QAction(QtGui.QIcon(':/images/open.svg'),
+        action = QtGui.QAction(QtGui.QIcon(':/open.svg'),
                                self.tr('&Open'), actionsgroup)
         action.setObjectName('open')
         action.setShortcut(self.tr('Ctrl+O'))
@@ -239,7 +239,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         actionsgroup.addAction(action)
 
         # Close
-        action = QtGui.QAction(QtGui.QIcon(':/images/close.svg'),
+        action = QtGui.QAction(QtGui.QIcon(':/close.svg'),
                                self.tr('&Close'), actionsgroup)
         action.setObjectName('close')
         action.setShortcut(self.tr('Ctrl+W'))
@@ -253,7 +253,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         #action.setObjectName('separator')
 
         # Exit
-        action = QtGui.QAction(QtGui.QIcon(':/images/quit.svg'),
+        action = QtGui.QAction(QtGui.QIcon(':/quit.svg'),
                                self.tr('&Exit'), actionsgroup)
         action.setObjectName('exit')
         action.setShortcut(self.tr('Ctrl+X'))
@@ -268,7 +268,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         actionsgroup = QtGui.QActionGroup(self)
 
         # Preferences
-        action = QtGui.QAction(QtGui.QIcon(':/images/preferences.svg'),
+        action = QtGui.QAction(QtGui.QIcon(':/preferences.svg'),
                                self.tr('&Preferences'), actionsgroup)
         action.setObjectName('preferences')
         action.setToolTip(self.tr('Open the program preferences dialog'))
@@ -283,7 +283,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         actionsgroup = QtGui.QActionGroup(self)
 
         # About
-        action = QtGui.QAction(QtGui.QIcon(':/images/about.svg'),
+        action = QtGui.QAction(QtGui.QIcon(':/about.svg'),
                                self.tr('&About'), actionsgroup)
         action.setObjectName('about')
         action.setToolTip(self.tr('Show program information'))
@@ -293,7 +293,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         actionsgroup.addAction(action)
 
         # AboutQt
-        action = QtGui.QAction(QtGui.QIcon(':/images/qt-logo.png'),
+        action = QtGui.QAction(QtGui.QIcon(':/qt-logo.png'),
                                self.tr('About &Qt'), actionsgroup)
         action.setObjectName('aboutQt')
         action.setToolTip(self.tr('Show information about Qt'))
@@ -371,7 +371,6 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
 
         logger = logging.getLogger()    # 'gsdview' # @TODO: fix
 
-
         fmt = ('%(levelname)s: %(asctime)s %(filename)s line %(lineno)d in '
                '%(funcName)s: %(message)s')
         formatter = logging.Formatter(fmt)
@@ -386,6 +385,18 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         handler.setLevel(logging.WARNING)
         handler.setFormatter(formatter)
         logger.addHandler(handler)
+
+        # set log level
+        # @WARNING: duplicate loadSettings
+        level = self.settings.value('preferences/loglevel',
+                                    QtCore.QVariant('INFO'))
+        level = level.toString()
+        levelno = logging.getLevelName(str(level))
+        if isinstance(levelno, int):
+            logger.setLevel(levelno)
+            logger.debug('"%s" loglevel set' % level)
+        else:
+            logging.debug('invalid log level: "%s"' % level)
 
         return logger
 
