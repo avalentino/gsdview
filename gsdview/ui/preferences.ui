@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>preferencesDialog</class>
- <widget class="QDialog" name="preferencesDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="preferencesDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,70 +10,70 @@
     <height>434</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Preferences</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="../../resources.qrc" >
-    <normaloff>:/images/preferences.svg</normaloff>:/images/preferences.svg</iconset>
+  <property name="windowIcon">
+   <iconset resource="../../images/resources.qrc">
+    <normaloff>:/preferences.svg</normaloff>:/preferences.svg</iconset>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" >
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QListWidget" name="listWidget" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Expanding" hsizetype="Minimum" >
+      <widget class="QListWidget" name="listWidget">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="maximumSize" >
+       <property name="maximumSize">
         <size>
          <width>112</width>
          <height>16777215</height>
         </size>
        </property>
-       <property name="toolTip" >
+       <property name="toolTip">
         <string/>
        </property>
-       <property name="iconSize" >
+       <property name="iconSize">
         <size>
          <width>64</width>
          <height>64</height>
         </size>
        </property>
-       <property name="verticalScrollMode" >
+       <property name="verticalScrollMode">
         <enum>QAbstractItemView::ScrollPerPixel</enum>
        </property>
-       <property name="movement" >
+       <property name="movement">
         <enum>QListView::Static</enum>
        </property>
-       <property name="flow" >
+       <property name="flow">
         <enum>QListView::TopToBottom</enum>
        </property>
-       <property name="isWrapping" stdset="0" >
+       <property name="isWrapping" stdset="0">
         <bool>false</bool>
        </property>
-       <property name="resizeMode" >
+       <property name="resizeMode">
         <enum>QListView::Adjust</enum>
        </property>
-       <property name="spacing" >
+       <property name="spacing">
         <number>12</number>
        </property>
-       <property name="viewMode" >
+       <property name="viewMode">
         <enum>QListView::IconMode</enum>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QStackedWidget" name="stackedWidget" >
-       <property name="currentIndex" >
+      <widget class="QStackedWidget" name="stackedWidget">
+       <property name="currentIndex">
         <number>0</number>
        </property>
-       <widget class="QWidget" name="generalPage" >
-        <layout class="QVBoxLayout" name="generalVerticalLayout" >
-         <property name="spacing" >
+       <widget class="QWidget" name="generalPage">
+        <layout class="QVBoxLayout" name="generalVerticalLayout">
+         <property name="spacing">
           <number>3</number>
          </property>
         </layout>
@@ -82,11 +83,11 @@
     </layout>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="orientation" >
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons" >
+     <property name="standardButtons">
       <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
@@ -94,7 +95,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../../resources.qrc" />
+  <include location="../../images/resources.qrc"/>
  </resources>
  <connections>
   <connection>
@@ -103,11 +104,11 @@
    <receiver>preferencesDialog</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>257</x>
      <y>424</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>157</x>
      <y>274</y>
     </hint>
@@ -119,11 +120,11 @@
    <receiver>preferencesDialog</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>325</x>
      <y>424</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
     </hint>

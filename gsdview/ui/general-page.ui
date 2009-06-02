@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>generalPreferencesWidget</class>
- <widget class="QWidget" name="generalPreferencesWidget" >
-  <property name="geometry" >
+ <widget class="QWidget" name="generalPreferencesWidget">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,78 +10,78 @@
     <height>326</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="preferencesGroupBox" >
-     <property name="title" >
+    <widget class="QGroupBox" name="preferencesGroupBox">
+     <property name="title">
       <string>Preferences</string>
      </property>
-     <layout class="QGridLayout" name="preferencesGridLayout" >
-      <property name="horizontalSpacing" >
+     <layout class="QGridLayout" name="preferencesGridLayout">
+      <property name="horizontalSpacing">
        <number>12</number>
       </property>
-      <item row="0" column="0" >
-       <widget class="QLabel" name="loglevelLabel" >
-        <property name="text" >
+      <item row="0" column="0">
+       <widget class="QLabel" name="loglevelLabel">
+        <property name="text">
          <string>Log level</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="cachedirLabel" >
-        <property name="text" >
+      <item row="1" column="0">
+       <widget class="QLabel" name="cachedirLabel">
+        <property name="text">
          <string>Cache directory location</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" >
-       <widget class="FileEntryWidget" native="1" name="cachedirEntryWidget" >
-        <property name="toolTip" >
+      <item row="1" column="1">
+       <widget class="FileEntryWidget" name="cachedirEntryWidget" native="true">
+        <property name="toolTip">
          <string>Location of the directory for file cache.
-Default: "$HOME/.gsdview".</string>
+Default: &quot;$HOME/.gsdview&quot;.</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <layout class="QHBoxLayout" name="loglevelHorizontalLayout" >
+      <item row="0" column="1">
+       <layout class="QHBoxLayout" name="loglevelHorizontalLayout">
         <item>
-         <widget class="QComboBox" name="loglevelComboBox" >
+         <widget class="QComboBox" name="loglevelComboBox">
           <item>
-           <property name="text" >
+           <property name="text">
             <string>DEBUG</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>INFO</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>WARNING</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>ERROR</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>CRITICAL</string>
            </property>
           </item>
          </widget>
         </item>
         <item>
-         <spacer name="loglevelHorizontalSpacer" >
-          <property name="orientation" >
+         <spacer name="loglevelHorizontalSpacer">
+          <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeHint" stdset="0" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>138</width>
             <height>24</height>
@@ -98,49 +99,49 @@ Default: "$HOME/.gsdview".</string>
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="filedialogGroupBox" >
-     <property name="title" >
+    <widget class="QGroupBox" name="filedialogGroupBox">
+     <property name="title">
       <string>File DIalog</string>
      </property>
-     <layout class="QGridLayout" name="filedialogGridLayout" >
-      <property name="horizontalSpacing" >
+     <layout class="QGridLayout" name="filedialogGridLayout">
+      <property name="horizontalSpacing">
        <number>12</number>
       </property>
-      <item row="0" column="0" >
-       <layout class="QHBoxLayout" name="workdirHorizontalLayout" >
-        <property name="spacing" >
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="workdirHorizontalLayout">
+        <property name="spacing">
          <number>12</number>
         </property>
         <item>
-         <widget class="QLabel" name="workdirLabel" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+         <widget class="QLabel" name="workdirLabel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Working directory</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="FileEntryWidget" native="1" name="workdirEntryWidget" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+         <widget class="FileEntryWidget" name="workdirEntryWidget" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="sizeIncrement" >
+          <property name="sizeIncrement">
            <size>
             <width>1</width>
             <height>0</height>
            </size>
           </property>
-          <property name="toolTip" >
+          <property name="toolTip">
            <string>Base directory for files and directories selection.
-Default: "$HOME".</string>
+Default: &quot;$HOME&quot;.</string>
           </property>
          </widget>
         </item>
@@ -150,11 +151,11 @@ Default: "$HOME".</string>
     </widget>
    </item>
    <item>
-    <spacer name="verticalSpacer" >
-     <property name="orientation" >
+    <spacer name="verticalSpacer">
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" stdset="0" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
        <height>40</height>
@@ -163,39 +164,39 @@ Default: "$HOME".</string>
     </spacer>
    </item>
   </layout>
-  <action name="actionAddFavorite" >
-   <property name="icon" >
-    <iconset resource="../../resources.qrc" >
+  <action name="actionAddFavorite">
+   <property name="icon">
+    <iconset>
      <normaloff>:/images/add.svg</normaloff>:/images/add.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Add</string>
    </property>
   </action>
-  <action name="actionRemoveFavorite" >
-   <property name="icon" >
-    <iconset resource="../../resources.qrc" >
+  <action name="actionRemoveFavorite">
+   <property name="icon">
+    <iconset>
      <normaloff>:/images/remove.svg</normaloff>:/images/remove.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Remove</string>
    </property>
   </action>
-  <action name="actionEditFavorite" >
-   <property name="icon" >
-    <iconset resource="../../resources.qrc" >
+  <action name="actionEditFavorite">
+   <property name="icon">
+    <iconset>
      <normaloff>:/images/edit.svg</normaloff>:/images/edit.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Edit</string>
    </property>
   </action>
-  <action name="actionClearFavorites" >
-   <property name="icon" >
-    <iconset resource="../../resources.qrc" >
+  <action name="actionClearFavorites">
+   <property name="icon">
+    <iconset>
      <normaloff>:/images/clear.svg</normaloff>:/images/clear.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Clear</string>
    </property>
   </action>
@@ -208,8 +209,6 @@ Default: "$HOME".</string>
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../resources.qrc" />
- </resources>
+ <resources/>
  <connections/>
 </ui>
