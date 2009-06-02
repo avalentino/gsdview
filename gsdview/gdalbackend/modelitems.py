@@ -193,13 +193,6 @@ class DatasetItem(MajorObjectItem):
     iconfile = ':/gdalbackend/dataset.svg'
     _typeoffset = MajorObjectItem._typeoffset + 100
 
-    def _checkedopen(self, filename, mode=gdal.GA_ReadOnly):
-        gdalobj = gdal.Open(filename, mode)
-        if gdalobj is None:
-            raise RuntimeError('"%s" is not a valid GDAL dataset' %
-                                                    os.path.basename(filename))
-        return gdalobj
-
     def __init__(self, filename, mode=gdal.GA_ReadOnly):
         filename = os.path.abspath(filename)
         gdalobj = self._checkedopen(filename, mode)
@@ -212,6 +205,13 @@ class DatasetItem(MajorObjectItem):
 
         # TODO: improve attribute name
         self.cmapper = gdalsupport.coordinate_mapper(self._obj)
+
+    def _checkedopen(self, filename, mode=gdal.GA_ReadOnly):
+        gdalobj = gdal.Open(filename, mode)
+        if gdalobj is None:
+            raise RuntimeError('"%s" is not a valid GDAL dataset' %
+                                                    os.path.basename(filename))
+        return gdalobj
 
     def footprint(self):
         '''Return the dataset footprint as a QPolygonF or None'''
@@ -315,6 +315,19 @@ class CachedDatasetItem(DatasetItem):
     _typeoffset = DatasetItem._typeoffset + 1
     CACHEDIR = os.path.expanduser(os.path.join('~', '.gsdview', 'cache'))
 
+    def __init__(self, filename, cachedir=None):
+        filename = os.path.abspath(filename)
+        gdalobj = self._checkedopen(filename)
+        self.vrtfilename = self._vrtinit(gdalobj)
+        del gdalobj
+
+        super(CachedDatasetItem, self).__init__(self.vrtfilename, gdal.GA_Update)
+
+        # if description include the filename then set the basename of the
+        # original dataset
+        if os.path.basename(self.vrtfilename) in self.text():
+            self.setText(os.path.basename(filename))
+
     def _vrtinit(self, gdalobj, cachedir=None):
         # Build the virtual dataset filename
         if cachedir is None:
@@ -343,19 +356,6 @@ class CachedDatasetItem(DatasetItem):
             raise ValueError('unable to open the GDAL virtual dataset: "%s"' %
                                             os.path.basename(vrtfilename))
         return vrtfilename
-
-    def __init__(self, filename, cachedir=None):
-        filename = os.path.abspath(filename)
-        gdalobj = self._checkedopen(filename)
-        self.vrtfilename = self._vrtinit(gdalobj)
-        del gdalobj
-
-        super(CachedDatasetItem, self).__init__(self.vrtfilename, gdal.GA_Update)
-
-        # if description include the filename then set the basename of the
-        # original dataset
-        if os.path.basename(self.vrtfilename) in self.text():
-            self.setText(os.path.basename(filename))
 
     ###########################################################################
     ### BEGIN #################################################################
@@ -389,6 +389,7 @@ def datasetitem(filename):
     try:
         return CachedDatasetItem(filename)
     except RuntimeError:
+        # @TODO: remove virtualfile created by CachedDatasetItem
         return DatasetItem(filename)
 
 class SubDatasetItem(CachedDatasetItem):
@@ -404,23 +405,43 @@ class SubDatasetItem(CachedDatasetItem):
         self.filename = gdalfilename
         self.extrainfo = extrainfo
 
+        # @TODO: check
+        self._mode = None
+        self.cmapper = None
+        self.vrtfilename = None
+
+        # @TODO: check if it is possible that self._obj not None at this point
         if self._obj:
             self._setup_children()
 
     def isopen(self):
         return self._obj is not None
 
-    def open(self):
-        gdalobj = gdal.Open(self.filename)
-        if not gdalobj:
-            raise ValueError('"%s" is not a valid GDAL dataset' %
-                                            os.path.basename(self.filename))
+    # @staticmethod
+    def _normalize(self, filename):
+        filename = filename.replace(':', '_')
+        filename = filename.replace('/', '_')
+        filename = filename.replace('\\', '_')
+        return filename
+
+    def open(self, cachedir=None):
+        if not cachedir:
+            cachedir = os.path.join(self.CACHEDIR,
+                                    self._normalize(self.filename))
+
+        gdalobj = self._checkedopen(self.filename)
+        self.vrtfilename = self._vrtinit(gdalobj, cachedir)
+        del gdalobj
+
+        filename = os.path.abspath(self.vrtfilename)
+        gdalobj = self._checkedopen(filename, gdal.GA_Update)
+
         self._obj = gdalobj
-
-        # @TODO: check
-        description = self._obj.GetDescription()
-
+        self._mode = gdal.GA_Update
         self._setup_children()
+
+        # TODO: improve attribute name
+        self.cmapper = gdalsupport.coordinate_mapper(self._obj)
 
     def close(self):
         # @NOTE: don't call the parent "close()" method because DatasetItem
@@ -428,6 +449,9 @@ class SubDatasetItem(CachedDatasetItem):
         #        desired behaviour
         self._close()
         self._obj = None
+        self._mode = None
+        self.cmapper = None
+        self.vrtfilename = None
 
     def __getattr__(self, name):
         if self._obj:

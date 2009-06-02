@@ -31,6 +31,7 @@ from gsdview import qt4support
 
 import widgets
 import modelitems
+import gdalsupport
 import resources
 
 
@@ -357,7 +358,18 @@ class GDALBackend(QtCore.QObject):
     def openSubDataset(self):
         item = self._mainwin.currentItem()
         assert isinstance(item, modelitems.SubDatasetItem)
-        item.open()
+        try:
+            # Only works for CachedDatasetItems
+            cachedir = os.path.dirname(item.parent().vrtfilename)
+        except AttributeError, e:
+            id = gdalsupport.uniqueDatasetID(item.parent())
+            cachedir = os.path.join(modelitems.SubDatasetItem.CACHEDIR, id)
+
+        # sub-dataset index (starting from 1)
+        index = item.row() - item.parent().RasterCount + 1
+        cachedir = os.path.join(cachedir, 'subdataset%02d' % index)
+
+        item.open(cachedir)
         self._mainwin.treeview.expand(item.index())
 
     ### Raster Band ###########################################################
