@@ -25,16 +25,11 @@ __revision__ = '$Revision$'
 
 import os
 import logging
-import itertools
 
 import numpy
 
 from osgeo import gdal
 from osgeo import osr
-from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
-
-from gsdview import utils
-
 
 GDAL_CONFIG_OPTIONS = '''\
 GDAL_DATA
@@ -173,7 +168,7 @@ def uniqueDatasetID(prod):
         prod_id = prod.GetDescription()
         parts = prod_id.split(':')
         if len(parts) == 4:
-            fiename = ':'.join(parts[1:3])
+            filename = ':'.join(parts[1:3])
             parts = (parts[0], filename, parts[2])
         if len(parts) == 3:
             filename = os.path.basename(parts[1].strip('"'))

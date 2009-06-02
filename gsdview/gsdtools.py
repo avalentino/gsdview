@@ -23,10 +23,6 @@ __date__     = '$Date$'
 __revision__ = '$Revision$'
 
 
-import os
-import logging
-import itertools
-
 import numpy
 
 

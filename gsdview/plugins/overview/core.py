@@ -24,12 +24,10 @@ __revision__ = '$Revision$'
 
 
 import logging
-import numpy
 
 from PyQt4 import QtCore, QtGui
 
-import gsdtools
-from qt4support import overrideCursor, numpy2qimage
+from qt4support import overrideCursor
 
 class NavigationGraphicsView(QtGui.QGraphicsView):
     BOXCOLOR = QtGui.QColor(QtCore.Qt.red)

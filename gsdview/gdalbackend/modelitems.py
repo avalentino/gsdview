@@ -23,7 +23,7 @@ __date__     = '$Date$'
 __revision__ = '$Revision$'
 
 import os
-import re
+import logging
 
 from osgeo import gdal
 from PyQt4 import QtCore, QtGui
@@ -32,8 +32,6 @@ import info
 import gdalqt4
 import gdalsupport
 import resources
-
-from gsdview import utils
 
 
 class MajorObjectItem(QtGui.QStandardItem):
@@ -64,7 +62,7 @@ class MajorObjectItem(QtGui.QStandardItem):
         return getattr(self._obj, name)
 
     def type(self):
-        return QStandardItem.UserType + self._typeoffset
+        return QtGui.QStandardItem.UserType + self._typeoffset
 
     def _close(self):
         while self.hasChildren():
@@ -72,7 +70,7 @@ class MajorObjectItem(QtGui.QStandardItem):
                 self.child(0)._close()
             except AttributeError:
                 self._mainwin.logger.debug('unexpected child item class: '
-                                '"%s"' % type(self.child(index)).__name__)
+                                '"%s"' % type(self.child(0)).__name__)
             self.removeRow(0)
 
 
@@ -408,7 +406,7 @@ class SubDatasetItem(DatasetItem):
         gdalobj = gdal.Open(self.filename)
         if not gdalobj:
             raise ValueError('"%s" is not a valid GDAL dataset' %
-                                                    os.path.basename(filename))
+                                            os.path.basename(self.filename))
         self._obj = gdalobj
 
         # @TODO: check

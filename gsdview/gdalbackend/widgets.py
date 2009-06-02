@@ -25,13 +25,13 @@ __date__     = '$Date$'
 __revision__ = '$Revision$'
 
 import os
-import sys
 import logging
 
 from osgeo import gdal
 from PyQt4 import QtCore, QtGui, uic
 
-from gsdview.widgets import get_filedialog, FileEntryWidget
+from gsdview.widgets import get_filedialog
+
 import gdalsupport
 
 
@@ -494,13 +494,13 @@ if __name__ == '__main__':
 
     def test_datasetdialog(dataset):
         app = QtGui.QApplication(sys.argv)
-        dialog = GDALDatasetInfoDialog(dataset)
+        dialog = DatasetInfoDialog(dataset)
         dialog.show()
         sys.exit(app.exec_())
 
     def test_rasterbanddialog(band):
         app = QtGui.QApplication(sys.argv)
-        dialog = GDALBandInfoDialog(band)
+        dialog = BandInfoDialog(band)
         dialog.show()
         sys.exit(app.exec_())
 

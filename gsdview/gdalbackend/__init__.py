@@ -36,8 +36,6 @@ DontUseExceptions = core.GDALBackend.DontUseExceptions
 _backendobj = None
 
 def init(mainwin):
-    import os
-
     from PyQt4 import QtGui
     from osgeo import gdal
 
@@ -69,8 +67,8 @@ def init(mainwin):
     mainwin.preferencesdialog.addPage(page, icon, 'GDAL')
 
     ### BEGIN #################################################################
-    # @TODO: improve ptocessing tools handling and remove this workaround
-    from gdalexectools import GdalAddOverviewDescriptor
+    # @TODO: improve processing tools handling and remove this workaround
+    import gdalexectools
 
     # @NOTE: the textview is fixed by logplane initializer
     textview = None
@@ -141,8 +139,6 @@ def loadSettings(settings):
         logging.debug('run "gdal.AllRegister()"')
 
         # update the about dialog
-        from PyQt4 import QtGui
-
         tabWidget = _backendobj._mainwin.aboutdialog.tabWidget
         for index in range(tabWidget.count()):
             if tabWidget.tabText(index) == 'GDAL':

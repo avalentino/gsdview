@@ -23,13 +23,11 @@ __date__     = '$Date$'
 __revision__ = '$Revision$'
 
 
-import os
 import numpy
 
 from PyQt4 import QtCore, QtGui
 
-from gsdview import resources
-
+import gsdview.resources
 import resources
 
 
@@ -186,10 +184,7 @@ class WorldmapPanel(QtGui.QDockWidget):
 if __name__ == '__main__':
     import sys
 
-    try:
-        from osgeo import gdal
-    except ImportError:
-        import gdal
+    from osgeo import gdal
 
     app = QtGui.QApplication(sys.argv)
     mainWin = QtGui.QMainWindow()

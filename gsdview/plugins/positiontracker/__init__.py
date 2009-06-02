@@ -28,7 +28,7 @@ __all__ = ['CoordinateView', 'init', 'close']
 
 from info import *
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
 
 from coordinateview import CoordinateView, GeoCoordinateView
 

@@ -31,13 +31,10 @@ import os
 import sys
 import logging
 
-import numpy
-
 from PyQt4 import QtCore, QtGui
 
 import info
 import utils
-import gsdtools
 import exectools
 import qt4support
 import graphicsview

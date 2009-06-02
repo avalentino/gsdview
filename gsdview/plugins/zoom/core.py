@@ -23,6 +23,8 @@ __date__     = '$Date$'
 __revision__ = '$Revision$'
 
 
+import logging
+
 from PyQt4 import QtCore, QtGui
 
 from qt4support import actionGroupToMenu, actionGroupToToolbar

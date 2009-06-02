@@ -27,7 +27,6 @@ import logging
 
 import numpy
 
-from osgeo import gdal
 from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
 
 from PyQt4 import QtCore, QtGui

@@ -29,7 +29,6 @@ from PyQt4 import QtCore, QtGui
 
 from gsdview import qt4support
 
-import gdalqt4
 import widgets
 import modelitems
 import resources
@@ -416,7 +415,6 @@ class GDALBackend(QtCore.QObject):
         if not isinstance(item.parent(), modelitems.CachedDatasetItem):
             return
 
-        import numpy
         import gdalsupport
 
         band = item
