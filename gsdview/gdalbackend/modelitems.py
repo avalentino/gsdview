@@ -91,6 +91,7 @@ class BandItem(MajorObjectItem):
     _typeoffset = MajorObjectItem._typeoffset + 10
 
     def __init__(self, band):
+        assert band is not None
         super(BandItem, self).__init__(band)
         self._setup_children()
         self.scene = None
@@ -176,8 +177,8 @@ class OverviewItem(BandItem):
     #~ #defaultaction = 'Open'
 
 
-class BaseDatasetItem(MajorObjectItem):
-    '''Base dataset item
+class DatasetItem(MajorObjectItem):
+    '''Dataset item
 
     This class implements both the QStandardItem and the gdal.Dataset
     interface.
@@ -192,18 +193,17 @@ class BaseDatasetItem(MajorObjectItem):
     iconfile = ':/gdalbackend/dataset.svg'
     _typeoffset = MajorObjectItem._typeoffset + 100
 
-    def _open_gdal_dataset(self, filename, mode=gdal.GA_ReadOnly):
-        filename = os.path.abspath(filename)
-        filename = os.path.normpath(filename)
+    def _checkedopen(self, filename, mode=gdal.GA_ReadOnly):
         gdalobj = gdal.Open(filename, mode)
         if gdalobj is None:
             raise RuntimeError('"%s" is not a valid GDAL dataset' %
                                                     os.path.basename(filename))
-        return gdalobj, filename
+        return gdalobj
 
     def __init__(self, filename, mode=gdal.GA_ReadOnly):
-        gdalobj, filename = self._open_gdal_dataset(filename, mode)
-        super(BaseDatasetItem, self).__init__(gdalobj)
+        filename = os.path.abspath(filename)
+        gdalobj = self._checkedopen(filename, mode)
+        super(DatasetItem, self).__init__(gdalobj)
         if os.path.basename(filename) in self.text():
             self.setText(os.path.basename(filename))
         self.filename = filename
@@ -311,41 +311,44 @@ class BaseDatasetItem(MajorObjectItem):
         parent.removeRow(self.row())
 
 
-class CachedDatasetItem(BaseDatasetItem):
-    _typeoffset = BaseDatasetItem._typeoffset + 1
+class CachedDatasetItem(DatasetItem):
+    _typeoffset = DatasetItem._typeoffset + 1
     CACHEDIR = os.path.expanduser(os.path.join('~', '.gsdview', 'cache'))
 
-    def __init__(self, filename, cachedir=None):
-        gdalobj, filename = super(CachedDatasetItem,
-                                  self)._open_gdal_dataset(filename)
-        self.id = gdalsupport.uniqueDatasetID(gdalobj)
-
+    def _vrtinit(self, gdalobj, cachedir=None):
         # Build the virtual dataset filename
         if cachedir is None:
+            id = gdalsupport.uniqueDatasetID(gdalobj)
             cachedir = self.CACHEDIR
-        cachedir = os.path.join(cachedir, self.id)
+            cachedir = os.path.join(cachedir, id)
         if not os.path.isdir(cachedir):
             os.makedirs(cachedir)
-        self.vrtfilename = os.path.join(cachedir, 'virtual-dataset.vrt')
+        vrtfilename = os.path.join(cachedir, 'virtual-dataset.vrt')
 
         # Create the virtual dataset
         # @TODO: check 'openshared'
         _vrtdataset = None
-        if os.path.exists(self.vrtfilename):
+        if os.path.exists(vrtfilename):
             # @TODO: check if opening the dataset in update mode
             #        (gdal.GA_Update) is a better solution
-            _vrtdataset = gdal.Open(self.vrtfilename)
+            _vrtdataset = gdal.Open(vrtfilename)
 
         if _vrtdataset is None:
             # Hendle both non existing self.vrtfilename and errors in opening
             # existing self.vrtfilename
             driver = gdal.GetDriverByName('VRT')
-            _vrtdataset = driver.CreateCopy(self.vrtfilename, gdalobj)
+            _vrtdataset = driver.CreateCopy(vrtfilename, gdalobj)
 
         if _vrtdataset is None:
             raise ValueError('unable to open the GDAL virtual dataset: "%s"' %
-                                            os.path.basename(self.vrtfilename))
-        del _vrtdataset, gdalobj
+                                            os.path.basename(vrtfilename))
+        return vrtfilename
+
+    def __init__(self, filename, cachedir=None):
+        filename = os.path.abspath(filename)
+        gdalobj = self._checkedopen(filename)
+        self.vrtfilename = self._vrtinit(gdalobj)
+        del gdalobj
 
         super(CachedDatasetItem, self).__init__(self.vrtfilename, gdal.GA_Update)
 
@@ -379,11 +382,16 @@ class CachedDatasetItem(BaseDatasetItem):
     ### END ###################################################################
     ###########################################################################
 
-#~ class DatasetItem(BaseDatasetItem):
-class DatasetItem(CachedDatasetItem):
-    pass
+def datasetitem(filename):
+    # Some dataset has only sub-datasets (no raster band).
+    # In this case it is not possible to use a virtual datases like
+    # CachedDatasetItem does
+    try:
+        return CachedDatasetItem(filename)
+    except RuntimeError:
+        return DatasetItem(filename)
 
-class SubDatasetItem(DatasetItem):
+class SubDatasetItem(CachedDatasetItem):
     iconfile = ':/gdalbackend/subdataset.svg'
     _typeoffset = DatasetItem._typeoffset + 10
 

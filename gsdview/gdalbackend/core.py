@@ -112,7 +112,7 @@ class GDALBackend(QtCore.QObject):
 
             # @TODO: maybe it is better to use an exception here
             return None
-        return modelitems.DatasetItem(filename)
+        return modelitems.datasetitem(filename)
 
     def itemActions(self, item):
         try:
@@ -274,6 +274,7 @@ class GDALBackend(QtCore.QObject):
         self._actionsmap['OverviewItem'] = self._setupOverviewItemActions()
         #self._actionsmap['VirtualBandItem'] = self._setupVirtualBandItemActions()
         self._actionsmap['DatasetItem'] = self._setupDatasetItemActions()
+        self._actionsmap['CachedDatasetItem'] = self._actionsmap['DatasetItem']
         self._actionsmap['SubDatasetItem'] = self._setupSubDatasetItemActions()
 
     ### Actions enabling ######################################################
