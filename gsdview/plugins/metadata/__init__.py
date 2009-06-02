@@ -53,7 +53,11 @@ def init(mainwin):
                             'plugin')
             return
 
-        metadata = item.GetMetadata_List()
+        try:
+            metadata = item.GetMetadata_List()
+        except RuntimeError:
+            # closed sub-dataset
+            return
         metadataviewer.setMetadata(metadata)
 
     def onItemClicked(index, mainwin=mainwin):

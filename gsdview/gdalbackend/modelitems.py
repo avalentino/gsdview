@@ -197,7 +197,7 @@ class BaseDatasetItem(MajorObjectItem):
         filename = os.path.normpath(filename)
         gdalobj = gdal.Open(filename, mode)
         if gdalobj is None:
-            raise ValueError('"%s" is not a valid GDAL dataset' %
+            raise RuntimeError('"%s" is not a valid GDAL dataset' %
                                                     os.path.basename(filename))
         return gdalobj, filename
 
@@ -424,6 +424,8 @@ class SubDatasetItem(DatasetItem):
     def __getattr__(self, name):
         if self._obj:
             return DatasetItem.__getattr__(self, name)
-
-        raise RuntimeError('unable to retrieve "RasterCount" from a closed '
-                           'object')
+        elif name in dir(gdal.Dataset):
+            raise RuntimeError('unable to access "%s" on a non open '
+                               'object' % name)
+        else:
+            raise AttributeError(name)

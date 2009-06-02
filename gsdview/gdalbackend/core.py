@@ -47,17 +47,17 @@ class GDALBackend(QtCore.QObject):
     _use_exceptions = None
 
     # @TODO: fix names
-    @classmethod
+    @staticmethod
     def UseExceptions():
         gdal.UseExceptions()
         gdal.SetConfigOption('PYHTON_USE_EXCEPTIONS', 'TRUE')
 
-    @classmethod
+    @staticmethod
     def DontUseExceptions():
         gdal.DontUseExceptions()
         gdal.SetConfigOption('PYHTON_USE_EXCEPTIONS', 'FALSE')
 
-    @classmethod
+    @staticmethod
     def getUseExceptions():
         return gdal.GetConfigOption('PYHTON_USE_EXCEPTIONS', 'FALSE') == 'TRUE'
 

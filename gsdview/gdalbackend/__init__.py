@@ -89,6 +89,8 @@ def init(mainwin):
     #~ gdal.SetConfigOption('GDAL_PAM_PROXY_DIR',
                          #~ os.path.expanduser(os.path.join('~', '.gsdview',
                                                          #~ 'cache')))
+    UseExceptions()
+
     return _backendobj
 
 
@@ -103,7 +105,8 @@ def _definefunc(methodname):
 # @TODO: check (maybe it is better to make it explicitly)
 globals_ = globals()
 for methodname in dir(core.GDALBackend):
-    if not methodname.startswith('_'):
+    if (not methodname.startswith('_') and
+                    methodname not in ('UseExceptions', 'DontUseExceptions')):
         globals_[methodname] = _definefunc(methodname)
 del methodname, globals_, _definefunc
 

@@ -644,7 +644,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
                         else:
                             self.logger.info('file %s" already open' % filename)
                         break
-                    except ValueError:
+                    except RuntimeError:
                         #self.logger.exception('exception caught')
                         self.logger.debug('Backend "%s" failed to open file '
                                           '"%s"' % (backendname, filename))
