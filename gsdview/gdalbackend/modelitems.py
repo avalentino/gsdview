@@ -259,7 +259,9 @@ class DatasetItem(MajorObjectItem):
                 item.setToolTip(description)
             self.appendRow(item)
 
-    def _setup_child_subdatasets(self):
+    def _setup_child_subdatasets(self, gdalobj=None):
+        if not gdalobj:
+            gdalobj = self._obj
         #~ subdatasets = self._obj.GetSubDatasets()
         #~ subdatasets = subdatasets[self.rowCount():]
         #~ for index, (path, extrainfo) in enumerate(subdatasets):
@@ -272,7 +274,7 @@ class DatasetItem(MajorObjectItem):
                 #~ item.setToolTip(description)
             #~ self.appendRow(item)
         # @COMPATIBILITY: workaround for GDAL versins older than 1.6.1
-        metadata = self._obj.GetMetadata('SUBDATASETS')
+        metadata = gdalobj.GetMetadata('SUBDATASETS')
         subdatasets = [key for key in metadata if key.endswith('NAME')]
         # HDF5 driver incorrectly starts subdataset enumeration from 0
         # In order to handle both cases N+1 subdatasets are scanned
@@ -319,9 +321,11 @@ class CachedDatasetItem(DatasetItem):
         filename = os.path.abspath(filename)
         gdalobj = self._checkedopen(filename)
         self.vrtfilename = self._vrtinit(gdalobj)
-        del gdalobj
+        #del gdalobj
 
         super(CachedDatasetItem, self).__init__(self.vrtfilename, gdal.GA_Update)
+        self._setup_child_subdatasets(gdalobj)
+
 
         # if description include the filename then set the basename of the
         # original dataset
