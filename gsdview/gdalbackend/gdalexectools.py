@@ -24,6 +24,7 @@ __revision__ = '$Revision$'
 
 
 import re
+import logging
 
 import exectools
 from exectools.qt4tools import Qt4OutputHandler
@@ -73,8 +74,9 @@ class GdalOutputHandler(Qt4OutputHandler):
                 self.percentage = min(100, self.percentage + 2.5)
                 self._handle_percentage(self.percentage)
         if percentage is not None:
-            assert percentage >= self.percentage, ('percentage = %d, '
-                        'self.percentage = %f' % (percentage, self.percentage))
+            if percentage < self.percentage:
+                logging.debug('new percentage (%d) is lower than previous '
+                              'one (%f)' % (percentage, self.percentage))
 
             self.percentage = percentage
             self._handle_percentage(percentage)
