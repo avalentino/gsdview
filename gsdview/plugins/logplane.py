@@ -39,7 +39,7 @@ from exectools.qt4tools import Qt4OStream, Qt4OutputPlane, \
 name = 'logplane'
 version = '.'.join(map(str, __version__)) + 'a'
 
-short_description = 'GDAL backend for GSDView'
+short_description = 'Log plane for GSDView'
 description = __doc__
 
 author = ('Antonio Valentino',)
