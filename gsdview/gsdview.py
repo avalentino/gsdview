@@ -90,7 +90,16 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
 
     '''
 
-    def __init__(self, parent=None):
+    def __init__(self, splash=None, parent=None):
+        if not splash:
+            def splash_message(msg, level=logging.DEBUG):
+                logging.log(level, msg)
+        else:
+            from launch import splash_message as _splash_message
+            def splash_message(msg, level=logging.DEBUG):
+                return _splash_message(msg, splash, QtGui.qApp, level)
+
+        splash_message('Main window base classes initialization ...')
         QtGui.qApp.setWindowIcon(QtGui.QIcon(':/GSDView.png'))
 
         super(GSDView, self).__init__(parent)
@@ -99,24 +108,30 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         self.setObjectName('gsdview-mainwin')
 
         # GraphicsViewMonitor
+        splash_message('Setting up "monitor" component ...')
         self.monitor = graphicsview.GraphicsViewMonitor()
 
         # Dialogs
+        splash_message('Setting up file dialog ...')
         self.filedialog = QtGui.QFileDialog(self)
         self.filedialog.setFileMode(QtGui.QFileDialog.ExistingFile)
         self.filedialog.setViewMode(QtGui.QFileDialog.Detail)
 
+        splash_message('Setting up the about dialog ...')
         self.aboutdialog = AboutDialog(self)
+        splash_message('Setting up the preferences dialog ...')
         self.preferencesdialog = PreferencesDialog(self)
         self.connect(self.preferencesdialog, QtCore.SIGNAL('apply()'),
                      self.applySettings)
 
         # Progressbar
+        splash_message('Setting up the progress bar ...')
         self.progressbar = QtGui.QProgressBar(self)
         self.progressbar.setTextVisible(True)
         self.statusBar().addPermanentWidget(self.progressbar)
         self.progressbar.hide()
 
+        splash_message('Miscellanea setup ...')
         self.cachedir = None
 
         self.plugins = {}
@@ -127,6 +142,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
             os.makedirs(USERCONFIGDIR)
 
         # @TODO: fix filename
+        splash_message('Read application settings ...')
         #self.settings = QtCore.QSettings('gsdview-soft', 'gsdview', self)
         #self.settings = QtCore.QSettings(QtCore.QSettings.IniFormat,
         #                                 QtCore.QSettings.UserScope,
@@ -137,12 +153,16 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
                                          self)
 
         # Setup the log system and the external tools controller
+        splash_message('Complete logging setup...')
         # @TODO: logevel could be set from command line
         self.logger = self.setupLogging()
+
+        splash_message('Setting up external tol controller ...')
         self.controller = self.setupController(self.logger, self.statusBar(),
                                                self.progressbar)
 
         # Actions
+        splash_message('Setting up actions ...')
         self.setupActions()
 
         # File menu end toolbar
@@ -150,9 +170,11 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         self._addToolBarFromActions(self.fileActions, self.tr('File toolbar'))
 
         # Setup plugins
-        self.plugins = self.setupPlugins() # @TODO: pass settings
+        splash_message('Setup plugins ...')
+        self.plugins = self.setupPlugins(splash_message) # @TODO: pass settings
 
         # Settings menu end toolbar
+        splash_message('Settings menu setup ...')
         menu = self._addMenuFromActions(self.settingsActions,
                                         self.tr('&Settings'))
         self._addToolBarFromActions(self.settingsActions,
@@ -163,13 +185,16 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         self.connect(self.settings_submenu, QtCore.SIGNAL('aboutToShow()'),
                      self.updateSettingsMenu)
 
+        splash_message('Window menu setup ...')
         self.menuBar().addMenu(self.windowmenu)
 
         # Help menu end toolbar
+        splash_message('Help menu setup ...')
         self._addMenuFromActions(self.helpActions, self.tr('&Help'))
         self._addToolBarFromActions(self.helpActions, self.tr('Help toolbar'))
 
         # @NOTE: the window state setup must happen after the plugins loading
+        splash_message('Load settings ...')
         self.loadSettings() # @TODO: pass settings
         # @TODO: force the log level set from command line
         #self.logger.setLevel(level)
@@ -317,7 +342,13 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         self.addToolBar(toolbar)
         return toolbar
 
-    def setupPlugins(self):
+    def setupPlugins(self, logfunc=None):
+        if not logfunc:
+            def loginfo(msg):
+                return self.logger.info(msg)
+        else:
+            def loginfo(msg, level=logging.INFO):
+                return logfunc(msg, level)
         # @TODO: fix
         sys.path.insert(0, os.path.normpath(os.path.join(GSDVIEWROOT, os.pardir)))
 
@@ -328,7 +359,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         import gdalbackend
         gdalbackend.init(self)
         plugins['gdalbackend'] = gdalbackend
-        self.logger.debug('"gdalbackend" plugin loaded.')
+        loginfo('"gdalbackend" plugin loaded.')
 
         # @TODO: set from settings
         pluginsDir = os.path.join(os.path.dirname(__file__), 'plugins')
@@ -342,7 +373,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
                     module = __import__(name)
                     module.init(self)
                     plugins[name] = module
-                    self.logger.debug('"%s" plugin loaded.' % name)
+                    loginfo('"%s" plugin loaded.' % name)
                 except ImportError, e:
                     self.logger.debug('"%s" module not loaded: %s' % (name, e))
             del dirnames[:]
@@ -357,7 +388,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
                     module = __import__(name)
                     module.init(self)
                     plugins[name] = module
-                    self.logger.debug('"%s" plugin loaded.' % name)
+                    loginfo('"%s" plugin loaded.' % name)
                 except ImportError, e:
                     self.logger.debug('"%s" module not loaded: %s' % (name, e))
         return plugins
@@ -700,18 +731,13 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
             self.statusBar().showMessage('Ready.')
 
 
-def main():
-    # @NOTE: needed for UI building of promoted widgets
-    sys.path.insert(0, GSDVIEWROOT)
-
-    # @NOTE: needed for path names variables expansion
-    os.environ['GSDVIEWROOT'] = GSDVIEWROOT
-
-    app = QtGui.QApplication(sys.argv)
-    mainwin = GSDView()
-    mainwin.show()
-    sys.exit(app.exec_())
-
-
 if __name__ == '__main__':
+    GSDVIEWROOT = os.path.dirname(os.path.abspath(__file__))
+    EXTRAPATH, PKGNAME = GSDVIEWROOT.rsplit(os.path.sep, 1)
+    if PKGNAME != 'gsdview':
+        raise RuntimeError('wrong package name.')
+
+    if EXTRAPATH not in sys.path:
+        sys.path.insert(0, EXTRAPATH)
+    from gsdview.launch import main
     main()
