@@ -41,17 +41,26 @@ class Timer(object):
         return delta.seconds, delta.microseconds
 
 
-def traced_import(modname, splash, timer, app, level=logging.DEBUG):
-    splash.showMessage(splash.tr('Importing %1 module ...').arg(modname))
-    app.processEvents()
-    __import__(modname)
-    logging.log(level, '%s import: %d.%06ds' % ((modname,) + timer.update()))
+class SplashLogHandler(logging.Handler):
+    def __init__(self, splash, app=None, level=logging.NOTSET):
+        logging.Handler.__init__(self, level)
+        if not app:
+            from PyQt4.QtGui import qApp as app
+        self._app = app
+        self._splash = splash
 
+    def emit(self, record):
+        try:
+            msg = self.format(record)
+            self._splash.showMessage(self._splash.tr(msg))
+            self.flush()
+        except (KeyboardInterrupt, SystemExit):
+            raise
+        except:
+            self.handleError(record)
 
-def splash_message(msg, splash, app, level=logging.DEBUG):
-    splash.showMessage(splash.tr(msg))
-    app.processEvents()
-    logging.log(level, msg)
+    def flush(self):
+        self._app.processEvents()
 
 
 MODULES = ['os', 're', 'sys', 'itertools',
@@ -70,19 +79,17 @@ MODULES = ['os', 're', 'sys', 'itertools',
           #~ 'gsdview.gdalbackend.gdalbackend_resources',
 ]
 
-def preload(modules, splash, app=None):
+def preload(modules, app=None):
     if not app:
         from PyQt4 import QtGui
         app = QtGui.qApp
 
-    def _traced_import(modname, splash=splash, timer=Timer(), app=app):
-        return traced_import(modname, splash, timer, app)
-
-    def _splash_message(msg, splash=splash, app=app):
-        return _splash_message(msg, splash, app)
-
+    timer = Timer()
+    logger = logging.getLogger('splash')
     for modname in modules:
-        _traced_import(modname)
+        logger.info(app.tr('Importing %1 module ...').arg(modname))
+        app.processEvents()
+        logging.debug('%s import: %d.%06ds' % ((modname,) + timer.update()))
 
 
 def setup_env():
@@ -146,27 +153,36 @@ def main():
     pixmap = QtGui.QPixmap(':images/splash.png')
     splash = QtGui.QSplashScreen(pixmap)
     splash.show()
-    #app.processEvents()
+    app.processEvents()
 
-    splash_message('Splash screen setup completed', splash, app)
+    splash_loghandler = SplashLogHandler(splash, app)
+    splash_loghandler.setLevel(logging.DEBUG)
+    splash_loghandler.setFormatter(logging.Formatter('%(message)s'))
+
+    logger = logging.getLogger('splash')
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(splash_loghandler)
+
+    logger.debug('Splash screen setup completed')
     logging.debug('splash screen setup %d.%06ds' % timer.update())
 
     ### environment setup #####################################################
-    splash_message('Setup environment ...', splash, app)
+    logger.debug('Setup environment ...')
     setup_env()
     logging.debug('environment setup %d.%06ds' % timer.update())
 
     ### modules loading #######################################################
-    preload(MODULES, splash, app)
+    preload(MODULES, app)
 
     ### GUI ###################################################################
-    splash_message('Build GUI ...', splash, app)
+    logger.debug('Build GUI ...')
     from gsdview.app import GSDView
-    mainwin = GSDView(splash=splash)    # @TODO: pass plugins_path, loglevel??
+    mainwin = GSDView()    # @TODO: pass plugins_path, loglevel??
     mainwin.show()
     logging.debug('GUI setup %d.%06ds' % timer.update())
 
     ### close splash and run app ##############################################
+    logger.removeHandler(splash_loghandler)
     splash.finish(mainwin)
     app.processEvents()
     sys.exit(app.exec_())

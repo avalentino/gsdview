@@ -90,16 +90,10 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
 
     '''
 
-    def __init__(self, splash=None, parent=None):
-        if not splash:
-            def splash_message(msg, level=logging.DEBUG):
-                logging.log(level, msg)
-        else:
-            from launch import splash_message as _splash_message
-            def splash_message(msg, level=logging.DEBUG):
-                return _splash_message(msg, splash, QtGui.qApp, level)
+    def __init__(self, parent=None):
+        splashlogger = logging.getLogger('splash')
 
-        splash_message('Main window base classes initialization ...')
+        splashlogger.debug('Main window base classes initialization ...')
         QtGui.qApp.setWindowIcon(QtGui.QIcon(':/GSDView.png'))
 
         super(GSDView, self).__init__(parent)
@@ -108,30 +102,30 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         self.setObjectName('gsdview-mainwin')
 
         # GraphicsViewMonitor
-        splash_message('Setting up "monitor" component ...')
+        splashlogger.debug('Setting up "monitor" component ...')
         self.monitor = graphicsview.GraphicsViewMonitor()
 
         # Dialogs
-        splash_message('Setting up file dialog ...')
+        splashlogger.debug('Setting up file dialog ...')
         self.filedialog = QtGui.QFileDialog(self)
         self.filedialog.setFileMode(QtGui.QFileDialog.ExistingFile)
         self.filedialog.setViewMode(QtGui.QFileDialog.Detail)
 
-        splash_message('Setting up the about dialog ...')
+        splashlogger.debug('Setting up the about dialog ...')
         self.aboutdialog = AboutDialog(self)
-        splash_message('Setting up the preferences dialog ...')
+        splashlogger.debug('Setting up the preferences dialog ...')
         self.preferencesdialog = PreferencesDialog(self)
         self.connect(self.preferencesdialog, QtCore.SIGNAL('apply()'),
                      self.applySettings)
 
         # Progressbar
-        splash_message('Setting up the progress bar ...')
+        splashlogger.debug('Setting up the progress bar ...')
         self.progressbar = QtGui.QProgressBar(self)
         self.progressbar.setTextVisible(True)
         self.statusBar().addPermanentWidget(self.progressbar)
         self.progressbar.hide()
 
-        splash_message('Miscellanea setup ...')
+        splashlogger.debug('Miscellanea setup ...')
         self.cachedir = None
 
         self.plugins = {}
@@ -142,7 +136,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
             os.makedirs(USERCONFIGDIR)
 
         # @TODO: fix filename
-        splash_message('Read application settings ...')
+        splashlogger.debug('Read application settings ...')
         #self.settings = QtCore.QSettings('gsdview-soft', 'gsdview', self)
         #self.settings = QtCore.QSettings(QtCore.QSettings.IniFormat,
         #                                 QtCore.QSettings.UserScope,
@@ -153,16 +147,16 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
                                          self)
 
         # Setup the log system and the external tools controller
-        splash_message('Complete logging setup...')
+        splashlogger.debug('Complete logging setup...')
         # @TODO: logevel could be set from command line
         self.logger = self.setupLogging()
 
-        splash_message('Setting up external tol controller ...')
+        splashlogger.debug('Setting up external tol controller ...')
         self.controller = self.setupController(self.logger, self.statusBar(),
                                                self.progressbar)
 
         # Actions
-        splash_message('Setting up actions ...')
+        splashlogger.debug('Setting up actions ...')
         self.setupActions()
 
         # File menu end toolbar
@@ -170,11 +164,11 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         self._addToolBarFromActions(self.fileActions, self.tr('File toolbar'))
 
         # Setup plugins
-        splash_message('Setup plugins ...')
-        self.plugins = self.setupPlugins(splash_message) # @TODO: pass settings
+        splashlogger.debug(self.tr('Setup plugins ...'))
+        self.plugins = self.setupPlugins() # @TODO: pass settings
 
         # Settings menu end toolbar
-        splash_message('Settings menu setup ...')
+        splashlogger.debug(self.tr('Settings menu setup ...'))
         menu = self._addMenuFromActions(self.settingsActions,
                                         self.tr('&Settings'))
         self._addToolBarFromActions(self.settingsActions,
@@ -185,16 +179,16 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         self.connect(self.settings_submenu, QtCore.SIGNAL('aboutToShow()'),
                      self.updateSettingsMenu)
 
-        splash_message('Window menu setup ...')
+        splashlogger.debug(self.tr('Window menu setup ...'))
         self.menuBar().addMenu(self.windowmenu)
 
         # Help menu end toolbar
-        splash_message('Help menu setup ...')
+        splashlogger.debug('Help menu setup ...')
         self._addMenuFromActions(self.helpActions, self.tr('&Help'))
         self._addToolBarFromActions(self.helpActions, self.tr('Help toolbar'))
 
         # @NOTE: the window state setup must happen after the plugins loading
-        splash_message('Load settings ...')
+        splashlogger.debug('Load settings ...')
         self.loadSettings() # @TODO: pass settings
         # @TODO: force the log level set from command line
         #self.logger.setLevel(level)
@@ -342,13 +336,9 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         self.addToolBar(toolbar)
         return toolbar
 
-    def setupPlugins(self, logfunc=None):
-        if not logfunc:
-            def loginfo(msg):
-                return self.logger.info(msg)
-        else:
-            def loginfo(msg, level=logging.INFO):
-                return logfunc(msg, level)
+    def setupPlugins(self):
+        splashlogger = logging.getLogger('splash')
+
         # @TODO: fix
         sys.path.insert(0, os.path.normpath(os.path.join(GSDVIEWROOT, os.pardir)))
 
@@ -359,25 +349,13 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         import gdalbackend
         gdalbackend.init(self)
         plugins['gdalbackend'] = gdalbackend
-        loginfo('"gdalbackend" plugin loaded.')
+        splashlogger.info('"gdalbackend" plugin loaded.')
 
         # @TODO: set from settings
         pluginsDir = os.path.join(os.path.dirname(__file__), 'plugins')
         sys.path.insert(0, pluginsDir)
 
         for dirpath, dirnames, filenames in os.walk(pluginsDir):
-            for name in dirnames:
-                if name.startswith(('.', '_')) or (name in sys.modules):
-                    continue
-                try:
-                    module = __import__(name)
-                    module.init(self)
-                    plugins[name] = module
-                    loginfo('"%s" plugin loaded.' % name)
-                except ImportError, e:
-                    self.logger.debug('"%s" module not loaded: %s' % (name, e))
-            del dirnames[:]
-
             for name in filenames:
                 name, ext = os.path.splitext(name)
                 #if ext.lower() not in ('.py', '.pyc', '.pyo', '.pyd', '.dll', '.so', '.egg', '.zip'):
@@ -388,9 +366,22 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
                     module = __import__(name)
                     module.init(self)
                     plugins[name] = module
-                    loginfo('"%s" plugin loaded.' % name)
+                    splashlogger.info('"%s" plugin loaded.' % name)
                 except ImportError, e:
                     self.logger.debug('"%s" module not loaded: %s' % (name, e))
+
+            for name in dirnames:
+                if name.startswith(('.', '_')) or (name in sys.modules):
+                    continue
+                try:
+                    module = __import__(name)
+                    module.init(self)
+                    plugins[name] = module
+                    splashlogger.info('"%s" plugin loaded.' % name)
+                except ImportError, e:
+                    self.logger.debug('"%s" module not loaded: %s' % (name, e))
+            del dirnames[:]
+
         return plugins
 
     def setupLogging(self):
