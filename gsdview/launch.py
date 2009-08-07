@@ -161,7 +161,7 @@ def main():
 
     ### GUI ###################################################################
     splash_message('Build GUI ...', splash, app)
-    from gsdview.gsdview import GSDView
+    from gsdview.app import GSDView
     mainwin = GSDView(splash=splash)    # @TODO: pass plugins_path, loglevel??
     mainwin.show()
     logging.debug('GUI setup %d.%06ds' % timer.update())
