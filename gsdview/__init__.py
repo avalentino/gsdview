@@ -1,1 +1,1 @@
-from launch import main
+from gsdview.launch import main

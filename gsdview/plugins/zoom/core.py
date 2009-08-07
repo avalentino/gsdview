@@ -27,7 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from qt4support import actionGroupToMenu, actionGroupToToolbar
+from gsdview.qt4support import actionGroupToMenu, actionGroupToToolbar
 
 from gsdview import resources
 

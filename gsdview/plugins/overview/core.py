@@ -27,7 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from qt4support import overrideCursor
+from gsdview.qt4support import overrideCursor
 
 class NavigationGraphicsView(QtGui.QGraphicsView):
     BOXCOLOR = QtGui.QColor(QtCore.Qt.red)

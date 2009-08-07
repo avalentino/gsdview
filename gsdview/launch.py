@@ -85,7 +85,7 @@ def preload(modules, app=None):
         app = QtGui.qApp
 
     timer = Timer()
-    logger = logging.getLogger('splash')
+    logger = logging.getLogger('gsdview')
     for modname in modules:
         logger.info(app.tr('Importing %1 module ...').arg(modname))
         app.processEvents()
@@ -134,6 +134,12 @@ def cmdline_ui():
 
 def main():
     options, args = cmdline_ui()
+    logging.basicConfig(#level=logging.DEBUG,
+                        level=logging.INFO,
+                        format='%(levelname)s: %(message)s')
+    logger = logging.getLogger('gsdview')
+    logger.setLevel(logging.DEBUG)
+
     # @TODO:
     # * config logging using options.configfile, USER_CFG, SYS_CFG
     # * if options.debug: set rootlogger.level = logging.DEBUG
@@ -143,10 +149,10 @@ def main():
 
     ### splash screen #########################################################
     from PyQt4 import QtGui
-    logging.debug('Qt4 import %d.%06ds' % timer.update())
+    logging.debug('Qt4 import: %d.%06ds' % timer.update())
 
     import splash_resources
-    logging.debug('splash resources import %d.%06ds' % timer.update())
+    logging.debug('splash resources import: %d.%06ds' % timer.update())
 
     import sys
     app = QtGui.QApplication(sys.argv)
@@ -156,35 +162,35 @@ def main():
     app.processEvents()
 
     splash_loghandler = SplashLogHandler(splash, app)
-    splash_loghandler.setLevel(logging.DEBUG)
     splash_loghandler.setFormatter(logging.Formatter('%(message)s'))
 
-    logger = logging.getLogger('splash')
-    logger.setLevel(logging.DEBUG)
     logger.addHandler(splash_loghandler)
 
     logger.debug('Splash screen setup completed')
-    logging.debug('splash screen setup %d.%06ds' % timer.update())
+    logging.debug('splash screen setup: %d.%06ds' % timer.update())
 
     ### environment setup #####################################################
-    logger.debug('Setup environment ...')
+    logger.info('Setup environment ...')
     setup_env()
-    logging.debug('environment setup %d.%06ds' % timer.update())
+    logging.debug('environment setup: %d.%06ds' % timer.update())
 
     ### modules loading #######################################################
     preload(MODULES, app)
 
     ### GUI ###################################################################
-    logger.debug('Build GUI ...')
+    logger.info('Build GUI ...')
     from gsdview.app import GSDView
     mainwin = GSDView()    # @TODO: pass plugins_path, loglevel??
     mainwin.show()
-    logging.debug('GUI setup %d.%06ds' % timer.update())
+    logger.info('GUI setup completed')
+    logging.debug('GUI setup: %d.%06ds' % timer.update())
 
     ### close splash and run app ##############################################
     logger.removeHandler(splash_loghandler)
     splash.finish(mainwin)
     app.processEvents()
+
+    logger.info('Enter main event loop')
     sys.exit(app.exec_())
 
 if __name__ == '__main__':

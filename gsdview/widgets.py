@@ -30,9 +30,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui, uic
 
-import info
-
-import resources
+from gsdview import info
+from gsdview import resources
 
 
 def get_mainwin():

@@ -33,16 +33,17 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-import info
-import utils
-import exectools
-import qt4support
-import graphicsview
+from gsdview import info
+from gsdview import utils
+from gsdview import exectools
+from gsdview import qt4support
+from gsdview import graphicsview
 
-from widgets import AboutDialog, PreferencesDialog
-from exectools.qt4tools import Qt4ToolController, Qt4DialogLoggingHandler
+from gsdview.widgets import AboutDialog, PreferencesDialog
+from gsdview.exectools.qt4tools import Qt4ToolController
+from gsdview.exectools.qt4tools import Qt4DialogLoggingHandler
 
-import resources
+#~ from gsdview import resources
 
 # @TODO: move elsewhere (site.py ??)
 # @NOTE: this should happen before any os.chdir
@@ -91,9 +92,9 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
     '''
 
     def __init__(self, parent=None):
-        splashlogger = logging.getLogger('splash')
+        logger = logging.getLogger('gsdview')
 
-        splashlogger.debug('Main window base classes initialization ...')
+        logger.debug('Main window base classes initialization ...')
         QtGui.qApp.setWindowIcon(QtGui.QIcon(':/GSDView.png'))
 
         super(GSDView, self).__init__(parent)
@@ -102,30 +103,30 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         self.setObjectName('gsdview-mainwin')
 
         # GraphicsViewMonitor
-        splashlogger.debug('Setting up "monitor" component ...')
+        logger.debug('Setting up "monitor" component ...')
         self.monitor = graphicsview.GraphicsViewMonitor()
 
         # Dialogs
-        splashlogger.debug('Setting up file dialog ...')
+        logger.debug('Setting up file dialog ...')
         self.filedialog = QtGui.QFileDialog(self)
         self.filedialog.setFileMode(QtGui.QFileDialog.ExistingFile)
         self.filedialog.setViewMode(QtGui.QFileDialog.Detail)
 
-        splashlogger.debug('Setting up the about dialog ...')
+        logger.debug('Setting up the about dialog ...')
         self.aboutdialog = AboutDialog(self)
-        splashlogger.debug('Setting up the preferences dialog ...')
+        logger.debug('Setting up the preferences dialog ...')
         self.preferencesdialog = PreferencesDialog(self)
         self.connect(self.preferencesdialog, QtCore.SIGNAL('apply()'),
                      self.applySettings)
 
         # Progressbar
-        splashlogger.debug('Setting up the progress bar ...')
+        logger.debug('Setting up the progress bar ...')
         self.progressbar = QtGui.QProgressBar(self)
         self.progressbar.setTextVisible(True)
         self.statusBar().addPermanentWidget(self.progressbar)
         self.progressbar.hide()
 
-        splashlogger.debug('Miscellanea setup ...')
+        logger.debug('Miscellanea setup ...')
         self.cachedir = None
 
         self.plugins = {}
@@ -136,7 +137,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
             os.makedirs(USERCONFIGDIR)
 
         # @TODO: fix filename
-        splashlogger.debug('Read application settings ...')
+        logger.debug('Read application settings ...')
         #self.settings = QtCore.QSettings('gsdview-soft', 'gsdview', self)
         #self.settings = QtCore.QSettings(QtCore.QSettings.IniFormat,
         #                                 QtCore.QSettings.UserScope,
@@ -147,16 +148,16 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
                                          self)
 
         # Setup the log system and the external tools controller
-        splashlogger.debug('Complete logging setup...')
+        logger.debug('Complete logging setup...')
         # @TODO: logevel could be set from command line
         self.logger = self.setupLogging()
 
-        splashlogger.debug('Setting up external tol controller ...')
+        logger.debug('Setting up external tol controller ...')
         self.controller = self.setupController(self.logger, self.statusBar(),
                                                self.progressbar)
 
         # Actions
-        splashlogger.debug('Setting up actions ...')
+        logger.debug('Setting up actions ...')
         self.setupActions()
 
         # File menu end toolbar
@@ -164,11 +165,11 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         self._addToolBarFromActions(self.fileActions, self.tr('File toolbar'))
 
         # Setup plugins
-        splashlogger.debug(self.tr('Setup plugins ...'))
+        logger.debug(self.tr('Setup plugins ...'))
         self.plugins = self.setupPlugins() # @TODO: pass settings
 
         # Settings menu end toolbar
-        splashlogger.debug(self.tr('Settings menu setup ...'))
+        logger.debug(self.tr('Settings menu setup ...'))
         menu = self._addMenuFromActions(self.settingsActions,
                                         self.tr('&Settings'))
         self._addToolBarFromActions(self.settingsActions,
@@ -179,16 +180,16 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         self.connect(self.settings_submenu, QtCore.SIGNAL('aboutToShow()'),
                      self.updateSettingsMenu)
 
-        splashlogger.debug(self.tr('Window menu setup ...'))
+        logger.debug(self.tr('Window menu setup ...'))
         self.menuBar().addMenu(self.windowmenu)
 
         # Help menu end toolbar
-        splashlogger.debug('Help menu setup ...')
+        logger.debug('Help menu setup ...')
         self._addMenuFromActions(self.helpActions, self.tr('&Help'))
         self._addToolBarFromActions(self.helpActions, self.tr('Help toolbar'))
 
         # @NOTE: the window state setup must happen after the plugins loading
-        splashlogger.debug('Load settings ...')
+        logger.info('Load settings ...')
         self.loadSettings() # @TODO: pass settings
         # @TODO: force the log level set from command line
         #self.logger.setLevel(level)
@@ -337,10 +338,10 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         return toolbar
 
     def setupPlugins(self):
-        splashlogger = logging.getLogger('splash')
+        logger = logging.getLogger('gsdview')
 
         # @TODO: fix
-        sys.path.insert(0, os.path.normpath(os.path.join(GSDVIEWROOT, os.pardir)))
+        #sys.path.insert(0, os.path.normpath(os.path.join(GSDVIEWROOT, os.pardir)))
 
         # @TODO: move to the PluginManager
         plugins = {}
@@ -349,7 +350,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         import gdalbackend
         gdalbackend.init(self)
         plugins['gdalbackend'] = gdalbackend
-        splashlogger.info('"gdalbackend" plugin loaded.')
+        logger.info('"gdalbackend" plugin loaded.')
 
         # @TODO: set from settings
         pluginsDir = os.path.join(os.path.dirname(__file__), 'plugins')
@@ -366,7 +367,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
                     module = __import__(name)
                     module.init(self)
                     plugins[name] = module
-                    splashlogger.info('"%s" plugin loaded.' % name)
+                    logger.info('"%s" plugin loaded.' % name)
                 except ImportError, e:
                     self.logger.debug('"%s" module not loaded: %s' % (name, e))
 
@@ -377,7 +378,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
                     module = __import__(name)
                     module.init(self)
                     plugins[name] = module
-                    splashlogger.info('"%s" plugin loaded.' % name)
+                    logger.info('"%s" plugin loaded.' % name)
                 except ImportError, e:
                     self.logger.debug('"%s" module not loaded: %s' % (name, e))
             del dirnames[:]
@@ -385,10 +386,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         return plugins
 
     def setupLogging(self):
-        # @TODO: move to launcher
-        logging.basicConfig(format='%(levelname)s: %(message)s')
-
-        logger = logging.getLogger()    # 'gsdview' # @TODO: fix
+        logger = logging.getLogger('gsdview')    # 'gsdview' # @TODO: fix
 
         fmt = ('%(levelname)s: %(asctime)s %(filename)s line %(lineno)d in '
                '%(funcName)s: %(message)s')
@@ -413,7 +411,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         levelno = logging.getLevelName(str(level))
         if isinstance(levelno, int):
             logger.setLevel(levelno)
-            logger.debug('"%s" loglevel set' % level)
+            logger.info('"%s" loglevel set' % level)
         else:
             logging.debug('invalid log level: "%s"' % level)
 
@@ -723,12 +721,5 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
 
 
 if __name__ == '__main__':
-    GSDVIEWROOT = os.path.dirname(os.path.abspath(__file__))
-    EXTRAPATH, PKGNAME = GSDVIEWROOT.rsplit(os.path.sep, 1)
-    if PKGNAME != 'gsdview':
-        raise RuntimeError('wrong package name.')
-
-    if EXTRAPATH not in sys.path:
-        sys.path.insert(0, EXTRAPATH)
     from gsdview.launch import main
     main()
