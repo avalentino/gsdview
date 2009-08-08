@@ -25,7 +25,11 @@ __version__  = (0,5,9)
 __revision__ = '$Revision$'
 __requires__ = []
 
-__all__ = ['init', 'close']
+__all__ = ['init', 'close', 'loadSettings', 'saveSettings',
+           'name','version', 'short_description','description',
+           'author', 'author_email', 'copyright', 'license_type',
+           'website', 'website_label',
+]
 
 
 import logging
@@ -49,6 +53,7 @@ license_type = 'GNU GPL'
 website = 'http://gsdview.sourceforge.net'
 website_label = website
 
+
 def init(mainwin):
     panel = QtGui.QDockWidget('Output Log', mainwin)
     # @TODO: try to add actions to a QTextEdit widget instead of using a
@@ -70,7 +75,7 @@ def init(mainwin):
     handler.setFormatter(formatter)
     mainwin.logger.addHandler(handler)
 
-    # seupController
+    # setupController
     # @TODO: fix for multiple tools
     mainwin.controller.tool.stdout_handler.stream = Qt4OStream(logplane)
 
@@ -87,6 +92,10 @@ def init(mainwin):
 
 def close(mainwin):
     saveSettings(mainwin.settings)
+    #mainwin.logger.remove(_global_aux.pop('handler'))
+    #mainwin.controller.tool.stdout_handler.stream = _global_aux.pop('old_stream')
+    #panel = mainwin.findChild(QtGui.QDockWidget, 'outputPanel')
+    #mainwin.removeDockWidget(panel)
 
 def loadSettings(settings):
     pass
