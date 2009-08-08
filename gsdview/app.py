@@ -40,6 +40,7 @@ from gsdview import qt4support
 from gsdview import graphicsview
 
 from gsdview.widgets import AboutDialog, PreferencesDialog
+from gsdview.pluginmanager import PluginManager
 from gsdview.exectools.qt4tools import Qt4ToolController
 from gsdview.exectools.qt4tools import Qt4DialogLoggingHandler
 
@@ -129,7 +130,8 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         logger.debug('Miscellanea setup ...')
         self.cachedir = None
 
-        self.plugins = {}
+        #self.plugins = {}
+        self.pluginmanager = PluginManager(self)
         self.backends = []
 
         # Settings
@@ -166,7 +168,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
 
         # Setup plugins
         logger.debug(self.tr('Setup plugins ...'))
-        self.plugins = self.setupPlugins() # @TODO: pass settings
+        self.setupPlugins()
 
         # Settings menu end toolbar
         logger.debug(self.tr('Settings menu setup ...'))
@@ -214,7 +216,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         #        the cottect item
         self.treeview.setCurrentIndex(modelindex)
         item = self.datamodel.itemFromIndex(modelindex)
-        backend = self.plugins[item.backend]
+        backend = self.pluginmanager.plugins[item.backend]
         menu = backend.itemContextMenu(item)
         if menu:
             menu.exec_(self.treeview.mapToGlobal(pos))
@@ -225,7 +227,9 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         # @TODO: whait for finished (??)
         # @TODO: save opened datasets (??)
         self.saveSettings()
+        self.pluginmanager.save_settings(self.settings)
         self.closeAll()
+        self.pluginmanager.reset()
         event.accept()
 
     def changeEvent(self, event):
@@ -344,46 +348,46 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         #sys.path.insert(0, os.path.normpath(os.path.join(GSDVIEWROOT, os.pardir)))
 
         # @TODO: move to the PluginManager
-        plugins = {}
+        #~ plugins = {}
 
         # load backends
-        import gdalbackend
-        gdalbackend.init(self)
-        plugins['gdalbackend'] = gdalbackend
-        logger.info('"gdalbackend" plugin loaded.')
+        path = os.path.dirname(os.path.abspath(__file__))
+        self.pluginmanager.load('gdalbackend', paths=path)
+
+        self.pluginmanager.load_settings(self.settings)
 
         # @TODO: set from settings
-        pluginsDir = os.path.join(os.path.dirname(__file__), 'plugins')
-        sys.path.insert(0, pluginsDir)
+        #pluginsDir = os.path.join(os.path.dirname(__file__), 'plugins')
+        #sys.path.insert(0, pluginsDir)
 
-        for dirpath, dirnames, filenames in os.walk(pluginsDir):
-            for name in filenames:
-                name, ext = os.path.splitext(name)
-                #if ext.lower() not in ('.py', '.pyc', '.pyo', '.pyd', '.dll', '.so', '.egg', '.zip'):
-                    #continue
-                if name.startswith(('.', '_')) or (name in sys.modules):
-                    continue
-                try:
-                    module = __import__(name)
-                    module.init(self)
-                    plugins[name] = module
-                    logger.info('"%s" plugin loaded.' % name)
-                except ImportError, e:
-                    self.logger.debug('"%s" module not loaded: %s' % (name, e))
+        #~ for dirpath, dirnames, filenames in os.walk(pluginsDir):
+            #~ for name in filenames:
+                #~ name, ext = os.path.splitext(name)
+                #~ #if ext.lower() not in ('.py', '.pyc', '.pyo', '.pyd', '.dll', '.so', '.egg', '.zip'):
+                    #~ #continue
+                #~ if name.startswith(('.', '_')) or (name in sys.modules):
+                    #~ continue
+                #~ try:
+                    #~ module = __import__(name)
+                    #~ module.init(self)
+                    #~ plugins[name] = module
+                    #~ logger.info('"%s" plugin loaded.' % name)
+                #~ except ImportError, e:
+                    #~ self.logger.debug('"%s" module not loaded: %s' % (name, e))
 
-            for name in dirnames:
-                if name.startswith(('.', '_')) or (name in sys.modules):
-                    continue
-                try:
-                    module = __import__(name)
-                    module.init(self)
-                    plugins[name] = module
-                    logger.info('"%s" plugin loaded.' % name)
-                except ImportError, e:
-                    self.logger.debug('"%s" module not loaded: %s' % (name, e))
-            del dirnames[:]
+            #~ for name in dirnames:
+                #~ if name.startswith(('.', '_')) or (name in sys.modules):
+                    #~ continue
+                #~ try:
+                    #~ module = __import__(name)
+                    #~ module.init(self)
+                    #~ plugins[name] = module
+                    #~ logger.info('"%s" plugin loaded.' % name)
+                #~ except ImportError, e:
+                    #~ self.logger.debug('"%s" module not loaded: %s' % (name, e))
+            #~ del dirnames[:]
 
-        return plugins
+        #~ return plugins
 
     def setupLogging(self):
         logger = logging.getLogger('gsdview')    # 'gsdview' # @TODO: fix
@@ -508,6 +512,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
             settings.endGroup()
 
     def loadSettings(self, settings=None):
+        # @TODO: split app saveSettings frlm plugins one
         if settings is None:
             settings = self.settings
 
@@ -538,7 +543,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         # @TODO
 
         # plugins
-        for plugin in self.plugins.values():
+        for plugin in self.pluginmanager.plugins.values():
             plugin.loadSettings(settings)
 
     def _saveWindowState(self, settings=None):
@@ -619,7 +624,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
 
         # @NOTE: cache preferences are only modified via preferences dialog
 
-        for plugin in self.plugins.values():
+        for plugin in self.pluginmanager.plugins.values():
             #logging.debug('save %s plugin preferences' % plugin.name)
             plugin.saveSettings(settings)
 
@@ -653,7 +658,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
             filename = str(self.filedialog.selectedFiles()[0])
             if filename:
                 for backendname in self.backends:
-                    backend = self.plugins[backendname]
+                    backend = self.pluginmanager.plugins[backendname]
                     try:
                         item = backend.openFile(filename)
                         if item:
@@ -682,7 +687,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
                 item = item.parent()
 
             try:
-                #~ backend = self.plugins[item.backend]
+                #~ backend = self.pluginmanager.plugins[item.backend]
                 #~ backend.closeFile(item)
                 item.close()
             except AttributeError:
@@ -695,7 +700,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         while root.hasChildren():
             item = root.child(0)
             try:
-                #~ backend = self.plugins[item.backend]
+                #~ backend = self.pluginmanager.plugins[item.backend]
                 #~ backend.closeFile(item)
                 item.close()
             except AttributeError:

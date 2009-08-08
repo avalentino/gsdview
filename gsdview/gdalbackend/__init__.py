@@ -78,6 +78,7 @@ def init(mainwin):
     mainwin.controller.tool = tool
     ### END ###################################################################
 
+    # @TODO: check
     # register the backend
     mainwin.backends.append(name)
 
