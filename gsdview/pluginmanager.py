@@ -30,7 +30,8 @@ import sys
 import pkgutil
 import logging
 
-from PyQt4 import QtCore    # @TODO: move Qt specific implementation elsewhere
+# @TODO: move Qt specific implementation elsewhere
+from PyQt4 import QtCore, QtGui, uic
 
 
 class PluginManager(object):
@@ -38,6 +39,7 @@ class PluginManager(object):
         super(PluginManager, self).__init__()
         self.paths = []
         self.plugins = {}
+        self.autoload = []
         self._mainwin = mainwin
 
     def _get_allplugins(self):
@@ -63,7 +65,7 @@ class PluginManager(object):
 
         return plugins
 
-    def load(self, names, paths=None, type_='plugins'):
+    def load(self, names, paths=None, info_only=False, type_='plugins'):
         if paths is None:
             paths = self.paths
         elif isinstance(paths, basestring):
@@ -83,11 +85,15 @@ class PluginManager(object):
                 if name in self.plugins:
                     continue
 
-                fullname = name.lstrip('gsdview.').lstrip(type_ + '.')
-                fullname = 'gsdview.%s.%s' % (type_, name)
+                # @NOTE: this causes:
+                #           RuntimeWarning: Parent module 'gsdview.plugins'
+                #           not found while handling absolute import
+                #fullname = name.lstrip('gsdview.').lstrip(type_ + '.')
+                #fullname = 'gsdview.%s.%s' % (type_, name)
+                fullname = name
 
                 if fullname in sys.modules:
-                    self.plugins[name] = sys.modules[fullname]
+                    self.plugins[name] = module = sys.modules[fullname]
                 else:
                     loader = importer.find_module(name)
                     if not loader:
@@ -98,17 +104,21 @@ class PluginManager(object):
                     else:
                         logger.warning('unable to find "%s" plugin' % name)
                         continue
-                try:
-                    module.init(self._mainwin)
-                    self.plugins[name] = module
-                    logger.info('"%s" plugin loaded.' % name)
-                except Exception, e:   #AttributeError:
-                    logger.warning('error loading "%s" plugin: %s' % (name, e))
+                if not info_only:
+                    try:
+                        module.init(self._mainwin)
+                        self.plugins[name] = module
+                        logger.info('"%s" plugin loaded.' % name)
+                    except Exception, e:   #AttributeError:
+                        logger.warning('error loading "%s" plugin: %s' %
+                                                                    (name, e))
 
-
-    #~ def unload(self, names, type_='plugin'):
-        #~ module = self.plugins.pop(name)
-        #~ module.close(self._mainwin)
+    def unload(self, names, type_='plugin'):
+        if isinstance(names, basestring):
+            names = [names]
+        for name in names:
+            module = self.plugins.pop(name)
+            module.close(self._mainwin)
 
     def reset(self):
         for name in self.plugins.keys():
@@ -116,22 +126,29 @@ class PluginManager(object):
             plugin.close(self._mainwin)
         self.paths = []
 
-    def save_settings(self, settings):
+    def save_settings(self, settings=None):
+        if not settings:
+            settings = self._mainwin.settings
+
         # @NOTE:  settings is expected to be a QSettings instance
         # @TODO: make it Qt independent
         settings.beginGroup('pluginmanager')
         try:
             settings.setValue('pluginspaths', QtCore.QVariant(self.paths))
-            settings.setValue('active_plugins',
-                              QtCore.QVariant(list(self.plugins.keys())))
+            settings.setValue('autoload_plugins',
+                              QtCore.QVariant(self.autoload))
             settings.setValue('available_plugins',
                               QtCore.QVariant(self.allplugins))
         finally:
             settings.endGroup()
 
-    def load_settings(self, settings):
+    def load_settings(self, settings=None):
         # @NOTE:  settings is expected to be a QSettings instance
         # @TODO: make it Qt independent
+
+        if not settings:
+            settings = self._mainwin.settings
+
         settings.beginGroup('pluginmanager')
         try:
             if settings.contains('pluginspaths'):
@@ -143,10 +160,10 @@ class PluginManager(object):
                                     'plugins')
                 self.paths = [PLUGINSPATH]
 
-            active_plugins = settings.value('active_plugins',
-                                            QtCore.QVariant([]))
-            active_plugins = map(str, active_plugins.toStringList())
-            self.load(active_plugins)
+            autoload_plugins = settings.value('autoload_plugins',
+                                              QtCore.QVariant([]))
+            self.autoload = map(str, autoload_plugins.toStringList())
+            self.load(self.autoload)
 
             # @TODO: check
             # @NOTE: by default loads new plugins
@@ -159,6 +176,7 @@ class PluginManager(object):
             new_plugins = available_plugins.difference(old_plugins)
 
             self.load(list(new_plugins))
+            self.autoload.extend(new_plugins)
         finally:
             settings.endGroup()
 
@@ -237,3 +255,205 @@ class PluginManager(object):
                             'initialization error', exc_info=True)
         return plugins
 '''
+
+
+class PluginManagerGui(QtGui.QWidget):
+    uifile = os.path.join(os.path.dirname(__file__), 'ui', 'pluginmanager.ui')
+
+    def __init__(self, pluginmanager, parent=None, flags=QtCore.Qt.Widget):
+        QtGui.QWidget.__init__(self, parent, flags)
+        uic.loadUi(self.uifile, self)
+        self.pluginmanager = pluginmanager
+
+        # @TODO: check edit triggers
+        #int(self.pathListWidget.editTriggers() & self.pathListWidget.DoubleClicked)
+
+        tablewidget = self.pluginsTableWidget
+
+        tablewidget.verticalHeader().setVisible(False)
+        tablewidget.horizontalHeader().setStretchLastSection(True)
+
+        self.connect(self.pathListWidget,
+                     QtCore.SIGNAL('itemSelectionChanged()'),
+                     self.pathSelectionChanged)
+
+        self.connect(self.addButton, QtCore.SIGNAL('clicked()'),
+                     self.addPathItem)
+        self.connect(self.removeButton, QtCore.SIGNAL('clicked()'),
+                     self.removePathItem)
+        self.connect(self.upButton, QtCore.SIGNAL('clicked()'),
+                     self.movePathItemsUp)
+        self.connect(self.downButton, QtCore.SIGNAL('clicked()'),
+                     self.movePathItemsDown)
+        self.connect(self.editButton, QtCore.SIGNAL('clicked()'),
+                     self.editPathItem)
+
+    def pathSelectionChanged(self):
+        enabled = bool(self.pathListWidget.selectedItems())
+        self.editButton.setEnabled(enabled)
+        self.removeButton.setEnabled(enabled)
+        self.upButton.setEnabled(enabled)
+        self.downButton.setEnabled(enabled)
+
+    def addPathItem(self):
+        filedialog = self.pluginmanager._mainwin.filedialog
+        filedialog.setFileMode(filedialog.Directory)
+        if(filedialog.exec_()):
+            dirs = filedialog.selectedFiles()
+            for dir_ in dirs:
+                self.pathListWidget.addItem(dir_)
+
+    def removePathItem(self):
+        model = self.pathListWidget.model()
+        for item in self.pathListWidget.selectedItems():
+            model.removeRow(self.pathListWidget.row(item))
+
+    def editPathItem(self):
+        items = self.pathListWidget.selectedItems()
+        if items:
+            item = items[0]
+
+            filedialog = self.pluginmanager._mainwin.filedialog
+            filedialog.setFileMode(filedialog.Directory)
+            filedialog.selectFile(item.text())
+            if(filedialog.exec_()):
+                dirs = filedialog.selectedFiles()
+                if dirs:
+                    dir_ = dirs[0]
+                    item.setText(dir_)
+
+    def movePathItem(self, item, offset):
+        if offset == 0:
+            return
+
+        listwidget = self.pathListWidget
+        row = listwidget.row(item)
+
+        if (row + offset) < 0:
+            offset = -row
+        elif (row + offset) >= listwidget.count():
+            offset = listwidget.count() - 1 - row
+
+        if offset == 0:
+            return
+
+        selected = item.isSelected()
+        item = listwidget.takeItem(row)
+        listwidget.insertItem(row + offset, item)
+        item.setSelected(selected)
+
+    def movePathItemsUp(self):
+        for item in self.pathListWidget.selectedItems():
+            self.movePathItem(item, -1)
+
+    def movePathItemsDown(self):
+        for item in self.pathListWidget.selectedItems():
+            self.movePathItem(item, 1)
+
+    def update_view(self):
+        self.pathListWidget.clear()
+
+        for item in self.pluginmanager.paths:
+            self.pathListWidget.addItem(item)
+
+        self.pluginmanager.load(self.pluginmanager.allplugins, info_only=True)
+
+        tablewidget = self.pluginsTableWidget
+        tablewidget.clear()
+        tablewidget.setRowCount(0)
+        tablewidget.setHorizontalHeaderLabels([self.tr('Name'),
+                                               self.tr('Description'),
+                                               self.tr('Info'),
+                                               self.tr('Active'),
+                                               self.tr('Load on startup')])
+
+        for plugin in self.pluginmanager.allplugins:
+            try:
+                name = sys.modules[plugin].name
+                short_description = sys.modules[plugin].short_description
+            except AttributeError, e:
+                msg = str(e)
+                if not "'name'" in msg and not  "'short_description'" in msg:
+                    raise
+            else:
+                index = tablewidget.rowCount()
+                tablewidget.insertRow(index)
+
+                # name/description
+                tablewidget.setItem(index, 0, QtGui.QTableWidgetItem(name))
+                tablewidget.setItem(index, 1,
+                                    QtGui.QTableWidgetItem(short_description))
+
+                # info
+                w = QtGui.QPushButton(QtGui.QIcon(':/info.svg'),
+                                      tablewidget.tr('Info'),
+                                      tablewidget)
+                tablewidget.setCellWidget(index, 2, w)
+                w.connect(w, QtCore.SIGNAL('clicked()'),
+                          lambda: self.showPluginInfo(index))
+                w.setEnabled(False) # @TODO: remove
+
+                # active
+                w = QtGui.QCheckBox()
+                tablewidget.setCellWidget(index, 3, w)
+                w.setChecked(plugin in self.pluginmanager.plugins)
+                # TODO: remove this block when plugins unloading will be
+                #       available
+                if w.isChecked():
+                    w.setEnabled(False)
+
+                # autoload
+                w = QtGui.QCheckBox()
+                tablewidget.setCellWidget(index, 4, w)
+                w.setChecked(plugin in self.pluginmanager.autoload)
+        tablewidget.resizeColumnsToContents()
+
+    def load(self, settings=None):
+        self.pluginmanager.load_settings(settings)
+        self.update_view()
+
+    #~ def toggle_autoload(self, row, checked):
+        #~ assert checked == self.pluginsTableWidget.cellWidget(row, 3).isChecked()
+        #~ name = self.pluginsTableWidget.item(row, 0).text()
+        #~ if checked and not name in self.pluginmanager.autoload:
+            #~ # TODO: apply changes in model only when the APPLY or OK button
+            #~ #       is pressed
+            #~ self.pluginmanager.autoload.append(name)
+        #~ else:
+            #~ try:
+                #~ self.pluginmanager.autoload.remove(name)
+            #~ except ValueError, e:
+                #~ # @TODO: use the appropriate logger
+                #~ logging.debug(e, exc_info=True)
+
+    def update_pluginmanager(self):
+        paths = []
+        for row in range(self.pathListWidget.count()):
+            paths.append(str(self.pathListWidget.item(row).text()))
+        self.pluginmanager.paths = paths
+
+        tablewidget = self.pluginsTableWidget
+
+        active = set()
+        autoload = []
+        for row in range(tablewidget.rowCount()):
+            name = str(tablewidget.item(row, 0).text())
+            if tablewidget.cellWidget(row, 3).isChecked():
+                active.add(name)
+
+            if tablewidget.cellWidget(row, 4).isChecked():
+                autoload.append(name)
+
+        toload = active.difference(self.pluginmanager.plugins)
+        tounload = set(self.pluginmanager.plugins).difference(active)
+        assert not set(toload).intersection(tounload)
+
+        self.pluginmanager.load(toload)
+        # TODO: do not allow backends unloading
+        self.pluginmanager.unload(tounload)
+
+        self.pluginmanager.autoload = autoload
+
+    def save(self, settings=None):
+        self.update_pluginmanager()
+        self.pluginmanager.save_settings(settings)

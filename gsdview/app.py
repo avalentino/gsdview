@@ -38,9 +38,9 @@ from gsdview import utils
 from gsdview import exectools
 from gsdview import qt4support
 from gsdview import graphicsview
+from gsdview import pluginmanager
 
 from gsdview.widgets import AboutDialog, PreferencesDialog
-from gsdview.pluginmanager import PluginManager
 from gsdview.exectools.qt4tools import Qt4ToolController
 from gsdview.exectools.qt4tools import Qt4DialogLoggingHandler
 
@@ -130,9 +130,14 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         logger.debug('Miscellanea setup ...')
         self.cachedir = None
 
+        # Plugin Manager
         #self.plugins = {}
-        self.pluginmanager = PluginManager(self)
         self.backends = []
+        self.pluginmanager = pluginmanager.PluginManager(self)
+        self.preferencesdialog.addPage(
+                pluginmanager.PluginManagerGui(self.pluginmanager, self),
+                QtGui.QIcon(':/plugin.svg'),
+                label='Plugin Manager')
 
         # Settings
         if not os.path.isdir(USERCONFIGDIR):

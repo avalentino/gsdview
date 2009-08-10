@@ -21,5 +21,10 @@
     <file>zoom-out.svg</file>
     <file>zoom-fit.svg</file>
     <file>zoom-100.svg</file>
+    <file>go-up.svg</file>
+    <file>go-down.svg</file>
+    <file>goto-top.svg</file>
+    <file>goto-bottom.svg</file>
+    <file>plugin.svg</file>
   </qresource>
 </RCC>
