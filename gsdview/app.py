@@ -137,7 +137,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         self.preferencesdialog.addPage(
                 pluginmanager.PluginManagerGui(self.pluginmanager, self),
                 QtGui.QIcon(':/plugin.svg'),
-                label='Plugin Manager')
+                label='Plugins')
 
         # Settings
         if not os.path.isdir(USERCONFIGDIR):

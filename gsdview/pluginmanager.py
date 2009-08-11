@@ -300,8 +300,11 @@ class PluginManagerGui(QtGui.QWidget):
         filedialog.setFileMode(filedialog.Directory)
         if(filedialog.exec_()):
             dirs = filedialog.selectedFiles()
+            existingdirs = [str(self.pathListWidget.item(row).text())
+                                for row in range(self.pathListWidget.count())]
             for dir_ in dirs:
-                self.pathListWidget.addItem(dir_)
+                if dir_ not in existingdirs:
+                    self.pathListWidget.addItem(dir_)
 
     def removePathItem(self):
         model = self.pathListWidget.model()
@@ -322,7 +325,7 @@ class PluginManagerGui(QtGui.QWidget):
                     dir_ = dirs[0]
                     item.setText(dir_)
 
-    def movePathItem(self, item, offset):
+    def _movePathItem(self, item, offset):
         if offset == 0:
             return
 
@@ -343,12 +346,24 @@ class PluginManagerGui(QtGui.QWidget):
         item.setSelected(selected)
 
     def movePathItemsUp(self):
-        for item in self.pathListWidget.selectedItems():
-            self.movePathItem(item, -1)
+        selected = sorted(self.pathListWidget.selectedItems(),
+                          key=self.pathListWidget.row)
+
+        if self.pathListWidget.row(selected[0]) == 0:
+            return
+
+        for item in selected:
+            self._movePathItem(item, -1)
 
     def movePathItemsDown(self):
-        for item in self.pathListWidget.selectedItems():
-            self.movePathItem(item, 1)
+        selected = sorted(self.pathListWidget.selectedItems(),
+                          key=self.pathListWidget.row, reverse=True)
+
+        if self.pathListWidget.row(selected[0]) == self.pathListWidget.count()-1:
+            return
+
+        for item in selected:
+            self._movePathItem(item, 1)
 
     def update_view(self):
         self.pathListWidget.clear()
@@ -386,11 +401,12 @@ class PluginManagerGui(QtGui.QWidget):
 
                 # info
                 w = QtGui.QPushButton(QtGui.QIcon(':/info.svg'),
-                                      tablewidget.tr('Info'),
+                                      '', # tablewidget.tr('Info'),
                                       tablewidget)
                 tablewidget.setCellWidget(index, 2, w)
                 w.connect(w, QtCore.SIGNAL('clicked()'),
                           lambda: self.showPluginInfo(index))
+                w.setToolTip(w.tr('Show plugin info.'))
                 w.setEnabled(False) # @TODO: remove
 
                 # active
@@ -406,25 +422,12 @@ class PluginManagerGui(QtGui.QWidget):
                 w = QtGui.QCheckBox()
                 tablewidget.setCellWidget(index, 4, w)
                 w.setChecked(plugin in self.pluginmanager.autoload)
+                w.setToolTip(w.tr('Load on startup'))
         tablewidget.resizeColumnsToContents()
 
     def load(self, settings=None):
         self.pluginmanager.load_settings(settings)
         self.update_view()
-
-    #~ def toggle_autoload(self, row, checked):
-        #~ assert checked == self.pluginsTableWidget.cellWidget(row, 3).isChecked()
-        #~ name = self.pluginsTableWidget.item(row, 0).text()
-        #~ if checked and not name in self.pluginmanager.autoload:
-            #~ # TODO: apply changes in model only when the APPLY or OK button
-            #~ #       is pressed
-            #~ self.pluginmanager.autoload.append(name)
-        #~ else:
-            #~ try:
-                #~ self.pluginmanager.autoload.remove(name)
-            #~ except ValueError, e:
-                #~ # @TODO: use the appropriate logger
-                #~ logging.debug(e, exc_info=True)
 
     def update_pluginmanager(self):
         paths = []
