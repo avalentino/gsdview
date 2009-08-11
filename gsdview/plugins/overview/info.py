@@ -43,8 +43,8 @@ Moving the red box with the mouse updates the main view to show the boxed area.
 
 '''
 
-author = ('Antonio Valentino',)
-author_email = ('a_valentino@users.sf.net',)
+author = 'Antonio Valentino'
+author_email = 'a_valentino@users.sf.net'
 copyright = 'Copyright (C) 2008-2009 %s <%s>' % (author, author_email)
 license_type = 'GNU GPL'
 website = 'http://gsdview.sourceforge.net'

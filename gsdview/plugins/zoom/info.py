@@ -38,8 +38,8 @@ with a tree view displaying the GDAL dataset contents.
 
 '''
 
-author = ('Antonio Valentino',)
-author_email = ('a_valentino@users.sf.net',)
+author = 'Antonio Valentino'
+author_email = 'a_valentino@users.sf.net'
 copyright = 'Copyright (C) 2008-2009 %s <%s>' % (author, author_email)
 license_type = 'GNU GPL'
 website = 'http://gsdview.sourceforge.net'

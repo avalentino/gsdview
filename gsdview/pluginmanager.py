@@ -98,7 +98,7 @@ class PluginManager(object):
                     loader = importer.find_module(name)
                     if not loader:
                         # search in standard path
-                        loader = pkgutil.get_loader('numpy')
+                        loader = pkgutil.get_loader(fullname)
                     if loader:
                         module = loader.load_module(fullname)
                     else:
@@ -405,9 +405,8 @@ class PluginManagerGui(QtGui.QWidget):
                                       tablewidget)
                 tablewidget.setCellWidget(index, 2, w)
                 w.connect(w, QtCore.SIGNAL('clicked()'),
-                          lambda: self.showPluginInfo(index))
+                          lambda index=index: self.showPluginInfo(index))
                 w.setToolTip(w.tr('Show plugin info.'))
-                w.setEnabled(False) # @TODO: remove
 
                 # active
                 w = QtGui.QCheckBox()
@@ -460,3 +459,83 @@ class PluginManagerGui(QtGui.QWidget):
     def save(self, settings=None):
         self.update_pluginmanager()
         self.pluginmanager.save_settings(settings)
+
+    def showPluginInfo(self, index):
+        item = self.pluginsTableWidget.item(index, 0)
+        name = str(item.text())
+        try:
+            plugin = self.pluginmanager.plugins[name]
+            active = True
+        except KeyError:
+            plugin = sys.modules[name]
+            active = False
+
+        d = PluginInfoDialog(plugin, active)
+        d.exec_()
+
+
+class PluginInfoForm(QtGui.QFrame):
+    uifile = os.path.join(os.path.dirname(__file__), 'ui', 'plugininfo.ui')
+
+    def __init__(self, plugin=None, active=None, parent=None,
+                 flags=QtCore.Qt.Widget):
+        QtGui.QFrame.__init__(self, parent, flags)
+        uic.loadUi(self.uifile, self)
+        if plugin is not None and active is not None:
+            self.loadinfo(plugin, active)
+        else:
+            self.clear()
+
+    def loadinfo(self, plugin, active):
+        self.nameValue.setText(plugin.name.capitalize())
+        self.descriptionValue.setText(plugin.description)
+
+        self.authorValue.setText(plugin.author)
+        self.emailValue.setText(
+                '&lt;<a href="mailto:%(email)s">%(email)s</a>&gt;' %
+                                            dict(email=plugin.author_email))
+        self.versionValue.setText(plugin.version)
+        self.revisionValue.setText(plugin.__revision__)
+        self.licenseValue.setText(plugin.license_type)
+        self.copyrightValue.setText(plugin.copyright)
+        self.websiteValue.setText('<a href="%s">%s</a>' %
+                                        (plugin.website, plugin.website_label))
+
+        fullpath = plugin.__file__
+        for c in ('', 'c', 'o'):
+            fullpath = fullpath.rstrip('%s__init__.py%s' % (os.pathsep, c))
+        self.fullPathValue.setText(fullpath)
+        self.loadedCheckBox.setChecked(active)
+
+
+    def clear(self):
+        self.nameValue.setText('')
+        self.descriptionValue.setText('')
+
+        self.authorValue.setText('')
+        self.emailValue.setText('')
+        self.versionValue.setText('')
+        self.revisionValue.setText('')
+        self.licenseValue.setText('')
+        self.copyrightValue.setText('')
+        self.websiteValue.setText('')
+
+        self.fullPathValue.setText('')
+        self.loadedCheckBox.setChecked(False)
+
+
+class PluginInfoDialog(QtGui.QDialog):
+
+    def __init__(self, plugin, active, parent=None, flags=QtCore.Qt.Widget):
+        QtGui.QDialog.__init__(self, parent, flags)
+        self.setModal(True)
+
+        bbox = QtGui.QDialogButtonBox()
+        bbox.addButton(bbox.Close)
+        b = bbox.button(bbox.Close)
+        b.connect(b, QtCore.SIGNAL('clicked()'), self.accept)
+
+        layout = QtGui.QVBoxLayout()
+        layout.addWidget(PluginInfoForm(plugin, active))
+        layout.addWidget(bbox)
+        self.setLayout(layout)
