@@ -367,39 +367,6 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         # save initial state
         self.pluginmanager.save_settings(self.settings)
 
-        # @TODO: set from settings
-        #pluginsDir = os.path.join(os.path.dirname(__file__), 'plugins')
-        #sys.path.insert(0, pluginsDir)
-
-        #~ for dirpath, dirnames, filenames in os.walk(pluginsDir):
-            #~ for name in filenames:
-                #~ name, ext = os.path.splitext(name)
-                #~ #if ext.lower() not in ('.py', '.pyc', '.pyo', '.pyd', '.dll', '.so', '.egg', '.zip'):
-                    #~ #continue
-                #~ if name.startswith(('.', '_')) or (name in sys.modules):
-                    #~ continue
-                #~ try:
-                    #~ module = __import__(name)
-                    #~ module.init(self)
-                    #~ plugins[name] = module
-                    #~ logger.info('"%s" plugin loaded.' % name)
-                #~ except ImportError, e:
-                    #~ self.logger.debug('"%s" module not loaded: %s' % (name, e))
-
-            #~ for name in dirnames:
-                #~ if name.startswith(('.', '_')) or (name in sys.modules):
-                    #~ continue
-                #~ try:
-                    #~ module = __import__(name)
-                    #~ module.init(self)
-                    #~ plugins[name] = module
-                    #~ logger.info('"%s" plugin loaded.' % name)
-                #~ except ImportError, e:
-                    #~ self.logger.debug('"%s" module not loaded: %s' % (name, e))
-            #~ del dirnames[:]
-
-        #~ return plugins
-
     def setupLogging(self):
         logger = logging.getLogger('gsdview')    # 'gsdview' # @TODO: fix
 
