@@ -40,6 +40,7 @@ from gsdview import qt4support
 from gsdview import graphicsview
 from gsdview import pluginmanager
 
+#from gsdview appsite import USERCONFIGDIR, SYSPLUGINSDIR  # @TODO: fix
 from gsdview.widgets import AboutDialog, PreferencesDialog
 from gsdview.exectools.qt4tools import Qt4ToolController
 from gsdview.exectools.qt4tools import Qt4DialogLoggingHandler
@@ -49,7 +50,9 @@ from gsdview.exectools.qt4tools import Qt4DialogLoggingHandler
 # @TODO: move elsewhere (site.py ??)
 # @NOTE: this should happen before any os.chdir
 GSDVIEWROOT = os.path.dirname(os.path.abspath(__file__))
+# @TODO: import from appsite
 USERCONFIGDIR = os.path.expanduser(os.path.join('~', '.gsdview'))
+SYSPLUGINSDIR = os.path.join(GSDVIEWROOT, 'plugins')
 
 from mainwin import ItemModelMainWindow
 
@@ -133,7 +136,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         # Plugin Manager
         #self.plugins = {}
         self.backends = []
-        self.pluginmanager = pluginmanager.PluginManager(self)
+        self.pluginmanager = pluginmanager.PluginManager(self, SYSPLUGINSDIR)
         self.preferencesdialog.addPage(
                 pluginmanager.PluginManagerGui(self.pluginmanager, self),
                 QtGui.QIcon(':/plugin.svg'),
@@ -360,6 +363,9 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         self.pluginmanager.load('gdalbackend', paths=path)
 
         self.pluginmanager.load_settings(self.settings)
+
+        # save initial state
+        self.pluginmanager.save_settings(self.settings)
 
         # @TODO: set from settings
         #pluginsDir = os.path.join(os.path.dirname(__file__), 'plugins')

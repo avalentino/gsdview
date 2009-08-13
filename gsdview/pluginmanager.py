@@ -33,23 +33,26 @@ import logging
 # @TODO: move Qt specific implementation elsewhere
 from PyQt4 import QtCore, QtGui, uic
 
+try:
+    import pkg_resources
+except ImportERROR:
+    logging.getLogger(__name__).debug('"pkg_resources" not found.')
 
 class PluginManager(object):
-    def __init__(self, mainwin):
+
+    def __init__(self, mainwin, syspath=None):
         super(PluginManager, self).__init__()
         self.paths = []
+        self.syspath = syspath
         self.plugins = {}
         self.autoload = []
         self._mainwin = mainwin
 
     def _get_allplugins(self):
-        plugins = list(self.plugins.keys())
-        extra_plugins = self._scanpaths()
-        extra_plugins = set(extra_plugins).difference(plugins)
-        plugins.extend(extra_plugins)
-        plugins.sort()
+        plugins = set(self.plugins.keys())
+        plugins.update(self._scanpaths())
 
-        return plugins
+        return sorted(plugins)
 
     allplugins = property(_get_allplugins, doc='List of all availabe plugins.')
 
@@ -62,6 +65,15 @@ class PluginManager(object):
             if name.startswith('_'):
                 continue
             plugins.append(name)
+
+        for path in self.paths:
+            try:
+                for egg in pkg_resources.find_distributions(path):
+                    if egg.egg_name().startswith('_'):
+                        continue
+                    plugins.append(egg.key)
+            except NameError:
+                pass
 
         return plugins
 
@@ -77,6 +89,11 @@ class PluginManager(object):
         logger = logging.getLogger('gsdview')
         for path in paths:
             importer = pkgutil.get_importer(path)
+            try:
+                distributions = pkg_resources.find_distributions(path)
+                distributions = dict((egg.key, egg) for egg in distributions)
+            except NameError:
+                distributions = {}
 
             if isinstance(names, basestring):
                 names = [names]
@@ -93,7 +110,7 @@ class PluginManager(object):
                 fullname = name
 
                 if fullname in sys.modules:
-                    self.plugins[name] = module = sys.modules[fullname]
+                    module = sys.modules[fullname]
                 else:
                     loader = importer.find_module(name)
                     if not loader:
@@ -101,6 +118,11 @@ class PluginManager(object):
                         loader = pkgutil.get_loader(fullname)
                     if loader:
                         module = loader.load_module(fullname)
+                    elif fullname in distributions:
+                        # @TODO: improve
+                        egg = distributions[fullname]
+                        egg.activate()
+                        module = __import__(fullname)
                     else:
                         logger.warning('unable to find "%s" plugin' % name)
                         continue
@@ -134,6 +156,9 @@ class PluginManager(object):
         # @TODO: make it Qt independent
         settings.beginGroup('pluginmanager')
         try:
+            paths = list(self.paths)    # @NOTE: copy
+            if self.syspath in paths:
+                paths.remove(self.syspath)
             settings.setValue('pluginspaths', QtCore.QVariant(self.paths))
             settings.setValue('autoload_plugins',
                               QtCore.QVariant(self.autoload))
@@ -154,11 +179,8 @@ class PluginManager(object):
             if settings.contains('pluginspaths'):
                 pluginspaths = settings.value('pluginspaths')
                 self.paths = map(str, pluginspaths.toStringList())
-            else:
-                PLUGINSPATH = os.path.join(
-                                    os.path.dirname(os.path.abspath(__file__)),
-                                    'plugins')
-                self.paths = [PLUGINSPATH]
+            if not self.syspath in self.paths:
+                self.paths.append(self.syspath)
 
             autoload_plugins = settings.value('autoload_plugins',
                                               QtCore.QVariant([]))
@@ -176,85 +198,11 @@ class PluginManager(object):
             new_plugins = available_plugins.difference(old_plugins)
 
             self.load(list(new_plugins))
+            # only marks actually loaded plugins
+            new_plugins.intersection_update(self.plugins)
             self.autoload.extend(new_plugins)
         finally:
             settings.endGroup()
-
-'''
-    def setupPlugins(self):
-        # @TODO: fix
-        sys.path.insert(0, os.path.normpath(os.path.join(GSDVIEWROOT, os.pardir)))
-
-        # @TODO: move to the PluginManager
-        plugins = {}
-
-        # load backends
-        import gdalbackend
-        gdalbackend.init(self)
-        plugins['gdalbackend'] = gdalbackend
-        _logger.debug('"gdalbackend" plugin loaded.')
-
-        # @TODO: set from settings
-        if getattr(sys, 'frozen', False):
-            pluginsdir = os.path.join(os.path.dirname(sys.argv[0]), 'plugins')
-        else:
-            pluginsdir = os.path.join(os.path.dirname(__file__), 'plugins')
-
-            # ensure that the gsdview package is in the PYTHONPATH
-            dirname = os.path.dirname(__file__)
-            dirname = os.path.join(dirname, os.path.pardir)
-            sys.path.insert(0, dirname)
-
-        _logger.debug('pluginsdir = %s' % pluginsdir)
-        sys.path.insert(0, pluginsdir)
-
-        pkgnames = []
-        for pattern in ('*.py', '*.pyc', '*.pyo'):
-            modules = [os.path.splitext(name)[0]
-                                for name in glob.glob1(pluginsdir, pattern)
-                                            if not name.startswith(('.', '_'))]
-            pkgnames.extend(module for module in modules
-                                                    if module not in pkgnames)
-
-        #_logger.debug('modules: %s' % str(pkgnames))
-
-        pkgnames.extend(name for name in os.listdir(pluginsdir)
-                            if not name.startswith(('.', '_')) and
-                                os.path.isdir(os.path.join(pluginsdir, name)))
-        #_logger.debug('modules and packages: %s' % str(pkgnames))
-
-        #~ try:
-            #~ # @TODO: this require a huge fix
-            #~ from setuptools import find_packages
-            #~ from pkg_resources import find_distributions
-            #~ eggs = [item for item in find_distributions(pluginsdir)]
-            #~ for egg in eggs:
-                #~ egg.activate()
-            #~ pkgnames.extend(item.egg_name().split('_plugin')[0] for item in eggs)
-            #~ _logger.debug('modules and eggs: %s' % str(pkgnames))
-            #~ pkgnames.extend(name for name in find_packages(pluginsdir)
-                                            #~ if not name.startswith(('.', '_')))
-            #~ _logger.debug('modules, eggs and packages: %s' % str(pkgnames))
-        #~ except ImportError:
-            #~ pkgnames.extend(name for name in os.listdir(pluginsdir)
-                                            #~ if not name.startswith(('.', '_')))
-            #~ _logger.debug('modules and packages: %s' % str(pkgnames))
-
-        for name in pkgnames:
-            try:
-                module = __import__(name)
-                module.init(self)
-                plugins[name] = module
-                _logger.debug('"%s" plugin loaded.' % name)
-            except (ImportError, AttributeError), e:
-                #_logger.exception(name)
-                _logger.debug('"%s" module not loaded: %s' % (name, e))
-            except:
-                #init with unknown error
-                logging.getLogger('dialog').error(
-                            'initialization error', exc_info=True)
-        return plugins
-'''
 
 
 class PluginManagerGui(QtGui.QWidget):
@@ -383,6 +331,9 @@ class PluginManagerGui(QtGui.QWidget):
                                                self.tr('Load on startup')])
 
         for plugin in self.pluginmanager.allplugins:
+            name = tablewidget.tr('NOT AVAILABLE')
+            short_description = tablewidget.tr('NOT AVAILABLE')
+            disabled = False
             try:
                 name = sys.modules[plugin].name
                 short_description = sys.modules[plugin].short_description
@@ -390,38 +341,52 @@ class PluginManagerGui(QtGui.QWidget):
                 msg = str(e)
                 if not "'name'" in msg and not  "'short_description'" in msg:
                     raise
-            else:
-                index = tablewidget.rowCount()
-                tablewidget.insertRow(index)
+                name = plugin
+                disabled = True
 
-                # name/description
-                tablewidget.setItem(index, 0, QtGui.QTableWidgetItem(name))
-                tablewidget.setItem(index, 1,
-                                    QtGui.QTableWidgetItem(short_description))
+            index = tablewidget.rowCount()
+            tablewidget.insertRow(index)
 
-                # info
-                w = QtGui.QPushButton(QtGui.QIcon(':/info.svg'),
-                                      '', # tablewidget.tr('Info'),
-                                      tablewidget)
-                tablewidget.setCellWidget(index, 2, w)
-                w.connect(w, QtCore.SIGNAL('clicked()'),
-                          lambda index=index: self.showPluginInfo(index))
-                w.setToolTip(w.tr('Show plugin info.'))
+            # name/description
+            tablewidget.setItem(index, 0, QtGui.QTableWidgetItem(name))
+            tablewidget.setItem(index, 1,
+                                QtGui.QTableWidgetItem(short_description))
 
-                # active
-                w = QtGui.QCheckBox()
-                tablewidget.setCellWidget(index, 3, w)
-                w.setChecked(plugin in self.pluginmanager.plugins)
-                # TODO: remove this block when plugins unloading will be
-                #       available
-                if w.isChecked():
-                    w.setEnabled(False)
+            # info
+            w = QtGui.QPushButton(QtGui.QIcon(':/info.svg'),
+                                  '', # tablewidget.tr('Info'),
+                                  tablewidget)
+            tablewidget.setCellWidget(index, 2, w)
+            w.connect(w, QtCore.SIGNAL('clicked()'),
+                      lambda index=index: self.showPluginInfo(index))
+            w.setToolTip(w.tr('Show plugin info.'))
 
-                # autoload
-                w = QtGui.QCheckBox()
-                tablewidget.setCellWidget(index, 4, w)
-                w.setChecked(plugin in self.pluginmanager.autoload)
-                w.setToolTip(w.tr('Load on startup'))
+            # active
+            w = QtGui.QCheckBox()
+            tablewidget.setCellWidget(index, 3, w)
+            w.setChecked(plugin in self.pluginmanager.plugins)
+            # TODO: remove this block when plugins unloading will be
+            #       available
+            if w.isChecked():
+                w.setEnabled(False)
+
+            # autoload
+            w = QtGui.QCheckBox()
+            tablewidget.setCellWidget(index, 4, w)
+            w.setChecked(plugin in self.pluginmanager.autoload)
+            w.setToolTip(w.tr('Load on startup'))
+
+            if disabled:
+                for col in range(tablewidget.columnCount()):
+                    item = tablewidget.item(index, col)
+                    if item:
+                        item.setFlags(item.flags() ^ QtCore.Qt.ItemIsEnabled)
+                        msg = tablewidget.tr("Plugin don't seems to be "
+                                              "compatible with GSDView.")
+                        item.setToolTip(msg)
+                    else:
+                        w = tablewidget.cellWidget(index, col)
+                        w.setEnabled(False)
         tablewidget.resizeColumnsToContents()
 
     def load(self, settings=None):
