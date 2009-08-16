@@ -1,14 +1,16 @@
 include MANIFEST MANIFEST.in
 include LICENSE.txt
 #include AUTHORS
-include Makefile doc/Makefile doc/make.bat
+include Makefile
 include gsdviewer
 include gsdview.desktop
-include resources.qrc
 recursive-include gsdview *.py *.ui
 recursive-include images *.svg *.png *.qrc
-recursive-include gsdview/gdalbackend/images *.svg *.png *.qrc
-recursive-include gsdview/plugins/worldmap/images *.svg *.jpg *.qrc
-recursive-include doc/source *.txt *.html *.pdf *.css *.png *.svg *.ico *.py
+recursive-include gsdview/gdalbackend/images *.svg *.qrc
+recursive-include gsdview/plugins/worldmap/images *.jpg *.qrc
+
+include doc/Makefile doc/make.bat
+recursive-include doc/source *.txt *.html *.pdf *.png *.svg *.ico *.py
 recursive-include doc/html *
+
 recursive-include debian *
