@@ -187,6 +187,19 @@ class GeneralPreferencesPage(QtGui.QWidget):
         QtGui.QWidget.__init__(self, parent, flags)
         uic.loadUi(self.uifile, self)
 
+        # Avoid promoted widgets
+        self.cachedirEntryWidget = FileEntryWidget()
+        self.cachedirEntryWidget.setToolTip(
+                    self.tr('Location of the directory for file cache.\n'
+                            'Default: "$HOME/.gsdview".'))
+        self.preferencesGridLayout.addWidget(self.cachedirEntryWidget, 1, 1)
+
+        self.workdirEntryWidget = FileEntryWidget()
+        self.workdirEntryWidget.setToolTip(
+                    self.tr('Base directory for files and directories '
+                            'selection.\nDefault: "$HOME".'))
+        self.fileDialogHorizontalLayout.addWidget(self.workdirEntryWidget)
+
         self.loglevelComboBox.setFocus()
 
         # Log level
