@@ -77,6 +77,20 @@ class PluginManager(object):
 
         return plugins
 
+    def load_module(self, module, name=None):
+        logger = logging.getLogger('gsdview')
+
+        if not name:
+            name = module.__name__
+
+        try:
+            module.init(self._mainwin)
+            self.plugins[name] = module
+            logger.info('"%s" plugin loaded.' % name)
+        except Exception, e:   #AttributeError:
+            logger.warning('error loading "%s" plugin: %s' %
+                                                        (name, e))
+
     def load(self, names, paths=None, info_only=False, type_='plugins'):
         if paths is None:
             paths = self.paths
@@ -84,7 +98,9 @@ class PluginManager(object):
             paths = [paths]
 
         if not paths:
-            return
+            paths = []
+            if self.syspath:
+                paths.append(self.syspath)
 
         logger = logging.getLogger('gsdview')
         for path in paths:
@@ -102,38 +118,27 @@ class PluginManager(object):
                 if name in self.plugins:
                     continue
 
-                # @NOTE: this causes:
-                #           RuntimeWarning: Parent module 'gsdview.plugins'
-                #           not found while handling absolute import
-                #fullname = name.lstrip('gsdview.').lstrip(type_ + '.')
-                #fullname = 'gsdview.%s.%s' % (type_, name)
-                fullname = name
-
-                if fullname in sys.modules:
-                    module = sys.modules[fullname]
+                if name in sys.modules:
+                    module = sys.modules[name]
                 else:
-                    loader = importer.find_module(name)
-                    if not loader:
-                        # search in standard path
-                        loader = pkgutil.get_loader(fullname)
-                    if loader:
-                        module = loader.load_module(fullname)
-                    elif fullname in distributions:
-                        # @TODO: improve
-                        egg = distributions[fullname]
-                        egg.activate()
-                        module = __import__(fullname)
-                    else:
-                        logger.warning('unable to find "%s" plugin' % name)
-                        continue
-                if not info_only:
                     try:
-                        module.init(self._mainwin)
-                        self.plugins[name] = module
-                        logger.info('"%s" plugin loaded.' % name)
-                    except Exception, e:   #AttributeError:
-                        logger.warning('error loading "%s" plugin: %s' %
+                        loader = importer.find_module(name)
+                        if loader:
+                            module = loader.load_module(name)
+                        elif name in distributions:
+                            egg = distributions[name]
+                            egg.activate()
+                            module = __import__(name)
+                        else:
+                            logger.warning('unable to find "%s" plugin' % name)
+                            continue
+                    except ImportError, e:
+                        logger.warning('unable to import "%s" plugin: %s' %
                                                                     (name, e))
+                        continue
+
+                if not info_only:
+                    self.load_module(module, name)
 
     def unload(self, names, type_='plugin'):
         if isinstance(names, basestring):
@@ -152,16 +157,20 @@ class PluginManager(object):
         if not settings:
             settings = self._mainwin.settings
 
-        # @NOTE:  settings is expected to be a QSettings instance
+        # @NOTE: settings is expected to be a QSettings instance
         # @TODO: make it Qt independent
         settings.beginGroup('pluginmanager')
         try:
             paths = list(self.paths)    # @NOTE: copy
             if self.syspath in paths:
                 paths.remove(self.syspath)
-            settings.setValue('pluginspaths', QtCore.QVariant(self.paths))
+            settings.setValue('pluginspaths', QtCore.QVariant(paths))
+
+            autoload = set(self.autoload)
+            autoload = list(autoload.intersection(self.allplugins))
             settings.setValue('autoload_plugins',
-                              QtCore.QVariant(self.autoload))
+                              QtCore.QVariant(autoload))
+
             settings.setValue('available_plugins',
                               QtCore.QVariant(self.allplugins))
         finally:
@@ -179,7 +188,7 @@ class PluginManager(object):
             if settings.contains('pluginspaths'):
                 pluginspaths = settings.value('pluginspaths')
                 self.paths = map(str, pluginspaths.toStringList())
-            if not self.syspath in self.paths:
+            if self.syspath and not self.syspath in self.paths:
                 self.paths.append(self.syspath)
 
             autoload_plugins = settings.value('autoload_plugins',
@@ -331,18 +340,22 @@ class PluginManagerGui(QtGui.QWidget):
                                                self.tr('Load on startup')])
 
         for plugin in self.pluginmanager.allplugins:
-            name = tablewidget.tr('NOT AVAILABLE')
+            name = plugin
             short_description = tablewidget.tr('NOT AVAILABLE')
             disabled = False
-            try:
-                name = sys.modules[plugin].name
-                short_description = sys.modules[plugin].short_description
-            except AttributeError, e:
-                msg = str(e)
-                if not "'name'" in msg and not  "'short_description'" in msg:
-                    raise
-                name = plugin
-                disabled = True
+            for dict_ in (self.pluginmanager.plugins, sys.modules):
+                try:
+                    module = dict_[name]
+                    name = module.name
+                    short_description = module.short_description
+                    break
+                except AttributeError, e:
+                    msg = str(e)
+                    if not "'name'" in msg and not  "'short_description'" in msg:
+                        raise
+                    disabled = True
+                except KeyError:
+                    disabled = True
 
             index = tablewidget.rowCount()
             tablewidget.insertRow(index)
@@ -382,7 +395,7 @@ class PluginManagerGui(QtGui.QWidget):
                     if item:
                         item.setFlags(item.flags() ^ QtCore.Qt.ItemIsEnabled)
                         msg = tablewidget.tr("Plugin don't seems to be "
-                                              "compatible with GSDView.")
+                                             "compatible with GSDView.")
                         item.setToolTip(msg)
                     else:
                         w = tablewidget.cellWidget(index, col)
@@ -432,8 +445,11 @@ class PluginManagerGui(QtGui.QWidget):
             plugin = self.pluginmanager.plugins[name]
             active = True
         except KeyError:
-            plugin = sys.modules[name]
             active = False
+            try:
+                plugin = sys.modules[name]
+            except KetError:
+                return
 
         d = PluginInfoDialog(plugin, active)
         d.exec_()
@@ -467,8 +483,13 @@ class PluginInfoForm(QtGui.QFrame):
                                         (plugin.website, plugin.website_label))
 
         fullpath = plugin.__file__
-        for c in ('', 'c', 'o'):
-            fullpath = fullpath.rstrip('%s__init__.py%s' % (os.pathsep, c))
+        if fullpath.endswith('.pyc') or fullpath.endswith('.pyo'):
+            fullpath = fullpath.rstrip('co')
+
+        s = '%s__init__.py' % os.sep
+        if fullpath.endswith(s):
+            fullpath = fullpath[:-len(s)]
+
         self.fullPathValue.setText(fullpath)
         self.loadedCheckBox.setChecked(active)
 

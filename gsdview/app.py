@@ -83,7 +83,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
     - settingsActions
     - helpActions
 
-    - plugins
+    - pluginmanager
     - backends
 
     - controller
@@ -350,18 +350,11 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         return toolbar
 
     def setupPlugins(self):
-        logger = logging.getLogger('gsdview')
-
-        # @TODO: fix
-        #sys.path.insert(0, os.path.normpath(os.path.join(GSDVIEWROOT, os.pardir)))
-
-        # @TODO: move to the PluginManager
-        #~ plugins = {}
-
         # load backends
-        path = os.path.dirname(os.path.abspath(__file__))
-        self.pluginmanager.load('gdalbackend', paths=path)
+        module = __import__('gsdview.gdalbackend', fromlist=['gsdview'])
+        self.pluginmanager.load_module(module, 'gdalbackend')
 
+        # load settings
         self.pluginmanager.load_settings(self.settings)
 
         # save initial state
@@ -370,6 +363,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
     def setupLogging(self):
         logger = logging.getLogger('gsdview')    # 'gsdview' # @TODO: fix
 
+        # move this to launch.py
         fmt = ('%(levelname)s: %(asctime)s %(filename)s line %(lineno)d in '
                '%(funcName)s: %(message)s')
         formatter = logging.Formatter(fmt)
@@ -405,7 +399,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         #~ tool = GdalAddOverviewDescriptor(stdout_handler=handler)
 
         # @TODO: rewrite and remove this workaround
-        tool = exectools.GenericToolDescriptor('echo')  # ummy tool
+        tool = exectools.GenericToolDescriptor('echo')  # dummy tool
         controller = Qt4ToolController(logger, parent=self)
         controller.tool = tool
         controller.connect(controller, QtCore.SIGNAL('finished()'),
