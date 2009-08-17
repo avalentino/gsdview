@@ -472,7 +472,8 @@ p, li { white-space: pre-wrap; }
 
 if __name__ == '__main__':
     import os, sys
-    sys.path.insert(0, os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__),
+                                    os.pardir, os.pardir))
 
     def test_gdalinfowidget():
         app = QtGui.QApplication(sys.argv)
