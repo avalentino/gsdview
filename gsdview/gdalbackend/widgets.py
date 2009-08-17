@@ -32,7 +32,7 @@ from PyQt4 import QtCore, QtGui, uic
 
 from gsdview.widgets import get_filedialog
 
-import gdalsupport
+from gsdview.gdalbackend import gdalsupport
 
 
 class GDALInfoWidget(QtGui.QWidget):
