@@ -23,7 +23,11 @@ __date__     = '$Date$'
 __revision__ = '$Revision$'
 __requires__ = []       # @TODO: move to the info file
 
-__all__ = ['init', 'close', 'footprint', 'WorldmapPanel']
+__all__ = ['init', 'close', 'footprint', 'WorldmapPanel',
+           'name','version', 'short_description','description',
+           'author', 'author_email', 'copyright', 'license_type',
+           'website', 'website_label',
+]
 
 
 from info import *

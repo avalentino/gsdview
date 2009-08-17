@@ -24,7 +24,11 @@ __revision__ = '$Revision$'
 __requires__ = []
 
 __all__ = ['init', 'close', 'loadSettings', 'saveSettings',
-           'openFile', 'UseExceptions', 'DontUseExceptions']
+           'openFile', 'UseExceptions', 'DontUseExceptions',
+           'name','version', 'short_description','description',
+           'author', 'author_email', 'copyright', 'license_type',
+           'website', 'website_label',
+]
 
 
 from info import *

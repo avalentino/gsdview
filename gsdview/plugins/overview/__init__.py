@@ -23,7 +23,11 @@ __date__     = '$Date$'
 __revision__ = '$Revision$'
 __requires__ = []
 
-__all__ = ['GdalBandOverview', 'init', 'close']
+__all__ = ['GdalBandOverview', 'init', 'close',
+           'name','version', 'short_description','description',
+           'author', 'author_email', 'copyright', 'license_type',
+           'website', 'website_label',
+]
 
 from info import *
 
