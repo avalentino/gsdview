@@ -18,4 +18,14 @@ __ `GSDView project page`_
 
 .. include:: latestnews.txt
 
+
+:18/05/2008: First public release available.
+
+             The first public release of GSDView is available for download_
+             on SourceForge_.
+
+             This is still an alpha release with a minimal set of features.
+
+
 .. _`GSDView project page`: http://sourceforge.net/projects/gsdview
+.. _download: http://sourceforge.net/project/showfiles.php?group_id=226458

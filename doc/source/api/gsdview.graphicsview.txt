@@ -1,0 +1,25 @@
+gsdview.graphicsview
+====================
+
+.. automodule:: gsdview.graphicsview
+   :members:
+   :undoc-members:
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      GraphicsView
+      GraphicsViewMonitor
+   
+   
+
+   
+   
+   

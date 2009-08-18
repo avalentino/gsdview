@@ -1,0 +1,35 @@
+logplane
+========
+
+.. automodule:: logplane
+   :members:
+   :undoc-members:
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      close
+      init
+      loadSettings
+      saveSettings
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Qt4OStream
+      Qt4OutputPlane
+      Qt4StreamLoggingHandler
+   
+   
+
+   
+   
+   

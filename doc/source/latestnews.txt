@@ -1,10 +1,17 @@
+:XX/08/2009: GSDView Open Source Edition v. 0.6.0 released.
+
+             With respect to the alpha version a serious bug in
+             sub-datasets handling has been fixed.
+             New component (PluginManager) for plugin management.
+             It is configurable via preferences dialog.
+
 :10/05/2009: GSDView Open Source Edition v. 0.6.0 alpha 1 released.
 
-             Almost complete application re-write: 
+             Almost complete application re-write:
              new architecture that allows multiple data access backends
-             (currently only GDAL backend is provided), updated dataset 
-             browser with new contextual actions, Multiple Document 
-             Interface (MDI), new preference dialog, improved GDAL 
+             (currently only GDAL backend is provided), updated dataset
+             browser with new contextual actions, Multiple Document
+             Interface (MDI), new preference dialog, improved GDAL
              configuration handling.
 
 :30/08/2008: New Home Page.
@@ -13,14 +20,6 @@
              Now the sphinx_ tool is used to generate the entire
              documentation set.
 
-:18/05/2008: First public release available.
-
-             The first public release of GSDView is available for download_
-             on SourceForge_.
-
-             This is still an alpha release with a minimal set of features.
-
 
 .. _sphinx: http://sphinx.pocoo.org
-.. _download: http://sourceforge.net/project/showfiles.php?group_id=226458
 .. _SourceForge: http://sourceforge.net

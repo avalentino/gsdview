@@ -1,0 +1,24 @@
+metadata.core
+=============
+
+.. automodule:: metadata.core
+   :members:
+   :undoc-members:
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MetadataViewer
+   
+   
+
+   
+   
+   

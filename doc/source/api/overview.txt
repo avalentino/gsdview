@@ -1,0 +1,33 @@
+overview
+========
+
+.. automodule:: overview
+   :members:
+   :undoc-members:
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      close
+      init
+      loadSettings
+      saveSettings
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BandOverviewDock
+   
+   
+
+   
+   
+   

@@ -1,0 +1,31 @@
+gsdview.gdalbackend.gdalqt4
+===========================
+
+.. automodule:: gsdview.gdalbackend.gdalqt4
+   :members:
+   :undoc-members:
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      GDALTypeCodeToNumericTypeCode
+      numpy2qimage
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      GdalGraphicsItem
+   
+   
+
+   
+   
+   

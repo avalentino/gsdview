@@ -17,13 +17,15 @@ import sys, os
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.append(os.path.abspath('.'))
-sys.path.insert(0, '../..')
+sys.path.insert(0, os.path.abspath('../..'))
+sys.path.insert(1, os.path.abspath('../../gsdview/plugins'))
 
 # -- General configuration -----------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.todo', 'sphinx.ext.ifconfig']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.autosummary',
+              'sphinx.ext.todo', 'sphinx.ext.ifconfig']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -140,8 +142,7 @@ html_sidebars = {'index': 'homepagesidebar.html'}
 #html_additional_pages = {}
 
 # If false, no module index is generated.
-#html_use_modindex = True
-html_use_modindex = False
+html_use_modindex = True
 
 # If false, no index is generated.
 #html_use_index = True

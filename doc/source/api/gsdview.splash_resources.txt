@@ -1,0 +1,25 @@
+gsdview.splash_resources
+========================
+
+.. automodule:: gsdview.splash_resources
+   :members:
+   :undoc-members:
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      qCleanupResources
+      qInitResources
+   
+   
+
+   
+   
+   
+
+   
+   
+   

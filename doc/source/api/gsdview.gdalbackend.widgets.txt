@@ -1,0 +1,34 @@
+gsdview.gdalbackend.widgets
+===========================
+
+.. automodule:: gsdview.gdalbackend.widgets
+   :members:
+   :undoc-members:
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_filedialog
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BandInfoDialog
+      DatasetInfoDialog
+      GDALInfoWidget
+      GDALPreferencesPage
+      MajorObjectInfoDialog
+   
+   
+
+   
+   
+   

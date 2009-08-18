@@ -1,0 +1,43 @@
+gsdview.gdalbackend.gdalsupport
+===============================
+
+.. automodule:: gsdview.gdalbackend.gdalsupport
+   :members:
+   :undoc-members:
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      available_ovr_levels
+      best_ovr_index
+      compute_ovr_level
+      coordinate_mapper
+      gdalFilters
+      gdalOvLevelAdjust
+      getDriverList
+      uniqueDatasetID
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CoordinateMapper
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      CoordinateMapper
+   
+   

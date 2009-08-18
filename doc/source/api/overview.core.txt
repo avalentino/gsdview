@@ -1,0 +1,31 @@
+overview.core
+=============
+
+.. automodule:: overview.core
+   :members:
+   :undoc-members:
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      overrideCursor
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BandOverviewDock
+      NavigationGraphicsView
+   
+   
+
+   
+   
+   

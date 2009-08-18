@@ -1,0 +1,18 @@
+metadata.info
+=============
+
+.. automodule:: metadata.info
+   :members:
+   :undoc-members:
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   

@@ -1,0 +1,35 @@
+gsdview.gdalbackend.modelitems
+==============================
+
+.. automodule:: gsdview.gdalbackend.modelitems
+   :members:
+   :undoc-members:
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      datasetitem
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BandItem
+      CachedDatasetItem
+      DatasetItem
+      MajorObjectItem
+      OverviewItem
+      SubDatasetItem
+   
+   
+
+   
+   
+   

@@ -1,0 +1,87 @@
+gsdview.gdalbackend
+===================
+
+.. automodule:: gsdview.gdalbackend
+   :members:
+   :undoc-members:
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      DontUseExceptions
+      UseExceptions
+      blockSignals
+      buildOverviews
+      childEvent
+      children
+      close
+      closeItem
+      connect
+      connectNotify
+      customEvent
+      deleteLater
+      disconnect
+      disconnectNotify
+      dumpObjectInfo
+      dumpObjectTree
+      dynamicPropertyNames
+      emit
+      event
+      eventFilter
+      findChild
+      findChildren
+      findItemFromFilename
+      getUseExceptions
+      inherits
+      init
+      installEventFilter
+      isWidgetType
+      itemActions
+      itemContextMenu
+      killTimer
+      loadSettings
+      metaObject
+      moveToThread
+      newImageView
+      objectName
+      onItemActivated
+      openFile
+      openImageView
+      openItemMatadataView
+      openSubDataset
+      parent
+      property
+      receivers
+      removeEventFilter
+      saveSettings
+      sender
+      setObjectName
+      setParent
+      setProperty
+      showItemProperties
+      signalsBlocked
+      startTimer
+      staticMetaObject
+      thread
+      timerEvent
+      tr
+      trUtf8
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      GDALBackend
+   
+   
+
+   
+   
+   

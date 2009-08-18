@@ -1,0 +1,29 @@
+gsdview.app
+===========
+
+.. automodule:: gsdview.app
+   :members:
+   :undoc-members:
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AboutDialog
+      GSDView
+      ItemModelMainWindow
+      PreferencesDialog
+      Qt4DialogLoggingHandler
+      Qt4ToolController
+   
+   
+
+   
+   
+   

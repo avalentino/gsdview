@@ -1,0 +1,31 @@
+zoom.core
+=========
+
+.. automodule:: zoom.core
+   :members:
+   :undoc-members:
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      actionGroupToMenu
+      actionGroupToToolbar
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ZoomTool
+   
+   
+
+   
+   
+   

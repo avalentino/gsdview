@@ -1,0 +1,24 @@
+worldmap.core
+=============
+
+.. automodule:: worldmap.core
+   :members:
+   :undoc-members:
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      WorldmapPanel
+   
+   
+
+   
+   
+   

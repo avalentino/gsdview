@@ -1,0 +1,26 @@
+gsdview.mainwin
+===============
+
+.. automodule:: gsdview.mainwin
+   :members:
+   :undoc-members:
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ItemModelMainWindow
+      ItemSubWindow
+      MdiMainWindow
+   
+   
+
+   
+   
+   

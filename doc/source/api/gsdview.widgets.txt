@@ -1,0 +1,34 @@
+gsdview.widgets
+===============
+
+.. automodule:: gsdview.widgets
+   :members:
+   :undoc-members:
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_filedialog
+      get_mainwin
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AboutDialog
+      FileEntryWidget
+      GeneralPreferencesPage
+      PreferencesDialog
+   
+   
+
+   
+   
+   

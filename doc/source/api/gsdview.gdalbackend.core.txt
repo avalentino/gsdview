@@ -1,0 +1,26 @@
+gsdview.gdalbackend.core
+========================
+
+.. automodule:: gsdview.gdalbackend.core
+   :members:
+   :undoc-members:
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      GDALBackend
+      GraphicsViewSubWindow
+      ItemSubWindow
+   
+   
+
+   
+   
+   

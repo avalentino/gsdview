@@ -1,0 +1,27 @@
+gsdview.pluginmanager
+=====================
+
+.. automodule:: gsdview.pluginmanager
+   :members:
+   :undoc-members:
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      PluginInfoDialog
+      PluginInfoForm
+      PluginManager
+      PluginManagerGui
+   
+   
+
+   
+   
+   

@@ -1,0 +1,63 @@
+GSDView API Reference
+=====================
+
+.. autosummary::
+   :toctree: api/
+   :template: module.rst
+
+   gsdview
+   gsdview.app
+   gsdview.graphicsview
+   gsdview.gsdtools
+   gsdview.info
+   gsdview.launch
+   gsdview.mainwin
+   gsdview.pluginmanager
+   gsdview.qt4support
+   gsdview.splash_resources
+   gsdview.utils
+   gsdview.widgets
+   gsdview.gdalbackend
+   gsdview.gdalbackend.core
+   gsdview.gdalbackend.gdalexectools
+   gsdview.gdalbackend.gdalqt4
+   gsdview.gdalbackend.gdalsupport
+   gsdview.gdalbackend.info
+   gsdview.gdalbackend.modelitems
+   gsdview.gdalbackend.widgets
+   gsdview.exectools
+   gsdview.exectools.exectools
+   gsdview.exectools.gtktools
+   gsdview.exectools.qt4tools
+
+
+..
+   gsdview.exectools.recipe_440544
+   gsdview.exectools.subprocess2
+
+
+Plugins
+=======
+
+.. autosummary::
+   :toctree: api/plugins/
+   :template: module.rst
+
+   logplane
+   overview
+   overview.info
+   overview.core
+   positiontracker
+   positiontracker.info
+   positiontracker.coordinateview
+   metadata
+   metadata.info
+   metadata.core
+   worldmap
+   worldmap.info
+   worldmap.core
+   worldmap.resources
+   zoom
+   zoom.info
+   zoom.core
+

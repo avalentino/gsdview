@@ -1,0 +1,25 @@
+worldmap.resources
+==================
+
+.. automodule:: worldmap.resources
+   :members:
+   :undoc-members:
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      qCleanupResources
+      qInitResources
+   
+   
+
+   
+   
+   
+
+   
+   
+   

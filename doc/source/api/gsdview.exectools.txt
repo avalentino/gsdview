@@ -1,0 +1,50 @@
+gsdview.exectools
+=================
+
+.. automodule:: gsdview.exectools
+   :members:
+   :undoc-members:
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      StringIO
+      call
+      check_call
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BaseOStream
+      BaseOutputHandler
+      BaseToolController
+      GenericToolDescriptor
+      OFStream
+      Popen
+      ToolDescriptor
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      BaseOStream
+      BaseOutputHandler
+      BaseToolController
+      GenericToolDescriptor
+      OFStream
+      Popen
+      ToolDescriptor
+   
+   

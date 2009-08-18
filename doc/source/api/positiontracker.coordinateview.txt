@@ -1,0 +1,25 @@
+positiontracker.coordinateview
+==============================
+
+.. automodule:: positiontracker.coordinateview
+   :members:
+   :undoc-members:
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CoordinateView
+      GeoCoordinateView
+   
+   
+
+   
+   
+   

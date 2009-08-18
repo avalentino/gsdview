@@ -1,0 +1,18 @@
+worldmap.info
+=============
+
+.. automodule:: worldmap.info
+   :members:
+   :undoc-members:
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   

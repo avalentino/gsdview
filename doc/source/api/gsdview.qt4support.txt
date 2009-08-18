@@ -1,0 +1,27 @@
+gsdview.qt4support
+==================
+
+.. automodule:: gsdview.qt4support
+   :members:
+   :undoc-members:
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      actionGroupToMenu
+      actionGroupToToolbar
+      numpy2qimage
+      overrideCursor
+   
+   
+
+   
+   
+   
+
+   
+   
+   
