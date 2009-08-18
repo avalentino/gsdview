@@ -177,7 +177,7 @@ class PluginManager(object):
             settings.endGroup()
 
     def load_settings(self, settings=None):
-        # @NOTE:  settings is expected to be a QSettings instance
+        # @NOTE: settings is expected to be a QSettings instance
         # @TODO: make it Qt independent
 
         if not settings:
