@@ -23,6 +23,7 @@ Changes from 0.5.9 to 0.6.0 (XX/08/2009)
 
 * Fixed bug in sub-datasets handling
 * Improved debian packaging (close `#3`_)
+* API reference added to documentation
 
 .. _`#2`: https://sourceforge.net/apps/trac/gsdview/ticket/2
 .. _`#3`: https://sourceforge.net/apps/trac/gsdview/ticket/3
