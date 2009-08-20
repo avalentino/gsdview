@@ -35,7 +35,7 @@ from PyQt4 import QtCore, QtGui, uic
 
 try:
     import pkg_resources
-except ImportERROR:
+except ImportError:
     logging.getLogger(__name__).debug('"pkg_resources" not found.')
 
 class PluginManager(object):
