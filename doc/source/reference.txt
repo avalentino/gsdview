@@ -40,7 +40,7 @@ Plugins
 =======
 
 .. autosummary::
-   :toctree: api/plugins/
+   :toctree: api/
    :template: module.rst
 
    logplane

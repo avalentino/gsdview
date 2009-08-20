@@ -20,5 +20,5 @@ from exectools import *
 from subprocess2 import *
 
 __all__ = ['EX_OK', 'BaseOStream', 'OFStream', 'BaseOutputHandler',
-           'BaseExecutor']
+           'BaseToolController']
 __all__.extend(subprocess2.__all__)

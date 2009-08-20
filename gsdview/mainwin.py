@@ -62,7 +62,7 @@ class MdiMainWindow(QtGui.QMainWindow):
     :attributes:
 
     - mdiarea
-    . windowactions
+    - windowactions
     - windowmenu
 
     :signals:
