@@ -21,8 +21,8 @@
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
 
 
-__author__  = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__    = '$Date$'
+__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__     = '$Date$'
 __revision__ = '$Revision$'
 
 import os
@@ -45,7 +45,7 @@ has_setuptools = False
 PKGNAME = info.name.lower()
 
 classifiers = '''\
-Development Status :: 3 - Alpha
+Development Status :: 4 - Beta
 Environment :: Win32 (MS Windows)
 Environment :: X11 Applications :: Qt
 Intended Audience :: Developers
@@ -61,11 +61,12 @@ Topic :: Scientific/Engineering :: GIS
 Topic :: Scientific/Engineering :: Visualization
 '''
 
+
 if has_setuptools:
     setuptools_kwargs = dict(
         #install_requires = ['GDAL >= 1.5.2',
-        #                    'numpy >= 1.1.0',
-        #                    'PyQt4 >= 4.3',
+        #                    'numpy >= 1.2.1',
+        #                    'PyQt >= 4.5',
         #                   ],
         #extras_require = {},
         keywords = 'gsdview gdal',
@@ -78,7 +79,9 @@ if has_setuptools:
 else:
     setuptools_kwargs = {}
 
-packages = ['gsdview', 'gsdview.exectools', 'gsdview.gdalbackend',
+packages = ['gsdview', 
+            'gsdview.exectools', 
+            'gsdview.gdalbackend',
             'gsdview.plugins',
             'gsdview.plugins.overview',
             'gsdview.plugins.metadata',
