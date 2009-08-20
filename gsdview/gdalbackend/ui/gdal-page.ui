@@ -104,13 +104,6 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="FileEntryWidget" name="gdalDataDirEntryWidget" native="true">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="0">
        <widget class="QCheckBox" name="skipCheckBox">
         <property name="text">
@@ -132,24 +125,10 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="FileEntryWidget" name="gdalDriverPathEntryWidget" native="true">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
       <item row="4" column="0">
        <widget class="QCheckBox" name="ogrDriverPathCheckBox">
         <property name="text">
          <string>OGR_DRIVER_PATH</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="FileEntryWidget" name="ogrDriverPathEntryWidget" native="true">
-        <property name="enabled">
-         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -199,14 +178,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>FileEntryWidget</class>
-   <extends>QWidget</extends>
-   <header>widgets.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="../images/resources.qrc"/>
  </resources>
@@ -228,22 +199,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>gdalDataCheckBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>gdalDataDirEntryWidget</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>136</x>
-     <y>114</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>188</x>
-     <y>115</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>skipCheckBox</sender>
    <signal>toggled(bool)</signal>
    <receiver>skipLineEdit</receiver>
@@ -256,38 +211,6 @@
     <hint type="destinationlabel">
      <x>206</x>
      <y>151</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>gdalDriverPathCheckBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>gdalDriverPathEntryWidget</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>102</x>
-     <y>166</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>228</x>
-     <y>170</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>ogrDriverPathCheckBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>ogrDriverPathEntryWidget</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>116</x>
-     <y>203</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>212</x>
-     <y>201</y>
     </hint>
    </hints>
   </connection>

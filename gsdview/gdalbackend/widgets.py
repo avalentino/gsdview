@@ -30,7 +30,7 @@ import logging
 from osgeo import gdal
 from PyQt4 import QtCore, QtGui, uic
 
-from gsdview.widgets import get_filedialog
+from gsdview.widgets import get_filedialog, FileEntryWidget
 
 from gsdview.gdalbackend import gdalsupport
 
@@ -118,6 +118,32 @@ class GDALPreferencesPage(QtGui.QWidget):
     def __init__(self, parent=None, flags=QtCore.Qt.Widget):
         QtGui.QWidget.__init__(self, parent, flags)
         uic.loadUi(self.uifile, self)
+
+        # Avoid promoted widgets
+        DirectoryOnly = QtGui.QFileDialog.DirectoryOnly
+        self.gdalDataDirEntryWidget = FileEntryWidget(mode=DirectoryOnly)
+        self.optionsGridLayout.addWidget(self.gdalDataDirEntryWidget, 1, 1)
+        self.gdalDataDirEntryWidget.setEnabled(False)
+        self.connect(self.gdalDataCheckBox,
+                     QtCore.SIGNAL('toggled(bool)'),
+                     self.gdalDataDirEntryWidget,
+                     QtCore.SLOT('setEnabled(bool)'))
+
+        self.gdalDriverPathEntryWidget = FileEntryWidget(mode=DirectoryOnly)
+        self.optionsGridLayout.addWidget(self.gdalDriverPathEntryWidget, 3, 1)
+        self.gdalDriverPathEntryWidget.setEnabled(False)
+        self.connect(self.gdalDriverPathCheckBox,
+                     QtCore.SIGNAL('toggled(bool)'),
+                     self.gdalDriverPathEntryWidget,
+                     QtCore.SLOT('setEnabled(bool)'))
+
+        self.ogrDriverPathEntryWidget = FileEntryWidget(mode=DirectoryOnly)
+        self.optionsGridLayout.addWidget(self.ogrDriverPathEntryWidget, 4, 1)
+        self.ogrDriverPathEntryWidget.setEnabled(False)
+        self.connect(self.ogrDriverPathCheckBox,
+                     QtCore.SIGNAL('toggled(bool)'),
+                     self.ogrDriverPathEntryWidget,
+                     QtCore.SLOT('setEnabled(bool)'))
 
         # info button
         self.connect(self.infoButton, QtCore.SIGNAL('clicked()'), self.showinfo)

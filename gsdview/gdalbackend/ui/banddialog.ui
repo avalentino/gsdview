@@ -728,7 +728,7 @@ be depended on for long, nor should it ever be modified by the caller.</string>
  </widget>
  <resources>
   <include location="../images/resources.qrc"/>
-  <include location="../resources.qrc"/>
+  <include location="../images/resources.qrc"/>
  </resources>
  <connections/>
 </ui>
