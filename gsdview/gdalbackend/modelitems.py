@@ -28,10 +28,10 @@ import logging
 from osgeo import gdal
 from PyQt4 import QtCore, QtGui
 
-import info
-import gdalqt4
-import gdalsupport
-import resources
+from gsdview.gdalbackend import info
+from gsdview.gdalbackend import gdalqt4
+from gsdview.gdalbackend import gdalsupport
+from gsdview.gdalbackend import resources
 
 
 class MajorObjectItem(QtGui.QStandardItem):

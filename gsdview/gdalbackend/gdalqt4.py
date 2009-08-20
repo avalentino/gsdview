@@ -34,7 +34,7 @@ from PyQt4 import QtCore, QtGui
 from gsdview import gsdtools
 from gsdview.qt4support import numpy2qimage
 
-import gdalsupport
+from gsdview.gdalbackend import gdalsupport
 
 
 # @TODO: move GraphicsView here

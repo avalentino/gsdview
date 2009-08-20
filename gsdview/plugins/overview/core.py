@@ -144,7 +144,7 @@ class BandOverviewDock(QtGui.QDockWidget):
 
             # @TODO: fix
             from osgeo import gdal
-            from gdalbackend import gdalsupport
+            from gsdview.gdalbackend import gdalsupport
 
             try:
                 ovrindex = gdalsupport.best_ovr_index(banditem)

@@ -29,10 +29,10 @@ from PyQt4 import QtCore, QtGui
 
 from gsdview import qt4support
 
-import widgets
-import modelitems
-import gdalsupport
-import resources
+from gsdview.gdalbackend import widgets
+from gsdview.gdalbackend import modelitems
+from gsdview.gdalbackend import gdalsupport
+from gsdview.gdalbackend import resources
 
 
 class GDALBackend(QtCore.QObject):
@@ -428,7 +428,7 @@ class GDALBackend(QtCore.QObject):
         if not isinstance(item.parent(), modelitems.CachedDatasetItem):
             return
 
-        import gdalsupport
+        from gsdview.gdalbackend import gdalsupport
 
         band = item
         levels = gdalsupport.available_ovr_levels(band)

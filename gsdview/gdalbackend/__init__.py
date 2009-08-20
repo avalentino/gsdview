@@ -43,9 +43,9 @@ def init(mainwin):
     from PyQt4 import QtGui
     from osgeo import gdal
 
-    import widgets
-    import gdalsupport
-    import resources
+    from gsdview.gdalbackend import widgets
+    from gsdview.gdalbackend import gdalsupport
+    from gsdview.gdalbackend import resources
 
     # @TODO: check
     #UseExceptions()
@@ -72,7 +72,7 @@ def init(mainwin):
 
     ### BEGIN #################################################################
     # @TODO: improve processing tools handling and remove this workaround
-    import gdalexectools
+    from gsdview.gdalbackend import gdalexectools
 
     # @NOTE: the textview is fixed by logplane initializer
     textview = None
