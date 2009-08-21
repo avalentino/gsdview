@@ -55,10 +55,11 @@ gsdview/plugins/worldmap/resources.py: \
 
 clean:
 	cd doc && $(MAKE) clean
-	$(RM) -r MANIFEST build dist
+	$(RM) -r MANIFEST build dist gsdview.egg-info
 	$(RM) $(shell find . -name '*.pyc') $(shell find . -name '*~')
 	cd debian && $(RM) -r gsdview gsdview.* gsdview*.1 files pycompat
 	$(RM) python-build-stamp-* debian/stamp-makefile-build
+	cd pkg && $(MAKE) clean
 
 sdist: docs resources
 	python setup.py sdist --manifest-only
