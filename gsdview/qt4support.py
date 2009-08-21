@@ -23,7 +23,11 @@ __date__     = '$Date$'
 __revision__ = '$Revision$'
 
 
+import os
+
 from PyQt4 import QtCore, QtGui
+
+from gsdview import utils
 
 
 intToWinState = {
@@ -130,3 +134,42 @@ except ImportError:
 
         return result
 
+def getuifile(name, package=None):
+    '''Return the ui file path.
+
+    It is assumed that Qt UI files are located in the "ui" subfolfer of
+    the package.
+
+    .. see:: utils.getresource
+
+    '''
+
+    return utils.getresource(os.path.join('ui', name), package)
+
+
+def geticonfile(name, package=None):
+    '''Return the icon file path.
+
+    It is assumed that icon files are located in the "images" subfolder
+    of the package.
+
+    .. see:: utils.getresource
+
+    '''
+
+    return utils.getresource(os.path.join('images', name), package)
+
+
+def geticon(name, package=None):
+    '''Build and return requested icon.
+
+    It is assumed that icon files are located in the "images" subfolder
+    of the package.
+
+    .. see:: utils.getresource
+
+    '''
+
+    iconfile = utils.getresource(os.path.join('images', name), package)
+
+    return QtGui.QIcon(iconfile)
