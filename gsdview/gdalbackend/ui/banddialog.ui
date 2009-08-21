@@ -20,10 +20,6 @@
       <number>0</number>
      </property>
      <widget class="QWidget" name="infoTab">
-      <attribute name="icon">
-       <iconset resource="../images/resources.qrc">
-        <normaloff>:/gdalbackend/info.svg</normaloff>:/gdalbackend/info.svg</iconset>
-      </attribute>
       <attribute name="title">
        <string>Info</string>
       </attribute>
@@ -647,10 +643,6 @@ be depended on for long, nor should it ever be modified by the caller.</string>
       </layout>
      </widget>
      <widget class="QWidget" name="metadataTab">
-      <attribute name="icon">
-       <iconset resource="../images/resources.qrc">
-        <normaloff>:/gdalbackend/metadata.svg</normaloff>:/gdalbackend/metadata.svg</iconset>
-      </attribute>
       <attribute name="title">
        <string>Metadata</string>
       </attribute>
@@ -726,9 +718,6 @@ be depended on for long, nor should it ever be modified by the caller.</string>
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../images/resources.qrc"/>
-  <include location="../images/resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

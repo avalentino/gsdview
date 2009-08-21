@@ -30,15 +30,12 @@ from PyQt4 import QtCore, QtGui
 
 from exectools import BaseOStream, BaseOutputHandler, BaseToolController, EX_OK
 
-import resources
 
 class Qt4Blinker(QtGui.QLabel):
-    def __init__(self, filename=None):
+    def __init__(self):
         QtGui.QLabel.__init__(self)
-        if not filename:
-            filename = ':/red-circle.svg'
-        pixmap = QtGui.QPixmap()
-        pixmap.load(filename)
+        qstyle = QtGui.qApp.style()
+        pixmap = qstyle.standardPixmap(QtGui.QStyle.SP_DialogNoButton)
         self.setPixmap(pixmap)
 
     def pulse(self):
@@ -125,12 +122,14 @@ class Qt4OutputPlane(QtGui.QTextEdit):
         self.banner = None
 
     def _setupActions(self):
+        qstype = QtGui.qApp.style()
+
         # Setup actions
         self.actions = QtGui.QActionGroup(self)
 
         # Save As
-        self.actionSaveAs = QtGui.QAction(QtGui.QIcon(':/save-as.svg'),
-                                          self.tr('&Save As'), self)
+        icon = qstype.standardIcon(QtGui.QStyle.SP_DialogSaveButton)
+        self.actionSaveAs = QtGui.QAction(icon, self.tr('&Save As'), self)
         self.actionSaveAs.setShortcut(self.tr('Ctrl+S'))
         self.actionSaveAs.setStatusTip(self.tr('Save text to file'))
         self.connect(self.actionSaveAs, QtCore.SIGNAL('triggered()'),
@@ -138,8 +137,9 @@ class Qt4OutputPlane(QtGui.QTextEdit):
         self.actions.addAction(self.actionSaveAs)
 
         # Clear
-        self.actionClear = QtGui.QAction(QtGui.QIcon(':/clear.svg'),
-                                         self.tr('&Clear'), self)
+        icon = QtGui.QIcon(
+            ':/trolltech/styles/commonstyle/images/standardbutton-clear-32.png')
+        self.actionClear = QtGui.QAction(icon, self.tr('&Clear'), self)
         self.actionClear.setShortcut(self.tr('Shift+F5'));
         self.actionClear.setStatusTip(self.tr('Clear the text'))
         self.connect(self.actionClear, QtCore.SIGNAL('triggered()'),
@@ -147,8 +147,8 @@ class Qt4OutputPlane(QtGui.QTextEdit):
         self.actions.addAction(self.actionClear)
 
         # Close
-        self.actionHide = QtGui.QAction(QtGui.QIcon(':/close.svg'),
-                                        self.tr('&Hide'), self)
+        icon = qstype.standardIcon(QtGui.QStyle.SP_DialogCloseButton)
+        self.actionHide = QtGui.QAction(icon, self.tr('&Hide'), self)
         self.actionHide.setShortcut(self.tr('Ctrl+W'))
         self.actionHide.setStatusTip(self.tr('Hide the text plane'))
         self.connect(self.actionHide, QtCore.SIGNAL('triggered()'),

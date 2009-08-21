@@ -46,8 +46,6 @@ from gsdview.widgets import AboutDialog, PreferencesDialog
 from gsdview.exectools.qt4tools import Qt4ToolController
 from gsdview.exectools.qt4tools import Qt4DialogLoggingHandler
 
-from gsdview import resources
-
 
 class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
     # @TODO:
@@ -91,7 +89,8 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         logger = logging.getLogger('gsdview')
 
         logger.debug('Main window base classes initialization ...')
-        QtGui.qApp.setWindowIcon(QtGui.QIcon(':/GSDView.png'))
+        iconfile = utils.getresource('images/GSDView.png', __name__)
+        QtGui.qApp.setWindowIcon(QtGui.QIcon(iconfile))
 
         super(GSDView, self).__init__(parent)
         title = self.tr('GSDView Open Source Edition v. %1').arg(info.version)
@@ -131,7 +130,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         self.pluginmanager = pluginmanager.PluginManager(self, SYSPLUGINSDIR)
         self.preferencesdialog.addPage(
                 pluginmanager.PluginManagerGui(self.pluginmanager, self),
-                QtGui.QIcon(':/plugin.svg'),
+                QtGui.QIcon(utils.getresource('images/plugin.svg', __name__)),
                 label='Plugins')
 
         # Settings
@@ -250,8 +249,8 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         actionsgroup = QtGui.QActionGroup(self)
 
         # Open
-        action = QtGui.QAction(QtGui.QIcon(':/open.svg'),
-                               self.tr('&Open'), actionsgroup)
+        icon = QtGui.QIcon(utils.getresource('images/open.svg', __name__))
+        action = QtGui.QAction(icon, self.tr('&Open'), actionsgroup)
         action.setObjectName('open')
         action.setShortcut(self.tr('Ctrl+O'))
         action.setToolTip(self.tr('Open an existing file'))
@@ -260,8 +259,8 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         actionsgroup.addAction(action)
 
         # Close
-        action = QtGui.QAction(QtGui.QIcon(':/close.svg'),
-                               self.tr('&Close'), actionsgroup)
+        icon = QtGui.QIcon(utils.getresource('images/close.svg', __name__))
+        action = QtGui.QAction(icon, self.tr('&Close'), actionsgroup)
         action.setObjectName('close')
         action.setShortcut(self.tr('Ctrl+W'))
         action.setToolTip(self.tr('Close the current file'))
@@ -274,8 +273,8 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         #action.setObjectName('separator')
 
         # Exit
-        action = QtGui.QAction(QtGui.QIcon(':/quit.svg'),
-                               self.tr('&Exit'), actionsgroup)
+        icon = QtGui.QIcon(utils.getresource('images/quit.svg', __name__))
+        action = QtGui.QAction(icon, self.tr('&Exit'), actionsgroup)
         action.setObjectName('exit')
         action.setShortcut(self.tr('Ctrl+X'))
         action.setToolTip(self.tr('Exit the program'))
@@ -289,8 +288,8 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         actionsgroup = QtGui.QActionGroup(self)
 
         # Preferences
-        action = QtGui.QAction(QtGui.QIcon(':/preferences.svg'),
-                               self.tr('&Preferences'), actionsgroup)
+        icon = QtGui.QIcon(utils.getresource('images/preferences.svg', __name__))
+        action = QtGui.QAction(icon, self.tr('&Preferences'), actionsgroup)
         action.setObjectName('preferences')
         action.setToolTip(self.tr('Open the program preferences dialog'))
         action.setStatusTip(self.tr('Open the program preferences dialog'))
@@ -304,8 +303,8 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         actionsgroup = QtGui.QActionGroup(self)
 
         # About
-        action = QtGui.QAction(QtGui.QIcon(':/about.svg'),
-                               self.tr('&About'), actionsgroup)
+        icon = QtGui.QIcon(utils.getresource('images/about.svg', __name__))
+        action = QtGui.QAction(icon, self.tr('&About'), actionsgroup)
         action.setObjectName('about')
         action.setToolTip(self.tr('Show program information'))
         action.setStatusTip(self.tr('Show program information'))
@@ -314,8 +313,8 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         actionsgroup.addAction(action)
 
         # AboutQt
-        action = QtGui.QAction(QtGui.QIcon(':/qt-logo.png'),
-                               self.tr('About &Qt'), actionsgroup)
+        icon = QtGui.QIcon(utils.getresource('images/qt-logo.png', __name__))
+        action = QtGui.QAction(icon, self.tr('About &Qt'), actionsgroup)
         action.setObjectName('aboutQt')
         action.setToolTip(self.tr('Show information about Qt'))
         action.setStatusTip(self.tr('Show information about Qt'))

@@ -64,10 +64,6 @@
           <property name="text">
            <string>Add</string>
           </property>
-          <property name="icon">
-           <iconset resource="../../images/resources.qrc">
-            <normaloff>:/add.svg</normaloff>:/add.svg</iconset>
-          </property>
           <property name="shortcut">
            <string>Ctrl++</string>
           </property>
@@ -83,10 +79,6 @@
           </property>
           <property name="text">
            <string>Remove</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/resources.qrc">
-            <normaloff>:/remove.svg</normaloff>:/remove.svg</iconset>
           </property>
           <property name="shortcut">
            <string>Ctrl+-</string>
@@ -104,10 +96,6 @@
           <property name="text">
            <string>Edit</string>
           </property>
-          <property name="icon">
-           <iconset resource="../../images/resources.qrc">
-            <normaloff>:/edit.svg</normaloff>:/edit.svg</iconset>
-          </property>
          </widget>
         </item>
         <item>
@@ -121,10 +109,6 @@
           <property name="text">
            <string>Up</string>
           </property>
-          <property name="icon">
-           <iconset resource="../../images/resources.qrc">
-            <normaloff>:/go-up.svg</normaloff>:/go-up.svg</iconset>
-          </property>
          </widget>
         </item>
         <item>
@@ -137,10 +121,6 @@
           </property>
           <property name="text">
            <string>Down</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/resources.qrc">
-            <normaloff>:/go-down.svg</normaloff>:/go-down.svg</iconset>
           </property>
          </widget>
         </item>
@@ -188,9 +168,6 @@
      <attribute name="verticalHeaderVisible">
       <bool>false</bool>
      </attribute>
-     <attribute name="verticalHeaderVisible">
-      <bool>false</bool>
-     </attribute>
      <column>
       <property name="text">
        <string>Name</string>
@@ -223,8 +200,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../../images/resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

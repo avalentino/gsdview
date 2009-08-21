@@ -43,9 +43,10 @@ def init(mainwin):
     from PyQt4 import QtGui
     from osgeo import gdal
 
+    from gsdview import utils
+
     from gsdview.gdalbackend import widgets
     from gsdview.gdalbackend import gdalsupport
-    from gsdview.gdalbackend import resources
 
     # @TODO: check
     #UseExceptions()
@@ -58,16 +59,17 @@ def init(mainwin):
                                            gdal.VersionInfo('RELEASE_NAME'),
                                            'http://www.gdal.org')
 
+    # GDAL icon
+    icon = QtGui.QIcon(utils.getresource('images/GDALLogoColor.svg', __name__))
+
     # add a new page in the about dialog
     page = widgets.GDALInfoWidget(mainwin.aboutdialog)
-    icon = QtGui.QIcon(':/gdalbackend/GDALLogoColor.svg')
     tabindex = mainwin.aboutdialog.tabWidget.addTab(page, icon, 'GDAL')
     widget = mainwin.aboutdialog.tabWidget.widget(tabindex)
     widget.setObjectName('gdalTab')
 
     # update the settings dialog
     page = widgets.GDALPreferencesPage(mainwin.preferencesdialog)
-    icon = QtGui.QIcon(':/gdalbackend/GDALLogoColor.svg')
     mainwin.preferencesdialog.addPage(page, icon, 'GDAL')
 
     ### BEGIN #################################################################

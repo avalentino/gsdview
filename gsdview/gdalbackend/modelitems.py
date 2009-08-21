@@ -28,14 +28,15 @@ import logging
 from osgeo import gdal
 from PyQt4 import QtCore, QtGui
 
+from gsdview import utils
+
 from gsdview.gdalbackend import info
 from gsdview.gdalbackend import gdalqt4
 from gsdview.gdalbackend import gdalsupport
-from gsdview.gdalbackend import resources
 
 
 class MajorObjectItem(QtGui.QStandardItem):
-    iconfile = ':/gdalbackend/generic.svg'
+    iconfile = utils.getresource('images/generic.svg', __name__)
     _typeoffset = 100
     backend = info.name
 
@@ -87,7 +88,7 @@ class BandItem(MajorObjectItem):
 
     '''
 
-    iconfile = ':/gdalbackend/rasterband.svg'
+    iconfile = utils.getresource('images/rasterband.svg', __name__)
     _typeoffset = MajorObjectItem._typeoffset + 10
 
     def __init__(self, band):
@@ -166,11 +167,11 @@ class BandItem(MajorObjectItem):
 
 
 class OverviewItem(BandItem):
-    iconfile = ':/gdalbackend/overview.svg'
+    iconfile = utils.getresource('images/overview.svg', __name__)
     _typeoffset = BandItem._typeoffset + 1
 
 #~ class VirtualBandItem(BandItem):
-    #~ iconfile = ':/gdalbackend/virtualband.svg'
+    #~ iconfile = utils.getresource('images/virtualband.svg', __name__)
     #~ _typeoffset = BandItem._typeoffset + 2
     # @TODO: remove
     #~ actions = BandItem.actions + ('Delete',)
@@ -190,7 +191,7 @@ class DatasetItem(MajorObjectItem):
 
     '''
 
-    iconfile = ':/gdalbackend/dataset.svg'
+    iconfile = utils.getresource('images/dataset.svg', __name__)
     _typeoffset = MajorObjectItem._typeoffset + 100
 
     def __init__(self, filename, mode=gdal.GA_ReadOnly):
@@ -388,7 +389,7 @@ class CachedDatasetItem(DatasetItem):
 
 def datasetitem(filename):
     # Some dataset has only sub-datasets (no raster band).
-    # In this case it is not possible to use a virtual datases like
+    # In this case it is not possible to use a virtual datasets like
     # CachedDatasetItem does
     try:
         return CachedDatasetItem(filename)
@@ -397,7 +398,7 @@ def datasetitem(filename):
         return DatasetItem(filename)
 
 class SubDatasetItem(CachedDatasetItem):
-    iconfile = ':/gdalbackend/subdataset.svg'
+    iconfile = utils.getresource('images/subdataset.svg', __name__)
     _typeoffset = DatasetItem._typeoffset + 10
 
     def __init__(self, gdalfilename, extrainfo=''):

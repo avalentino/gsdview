@@ -30,7 +30,7 @@ import logging
 from osgeo import gdal
 from PyQt4 import QtCore, QtGui, uic
 
-from gsdview import utils
+from gsdview.utils import getresource
 from gsdview.widgets import get_filedialog, FileEntryWidget
 
 from gsdview.gdalbackend import gdalsupport
@@ -38,7 +38,7 @@ from gsdview.gdalbackend import gdalsupport
 
 class GDALInfoWidget(QtGui.QWidget):
 
-    uifile = utils.getresource(os.path.join('ui', 'gdalinfo.ui'), __name__)
+    uifile = getresource(os.path.join('ui', 'gdalinfo.ui'), __name__)
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget):
         QtGui.QWidget.__init__(self, parent, flags)
@@ -116,11 +116,14 @@ class GDALInfoWidget(QtGui.QWidget):
 
 class GDALPreferencesPage(QtGui.QWidget):
 
-    uifile = utils.getresource(os.path.join('ui', 'gdal-page.ui'), __name__)
+    uifile = getresource(os.path.join('ui', 'gdal-page.ui'), __name__)
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget):
         QtGui.QWidget.__init__(self, parent, flags)
         uic.loadUi(self.uifile, self)
+
+        iconfile = getresource(os.path.join('images', 'info.svg'), __name__)
+        self.infoButton.setIcon(QtGui.QIcon(iconfile))
 
         # Avoid promoted widgets
         DirectoryOnly = QtGui.QFileDialog.DirectoryOnly
@@ -353,11 +356,17 @@ class MajorObjectInfoDialog(QtGui.QDialog):
 
 class BandInfoDialog(MajorObjectInfoDialog):
 
-    uifile = utils.getresource(os.path.join('ui', 'banddialog.ui'), __name__)
+    uifile = getresource(os.path.join('ui', 'banddialog.ui'), __name__)
 
     def __init__(self, band, parent=None, flags=QtCore.Qt.Widget):
         assert band, 'a valid GDAL raster band expected'
         MajorObjectInfoDialog.__init__(self, band, parent, flags)
+
+        # Set tab icons
+        iconfile = getresource(os.path.join('images', 'info.svg'), __name__)
+        self.tabWidget.setTabIcon(0, QtGui.QIcon(iconfile))
+        iconfile = getresource(os.path.join('images', 'metadata.svg'), __name__)
+        self.tabWidget.setTabIcon(1, QtGui.QIcon(iconfile))
 
         # Info Tab
         self._setupInfoTab(band)
@@ -396,11 +405,21 @@ class BandInfoDialog(MajorObjectInfoDialog):
 
 class DatasetInfoDialog(MajorObjectInfoDialog):
 
-    uifile = utils.getresource(os.path.join('ui', 'datasetdialog.ui'), __name__)
+    uifile = getresource(os.path.join('ui', 'datasetdialog.ui'), __name__)
 
     def __init__(self, dataset, parent=None, flags=QtCore.Qt.Widget):
         assert dataset, 'a valid GDAL dataset expected'
         MajorObjectInfoDialog.__init__(self, dataset, parent, flags)
+
+        # Set tab icons
+        iconfile = getresource(os.path.join('images', 'info.svg'), __name__)
+        self.tabWidget.setTabIcon(0, QtGui.QIcon(iconfile))
+        iconfile = getresource(os.path.join('images', 'metadata.svg'), __name__)
+        self.tabWidget.setTabIcon(1, QtGui.QIcon(iconfile))
+        iconfile = getresource(os.path.join('images', 'gcp.svg'), __name__)
+        self.tabWidget.setTabIcon(2, QtGui.QIcon(iconfile))
+        iconfile = getresource(os.path.join('images', 'driver.svg'), __name__)
+        self.tabWidget.setTabIcon(3, QtGui.QIcon(iconfile))
 
         # Info Tab
         self._setupInfoTab(dataset)

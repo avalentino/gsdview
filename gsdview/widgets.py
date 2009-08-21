@@ -31,8 +31,7 @@ import logging
 from PyQt4 import QtCore, QtGui, uic
 
 from gsdview import info
-from gsdview import utils
-from gsdview import resources
+from gsdview.utils import getresource
 
 
 def get_mainwin():
@@ -77,12 +76,17 @@ def _choosedir(dirname, dialog=None,):
 
 class AboutDialog(QtGui.QDialog):
 
-    uifile = utils.getresource(os.path.join('ui', 'aboutdialog.ui'), __name__)
+    uifile = getresource(os.path.join('ui', 'aboutdialog.ui'), __name__)
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget): # QtCore.Qt.Dialog
         QtGui.QDialog.__init__(self, parent, flags)
         uic.loadUi(self.uifile, self)
 
+        # Set icons
+        logofile = getresource(os.path.join('images', 'GSDView.png'), __name__)
+        self.setLogo(logofile)
+
+        # Set contents
         self.titleLabel.setText('%s v. %s' % (self.tr(info.name), info.version))
 
         description = '''<p>%s</p>
@@ -95,6 +99,10 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview">http://sourcefor
         self.aboutTextBrowser.setText(description)
 
         self.setVersions()
+
+    def setLogo(self, logofile):
+        self.gsdviewLogoLabel.setPixmap(QtGui.QPixmap(logofile))
+
 
     def setVersions(self):
         tablewidget = self.versionsTableWidget
@@ -131,7 +139,8 @@ class FileEntryWidget(QtGui.QWidget):
         self.lineEdit = QtGui.QLineEdit()
         self.lineEdit.setCompleter(self.__completer)
 
-        self.button = QtGui.QPushButton(QtGui.QIcon (':/open.svg'), '')
+        icon = QtGui.QIcon(getresource('images/open.svg', __name__))
+        self.button = QtGui.QPushButton(icon, '')
         self.button.setToolTip(self.tr('select from file dialog'))
 
         layout = QtGui.QHBoxLayout()
@@ -183,7 +192,7 @@ class FileEntryWidget(QtGui.QWidget):
 
 class GeneralPreferencesPage(QtGui.QWidget):
 
-    uifile = utils.getresource(os.path.join('ui', 'general-page.ui'), __name__)
+    uifile = getresource(os.path.join('ui', 'general-page.ui'), __name__)
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget):
         QtGui.QWidget.__init__(self, parent, flags)
@@ -299,7 +308,7 @@ class PreferencesDialog(QtGui.QDialog):
     # @TODO: also look at
     # /usr/share/doc/python-qt4-doc/examples/tools/settingseditor/settingseditor.py
 
-    uifile = utils.getresource(os.path.join('ui', 'preferences.ui'), __name__)
+    uifile = getresource(os.path.join('ui', 'preferences.ui'), __name__)
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget): # QtCore.Qt.Dialog
         QtGui.QDialog.__init__(self, parent, flags)
@@ -310,12 +319,11 @@ class PreferencesDialog(QtGui.QDialog):
         self.stackedWidget.removeWidget(page)
 
         # app pages
-        self.addPage(GeneralPreferencesPage(),
-                     QtGui.QIcon(':/preferences.svg'), self.tr('General'))
+        icon = QtGui.QIcon(getresource('images/preferences.svg', __name__))
+        self.addPage(GeneralPreferencesPage(), icon, self.tr('General'))
 
-        #~ self.addPage(CachePreferencesPage(),
-                     #~ QtGui.QIcon(':/harddisk.svg'),
-                     #~ self.tr('Cache'))
+        #~ icon = QtGui.QIcon(getresource('images/harddisk.svg', __name__))
+        #~ self.addPage(CachePreferencesPage(), icon, self.tr('Cache'))
 
         assert self.listWidget.count() == self.stackedWidget.count()
 

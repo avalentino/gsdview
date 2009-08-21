@@ -38,7 +38,7 @@ try:
 except ImportError:
     logging.getLogger(__name__).debug('"pkg_resources" not found.')
 
-from gsdview import utils   # @TODO: check dependency
+from gsdview.utils import getresource   # @TODO: check dependency
 
 
 class PluginManager(object):
@@ -218,11 +218,25 @@ class PluginManager(object):
 
 
 class PluginManagerGui(QtGui.QWidget):
-    uifile = utils.getresource(os.path.join('ui', 'pluginmanager.ui'), __name__)
+    uifile = getresource(os.path.join('ui', 'pluginmanager.ui'), __name__)
 
     def __init__(self, pluginmanager, parent=None, flags=QtCore.Qt.Widget):
         QtGui.QWidget.__init__(self, parent, flags)
         uic.loadUi(self.uifile, self)
+
+        # Set icons
+        iconfile = getresource(os.path.join('images', 'add.svg'))
+        self.addButton.setIcon(QtGui.QIcon(iconfile))
+        iconfile = getresource(os.path.join('images', 'remove.svg'))
+        self.removeButton.setIcon(QtGui.QIcon(iconfile))
+        iconfile = getresource(os.path.join('images', 'edit.svg'))
+        self.editButton.setIcon(QtGui.QIcon(iconfile))
+        iconfile = getresource(os.path.join('images', 'go-up.svg'))
+        self.upButton.setIcon(QtGui.QIcon(iconfile))
+        iconfile = getresource(os.path.join('images', 'go-down.svg'))
+        self.downButton.setIcon(QtGui.QIcon(iconfile))
+
+        # Set plugin manager attribute
         self.pluginmanager = pluginmanager
 
         # @TODO: check edit triggers
@@ -369,9 +383,8 @@ class PluginManagerGui(QtGui.QWidget):
                                 QtGui.QTableWidgetItem(short_description))
 
             # info
-            w = QtGui.QPushButton(QtGui.QIcon(':/info.svg'),
-                                  '', # tablewidget.tr('Info'),
-                                  tablewidget)
+            icon = QtGui.QIcon(getresource('images/info.svg', __name__))
+            w = QtGui.QPushButton(icon, '', tablewidget)
             tablewidget.setCellWidget(index, 2, w)
             w.connect(w, QtCore.SIGNAL('clicked()'),
                       lambda index=index: self.showPluginInfo(index))
@@ -459,7 +472,7 @@ class PluginManagerGui(QtGui.QWidget):
 
 
 class PluginInfoForm(QtGui.QFrame):
-    uifile = utils.getresource(os.path.join('ui', 'plugininfo.ui'), __name__)
+    uifile = getresource(os.path.join('ui', 'plugininfo.ui'), __name__)
 
     def __init__(self, plugin=None, active=None, parent=None,
                  flags=QtCore.Qt.Widget):

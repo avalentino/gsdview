@@ -27,9 +27,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
+from gsdview.utils import getresource
 from gsdview.qt4support import actionGroupToMenu, actionGroupToToolbar
-
-from gsdview import resources
 
 
 class ZoomTool(QtCore.QObject):
@@ -45,31 +44,31 @@ class ZoomTool(QtCore.QObject):
         actions = QtGui.QActionGroup(self)
 
         # Zoom in
-        actionZoomIn = QtGui.QAction(QtGui.QIcon(':/zoom-in.svg'),
-                                     self.tr('Zoom In'), self)
+        icon = QtGui.QIcon(getresource('images/zoom-in.svg', 'gsdview'))
+        actionZoomIn = QtGui.QAction(icon, self.tr('Zoom In'), self)
         actionZoomIn.setStatusTip(self.tr('Zoom In'))
         actionZoomIn.setShortcut(QtGui.QKeySequence(self.tr('Ctrl++')))
         self.connect(actionZoomIn, QtCore.SIGNAL('triggered()'), self.zoomIn)
         actions.addAction(actionZoomIn)
 
         # Zoom out
-        actionZoomOut = QtGui.QAction(QtGui.QIcon(':/zoom-out.svg'),
-                                      self.tr('Zoom Out'), self)
+        icon = QtGui.QIcon(getresource('images/zoom-out.svg', 'gsdview'))
+        actionZoomOut = QtGui.QAction(icon, self.tr('Zoom Out'), self)
         actionZoomOut.setStatusTip(self.tr('Zoom Out'))
         actionZoomOut.setShortcut(QtGui.QKeySequence(self.tr('Ctrl+-')))
         self.connect(actionZoomOut, QtCore.SIGNAL('triggered()'), self.zoomOut)
         actions.addAction(actionZoomOut)
 
         # Zoom fit
-        actionZoomFit = QtGui.QAction(QtGui.QIcon(':/zoom-fit.svg'),
-                                      self.tr('Zoom Fit'), self)
+        icon = QtGui.QIcon(getresource('images/zoom-fit.svg', 'gsdview'))
+        actionZoomFit = QtGui.QAction(icon, self.tr('Zoom Fit'), self)
         actionZoomIn.setStatusTip(self.tr('Zoom to fit the window size'))
         self.connect(actionZoomFit, QtCore.SIGNAL('triggered()'), self.zoomFit)
         actions.addAction(actionZoomFit)
 
         # Zoom 100
-        actionZoom100 = QtGui.QAction(QtGui.QIcon(':/zoom-100.svg'),
-                                      self.tr('Zoom 100%'), self)
+        icon = QtGui.QIcon(getresource('images/zoom-100.svg', 'gsdview'))
+        actionZoom100 = QtGui.QAction(icon, self.tr('Zoom 100%'), self)
         actionZoom100.setStatusTip(self.tr('Original size'))
         self.connect(actionZoom100, QtCore.SIGNAL('triggered()'), self.zoom100)
         actions.addAction(actionZoom100)

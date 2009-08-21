@@ -37,10 +37,6 @@
        <property name="text">
         <string>Show detailed GDAL info</string>
        </property>
-       <property name="icon">
-        <iconset resource="../images/resources.qrc">
-         <normaloff>:/gdalbackend/info.svg</normaloff>:/gdalbackend/info.svg</iconset>
-       </property>
       </widget>
      </item>
     </layout>
@@ -178,9 +174,7 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../images/resources.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>cacheCheckBox</sender>

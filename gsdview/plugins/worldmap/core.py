@@ -27,8 +27,6 @@ import numpy
 
 from PyQt4 import QtCore, QtGui
 
-import gsdview.resources
-
 from gsdview.utils import getresource
 
 
@@ -51,8 +49,8 @@ class WorldmapPanel(QtGui.QDockWidget):
         self.setWorldmapItem()
 
         # Zoom in
-        self.actionZoomIn = QtGui.QAction(QtGui.QIcon(':/zoom-in.svg'),
-                                          self.tr('Zoom In'), self)
+        icon = QtGui.QIcon(getresource('images/zoom-in.svg', 'gsdview'))
+        self.actionZoomIn = QtGui.QAction(icon, self.tr('Zoom In'), self)
         self.actionZoomIn.setStatusTip(self.tr('Zoom In'))
         self.actionZoomIn.setShortcut(QtGui.QKeySequence(self.tr('Ctrl++')))
         self.actionZoomIn.setEnabled(False)
@@ -60,8 +58,8 @@ class WorldmapPanel(QtGui.QDockWidget):
                      lambda: self._zoom(+1))
 
         # Zoom out
-        self.actionZoomOut = QtGui.QAction(QtGui.QIcon(':/zoom-out.svg'),
-                                           self.tr('Zoom Out'), self)
+        icon = QtGui.QIcon(getresource('images/zoom-out.svg', 'gsdview'))
+        self.actionZoomOut = QtGui.QAction(icon, self.tr('Zoom Out'), self)
         self.actionZoomOut.setStatusTip(self.tr('Zoom Out'))
         self.actionZoomOut.setShortcut(QtGui.QKeySequence(self.tr('Ctrl+-')))
         self.actionZoomOut.setEnabled(False)

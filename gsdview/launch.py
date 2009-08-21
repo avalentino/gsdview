@@ -76,7 +76,6 @@ MODULES = ['os', 're', 'sys', 'itertools',
           #~ 'gsdview.gdalbackend.modelitems',
           #~ 'gsdview.gdalbackend.gdalsupport',
           #~ 'gsdview.gdalbackend.gdalexectools',
-          #~ 'gsdview.gdalbackend.gdalbackend_resources',
 ]
 
 def preload(modules, app=None):
