@@ -40,21 +40,13 @@ from gsdview import qt4support
 from gsdview import graphicsview
 from gsdview import pluginmanager
 
-#from gsdview appsite import USERCONFIGDIR, SYSPLUGINSDIR  # @TODO: fix
+from gsdview.mainwin import ItemModelMainWindow
+from gsdview.appsite import USERCONFIGDIR, SYSPLUGINSDIR
 from gsdview.widgets import AboutDialog, PreferencesDialog
 from gsdview.exectools.qt4tools import Qt4ToolController
 from gsdview.exectools.qt4tools import Qt4DialogLoggingHandler
 
-#~ from gsdview import resources
-
-# @TODO: move elsewhere (site.py ??)
-# @NOTE: this should happen before any os.chdir
-GSDVIEWROOT = os.path.dirname(os.path.abspath(__file__))
-# @TODO: import from appsite
-USERCONFIGDIR = os.path.expanduser(os.path.join('~', '.gsdview'))
-SYSPLUGINSDIR = os.path.join(GSDVIEWROOT, 'plugins')
-
-from mainwin import ItemModelMainWindow
+from gsdview import resources
 
 
 class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):

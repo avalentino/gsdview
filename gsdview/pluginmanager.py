@@ -38,6 +38,9 @@ try:
 except ImportError:
     logging.getLogger(__name__).debug('"pkg_resources" not found.')
 
+from gsdview import utils   # @TODO: check dependency
+
+
 class PluginManager(object):
 
     def __init__(self, mainwin, syspath=None):
@@ -215,7 +218,7 @@ class PluginManager(object):
 
 
 class PluginManagerGui(QtGui.QWidget):
-    uifile = os.path.join(os.path.dirname(__file__), 'ui', 'pluginmanager.ui')
+    uifile = utils.getresource(os.path.join('ui', 'pluginmanager.ui'), __name__)
 
     def __init__(self, pluginmanager, parent=None, flags=QtCore.Qt.Widget):
         QtGui.QWidget.__init__(self, parent, flags)
@@ -456,7 +459,7 @@ class PluginManagerGui(QtGui.QWidget):
 
 
 class PluginInfoForm(QtGui.QFrame):
-    uifile = os.path.join(os.path.dirname(__file__), 'ui', 'plugininfo.ui')
+    uifile = utils.getresource(os.path.join('ui', 'plugininfo.ui'), __name__)
 
     def __init__(self, plugin=None, active=None, parent=None,
                  flags=QtCore.Qt.Widget):

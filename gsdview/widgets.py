@@ -31,6 +31,7 @@ import logging
 from PyQt4 import QtCore, QtGui, uic
 
 from gsdview import info
+from gsdview import utils
 from gsdview import resources
 
 
@@ -76,7 +77,7 @@ def _choosedir(dirname, dialog=None,):
 
 class AboutDialog(QtGui.QDialog):
 
-    uifile = os.path.join(os.path.dirname(__file__), 'ui', 'aboutdialog.ui')
+    uifile = utils.getresource(os.path.join('ui', 'aboutdialog.ui'), __name__)
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget): # QtCore.Qt.Dialog
         QtGui.QDialog.__init__(self, parent, flags)
@@ -181,7 +182,8 @@ class FileEntryWidget(QtGui.QWidget):
         self.lineEdit.setText(text)
 
 class GeneralPreferencesPage(QtGui.QWidget):
-    uifile = os.path.join(os.path.dirname(__file__), 'ui', 'general-page.ui')
+
+    uifile = utils.getresource(os.path.join('ui', 'general-page.ui'), __name__)
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget):
         QtGui.QWidget.__init__(self, parent, flags)
@@ -297,7 +299,7 @@ class PreferencesDialog(QtGui.QDialog):
     # @TODO: also look at
     # /usr/share/doc/python-qt4-doc/examples/tools/settingseditor/settingseditor.py
 
-    uifile = os.path.join(os.path.dirname(__file__), 'ui', 'preferences.ui')
+    uifile = utils.getresource(os.path.join('ui', 'preferences.ui'), __name__)
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget): # QtCore.Qt.Dialog
         QtGui.QDialog.__init__(self, parent, flags)

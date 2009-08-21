@@ -30,13 +30,15 @@ import logging
 from osgeo import gdal
 from PyQt4 import QtCore, QtGui, uic
 
+from gsdview import utils
 from gsdview.widgets import get_filedialog, FileEntryWidget
 
 from gsdview.gdalbackend import gdalsupport
 
 
 class GDALInfoWidget(QtGui.QWidget):
-    uifile = os.path.join(os.path.dirname(__file__), 'ui', 'gdalinfo.ui')
+
+    uifile = utils.getresource(os.path.join('ui', 'gdalinfo.ui'), __name__)
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget):
         QtGui.QWidget.__init__(self, parent, flags)
@@ -113,7 +115,8 @@ class GDALInfoWidget(QtGui.QWidget):
 
 
 class GDALPreferencesPage(QtGui.QWidget):
-    uifile = os.path.join(os.path.dirname(__file__), 'ui', 'gdal-page.ui')
+
+    uifile = utils.getresource(os.path.join('ui', 'gdal-page.ui'), __name__)
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget):
         QtGui.QWidget.__init__(self, parent, flags)
@@ -350,7 +353,7 @@ class MajorObjectInfoDialog(QtGui.QDialog):
 
 class BandInfoDialog(MajorObjectInfoDialog):
 
-    uifile = os.path.join(os.path.dirname(__file__), 'ui', 'banddialog.ui')
+    uifile = utils.getresource(os.path.join('ui', 'banddialog.ui'), __name__)
 
     def __init__(self, band, parent=None, flags=QtCore.Qt.Widget):
         assert band, 'a valid GDAL raster band expected'
@@ -393,7 +396,7 @@ class BandInfoDialog(MajorObjectInfoDialog):
 
 class DatasetInfoDialog(MajorObjectInfoDialog):
 
-    uifile = os.path.join(os.path.dirname(__file__), 'ui', 'datasetdialog.ui')
+    uifile = utils.getresource(os.path.join('ui', 'datasetdialog.ui'), __name__)
 
     def __init__(self, dataset, parent=None, flags=QtCore.Qt.Widget):
         assert dataset, 'a valid GDAL dataset expected'
