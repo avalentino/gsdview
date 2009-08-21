@@ -71,7 +71,7 @@ p, li { white-space: pre-wrap; }
             <string/>
            </property>
            <property name="pixmap">
-            <pixmap>:/GSDView.png</pixmap>
+            <pixmap>../images/GSDView.png</pixmap>
            </property>
            <property name="scaledContents">
             <bool>true</bool>

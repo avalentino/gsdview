@@ -31,19 +31,9 @@ debian/gsdview.1: debian/manpage.xml
 debian/gsdviewer.1: debian/gsdview.1
 	cp debian/gsdview.1 debian/gsdviewer.1
 
-resources: gsdview/resources.py \
-           gsdview/splash_resources.py \
-           gsdview/gdalbackend/resources.py
-
-gsdview/resources.py: images/resources.qrc images/*
-	pyrcc4 -o $@ $<
+resources: gsdview/splash_resources.py
 
 gsdview/splash_resources.py: images/splash.qrc images/splash.svg
-	pyrcc4 -o $@ $<
-
-gsdview/gdalbackend/resources.py: \
-                            gsdview/gdalbackend/images/resources.qrc \
-                            gsdview/gdalbackend/images/*
 	pyrcc4 -o $@ $<
 
 

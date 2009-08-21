@@ -313,6 +313,8 @@ class PreferencesDialog(QtGui.QDialog):
     def __init__(self, parent=None, flags=QtCore.Qt.Widget): # QtCore.Qt.Dialog
         QtGui.QDialog.__init__(self, parent, flags)
         uic.loadUi(self.uifile, self)
+        iconfile = getresource(os.path.join('images', 'preferences.svg'), __name__)
+        self.setWindowIcon(QtGui.QIcon(iconfile))
 
         # remove empty page
         page = self.stackedWidget.widget(0)

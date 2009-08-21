@@ -225,15 +225,15 @@ class PluginManagerGui(QtGui.QWidget):
         uic.loadUi(self.uifile, self)
 
         # Set icons
-        iconfile = getresource(os.path.join('images', 'add.svg'))
+        iconfile = getresource(os.path.join('images', 'add.svg'), __name__)
         self.addButton.setIcon(QtGui.QIcon(iconfile))
-        iconfile = getresource(os.path.join('images', 'remove.svg'))
+        iconfile = getresource(os.path.join('images', 'remove.svg'), __name__)
         self.removeButton.setIcon(QtGui.QIcon(iconfile))
-        iconfile = getresource(os.path.join('images', 'edit.svg'))
+        iconfile = getresource(os.path.join('images', 'edit.svg'), __name__)
         self.editButton.setIcon(QtGui.QIcon(iconfile))
-        iconfile = getresource(os.path.join('images', 'go-up.svg'))
+        iconfile = getresource(os.path.join('images', 'go-up.svg'), __name__)
         self.upButton.setIcon(QtGui.QIcon(iconfile))
-        iconfile = getresource(os.path.join('images', 'go-down.svg'))
+        iconfile = getresource(os.path.join('images', 'go-down.svg'), __name__)
         self.downButton.setIcon(QtGui.QIcon(iconfile))
 
         # Set plugin manager attribute

@@ -4,10 +4,8 @@ include LICENSE.txt
 include Makefile
 include gsdviewer
 include gsdview.desktop
-recursive-include gsdview *.py *.ui
 recursive-include images *.svg *.png *.qrc
-recursive-include gsdview/gdalbackend/images *.svg *.qrc
-recursive-include gsdview/plugins/worldmap/images *.jpg *.qrc
+recursive-include gsdview *.py *.ui *.svg *.png *.jpg
 
 include doc/Makefile doc/make.bat
 recursive-include doc/source *.txt *.html *.pdf *.png *.svg *.ico *.py

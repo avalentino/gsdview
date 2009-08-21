@@ -125,42 +125,6 @@
     </spacer>
    </item>
   </layout>
-  <action name="actionAddFavorite">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/images/add.svg</normaloff>:/images/add.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add</string>
-   </property>
-  </action>
-  <action name="actionRemoveFavorite">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/images/remove.svg</normaloff>:/images/remove.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Remove</string>
-   </property>
-  </action>
-  <action name="actionEditFavorite">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/images/edit.svg</normaloff>:/images/edit.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Edit</string>
-   </property>
-  </action>
-  <action name="actionClearFavorites">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/images/clear.svg</normaloff>:/images/clear.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Clear</string>
-   </property>
-  </action>
  </widget>
  <resources/>
  <connections/>
