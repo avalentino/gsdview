@@ -28,7 +28,7 @@ import logging
 from osgeo import gdal
 from PyQt4 import QtCore, QtGui
 
-from gsdview import utils
+from gsdview import qt4support
 
 from gsdview.gdalbackend import info
 from gsdview.gdalbackend import gdalqt4
@@ -36,7 +36,7 @@ from gsdview.gdalbackend import gdalsupport
 
 
 class MajorObjectItem(QtGui.QStandardItem):
-    iconfile = utils.getresource('images/generic.svg', __name__)
+    iconfile = qt4support.geticon('metadata.svg', __name__)
     _typeoffset = 100
     backend = info.name
 
@@ -88,7 +88,7 @@ class BandItem(MajorObjectItem):
 
     '''
 
-    iconfile = utils.getresource('images/rasterband.svg', __name__)
+    iconfile = qt4support.geticon('rasterband.svg', __name__)
     _typeoffset = MajorObjectItem._typeoffset + 10
 
     def __init__(self, band):
@@ -167,11 +167,11 @@ class BandItem(MajorObjectItem):
 
 
 class OverviewItem(BandItem):
-    iconfile = utils.getresource('images/overview.svg', __name__)
+    iconfile = qt4support.geticon('overview.svg', __name__)
     _typeoffset = BandItem._typeoffset + 1
 
 #~ class VirtualBandItem(BandItem):
-    #~ iconfile = utils.getresource('images/virtualband.svg', __name__)
+    #~ iconfile = qt4support.geticon('virtualband.svg', __name__)
     #~ _typeoffset = BandItem._typeoffset + 2
     # @TODO: remove
     #~ actions = BandItem.actions + ('Delete',)
@@ -191,7 +191,7 @@ class DatasetItem(MajorObjectItem):
 
     '''
 
-    iconfile = utils.getresource('images/dataset.svg', __name__)
+    iconfile = qt4support.geticon('dataset.svg', __name__)
     _typeoffset = MajorObjectItem._typeoffset + 100
 
     def __init__(self, filename, mode=gdal.GA_ReadOnly):
@@ -266,7 +266,7 @@ class DatasetItem(MajorObjectItem):
         #~ subdatasets = self._obj.GetSubDatasets()
         #~ subdatasets = subdatasets[self.rowCount():]
         #~ for index, (path, extrainfo) in enumerate(subdatasets):
-            #~ # @TODO: pass full path for the sub-dataet filename (??)
+            #~ # @TODO: pass full path for the sub-dataset filename (??)
             #~ item = SubDatasetItem(path, extrainfo)
             #~ if not item.text():
                 #~ description = '%s n. %d' % (QtGui.qApp.tr('Sub Datset'),
@@ -287,7 +287,7 @@ class DatasetItem(MajorObjectItem):
                 #        handling in HDF5 driver for GDAL < 1.6.1
                 continue
             extrainfo = metadata['SUBDATASET_%d_DESC' % index]
-            # @TODO: pass full path for the sub-dataet filename (??)
+            # @TODO: pass full path for the sub-dataset filename (??)
             item = SubDatasetItem(path, extrainfo)
             if not item.text():
                 description = '%s n. %d' % (QtGui.qApp.tr('Sub Datset'),
@@ -398,7 +398,7 @@ def datasetitem(filename):
         return DatasetItem(filename)
 
 class SubDatasetItem(CachedDatasetItem):
-    iconfile = utils.getresource('images/subdataset.svg', __name__)
+    iconfile = qt4support.geticon('subdataset.svg', __name__)
     _typeoffset = DatasetItem._typeoffset + 10
 
     def __init__(self, gdalfilename, extrainfo=''):

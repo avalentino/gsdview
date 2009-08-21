@@ -484,21 +484,21 @@ if __name__ == "__main__":
                 return child
 
             def createActions(self):
-                icon = QtGui.QIcon(utils.getresource('images/new.svg', __name__))
+                icon = geticon('new.svg', __name__)
                 self.newAct = QtGui.QAction(icon, self.tr("&New"), self)
                 self.newAct.setShortcut(self.tr("Ctrl+N"))
                 self.newAct.setStatusTip(self.tr("Create a new file"))
                 self.connect(self.newAct, QtCore.SIGNAL("triggered()"),
                              self.newFile)
 
-                icon = QtGui.QIcon(utils.getresource('images/open.svg', __name__))
+                icon = geticon('open.svg', __name__)
                 self.openAct = QtGui.QAction(icon, self.tr("&Open..."), self)
                 self.openAct.setShortcut(self.tr("Ctrl+O"))
                 self.openAct.setStatusTip(self.tr("Open an existing file"))
                 self.connect(self.openAct, QtCore.SIGNAL("triggered()"),
                              self.open)
 
-                icon = QtGui.QIcon(utils.getresource('images/save.svg', __name__))
+                icon = geticon('save.svg', __name__)
                 self.saveAct = QtGui.QAction(icon, self.tr("&Save"), self)
                 self.saveAct.setShortcut(self.tr("Ctrl+S"))
                 self.saveAct.setStatusTip(self.tr("Save the document to disk"))
@@ -517,14 +517,14 @@ if __name__ == "__main__":
                 self.connect(self.exitAct, QtCore.SIGNAL("triggered()"),
                              self.close)
 
-                icon = QtGui.QIcon(utils.getresource('images/cut.svg', __name__))
+                icon = geticon('cut.svg', __name__)
                 self.cutAct = QtGui.QAction(icon, self.tr("Cu&t"), self)
                 self.cutAct.setShortcut(self.tr("Ctrl+X"))
                 self.cutAct.setStatusTip(self.tr("Cut the current selection's "
                                                  "contents to the clipboard"))
                 self.connect(self.cutAct, QtCore.SIGNAL("triggered()"), self.cut)
 
-                icon = QtGui.QIcon(utils.getresource('images/copy.svg', __name__))
+                icon = geticon('copy.svg', __name__)
                 self.copyAct = QtGui.QAction(icon, self.tr("&Copy"), self)
                 self.copyAct.setShortcut(self.tr("Ctrl+C"))
                 self.copyAct.setStatusTip(self.tr("Copy the current selection's "
@@ -532,7 +532,7 @@ if __name__ == "__main__":
                 self.connect(self.copyAct, QtCore.SIGNAL("triggered()"),
                              self.copy)
 
-                icon = QtGui.QIcon(utils.getresource('images/paste.svg', __name__))
+                icon = geticon('paste.svg', __name__)
                 self.pasteAct = QtGui.QAction(icon, self.tr("&Paste"), self)
                 self.pasteAct.setShortcut(self.tr("Ctrl+V"))
                 self.pasteAct.setStatusTip(self.tr("Paste the clipboard's contents "

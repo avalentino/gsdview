@@ -27,7 +27,7 @@ import numpy
 
 from PyQt4 import QtCore, QtGui
 
-from gsdview.utils import getresource
+from gsdview.qt4support import geticonfile, geticon
 
 
 class WorldmapPanel(QtGui.QDockWidget):
@@ -49,7 +49,7 @@ class WorldmapPanel(QtGui.QDockWidget):
         self.setWorldmapItem()
 
         # Zoom in
-        icon = QtGui.QIcon(getresource('images/zoom-in.svg', 'gsdview'))
+        icon = geticon('zoom-in.svg', 'gsdview')
         self.actionZoomIn = QtGui.QAction(icon, self.tr('Zoom In'), self)
         self.actionZoomIn.setStatusTip(self.tr('Zoom In'))
         self.actionZoomIn.setShortcut(QtGui.QKeySequence(self.tr('Ctrl++')))
@@ -58,7 +58,7 @@ class WorldmapPanel(QtGui.QDockWidget):
                      lambda: self._zoom(+1))
 
         # Zoom out
-        icon = QtGui.QIcon(getresource('images/zoom-out.svg', 'gsdview'))
+        icon = geticon('zoom-out.svg', 'gsdview')
         self.actionZoomOut = QtGui.QAction(icon, self.tr('Zoom Out'), self)
         self.actionZoomOut.setStatusTip(self.tr('Zoom Out'))
         self.actionZoomOut.setShortcut(QtGui.QKeySequence(self.tr('Ctrl+-')))
@@ -96,9 +96,9 @@ class WorldmapPanel(QtGui.QDockWidget):
         if self.worldmapitem is not None:
             scene.removeItem(self.worldmapitem)
 
-        #~ imgfile = getresource('images/world_2160x1080.jpg', __name__)
-        imgfile = getresource('images/world_4320x2160.jpg', __name__)
-        #~ imgfile = getresource('images/world_5400x2700.jpg', __name__)
+        #~ imgfile = geticonfile('world_2160x1080.jpg', __name__)
+        imgfile = geticonfile('world_4320x2160.jpg', __name__)
+        #~ imgfile = geticonfile('world_5400x2700.jpg', __name__)
         worldmap = QtGui.QPixmap(imgfile)
 
         worldmapitem = scene.addPixmap(worldmap)

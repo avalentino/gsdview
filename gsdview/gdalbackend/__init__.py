@@ -43,7 +43,7 @@ def init(mainwin):
     from PyQt4 import QtGui
     from osgeo import gdal
 
-    from gsdview import utils
+    from gsdview import qt4support
 
     from gsdview.gdalbackend import widgets
     from gsdview.gdalbackend import gdalsupport
@@ -60,7 +60,7 @@ def init(mainwin):
                                            'http://www.gdal.org')
 
     # GDAL icon
-    icon = QtGui.QIcon(utils.getresource('images/GDALLogoColor.svg', __name__))
+    icon = qt4support.geticon('GDALLogoColor.svg', __name__)
 
     # add a new page in the about dialog
     page = widgets.GDALInfoWidget(mainwin.aboutdialog)

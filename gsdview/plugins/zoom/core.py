@@ -27,8 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from gsdview.utils import getresource
-from gsdview.qt4support import actionGroupToMenu, actionGroupToToolbar
+from gsdview.qt4support import geticon, actionGroupToMenu, actionGroupToToolbar
 
 
 class ZoomTool(QtCore.QObject):
@@ -44,7 +43,7 @@ class ZoomTool(QtCore.QObject):
         actions = QtGui.QActionGroup(self)
 
         # Zoom in
-        icon = QtGui.QIcon(getresource('images/zoom-in.svg', 'gsdview'))
+        icon = geticon('zoom-in.svg', 'gsdview')
         actionZoomIn = QtGui.QAction(icon, self.tr('Zoom In'), self)
         actionZoomIn.setStatusTip(self.tr('Zoom In'))
         actionZoomIn.setShortcut(QtGui.QKeySequence(self.tr('Ctrl++')))
@@ -52,7 +51,7 @@ class ZoomTool(QtCore.QObject):
         actions.addAction(actionZoomIn)
 
         # Zoom out
-        icon = QtGui.QIcon(getresource('images/zoom-out.svg', 'gsdview'))
+        icon = geticon('zoom-out.svg', 'gsdview')
         actionZoomOut = QtGui.QAction(icon, self.tr('Zoom Out'), self)
         actionZoomOut.setStatusTip(self.tr('Zoom Out'))
         actionZoomOut.setShortcut(QtGui.QKeySequence(self.tr('Ctrl+-')))
@@ -60,14 +59,14 @@ class ZoomTool(QtCore.QObject):
         actions.addAction(actionZoomOut)
 
         # Zoom fit
-        icon = QtGui.QIcon(getresource('images/zoom-fit.svg', 'gsdview'))
+        icon = geticon('zoom-fit.svg', 'gsdview')
         actionZoomFit = QtGui.QAction(icon, self.tr('Zoom Fit'), self)
         actionZoomIn.setStatusTip(self.tr('Zoom to fit the window size'))
         self.connect(actionZoomFit, QtCore.SIGNAL('triggered()'), self.zoomFit)
         actions.addAction(actionZoomFit)
 
         # Zoom 100
-        icon = QtGui.QIcon(getresource('images/zoom-100.svg', 'gsdview'))
+        icon = geticon('zoom-100.svg', 'gsdview')
         actionZoom100 = QtGui.QAction(icon, self.tr('Zoom 100%'), self)
         actionZoom100.setStatusTip(self.tr('Original size'))
         self.connect(actionZoom100, QtCore.SIGNAL('triggered()'), self.zoom100)

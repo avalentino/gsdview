@@ -38,7 +38,7 @@ try:
 except ImportError:
     logging.getLogger(__name__).debug('"pkg_resources" not found.')
 
-from gsdview.utils import getresource   # @TODO: check dependency
+from gsdview.qt4support import getuifile, geticon   # @TODO: check dependency
 
 
 class PluginManager(object):
@@ -218,23 +218,18 @@ class PluginManager(object):
 
 
 class PluginManagerGui(QtGui.QWidget):
-    uifile = getresource(os.path.join('ui', 'pluginmanager.ui'), __name__)
+    uifile = getuifile('pluginmanager.ui', __name__)
 
     def __init__(self, pluginmanager, parent=None, flags=QtCore.Qt.Widget):
         QtGui.QWidget.__init__(self, parent, flags)
         uic.loadUi(self.uifile, self)
 
         # Set icons
-        iconfile = getresource(os.path.join('images', 'add.svg'), __name__)
-        self.addButton.setIcon(QtGui.QIcon(iconfile))
-        iconfile = getresource(os.path.join('images', 'remove.svg'), __name__)
-        self.removeButton.setIcon(QtGui.QIcon(iconfile))
-        iconfile = getresource(os.path.join('images', 'edit.svg'), __name__)
-        self.editButton.setIcon(QtGui.QIcon(iconfile))
-        iconfile = getresource(os.path.join('images', 'go-up.svg'), __name__)
-        self.upButton.setIcon(QtGui.QIcon(iconfile))
-        iconfile = getresource(os.path.join('images', 'go-down.svg'), __name__)
-        self.downButton.setIcon(QtGui.QIcon(iconfile))
+        self.addButton.setIcon(geticon('add.svg', __name__))
+        self.removeButton.setIcon(geticon('remove.svg', __name__))
+        self.editButton.setIcon(geticon('edit.svg', __name__))
+        self.upButton.setIcon(geticon('go-up.svg', __name__))
+        self.downButton.setIcon(geticon('go-down.svg', __name__))
 
         # Set plugin manager attribute
         self.pluginmanager = pluginmanager
@@ -383,7 +378,7 @@ class PluginManagerGui(QtGui.QWidget):
                                 QtGui.QTableWidgetItem(short_description))
 
             # info
-            icon = QtGui.QIcon(getresource('images/info.svg', __name__))
+            icon = geticon('info.svg', __name__)
             w = QtGui.QPushButton(icon, '', tablewidget)
             tablewidget.setCellWidget(index, 2, w)
             w.connect(w, QtCore.SIGNAL('clicked()'),
@@ -472,7 +467,7 @@ class PluginManagerGui(QtGui.QWidget):
 
 
 class PluginInfoForm(QtGui.QFrame):
-    uifile = getresource(os.path.join('ui', 'plugininfo.ui'), __name__)
+    uifile = getuifile('plugininfo.ui', __name__)
 
     def __init__(self, plugin=None, active=None, parent=None,
                  flags=QtCore.Qt.Widget):

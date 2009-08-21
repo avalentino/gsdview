@@ -43,6 +43,7 @@ from gsdview import pluginmanager
 from gsdview.mainwin import ItemModelMainWindow
 from gsdview.appsite import USERCONFIGDIR, SYSPLUGINSDIR
 from gsdview.widgets import AboutDialog, PreferencesDialog
+
 from gsdview.exectools.qt4tools import Qt4ToolController
 from gsdview.exectools.qt4tools import Qt4DialogLoggingHandler
 
@@ -89,8 +90,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         logger = logging.getLogger('gsdview')
 
         logger.debug('Main window base classes initialization ...')
-        iconfile = utils.getresource('images/GSDView.png', __name__)
-        QtGui.qApp.setWindowIcon(QtGui.QIcon(iconfile))
+        QtGui.qApp.setWindowIcon(qt4support.geticon('GSDView.png', __name__))
 
         super(GSDView, self).__init__(parent)
         title = self.tr('GSDView Open Source Edition v. %1').arg(info.version)
@@ -130,7 +130,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         self.pluginmanager = pluginmanager.PluginManager(self, SYSPLUGINSDIR)
         self.preferencesdialog.addPage(
                 pluginmanager.PluginManagerGui(self.pluginmanager, self),
-                QtGui.QIcon(utils.getresource('images/plugin.svg', __name__)),
+                qt4support.geticon('plugin.svg', __name__),
                 label='Plugins')
 
         # Settings
@@ -249,7 +249,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         actionsgroup = QtGui.QActionGroup(self)
 
         # Open
-        icon = QtGui.QIcon(utils.getresource('images/open.svg', __name__))
+        icon = qt4support.geticon('open.svg', __name__)
         action = QtGui.QAction(icon, self.tr('&Open'), actionsgroup)
         action.setObjectName('open')
         action.setShortcut(self.tr('Ctrl+O'))
@@ -259,7 +259,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         actionsgroup.addAction(action)
 
         # Close
-        icon = QtGui.QIcon(utils.getresource('images/close.svg', __name__))
+        icon = qt4support.geticon('close.svg', __name__)
         action = QtGui.QAction(icon, self.tr('&Close'), actionsgroup)
         action.setObjectName('close')
         action.setShortcut(self.tr('Ctrl+W'))
@@ -273,7 +273,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         #action.setObjectName('separator')
 
         # Exit
-        icon = QtGui.QIcon(utils.getresource('images/quit.svg', __name__))
+        icon = qt4support.geticon('quit.svg', __name__)
         action = QtGui.QAction(icon, self.tr('&Exit'), actionsgroup)
         action.setObjectName('exit')
         action.setShortcut(self.tr('Ctrl+X'))
@@ -288,7 +288,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         actionsgroup = QtGui.QActionGroup(self)
 
         # Preferences
-        icon = QtGui.QIcon(utils.getresource('images/preferences.svg', __name__))
+        icon = qt4support.geticon('preferences.svg', __name__)
         action = QtGui.QAction(icon, self.tr('&Preferences'), actionsgroup)
         action.setObjectName('preferences')
         action.setToolTip(self.tr('Open the program preferences dialog'))
@@ -303,7 +303,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         actionsgroup = QtGui.QActionGroup(self)
 
         # About
-        icon = QtGui.QIcon(utils.getresource('images/about.svg', __name__))
+        icon = qt4support.geticon('about.svg', __name__)
         action = QtGui.QAction(icon, self.tr('&About'), actionsgroup)
         action.setObjectName('about')
         action.setToolTip(self.tr('Show program information'))
@@ -313,7 +313,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         actionsgroup.addAction(action)
 
         # AboutQt
-        icon = QtGui.QIcon(utils.getresource('images/qt-logo.png', __name__))
+        icon = qt4support.geticon('qt-logo.png', __name__)
         action = QtGui.QAction(icon, self.tr('About &Qt'), actionsgroup)
         action.setObjectName('aboutQt')
         action.setToolTip(self.tr('Show information about Qt'))

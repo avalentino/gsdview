@@ -31,7 +31,7 @@ import logging
 from PyQt4 import QtCore, QtGui, uic
 
 from gsdview import info
-from gsdview.utils import getresource
+from gsdview.qt4support import getuifile, geticonfile, geticon
 
 
 def get_mainwin():
@@ -76,14 +76,14 @@ def _choosedir(dirname, dialog=None,):
 
 class AboutDialog(QtGui.QDialog):
 
-    uifile = getresource(os.path.join('ui', 'aboutdialog.ui'), __name__)
+    uifile = getuifile('aboutdialog.ui', __name__)
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget): # QtCore.Qt.Dialog
         QtGui.QDialog.__init__(self, parent, flags)
         uic.loadUi(self.uifile, self)
 
         # Set icons
-        logofile = getresource(os.path.join('images', 'GSDView.png'), __name__)
+        logofile = geticonfile('GSDView.png', __name__)
         self.setLogo(logofile)
 
         # Set contents
@@ -139,8 +139,7 @@ class FileEntryWidget(QtGui.QWidget):
         self.lineEdit = QtGui.QLineEdit()
         self.lineEdit.setCompleter(self.__completer)
 
-        icon = QtGui.QIcon(getresource('images/open.svg', __name__))
-        self.button = QtGui.QPushButton(icon, '')
+        self.button = QtGui.QPushButton(geticon('open.svg', __name__), '')
         self.button.setToolTip(self.tr('select from file dialog'))
 
         layout = QtGui.QHBoxLayout()
@@ -192,7 +191,7 @@ class FileEntryWidget(QtGui.QWidget):
 
 class GeneralPreferencesPage(QtGui.QWidget):
 
-    uifile = getresource(os.path.join('ui', 'general-page.ui'), __name__)
+    uifile = getuifile('general-page.ui', __name__)
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget):
         QtGui.QWidget.__init__(self, parent, flags)
@@ -308,23 +307,22 @@ class PreferencesDialog(QtGui.QDialog):
     # @TODO: also look at
     # /usr/share/doc/python-qt4-doc/examples/tools/settingseditor/settingseditor.py
 
-    uifile = getresource(os.path.join('ui', 'preferences.ui'), __name__)
+    uifile = getuifile('preferences.ui', __name__)
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget): # QtCore.Qt.Dialog
         QtGui.QDialog.__init__(self, parent, flags)
         uic.loadUi(self.uifile, self)
-        iconfile = getresource(os.path.join('images', 'preferences.svg'), __name__)
-        self.setWindowIcon(QtGui.QIcon(iconfile))
+        self.setWindowIcon(geticon('preferences.svg', __name__))
 
         # remove empty page
         page = self.stackedWidget.widget(0)
         self.stackedWidget.removeWidget(page)
 
         # app pages
-        icon = QtGui.QIcon(getresource('images/preferences.svg', __name__))
+        icon = geticon('preferences.svg', __name__)
         self.addPage(GeneralPreferencesPage(), icon, self.tr('General'))
 
-        #~ icon = QtGui.QIcon(getresource('images/harddisk.svg', __name__))
+        #~ icon = geticon('harddisk.svg', __name__)
         #~ self.addPage(CachePreferencesPage(), icon, self.tr('Cache'))
 
         assert self.listWidget.count() == self.stackedWidget.count()
