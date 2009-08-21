@@ -28,7 +28,8 @@ import numpy
 from PyQt4 import QtCore, QtGui
 
 import gsdview.resources
-import resources
+
+from gsdview.utils import getresource
 
 
 class WorldmapPanel(QtGui.QDockWidget):
@@ -97,9 +98,11 @@ class WorldmapPanel(QtGui.QDockWidget):
         if self.worldmapitem is not None:
             scene.removeItem(self.worldmapitem)
 
-        #~ worldmap = QtGui.QPixmap(':/worldmap/world_2160x1080.jpg')
-        worldmap = QtGui.QPixmap(':/worldmap/world_4320x2160.jpg')
-        #~ worldmap = QtGui.QPixmap(':/worldmap/world_5400x2700.jpg')
+        #~ imgfile = getresource('images/world_2160x1080.jpg', __name__)
+        imgfile = getresource('images/world_4320x2160.jpg', __name__)
+        #~ imgfile = getresource('images/world_5400x2700.jpg', __name__)
+        worldmap = QtGui.QPixmap(imgfile)
+
         worldmapitem = scene.addPixmap(worldmap)
         worldmapitem.setTransformationMode(QtCore.Qt.SmoothTransformation)
         # @NOTE: reverse the y axis

@@ -33,8 +33,7 @@ debian/gsdviewer.1: debian/gsdview.1
 
 resources: gsdview/resources.py \
            gsdview/splash_resources.py \
-           gsdview/gdalbackend/resources.py \
-           gsdview/plugins/worldmap/resources.py
+           gsdview/gdalbackend/resources.py
 
 gsdview/resources.py: images/resources.qrc images/*
 	pyrcc4 -o $@ $<
@@ -45,11 +44,6 @@ gsdview/splash_resources.py: images/splash.qrc images/splash.svg
 gsdview/gdalbackend/resources.py: \
                             gsdview/gdalbackend/images/resources.qrc \
                             gsdview/gdalbackend/images/*
-	pyrcc4 -o $@ $<
-
-gsdview/plugins/worldmap/resources.py: \
-                            gsdview/plugins/worldmap/images/resources.qrc \
-                            gsdview/plugins/worldmap/images/*
 	pyrcc4 -o $@ $<
 
 
