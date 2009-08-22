@@ -8,9 +8,9 @@
 XP=xsltproc -''-nonet
 DB2MAN=/usr/share/sgml/docbook/stylesheet/xsl/nwalsh/manpages/docbook.xsl
 
-.PHONY: default docs html pdf man resources clean sdist bdist deb rpmspec rpm
+.PHONY: default docs html pdf man clean sdist bdist deb rpmspec rpm
 
-default: docs resources
+default: docs
 
 docs: html man
 #docs: html pdf man
@@ -30,12 +30,6 @@ debian/gsdview.1: debian/manpage.xml
 
 debian/gsdviewer.1: debian/gsdview.1
 	cp debian/gsdview.1 debian/gsdviewer.1
-
-resources: gsdview/splash_resources.py
-
-gsdview/splash_resources.py: images/splash.qrc images/splash.svg
-	pyrcc4 -o $@ $<
-
 
 clean:
 	cd doc && $(MAKE) clean

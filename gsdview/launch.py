@@ -67,15 +67,14 @@ MODULES = ['os', 're', 'sys', 'itertools',
           'numpy',
           'osgeo.gdal', 'osgeo.osr',
           'PyQt4.QtCore', 'PyQt4.QtGui',
-          'gsdview.info', 'gsdview.utils', 'gsdview.widgets',
-          'gsdview.mainwin', 'gsdview.gsdtools', 'gsdview.qt4support',
-          'gsdview.graphicsview',
           'gsdview.exectools', 'gsdview.exectools.qt4tools',
-          #~ 'gsdview.gdalbackend', 'gsdview.gdalbackend.core',
-          #~ 'gsdview.gdalbackend.gdalqt4', 'gsdview.gdalbackend.widgets',
-          #~ 'gsdview.gdalbackend.modelitems',
-          #~ 'gsdview.gdalbackend.gdalsupport',
-          #~ 'gsdview.gdalbackend.gdalexectools',
+          'gsdview.gdalbackend', 'gsdview.gdalbackend.core',
+          'gsdview.gdalbackend.gdalqt4', 'gsdview.gdalbackend.widgets',
+          'gsdview.gdalbackend.modelitems', 'gsdview.gdalbackend.gdalsupport',
+          'gsdview.gdalbackend.gdalexectools',
+          'gsdview.info', 'gsdview.utils', 'gsdview.apptools',
+          'gsdview.gsdtools', 'gsdview.qt4support', 'gsdview.widgets',
+          'gsdview.graphicsview', 'gsdview.mainwin', 'gsdview.app',
 ]
 
 def preload(modules, app=None):
@@ -150,12 +149,12 @@ def main():
     from PyQt4 import QtGui
     logging.debug('Qt4 import: %d.%06ds' % timer.update())
 
-    import splash_resources
-    logging.debug('splash resources import: %d.%06ds' % timer.update())
+    import os, sys
+    from gsdview.utils import getresource
 
-    import sys
     app = QtGui.QApplication(sys.argv)
-    pixmap = QtGui.QPixmap(':images/splash.png')
+    pngfile = getresource(os.path.join('images', 'splash.png'), __name__)
+    pixmap = QtGui.QPixmap(pngfile)
     splash = QtGui.QSplashScreen(pixmap)
     splash.show()
     app.processEvents()
