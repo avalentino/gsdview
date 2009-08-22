@@ -4,7 +4,7 @@ include LICENSE.txt
 include Makefile
 include gsdviewer
 include gsdview.desktop
-#recursive-include images *.svg *.png *.qrc
+#recursive-include images *.svg
 recursive-include gsdview *.py *.ui *.svg *.png *.jpg
 
 include doc/Makefile doc/make.bat
