@@ -313,7 +313,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         actionsgroup.addAction(action)
 
         # AboutQt
-        icon = qt4support.geticon('qt-logo.png', __name__)
+        icon = QtGui.QIcon(':/trolltech/qmessagebox/images/qtlogo-64.png')
         action = QtGui.QAction(icon, self.tr('About &Qt'), actionsgroup)
         action.setObjectName('aboutQt')
         action.setToolTip(self.tr('Show information about Qt'))
