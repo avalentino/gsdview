@@ -47,11 +47,15 @@ coll = COLLECT(exe,
                a.datas,
                project_files,
 
-               # Qt4 UI files
+               # Packages resources: Qt4 UI files and images
                Tree(os.path.join(GSDVIEWROOT, 'gsdview', 'ui'), 'ui',
+                    excludes=['.svn']),
+               Tree(os.path.join(GSDVIEWROOT, 'gsdview', 'images'), 'images',
                     excludes=['.svn']),
                Tree(os.path.join(GSDVIEWROOT, 'gsdview', 'gdalbackend', 'ui'),
                     'ui', excludes=['.svn']),
+               Tree(os.path.join(GSDVIEWROOT, 'gsdview', 'gdalbackend', 'images'),
+                    'images', excludes=['.svn']),
 
                # Plugins
                Tree(os.path.join(GSDVIEWROOT, 'gsdview', 'plugins'), 'plugins',
