@@ -24,9 +24,14 @@ Changes from 0.5.9 to 0.6.0 (XX/08/2009)
 * Fixed bug in sub-datasets handling
 * Improved debian packaging (close `#3`_)
 * API reference added to documentation
+* Resources handling refactoring (close `#6`_)
+* Initial support for `pyinstaller <http://www.pyinstaller.org>`_
+  packaging (`#8`_)
 
 .. _`#2`: https://sourceforge.net/apps/trac/gsdview/ticket/2
 .. _`#3`: https://sourceforge.net/apps/trac/gsdview/ticket/3
+.. _`#6`: https://sourceforge.net/apps/trac/gsdview/ticket/6
+.. _`#8`: https://sourceforge.net/apps/trac/gsdview/ticket/8
 
 
 Changes from 0.3.0 to 0.5.9 (10/05/2009)
