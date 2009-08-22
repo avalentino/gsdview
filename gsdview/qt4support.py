@@ -140,7 +140,7 @@ def getuifile(name, package=None):
     It is assumed that Qt UI files are located in the "ui" subfolfer of
     the package.
 
-    .. see:: utils.getresource
+    .. seealso:: :autolink:`gsdview.utils.getresource`
 
     '''
 
@@ -153,7 +153,7 @@ def geticonfile(name, package=None):
     It is assumed that icon files are located in the "images" subfolder
     of the package.
 
-    .. see:: utils.getresource
+    .. seealso:: :autolink:`gsdview.utils.getresource`
 
     '''
 
@@ -166,7 +166,7 @@ def geticon(name, package=None):
     It is assumed that icon files are located in the "images" subfolder
     of the package.
 
-    .. see:: utils.getresource
+    .. seealso:: :autolink:`gsdview.utils.getresource`
 
     '''
 
