@@ -164,7 +164,7 @@ class GDALBackend(QtCore.QObject):
 
         # show properties
         # @TODO: standard info icon from gdsview package
-        icon = qt4support.geticon('info.svg', __name__)
+        icon = qt4support.geticon('info.svg', 'gsdview')
         action = QtGui.QAction(icon, self.tr('&Show Properties'), actionsgroup)
         action.setObjectName('actionShowItemProperties')
         action.setShortcut(self.tr('Ctrl+S'))

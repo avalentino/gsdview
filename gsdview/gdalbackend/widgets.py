@@ -122,7 +122,7 @@ class GDALPreferencesPage(QtGui.QWidget):
         QtGui.QWidget.__init__(self, parent, flags)
         uic.loadUi(self.uifile, self)
 
-        self.infoButton.setIcon(geticon('info.svg', __name__))
+        self.infoButton.setIcon(geticon('info.svg', 'gsdview'))
 
         # Avoid promoted widgets
         DirectoryOnly = QtGui.QFileDialog.DirectoryOnly
@@ -362,7 +362,7 @@ class BandInfoDialog(MajorObjectInfoDialog):
         MajorObjectInfoDialog.__init__(self, band, parent, flags)
 
         # Set tab icons
-        self.tabWidget.setTabIcon(0, geticon('info.svg', __name__))
+        self.tabWidget.setTabIcon(0, geticon('info.svg', 'gsdview'))
         self.tabWidget.setTabIcon(1, geticon('metadata.svg', __name__))
 
         # Info Tab
@@ -409,7 +409,7 @@ class DatasetInfoDialog(MajorObjectInfoDialog):
         MajorObjectInfoDialog.__init__(self, dataset, parent, flags)
 
         # Set tab icons
-        self.tabWidget.setTabIcon(0, geticon('info.svg', __name__))
+        self.tabWidget.setTabIcon(0, geticon('info.svg', 'gsdview'))
         self.tabWidget.setTabIcon(1, geticon('metadata.svg', __name__))
         self.tabWidget.setTabIcon(2, geticon('gcp.svg', __name__))
         self.tabWidget.setTabIcon(3, geticon('driver.svg', __name__))
