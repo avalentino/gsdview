@@ -23,13 +23,10 @@ pdf: doc/GSDView.pdf
 	cd doc/build/latex && make
 	cp doc/build/latex/GSDView.pdf doc
 
-man: debian/gsdview.1 debian/gsdviewer.1
+man: debian/gsdview.1
 
 debian/gsdview.1: debian/manpage.xml
 	$(XP) -o $@ $(DB2MAN) $<
-
-debian/gsdviewer.1: debian/gsdview.1
-	cp debian/gsdview.1 debian/gsdviewer.1
 
 clean:
 	cd doc && $(MAKE) clean
@@ -39,13 +36,12 @@ clean:
 	$(RM) python-build-stamp-* debian/stamp-makefile-build
 	cd pkg && $(MAKE) clean
 
-sdist: docs resources
-	python setup.py sdist --manifest-only
-	python setup.py sdist --force-manifest
+sdist: docs
+	python setup.py sdist
 
 bdist: sdist deb #rpm
 
-deb: docs resources
+deb: docs
 	dpkg-buildpackage -us -uc
 
 rpmspec:

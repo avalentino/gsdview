@@ -45,10 +45,10 @@ Requirements
 In order to run GSDView you should have the following software installed:
 
 * Python_ 2.5 or higher
-* PyQt_ 4.3  or higher
-* numpy_ 1.1.0  or higher
+* PyQt_ 4.5  or higher
+* numpy_ 1.2.1  or higher
 * gdal_ 1.5.2 or higher
-* PyQwt_ 5.0  or higher (recommended)
+* PyQwt_ 5.2  or higher (recommended)
 
 .. _PyQt: http://www.riverbankcomputing.co.uk
 .. _numpy: http://www.numpy.org
@@ -85,18 +85,18 @@ You can also install GSDView in a custom location::
 .. note::
 
    If you have all dependencies installed you can **run GSDView without
-   installation** by simply running the following command in the package root::
+   installation** by simply running the following command in the package
+   root::
 
-    $ python gsdviewer
-
+    $ python run.py
 
 .. note::
 
    Windows_\ :sup:`TM` users can **run GSDView without installation** by
-   double-clicking on ``gsdviewer.pyw`` file.
+   double-clicking on ``gsdview.pyw`` file.
 
-   If it doesn't exist you can get it by making a copy of the ``gsdviewer``
-   file and renaming it ``gsdviewer.pyw``.
+   If it doesn't exist you can get it by making a copy of the
+   ``run.py`` file and renaming it ``run.pyw``.
 
 .. _Windows: http://www.microsoft.com/windows
 
