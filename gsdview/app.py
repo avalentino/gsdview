@@ -33,9 +33,11 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
+import exectools
+from exectools.qt4tools import Qt4ToolController, Qt4DialogLoggingHandler
+
 from gsdview import info
 from gsdview import utils
-from gsdview import exectools
 from gsdview import qt4support
 from gsdview import graphicsview
 from gsdview import pluginmanager
@@ -43,9 +45,6 @@ from gsdview import pluginmanager
 from gsdview.mainwin import ItemModelMainWindow
 from gsdview.appsite import USERCONFIGDIR, SYSPLUGINSDIR
 from gsdview.widgets import AboutDialog, PreferencesDialog
-
-from gsdview.exectools.qt4tools import Qt4ToolController
-from gsdview.exectools.qt4tools import Qt4DialogLoggingHandler
 
 
 class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):

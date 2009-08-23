@@ -35,8 +35,9 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from gsdview.exectools.qt4tools import Qt4OStream, Qt4OutputPlane, \
-                                       Qt4StreamLoggingHandler
+from exectools.qt4tools import Qt4OStream
+from exectools.qt4tools import Qt4OutputPlane
+from exectools.qt4tools import Qt4StreamLoggingHandler
 
 # Info
 name = 'logplane'

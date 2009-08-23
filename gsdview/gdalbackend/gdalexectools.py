@@ -26,8 +26,8 @@ __revision__ = '$Revision$'
 import re
 import logging
 
-from gsdview import exectools
-from gsdview.exectools.qt4tools import Qt4OutputHandler
+import exectools
+from exectools.qt4tools import Qt4OutputHandler
 
 from PyQt4 import QtGui
 

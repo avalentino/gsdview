@@ -67,14 +67,14 @@ MODULES = ['os', 're', 'sys', 'itertools',
           'numpy',
           'osgeo.gdal', 'osgeo.osr',
           'PyQt4.QtCore', 'PyQt4.QtGui',
-          'gsdview.exectools', 'gsdview.exectools.qt4tools',
+          'exectools', 'exectools.qt4tools',
+          'gsdview.info', 'gsdview.utils', 'gsdview.apptools',
+          'gsdview.gsdtools', 'gsdview.qt4support', 'gsdview.widgets',
+          'gsdview.graphicsview', 'gsdview.mainwin', 'gsdview.app',
           'gsdview.gdalbackend', 'gsdview.gdalbackend.core',
           'gsdview.gdalbackend.gdalqt4', 'gsdview.gdalbackend.widgets',
           'gsdview.gdalbackend.modelitems', 'gsdview.gdalbackend.gdalsupport',
           'gsdview.gdalbackend.gdalexectools',
-          'gsdview.info', 'gsdview.utils', 'gsdview.apptools',
-          'gsdview.gsdtools', 'gsdview.qt4support', 'gsdview.widgets',
-          'gsdview.graphicsview', 'gsdview.mainwin', 'gsdview.app',
 ]
 
 def preload(modules, app=None):
