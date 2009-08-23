@@ -7,7 +7,7 @@ GSDVIEWROOT = '..'
 
 a = Analysis([os.path.join(HOMEPATH,'support', '_mountzlib.py'),
               os.path.join(HOMEPATH,'support', 'useUnicode.py'),
-              os.path.join(GSDVIEWROOT, 'gsdviewer'),
+              os.path.join(GSDVIEWROOT, 'scripts', 'gsdview'),
              ],
              pathex=[GSDVIEWROOT],
              hookspath=['.'],
@@ -31,7 +31,7 @@ exe = EXE(pyz,
                'images', excludes=['.svn']),
 
           # Plugins
-          Tree(os.path.join(GSDVIEWROOT, 'gsdview', 'plugins'), 'plugins',
+          Tree(os.path.join(GSDVIEWROOT, 'plugins'), 'plugins',
                excludes=['.svn']),
 
           # Docs
