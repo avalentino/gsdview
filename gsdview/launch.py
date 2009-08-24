@@ -90,18 +90,6 @@ def preload(modules, app=None):
         logging.debug('%s import: %d.%06ds' % ((modname,) + timer.update()))
 
 
-def setup_env():
-    import os, sys
-    GSDVIEWROOT = os.path.dirname(os.path.abspath(__file__))
-
-    # @NOTE: needed for UI building of promoted widgets
-    if GSDVIEWROOT not in sys.path:
-        sys.path.insert(0, GSDVIEWROOT)
-
-    # @NOTE: needed for path names variables expansion
-    os.environ['GSDVIEWROOT'] = GSDVIEWROOT
-
-
 def cmdline_ui():
     import os
     from optparse import OptionParser
@@ -166,11 +154,6 @@ def main():
 
     logger.debug('Splash screen setup completed')
     logging.debug('splash screen setup: %d.%06ds' % timer.update())
-
-    ### environment setup #####################################################
-    logger.info('Setup environment ...')
-    setup_env()
-    logging.debug('environment setup: %d.%06ds' % timer.update())
 
     ### modules loading #######################################################
     preload(MODULES, app)
