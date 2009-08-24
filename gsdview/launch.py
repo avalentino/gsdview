@@ -26,6 +26,7 @@
 import logging
 import datetime
 
+
 class Timer(object):
     def __init__(self):
         self.start = datetime.datetime.now()
@@ -76,6 +77,7 @@ MODULES = ['os', 're', 'sys', 'itertools',
           'gsdview.gdalbackend.modelitems', 'gsdview.gdalbackend.gdalsupport',
           'gsdview.gdalbackend.gdalexectools',
 ]
+
 
 def preload(modules, app=None):
     if not app:

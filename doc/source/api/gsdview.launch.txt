@@ -14,7 +14,6 @@ gsdview.launch
       cmdline_ui
       main
       preload
-      setup_env
    
    
 
