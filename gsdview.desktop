@@ -2,7 +2,7 @@
 Name=GSDView
 Comment=Geo-Spatial Data Viewer
 TryExec=gsdviewer
-Exec=gsdviewer
+Exec=gsdview
 Icon=GSDView
 Type=Application
 X-GNOME-DocPath=
