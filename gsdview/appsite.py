@@ -38,7 +38,7 @@ if not hasattr(sys, 'frozen'):
     # Source schema
     LIBDIR = os.path.abspath(os.path.dirname(__file__))
     GSDVIEWROOT = os.path.normpath(os.path.join(LIBDIR, os.pardir))
-    SYSPLUGINSDIR = os.path.join(GSDVIEWROOT, 'plugins')
+    SYSPLUGINSDIR = os.path.join(LIBDIR, 'plugins')
     del LIBDIR
 else:
     if '_MEIPASS2' in os.environ:   # one-file temp's directory

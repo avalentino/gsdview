@@ -31,7 +31,7 @@ exe = EXE(pyz,
                'images', excludes=['.svn']),
 
           # Plugins
-          Tree(os.path.join(GSDVIEWROOT, 'plugins'), 'plugins',
+          Tree(os.path.join(GSDVIEWROOT, 'gsdview', 'plugins'), 'plugins',
                excludes=['.svn']),
 
           # Docs
