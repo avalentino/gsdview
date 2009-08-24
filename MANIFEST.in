@@ -1,14 +1,19 @@
-include MANIFEST MANIFEST.in
+include MANIFEST*
 include LICENSE.txt
 #include AUTHORS
 include Makefile
-include gsdviewer
+include run.py
 include gsdview.desktop
 #recursive-include images *.svg
+
 recursive-include gsdview *.py *.ui *.svg *.png *.jpg
+recursive-include exectools *.py
 
 include doc/Makefile doc/make.bat
-recursive-include doc/source *.txt *.html *.pdf *.png *.svg *.ico *.py
+recursive-include doc/source *.txt *.rst *.html *.pdf *.png *.svg *.ico *.py
 recursive-include doc/html *
 
+include scripts/*.pyw
 recursive-include debian *
+recursive-include pkg Makefile *.py *.spec
+prune pkg/pyinstaller
