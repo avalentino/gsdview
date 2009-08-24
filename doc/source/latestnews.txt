@@ -1,4 +1,4 @@
-:XX/08/2009: GSDView Open Source Edition v. 0.6.0 released.
+:24/08/2009: GSDView Open Source Edition v. 0.6.0 released.
 
              With respect to the alpha version a serious bug in
              sub-datasets handling has been fixed.

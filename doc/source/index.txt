@@ -29,9 +29,9 @@ Documents
 .. toctree::
    :maxdepth: 2
 
-  CHANGES
-  News archive <newsarchive>
-  reference
+   CHANGES
+   News archive <newsarchive>
+   reference
 
 
 .. comment
