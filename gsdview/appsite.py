@@ -20,7 +20,6 @@
 
 '''Site configuration module.
 
-:LIBDIR: GSDView package directory
 :DATADIR: system configuration, auxdata, images, etc.
 :DOCDIR: doumentation
 :LICENSEFILE: license file
@@ -54,47 +53,3 @@ LICENSEFILE = os.path.join(GSDVIEWROOT, 'LICENSE.txt')
 USERCONFIGDIR = os.path.expanduser(os.path.join('~', '.gsdview'))
 
 del GSDVIEWROOT
-
-
-
-# Std install schema
-_stdinstall_schema = '''\
-__all__ = ['DATADIR', 'DOCSDIR', 'LICENSEFILE', 'SYSPLUGINSDIR']
-
-import os
-PKGNAME = 'gsdview'
-
-DATADIR = os.path.join('%(DATADIR)s', 'share', PKGNAME)
-DOCSDIR = os.path.join('%(DATADIR)s', 'share', 'doc', PKGNAME)
-SYSPLUGINSDIR = os.path.join('%(LIBDIR)s', 'plugins')
-
-LICENSEFILE = os.path.join(DOCSDIR, 'LICENSE.txt')
-USERCONFIGDIR = os.path.expanduser(os.path.join('~', '.gsdview'))
-
-if not os.path.exists(DOCSDIR):
-    try:
-        import pkg_resources
-
-        req = pkg_resources.Requirement.parse(PKGNAME)
-        SHAREDIR = pkg_resources.resource_filename(req, 'share')
-        DATADIR = os.path.join(SHAREDIR, PKGNAME)
-        DOCSDIR = os.path.join(SHAREDIR, 'doc', PKGNAME)
-        LICENSEFILE = os.path.join(DOCSDIR, 'LICENSE.txt')
-        SYSPLUGINSDIR = pkg_resources.resource_filename(
-                                        req, os.path.join('gsdview', 'plugins'))
-
-        del SHAREDIR, req
-
-    except ImportError:
-        import warnings
-        warnings.warn(
-            'Unable to locate the application data directory.\\n'
-            'Please check yout installation.\\n'
-            'If the error persists please file a bug report at:\\n'
-            '  https://sourceforge.net/apps/trac/gsdview/wiki')
-
-del PKGNAME, os
-
-for name in __all__:
-    print '%%s:' %% name, globals()[name]
-'''

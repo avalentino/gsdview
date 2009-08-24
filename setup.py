@@ -58,12 +58,62 @@ except ImportError:
 from distutils.command.install_lib import install_lib
 class InstallLib(install_lib):
 
+    stdinstall_schema = '''\
+__all__ = ['DATADIR', 'DOCSDIR', 'LICENSEFILE', 'SYSPLUGINSDIR']
+
+import os
+PKGNAME = 'gsdview'
+
+DATADIR = os.path.join('%(DATADIR)s', 'share', PKGNAME)
+DOCSDIR = os.path.join('%(DATADIR)s', 'share', 'doc', PKGNAME)
+SYSPLUGINSDIR = os.path.join('%(LIBDIR)s', 'plugins')
+
+LICENSEFILE = os.path.join(DOCSDIR, 'LICENSE.txt')
+USERCONFIGDIR = os.path.expanduser(os.path.join('~', '.gsdview'))
+
+if not os.path.exists(DOCSDIR):
+    try:
+        import pkg_resources
+
+        req = pkg_resources.Requirement.parse(PKGNAME)
+        SHAREDIR = pkg_resources.resource_filename(req, 'share')
+        DATADIR = os.path.join(SHAREDIR, PKGNAME)
+        DOCSDIR = os.path.join(SHAREDIR, 'doc', PKGNAME)
+        LICENSEFILE = os.path.join(DOCSDIR, 'LICENSE.txt')
+        SYSPLUGINSDIR = pkg_resources.resource_filename(
+                                        req, os.path.join('gsdview', 'plugins'))
+
+        del SHAREDIR, req
+
+    except ImportError:
+        import warnings
+        warnings.warn(
+            'Unable to locate the application data directory.\\n'
+            'Please check yout installation.\\n'
+            'If the error persists please file a bug report at:\\n'
+            '  https://sourceforge.net/apps/trac/gsdview/wiki')
+
+del PKGNAME, os
+'''
+
+    def _striproot(self, path):
+        install = self.get_finalized_command('install')
+
+        if install.root and path.startswith(install.root):
+            return path[len(install.root):]
+        else:
+            return path
+
     def install(self):
         installed = install_lib.install(self)
 
         # Retrieve datadir
         install = self.get_finalized_command('install')
-        datadir = install.install_data
+
+        DATADIR = self._striproot(install.install_data)
+        LIBDIR = os.path.join(self._striproot(self.install_dir), PKGNAME)
+
+
 
         # Update the appsite.py file
         sitefile = 'appsite.py'
@@ -80,7 +130,7 @@ class InstallLib(install_lib):
 # Please do not modify.
 
 ''')
-        fp.write(appsite._stdinstall_schema % locals())
+        fp.write(self.stdinstall_schema % locals())
         fp.close()
 
         return installed
@@ -108,6 +158,7 @@ Topic :: Scientific/Engineering :: Visualization
 
 datafiles = [
     (os.path.join('share', 'doc', PKGNAME), ['README.txt']),
+    (os.path.join('share', 'doc', PKGNAME), ['LICENSE.txt']),
     (os.path.join('share', 'doc', PKGNAME, 'html'),
         [name for name in glob(os.path.join('doc', 'html', '*'))
                                             if not os.path.isdir(name)]),
@@ -117,7 +168,6 @@ datafiles = [
     (os.path.join('share', 'doc', PKGNAME, 'html', '_static'),
         [name for name in glob(os.path.join('doc', 'html', '_static', '*'))
                                             if not os.path.isdir(name)]),
-
     #(os.path.join('share', 'doc', PKGNAME),
     #                [os.path.join('doc', 'GSDView.pdf')]),
 ]
@@ -132,9 +182,6 @@ if os.name == 'posix':
                         ['gsdview.desktop']))
     datafiles.append((os.path.join('share', 'pixmaps'),
                         [os.path.join('gsdview', 'images', 'GSDView.png')]))
-
-if not platform.dist()[0] in ('Dabian', 'Ubuntu'):
-    datafiles.append((os.path.join('share', 'doc', PKGNAME), ['LICENSE.txt']))
 
 kwargs['data_files'] = datafiles
 
