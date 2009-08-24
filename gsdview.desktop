@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=GSDView
 Comment=Geo-Spatial Data Viewer
-TryExec=gsdviewer
+TryExec=gsdview
 Exec=gsdview
 Icon=GSDView
 Type=Application
