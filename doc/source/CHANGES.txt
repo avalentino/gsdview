@@ -27,11 +27,17 @@ Changes from 0.5.9 to 0.6.0 (XX/08/2009)
 * Resources handling refactoring (close `#6`_)
 * Initial support for `pyinstaller <http://www.pyinstaller.org>`_
   packaging (`#8`_)
+* Improved project layout: exectools in now an independent python package,
+  no more a sub-package of gsdview (close `#10`_)
+* `setuptools <http://http//pypi.python.org/pypi/setuptools>`_ suport
+  (close `#7`_)
 
 .. _`#2`: https://sourceforge.net/apps/trac/gsdview/ticket/2
 .. _`#3`: https://sourceforge.net/apps/trac/gsdview/ticket/3
 .. _`#6`: https://sourceforge.net/apps/trac/gsdview/ticket/6
+.. _`#7`: https://sourceforge.net/apps/trac/gsdview/ticket/7
 .. _`#8`: https://sourceforge.net/apps/trac/gsdview/ticket/8
+.. _`#10`: https://sourceforge.net/apps/trac/gsdview/ticket/10
 
 
 Changes from 0.3.0 to 0.5.9 (10/05/2009)
