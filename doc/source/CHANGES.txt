@@ -11,7 +11,7 @@
 ChangeLog
 =========
 
-Changes from 0.5.9 to 0.6.0 (XX/08/2009)
+Changes from 0.5.9 to 0.6.0 (24/08/2009)
 ----------------------------------------
 
 * New plugin manager module (close `#2`_):
