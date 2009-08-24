@@ -12,6 +12,7 @@ gsdview.utils
    .. autosummary::
    
       default_workdir
+      getresource
    
    
 

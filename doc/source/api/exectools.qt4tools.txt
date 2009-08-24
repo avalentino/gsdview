@@ -1,7 +1,7 @@
-gsdview.exectools.qt4tools
-==========================
+exectools.qt4tools
+==================
 
-.. automodule:: gsdview.exectools.qt4tools
+.. automodule:: exectools.qt4tools
    :members:
    :undoc-members:
 

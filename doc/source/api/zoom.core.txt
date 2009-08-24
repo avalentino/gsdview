@@ -7,13 +7,6 @@ zoom.core
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-   
-      actionGroupToMenu
-      actionGroupToToolbar
-   
    
 
    

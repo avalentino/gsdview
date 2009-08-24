@@ -13,6 +13,9 @@ gsdview.qt4support
    
       actionGroupToMenu
       actionGroupToToolbar
+      geticon
+      geticonfile
+      getuifile
       numpy2qimage
       overrideCursor
    

@@ -1,7 +1,7 @@
-gsdview.exectools.gtktools
-==========================
+exectools.gtktools
+==================
 
-.. automodule:: gsdview.exectools.gtktools
+.. automodule:: exectools.gtktools
    :members:
    :undoc-members:
 

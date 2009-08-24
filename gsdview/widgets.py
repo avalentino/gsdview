@@ -31,7 +31,7 @@ import logging
 from PyQt4 import QtCore, QtGui, uic
 
 from gsdview import info
-from gsdview.qt4support import getuifile, geticonfile, geticon
+from gsdview import qt4support
 
 
 def get_mainwin():
@@ -76,14 +76,14 @@ def _choosedir(dirname, dialog=None,):
 
 class AboutDialog(QtGui.QDialog):
 
-    uifile = getuifile('aboutdialog.ui', __name__)
+    uifile = qt4support.getuifile('aboutdialog.ui', __name__)
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget): # QtCore.Qt.Dialog
         QtGui.QDialog.__init__(self, parent, flags)
         uic.loadUi(self.uifile, self)
 
         # Set icons
-        logofile = geticonfile('GSDView.png', __name__)
+        logofile = qt4support.geticonfile('GSDView.png', __name__)
         self.setLogo(logofile)
 
         # Set contents
@@ -139,7 +139,8 @@ class FileEntryWidget(QtGui.QWidget):
         self.lineEdit = QtGui.QLineEdit()
         self.lineEdit.setCompleter(self.__completer)
 
-        self.button = QtGui.QPushButton(geticon('open.svg', __name__), '')
+        icon = qt4support.geticon('open.svg', __name__)
+        self.button = QtGui.QPushButton(icon, '')
         self.button.setToolTip(self.tr('select from file dialog'))
 
         layout = QtGui.QHBoxLayout()
@@ -191,7 +192,7 @@ class FileEntryWidget(QtGui.QWidget):
 
 class GeneralPreferencesPage(QtGui.QWidget):
 
-    uifile = getuifile('general-page.ui', __name__)
+    uifile = qt4support.getuifile('general-page.ui', __name__)
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget):
         QtGui.QWidget.__init__(self, parent, flags)
@@ -307,22 +308,22 @@ class PreferencesDialog(QtGui.QDialog):
     # @TODO: also look at
     # /usr/share/doc/python-qt4-doc/examples/tools/settingseditor/settingseditor.py
 
-    uifile = getuifile('preferences.ui', __name__)
+    uifile = qt4support.getuifile('preferences.ui', __name__)
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget): # QtCore.Qt.Dialog
         QtGui.QDialog.__init__(self, parent, flags)
         uic.loadUi(self.uifile, self)
-        self.setWindowIcon(geticon('preferences.svg', __name__))
+        self.setWindowIcon(qt4support.geticon('preferences.svg', __name__))
 
         # remove empty page
         page = self.stackedWidget.widget(0)
         self.stackedWidget.removeWidget(page)
 
         # app pages
-        icon = geticon('preferences.svg', __name__)
+        icon = qt4support.geticon('preferences.svg', __name__)
         self.addPage(GeneralPreferencesPage(), icon, self.tr('General'))
 
-        #~ icon = geticon('harddisk.svg', __name__)
+        #~ icon = qt4support.geticon('harddisk.svg', __name__)
         #~ self.addPage(CachePreferencesPage(), icon, self.tr('Cache'))
 
         assert self.listWidget.count() == self.stackedWidget.count()

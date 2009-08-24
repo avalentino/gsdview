@@ -1,7 +1,7 @@
-gsdview.exectools.exectools
-===========================
+exectools.exectools
+===================
 
-.. automodule:: gsdview.exectools.exectools
+.. automodule:: exectools.exectools
    :members:
    :undoc-members:
 
