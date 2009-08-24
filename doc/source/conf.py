@@ -25,7 +25,8 @@ sys.path.insert(1, os.path.abspath('../../gsdview/plugins'))
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.autosummary',
-              'sphinx.ext.todo', 'sphinx.ext.ifconfig']
+              'sphinx.ext.todo', 'sphinx.ext.ifconfig',
+              'sphinx.ext.coverage', 'sphinx.ext.pngmath']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -34,7 +35,7 @@ templates_path = ['_templates']
 source_suffix = '.txt'
 
 # The encoding of source files.
-#source_encoding = 'utf-8'
+#source_encoding = 'utf-8-sig'
 
 # The master toctree document.
 master_doc = 'index'
@@ -153,6 +154,12 @@ html_use_index = False
 
 # If true, links to the reST sources are added to the pages.
 #html_show_sourcelink = True
+
+# If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
+#html_show_sphinx = True
+
+# If true, "(C) Copyright ..." is shown in the HTML footer. Default is True.
+#html_show_copyright = True
 
 # If true, an OpenSearch description file will be output, and all pages will
 # contain a <link> tag referring to it.  The value of this option must be the

@@ -27,7 +27,7 @@ Documents
 =========
 
 .. toctree::
-  :maxdepth: 2
+   :maxdepth: 2
 
   CHANGES
   News archive <newsarchive>
