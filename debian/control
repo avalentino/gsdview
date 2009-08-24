@@ -10,7 +10,7 @@ Homepage: http://sourceforge.net/projects/gsdview
 
 Package: gsdview
 Architecture: all
-Depends: ${python:Depends}, python-qt4, python-gdal, gdal-bin
+Depends: ${python:Depends}, python-qt4, python-gdal, gdal-bin, libjs-jquery
 XB-Python-Version: ${python:Versions}
 Recommends: python-qwt5-qt4
 Description: Geo-Spatial Data Viewer
