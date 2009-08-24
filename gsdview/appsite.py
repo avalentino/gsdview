@@ -61,13 +61,15 @@ del GSDVIEWROOT
 _stdinstall_schema = '''\
 __all__ = ['DATADIR', 'DOCDIR', 'LICENSEFILE', 'SYSPLUGINSDIR']
 
+import os
+
 PKGNAME = 'gsdview'
-LIBDIR = os.path.join('%(libdir)s', PKGNAME)
 
 DATADIR = os.path.join('%(datadir)s', 'share', PKGNAME)
 DOCSDIR = os.path.join('%(datadir)s', 'share', 'doc', PKGNAME)
 LICENSEFILE = os.path.join(DOCSDIR, 'LICENSE.txt')
-SYSPLUGINSDIR = os.path.join(LIBDIR, 'plugins')
+SYSPLUGINSDIR = os.path.join('%(libdir)s', 'plugins')
+USERCONFIGDIR = os.path.expanduser(os.path.join('~', '.gsdview'))
 
-del PKGNAME, LIBDIR
+del PKGNAME, os
 '''
