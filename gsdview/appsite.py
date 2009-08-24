@@ -62,13 +62,26 @@ _stdinstall_schema = '''\
 __all__ = ['DATADIR', 'DOCDIR', 'LICENSEFILE', 'SYSPLUGINSDIR']
 
 import os
-
 PKGNAME = 'gsdview'
 
-DATADIR = os.path.join('%(datadir)s', 'share', PKGNAME)
-DOCSDIR = os.path.join('%(datadir)s', 'share', 'doc', PKGNAME)
+try:
+    import pkg_resources
+
+    req = pkg_resources.Requirement.parse(PKGNAME)
+    SHAREDIR = pkg_resources.resource_filename(req, 'share')
+    DATADIR = os.path.join(SHAREDIR, PKGNAME)
+    DOCSDIR = os.path.join(SHAREDIR, 'doc', PKGNAME)
+    SYSPLUGINSDIR = pkg_resources.resource_filename(
+                                    req, os.path.join('gsdview', 'plugins'))
+
+    del SHAREDIR, req
+
+except ImportError:
+    DATADIR = os.path.join('%(datadir)s', 'share', PKGNAME)
+    DOCSDIR = os.path.join('%(datadir)s', 'share', 'doc', PKGNAME)
+    SYSPLUGINSDIR = os.path.join('%(libdir)s', 'plugins')
+
 LICENSEFILE = os.path.join(DOCSDIR, 'LICENSE.txt')
-SYSPLUGINSDIR = os.path.join('%(libdir)s', 'plugins')
 USERCONFIGDIR = os.path.expanduser(os.path.join('~', '.gsdview'))
 
 del PKGNAME, os

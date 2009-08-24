@@ -39,7 +39,11 @@ clean:
 sdist: docs
 	python setup.py sdist
 
-bdist: sdist deb #rpm
+# Not available in setuptools (??)
+#	python setup.py sdist --manifest-only
+#	 python setup.py sdist --force-manifest
+
+bdist: sdist deb
 
 deb: docs
 	dpkg-buildpackage -us -uc

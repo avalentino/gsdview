@@ -33,7 +33,6 @@ from gsdview import info
 
 # Using ``setuptools`` enables lots of goodies, such as building eggs.
 try:
-    raise ImportError
     from setuptools import setup, find_packages
     has_setuptools = True
 except ImportError:
