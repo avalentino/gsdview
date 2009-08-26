@@ -1,15 +1,9 @@
 [Desktop Entry]
+Type=Application
 Name=GSDView
 Comment=Geo-Spatial Data Viewer
-TryExec=gsdview
 Exec=gsdview
 Icon=GSDView
-Type=Application
-X-GNOME-DocPath=
-X-GNOME-Bugzilla-Bugzilla=
-X-GNOME-Bugzilla-Product=
-X-GNOME-Bugzilla-Component=
-X-GNOME-Bugzilla-Version=
+Terminal=false
 Categories=Education;Science;Astronomy;Qt;
-StartupNotify=true
-X-Ubuntu-Gettext-Domain=gsdview
+
