@@ -1,5 +1,5 @@
 ..  :Source: doc/source/newsarchive.txt
-    :Version: 0.6.0
+    :Version: 0.6.1
     :Author: Antonio Valentino
     :Contact: a_valentino@users.sf.net
     :URL: http://gsdview.sourceforge.net
