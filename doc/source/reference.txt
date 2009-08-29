@@ -1,6 +1,10 @@
 GSDView API Reference
 =====================
 
+
+Main Application
+----------------
+
 .. autosummary::
    :toctree: api/
    :template: module.rst
@@ -36,7 +40,7 @@ GSDView API Reference
 
 
 Plugins
-=======
+-------
 
 .. autosummary::
    :toctree: api/

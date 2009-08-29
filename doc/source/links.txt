@@ -1,0 +1,28 @@
+Links
+=====
+
+
+GSDView Open Edition
+--------------------
+
+* `Home Page <http://gsdview.sourceforge.net>`_
+* SourceForge `Project Page <http://sourceforge.net/projects/gsdview>`_
+* `Screenshots <http://sourceforge.net/project/screenshots.php?group_id=226458>`_
+* `Downloads <http://sourceforge.net/project/showfiles.php?group_id=226458>`_
+* `Trac Site <https://sourceforge.net/apps/trac/gsdview>`_ on SourceForge.net
+
+
+GSDView Pro Edition
+-------------------
+
+* `Home Page <http://www.consorzio-innova.com/static/gsdview/index.html>`_
+* `EOMAG <http://www.eomag.eu/articles/726/qualitative-analysis-of-the-first-real-cosmo-skymed-sar-data>`_
+
+
+Citations
+---------
+
+* `Global Change Master Directory <http://gcmd.nasa.gov/records/GSDView.html>`_ - NASA
+* `GRASS wiki <http://grass.osgeo.org/wiki/WxPython-based_GUI_for_GRASS#General_GUI_Design>`_
+* `Softpedia <http://mac.softpedia.com/get/Math-Scientific/GSDView.shtml>`_
+* `WareSeeker.com <http://mac.wareseeker.com/Games/absolute-farkle-3.5.zip/c73c3092a>`_
