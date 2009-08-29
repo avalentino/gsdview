@@ -28,6 +28,9 @@ __all__ = ['getresource']
 
 import os
 import sys
+import platform
+import traceback
+import email.utils
 
 try:
     import pkg_resources
@@ -35,6 +38,7 @@ except ImportError:
     import logging
     logging.getLogger('gsdview').debug('"pkg_resources" not found.')
 
+from gsdview import info
 from gsdview import appsite
 
 def default_workdir():
@@ -86,3 +90,38 @@ def getresource(resource, package=None):
         datadir = appsite.DATADIR
 
     return os.path.join(datadir, resource)
+
+def format_platform_info():
+    platform_info = ['architecture: %s %s\n' % platform.architecture()]
+    platform_info.append('platform: %s' % platform.platform())
+    libc_ver = '%s %s\n' % platform.libc_ver()
+    if libc_ver.strip():
+        platform_info.append(libc_ver)
+
+    #~ mac_ver(): ('', ('', '', ''), '')
+    #~ win32_ver(): ('', '', '', '')
+
+    platform_info.append('python_compiler: %s\n' % platform.python_compiler())
+    platform_info.append('python_implementation: %s\n' %
+                                            platform.python_implementation())
+
+    return platform_info
+
+def foramt_bugreport(exctype=None, excvalue=None, tracebackobj=None):
+    if (exctype, excvalue, tracebackobj) == (None, None, None):
+        exctype, excvalue, tracebackobj = sys.exc_info()
+
+    separator = '-' * 80 + '\n'
+    timestamp = email.utils.formatdate(localtime=True)+'\n'
+
+    msg = [timestamp, separator]
+    msg.extend(traceback.format_exception_only(exctype, excvalue))
+    msg.append(separator)
+    msg.append('Traceback:\n')
+    msg.extend(traceback.format_tb(tracebackobj))
+    msg.append(separator)
+    msg.extend(info.all_versions_str().splitlines(True))
+    msg[-1] = msg[-1] + '\n'
+    msg.extend(format_platform_info())
+
+    return msg

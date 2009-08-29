@@ -25,7 +25,7 @@ __version__  = (0,6,0)
 
 __all__ = ['name', 'version', 'short_description', 'description',
            'author', 'author_email', 'copyright', 'license_type',
-           'website', 'website_label', 'all_versions']
+           'website', 'website_label', 'all_versions', 'all_versions_str']
 
 import sys
 
@@ -58,23 +58,31 @@ download_url = 'http://sourceforge.net/project/showfiles.php?group_id=226458'
 #translator_credits = None
 
 # @TODO: check (too many imports)
+import sip
 from PyQt4 import QtCore
 import numpy
 
 all_versions = [
     ('GSDView', version, website),
     ('Python', '.'.join(map(str,sys.version_info[:3])), 'www.python.org'),
-    ('PyQt4', QtCore.PYQT_VERSION_STR, 'http://www.riverbankcomputing.co.uk/pyqt'),
-    ('Qt', QtCore.QT_VERSION_STR, 'http://www.trolltech.com/qt'),
+    ('sip', sip.SIP_VERSION_STR,
+                    'http://www.riverbankcomputing.co.uk/software/sip'),
+    ('PyQt4', QtCore.PYQT_VERSION_STR,
+                    'http://www.riverbankcomputing.co.uk/software/pyqt'),
+    ('Qt', QtCore.QT_VERSION_STR, 'http://www.trolltech.com/qt'), # @TODO: check QtCore.qVersio()
     ('numpy', numpy.version.version, 'http://www.scipy.org'),
+    # @TODO: Qsci.QSCINTILLA_VERSION_STR
 ]
 
-
-if __name__ == '__main__':
-    all_versions_str = '\n'.join('%s v. %s, (%s)' % (sw, version_, link)
+def all_versions_str():
+    return '\n'.join('%s v. %s (%s)' % (sw, version_, link)
                                         for sw, version_, link in all_versions)
 
-    print 'name',name
+if __name__ == '__main__':
+    all_versions_str_ = '\n'.join('%s v. %s (%s)' % (sw, version_, link)
+                                        for sw, version_, link in all_versions)
+
+    print 'name', name
     print 'version:', version
     print 'short_description:', short_description
     print 'description:', description
@@ -84,4 +92,4 @@ if __name__ == '__main__':
     print 'license_type:', license_type
     print 'website:', website
     print 'website_label:', website_label
-    print 'all_versions_str:', all_versions_str
+    print 'all_versions_str:', all_versions_str_

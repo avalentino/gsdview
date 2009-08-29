@@ -30,6 +30,9 @@ __revision__ = '$Revision$'
 import os
 import sys
 import logging
+import tempfile
+import traceback
+import email.utils
 
 from PyQt4 import QtCore, QtGui
 
@@ -241,6 +244,86 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
                 event.accept()
         except AttributeError:
             pass
+
+    ### Custom exception hook #################################################
+    def excepthook(self, exctype, excvalue, tracebackobj):
+        '''Global function to catch unhandled exceptions.
+
+        :parameters:
+
+        - exctype: exception class
+        - excvalue: exception instance
+        - tracebackobj: traceback object
+
+        '''
+
+        sys.__excepthook__(exctype, excvalue, tracebackobj)
+        # No messages for keyboard interruts
+        if not issubclass(exctype, Exception):
+        #~ if issubclass(exctype, KeyboardInterrupt):
+            self.logger.info(str(excvalue))
+            self.close()
+            return
+
+        # #TODO: check
+        # Guard for avoiding multiple dialog opening
+        if hasattr(self, '_busy'):
+            return
+        self._busy = True
+
+
+        template = '''\
+        <p>
+            An unhandled exception occurred.
+        </p>
+        <br>
+        <p>
+            Please file a bug report at
+            <a href="http://sourceforge.net/apps/trac/gsdview">
+                http://sourceforge.net/apps/trac/gsdview
+            </a>
+            or report the problem via email to
+            <a href="mailto:%1 &lt;%2&gt;?subject=%3&attach=%4">%1</a>.
+        </p>
+        <hr>
+        <p>Timestamp: %5</p>
+        <hr>
+        <p>%6</p>
+        <p>Traceback:</p>
+        <p>%7</p>
+        <hr>
+        <p>System info:</p>
+        <br>
+        <p>%8</p>
+        '''
+
+        subject = '[gsdview] Bug report'
+        data = ''.join(utils.foramt_bugreport(exctype, excvalue, tracebackobj))
+        attachfile = os.tempnam()
+        fd = open(attachfile, 'w')
+        try:
+            fd.write(data)
+        finally:
+            fd.close()
+
+        timestamp = email.utils.formatdate(localtime=True)
+        errormsg = traceback.format_exception_only(exctype, excvalue)
+        errormsg = ''.join(errormsg).replace('\n', '<br>')
+        tb = ''.join(traceback.format_tb(tracebackobj)).replace('\n', '<br>')
+        sysinfo = ''.join(utils.format_platform_info()).replace('\n', '<br>')
+
+        msg = self.tr(template)
+        for arg_ in (info.author, info.author_email, subject, attachfile,
+                     timestamp, errormsg, tb, sysinfo):
+            msg = msg.arg(QtCore.QString(arg_))
+
+        title = self.tr('Critical error: unhandled exception occurred')
+        QtGui.QMessageBox.critical(self, title, msg)
+        try:
+            os.remove(attachfile)
+        except OSError:
+            pass
+        self.close()
 
     ### Setup helpers #########################################################
     def _setupFileActions(self):

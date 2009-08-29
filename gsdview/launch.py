@@ -140,9 +140,12 @@ def main():
     logging.debug('Qt4 import: %d.%06ds' % timer.update())
 
     import os, sys
+    from gsdview import info
     from gsdview.utils import getresource
 
     app = QtGui.QApplication(sys.argv)
+    app.setApplicationVersion(info.version)
+
     pngfile = getresource(os.path.join('images', 'splash.png'), __name__)
     pixmap = QtGui.QPixmap(pngfile)
     splash = QtGui.QSplashScreen(pixmap)
@@ -172,6 +175,9 @@ def main():
     logger.removeHandler(splash_loghandler)
     splash.finish(mainwin)
     app.processEvents()
+
+    logger.info('Install the exception hook')
+    sys.excepthook = mainwin.excepthook     # @TODO: check
 
     logger.info('Enter main event loop')
     sys.exit(app.exec_())
