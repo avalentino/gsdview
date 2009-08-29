@@ -104,7 +104,7 @@ You can also install GSDView in a custom location::
 License
 =======
 
-GSDview is released under the terms of the `GNU General Public License`__
+GSDView is released under the terms of the `GNU General Public License`__
 version 2.
 
 __ GPL_
