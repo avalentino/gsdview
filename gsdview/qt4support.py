@@ -60,7 +60,7 @@ def overrideCursor(func):
     def aux(*args, **kwargs):
         QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
         try:
-            func(*args, **kwargs)
+            return func(*args, **kwargs)
         finally:
             QtGui.QApplication.restoreOverrideCursor()
     return aux

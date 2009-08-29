@@ -387,6 +387,7 @@ class CachedDatasetItem(DatasetItem):
     ### END ###################################################################
     ###########################################################################
 
+@qt4support.overrideCursor
 def datasetitem(filename):
     # Some dataset has only sub-datasets (no raster band).
     # In this case it is not possible to use a virtual datasets like
