@@ -5,7 +5,7 @@ Links
 GSDView Open Edition
 --------------------
 
-* `Home Page <http://gsdview.sourceforge.net>`_
+* `GSDView Open Edition Home Page <http://gsdview.sourceforge.net>`_
 * SourceForge `Project Page <http://sourceforge.net/projects/gsdview>`_
 * `Screenshots <http://sourceforge.net/project/screenshots.php?group_id=226458>`_
 * `Downloads <http://sourceforge.net/project/showfiles.php?group_id=226458>`_
@@ -15,7 +15,7 @@ GSDView Open Edition
 GSDView Pro Edition
 -------------------
 
-* `Home Page <http://www.consorzio-innova.com/static/gsdview/index.html>`_
+* `GSDView Pro Edition Home Page <http://www.consorzio-innova.com/static/gsdview/index.html>`_
 * `EOMAG <http://www.eomag.eu/articles/726/qualitative-analysis-of-the-first-real-cosmo-skymed-sar-data>`_
 
 
