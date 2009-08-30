@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 # -*- coding: UTF8 -*-
 
 ### Copyright (C) 2008-2009 Antonio Valentino <a_valentino@users.sf.net>
@@ -146,6 +145,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         #                                 QtCore.QSettings.UserScope,
         #                                 'gsdview', 'gsdview', self)
         cfgfile = os.path.join(USERCONFIGDIR, 'gsdview.ini')
+        self.logger.info('Configuration file: ""%s".')
         self.settings = QtCore.QSettings(cfgfile,
                                          QtCore.QSettings.IniFormat,
                                          self)
@@ -231,6 +231,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         self.pluginmanager.save_settings(self.settings)
         self.closeAll()
         self.pluginmanager.reset()
+        self.logger.info('Closing application')
         event.accept()
 
     def changeEvent(self, event):
@@ -261,7 +262,10 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         # No messages for keyboard interruts
         if not issubclass(exctype, Exception):
         #~ if issubclass(exctype, KeyboardInterrupt):
-            self.logger.info(str(excvalue))
+            msg = str(excvalue)
+            if not msg:
+                msg = excvalue.__class__.__name__
+            self.logger.info(msg)
             self.close()
             return
 
