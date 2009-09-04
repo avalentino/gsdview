@@ -1,3 +1,5 @@
+# -*- coding: UTF8 -*-
+
 ### Copyright (C) 2008-2009 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
@@ -15,6 +17,7 @@
 ### You should have received a copy of the GNU General Public License
 ### along with GSDView; if not, write to the Free Software
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
+
 
 '''Overview pannel for GDAL raster bands.'''
 

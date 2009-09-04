@@ -19,6 +19,7 @@
 ### along with GSDView; if not, write to the Free Software
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
 
+
 '''GUI front-end for the Geospatial Data Abstracton Library (GDAL).'''
 
 __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
