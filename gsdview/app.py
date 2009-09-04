@@ -145,7 +145,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         #                                 QtCore.QSettings.UserScope,
         #                                 'gsdview', 'gsdview', self)
         cfgfile = os.path.join(USERCONFIGDIR, 'gsdview.ini')
-        self.logger.info('Configuration file: ""%s".')
+        logger.info('Configuration file: ""%s".')
         self.settings = QtCore.QSettings(cfgfile,
                                          QtCore.QSettings.IniFormat,
                                          self)
