@@ -194,7 +194,10 @@ class GDALPreferencesPage(QtGui.QWidget):
         layout.addWidget(GDALInfoWidget())
 
         buttonbox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Close)
-        dialog.connect(buttonbox, QtCore.SIGNAL('rejected()'), dialog.reject)
+        dialog.connect(buttonbox, QtCore.SIGNAL('accepted()'),
+                       dialog, QtCore.SLOT('accept()'))
+        dialog.connect(buttonbox, QtCore.SIGNAL('rejected()'),
+                       dialog, QtCore.SLOT('reject()'))
         layout.addWidget(buttonbox)
 
         dialog.setLayout(layout)
