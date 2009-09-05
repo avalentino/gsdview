@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>454</width>
-    <height>533</height>
+    <width>427</width>
+    <height>550</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -262,29 +262,35 @@ meaning that right and bottom edge blocks may be incomplete.
               </property>
              </widget>
             </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="offsetLabel">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Offset:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="1">
-             <widget class="QLabel" name="offsetValue">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="toolTip">
-               <string>The raster value offset.
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="offsetSizeVerticalLayout">
+            <item>
+             <layout class="QGridLayout" name="offsetSizeGridLayout">
+              <item row="0" column="0">
+               <widget class="QLabel" name="offsetLabel">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Offset:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="offsetValue">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string>The raster value offset.
 
 This value (in combination with the GetScale() value) is used to transform
 raw pixel values into the units returned by GetUnits().
@@ -295,9 +301,9 @@ a precision of 0.1, and starting from -100.
 
 For file formats that don't know this intrinsically a value of zero is returned.
 </string>
-              </property>
-              <property name="whatsThis">
-               <string>The raster value offset.
+                </property>
+                <property name="whatsThis">
+                 <string>The raster value offset.
 
 This value (in combination with the GetScale() value) is used to transform
 raw pixel values into the units returned by GetUnits().
@@ -308,43 +314,58 @@ a precision of 0.1, and starting from -100.
 
 For file formats that don't know this intrinsically a value of zero is returned.
 </string>
-              </property>
-              <property name="text">
-               <string>offset value</string>
-              </property>
-              <property name="textInteractionFlags">
-               <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-              </property>
-             </widget>
+                </property>
+                <property name="text">
+                 <string>offset value</string>
+                </property>
+                <property name="textInteractionFlags">
+                 <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="scaleLabel">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Scale:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLabel" name="scaleValue">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>scale value</string>
+                </property>
+                <property name="textInteractionFlags">
+                 <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
-            <item row="5" column="0">
-             <widget class="QLabel" name="scaleLabel">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
+            <item>
+             <spacer name="offsetScaleVerticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
               </property>
-              <property name="text">
-               <string>Scale:</string>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
               </property>
-             </widget>
-            </item>
-            <item row="5" column="1">
-             <widget class="QLabel" name="scaleValue">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>scale value</string>
-              </property>
-              <property name="textInteractionFlags">
-               <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-              </property>
-             </widget>
+             </spacer>
             </item>
            </layout>
           </item>
@@ -355,7 +376,7 @@ For file formats that don't know this intrinsically a value of zero is returned.
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>239</width>
+              <width>41</width>
               <height>20</height>
              </size>
             </property>
@@ -528,7 +549,7 @@ nor contribute to analysis operations.</string>
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>90</height>
+           <height>120</height>
           </size>
          </property>
          <property name="sizeIncrement">

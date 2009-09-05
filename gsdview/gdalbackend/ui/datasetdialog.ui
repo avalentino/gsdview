@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>478</width>
-    <height>518</height>
+    <height>513</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -592,19 +592,25 @@ OpenGIS WKT format.</string>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
            <horstretch>0</horstretch>
-           <verstretch>1</verstretch>
+           <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>120</height>
+          </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>100</height>
+           <height>180</height>
           </size>
          </property>
          <property name="sizeIncrement">
           <size>
            <width>0</width>
-           <height>1</height>
+           <height>0</height>
           </size>
          </property>
          <property name="title">
@@ -635,6 +641,30 @@ OpenGIS WKT format.</string>
        </item>
        <item>
         <widget class="QGroupBox" name="gcpsGoupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>2</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="sizeIncrement">
+          <size>
+           <width>0</width>
+           <height>2</height>
+          </size>
+         </property>
          <property name="title">
           <string>GCPs</string>
          </property>
