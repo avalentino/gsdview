@@ -31,31 +31,30 @@ from glob import glob
 
 from gsdview import info
 
-# Using ``setuptools`` enables lots of goodies, such as building eggs.
-try:
-    from setuptools import setup, find_packages
-    has_setuptools = True
-except ImportError:
-    from distutils.core import setup
-    has_setuptools = False
-
-from distutils import log
-
-
 PKGNAME = info.name.lower()
 
 cmdclass = {}
 kwargs = {}
 
+# Using ``setuptools`` enables lots of goodies, such as building eggs.
+from distutils import log
+try:
+    from setuptools import setup, find_packages
+    from setuptools.command.install_lib import install_lib
+    has_setuptools = True
+except ImportError:
+    from distutils.core import setup
+    from distutils.command.install_lib import install_lib
+    has_setuptools = False
+
 try:
     from sphinx.setup_command import BuildDoc
-    cmdclass = {'build_sphinx': BuildDoc}
+    cmdclass['build_sphinx'] = BuildDoc
 except ImportError:
     log.info('Sphinx not found.')
 
 
 # Fix the install_lib command in order to generate an updated appsite.py file
-from distutils.command.install_lib import install_lib
 class InstallLib(install_lib):
 
     stdinstall_schema = '''\
@@ -112,8 +111,6 @@ del PKGNAME, os
 
         DATADIR = self._striproot(install.install_data)
         LIBDIR = os.path.join(self._striproot(self.install_dir), PKGNAME)
-
-
 
         # Update the appsite.py file
         sitefile = 'appsite.py'
