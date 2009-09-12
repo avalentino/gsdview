@@ -27,35 +27,12 @@ __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
 
-import sys
 
+import sys; sys.path.insert(0, '..')
 from PyQt4 import QtCore, QtGui
 
-'''Sub-window menu
+from gsdview.qtwindowlistmenu import QtWindowListMenu
 
-http://doc.trolltech.com/solutions/4/qtwindowlistmenu/
-
-Inherits QMenu.
-
-Public Functions
-
-    * QtWindowListMenu(QWorkspace* workspace, QWidget* parent=0, const char* name=0)
-    * QAction *addTo(const QString& text, QMenuBar* menubar, int idx=-1)
-    * void removeWindow(QWidget* w, bool windowDestroyed=false)
-    * void setCascadeIcon(const QIcon& icon)
-    * void setCloseAllIcon(const QIcon& icon)
-    * void setCloseIcon(const QIcon & icon)
-    * void setDefaultIcon(const QIcon& icon)
-    * void setTileIcon(const QIcon& icon)
-    * void setWindowIcon(QWidget* widget, const QIcon& icon)
-
-Public Slots
-
-    * void addWindow(QWidget* w)
-    * void addWindow(QWidget* widget, const QIcon& icon)
-    * virtual void setEnabled(bool b)
-
-'''
 
 class MdiMainWindow(QtGui.QMainWindow):
     '''Base class for MDI applications.
@@ -71,138 +48,20 @@ class MdiMainWindow(QtGui.QMainWindow):
     - subWindowClosed()     # @TODO: should this signal be emitted by mdiarea?
 
     '''
-
-    # See /usr/share/doc/python-qt4-doc/examples/mainwindows/mdi/mdi.py
-
-    def __init__(self, parent=None):
-        super(MdiMainWindow, self).__init__(parent)
+    def __init__(self, parent=None, flags=QtCore.Qt.Widget):
+        QtGui.QMainWindow.__init__(self, parent, flags)
 
         self.mdiarea = QtGui.QMdiArea()
         self.setCentralWidget(self.mdiarea)
         self.mdiarea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.mdiarea.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
 
-        self.connect(self.mdiarea,
-                     QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
-                     self.updateWindowActions)
-        self._windowmapper = QtCore.QSignalMapper(self)
-        self.connect(self._windowmapper, QtCore.SIGNAL('mapped(QWidget*)'),
-                     self.mdiarea.setActiveSubWindow)
-                     #self.mdiarea, QtCore.SLOT('setActiveSubWindow(QWidget*)')
-
-        self.windowactions = self._createWindowActions()
-        self.updateWindowActions()
-        self.windowmenu = self._createWindowMenu()
-
-    #~ def closeEvent(self, event):
-        #~ self.mdiarea.closeAllWindows()
-        #~ if self.mdiarea.activeWindow():
-            #~ event.ignore()
-        #~ else:
-            #~ self.writeSettings()
-            #~ event.accept()
-
-    def _createWindowActions(self):
-        actionsgroup = QtGui.QActionGroup(self)
-
-        action = QtGui.QAction(self.tr('Cl&ose'), actionsgroup)
-        action.setObjectName('close')
-        action.setShortcut(self.tr('Ctrl+W'))
-        action.setStatusTip(self.tr('Close the active window'))
-        self.connect(action, QtCore.SIGNAL('triggered()'),
-                     self.mdiarea.closeActiveSubWindow)
-
-        action = QtGui.QAction(self.tr('Close &All'), actionsgroup)
-        action.setObjectName('closeAll')
-        action.setStatusTip(self.tr('Close all the windows'))
-        self.connect(action, QtCore.SIGNAL('triggered()'),
-                     self.mdiarea.closeAllSubWindows)
-
-        QtGui.QAction(actionsgroup).setSeparator(True)  # unnamed separator
-
-        action = QtGui.QAction(self.tr('&Tile'), actionsgroup)
-        action.setObjectName('tile')
-        action.setStatusTip(self.tr('Tile the windows'))
-        self.connect(action, QtCore.SIGNAL('triggered()'),
-                     self.mdiarea.tileSubWindows)
-
-        action = QtGui.QAction(self.tr('&Cascade'), actionsgroup)
-        action.setObjectName('cascade')
-        action.setStatusTip(self.tr('Cascade the windows'))
-        self.connect(action, QtCore.SIGNAL('triggered()'),
-                     self.mdiarea.cascadeSubWindows)
-
-        QtGui.QAction(actionsgroup).setSeparator(True)  # unnamed separator
-
-        action = QtGui.QAction(self.tr('Ne&xt'), actionsgroup)
-        action.setObjectName('next')
-        action.setShortcut(self.tr('Ctrl+F6'))
-        action.setStatusTip(self.tr('Move the focus to the next window'))
-        self.connect(action, QtCore.SIGNAL('triggered()'),
-                     self.mdiarea.activateNextSubWindow)
-
-        action = QtGui.QAction(self.tr('Pre&vious'), actionsgroup)
-        action.setObjectName('previous')
-        action.setShortcut(self.tr('Ctrl+Shift+F6'))
-        action.setStatusTip(self.tr('Move the focus to the previous window'))
-        self.connect(action, QtCore.SIGNAL('triggered()'),
-                     self.mdiarea.activatePreviousSubWindow)
-
-        action = QtGui.QAction(actionsgroup)
-        action.setObjectName('separator')
-        action.setSeparator(True)
-
-        return actionsgroup
-
-    def updateWindowActions(self):
-        hasMdiChild = self.mdiarea.activeSubWindow() is not None
-        for action in self.windowactions.actions():
-            action.setEnabled(hasMdiChild)
-
-    def _createWindowMenu(self):
-        menu = QtGui.QMenu(self.tr('&Window'), self.menuBar())
-        self.connect(menu, QtCore.SIGNAL('aboutToShow()'),
-                     self.updateWindowMenu)
-        return menu
-
-    def updateWindowMenu(self):
-        self.windowmenu.clear()
-        for action in self.windowactions.actions():
-            self.windowmenu.addAction(action)
-
-        windows = self.mdiarea.subWindowList()
-
-        separator = self.windowactions.findChild(QtGui.QAction, 'separator')
-        separator.setVisible(len(windows) != 0)
-
-        for index, child in enumerate(windows):
-            title = str(child.windowTitle())
-            if title.endswith('[*]'):
-                title = title[:-3]
-            if index < 9:
-                text = self.tr('&%1 %2').arg(index + 1).arg(title)
-            else:
-                text = self.tr('%1 %2').arg(index + 1).arg(title)
-
-            action = self.windowmenu.addAction(text)
-            action.setCheckable(True)
-            action.setChecked(child == self.mdiarea.activeSubWindow())
-            self.connect(action, QtCore.SIGNAL('triggered()'),
-                         self._windowmapper, QtCore.SLOT('map()'))
-            self._windowmapper.setMapping(action, child)
-
-    #~ def findMdiChild(self, fileName):
-        #~ canonicalFilePath = QtCore.QFileInfo(fileName).canonicalFilePath()
-
-        #~ for window in self.mdiarea.windowList():
-            #~ if window.currentFile() == canonicalFilePath:
-                #~ return window
-        #~ return None
+        self.windowmenu = QtWindowListMenu(self.menuBar())
+        self.windowmenu.attachToMdiArea(self.mdiarea)
 
     ### SIGNALS ###############################################################
     def subWindowClosed(self):
         self.emit(QtCore.SIGNAL('subWindowClosed()'))
-
 
 class ItemSubWindow(QtGui.QMdiSubWindow):
 
@@ -282,6 +141,7 @@ class ItemModelMainWindow(MdiMainWindow):
 
 
 if __name__ == "__main__":
+    from qt4support import geticon
     ### Test MdiMainWindow ####################################################
     def test_mdimainwin():
         class MdiChild(QtGui.QTextEdit):
@@ -485,21 +345,23 @@ if __name__ == "__main__":
                 return child
 
             def createActions(self):
-                icon = geticon('new.svg', __name__)
+                style = QtGui.qApp.style()
+
+                icon = style.standardIcon(style.SP_FileIcon)
                 self.newAct = QtGui.QAction(icon, self.tr("&New"), self)
                 self.newAct.setShortcut(self.tr("Ctrl+N"))
                 self.newAct.setStatusTip(self.tr("Create a new file"))
                 self.connect(self.newAct, QtCore.SIGNAL("triggered()"),
                              self.newFile)
 
-                icon = geticon('open.svg', __name__)
+                icon = style.standardIcon(style.SP_DialogOpenButton)
                 self.openAct = QtGui.QAction(icon, self.tr("&Open..."), self)
                 self.openAct.setShortcut(self.tr("Ctrl+O"))
                 self.openAct.setStatusTip(self.tr("Open an existing file"))
                 self.connect(self.openAct, QtCore.SIGNAL("triggered()"),
                              self.open)
 
-                icon = geticon('save.svg', __name__)
+                icon = style.standardIcon(style.SP_DialogSaveButton)
                 self.saveAct = QtGui.QAction(icon, self.tr("&Save"), self)
                 self.saveAct.setShortcut(self.tr("Ctrl+S"))
                 self.saveAct.setStatusTip(self.tr("Save the document to disk"))
@@ -518,14 +380,14 @@ if __name__ == "__main__":
                 self.connect(self.exitAct, QtCore.SIGNAL("triggered()"),
                              self.close)
 
-                icon = geticon('cut.svg', __name__)
+                icon = geticon('cut.svg', 'gsdview')
                 self.cutAct = QtGui.QAction(icon, self.tr("Cu&t"), self)
                 self.cutAct.setShortcut(self.tr("Ctrl+X"))
                 self.cutAct.setStatusTip(self.tr("Cut the current selection's "
                                                  "contents to the clipboard"))
                 self.connect(self.cutAct, QtCore.SIGNAL("triggered()"), self.cut)
 
-                icon = geticon('copy.svg', __name__)
+                icon = geticon('copy.svg', 'gsdview')
                 self.copyAct = QtGui.QAction(icon, self.tr("&Copy"), self)
                 self.copyAct.setShortcut(self.tr("Ctrl+C"))
                 self.copyAct.setStatusTip(self.tr("Copy the current selection's "
@@ -533,7 +395,7 @@ if __name__ == "__main__":
                 self.connect(self.copyAct, QtCore.SIGNAL("triggered()"),
                              self.copy)
 
-                icon = geticon('paste.svg', __name__)
+                icon = geticon('paste.svg', 'gsdview')
                 self.pasteAct = QtGui.QAction(icon, self.tr("&Paste"), self)
                 self.pasteAct.setShortcut(self.tr("Ctrl+V"))
                 self.pasteAct.setStatusTip(self.tr("Paste the clipboard's contents "
@@ -592,11 +454,11 @@ if __name__ == "__main__":
                         return window
                 return None
 
+        import sys
         app = QtGui.QApplication(sys.argv)
         mainwindow = TestMdiMainWindow()
         mainwindow.show()
         sys.exit(app.exec_())
     ### Test MdiMainWindow END ################################################
-
 
     test_mdimainwin()
