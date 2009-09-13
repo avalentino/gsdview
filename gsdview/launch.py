@@ -93,7 +93,6 @@ def preload(modules, app=None):
 
 
 def cmdline_ui():
-    import os
     from optparse import OptionParser
 
     from gsdview import info
