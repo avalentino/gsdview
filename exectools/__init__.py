@@ -16,6 +16,9 @@
 ### along with this module; if not, write to the Free Software
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
+__version__ = (0,5,0)
+version = '.'.join(map(str, __version__))
+
 from exectools import *
 from subprocess2 import *
 

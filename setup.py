@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 # -*- coding: UTF8 -*-
 
 ### Copyright (C) 2008-2009 Antonio Valentino <a_valentino@users.sf.net>
@@ -30,6 +29,7 @@ import platform
 from glob import glob
 
 from gsdview import info
+from exectools import version as exectools_version
 
 PKGNAME = info.name.lower()
 
@@ -188,8 +188,8 @@ if has_setuptools:
     kwargs.update(dict(
         install_requires = ['GDAL >= 1.5.2',
                             'numpy >= 1.2.1',
-                            #'PyQt >= 4.5',
-                           ],
+                            #'PyQt >= 4.5'
+        ],
         #extras_require = {},
         keywords = 'gsdview gdal',
         entry_points = {
@@ -222,21 +222,27 @@ else:
     }
 
 
-setup(name             = PKGNAME,
-      version          = info.version,
-      description      = info.short_description,
-      long_description = info.description,
-      author           = info.author,
-      author_email     = info.author_email,
-      maintainer       = info.author,
-      maintainer_email = info.author_email,
-      url              = info.website,
-      download_url     = info.download_url,
-      packages         = packages,
-      classifiers      = filter(None, classifiers.split('\n')),
-      license          = info.license_type,
-      platforms        = ['any'],
-      cmdclass         = cmdclass,      # @TODO: check
+setup(name              = PKGNAME,
+      version           = info.version,
+      description       = info.short_description,
+      long_description  = info.description,
+      author            = info.author,
+      author_email      = info.author_email,
+      maintainer        = info.author,
+      maintainer_email  = info.author_email,
+      url               = info.website,
+      download_url      = info.download_url,
+      packages          = packages,
+      classifiers       = filter(None, classifiers.split('\n')),
+      license           = info.license_type,
+      platforms         = ['any'],
+      requires          = ['GDAL (>= 1.7.2)',
+                           'numpy (>= 1.2.1)',
+                           'PyQt4 (>= 4.5)'],
+      provides          = ['%s (%s)' % (PKGNAME,
+                                        '.'.join(map(str,info.__version__))),
+                           'exectools (%s)' % exectools_version],
+      cmdclass          = cmdclass,
       **kwargs
 )
 
