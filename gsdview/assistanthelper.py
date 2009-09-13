@@ -63,9 +63,9 @@ class Assistant(object):
             return
 
         ba = QtCore.QByteArray("SetSource ")
-        ba.append(self.APP_DOC_PATH);
+        ba.append(self.APP_DOC_PATH)
 
-        self.proc.write(ba + QtCore.QString(page).toLocal8Bit() + '\0');
+        self.proc.write(ba + QtCore.QString(page).toLocal8Bit() + '\0')
 
     def startAssistant(self):
         if not self.proc:
@@ -73,7 +73,7 @@ class Assistant(object):
 
         if self.proc.state() != QtCore.QProcess.Running:
             app = QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.BinariesPath)
-            app =+ QtCore.QDir.separator()
+            app += QtCore.QDir.separator()
             if sys.platform == 'darwin':
                 app += QtCore.QLatin1String(
                                     'Assistant.app/Contents/MacOS/Assistant')
@@ -89,7 +89,7 @@ class Assistant(object):
             self.proc.start(app, args)
 
             if not self.proc.waitForStarted():
-                tr = QtGui.QApplication.qApp.tr
+                tr = QtGui.qApp.tr
                 QtGui.QMessageBox.critical(0, tr('Simple Text Viewer'),
                         tr('Unable to launch Qt Assistant (%1)').arg(app))
                 return False

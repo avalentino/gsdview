@@ -243,7 +243,7 @@ def _fixedGCPs(gcps):
         import copy
         gcps = copy.deepcopy(gcps)
         for indx, gcp in enumerate(gcps):
-            gcp.GCPLine = lines[index]
+            gcp.GCPLine = lines[indx]
 
     return gcps
 
@@ -306,7 +306,7 @@ class CoordinateMapper(object):
     def _transform(self, x, y, M, C):
         x, y = map(numpy.ravel, (x, y))
 
-        Pin = numpy.array((x,y))
+        Pin = numpy.array((x, y))
         return numpy.dot(M, Pin) + C
 
     def imgToGeoPoints(self, line, pixel):
@@ -316,7 +316,7 @@ class CoordinateMapper(object):
         xy = self._transform(line, pixel, M, C)
         if self._srTransform:
             for index, (x, y) in enumerate(xy.transpose()):
-                xy[:,index] = self._srTransform.TransformPoint(x,y)[:2]
+                xy[:, index] = self._srTransform.TransformPoint(x, y)[:2]
         # @TODO: check single point
         return xy[1], xy[0]
 
@@ -362,7 +362,7 @@ class CoordinateMapper(object):
 def coordinate_mapper(dataset, precise=False):
     try:
         mapper = CoordinateMapper(dataset)
-    except ValueError, e:
+    except ValueError:
         mapper = None
     else:
         # @TODO: check
@@ -443,9 +443,9 @@ class MissingOvrError(Exception):
     def __init__(self, ovrlevel):
         super(MissingOvrError, self).__init__(ovrlevel)
 
-        def __str__(self):
-            return ('Overview with level "%s" is not available in the '
-                    'product' % self.args[0])
+    def __str__(self):
+        return ('Overview with level "%s" is not available in the product' %
+                                                                self.args[0])
 
 ### END #######################################################################
 ###############################################################################

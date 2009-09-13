@@ -33,6 +33,7 @@ __all__ = ['CoordinateView', 'init', 'close',
 ]
 
 
+import info
 from info import *
 
 from PyQt4 import QtCore

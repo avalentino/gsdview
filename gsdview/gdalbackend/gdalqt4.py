@@ -26,8 +26,6 @@ __date__     = '$Date$'
 __revision__ = '$Revision$'
 
 
-import logging
-
 import numpy
 
 from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
@@ -69,10 +67,11 @@ class GdalGraphicsItem(QtGui.QGraphicsItem):
         if isinstance(dtype, basestring):
             dtype = numpy.typeDict[dtype]
         if numpy.iscomplexobj(dtype()):
+            #~ # @TODO: remove
+            #~ import logging
+            #~ logging.warning('extract module from complex data')
             # @TODO: raise ItemTypeError or NotImplementedError
             raise NotImplementedError('support for "%s" data type not avalable')
-            # @TODO: remove
-            logging.warning('extract module from complex data')
 
     def compute_default_LUT(self):
         # @TOOD: fix flags (approx, force)

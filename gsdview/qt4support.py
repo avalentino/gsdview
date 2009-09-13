@@ -92,10 +92,10 @@ except ImportError:
                 if shape != data.shape:
                     # build aigned matrix
                     image = numpy.zeros(shape, numpy.ubyte)
-                    image[:,:w] = data
+                    image[:, :w] = data
                 else:
                     image = numpy.require(data, numpy.uint8, 'CO') # 'CAO'
-                format = QtGui.QImage.Format_Indexed8
+                format_ = QtGui.QImage.Format_Indexed8
 
                 # @TODO: check
                 #~ colortable = [QtGui.QColor(i, i, i).rgb() for i in range(256)]
@@ -103,11 +103,11 @@ except ImportError:
 
             elif data.ndim == 3 and data.shape[2] == 3:
                 image = numpy.require(data, numpy.uint8, 'CO') # 'CAO'
-                format = QtGui.QImage.Format_RGB
+                format_ = QtGui.QImage.Format_RGB32
 
             elif data.ndim == 3 and data.shape[2] == 4:
                 image = numpy.require(data, numpy.uint8, 'CO') # 'CAO'
-                format = QtGui.QImage.Format_ARGB32
+                format_ = QtGui.QImage.Format_ARGB32
 
         elif data.dtype == numpy.uint16 and data.ndim == 2:
             # @TODO: check
@@ -117,20 +117,20 @@ except ImportError:
             if shape != data.shape:
                 # build aigned matrix
                 image = numpy.zeros(shape, numpy.ubyte)
-                image[:,:w] = data
+                image[:, :w] = data
             else:
                 image = numpy.require(data, numpy.uint16, 'CO') # 'CAO'
-            format = QtGui.QImage.Format_RGB16
+            format_ = QtGui.QImage.Format_RGB16
 
         elif data.dtype == numpy.uint32 and data.ndim == 2:
             image = numpy.require(data, numpy.uint32, 'CO') # 'CAO'
-            format = QtGui.QImage.Format_ARGB32
+            format_ = QtGui.QImage.Format_ARGB32
 
         else:
             raise ValueError('unable to convert data: shape=%s, '
-                        'dtype="%s"' % (data.shape, numpy.dtypr(data.dtype)))
+                        'dtype="%s"' % (data.shape, numpy.dtype(data.dtype)))
 
-        result = QtGui.QImage(image.data, w, h, format)
+        result = QtGui.QImage(image.data, w, h, format_)
         result.ndarray = image
         if colortable:
             result.setColorTable(colortable)

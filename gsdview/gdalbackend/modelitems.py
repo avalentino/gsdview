@@ -73,8 +73,8 @@ class MajorObjectItem(QtGui.QStandardItem):
             try:
                 self.child(0)._close()
             except AttributeError:
-                self._mainwin.logger.debug('unexpected child item class: '
-                                '"%s"' % type(self.child(0)).__name__)
+                logging.debug('unexpected child item class: "%s"' %
+                                                type(self.child(0)).__name__)
             self.removeRow(0)
 
 
@@ -225,10 +225,10 @@ class DatasetItem(MajorObjectItem):
 
         lat, lon = self.cmapper.imgToGeoGrid([0.5, self.RasterXSize - 0.5],
                                              [0.5, self.RasterYSize - 0.5])
-        polygon = QtGui.QPolygonF([QtCore.QPointF(lon[0,0], lat[0,0]),
-                                   QtCore.QPointF(lon[0,1], lat[0,1]),
-                                   QtCore.QPointF(lon[1,1], lat[1,1]),
-                                   QtCore.QPointF(lon[1,0], lat[1,0])])
+        polygon = QtGui.QPolygonF([QtCore.QPointF(lon[0, 0], lat[0, 0]),
+                                   QtCore.QPointF(lon[0, 1], lat[0, 1]),
+                                   QtCore.QPointF(lon[1, 1], lat[1, 1]),
+                                   QtCore.QPointF(lon[1, 0], lat[1, 0])])
 
         return polygon
 
@@ -321,7 +321,7 @@ class CachedDatasetItem(DatasetItem):
     _typeoffset = DatasetItem._typeoffset + 1
     CACHEDIR = os.path.expanduser(os.path.join('~', '.gsdview', 'cache'))
 
-    def __init__(self, filename, cachedir=None):
+    def __init__(self, filename):
         filename = os.path.abspath(filename)
         gdalobj = self._checkedopen(filename)
         self.vrtfilename = self._vrtinit(gdalobj)
@@ -339,9 +339,9 @@ class CachedDatasetItem(DatasetItem):
     def _vrtinit(self, gdalobj, cachedir=None):
         # Build the virtual dataset filename
         if cachedir is None:
-            id = gdalsupport.uniqueDatasetID(gdalobj)
+            id_ = gdalsupport.uniqueDatasetID(gdalobj)
             cachedir = self.CACHEDIR
-            cachedir = os.path.join(cachedir, id)
+            cachedir = os.path.join(cachedir, id_)
         if not os.path.isdir(cachedir):
             os.makedirs(cachedir)
         vrtfilename = os.path.join(cachedir, 'virtual-dataset.vrt')

@@ -33,6 +33,7 @@ __all__ = ['MetadataViewer', 'init', 'close',
 ]
 
 
+import info
 from info import *
 
 from PyQt4 import QtCore
@@ -56,6 +57,7 @@ def init(mainwin):
         # @TODO: fix
         # @WARNING: this method contains backend specific code
         if item.backend != 'gdalbackend':
+            import logging
             logging.warning('only "gdalbackend" is supported by "overview" '
                             'plugin')
             return

@@ -460,7 +460,7 @@ class PluginManagerGui(QtGui.QWidget):
             active = False
             try:
                 plugin = sys.modules[name]
-            except KetError:
+            except KeyError:
                 return
 
         d = PluginInfoDialog(plugin, active)

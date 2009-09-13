@@ -33,6 +33,7 @@ __all__ = ['init', 'close', 'WorldmapPanel',
 ]
 
 
+import info
 from info import *
 
 from PyQt4 import QtCore

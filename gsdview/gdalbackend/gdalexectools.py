@@ -97,7 +97,7 @@ class GdalOutputHandler(Qt4OutputHandler):
 if __name__ == '__main__':
     def test_GdalOutputHandler_re():
         s = '0...10...20...30...40...50...60...70...80...90...100 - done.\n'
-        import exectools
+
         h = exectools.BaseOutputHandler(exectools.OFStream())
         h._progress_pattern = GdalOutputHandler()._progress_pattern
         h.feed(s)
@@ -106,7 +106,7 @@ if __name__ == '__main__':
 
     def test_GdalOutputHandler1():
         s = '0...10...20...30...40...50...60...70...80...90...100 - done.\n'
-        import exectools
+
         class C(GdalOutputHandler):
             def __init__(self):
                 exectools.BaseOutputHandler.__init__(self, exectools.OFStream())
@@ -125,7 +125,7 @@ if __name__ == '__main__':
 
     def test_GdalOutputHandler2():
         s = '0...10...20...30...40...50...60...70...80...90...100 - done.\n'
-        import exectools
+
         h = exectools.BaseOutputHandler(exectools.OFStream())
         h._progress_pattern = GdalOutputHandler()._progress_pattern
         for c in s:

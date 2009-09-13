@@ -59,7 +59,7 @@ class CoordinateView(QtGui.QWidget):
 
         self.setLayout(layout)
 
-    def updatePos(self, scenepos):
+    def updatePos(self, scenepos, cmapper=None):
         self.show()
         self.xedit.setText(str(scenepos.x()))
         self.yedit.setText(str(scenepos.y()))

@@ -22,7 +22,6 @@ __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __revision__ = '$Revision$'
 __date__     = '$Date$'
 
-import re
 import time
 import logging
 
@@ -96,17 +95,17 @@ class Qt4OStream(BaseOStream):
         #QtGui.qApp.processEvents()     # @TODO: check
         pass
 
-    def write(self, data, format=None):
+    def write(self, data, format_=None):
         '''Write data on the output stream'''
 
         data = self._fixencoding(data)
 
-        if isinstance(format, basestring):
-            format = self._formats.get(format, '')
+        if isinstance(format_, basestring):
+            format_ = self._formats.get(format_, '')
 
         if format:
             oldFormat = self.textview.currentCharFormat()
-            self.textview.setCurrentCharFormat(format)
+            self.textview.setCurrentCharFormat(format_)
             self.textview.insertPlainText(data)
             self.textview.setCurrentCharFormat(oldFormat)
         else:
@@ -140,7 +139,7 @@ class Qt4OutputPlane(QtGui.QTextEdit):
         icon = QtGui.QIcon(
             ':/trolltech/styles/commonstyle/images/standardbutton-clear-32.png')
         self.actionClear = QtGui.QAction(icon, self.tr('&Clear'), self)
-        self.actionClear.setShortcut(self.tr('Shift+F5'));
+        self.actionClear.setShortcut(self.tr('Shift+F5'))
         self.actionClear.setStatusTip(self.tr('Clear the text'))
         self.connect(self.actionClear, QtCore.SIGNAL('triggered()'),
                      self.clear)
@@ -456,7 +455,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
                         QtCore.SIGNAL('error()'),
                         self.handle_error)
 
-    def finalize_run(self, exitCode=None, exitStatus=None):
+    def finalize_run(self, *args, **kwargs):
         '''Perform finalization actions
 
         This method is called when the controlled process terminates
@@ -473,6 +472,11 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         of overriging "finalize_run".
 
         '''
+
+        if args:
+            exitCode = args[0]
+        else:
+            exitCode = None
 
         try:
             # retrieve residual data

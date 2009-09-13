@@ -366,9 +366,9 @@ class GDALBackend(QtCore.QObject):
         try:
             # Only works for CachedDatasetItems
             cachedir = os.path.dirname(item.parent().vrtfilename)
-        except AttributeError, e:
-            id = gdalsupport.uniqueDatasetID(item.parent())
-            cachedir = os.path.join(modelitems.SubDatasetItem.CACHEDIR, id)
+        except AttributeError:
+            id_ = gdalsupport.uniqueDatasetID(item.parent())
+            cachedir = os.path.join(modelitems.SubDatasetItem.CACHEDIR, id_)
 
         # sub-dataset index (starting from 1)
         index = item.row() - item.parent().RasterCount + 1
@@ -432,8 +432,6 @@ class GDALBackend(QtCore.QObject):
 
         if not isinstance(item.parent(), modelitems.CachedDatasetItem):
             return
-
-        from gsdview.gdalbackend import gdalsupport
 
         band = item
         levels = gdalsupport.available_ovr_levels(band)

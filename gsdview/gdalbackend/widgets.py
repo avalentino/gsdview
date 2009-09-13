@@ -516,7 +516,7 @@ p, li { white-space: pre-wrap; }
         #~ DatasetInfoDialog.__init__(self, subdataset, parent, flags)
 
 if __name__ == '__main__':
-    import os, sys
+    import sys
     sys.path.insert(0, os.path.join(os.path.dirname(__file__),
                                     os.pardir, os.pardir))
 
@@ -529,7 +529,7 @@ if __name__ == '__main__':
         dialog.show()
         app.exec_()
 
-    def test_gdalpreferencespage():
+    def test_datasetdialog(dataset):
         app = QtGui.QApplication(sys.argv)
         dialog = QtGui.QDialog()
         layout = QtGui.QVBoxLayout()
@@ -538,7 +538,6 @@ if __name__ == '__main__':
         dialog.show()
         app.exec_()
 
-    def test_datasetdialog(dataset):
         app = QtGui.QApplication(sys.argv)
         dialog = DatasetInfoDialog(dataset)
         dialog.show()
@@ -556,8 +555,8 @@ if __name__ == '__main__':
 
     filename = 'ASA_IMM_1PXPDE20020730_095830_000001002008_00108_02166_0066.N1'
     filename = os.path.join(os.path.expanduser('~'), filename)
-    dataset = gdal.Open(filename)
-    band = dataset.GetRasterBand(1)
+    dataset_ = gdal.Open(filename)
+    band_ = dataset_.GetRasterBand(1)
 
-    test_datasetdialog(dataset)
-    #~ test_rasterbanddialog(band)
+    test_datasetdialog(dataset_)
+    #~ test_rasterbanddialog(band_)

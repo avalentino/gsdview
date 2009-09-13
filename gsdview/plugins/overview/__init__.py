@@ -32,6 +32,7 @@ __all__ = ['BandOverviewDock', 'init', 'close',
            'website', 'website_label',
 ]
 
+import info
 from info import *
 
 from PyQt4 import QtCore

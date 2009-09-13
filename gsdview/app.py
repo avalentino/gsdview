@@ -30,7 +30,6 @@ __revision__ = '$Revision$'
 import os
 import sys
 import logging
-import tempfile
 import traceback
 import email.utils
 

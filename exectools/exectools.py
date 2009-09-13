@@ -60,7 +60,7 @@ class BaseOStream(object):
 
         pass
 
-    def write(self, data, format=None):
+    def write(self, data, format_=None):
         '''Write data on the output stream'''
 
         pass
@@ -79,16 +79,16 @@ class OFStream(BaseOStream):
 
         self.fileobj.flush()
 
-    def write(self, data, format=None):
+    def write(self, data, format_=None):
         '''Write data to file'''
 
         data = self._fixencoding(data)
 
-        if isinstance(format, basestring):
-            format = self.formats.get(format, '')
+        if isinstance(format_, basestring):
+            format_ = self.formats.get(format_, '')
 
-        if format:
-            data = format % data
+        if format_:
+            data = format_ % data
 
         self.fileobj.write(data)
 
@@ -404,7 +404,7 @@ class BaseToolController(object):
 
         pass
 
-    def finalize_run(self):
+    def finalize_run(self, *args, **kwargs):
         '''Perform finalization actions
 
         This method is called when the controlled process terminates

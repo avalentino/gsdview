@@ -37,13 +37,12 @@ __all__ = ['init', 'close', 'loadSettings', 'saveSettings',
 from info import *
 from core import GDALBackend
 
-UseExceptions = core.GDALBackend.UseExceptions
-DontUseExceptions = core.GDALBackend.DontUseExceptions
+UseExceptions = GDALBackend.UseExceptions
+DontUseExceptions = GDALBackend.DontUseExceptions
 
 _backendobj = None
 
 def init(mainwin):
-    from PyQt4 import QtGui
     from osgeo import gdal
 
     from gsdview import qt4support
@@ -114,7 +113,7 @@ def _definefunc(methodname):
 
 # @TODO: check (maybe it is better to make it explicitly)
 globals_ = globals()
-for methodname in dir(core.GDALBackend):
+for methodname in dir(GDALBackend):
     if (not methodname.startswith('_') and
                     methodname not in ('UseExceptions', 'DontUseExceptions')):
         globals_[methodname] = _definefunc(methodname)
@@ -142,7 +141,6 @@ def loadSettings(settings):
             gdal.SetConfigOption('GDAL_DATA', value)
             logging.debug('GDAL_DATA directory set to "%s"' % value)
 
-        register = False
         for optname in ('GDAL_SKIP', 'GDAL_DRIVER_PATH', 'OGR_DRIVER_PATH'):
             value = settings.value(optname).toString()
             value = os.path.expanduser(os.path.expandvars(str(value)))
@@ -155,13 +153,13 @@ def loadSettings(settings):
         tabWidget = _backendobj._mainwin.aboutdialog.tabWidget
         for index in range(tabWidget.count()):
             if tabWidget.tabText(index) == 'GDAL':
+                gdalinfowidget = tabWidget.widget(index)
+                gdalinfowidget.setGdalDriversTab()
                 break
         else:
             _backendobj._mainwin.logger.debug('GDAL page ot found in the '
                                               'about dialog')
             return
-        gdalinfowidget = tabWidget.widget(index)
-        gdalinfowidget.setGdalDriversTab()
     finally:
         settings.endGroup()
 

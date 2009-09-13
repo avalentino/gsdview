@@ -548,7 +548,7 @@ class GtkToolController(gobject.GObject, BaseToolController):
         BaseToolController.__init__(self, logger)
         self._handlers = []
 
-    def finalize_run(self):
+    def finalize_run(self, *args, **kwargs):
         '''Perform finalization actions
 
         This method is called when the controlled process terminates
