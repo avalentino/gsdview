@@ -1,3 +1,5 @@
+# svn co http://svn.pyinstaller.org/trunk pyinstaller
+
 GSDVIEWROOT=..
 PYINSTALLERROOT=./pyinstaller
 
@@ -16,6 +18,6 @@ clean:
 	$(RM) *.pyc logdict*.log warngsdview*.txt +~
 	$(RM) -r $(GSDVIEWROOT)/dist/onefile
 	$(RM) -r $(GSDVIEWROOT)/dist/gsdview
-	if [ -d ../dist ]; then rmdir --ignore-fail-on-non-empty ../dist; fi
 	$(RM) -r build
+	#if [ -d ../dist ]; then rmdir --ignore-fail-on-non-empty ../dist; fi
 

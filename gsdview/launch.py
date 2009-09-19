@@ -143,6 +143,7 @@ def main():
     from gsdview.utils import getresource
 
     app = QtGui.QApplication(sys.argv)
+    app.setApplicationName(info.name)
     app.setApplicationVersion(info.version)
 
     pngfile = getresource(os.path.join('images', 'splash.png'), __name__)
