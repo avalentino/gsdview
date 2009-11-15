@@ -1,0 +1,18 @@
+/**
+ * SourceForge stylesheet -- sourceforge theme
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
+
+@import url("default.css");
+
+/* -- body styles ----------------------------------------------------------- */
+div.docstitle {
+    color: {{ theme_docstitlecolor }};
+    text-align: right;
+    padding-right: 1em;
+}
+
+div.admonition-todo {
+    background-color: {{ theme_todobgcolor }};
+    border: 1px solid {{ theme_todobordercolor }};
+}

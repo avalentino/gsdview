@@ -1,0 +1,34 @@
+{% block extralinksbar %}
+{% if not theme_nosflinks|tobool or theme_extralinks %}
+<h3>Links</h3>
+<ul>
+{% block sflinks %}
+    {% set unixname = theme_unixname|default(project|lower, true) %}
+    {% if not theme_nosflinks|tobool %}
+    <li>
+        <a href="http://sourceforge.net/projects/{{ unixname }}">SF Project Page</a>
+    </li>
+    {% if theme_groupid %}
+    <li>
+        <a href="http://sourceforge.net/project/screenshots.php?group_id={{ theme_groupid }}">Screenshots</a>
+    </li>
+
+    <li>
+        <a href="http://sourceforge.net/project/showfiles.php?group_id={{ theme_groupid }}">Downloads</a>
+    </li>
+    {% endif %}
+    {% if theme_hastrac %}
+    <li>
+        <a href="http://sourceforge.net/apps/trac/{{ unixname }}">Trac Site on SF.net</a>
+    </li>
+    {% endif %}
+    {% endif %}
+{% endblock %}
+{% block extralinks %}
+    {% for caption, href in theme_extralinks %}
+        <li><a href="{{ href }}">{{ caption }}</a></li>
+    {% endfor %}
+{% endblock %}
+</ul>
+{% endif %}
+{% endblock %}

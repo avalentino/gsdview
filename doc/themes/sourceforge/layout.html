@@ -1,0 +1,24 @@
+{% extends "basic/layout.html" %}
+
+{% block relbar1 %}
+    {% block masterdocstitle %}
+        {% if pagename == master_doc %}
+        <div class="docstitle">
+            <h1>{{ docstitle }}</h1>
+        </div>
+        {% endif %}
+    {% endblock %}
+    {{ super() }}
+{% endblock %}
+
+{% block sidebarlogo %}
+    {{ super() }}
+    {% if theme_groupid %}
+    {% set unixname = theme_unixname|default(project|lower, true) %}
+    <p>
+        <a href="http://sourceforge.net/projects/{{ unixname }}">
+            <img src="http://sflogo.sourceforge.net/sflogo.php?group_id={{ theme_groupid }}&type={{ theme_sflogotype }}" width="{{ theme_sflogowidth }}" height="{{ theme_sflogoheight }}" alt="Get {{ project }} at SourceForge.net. Fast, secure and Free Open Source software downloads" />
+        </a>
+    </p>
+    {% endif %}
+{% endblock %}
