@@ -447,9 +447,9 @@ class DatasetInfoDialog(MajorObjectInfoDialog):
 
         xoffset, a11, a12, yoffset, a21, a22 = dataset.GetGeoTransform()
         self.xOffsetValue.setText(str(xoffset))
-        self.yOffsetValue.setText(str(a11))
-        self.a11Value.setText(str(a12))
-        self.a12Value.setText(str(yoffset))
+        self.yOffsetValue.setText(str(yoffset))
+        self.a11Value.setText(str(a11))
+        self.a12Value.setText(str(a12))
         self.a21Value.setText(str(a21))
         self.a22Value.setText(str(a22))
 
@@ -493,8 +493,8 @@ p, li { white-space: pre-wrap; }
         tablewidget.setSortingEnabled(False)
 
         for row, gcp in enumerate(gcplist):
-            tablewidget.setItem(row, 0, QtGui.QTableWidgetItem(str(gcp.GCPLine)))
-            tablewidget.setItem(row, 1, QtGui.QTableWidgetItem(str(gcp.GCPPixel)))
+            tablewidget.setItem(row, 0, QtGui.QTableWidgetItem(str(gcp.GCPPixel)))
+            tablewidget.setItem(row, 1, QtGui.QTableWidgetItem(str(gcp.GCPLine)))
             tablewidget.setItem(row, 2, QtGui.QTableWidgetItem(str(gcp.GCPX)))
             tablewidget.setItem(row, 3, QtGui.QTableWidgetItem(str(gcp.GCPY)))
             tablewidget.setItem(row, 4, QtGui.QTableWidgetItem(str(gcp.GCPZ)))
