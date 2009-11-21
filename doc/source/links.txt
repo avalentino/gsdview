@@ -23,6 +23,10 @@ Citations
 ---------
 
 * `Global Change Master Directory <http://gcmd.nasa.gov/records/GSDView.html>`_ - NASA
+* `CEOS Land Surface Imaging Constellation Portal 
+  <http://idn.ceos.org/portals/Metadata.do?Portal=lsi_services&KeywordPath=Parameters|OCEANS&EntryId=GSDView&MetadataView=Brief&MetadataType=1&lbnode=mdlb2>`_
 * `GRASS wiki <http://grass.osgeo.org/wiki/WxPython-based_GUI_for_GRASS#General_GUI_Design>`_
 * `Softpedia <http://mac.softpedia.com/get/Math-Scientific/GSDView.shtml>`_
 * `WareSeeker.com <http://mac.wareseeker.com/Games/absolute-farkle-3.5.zip/c73c3092a>`_
+
+.. `European Wireless 2009 <ftp://lenst.det.unifi.it/pub/LenLar/proceedings/2009/wv09/WVITAE09/PDF/AUTHOR/WV091401.PDF>`_
