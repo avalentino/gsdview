@@ -103,7 +103,7 @@ class Qt4OStream(BaseOStream):
         if isinstance(format_, basestring):
             format_ = self._formats.get(format_, '')
 
-        if format:
+        if format_:
             oldFormat = self.textview.currentCharFormat()
             self.textview.setCurrentCharFormat(format_)
             self.textview.insertPlainText(data)
