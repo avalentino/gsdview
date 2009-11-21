@@ -323,10 +323,13 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
 
         title = self.tr('Critical error: unhandled exception occurred')
         QtGui.QMessageBox.critical(self, title, msg)
-        try:
-            os.remove(attachfile)
-        except OSError:
-            pass
+        # @NOTE: can't remove the temp file containing the bug report since
+        #        it is not possible to know if the email client has actualy
+        #        sent it yet.
+        #try:
+        #    os.remove(attachfile)
+        #except OSError:
+        #    pass
         self.close()
 
     ### Setup helpers #########################################################
