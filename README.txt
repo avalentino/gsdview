@@ -51,8 +51,8 @@ In order to run GSDView you should have the following software installed:
 * gdal_ 1.5.2 or higher
 * PyQwt_ 5.2  or higher (recommended)
 
-.. _SIP: http://www.riverbankcomputing.co.uk
-.. _PyQt: http://www.riverbankcomputing.co.uk
+.. _SIP: http://www.riverbankcomputing.co.uk/software/sip
+.. _PyQt: http://www.riverbankcomputing.co.uk/software/pyqt
 .. _numpy: http://www.numpy.org
 .. _gdal: http://www.gdal.org
 .. _PyQwt: http://pyqwt.sourceforge.net
