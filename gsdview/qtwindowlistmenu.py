@@ -71,12 +71,12 @@ class QtWindowListMenu(QtGui.QMenu):
 
     This enum specifies the standard menu items of a QtWindowListMenu.
 
-    * CloseAction    Ref. QMdiArea::closeActiveSubWindow()
-    * CloseAllAction Ref. QMdiArea::closeAllSubWindows()
-    * TileAction     Ref. QMdiArea::tileSubWindows()
-    * CascadeAction  Ref. QMdiArea::cascadeSubWindows()
-    * NextAction     Ref. QMdiArea::activateNextSubWindow()
-    * PrevAction     Ref. QMdiArea::activatePreviousSubWindow()
+    * CloseAction
+    * CloseAllAction
+    * TileAction
+    * CascadeAction
+    * NextAction
+    * PrevAction
 
     .. seealso:: standardAction()
 

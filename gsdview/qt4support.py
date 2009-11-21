@@ -27,6 +27,7 @@ __revision__ = '$Revision$'
 
 
 import os
+import logging
 
 from PyQt4 import QtCore, QtGui
 
@@ -43,8 +44,7 @@ intToWinState = {
 
 def actionGroupToMenu(actionGroup, label, mainwin):
     menu = QtGui.QMenu(label, mainwin)
-    for action in actionGroup.actions():
-        menu.addAction(action)
+    menu.addActions(actionGroup.actions())
     return menu
 
 def actionGroupToToolbar(actionGroup, label, name=None):
@@ -55,8 +55,7 @@ def actionGroupToToolbar(actionGroup, label, name=None):
         name = ''.join(parts)
     toolbar = QtGui.QToolBar(label)
     toolbar.setObjectName(name)
-    for action in actionGroup.actions():
-        toolbar.addAction(action)
+    toolbar.addActions(actionGroup.actions())
     return toolbar
 
 def overrideCursor(func):
@@ -71,16 +70,23 @@ def overrideCursor(func):
 try:
     from PyQt4.Qwt5 import toQImage
     def numpy2qimage(data):
-        return toQImage(data.transpose())
+        # @NOTE: for Qwt5 < 5.2.0
+        # return toQImage(data.transpose())
+        return toQImage(data)
 
     del toQImage
+    logging.debug('Using PyQwt version of numpy2qimage.')
 
 except ImportError:
     import numpy
     GRAY_COLORTABLE = [QtGui.QColor(i, i, i).rgb() for i in range(256)]
 
     def numpy2qimage(data):
-        '''Convert a numpy array into a QImage'''
+        '''Convert a numpy array into a QImage.
+
+        .. note:: requires sip >= 4.7.5.
+
+        '''
 
         colortable = None
 
@@ -136,6 +142,8 @@ except ImportError:
             result.setColorTable(colortable)
 
         return result
+
+    logging.debug('Using SIP version of numpy2qimage.')
 
 def getuifile(name, package=None):
     '''Return the ui file path.
