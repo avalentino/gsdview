@@ -68,13 +68,12 @@ def overrideCursor(func):
     return aux
 
 try:
-    from PyQt4.Qwt5 import toQImage
+    from PyQt4.Qwt5 import toQImage as _toQImage
     def numpy2qimage(data):
         # @NOTE: for Qwt5 < 5.2.0
         # return toQImage(data.transpose())
-        return toQImage(data)
+        return _toQImage(data)
 
-    del toQImage
     logging.debug('Using PyQwt version of numpy2qimage.')
 
 except ImportError:
