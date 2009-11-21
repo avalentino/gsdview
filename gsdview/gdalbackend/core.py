@@ -344,8 +344,8 @@ class GDALBackend(QtCore.QObject):
                 dialog.exec_()
                 break
         else:
-            self._mainwin.logger.ebug('unable to show info dialog for "%s" '
-                                      'item class' % (item.__class__.__name__))
+            self._mainwin.logger.debug('unable to show info dialog for "%s" '
+                                       'item class' % (item.__class__.__name__))
 
     ### Driver ################################################################
     ### Dataset ###############################################################
@@ -363,6 +363,9 @@ class GDALBackend(QtCore.QObject):
     def openSubDataset(self):
         item = self._mainwin.currentItem()
         assert isinstance(item, modelitems.SubDatasetItem)
+        if item.isopen():
+            return
+
         try:
             # Only works for CachedDatasetItems
             cachedir = os.path.dirname(item.parent().vrtfilename)
@@ -375,7 +378,10 @@ class GDALBackend(QtCore.QObject):
         cachedir = os.path.join(cachedir, 'subdataset%02d' % index)
 
         item.open(cachedir)
-        self._mainwin.treeview.expand(item.index())
+
+        for row in range(item.rowCount()):
+            child = item.child(row)
+            self._mainwin.treeview.expand(child.index())
 
     ### Raster Band ###########################################################
     def openImageView(self, item=None):
@@ -497,6 +503,9 @@ class GDALBackend(QtCore.QObject):
 
         self._mainwin.controller.tool._dataset = None
         dataset.reopen()
+        for row in range(dataset.rowCount()):
+            item = dataset.child(row)
+            self._mainwin.treeview.expand(item.index())
 
     ### END ###################################################################
     ###########################################################################
