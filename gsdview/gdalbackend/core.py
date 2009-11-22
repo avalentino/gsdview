@@ -104,6 +104,7 @@ class GDALBackend(QtCore.QObject):
                 pass
         return None
 
+    @qt4support.overrideCursor
     def openFile(self, filename):
         item = self.findItemFromFilename(filename)
         if item:
@@ -384,6 +385,7 @@ class GDALBackend(QtCore.QObject):
             self._mainwin.treeview.expand(child.index())
 
     ### Raster Band ###########################################################
+    @qt4support.overrideCursor
     def openImageView(self, item=None):
         if item is None:
             item = self._mainwin.currentItem()
