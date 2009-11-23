@@ -27,6 +27,7 @@ __revision__ = '$Revision: 430 $'
 
 
 import os
+import re
 import sys
 import pkgutil
 import logging
@@ -41,6 +42,21 @@ except ImportError:
 
 from gsdview.qt4support import getuifile, geticon   # @TODO: check dependency
 
+
+# @TODO: normalize (major, minor, rev) + (, (-|_|+)beta)
+VERSION_CHECK_RE = re.compile(
+    '''(?P<name>[a-zA-Z0-9_-]+)                     # package name
+       (?P<spec>                                    # optional version spec
+            [ \t]*                                  # optional space
+            (?P<op>(==|!=|>|>=|<|<=))               # comparison operator
+            [ \t]*                                  # optional space
+            (?P<version>\d+                         # version specification
+                (
+                    (\.\d+){0,2}                    # (major,) minor, rev
+                    ((((-|_|\+)[a-zA-Z]\w*))|\w*)?  # beta, -beta, _beta
+                )?
+            )
+       )?\Z''', re.VERBOSE)
 
 class PluginManager(object):
 
@@ -81,7 +97,39 @@ class PluginManager(object):
 
         return plugins
 
+    def _check_dependency(self, depstring):
+        # @TODO: use pkg_resources' parse_requirements and Requirement
+        #        if available:
+        #           for r in parse_requirements('gsdview >= 0.5'):
+        #               return r.key in self.plugins and avail_ver in r
+        depstring = depstring.strip()
+        if not depstring:
+            return True
+
+        m = VERSION_CHECK_RE.match(depstring)
+        if m:
+            if m.name in self.plugin:
+                if m.groum('spec'):
+                    avail_ver = plugins[m.group('name')].version
+                    req_ver = m.group('version')
+                    return eval('%s%s%s' % (avail_ver, m.group('op'), req_ver))
+                else:
+                    return True
+            else:
+                return False
+        else:
+            raise VaueError('invalid requirement specification: '
+                            '"%s"' % depstring)
+
+
+    def _check_deps(self, module):
+        for depstring in module.__requires__:
+            if not self._check_dependency(sepstring):
+                return False
+        return True
+
     def load_module(self, module, name=None):
+        # @TODO: make the module independent from gsdview
         logger = logging.getLogger('gsdview')
 
         if not name:
@@ -106,7 +154,9 @@ class PluginManager(object):
             if self.syspath:
                 paths.append(self.syspath)
 
+        # @TODO: make the module independent from gsdview
         logger = logging.getLogger('gsdview')
+        delayed = []
         for path in paths:
             importer = pkgutil.get_importer(path)
             try:
@@ -142,7 +192,37 @@ class PluginManager(object):
                         continue
 
                 if not info_only:
-                    self.load_module(module, name)
+                    if not self._check_deps(module):
+                        delayed.append(module)
+                    else:
+                        self.load_module(module, name)
+
+        # @TODO: delayed loading
+        if not info_only:
+            MAXATTEMPTS = 10
+            delayed_again = []
+            count = 0
+            while len(delayed) != len(delayed_again):
+                # check for max number of iterations
+                if count < MAXATTEMPTS:
+                    logger.warning('max number of attempts reached for '
+                                   'delayed plugins loading')
+                    break
+                else:
+                    count += 1
+
+                delayed = delayed_again
+                delayed_again = []
+                for module in delayed:
+                    if not self._check_deps(module):
+                        delayed_again.append(module)
+                    else:
+                        self.load_module(module, name)
+            if len(delayed_again):
+                logger.info('%d modules not loaded because of unmet '
+                            'dependency' % len(delayed_again))
+
+                # @TODO: log more verbose info: per module dependency failure
 
     def unload(self, names, type_='plugin'):
         if isinstance(names, basestring):
