@@ -75,19 +75,27 @@ class TestVersinonCheckRe(unittest.TestCase):
             m = VERSION_CHECK_RE.match(s)
             self.assertFalse(m)
 
-    def test_version(self):
-        for version in ('1', '1.0', '1.0.1',
-                        '1.0.1b', '1.0.1b3',
-                        '1.0.1-b', '1.0.1-b3',
-                        '1.0.1_b', '1.0.1_b3',
-                        '1.0.1+b', '1.0.1+b3',
-                        '1.0.1beta', '1.0.1beta3',
-                        '1.0.1-beta', '1.0.1-beta3',
-                        '1.0.1_beta', '1.0.1_beta3',
-                        '1.0.1+beta', '1.0.1+beta3'):
+    def test_simple_version(self):
+        for version in ('1', '1.0', '1.0.1'):
             s = 'gsdview==%s' % version
             m = VERSION_CHECK_RE.match(s)
             self.assertEqual(m.group('version'), version)
+
+    def test_decorated_version(self):
+        for version in ('1', '1.0', '1.0.1'):
+            for separator in ('', '-', '_', '+'):
+                for decoration in ('b', 'b3', 'beta', 'beta3'):
+                    s = 'gsdview==%s%s%s' % (version, separator, decoration)
+                    m = VERSION_CHECK_RE.match(s)
+                    self.assertEqual(m.group('version'), version)
+
+    #~ def test_date_decorated_version(self):
+        #~ decoration = '20091130'
+        #~ for version in ('1', '1.0', '1.0.1'):
+            #~ for separator in ('-', '_', '+'):
+                #~ s = 'gsdview==%s%s%s' % (version, separator, decoration)
+                #~ m = VERSION_CHECK_RE.match(s)
+                #~ self.assertEqual(m.group('version'), version)
 
     def test_invalid_version1(self):
         for version in ('1.', '1.0.', '1.0.1-', '1.0.1a-', '1.0.1-b-',

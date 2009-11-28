@@ -45,17 +45,13 @@ from gsdview.qt4support import getuifile, geticon   # @TODO: check dependency
 
 # @TODO: normalize (major, minor, rev) + (, (-|_|+)beta)
 VERSION_CHECK_RE = re.compile(
-    '''(?P<name>[a-zA-Z0-9_-]+)                     # package name
-       (?P<spec>                                    # optional version spec
-            [ \t]*                                  # optional space
-            (?P<op>(==|!=|>|>=|<|<=))               # comparison operator
-            [ \t]*                                  # optional space
-            (?P<version>\d+                         # version specification
-                (
-                    (\.\d+){0,2}                    # (major,) minor, rev
-                    ((((-|_|\+)[a-zA-Z]\w*))|\w*)?  # beta, -beta, _beta
-                )?
-            )
+    '''(?P<name>[a-zA-Z0-9_-]+)                         # package name
+       (?P<spec>                                        # optional version spec
+            [ \t]*                                      # optional space
+            (?P<op>(==|!=|>|>=|<|<=))                   # comparison operator
+            [ \t]*                                      # optional space
+            (?P<version>\d+(\.\d+){0,2})                # version specification
+            (?P<modifier>((-|_|\+)[a-zA-Z]\w*)|\w*)?    # beta, -beta, _beta
        )?\Z''', re.VERBOSE)
 
 class PluginManager(object):
