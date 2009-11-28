@@ -440,7 +440,8 @@ class PluginManagerGui(QtGui.QWidget):
                     break
                 except AttributeError, e:
                     msg = str(e)
-                    if not "'name'" in msg and not  "'short_description'" in msg:
+                    if (not "'name'" in msg
+                                    and not  "'short_description'" in msg):
                         raise
                     disabled = True
                 except KeyError:
@@ -478,7 +479,7 @@ class PluginManagerGui(QtGui.QWidget):
             w.setToolTip(w.tr('Load on startup'))
 
             if disabled:
-                for col in range(tablewidget.columnCount()):
+                for col in range(tablewidget.columnCount() - 1):
                     item = tablewidget.item(index, col)
                     if item:
                         item.setFlags(item.flags() ^ QtCore.Qt.ItemIsEnabled)
