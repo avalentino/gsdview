@@ -123,6 +123,7 @@ class PluginManager(object):
             name = module.__name__
 
         try:
+            # @TODO: find a more general form to pass arguments to plugins
             module.init(self._mainwin)
             self.plugins[name] = module
             logger.info('"%s" plugin loaded.' % name)
@@ -225,20 +226,20 @@ class PluginManager(object):
             names = [names]
         for name in names:
             module = self.plugins.pop(name)
+            # @TODO: find a more general form to pass arguments to plugins
             module.close(self._mainwin)
 
     def reset(self):
         for name in self.plugins.keys():
             plugin = self.plugins.pop(name)
+            # @TODO: find a more general form to pass arguments to plugins
             plugin.close(self._mainwin)
         self.paths = []
 
-    def save_settings(self, settings=None):
-        if not settings:
-            settings = self._mainwin.settings
-
-        # @NOTE: settings is expected to be a QSettings instance
-        # @TODO: make it Qt independent
+    # @NOTE: this method is Qt specific
+    # @TODO: move to specialized classes implementations that rely on a
+    #        specific external library
+    def save_settings(self, settings):
         settings.beginGroup('pluginmanager')
         try:
             paths = list(self.paths)    # @NOTE: copy
@@ -256,13 +257,10 @@ class PluginManager(object):
         finally:
             settings.endGroup()
 
-    def load_settings(self, settings=None):
-        # @NOTE: settings is expected to be a QSettings instance
-        # @TODO: make it Qt independent
-
-        if not settings:
-            settings = self._mainwin.settings
-
+    # @NOTE: this method is Qt specific
+    # @TODO: move to specialized classes implementations that rely on a
+    #        specific external library
+    def load_settings(self, settings):
         settings.beginGroup('pluginmanager')
         try:
             if settings.contains('pluginspaths'):
@@ -342,6 +340,7 @@ class PluginManagerGui(QtGui.QWidget):
         self.downButton.setEnabled(enabled)
 
     def addPathItem(self):
+        # @TODO: don't directly use _mainwin attribute
         filedialog = self.pluginmanager._mainwin.filedialog
         filedialog.setFileMode(filedialog.Directory)
         if(filedialog.exec_()):
@@ -362,6 +361,7 @@ class PluginManagerGui(QtGui.QWidget):
         if items:
             item = items[0]
 
+            # @TODO: don't directly use _mainwin attribute
             filedialog = self.pluginmanager._mainwin.filedialog
             filedialog.setFileMode(filedialog.Directory)
             filedialog.selectFile(item.text())
@@ -490,7 +490,7 @@ class PluginManagerGui(QtGui.QWidget):
                         w.setEnabled(False)
         tablewidget.resizeColumnsToContents()
 
-    def load(self, settings=None):
+    def load(self, settings):
         self.pluginmanager.load_settings(settings)
         self.update_view()
 
@@ -522,7 +522,7 @@ class PluginManagerGui(QtGui.QWidget):
 
         self.pluginmanager.autoload = autoload
 
-    def save(self, settings=None):
+    def save(self, settings):
         self.update_pluginmanager()
         self.pluginmanager.save_settings(settings)
 
