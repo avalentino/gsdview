@@ -31,6 +31,7 @@ import re
 import sys
 import pkgutil
 import logging
+from distutils.versionpredicate import VersionPredicate
 
 # @TODO: move Qt specific implementation elsewhere
 from PyQt4 import QtCore, QtGui, uic
@@ -42,17 +43,6 @@ except ImportError:
 
 from gsdview.qt4support import getuifile, geticon   # @TODO: check dependency
 
-
-# @TODO: normalize (major, minor, rev) + (, (-|_|+)beta)
-VERSION_CHECK_RE = re.compile(
-    '''(?P<name>[a-zA-Z0-9_-]+)                         # package name
-       (?P<spec>                                        # optional version spec
-            [ \t]*                                      # optional space
-            (?P<op>(==|!=|>|>=|<|<=))                   # comparison operator
-            [ \t]*                                      # optional space
-            (?P<version>\d+(\.\d+){0,2})                # version specification
-            (?P<modifier>((-|_|\+)[a-zA-Z]\w*)|\w*)?    # beta, -beta, _beta
-       )?\Z''', re.VERBOSE)
 
 class PluginManager(object):
 
@@ -98,29 +88,30 @@ class PluginManager(object):
         #        if available:
         #           for r in parse_requirements('gsdview >= 0.5'):
         #               return r.key in self.plugins and avail_ver in r
+
         depstring = depstring.strip()
         if not depstring:
             return True
 
-        m = VERSION_CHECK_RE.match(depstring)
-        if m:
-            if m.name in self.plugin:
-                if m.groum('spec'):
-                    avail_ver = plugins[m.group('name')].version
-                    req_ver = m.group('version')
-                    return eval('%s%s%s' % (avail_ver, m.group('op'), req_ver))
-                else:
-                    return True
-            else:
+        modules = dict(self.plugins)
+
+        # @TODO: use a cleaner way to provide extra moduled for check
+        # import gsdview
+        # modules['gsdview'] = gsdview
+
+        vp = VersionPredicate(depstring)
+        if vp.name in modules:
+            try:
+                return vp.satisfied_by(modules[vp.name].version)
+            except ValueError, e:
+                logging.warning(str(e)) #, exc_info=True)
                 return False
         else:
-            raise VaueError('invalid requirement specification: '
-                            '"%s"' % depstring)
-
+            return False
 
     def _check_deps(self, module):
         for depstring in module.__requires__:
-            if not self._check_dependency(sepstring):
+            if not self._check_dependency(depstring):
                 return False
         return True
 
@@ -152,7 +143,7 @@ class PluginManager(object):
 
         # @TODO: make the module independent from gsdview
         logger = logging.getLogger('gsdview')
-        delayed = []
+        delayed = {}
         for path in paths:
             importer = pkgutil.get_importer(path)
             try:
@@ -189,31 +180,40 @@ class PluginManager(object):
 
                 if not info_only:
                     if not self._check_deps(module):
-                        delayed.append(module)
+                        delayed[name] = module
+                        logging.info('loading of "%s" plugin delayed' %
+                                                                module.name)
                     else:
                         self.load_module(module, name)
 
         # @TODO: delayed loading
-        if not info_only:
+        if delayed and not info_only:
             MAXATTEMPTS = 10
-            delayed_again = []
-            count = 0
-            while len(delayed) != len(delayed_again):
+            delayed_again = delayed
+            iter_count = 0
+            loaded_count = None
+            while delayed_again and loaded_count != 0:
                 # check for max number of iterations
-                if count < MAXATTEMPTS:
+                if iter_count > MAXATTEMPTS:
                     logger.warning('max number of attempts reached for '
                                    'delayed plugins loading')
                     break
                 else:
-                    count += 1
+                    iter_count += 1
 
+                loaded_count = 0
                 delayed = delayed_again
-                delayed_again = []
-                for module in delayed:
+                delayed_again = {}
+
+                for name, module in delayed.items():
                     if not self._check_deps(module):
-                        delayed_again.append(module)
+                        delayed_again[name] = module
+                        logging.debug('loading of "%s" plugin delayed '
+                                      'again' % name)
+
                     else:
                         self.load_module(module, name)
+                        loaded_count += 1
             if len(delayed_again):
                 logger.info('%d modules not loaded because of unmet '
                             'dependency' % len(delayed_again))
