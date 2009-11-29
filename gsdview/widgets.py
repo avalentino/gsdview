@@ -389,7 +389,7 @@ class PreferencesDialog(QtGui.QDialog):
 
 class CrashDialog(QtGui.QDialog):
 
-    uifile = qt4support.getuifile('crashdialog.ui', __name__)
+    uifile = qt4support.getuifile('exceptiondialog.ui', __name__)
 
     template = '''Please file a bug report at
     <a href="http://sourceforge.net/apps/trac/gsdview">
