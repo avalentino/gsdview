@@ -27,11 +27,14 @@ __revision__ = '$Revision$'
 
 import os
 import sys
+import email
 import logging
+import traceback
 
 from PyQt4 import QtCore, QtGui, uic
 
 from gsdview import info
+from gsdview import utils
 from gsdview import qt4support
 
 
@@ -384,6 +387,158 @@ class PreferencesDialog(QtGui.QDialog):
         self.emit(QtCore.SIGNAL('apply()'))
 
 
+class CrashDialog(QtGui.QDialog):
+
+    uifile = qt4support.getuifile('crashdialog.ui', __name__)
+
+    template = '''Please file a bug report at
+    <a href="http://sourceforge.net/apps/trac/gsdview">
+        http://sourceforge.net/apps/trac/gsdview
+    </a>
+    or report the problem via email to
+        <a href="mailto:%1 &lt;%2&gt;?subject=%3&body=%4">%1</a>.
+    '''
+
+    def __init__(self, exctype=None, excvalue=None, tracebackobj=None,
+                 parent=None, flags=QtCore.Qt.Widget): # QtCore.Qt.Dialog
+        QtGui.QDialog.__init__(self, parent, flags)
+        uic.loadUi(self.uifile, self)
+
+        #~ sendbutton = QtGui.QPushButton(self.tr('Send bug-report'))
+        #~ sendbutton.setAutoDefault(False)
+
+        title = 'Critical error: unhandled exception occurred'
+        self.setWindowTitle(self.tr(title))
+
+        style = QtGui.qApp.style()
+        pixmap = style.standardPixmap(style.SP_MessageBoxCritical)
+        self.iconLabel.setPixmap(pixmap)
+
+        self.exctype = exctype
+        self.excvalue = excvalue
+        self.tracebackobj = tracebackobj
+
+        if not self._excInfoSet():
+            self.setExcInfo(*sys.exc_info())
+        else:
+            self._fill()
+
+        self.subject = '[gsdview] Bug report'
+
+        self.connect(self.bugreportLabel,
+                     QtCore.SIGNAL('linkActivated(const QString&)'),
+                     self._linkActivated)
+        self.connect(self.buttonBox,
+                     QtCore.SIGNAL('clicked(QAbstractButton*)'),
+                     self.onButtonClicked)
+
+    def onButtonClicked(self, button):
+        # @TODO: find a better way to check
+        if 'Save' in button.text():
+            self.save()
+
+    def _linkActivated(self, link):
+        print '"%s" link activated' % str(link)
+        if info.author_email in str(link):
+            self.sendBugReport()
+
+    def errorMsg(self):
+        self.errormsgLabel.text()
+
+    def setErrorMsg(self, text):
+        #errormsg = traceback.format_exception_only(exctype, excvalue)
+        self.errorMsgLabel.setText(text)
+
+    def traceback(self):
+        return self.tracebackTextEdit.text()
+
+    def setTraceback(self, tb):
+        if not isinstance(tb, basestring):
+            self.tracebackobj = tb
+            tb = ''.join(traceback.format_tb(tb))
+        else:
+            self.resetExcInfo()
+        self.tracebackTextEdit.setText(tb)
+
+    def timeStamp(self):
+        return self.timestampLabel.text()
+
+    def setTimeStamp(self, timestamp=None):
+        if timestamp is None:
+            timestamp = email.utils.formatdate(localtime=True)
+        self.timestampLabel.setText(timestamp)
+
+    def _fill(self):
+        if self._excInfoSet():
+            lines = traceback.format_exception_only(self.exctype, self.excvalue)
+            msg = '\n'.join(lines)
+            self.setErrorMsg(msg)
+            self.setTraceback(self.tracebackobj)
+            self.setTimeStamp()
+        else:
+            self.setErrorMsg('None')
+            self.setTraceback('None')
+            self.setTimeStamp('None')
+
+    def setExcInfo(self, exctype, excvalue, tracebackobj):
+        self.exctype = exctype
+        self.excvalue = excvalue
+        self.tracebackobj = tracebackobj
+        self._fill()
+
+    def resetExcInfo(self):
+        self.setExcInfo(None, None, None)
+
+    #~ def setBugReportText(self):
+        #~ msg = QtCore.QString(self.template)
+        #~ for arg_ in (info.author, info.author_email, subject, body):
+            #~ msg = msg.arg(QtCore.QString(arg_))
+
+    def _excInfoSet(self):
+        return all((self.exctype, self.excvalue, self.tracebackobj))
+
+    def sendBugReport(self):
+        if not self._excInfoSet():
+            exctype, excvalue, tracebackobj = sys.exc_info()
+        else:
+            exctype = self.exctype
+            excvalue = self.excvalue
+            tracebackobj = self.tracebackobj
+
+        error = traceback.format_exception_only(exctype, excvalue)
+        subject = '%s: %s' % (self.subject, error)
+        body = ''.join(utils.foramt_bugreport(exctype, excvalue, tracebackobj))
+        msg = 'mailto:%s <%s>?subject=%s&body=%s' % (info.author,
+                                            info.author_email, subject, body)
+        ret = QtGui.QDesktopServices.openUrl(QtCore.QUrl(msg))
+        if not ret:
+            msg = self.tr('Unable to send the bug-report.\n'
+                          'Please save the bug-report on file and send it '
+                          'manually.')
+            QtGui.QMessageBox.warning(self, self.tr('WARNING'), msg)
+
+    def save(self):
+        if not self._excInfoSet():
+            exctype, excvalue, tracebackobj = sys.exc_info()
+        else:
+            exctype = self.exctype
+            excvalue = self.excvalue
+            tracebackobj = self.tracebackobj
+
+        lines = utils.foramt_bugreport(exctype, excvalue, tracebackobj)
+        report = ''.join(lines)
+        filename = QtGui.QFileDialog.getOpenFileName(self)
+        if filename:
+            fd = file(filename, 'w')
+            try:
+                fd.write(report)
+            except Exception, e:
+                msg = self.tr('Unable to save the bug-report:\n%s' % str(e))
+                QtGui.QMessageBox.warning(self, self.tr('WARNING'), msg)
+            finally:
+                fd.close()
+
+
 if __name__ == '__main__':
     def test_aboutdialog():
         app = QtGui.QApplication(sys.argv)
@@ -415,8 +570,22 @@ if __name__ == '__main__':
         d.show()
         app.exec_()
 
+    def test_crashdialog():
+        def f(depth):
+            print 1/depth
+            return f(depth-1)
+        try:
+            f(4)
+        except Exception:
+            app = QtGui.QApplication(sys.argv)
+            d = CrashDialog()
+            d.show()
+            app.exec_()
+        print 'done.'
+
     logging.basicConfig(level=logging.DEBUG)
-    test_aboutdialog()
+    test_crashdialog()
+    #~ test_aboutdialog()
     #~ test_fileentrywidget()
     #~ test_generalpreferencespage()
     #~ test_preferencesdialog()
