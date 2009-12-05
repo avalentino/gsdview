@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>531</width>
-    <height>369</height>
+    <width>529</width>
+    <height>354</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -47,7 +47,7 @@
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,1">
+      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,1,0">
        <item>
         <widget class="QLabel" name="errorMsgLabel">
          <property name="minimumSize">
@@ -81,13 +81,13 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="bugreportLabel">
+        <widget class="QLabel" name="textLabel">
          <property name="text">
           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Please file a bug report at &lt;a href=&quot;http://sourceforge.net/apps/trac/gsdview&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://sourceforge.net/apps/trac/gsdview&lt;/span&gt;&lt;/a&gt; or report the problem via email to &lt;a href=&quot;mailto:a_valentino@users.sf.net?subject=[gsdview] Bug report&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Antonio Valentino&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Please file a bug report at &lt;a href=&quot;http://projecturl.example.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;projext url&lt;/span&gt;&lt;/a&gt; or report the problem via email to &lt;a href=&quot;mailto:author_email?subject=[project] Bug report&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Author Name&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -115,7 +115,7 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="tracebsckGroupBox">
+        <widget class="QGroupBox" name="tracebackGroupBox">
          <property name="title">
           <string>Traceback</string>
          </property>
@@ -124,30 +124,36 @@ p, li { white-space: pre-wrap; }
          </property>
          <layout class="QVBoxLayout" name="groupboxVerticalLayout">
           <item>
-           <widget class="QsciScintilla" name="tracebackTextEdit">
-            <property name="toolTip">
-             <string/>
+           <widget class="QPlainTextEdit" name="tracebackTextEdit">
+            <property name="lineWrapMode">
+             <enum>QPlainTextEdit::NoWrap</enum>
             </property>
-            <property name="whatsThis">
-             <string/>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+            <property name="plainText">
+             <string notr="true"/>
+            </property>
+            <property name="textInteractionFlags">
+             <set>Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
             </property>
            </widget>
           </item>
-          <item>
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
          </layout>
         </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </item>
@@ -159,19 +165,12 @@ p, li { white-space: pre-wrap; }
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Ignore|QDialogButtonBox::Save</set>
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Ignore</set>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>QsciScintilla</class>
-   <extends>QFrame</extends>
-   <header>Qsci/qsciscintilla.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections>
   <connection>
@@ -207,18 +206,18 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>tracebsckGroupBox</sender>
+   <sender>tracebackGroupBox</sender>
    <signal>toggled(bool)</signal>
    <receiver>tracebackTextEdit</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>339</x>
-     <y>263</y>
+     <x>289</x>
+     <y>210</y>
     </hint>
     <hint type="destinationlabel">
-     <x>326</x>
-     <y>285</y>
+     <x>293</x>
+     <y>217</y>
     </hint>
    </hints>
   </connection>

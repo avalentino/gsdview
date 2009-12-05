@@ -386,26 +386,59 @@ class PreferencesDialog(QtGui.QDialog):
     def apply(self):
         self.emit(QtCore.SIGNAL('apply()'))
 
-
-class CrashDialog(QtGui.QDialog):
+class ExceptionDialog(QtGui.QDialog):
 
     uifile = qt4support.getuifile('exceptiondialog.ui', __name__)
-
-    template = '''Please file a bug report at
-    <a href="http://sourceforge.net/apps/trac/gsdview">
-        http://sourceforge.net/apps/trac/gsdview
-    </a>
-    or report the problem via email to
-        <a href="mailto:%1 &lt;%2&gt;?subject=%3&body=%4">%1</a>.
-    '''
 
     def __init__(self, exctype=None, excvalue=None, tracebackobj=None,
                  parent=None, flags=QtCore.Qt.Widget): # QtCore.Qt.Dialog
         QtGui.QDialog.__init__(self, parent, flags)
         uic.loadUi(self.uifile, self)
 
-        #~ sendbutton = QtGui.QPushButton(self.tr('Send bug-report'))
-        #~ sendbutton.setAutoDefault(False)
+        style = QtGui.qApp.style()
+
+        icon = style.standardIcon(style.SP_CommandLink)
+        sendbutton = QtGui.QPushButton(icon, self.tr('Send'))
+        sendbutton.setToolTip(self.tr('Send the bug-report via email.'))
+        sendbutton.setAutoDefault(False)
+        self.buttonBox.addButton(sendbutton, QtGui.QDialogButtonBox.ActionRole)
+        self.connect(sendbutton, QtCore.SIGNAL('clicked()'), self.sendBugReport)
+        self.sendbutton = sendbutton
+
+        icon = style.standardIcon(style.SP_DialogSaveButton)
+        savebutton = QtGui.QPushButton(icon, self.tr('&Save'))
+        savebutton.setToolTip(self.tr('Save the bug-report on file.'))
+        savebutton.setAutoDefault(False)
+        self.buttonBox.addButton(savebutton, QtGui.QDialogButtonBox.ActionRole)
+        self.connect(savebutton, QtCore.SIGNAL('clicked()'), self.saveBugReport)
+        self.savebutton = savebutton
+
+        try:
+            from PyQt4 import Qsci
+            self.groupboxVerticalLayout.removeWidget(self.tracebackTextEdit)
+            self.tracebackTextEdit.setParent(None)
+            del self.tracebackTextEdit
+
+            self.tracebackTextEdit = Qsci.QsciScintilla()
+            self.groupboxVerticalLayout.addWidget(self.tracebackTextEdit)
+
+            self.tracebackTextEdit.setMarginLineNumbers(
+                                        Qsci.QsciScintilla.NumberMargin, True)
+            self.tracebackTextEdit.setMarginWidth(
+                                        Qsci.QsciScintilla.NumberMargin, 30)
+
+            lexer = Qsci.QsciLexerPython()
+            self.tracebackTextEdit.setLexer(lexer)
+            self.tracebackTextEdit.recolor()
+
+            self.tracebackTextEdit.setReadOnly(True)
+
+            self.connect(self.tracebackGroupBox,
+                         QtCore.SIGNAL('toggled(bool)'),
+                         self.tracebackTextEdit,
+                         QtCore.SLOT('setVisible(bool)'))
+        except ImportError:
+            pass
 
         title = 'Critical error: unhandled exception occurred'
         self.setWindowTitle(self.tr(title))
@@ -423,24 +456,15 @@ class CrashDialog(QtGui.QDialog):
         else:
             self._fill()
 
-        self.subject = '[gsdview] Bug report'
-
-        self.connect(self.bugreportLabel,
+        self.connect(self.textLabel,
                      QtCore.SIGNAL('linkActivated(const QString&)'),
                      self._linkActivated)
-        self.connect(self.buttonBox,
-                     QtCore.SIGNAL('clicked(QAbstractButton*)'),
-                     self.onButtonClicked)
-
-    def onButtonClicked(self, button):
-        # @TODO: find a better way to check
-        if 'Save' in button.text():
-            self.save()
 
     def _linkActivated(self, link):
-        print '"%s" link activated' % str(link)
-        if info.author_email in str(link):
+        if 'mailto' in str(link):
             self.sendBugReport()
+        else:
+            QtGui.QDesktopServices.openUrl(QtCore.QUrl(link))
 
     def errorMsg(self):
         self.errormsgLabel.text()
@@ -456,7 +480,7 @@ class CrashDialog(QtGui.QDialog):
         if not isinstance(tb, basestring):
             self.tracebackobj = tb
             tb = ''.join(traceback.format_tb(tb))
-        else:
+        else: # @TODO: check
             self.resetExcInfo()
         self.tracebackTextEdit.setText(tb)
 
@@ -477,7 +501,7 @@ class CrashDialog(QtGui.QDialog):
             self.setTimeStamp()
         else:
             self.setErrorMsg('None')
-            self.setTraceback('None')
+            self.tracebackTextEdit.setText('None')
             self.setTimeStamp('None')
 
     def setExcInfo(self, exctype, excvalue, tracebackobj):
@@ -489,10 +513,11 @@ class CrashDialog(QtGui.QDialog):
     def resetExcInfo(self):
         self.setExcInfo(None, None, None)
 
-    #~ def setBugReportText(self):
-        #~ msg = QtCore.QString(self.template)
-        #~ for arg_ in (info.author, info.author_email, subject, body):
-            #~ msg = msg.arg(QtCore.QString(arg_))
+    def text(self):
+        return self.textLabel.text()
+
+    def setText(self, text):
+        self.textLabel.setText(text)
 
     def _excInfoSet(self):
         return all((self.exctype, self.excvalue, self.tracebackobj))
@@ -505,19 +530,28 @@ class CrashDialog(QtGui.QDialog):
             excvalue = self.excvalue
             tracebackobj = self.tracebackobj
 
-        error = traceback.format_exception_only(exctype, excvalue)
-        subject = '%s: %s' % (self.subject, error)
-        body = ''.join(utils.foramt_bugreport(exctype, excvalue, tracebackobj))
-        msg = 'mailto:%s <%s>?subject=%s&body=%s' % (info.author,
-                                            info.author_email, subject, body)
-        ret = QtGui.QDesktopServices.openUrl(QtCore.QUrl(msg))
+        error = traceback.format_exception_only(exctype, excvalue)[-1].strip()
+        appname = QtGui.qApp.applicationName()
+        if appname:
+            subject = '[%s] Bug report - %s' % (appname, error)
+        else:
+            subject = 'Bug report - %s' % error
+        body = '[Please instest your comments and additinal info here.]'
+        body += '\n\n' + '-' * 80 + '\n'
+        body += ''.join(utils.foramt_bugreport(exctype, excvalue, tracebackobj))
+
+        url = QtCore.QUrl('mailto:%s <%s>' % (info.author, info.author_email))
+        url.addQueryItem('subject', subject)
+        url.addQueryItem('body', body)
+
+        ret = QtGui.QDesktopServices.openUrl(url)
         if not ret:
             msg = self.tr('Unable to send the bug-report.\n'
                           'Please save the bug-report on file and send it '
                           'manually.')
             QtGui.QMessageBox.warning(self, self.tr('WARNING'), msg)
 
-    def save(self):
+    def saveBugReport(self):
         if not self._excInfoSet():
             exctype, excvalue, tracebackobj = sys.exc_info()
         else:
@@ -527,7 +561,7 @@ class CrashDialog(QtGui.QDialog):
 
         lines = utils.foramt_bugreport(exctype, excvalue, tracebackobj)
         report = ''.join(lines)
-        filename = QtGui.QFileDialog.getOpenFileName(self)
+        filename = QtGui.QFileDialog.getSaveFileName(self)
         if filename:
             fd = file(filename, 'w')
             try:
@@ -538,54 +572,14 @@ class CrashDialog(QtGui.QDialog):
             finally:
                 fd.close()
 
-
-if __name__ == '__main__':
-    def test_aboutdialog():
-        app = QtGui.QApplication(sys.argv)
-        d = AboutDialog()
-        d.show()
-        app.exec_()
-
-    def test_fileentrywidget():
-        app = QtGui.QApplication(sys.argv)
-        d = QtGui.QDialog()
-        layout = QtGui.QVBoxLayout()
-        layout.addWidget(FileEntryWidget())
-        d.setLayout(layout)
-        d.show()
-        app.exec_()
-
-    def test_generalpreferencespage():
-        app = QtGui.QApplication(sys.argv)
-        d = QtGui.QDialog()
-        layout = QtGui.QVBoxLayout()
-        layout.addWidget(GeneralPreferencesPage())
-        d.setLayout(layout)
-        d.show()
-        app.exec_()
-
-    def test_preferencesdialog():
-        app = QtGui.QApplication(sys.argv)
-        d = PreferencesDialog()
-        d.show()
-        app.exec_()
-
-    def test_crashdialog():
-        def f(depth):
-            print 1/depth
-            return f(depth-1)
-        try:
-            f(4)
-        except Exception:
-            app = QtGui.QApplication(sys.argv)
-            d = CrashDialog()
-            d.show()
-            app.exec_()
-        print 'done.'
-
-    logging.basicConfig(level=logging.DEBUG)
-    test_crashdialog()
-    #~ test_aboutdialog()
-    #~ test_fileentrywidget()
-    #~ test_generalpreferencespage()
-    #~ test_preferencesdialog()
+class GSDViewExceptionDialog(ExceptionDialog):
+    def __init__(self, *args, **kwargs):
+        super(GSDViewExceptionDialog, self).__init__(*args, **kwargs)
+        text = ('Please file a bug report at '
+            '<a href="%(website)s">%(website_label)s</a> '
+            'or report the problem via email to '
+            '<a href="mailto:$(author_email)s?subject=[gsdview] Bug report">'
+                '%(author)s'
+            '</a>.')
+        text = text % info.__dict__
+        self.setText(self.tr(text))

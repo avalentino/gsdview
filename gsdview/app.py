@@ -47,7 +47,7 @@ from gsdview import pluginmanager
 from gsdview.mainwin import ItemModelMainWindow
 from gsdview.appsite import USERCONFIGDIR, SYSPLUGINSDIR
 from gsdview.widgets import AboutDialog, PreferencesDialog
-
+from gsdview.widgets import GSDViewExceptionDialog as ExceptionDialog
 
 class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
     # @TODO:
@@ -275,62 +275,14 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
             return
         self._busy = True
 
-
-        template = '''\
-        <p>
-            An unhandled exception occurred.
-        </p>
-        <br>
-        <p>
-            Please file a bug report at
-            <a href="http://sourceforge.net/apps/trac/gsdview">
-                http://sourceforge.net/apps/trac/gsdview
-            </a>
-            or report the problem via email to
-            <a href="mailto:%1 &lt;%2&gt;?subject=%3&attach=%4">%1</a>.
-        </p>
-        <hr>
-        <p>Timestamp: %5</p>
-        <hr>
-        <p>%6</p>
-        <p>Traceback:</p>
-        <p>%7</p>
-        <hr>
-        <p>System info:</p>
-        <br>
-        <p>%8</p>
-        '''
-
-        subject = '[gsdview] Bug report'
-        data = ''.join(utils.foramt_bugreport(exctype, excvalue, tracebackobj))
-        attachfile = os.tempnam()
-        fd = open(attachfile, 'w')
-        try:
-            fd.write(data)
-        finally:
-            fd.close()
-
-        timestamp = email.utils.formatdate(localtime=True)
-        errormsg = traceback.format_exception_only(exctype, excvalue)
-        errormsg = ''.join(errormsg).replace('\n', '<br>')
-        tb = ''.join(traceback.format_tb(tracebackobj)).replace('\n', '<br>')
-        sysinfo = ''.join(utils.format_platform_info()).replace('\n', '<br>')
-
-        msg = self.tr(template)
-        for arg_ in (info.author, info.author_email, subject, attachfile,
-                     timestamp, errormsg, tb, sysinfo):
-            msg = msg.arg(QtCore.QString(arg_))
-
-        title = self.tr('Critical error: unhandled exception occurred')
-        QtGui.QMessageBox.critical(self, title, msg)
-        # @NOTE: can't remove the temp file containing the bug report since
-        #        it is not possible to know if the email client has actualy
-        #        sent it yet.
-        #try:
-        #    os.remove(attachfile)
-        #except OSError:
-        #    pass
-        self.close()
+        dialog = ExceptionDialog(exctype, excvalue, tracebackobj, self)
+        #dialog.show()
+        ret = dialog.exec_()
+        if ret == QtGui.QDialog.Rejected:
+            self.close()
+        else:
+            logging.warning('ignoring an unhandled exception may cause '
+                            'program malfunctions.')
 
     ### Setup helpers #########################################################
     def _setupFileActions(self):
