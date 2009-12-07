@@ -15,7 +15,7 @@ onefile: gsdview-onefile.spec html
 	$(PYINSTALLERROOT)/Build.py $<
 
 clean:
-	$(RM) *.pyc logdict*.log warngsdview*.txt +~
+	$(RM) *.pyc logdict*.log warngsdview*.txt *~
 	$(RM) -r $(GSDVIEWROOT)/dist/onefile
 	$(RM) -r $(GSDVIEWROOT)/dist/gsdview
 	$(RM) -r build
