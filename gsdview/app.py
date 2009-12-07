@@ -30,12 +30,10 @@ __revision__ = '$Revision$'
 import os
 import sys
 import logging
-import traceback
-import email.utils
 
 from PyQt4 import QtCore, QtGui
 
-import exectools
+from exectools import GenericToolDescriptor
 from exectools.qt4tools import Qt4ToolController, Qt4DialogLoggingHandler
 
 from gsdview import info
@@ -51,7 +49,6 @@ from gsdview.widgets import GSDViewExceptionDialog as ExceptionDialog
 
 class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
     # @TODO:
-    #   * plugin architecture (incomplete)
     #   * cache browser, cache cleanup
     #   * open internal product
     #   * stop button
@@ -431,7 +428,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         #~ tool = GdalAddOverviewDescriptor(stdout_handler=handler)
 
         # @TODO: rewrite and remove this workaround
-        tool = exectools.GenericToolDescriptor('echo')  # dummy tool
+        tool = GenericToolDescriptor('echo')  # dummy tool
         controller = Qt4ToolController(logger, parent=self)
         controller.tool = tool
         controller.connect(controller, QtCore.SIGNAL('finished()'),
