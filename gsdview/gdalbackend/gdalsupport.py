@@ -377,6 +377,15 @@ def coordinate_mapper(dataset, precise=False):
 ###############################################################################
 ### BEGIN #####################################################################
 # @TODO: refactorize
+class MissingOvrError(Exception):
+    def __init__(self, ovrlevel):
+        super(MissingOvrError, self).__init__(ovrlevel)
+
+    def __str__(self):
+        return ('Overview with level "%s" is not available in the '
+                'product' % self.args[0])
+
+
 def gdalOvLevelAdjust(ovrlevel, xsize):
     '''Adjust the overview level
 
@@ -437,15 +446,6 @@ def best_ovr_index(band, ovrlevel=None, policy='NEAREST'):
     distances = list(distances)
 
     return distances.index(mindist)
-
-
-class MissingOvrError(Exception):
-    def __init__(self, ovrlevel):
-        super(MissingOvrError, self).__init__(ovrlevel)
-
-    def __str__(self):
-        return ('Overview with level "%s" is not available in the product' %
-                                                                self.args[0])
 
 ### END #######################################################################
 ###############################################################################

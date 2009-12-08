@@ -159,6 +159,7 @@ class BandOverviewDock(QtGui.QDockWidget):
             datatypesize = gdal.GetDataTypeSize(ovrBand.DataType) / 8 # byte
             ovrsize = ovrBand.XSize * ovrBand.YSize * datatypesize
             if ovrsize > self.OVRMAXSIZE:
+                logging.info('available overview is too large')
                 return
 
             # @TODO: check

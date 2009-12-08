@@ -137,7 +137,6 @@ class BandItem(MajorObjectItem):
     def _setup_scene(self, parent=None):
         # @TODO: check for scenes with no parent
         scene = QtGui.QGraphicsScene(parent)
-        #~ # @TODO: use a factory function (RGB etc)
         graphicsitem = gdalqt4.GdalGraphicsItem(self)
         scene.addItem(graphicsitem)
         return scene, graphicsitem
@@ -329,7 +328,6 @@ class CachedDatasetItem(DatasetItem):
 
         super(CachedDatasetItem, self).__init__(self.vrtfilename, gdal.GA_Update)
         self._setup_child_subdatasets(gdalobj)
-
 
         # if description include the filename then set the basename of the
         # original dataset
