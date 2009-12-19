@@ -29,7 +29,7 @@ __revision__ = '$Revision$'
 import os
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui, uic
 
 from gsdview import utils
 
@@ -155,6 +155,44 @@ def getuifile(name, package=None):
     '''
 
     return utils.getresource(os.path.join('ui', name), package)
+
+
+def getuiform(name, package=None):
+    '''Return the ui form class.
+
+    If it is available a pre-build python module the form class is
+    imported from it (assuming that the module contains a single UI
+    class having a name that starts with `Ui_`).
+
+    If no pre-build python module is available than the form call is
+    loaded directly from the ui file usning the PyQt4.uic helper module.
+
+    .. note:: like :autolink:`gsdview.qt4support.getuifile` this
+              function assumes that pre-build form modules and Qt UI
+              files are located in the "ui" subfolfer of the package.
+
+    .. seealso:: :autolink:`gsdview.utils.getresource`,
+                 :autolink:`gsdview.qt4support.getuifile`
+
+    '''
+
+    try:
+        fromlist = package.rsplit('.')[:-1]
+        fromlist.append('ui')
+        modname = '.'.join(fromlist + [name])
+        module = __import__(modname, fromlist=fromlist)
+        formnames = [key for key in module.__dict__.keys()
+                                                if key.startswith('Ui_')]
+        formname = formnames[0]
+        FormClass = getattr(module, formname)
+        logging.debug('load "%s" form base class from pre-compiled python '
+                      'module' % formname)
+        return FormClass
+    except ImportError:
+        uifile = getuifile(name + '.ui', package)
+        FormClass, QtBaseClass = uic.loadUiType(uifile)
+        logging.debug('load "%s" form class from ui file' % FormClass.__name__)
+        return FormClass
 
 
 def geticonfile(name, package=None):

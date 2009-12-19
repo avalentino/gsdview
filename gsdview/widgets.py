@@ -31,7 +31,7 @@ import email
 import logging
 import traceback
 
-from PyQt4 import QtCore, QtGui, uic
+from PyQt4 import QtCore, QtGui
 
 from gsdview import info
 from gsdview import utils
@@ -48,6 +48,7 @@ def get_mainwin():
         mainwin = None
     return mainwin
 
+
 def get_filedialog(parent=None):
     try:
         #mainwin = QtGui.qApp.findChild(QtGui.QMainWindow,  'gsdview-mainwin')
@@ -57,6 +58,7 @@ def get_filedialog(parent=None):
         logging.debug('unable to find the GDSView main window widget')
         dialog = QtGui.QFileDialog(parent)
     return dialog
+
 
 def _choosefile(filename='', dialog=None, mode=None):
     if not dialog:
@@ -74,17 +76,17 @@ def _choosefile(filename='', dialog=None, mode=None):
         dialog.setFileMode(oldmode)
     return filename
 
+
 def _choosedir(dirname, dialog=None,):
     return _choosefile(dirname, dialog, QtGui.QFileDialog.DirectoryOnly)
 
 
-class AboutDialog(QtGui.QDialog):
-
-    uifile = qt4support.getuifile('aboutdialog.ui', __name__)
+AboutDialogBase = qt4support.getuiform('aboutdialog', __name__)
+class AboutDialog(QtGui.QDialog, AboutDialogBase):
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget): # QtCore.Qt.Dialog
-        QtGui.QDialog.__init__(self, parent, flags)
-        uic.loadUi(self.uifile, self)
+        super(AboutDialog, self).__init__(parent, flags)
+        self.setupUi(self)
 
         # Set icons
         logofile = qt4support.geticonfile('GSDView.png', __name__)
@@ -128,6 +130,7 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview">http://sourcefor
         tablewidget.setItem(index, 0, QtGui.QTableWidgetItem(sw))
         tablewidget.setItem(index, 1, QtGui.QTableWidgetItem(version))
         tablewidget.setItem(index, 2, QtGui.QTableWidgetItem(link))
+
 
 class FileEntryWidget(QtGui.QWidget):
     def __init__(self, contents='', mode=QtGui.QFileDialog.AnyFile,
@@ -194,13 +197,13 @@ class FileEntryWidget(QtGui.QWidget):
     def setText(self, text):
         self.lineEdit.setText(text)
 
-class GeneralPreferencesPage(QtGui.QWidget):
 
-    uifile = qt4support.getuifile('general-page.ui', __name__)
+GeneralPreferencesPageBase = qt4support.getuiform('general-page', __name__)
+class GeneralPreferencesPage(QtGui.QWidget, GeneralPreferencesPageBase):
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget):
-        QtGui.QWidget.__init__(self, parent, flags)
-        uic.loadUi(self.uifile, self)
+        super(GeneralPreferencesPage, self).__init__(parent, flags)
+        self.setupUi(self)
 
         # Avoid promoted widgets
         self.cachedirEntryWidget = FileEntryWidget()
@@ -300,7 +303,8 @@ class GeneralPreferencesPage(QtGui.QWidget):
         self.loglevelComboBox.setCurrentIndex(index)
 
 
-class PreferencesDialog(QtGui.QDialog):
+PreferencesDialogBase = qt4support.getuiform('preferences', __name__)
+class PreferencesDialog(QtGui.QDialog, PreferencesDialogBase):
     '''Extendible preferences dialogg for GSDView.
 
     :signals:
@@ -312,11 +316,10 @@ class PreferencesDialog(QtGui.QDialog):
     # @TODO: also look at
     # /usr/share/doc/python-qt4-doc/examples/tools/settingseditor/settingseditor.py
 
-    uifile = qt4support.getuifile('preferences.ui', __name__)
-
     def __init__(self, parent=None, flags=QtCore.Qt.Widget): # QtCore.Qt.Dialog
-        QtGui.QDialog.__init__(self, parent, flags)
-        uic.loadUi(self.uifile, self)
+        super(PreferencesDialog, self).__init__(parent, flags)
+        self.setupUi(self)
+
         self.setWindowIcon(qt4support.geticon('preferences.svg', __name__))
 
         # remove empty page
@@ -386,14 +389,14 @@ class PreferencesDialog(QtGui.QDialog):
     def apply(self):
         self.emit(QtCore.SIGNAL('apply()'))
 
-class ExceptionDialog(QtGui.QDialog):
 
-    uifile = qt4support.getuifile('exceptiondialog.ui', __name__)
+ExceptionDialogBase = qt4support.getuiform('exceptiondialog', __name__)
+class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
 
     def __init__(self, exctype=None, excvalue=None, tracebackobj=None,
                  parent=None, flags=QtCore.Qt.Widget): # QtCore.Qt.Dialog
-        QtGui.QDialog.__init__(self, parent, flags)
-        uic.loadUi(self.uifile, self)
+        super(ExceptionDialog, self).__init__(parent, flags)
+        self.setupUi(self)
 
         style = QtGui.qApp.style()
 
@@ -571,6 +574,7 @@ class ExceptionDialog(QtGui.QDialog):
                 QtGui.QMessageBox.warning(self, self.tr('WARNING'), msg)
             finally:
                 fd.close()
+
 
 class GSDViewExceptionDialog(ExceptionDialog):
     def __init__(self, *args, **kwargs):

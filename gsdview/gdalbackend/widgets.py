@@ -29,21 +29,20 @@ import os
 import logging
 
 from osgeo import gdal
-from PyQt4 import QtCore, QtGui, uic
+from PyQt4 import QtCore, QtGui
 
 from gsdview.widgets import get_filedialog, FileEntryWidget
-from gsdview.qt4support import getuifile, geticon
+from gsdview.qt4support import getuiform, geticon
 
 from gsdview.gdalbackend import gdalsupport
 
 
-class GDALInfoWidget(QtGui.QWidget):
-
-    uifile = getuifile('gdalinfo.ui', __name__)
+GDALInfoWidgetBase = getuiform('gdalinfo', __name__)
+class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget):
-        QtGui.QWidget.__init__(self, parent, flags)
-        uic.loadUi(self.uifile, self)
+        super(GDALInfoWidget, self).__init__(parent, flags)
+        self.setupUi(self)
 
         # @TODO: check for available info in gdal 1.5 and above
         try:
@@ -115,13 +114,12 @@ class GDALInfoWidget(QtGui.QWidget):
         QtGui.QWidget.showEvent(self, event)
 
 
-class GDALPreferencesPage(QtGui.QWidget):
-
-    uifile = getuifile('gdal-page.ui', __name__)
+GDALPreferencesPageBase = getuiform('gdalpage', __name__)
+class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget):
-        QtGui.QWidget.__init__(self, parent, flags)
-        uic.loadUi(self.uifile, self)
+        super(GDALPreferencesPage, self).__init__(parent, flags)
+        self.setupUi(self)
 
         self.infoButton.setIcon(geticon('info.svg', 'gsdview'))
 
@@ -317,8 +315,7 @@ class GDALPreferencesPage(QtGui.QWidget):
 
 class MajorObjectInfoDialog(QtGui.QDialog):
     def __init__(self, gdalobj, parent=None, flags=QtCore.Qt.Widget):
-        QtGui.QDialog.__init__(self, parent, flags)
-        uic.loadUi(self.uifile, self)
+        super(MajorObjectInfoDialog, self).__init__(parent, flags)
 
         # Metadata Tab
         metadatalist = gdalobj.GetMetadata_List()
@@ -357,13 +354,13 @@ class MajorObjectInfoDialog(QtGui.QDialog):
         #tablewidget.setRowCount(0)
 
 
-class BandInfoDialog(MajorObjectInfoDialog):
-
-    uifile = getuifile('banddialog.ui', __name__)
+BandInfoDialogBase = getuiform('banddialog', __name__)
+class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
     def __init__(self, band, parent=None, flags=QtCore.Qt.Widget):
         assert band, 'a valid GDAL raster band expected'
-        MajorObjectInfoDialog.__init__(self, band, parent, flags)
+        super(BandInfoDialog, self).__init__(band, parent, flags)
+        self.setupUi(self)
 
         # Set tab icons
         self.tabWidget.setTabIcon(0, geticon('info.svg', 'gsdview'))
@@ -404,13 +401,13 @@ class BandInfoDialog(MajorObjectInfoDialog):
         #~ band.GetStatistics(approx_ok, force)    --> (min, max, mean, stddev)
 
 
-class DatasetInfoDialog(MajorObjectInfoDialog):
-
-    uifile = getuifile('datasetdialog.ui', __name__)
+DatasetInfoDialogBase = getuiform('datasetdialog', __name__)
+class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
 
     def __init__(self, dataset, parent=None, flags=QtCore.Qt.Widget):
         assert dataset, 'a valid GDAL dataset expected'
-        MajorObjectInfoDialog.__init__(self, dataset, parent, flags)
+        super(DatasetInfoDialog, self).__init__(dataset, parent, flags)
+        self.setupUi(self)
 
         # Set tab icons
         self.tabWidget.setTabIcon(0, geticon('info.svg', 'gsdview'))
@@ -507,13 +504,13 @@ p, li { white-space: pre-wrap; }
         header.setStretchLastSection(True)
         tablewidget.setSortingEnabled(sortingenabled)
 
-#~ class SubDatasetInfoDialog(DatasetInfoDialog):
 
-    #~ uifile = getuifile('subdatasetdialog.ui', __name__)
+#~ class SubDatasetInfoDialog(DatasetInfoDialog):
 
     #~ def __init__(self, subdataset, parent=None, flags=QtCore.Qt.Widget):
         #~ assert dataset, 'a valid GDAL dataset expected'
         #~ DatasetInfoDialog.__init__(self, subdataset, parent, flags)
+
 
 if __name__ == '__main__':
     import sys

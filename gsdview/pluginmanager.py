@@ -27,21 +27,20 @@ __revision__ = '$Revision: 430 $'
 
 
 import os
-import re
 import sys
 import pkgutil
 import logging
 from distutils.versionpredicate import VersionPredicate
 
 # @TODO: move Qt specific implementation elsewhere
-from PyQt4 import QtCore, QtGui, uic
+from PyQt4 import QtCore, QtGui
 
 try:
     import pkg_resources
 except ImportError:
     logging.getLogger(__name__).debug('"pkg_resources" not found.')
 
-from gsdview.qt4support import getuifile, geticon   # @TODO: check dependency
+from gsdview.qt4support import getuiform, geticon   # @TODO: check dependency
 
 
 class PluginManager(object):
@@ -292,12 +291,12 @@ class PluginManager(object):
             settings.endGroup()
 
 
-class PluginManagerGui(QtGui.QWidget):
-    uifile = getuifile('pluginmanager.ui', __name__)
+PluginManagerGuiBase = getuiform('pluginmanager', __name__)
+class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
 
     def __init__(self, pluginmanager, parent=None, flags=QtCore.Qt.Widget):
-        QtGui.QWidget.__init__(self, parent, flags)
-        uic.loadUi(self.uifile, self)
+        super(PluginManagerGui, self).__init__(parent, flags)
+        self.setupUi(self)
 
         # Set icons
         self.addButton.setIcon(geticon('add.svg', __name__))
@@ -544,13 +543,14 @@ class PluginManagerGui(QtGui.QWidget):
         d.exec_()
 
 
-class PluginInfoForm(QtGui.QFrame):
-    uifile = getuifile('plugininfo.ui', __name__)
+PluginInfoFormBase = getuiform('plugininfo', __name__)
+class PluginInfoForm(QtGui.QFrame, PluginInfoFormBase):
 
     def __init__(self, plugin=None, active=None, parent=None,
                  flags=QtCore.Qt.Widget):
-        QtGui.QFrame.__init__(self, parent, flags)
-        uic.loadUi(self.uifile, self)
+        super(PluginInfoForm, self).__init__(parent, flags)
+        self.setupUi(self)
+
         if plugin is not None and active is not None:
             self.loadinfo(plugin, active)
         else:

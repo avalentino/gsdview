@@ -8,7 +8,7 @@
 XP=xsltproc -''-nonet
 DB2MAN=/usr/share/sgml/docbook/stylesheet/xsl/nwalsh/manpages/docbook.xsl
 
-.PHONY: default docs html pdf man clean sdist bdist deb rpmspec rpm
+.PHONY: default docs html pdf man clean cleanall sdist bdist deb rpmspec rpm ui
 
 default: docs
 
@@ -57,3 +57,17 @@ rpm: sdist
 
 #debian/bestgui.1:: debian/manpage.xml
 #	$(XP) -o $@ $(DB2MAN) $<
+
+UIFILES = $(wildcard gsdview/ui/*.ui) $(wildcard gsdview/gdalbackend/ui/*.ui)
+PYUIFILES = $(patsubst %.ui,%.py,$(UIFILES))
+
+ui: $(PYUIFILES)
+	touch gsdview/ui/__init__.py
+	touch gsdview/gdalbackend/ui/__init__.py
+
+%.py: %.ui
+	pyuic4 -x $< -o $@
+
+cleanall: clean
+	$(RM) $(PYUIFILES)
+	$(RM) gsdview/ui/__init__.py gsdview/gdalbackend/ui/__init__.py
