@@ -33,8 +33,10 @@ from exectools import BaseOStream, BaseOutputHandler, BaseToolController, EX_OK
 class Qt4Blinker(QtGui.QLabel):
     def __init__(self):
         QtGui.QLabel.__init__(self)
-        qstyle = QtGui.qApp.style()
-        pixmap = qstyle.standardPixmap(QtGui.QStyle.SP_DialogNoButton)
+        #qstyle = QtGui.qApp.style()
+        #pixmap = qstyle.standardPixmap(QtGui.QStyle.SP_MediaStop)
+        pixmap = QtGui.QPixmap(
+            ':/trolltech/styles/commonstyle/images/standardbutton-no-32.png')
         self.setPixmap(pixmap)
 
     def pulse(self):
