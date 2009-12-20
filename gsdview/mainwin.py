@@ -87,9 +87,6 @@ class ItemModelMainWindow(MdiMainWindow):
         self.treeview.header().hide()
         self.treeview.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.connect(self.treeview,
-                     QtCore.SIGNAL('customContextMenuRequested(const QPoint&)'),
-                     self.itemContextMenu)
-        self.connect(self.treeview,
                      QtCore.SIGNAL('clicked(const QModelIndex&)'),
                      self.setActiveWinFromIndex)
         self.connect(self.mdiarea,

@@ -33,12 +33,12 @@ __all__ = ['ZoomTool', 'init', 'close',
 ]
 
 
-import info
-from info import *
+from zoom import info
+from zoom.info import *
 
 from PyQt4 import QtCore
 
-from core import ZoomTool
+from zoom.core import ZoomTool
 
 
 __version__ = info.__version__

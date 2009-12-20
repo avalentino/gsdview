@@ -130,6 +130,7 @@ class PluginManager(object):
             logger.warning('error loading "%s" plugin: %s' %
                                                         (name, e))
 
+    # @WARNING: (pychecker) Parameter (type_) not used
     def load(self, names, paths=None, info_only=False, type_='plugins'):
         if paths is None:
             paths = self.paths
@@ -220,6 +221,7 @@ class PluginManager(object):
 
                 # @TODO: log more verbose info: per module dependency failure
 
+    # @WARNING: (pychecker) Parameter (type_) not used
     def unload(self, names, type_='plugin'):
         if isinstance(names, basestring):
             names = [names]

@@ -33,12 +33,12 @@ __all__ = ['CoordinateView', 'init', 'close',
 ]
 
 
-import info
-from info import *
+from positiontracker import info
+from positiontracker.info import *
 
 from PyQt4 import QtCore
 
-from coordinateview import CoordinateView, GeoCoordinateView
+from positiontracker.coordinateview import CoordinateView, GeoCoordinateView
 
 __version__ = info.__version__
 

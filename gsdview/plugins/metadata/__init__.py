@@ -33,12 +33,12 @@ __all__ = ['MetadataViewer', 'init', 'close',
 ]
 
 
-import info
-from info import *
+from metadata import info
+from metadata.info import *
 
 from PyQt4 import QtCore
 
-from core import MetadataViewer
+from metadata.core import MetadataViewer
 
 
 __version__ = info.__version__

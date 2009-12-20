@@ -4,7 +4,7 @@ import os
 import sys
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 sys.path.insert(0, os.path.join(os.pardir, os.pardir))
 

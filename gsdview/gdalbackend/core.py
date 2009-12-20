@@ -212,7 +212,7 @@ class GDALBackend(QtCore.QObject):
         #~ action = actionsgroup.findChild(QtGui.QAction, 'actionBuidOverviews')
         #~ actionsgroup.removeAction(action)
         #~ return actionsgroup
-        return self._setupBandItemActions()
+        return self._setupBandItemActions(actionsgroup)
 
     # @TODO
     #def _setupVirtualBandItemActions(self):

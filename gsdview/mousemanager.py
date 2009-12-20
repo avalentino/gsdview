@@ -162,7 +162,7 @@ class MouseManager(QtCore.QObject):
         names = self.modes()
         index = names.index(name)
         action = self.actions.actions()[index]
-        self.actions.setChecked(True)
+        action.setChecked(True)
 
     def _delMode(self, name):
         names = [m.name for m in self._moderegistry]
@@ -198,7 +198,9 @@ class MouseManager(QtCore.QObject):
         return self._moderegistry[index]
 
     def _emitModeChanged(self, name=None):
-        self.emit(QtCore.SIGNAL('modeChanged(PyQt_PyObject)'), self.mode)
+        if name is None:
+            name = self.mode
+        self.emit(QtCore.SIGNAL('modeChanged(PyQt_PyObject)'), name)
 
     def eventFilter(self, object, event):
         '''Events dispatcher'''

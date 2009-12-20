@@ -194,6 +194,10 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         # @TODO: force the log level set from command line
         #self.logger.setLevel(level)
 
+        self.connect(self.treeview,
+                     QtCore.SIGNAL('customContextMenuRequested(const QPoint&)'),
+                     self.itemContextMenu)
+
         self.statusBar().showMessage('Ready')
 
     ### Model/View utils ######################################################
@@ -380,6 +384,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
 
     def setupPlugins(self):
         # load backends
+        # @WARNING: (pychecker) Function (__import__) doesn't support **kwArgs
         module = __import__('gsdview.gdalbackend', fromlist=['gsdview'])
         self.pluginmanager.load_module(module, 'gdalbackend')
 

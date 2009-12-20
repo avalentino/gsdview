@@ -55,6 +55,7 @@ def _getresource(resource, package):
         # pkg_resources not available
         if '.' in package:
             fromlist = package.split('.')[:-1]
+            # @WARNING: (pychecker) Function (__import__) doesn't support **kwArgs
             m = __import__(package, fromlist=fromlist)
         else:
             m = __import__(package)

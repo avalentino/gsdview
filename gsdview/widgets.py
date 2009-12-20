@@ -145,6 +145,8 @@ class FileEntryWidget(QtGui.QWidget):
 
         self.lineEdit = QtGui.QLineEdit()
         self.lineEdit.setCompleter(self.__completer)
+        if contents:
+            self.lineEdit.setText(contents)
 
         icon = qt4support.geticon('open.svg', __name__)
         self.button = QtGui.QPushButton(icon, '')
