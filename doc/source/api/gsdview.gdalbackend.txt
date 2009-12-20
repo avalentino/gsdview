@@ -52,6 +52,7 @@ gsdview.gdalbackend
       openFile
       openImageView
       openItemMatadataView
+      openRGBImageView
       openSubDataset
       parent
       property

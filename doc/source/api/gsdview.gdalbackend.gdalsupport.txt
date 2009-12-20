@@ -14,10 +14,12 @@ gsdview.gdalbackend.gdalsupport
       coordinate_mapper
       gdalFilters
       getDriverList
+      isRGB
       ovrBestIndex
       ovrLevelAdjust
       ovrLevelForSize
       ovrLevels
+      ovrRead
       uniqueDatasetID
    
    

@@ -14,15 +14,20 @@ ChangeLog
 Changes from 0.6.0 to 0.6.1 (in development)
 --------------------------------------------
 
+* Basic support for RGB views (`#1`_)
 * Use global exception hook to catch un-handled exceptions (close `#11`_).
   An error dialog is showed and the application quits.
+
+* New mouse manager component (`#24`_).
 * Now it is possible to pre-compile UI files into python modules and use
   generated modules to set the GUI up.
   If pre-compiled python forms are not available the GUI is set up using 
   Qt UI files directly.
 * Bug fix
 
+.. _`#1`: https://sourceforge.net/apps/trac/gsdview/ticket/1
 .. _`#11`: https://sourceforge.net/apps/trac/gsdview/ticket/11
+.. _`#24`: https://sourceforge.net/apps/trac/gsdview/ticket/24
 
 
 Changes from 0.5.9 to 0.6.0 (24/08/2009)
