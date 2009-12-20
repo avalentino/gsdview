@@ -14,8 +14,13 @@ ChangeLog
 Changes from 0.6.0 to 0.6.1 (in development)
 --------------------------------------------
 
-* Use global exception hook to catch unhandled exceptions (close `#11`_).
+* Use global exception hook to catch un-handled exceptions (close `#11`_).
   An error dialog is showed and the application quits.
+* Now it is possible to pre-compile UI files into python modules and use
+  generated modules to set the GUI up.
+  If pre-compiled python forms are not available the GUI is set up using 
+  Qt UI files directly.
+* Bug fix
 
 .. _`#11`: https://sourceforge.net/apps/trac/gsdview/ticket/11
 
