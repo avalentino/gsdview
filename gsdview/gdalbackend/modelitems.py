@@ -208,6 +208,7 @@ class DatasetItem(MajorObjectItem):
 
         # TODO: improve attribute name
         self.cmapper = gdalsupport.coordinate_mapper(self._obj)
+        self.scene, self.graphicsitem = self._setup_scene()
 
     def _checkedopen(self, filename, mode=gdal.GA_ReadOnly):
         gdalobj = gdal.Open(filename, mode)
@@ -215,6 +216,17 @@ class DatasetItem(MajorObjectItem):
             raise RuntimeError('"%s" is not a valid GDAL dataset' %
                                                     os.path.basename(filename))
         return gdalobj
+
+    def _setup_scene(self, parent=None):
+        try:
+            graphicsitem = gdalqt4.GdalRgbGraphicsItem(self)
+        except TypeError:
+            # dataset is not an RGB image
+            return None, None
+        else:
+            scene = QtGui.QGraphicsScene(parent)
+            scene.addItem(graphicsitem)
+            return scene, graphicsitem
 
     def footprint(self):
         '''Return the dataset geographic footprint as a QPolygonF.

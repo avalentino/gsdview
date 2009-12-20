@@ -216,6 +216,50 @@ def gdalFilters():
     return filters
 
 
+def isRGB(dataset, strict=False):
+    '''Return True if a dataset is compatible with RGB representaion.
+
+    Conditions tested are:
+
+      * 3 or 4 raster bands (3 in strict mode)
+      * raster band datatype is GDT_Byte
+      * color interpretation respect the expected order:
+
+          band1: GCI_RedBand
+          band2: GCI_GreenBand
+          band3: GCI_BlueBand
+          band4: GCI_AlphaBand (RGBA only allowed in non strict mode)
+
+        GCI_Undefined color interpretation is allowed in non strict mode.
+
+    '''
+
+    if dataset.RasterCount not in (3, 4):
+        return False
+
+    # @TODO: allow different color orders (??)
+    bands = [dataset.GetRasterBand(b) for b in range(1, dataset.RasterCount+1)]
+    for band, colorint in zip(bands, (gdal.GCI_RedBand,
+                                      gdal.GCI_GreenBand,
+                                      gdal.GCI_BlueBand,
+                                      gdal.GCI_AlphaBand)):
+
+        if strict:
+            allowed_colorints = (colorint, )
+        else:
+            allowed_colorints = (colorint, gdal.GCI_Undefined)
+        actual_colorint = band.GetRasterColorInterpretation()
+        if not band and actual_colorint not in allowed_colorints:
+            return False
+        if band.DataType != gdal.GDT_Byte:
+            return False
+
+    if strict and dataset.dastetCount != 3:
+        return False
+
+    return True
+
+
 ### Coordinate conversion helpers ############################################
 # @TODO: remove
 def _fixedGCPs(gcps):
@@ -510,3 +554,57 @@ def ovrBestIndex(gdalobj, ovrlevel=None, policy='NEAREST'):
         band = dataset.GetRasterBand(1)
         return ovrBestIndex(band)
 
+
+def ovrRead(dataset, x=0, y=0, w=None, h=None, ovrindex=None,
+            bstart=1, bcount=None, dtype=None):
+    '''Read an image block from overviews of all spacified bands.
+
+    This function read a data block from the overview corresponding to
+    *ovrindex* for all *bcount* raster bands starting drom the
+    *bstart*th one.
+
+    Parameters:
+
+    dataset: GDAL dataset object
+        the GDAL dataset to read from
+    x, y: int
+        origin of the box to read in overview coordinates
+    w, h: int
+        size of the box to read in overview coordinates
+    ovrindex: int
+        index of the overview to read from.
+        If the overview index is `None` data are retrieved directly
+        from the raster band instead of overviews.
+    bstart: int
+        raster band start index (default 1).
+    bcount: int or None
+        raster band count (defaut all starting from *bstart*)
+
+    Returns:
+
+    data: ndarray
+        the array of data read with shape (h, w, bcount)
+
+    '''
+
+    # @TODO: check RasterColorInterpretation
+
+    if bcount is None:
+        bcount = dataset.RasterCount
+
+    assert bstart > 0
+    assert bstart - 1 + bcount <= dataset.RasterCount
+
+    #data = numpy.zeros((h, w, dataset.RasterCount), numpy.ubyte)
+    channels = []
+    for bandindex in range(bstart, bstart + bcount):
+        band = dataset.GetRasterBand(bandindex)
+        if ovrindex is not None:
+            band = band.GetOverview(ovrindex)
+        channels.append(band.ReadAsArray(x, y, w, h))
+
+    data = numpy.dstack(channels)
+    if dtype and dtype != data.dtype:
+        return numpy.astype(data)
+    else:
+        return data

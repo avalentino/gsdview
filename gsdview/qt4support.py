@@ -68,6 +68,7 @@ def overrideCursor(func):
     return aux
 
 try:
+    raise ImportError # @TODO: remove
     from PyQt4.Qwt5 import toQImage as _toQImage
     def numpy2qimage(data):
         # @NOTE: for Qwt5 < 5.2.0
@@ -112,7 +113,7 @@ except ImportError:
             elif data.ndim == 3 and data.shape[2] == 3:
                 h, w = data.shape[:2]
                 image = numpy.zeros((h,w,4), data.dtype)
-                image[:,:,2::-1] = data[...]
+                image[:,:,2::-1] = data
                 image[...,-1] = 255
                 format_ = QtGui.QImage.Format_RGB32
 

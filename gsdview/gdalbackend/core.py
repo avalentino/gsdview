@@ -239,6 +239,17 @@ class GDALBackend(QtCore.QObject):
         self.connect(action, QtCore.SIGNAL('triggered()'), self.buildOverviews)
         action.setEnabled(False)    # @TODO: remove
 
+        # open RGB
+        # @TODO: find an icon for RGB
+        icon = qt4support.geticon('rasterband.svg', __name__)
+        action = QtGui.QAction(icon, self.tr('Open as RGB'), actionsgroup)
+        action.setObjectName('actionOpenRGBImageView')
+        #action.setShortcut(self.tr('Ctrl+B'))
+        action.setToolTip(self.tr('Display the dataset as an RGB image'))
+        action.setStatusTip(self.tr('Open as RGB'))
+        self.connect(action, QtCore.SIGNAL('triggered()'), self.openRGBImageView)
+        #action.setEnabled(False)    # @TODO: remove
+
         # @TODO: add band, add virtual band, open GCPs view
 
         # separator
@@ -285,6 +296,18 @@ class GDALBackend(QtCore.QObject):
         self._actionsmap['SubDatasetItem'] = self._setupSubDatasetItemActions()
 
     ### Actions enabling ######################################################
+    def _getDatasetItemActions(self, item=None):
+        actionsgroup = self._actionsmap['DatasetItem']
+
+        # RGB
+        action = actionsgroup.findChild(QtGui.QAction, 'actionOpenRGBImageView')
+        if gdalqt4.isRGB(item):
+            action.setEnabled(True)
+        else:
+            action.setEnabled(False)
+
+        return actionsgroup
+
     def _getBandItemActions(self, item=None):
         actionsgroup = self._actionsmap['BandItem']
 
@@ -350,6 +373,20 @@ class GDALBackend(QtCore.QObject):
 
     ### Driver ################################################################
     ### Dataset ###############################################################
+    def openRGBImageView(self, item=None):
+        if item is None:
+            item = self._mainwin.currentItem()
+        assert isinstance(item, modelitems.DatasetItem)
+
+        if not item.scene:
+            title = self.tr('WARNING')
+            msg = self.tr("This dataset can't be opened in RGB mode.")
+            QtGui.QMessageBox.warning(self._mainwin, title, msg)
+            return
+        # only open a new view if there is no other on the item selected
+        if len(item.scene.views()) == 0:
+            self.newImageView(item)
+
     def buildOverviews(self):
         # @TODO: implementation
         self._mainwin.logger.info('method not yet implemented')
@@ -398,7 +435,8 @@ class GDALBackend(QtCore.QObject):
     def newImageView(self, item=None):
         if item is None:
             item = self._mainwin.currentItem()
-        assert isinstance(item, modelitems.BandItem)
+        #assert isinstance(item, modelitems.BandItem)
+        assert isinstance(item, (modelitems.BandItem, modelitems.DatasetItem))
 
         # @TODO: check if any graphics view is open on the selected item
 
@@ -437,7 +475,8 @@ class GDALBackend(QtCore.QObject):
         #######################################################################
         ### BEGIN #############################################################
         # @TODO: improve ptocessing tools handling and remove this workaround
-
+        if isinstance(item, modelitems.DatasetItem):
+            item = item.GetRasterBand(1)
         if not isinstance(item.parent(), modelitems.CachedDatasetItem):
             return
 

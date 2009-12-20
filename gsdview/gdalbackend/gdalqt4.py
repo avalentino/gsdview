@@ -182,3 +182,43 @@ class GdalGraphicsItem(BaseGdalGraphicsItem):
         rect = self._targetRect(x, y, w, h, ovrlevel)
         image = numpy2qimage(data)
         painter.drawImage(rect, image)
+
+class GdalRgbGraphicsItem(BaseGdalGraphicsItem):
+    def __init__(self, dataset, parent=None, scene=None):
+        if not gdalsupport.isRGB(dataset):
+            raise TypeError('RGB or RGBA iamge expected')
+        BaseGdalGraphicsItem.__init__(self, dataset, parent, scene)
+
+    def paint(self, painter, option, widget):
+        band = self.gdalobj.GetRasterBand(1)
+        ovrband, ovrlevel, ovrindex = self._bestOvrLevel(band,
+                                                         option.levelOfDetail)
+        x, y, w, h = self._clipRect(ovrband,
+                                    option.exposedRect.toAlignedRect(),
+                                    ovrlevel)
+
+        dataset = self.gdalobj
+        if True: #ovrindex:
+            data = gdalsupport.ovrRead(dataset, x, y, w, h, ovrindex)
+            #(NxMx3)
+        else:
+            # Broken
+
+            # ReadAsArray returns a (3xNxM) sized matrix
+            data = dataset.ReadAsArray(x, y, w, h)
+
+            #data = numpy.dstack((data[0], data[1], data[2]))
+            data = numpy.rollaxis(data, 0, 3)
+            #data = data.transpose(1, 2, 0)
+            #data = data.transpose(2, 1, 0) # (??)
+
+            #data = numpy.require(data, data.dtype, 'CO') # 'CAO'
+
+            #~ image = numpy.zeros((h,w,4), data.dtype)
+            #~ image[:,:,2::-1] = data[...]
+            #~ image[...,-1] = 255
+            #~ format_ = QtGui.QImage.Format_RGB32
+
+        rect = self._targetRect(x, y, w, h, ovrlevel)
+        image = numpy2qimage(data)
+        painter.drawImage(rect, image)
