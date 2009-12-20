@@ -34,6 +34,7 @@ import numpy
 from osgeo import gdal
 from osgeo import osr
 
+
 GDAL_CONFIG_OPTIONS = '''\
 GDAL_DATA
 GDAL_SKIP
@@ -150,6 +151,8 @@ KML_DEBUG'''
 
 
 def uniqueDatasetID(prod):
+    # @TODO: use also gdal.Band.Checksum or similia
+
     d = prod.GetDriver()
     driver_name = d.GetDescription()
     logging.debug('driver_name = %s' % driver_name)
@@ -187,10 +190,14 @@ def uniqueDatasetID(prod):
 
 
 def getDriverList():
+    '''Return the list of available GDAL drivers'''
+
     return [gdal.GetDriver(index) for index in range(gdal.GetDriverCount())]
 
 
 def gdalFilters():
+    '''Returns the list of GDAL lile filters as expected by Qt'''
+
     # @TODO: move to gdalqt4
     filters = []
     filters.append('All files (*)')
@@ -209,6 +216,7 @@ def gdalFilters():
     return filters
 
 
+### Coordinate conversion helpers ############################################
 # @TODO: remove
 def _fixedGCPs(gcps):
     '''Fix Envisat GCPs
@@ -359,7 +367,7 @@ class CoordinateMapper(object):
         return line, pixel
 
 
-def coordinate_mapper(dataset, precise=False):
+def coordinate_mapper(dataset):
     try:
         mapper = CoordinateMapper(dataset)
     except ValueError:
@@ -374,9 +382,7 @@ def coordinate_mapper(dataset, precise=False):
     return mapper
 
 
-###############################################################################
-### BEGIN #####################################################################
-# @TODO: refactorize
+### Overviews handling helpers ###############################################
 class MissingOvrError(Exception):
     def __init__(self, ovrlevel):
         super(MissingOvrError, self).__init__(ovrlevel)
@@ -386,11 +392,11 @@ class MissingOvrError(Exception):
                 'product' % self.args[0])
 
 
-def gdalOvLevelAdjust(ovrlevel, xsize):
+def ovrLevelAdjust(ovrlevel, xsize):
     '''Adjust the overview level
 
     Replicate the GDALOvLevelAdjust function from
-    gdal-1.4.4/gcore/gdaldefaultoverviews.cpp
+    gdal/gcore/gdaldefaultoverviews.cpp
 
     '''
 
@@ -398,55 +404,109 @@ def gdalOvLevelAdjust(ovrlevel, xsize):
     return int(round(xsize / float(oxsize)))
 
 
-def compute_ovr_level(band, ovrsize=100*1024):
-    '''Compute the overview factor that fits the ovrsize request.'''
+def ovrLevelForSize(gdalobj, ovrsize=300*1024):
+    '''Compute the overview factor that fits the ovrsize request.
 
-    # ovrsize = 100 * 1024 ~= 100 KByte (about 320x320 8 bit pixels)
+    Default ovrsize = 300 KBytes ==> about 554x554 pixels paletted or
+    277x277 pixels RGB32.
 
-    #bytePerPixel = gdal.GetDataTypeSize(band.DataType) / 8
-    bytesperpixel = 1   # the quicklook image is always converted to byte
-    datasetsize = band.XSize * band.YSize * bytesperpixel
-    ovrlevel = numpy.sqrt(datasetsize / float(ovrsize))
-    ovrlevel = max(round(ovrlevel), 1)
+    '''
 
-    return gdalOvLevelAdjust(ovrlevel, band.XSize)
+    if hasattr(gdalobj, 'GetOverviewCount'):
+        # gdalobj is a raster band
 
+        band = gdalobj
 
-def available_ovr_levels(band):
-    ovrlevels = []
-    for ovrIndex in range(band.GetOverviewCount()):
-        ovrXSize = band.GetOverview(ovrIndex).XSize
-        ovrlevel = round(band.XSize / float(ovrXSize))
-        ovrlevel = gdalOvLevelAdjust(ovrlevel, band.XSize)
-        ovrlevels.append(ovrlevel)
+        #bytePerPixel = gdal.GetDataTypeSize(band.DataType) / 8
+        bytesperpixel = 1   # the quicklook image is always converted to byte
+        datasetsize = band.XSize * band.YSize * bytesperpixel
+        ovrlevel = numpy.sqrt(datasetsize / float(ovrsize))
+        ovrlevel = max(round(ovrlevel), 1)
 
-    return ovrlevels
-
-
-def best_ovr_index(band, ovrlevel=None, policy='NEAREST'):
-    if ovrlevel is None:
-        ovrlevel = compute_ovr_level(band)
-    ovrlevels = numpy.asarray(available_ovr_levels(band))
-    if len(ovrlevels) == 0:
-        raise MissingOvrError(ovrlevel)
-
-    distances = ovrlevels - ovrlevel
-    if policy.upper() == 'NEAREST':
-        distances = abs(distances)
-        mindist = distances.min()
-    elif policy.upper() == 'GREATER':
-        indices = numpy.where(distances >= 0)[0]
-        mindist = distances[indices].min()
-    elif policy.upper() == 'SMALLER':
-        indices = numpy.where(distances <= 0)[0]
-        mindist = distances[indices].max()
+        return ovrLevelAdjust(ovrlevel, band.XSize)
     else:
-        raise ValueError('invalid policy: "%s"' % policy)
+        # assume gdalobj is a dataset to be represented as an RGB32
+        dataset = gdalobj
+        band = dataset.GetRasterBand(1)
+        return ovrLevelForSize(band, ovrsize/4)
 
-    distances = list(distances)
 
-    return distances.index(mindist)
+def ovrLevels(gdalobj):
+    '''Return availabe overview levels.'''
 
-### END #######################################################################
-###############################################################################
+    if hasattr(gdalobj, 'GetOverviewCount'):
+        # gdalobj is a raster band
+        band = gdalobj
+        levels = []
+
+        for index in range(band.GetOverviewCount()):
+            ovrXSize = band.GetOverview(index).XSize
+            ovrlevel = round(band.XSize / float(ovrXSize))
+            ovrlevel = ovrLevelAdjust(ovrlevel, band.XSize)
+            levels.append(ovrlevel)
+
+        return levels
+    else:
+        # assume gdalobj is a dataset
+        dataset = gdalobj
+        band = dataset.GetRasterBand(1)
+        return ovrLevels(band)
+
+
+def ovrBestIndex(gdalobj, ovrlevel=None, policy='NEAREST'):
+    '''Return the overview index that best fits *ovrlevel*.
+
+    If *ovrlevel* is `None` it is used the level returner by the
+    `ovrLevelForSize` function i.e. the lavel ensures that the data
+    size doesn't exceede a certain memory size (defaut 300K).
+
+    The *policy* parameter can be set to:
+
+    :NEAREST: between available ovr factors the one closest to the
+              requested one (*ovrlevel*) is returned
+    :GREATER: between available ovr factors it is returned the closest
+              one that is greater or equal to the requested *ovrlevel*
+    :SMALLER: between available ovr factors it is returned the closest
+              one that is smaller or equal to the requested *ovrlevel*
+
+    .. note:: plase note that *GREATER* for overview level implies a
+              larger reduction factor hence a smaller image (and vice
+              versa).
+
+    '''
+
+    if hasattr(gdalobj, 'GetOverviewCount'):
+        # gdalobj is a raster band
+        band = gdalobj
+        if ovrlevel is None:
+            ovrlevel = ovrLevelForSize(band) # 300K
+        levels = numpy.asarray(ovrLevels(band))
+        if len(levels) == 0:
+            raise MissingOvrError(ovrlevel)
+
+        distances = levels - ovrlevel
+        if policy.upper() == 'NEAREST':
+            distances = abs(distances)
+            mindist = distances.min()
+        elif policy.upper() == 'GREATER':
+            indices = numpy.where(distances >= 0)[0]
+            if numpy.size(indices) == 0:
+                raise MissingOvrError(ovrlevel)
+            mindist = distances[indices].min()
+        elif policy.upper() == 'SMALLER':
+            indices = numpy.where(distances <= 0)[0]
+            if numpy.size(indices) == 0:
+                raise MissingOvrError(ovrlevel)
+            mindist = distances[indices].max()
+        else:
+            raise ValueError('invalid policy: "%s"' % policy)
+
+        distances = list(distances)
+
+        return distances.index(mindist)
+    else:
+        # assume gdalobj is a dataset
+        dataset = gdalobj
+        band = dataset.GetRasterBand(1)
+        return ovrBestIndex(band)
 

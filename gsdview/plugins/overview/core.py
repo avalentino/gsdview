@@ -133,10 +133,10 @@ class BandOverviewDock(QtGui.QDockWidget):
     #    return obj.eventFilter(obj, event)
 
     @overrideCursor
-    def setItem(self, banditem):
+    def setItem(self, item):
         # @TODO: fix
         # @WARNING: this method contains backend specific code
-        if banditem.backend != 'gdalbackend':
+        if item.backend != 'gdalbackend':
             logging.warning('only "gdalbackend" is supported by "overview" '
                             'plugin')
             return
@@ -150,27 +150,32 @@ class BandOverviewDock(QtGui.QDockWidget):
             from gsdview.gdalbackend import gdalsupport
 
             try:
-                ovrindex = gdalsupport.best_ovr_index(banditem)
+                level = gdalsupport.ovrLevelForSize(item, self.OVRMAXSIZE)
+                # @NOTE: use GREATER for overview level to ensure an overview
+                #        size smaller than OVRMAXSIZE
+                ovrindex = gdalsupport.ovrBestIndex(item, level, 'GREATER')
             except gdalsupport.MissingOvrError:
-                logging.debug('no overview available')
+                logging.info('no overview available or available overviews '
+                             'are too large')
                 return
 
-            ovrBand = banditem.GetOverview(ovrindex)
-            datatypesize = gdal.GetDataTypeSize(ovrBand.DataType) / 8 # byte
-            ovrsize = ovrBand.XSize * ovrBand.YSize * datatypesize
-            if ovrsize > self.OVRMAXSIZE:
-                logging.info('available overview is too large')
-                return
+            try:
+                # Assume the item is a raster band
+                ovrBand = item.GetOverview(ovrindex)
+            except AttributeError:
+                gdalsupport.ovrRead(item, ovrindex=ovrindex)
 
             # @TODO: check
-            scene = banditem.scene
+            scene = item.scene
             self.graphicsview.setScene(scene)
             self.graphicsview.setSceneRect(scene.sceneRect())
 
             if not self.graphicsview.autoscale:
-                ovrlevel = gdalsupport.available_ovr_levels(banditem)[ovrindex]
+                ovrlevel = gdalsupport.ovrLevels(item)[ovrindex]
                 matrix = QtCore.QMatirx(ovrlevel, 0, 0, ovrlevel, 0, 0)
                 self.graphicsview.setMatrix(matrix)
+            else:
+                self.graphicsview.fitInView()
 
             self.updateMainViewBox()
         finally:

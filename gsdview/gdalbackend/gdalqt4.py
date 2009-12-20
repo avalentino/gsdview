@@ -40,23 +40,74 @@ from gsdview.gdalbackend import gdalsupport
 
 # @TODO: move GraphicsView here
 
-# @TODO: use a factory function
-class GdalGraphicsItem(QtGui.QGraphicsItem):
-    # @TODO:
-    #   * child class that uses the quicklook image as a low resolution cache
-    #     to speedup scrolling
-    def __init__(self, band, parent=None, scene=None):
-        QtGui.QGraphicsItem.__init__(self, parent, scene)
-        self.band = band
-        #~ self._boundingRect = QtCore.QRectF(-self.band.XSize/2.,
-                                           #~ -self.band.YSize/2.,
-                                           #~ self.band.XSize,
-                                           #~ self.band.YSize)
-        # @TODO: check (work like QPixmap)
-        self._boundingRect = QtCore.QRectF(0, 0,
-                                           self.band.XSize,
-                                           self.band.YSize)
 
+class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
+    def __init__(self, gdalobj, parent=None, scene=None):
+        QtGui.QGraphicsItem.__init__(self, parent, scene)
+        self.gdalobj = gdalobj
+        try:
+            # dataset
+            self._boundingRect = QtCore.QRectF(0, 0,
+                                               gdalobj.RasterXSize,
+                                               gdalobj.RasterYSize)
+        except AttributeError:
+            # raster band
+            self._boundingRect = QtCore.QRectF(0, 0,
+                                               gdalobj.XSize,
+                                               gdalobj.YSize)
+
+    def boundingRect(self):
+        return self._boundingRect
+
+    def _bestOvrLevel(self, band, levelOfDetail):
+        ovrlevel = 1
+        ovrindex = None
+
+        if levelOfDetail < 1 and band.GetOverviewCount() > 0:
+            reqlevel = 1. / levelOfDetail
+            try:
+                ovrindex = gdalsupport.ovrBestIndex(band, reqlevel)
+            except ValueError:
+                pass
+            else:
+                ovrlevel = gdalsupport.ovrLevels(band)[ovrindex]
+                if abs(reqlevel - 1) < abs(reqlevel - ovrlevel):
+                    ovrlevel = 1
+                    ovrindex = None
+                else:
+                    band = band.GetOverview(ovrindex)
+        return band, ovrlevel, ovrindex
+
+    def _clipRect(self, ovrband, rect, ovrlevel):
+        boundingRect = self._boundingRect
+
+        x = int((rect.x() - boundingRect.x()) // ovrlevel)
+        y = int((rect.y() - boundingRect.y()) // ovrlevel)
+        width = rect.width() // ovrlevel + 1        # @TODO: check
+        height = rect.height() // ovrlevel + 1      # @TODO: check
+
+        if x < 0:
+            x = 0
+        if y < 0:
+            y = 0
+        if (x + width) * ovrlevel > boundingRect.width():
+            width = ovrband.XSize - x
+        if (y + height) * ovrlevel > boundingRect.height():
+            height = ovrband.YSize - y
+
+        return x, y, width, height
+
+    def _targetRect(self, x, y, w, h, ovrlevel):
+        boundingRect = self._boundingRect
+        return QtCore.QRect(x * ovrlevel + boundingRect.x(),
+                            y * ovrlevel + boundingRect.y(),
+                            w * ovrlevel,
+                            h * ovrlevel)
+
+# @TODO: use a factory function
+class GdalGraphicsItem(BaseGdalGraphicsItem):
+    def __init__(self, band, parent=None, scene=None):
+        BaseGdalGraphicsItem.__init__(self, band, parent, scene)
         self._lut = self.compute_default_LUT()
 
         #~ if band.DataType in (gdal.GDT_CInt16, gdal.GDT_CInt32):
@@ -67,19 +118,34 @@ class GdalGraphicsItem(QtGui.QGraphicsItem):
         if isinstance(dtype, basestring):
             dtype = numpy.typeDict[dtype]
         if numpy.iscomplexobj(dtype()):
-            #~ # @TODO: remove
-            #~ import logging
-            #~ logging.warning('extract module from complex data')
             # @TODO: raise ItemTypeError or NotImplementedError
             raise NotImplementedError('support for "%s" data type not avalable')
 
-    def compute_default_LUT(self):
+    def compute_default_LUT(self, band=None, data=None):
+        if band is None:
+            band = self.gdalobj
         # @TOOD: fix flags (approx, force)
         #min_, max_, mean, stddev = self.band.GetStatistics(False, True)
-        min_, max_, mean, stddev = self.band.GetStatistics(True, True)
 
-        #~ lower = 0
-        #~ upper = round(max_)
+        # @WARNING: this is potentially slow
+        # @TODO: check for overviews and if no one is peresent flag as
+        #        uninizialized
+        try:
+            indx = gdalsupport.ovrBestIndex(band, policy='GREATER')
+        except gdalsupport.MissingOvrError:
+            if data is not None:
+                min_ = data.min()
+                max_ = data.max()
+                mean = data.mean()
+                stddev = data.std()
+            else:
+                return None
+        else:
+            min_, max_, mean, stddev = band.GetStatistics(True, True)
+
+        # @TODO: check
+        #lower = 0
+        #upper = round(max_)
 
         N = 3
         lower = round(max(mean - N * stddev, 0))
@@ -90,61 +156,29 @@ class GdalGraphicsItem(QtGui.QGraphicsItem):
     def boundingRect(self):
         return self._boundingRect
 
-    # @overrideCursor
     def paint(self, painter, option, widget):
-        if option.levelOfDetail >= 1 or self.band.GetOverviewCount() == 0:
-            band = self.band
-            ovrlevel = 1
-            ovrindex = None
-        else:
-            reqlevel = 1. / option.levelOfDetail
-            try:
-                ovrindex = gdalsupport.best_ovr_index(self.band, reqlevel)
-            except ValueError:
-                band = self.band
-                ovrlevel = 1
-                ovrindex = None
-            else:
-                ovrlevel = gdalsupport.available_ovr_levels(self.band)[ovrindex]
-                if abs(reqlevel - 1) < abs(reqlevel - ovrlevel):
-                    band = self.band
-                    ovrlevel = 1
-                    ovrindex = None
-                else:
-                    band = self.band.GetOverview(ovrindex)
+        ovrband, ovrlevel, ovrindex = self._bestOvrLevel(self.gdalobj,
+                                                         option.levelOfDetail)
 
-        rect = option.exposedRect.toAlignedRect()
+        x, y, w, h = self._clipRect(ovrband,
+                                    option.exposedRect.toAlignedRect(),
+                                    ovrlevel)
 
-        x = int((rect.x() - self._boundingRect.x()) // ovrlevel)
-        y = int((rect.y() - self._boundingRect.y()) // ovrlevel)
-        width = rect.width() // ovrlevel + 1        # @TODO: check
-        height = rect.height() // ovrlevel + 1      # @TODO: check
-
-        if x < 0:
-            x = 0
-        if y < 0:
-            y = 0
-        if (x + width) * ovrlevel > self._boundingRect.width():
-            width = band.XSize - x
-        if (y + height) * ovrlevel > self._boundingRect.height():
-            height = band.YSize - y
-
-        data = band.ReadAsArray(x, y, width, height)
+        data = ovrband.ReadAsArray(x, y, w, h)
 
         if numpy.iscomplexobj(data):
             data = numpy.abs(data)
+        if self._lut is None:
+            self._lut = self.compute_default_LUT(ovrband, data)
         try:
             data = gsdtools.apply_LUT(data, self._lut)
         except IndexError:
-            # Is use the gdal approx stats evaluation it is possible thet the
-            # image maximum is under-estimated. Fix the LUT.
+            # If the gdal approx stats evaluation is used it than is possible
+            # that the image maximum is under-estimated. Fix the LUT.
             new_lut = gsdtools.fix_LUT(data, self._lut)
             self._lut = new_lut
             data = gsdtools.apply_LUT(data, self._lut)
 
+        rect = self._targetRect(x, y, w, h, ovrlevel)
         image = numpy2qimage(data)
-        targetRect = QtCore.QRect(x * ovrlevel + self._boundingRect.x(),
-                                  y * ovrlevel + self._boundingRect.y(),
-                                  width * ovrlevel,
-                                  height * ovrlevel)
-        painter.drawImage(targetRect, image)
+        painter.drawImage(rect, image)

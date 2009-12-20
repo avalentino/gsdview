@@ -442,7 +442,7 @@ class GDALBackend(QtCore.QObject):
             return
 
         band = item
-        levels = gdalsupport.available_ovr_levels(band)
+        levels = gdalsupport.ovrLevels(band)
         # @TODO: improve this: lower limit should depend on the actual data size
         missingOverviewLevels = (3, 9, 27)
         missingOverviewLevels = sorted(set(missingOverviewLevels).difference(levels))
@@ -491,9 +491,6 @@ class GDALBackend(QtCore.QObject):
             subProc.setWorkingDirectory(datasetCacheDir)
             self._mainwin.controller.run_tool(*args)
 
-        # @TODO: check
-        #self.emit(QtCore.SIGNAL('openGdalDataset(PyQt_PyObject)'), self.dataset)
-
     def _finalize(self):
         # @TODO: check if opening the dataset in update mode
         #        (gdal.GA_Update) is a better solution
@@ -526,7 +523,8 @@ class GraphicsViewSubWindow(ItemSubWindow): #QtGui.QMdiSubWindow):
 
     def __init__(self, item, parent=None, flags=QtCore.Qt.Widget):
         super(GraphicsViewSubWindow, self).__init__(item, parent, flags)
-        self.setWindowTitle('Raster Band') # @TODO: improve
+        title = str(item.GetDescription()).strip()
+        self.setWindowTitle(title)
 
         scene = item.scene
         graphicsview = QtGui.QGraphicsView(scene)
@@ -538,6 +536,9 @@ class GraphicsViewSubWindow(ItemSubWindow): #QtGui.QMdiSubWindow):
         if not modelindex.isValid():
             return
         parentitem = modelindex.model().itemFromIndex(modelindex)
+        if parentitem == self.item:
+            self.close()
+            return
         for row in range(start, end+1):
             item = parentitem.child(row)
             if item == self.item:
