@@ -23,9 +23,15 @@ gsdview.widgets
    .. autosummary::
    
       AboutDialog
+      AboutDialogBase
+      ExceptionDialog
+      ExceptionDialogBase
       FileEntryWidget
+      GSDViewExceptionDialog
       GeneralPreferencesPage
+      GeneralPreferencesPageBase
       PreferencesDialog
+      PreferencesDialogBase
    
    
 

@@ -18,6 +18,7 @@ gsdview.mainwin
       ItemModelMainWindow
       ItemSubWindow
       MdiMainWindow
+      QtWindowListMenu
    
    
 

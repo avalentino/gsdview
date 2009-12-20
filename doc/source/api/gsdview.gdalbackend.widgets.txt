@@ -13,7 +13,7 @@ gsdview.gdalbackend.widgets
    
       get_filedialog
       geticon
-      getuifile
+      getuiform
    
    
 
@@ -24,10 +24,14 @@ gsdview.gdalbackend.widgets
    .. autosummary::
    
       BandInfoDialog
+      BandInfoDialogBase
       DatasetInfoDialog
+      DatasetInfoDialogBase
       FileEntryWidget
       GDALInfoWidget
+      GDALInfoWidgetBase
       GDALPreferencesPage
+      GDALPreferencesPageBase
       MajorObjectInfoDialog
    
    

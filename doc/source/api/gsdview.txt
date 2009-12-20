@@ -11,6 +11,7 @@ gsdview
 
    .. autosummary::
    
+      all_versions_str
       main
    
    

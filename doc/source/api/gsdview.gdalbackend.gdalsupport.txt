@@ -11,13 +11,13 @@ gsdview.gdalbackend.gdalsupport
 
    .. autosummary::
    
-      available_ovr_levels
-      best_ovr_index
-      compute_ovr_level
       coordinate_mapper
       gdalFilters
-      gdalOvLevelAdjust
       getDriverList
+      ovrBestIndex
+      ovrLevelAdjust
+      ovrLevelForSize
+      ovrLevels
       uniqueDatasetID
    
    

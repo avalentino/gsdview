@@ -12,6 +12,8 @@ gsdview.utils
    .. autosummary::
    
       default_workdir
+      foramt_bugreport
+      format_platform_info
       getresource
    
    

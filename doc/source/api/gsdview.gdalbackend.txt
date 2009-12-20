@@ -23,6 +23,7 @@ gsdview.gdalbackend
       connectNotify
       customEvent
       deleteLater
+      destroyed
       disconnect
       disconnectNotify
       dumpObjectInfo
@@ -54,6 +55,7 @@ gsdview.gdalbackend
       openSubDataset
       parent
       property
+      pyqtConfigure
       receivers
       removeEventFilter
       saveSettings

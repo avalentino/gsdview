@@ -16,6 +16,7 @@ gsdview.qt4support
       geticon
       geticonfile
       getuifile
+      getuiform
       numpy2qimage
       overrideCursor
    

@@ -16,7 +16,9 @@ gsdview.app
    .. autosummary::
    
       AboutDialog
+      ExceptionDialog
       GSDView
+      GenericToolDescriptor
       ItemModelMainWindow
       PreferencesDialog
       Qt4DialogLoggingHandler

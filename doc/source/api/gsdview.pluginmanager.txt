@@ -12,7 +12,7 @@ gsdview.pluginmanager
    .. autosummary::
    
       geticon
-      getuifile
+      getuiform
    
    
 
@@ -24,8 +24,11 @@ gsdview.pluginmanager
    
       PluginInfoDialog
       PluginInfoForm
+      PluginInfoFormBase
       PluginManager
       PluginManagerGui
+      PluginManagerGuiBase
+      VersionPredicate
    
    
 
