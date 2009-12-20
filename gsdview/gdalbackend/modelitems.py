@@ -217,7 +217,14 @@ class DatasetItem(MajorObjectItem):
         return gdalobj
 
     def footprint(self):
-        '''Return the dataset footprint as a QPolygonF or None'''
+        '''Return the dataset geographic footprint as a QPolygonF.
+
+        The geographic footprint is a QPolygonF containing the four
+        vertices of the image in geographic coordinates.
+        If no geographic info is available in the dataset None is
+        returned.
+
+        '''
 
         if not self.cmapper:
             return
