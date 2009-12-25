@@ -301,12 +301,16 @@ class GDALBackend(QtCore.QObject):
 
         # RGB
         action = actionsgroup.findChild(QtGui.QAction, 'actionOpenRGBImageView')
-        if gdalqt4.isRGB(item):
+        if gdalsupport.isRGB(item):
             action.setEnabled(True)
         else:
             action.setEnabled(False)
 
         return actionsgroup
+
+    # @NOTE: this is needed for correct context menu setup
+    # @TODO: maybe it is possible to find a better way to handle the problem
+    _getCachedDatasetItemActions = _getDatasetItemActions
 
     def _getBandItemActions(self, item=None):
         actionsgroup = self._actionsmap['BandItem']
