@@ -316,6 +316,8 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
 class MajorObjectInfoDialog(QtGui.QDialog):
     def __init__(self, gdalobj, parent=None, flags=QtCore.Qt.Widget):
         super(MajorObjectInfoDialog, self).__init__(parent, flags)
+        if hasattr(self, 'setupUi'):
+            self.setupUi(self)
 
         # Metadata Tab
         metadatalist = gdalobj.GetMetadata_List()
@@ -360,7 +362,6 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
     def __init__(self, band, parent=None, flags=QtCore.Qt.Widget):
         assert band, 'a valid GDAL raster band expected'
         super(BandInfoDialog, self).__init__(band, parent, flags)
-        self.setupUi(self)
 
         # Set tab icons
         self.tabWidget.setTabIcon(0, geticon('info.svg', 'gsdview'))
@@ -407,7 +408,6 @@ class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
     def __init__(self, dataset, parent=None, flags=QtCore.Qt.Widget):
         assert dataset, 'a valid GDAL dataset expected'
         super(DatasetInfoDialog, self).__init__(dataset, parent, flags)
-        self.setupUi(self)
 
         # Set tab icons
         self.tabWidget.setTabIcon(0, geticon('info.svg', 'gsdview'))
