@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>427</width>
-    <height>550</height>
+    <width>498</width>
+    <height>538</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>GDAl Raster Band</string>
+   <string>GDAL Raster Band</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -26,94 +26,171 @@
       <attribute name="toolTip">
        <string>Info about the raster band.</string>
       </attribute>
-      <layout class="QVBoxLayout" name="infoTabVerticalLayout">
+      <layout class="QVBoxLayout" name="infoTabVerticalLayout_5">
        <item>
-        <layout class="QHBoxLayout" name="infoHorizontalLayout">
-         <item>
-          <layout class="QGridLayout" name="infoGridLayout">
-           <item row="0" column="0">
-            <widget class="QLabel" name="descriptionLabel">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>Description:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="descriptionValue">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>description value</string>
-             </property>
-             <property name="textInteractionFlags">
-              <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="overviewCountLabel">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>Overview Count:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QLabel" name="overviewCountValue">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>overview count value</string>
-             </property>
-             <property name="textInteractionFlags">
-              <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <spacer name="infoHorizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>118</width>
-             <height>17</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
+        <widget class="QGroupBox" name="infoGroupBox">
+         <property name="title">
+          <string>Info</string>
+         </property>
+         <layout class="QHBoxLayout" name="infoHorizontalLayout">
+          <item>
+           <layout class="QGridLayout" name="infoGridLayout">
+            <item row="0" column="0">
+             <widget class="QLabel" name="descriptionLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Description:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="descriptionValue">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>description value</string>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="overviewCountLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Overview Count:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLabel" name="overviewCountValue">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>overview count value</string>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="bandNumberLabel">
+              <property name="text">
+               <string>Band Number:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLabel" name="bandNumberValue">
+              <property name="toolTip">
+               <string>Fetch the band number. </string>
+              </property>
+              <property name="text">
+               <string>band number value</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="hasArbitraryOverviewsLabel">
+              <property name="text">
+               <string>Has Arbitrary Overviews:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLabel" name="hasArbitraryOverviewsValue">
+              <property name="text">
+               <string>has arbitrary overviews value</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="colorInterpretationLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Color Interpretation:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLabel" name="colorInterpretationValue">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>1</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>How should this band be interpreted as color?
+
+CV_Undefined is returned when the format doesn't know anything about the
+color interpretation.</string>
+              </property>
+              <property name="whatsThis">
+               <string>How should this band be interpreted as color?
+
+CV_Undefined is returned when the format doesn't know anything about the
+color interpretation.</string>
+              </property>
+              <property name="text">
+               <string>color interpretation value</string>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="infoHorizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>118</width>
+              <height>17</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
        </item>
        <item>
         <widget class="QGroupBox" name="dataGroupBox">
          <property name="title">
           <string>Data</string>
          </property>
-         <layout class="QHBoxLayout" name="dataHorizontalLayout">
+         <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <layout class="QGridLayout" name="dataGridLayout">
+           <layout class="QGridLayout" name="dataGridLayout1">
             <item row="0" column="0">
              <widget class="QLabel" name="xSizeLabel">
               <property name="sizePolicy">
@@ -166,35 +243,6 @@
               </property>
               <property name="text">
                <string>y size value</string>
-              </property>
-              <property name="textInteractionFlags">
-               <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="dataTypeLabel">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Data Type:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QLabel" name="dataTypeValue">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>data type value</string>
               </property>
               <property name="textInteractionFlags">
                <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -262,13 +310,71 @@ meaning that right and bottom edge blocks may be incomplete.
               </property>
              </widget>
             </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="noDataLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>No Data Value:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLabel" name="noDataValue">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>The no data value for this band.
+
+If there is no out of data value, an out of range value will generally be returned.
+The no data value for a band is generally a special marker value used to mark
+pixels that are not valid data. Such pixels should generally not be displayed, 
+nor contribute to analysis operations.</string>
+              </property>
+              <property name="whatsThis">
+               <string>The no data value for this band.
+
+If there is no out of data value, an out of range value will generally be returned.
+The no data value for a band is generally a special marker value used to mark
+pixels that are not valid data. Such pixels should generally not be displayed, 
+nor contribute to analysis operations.</string>
+              </property>
+              <property name="text">
+               <string>no data value</string>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="offsetSizeVerticalLayout">
+           <spacer name="dataHorizontalSpacer1">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="dataVerticalLayout">
             <item>
-             <layout class="QGridLayout" name="offsetSizeGridLayout">
-              <item row="0" column="0">
+             <layout class="QGridLayout" name="dataGridLayout2">
+              <item row="2" column="0">
                <widget class="QLabel" name="offsetLabel">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -281,7 +387,7 @@ meaning that right and bottom edge blocks may be incomplete.
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
+              <item row="2" column="1">
                <widget class="QLabel" name="offsetValue">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -323,7 +429,7 @@ For file formats that don't know this intrinsically a value of zero is returned.
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
+              <item row="3" column="0">
                <widget class="QLabel" name="scaleLabel">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -336,7 +442,7 @@ For file formats that don't know this intrinsically a value of zero is returned.
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
+              <item row="3" column="1">
                <widget class="QLabel" name="scaleValue">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -352,10 +458,53 @@ For file formats that don't know this intrinsically a value of zero is returned.
                 </property>
                </widget>
               </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="dataTypeLabel">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Data Type:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="dataTypeValue">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>data type value</string>
+                </property>
+                <property name="textInteractionFlags">
+                 <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="unitTypeLabel">
+                <property name="text">
+                 <string>Unit Type:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLabel" name="unitTypeValue">
+                <property name="text">
+                 <string>unit type value</string>
+                </property>
+               </widget>
+              </item>
              </layout>
             </item>
             <item>
-             <spacer name="offsetScaleVerticalSpacer">
+             <spacer name="dataVerticalSpacer">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
@@ -370,13 +519,13 @@ For file formats that don't know this intrinsically a value of zero is returned.
            </layout>
           </item>
           <item>
-           <spacer name="dataHorizontalSpacer">
+           <spacer name="dataHorizontalSpacer2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>41</width>
+              <width>40</width>
               <height>20</height>
              </size>
             </property>
@@ -386,15 +535,15 @@ For file formats that don't know this intrinsically a value of zero is returned.
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="statisticsGroupBox">
+        <widget class="QGroupBox" name="imageStructureGroupBox">
          <property name="title">
-          <string>Satistics</string>
+          <string>Image Structure</string>
          </property>
-         <layout class="QHBoxLayout" name="statisticsHorizontalLayout">
+         <layout class="QHBoxLayout" name="imageStructureHorizontalLayout">
           <item>
-           <layout class="QGridLayout" name="statisticsGridLayout">
+           <layout class="QGridLayout" name="imageStructureGridLayout">
             <item row="0" column="1">
-             <widget class="QLabel" name="minimumValue">
+             <widget class="QLabel" name="compressionValue">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
                 <horstretch>0</horstretch>
@@ -402,19 +551,17 @@ For file formats that don't know this intrinsically a value of zero is returned.
                </sizepolicy>
               </property>
               <property name="toolTip">
-               <string>The minimum value for this band.
+               <string>The compression type used for this dataset or band.
 
-For file formats that don't know this intrinsically, the minimum supported 
-value for the data type will generally be returned (or None).</string>
+There is no fixed catalog of compression type names, but where a given format includes a COMPRESSION creation option, the same list of values should be used here as there.</string>
               </property>
               <property name="whatsThis">
-               <string>The minimum value for this band.
+               <string>The compression type used for this dataset or band.
 
-For file formats that don't know this intrinsically, the minimum supported 
-value for the data type will generally be returned (or None).</string>
+There is no fixed catalog of compression type names, but where a given format includes a COMPRESSION creation option, the same list of values should be used here as there.</string>
               </property>
               <property name="text">
-               <string>minimum value</string>
+               <string>compression value</string>
               </property>
               <property name="textInteractionFlags">
                <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -422,7 +569,7 @@ value for the data type will generally be returned (or None).</string>
              </widget>
             </item>
             <item row="1" column="0">
-             <widget class="QLabel" name="maximumLabel">
+             <widget class="QLabel" name="nbitsLabel">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
                 <horstretch>0</horstretch>
@@ -430,12 +577,12 @@ value for the data type will generally be returned (or None).</string>
                </sizepolicy>
               </property>
               <property name="text">
-               <string>Maximum:</string>
+               <string>Numbero of bits:</string>
               </property>
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QLabel" name="maximumValue">
+             <widget class="QLabel" name="nbitsValue">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
                 <horstretch>0</horstretch>
@@ -443,64 +590,17 @@ value for the data type will generally be returned (or None).</string>
                </sizepolicy>
               </property>
               <property name="toolTip">
-               <string>The maximum value for this band.
+               <string>The actual number of bits used for this band, or the bands of this dataset.
 
-For file formats that don't know this intrinsically, the maximum supported 
-value for the data type will generally be returned (or None).</string>
+Normally only present when the number of bits is non-standard for the datatype, such as when a 1 bit TIFF is represented through GDAL as GDT_Byte.</string>
               </property>
               <property name="whatsThis">
-               <string>The maximum value for this band.
+               <string>The actual number of bits used for this band, or the bands of this dataset.
 
-For file formats that don't know this intrinsically, the maximum supported 
-value for the data type will generally be returned (or None).</string>
+Normally only present when the number of bits is non-standard for the datatype, such as when a 1 bit TIFF is represented through GDAL as GDT_Byte.</string>
               </property>
               <property name="text">
-               <string>maximum value</string>
-              </property>
-              <property name="textInteractionFlags">
-               <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="noDataLabel">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>No Data Value:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QLabel" name="noDataValue">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="toolTip">
-               <string>The no data value for this band.
-
-If there is no out of data value, an out of range value will generally be returned.
-The no data value for a band is generally a special marker value used to mark
-pixels that are not valid data. Such pixels should generally not be displayed, 
-nor contribute to analysis operations.</string>
-              </property>
-              <property name="whatsThis">
-               <string>The no data value for this band.
-
-If there is no out of data value, an out of range value will generally be returned.
-The no data value for a band is generally a special marker value used to mark
-pixels that are not valid data. Such pixels should generally not be displayed, 
-nor contribute to analysis operations.</string>
-              </property>
-              <property name="text">
-               <string>no data value</string>
+               <string>nbits value</string>
               </property>
               <property name="textInteractionFlags">
                <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -508,7 +608,7 @@ nor contribute to analysis operations.</string>
              </widget>
             </item>
             <item row="0" column="0">
-             <widget class="QLabel" name="minimumLabel">
+             <widget class="QLabel" name="compressionLabel">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
                 <horstretch>0</horstretch>
@@ -516,14 +616,54 @@ nor contribute to analysis operations.</string>
                </sizepolicy>
               </property>
               <property name="text">
-               <string>Minimum:</string>
+               <string>Compression:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="pixelTypeLabel">
+              <property name="text">
+               <string>Pixel type:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="interleaveLabel">
+              <property name="text">
+               <string>Interleave:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLabel" name="interleaveValue">
+              <property name="toolTip">
+               <string>This only applies on datasets, and the value should be one of PIXEL, LINE or BAND. It can be used as a data access hint.</string>
+              </property>
+              <property name="whatsThis">
+               <string>This only applies on datasets, and the value should be one of PIXEL, LINE or BAND. It can be used as a data access hint.</string>
+              </property>
+              <property name="text">
+               <string>interleave value</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLabel" name="pixelTypeValue">
+              <property name="toolTip">
+               <string>This may appear on a GDT_Byte band (or the corresponding dataset) and have the value SIGNEDBYTE to indicate the unsigned byte values between 128 and 255 should be interpreted as being values between -128 and -1 for applications that recognise the SIGNEDBYTE type.</string>
+              </property>
+              <property name="whatsThis">
+               <string>This may appear on a GDT_Byte band (or the corresponding dataset) and have the value SIGNEDBYTE to indicate the unsigned byte values between 128 and 255 should be interpreted as being values between -128 and -1 for applications that recognise the SIGNEDBYTE type.</string>
+              </property>
+              <property name="text">
+               <string>pixel type value</string>
               </property>
              </widget>
             </item>
            </layout>
           </item>
           <item>
-           <spacer name="statisticsHorizontalSpacer">
+           <spacer name="imageStructureHorizontalSpacer">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -539,127 +679,17 @@ nor contribute to analysis operations.</string>
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="colorGroupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>10</verstretch>
-          </sizepolicy>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
-         <property name="minimumSize">
+         <property name="sizeHint" stdset="0">
           <size>
-           <width>0</width>
-           <height>120</height>
+           <width>20</width>
+           <height>40</height>
           </size>
          </property>
-         <property name="sizeIncrement">
-          <size>
-           <width>0</width>
-           <height>10</height>
-          </size>
-         </property>
-         <property name="title">
-          <string>Color</string>
-         </property>
-         <layout class="QGridLayout" name="colorGridLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="colorInterpretationLabel">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Color Interpretation:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="colorInterpretationValue">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-              <horstretch>1</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="sizeIncrement">
-             <size>
-              <width>1</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>How should this band be interpreted as color?
-
-CV_Undefined is returned when the format doesn't know anything about the
-color interpretation.</string>
-            </property>
-            <property name="whatsThis">
-             <string>How should this band be interpreted as color?
-
-CV_Undefined is returned when the format doesn't know anything about the
-color interpretation.</string>
-            </property>
-            <property name="text">
-             <string>color interpretation value</string>
-            </property>
-            <property name="textInteractionFlags">
-             <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="colorTableLabel">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Color Table:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QTextBrowser" name="colorTableValue">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>The color table associated with band.
-
-If there is no associated color table, the return result is NULL.
-The returned color table remains owned by the GDALRasterBand, and can't 
-be depended on for long, nor should it ever be modified by the caller.</string>
-            </property>
-            <property name="whatsThis">
-             <string>The color table associated with band.
-
-If there is no associated color table, the return result is NULL.
-The returned color table remains owned by the GDALRasterBand, and can't 
-be depended on for long, nor should it ever be modified by the caller.</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -673,6 +703,53 @@ be depended on for long, nor should it ever be modified by the caller.</string>
       <layout class="QVBoxLayout" name="metadataTabVerticalLayout">
        <item>
         <layout class="QHBoxLayout" name="metadataNumHorizontalLayout">
+         <item>
+          <widget class="QLabel" name="domainLabel">
+           <property name="text">
+            <string>Domain:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="domainComboBox">
+           <property name="toolTip">
+            <string>GDAL Metadata domain</string>
+           </property>
+           <item>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>SUBDATASETS</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>IMAGE_STRUCTURE</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>RPC</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <spacer name="metadataHorizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
          <item>
           <widget class="QLabel" name="metadataNumLabel">
            <property name="sizePolicy">
@@ -729,6 +806,353 @@ be depended on for long, nor should it ever be modified by the caller.</string>
          <column>
           <property name="text">
            <string>Value</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="statisticsTab">
+      <attribute name="title">
+       <string>Statistics</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="statisticsVerticalLayout">
+       <item>
+        <layout class="QHBoxLayout" name="statisticsHorizontalLayout">
+         <item>
+          <layout class="QFormLayout" name="statisticsFormLayout">
+           <item row="0" column="0">
+            <widget class="QLabel" name="minimumLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Minimum:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLabel" name="minimumValue">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>The minimum value for this band.
+
+For file formats that don't know this intrinsically, the minimum supported 
+value for the data type will generally be returned (or None).</string>
+             </property>
+             <property name="whatsThis">
+              <string>The minimum value for this band.
+
+For file formats that don't know this intrinsically, the minimum supported 
+value for the data type will generally be returned (or None).</string>
+             </property>
+             <property name="text">
+              <string>minimum value</string>
+             </property>
+             <property name="textInteractionFlags">
+              <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="maximumLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Maximum:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLabel" name="maximumValue">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>The maximum value for this band.
+
+For file formats that don't know this intrinsically, the maximum supported 
+value for the data type will generally be returned (or None).</string>
+             </property>
+             <property name="whatsThis">
+              <string>The maximum value for this band.
+
+For file formats that don't know this intrinsically, the maximum supported 
+value for the data type will generally be returned (or None).</string>
+             </property>
+             <property name="text">
+              <string>maximum value</string>
+             </property>
+             <property name="textInteractionFlags">
+              <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="meanLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Mean:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QLabel" name="meanValue">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>The maximum value for this band.
+
+For file formats that don't know this intrinsically, the maximum supported 
+value for the data type will generally be returned (or None).</string>
+             </property>
+             <property name="whatsThis">
+              <string>The maximum value for this band.
+
+For file formats that don't know this intrinsically, the maximum supported 
+value for the data type will generally be returned (or None).</string>
+             </property>
+             <property name="text">
+              <string>mean value</string>
+             </property>
+             <property name="textInteractionFlags">
+              <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="stdLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Standard Deviation:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QLabel" name="stdValue">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>The maximum value for this band.
+
+For file formats that don't know this intrinsically, the maximum supported 
+value for the data type will generally be returned (or None).</string>
+             </property>
+             <property name="whatsThis">
+              <string>The maximum value for this band.
+
+For file formats that don't know this intrinsically, the maximum supported 
+value for the data type will generally be returned (or None).</string>
+             </property>
+             <property name="text">
+              <string>standard deviation value</string>
+             </property>
+             <property name="textInteractionFlags">
+              <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="statsButtonsVerticalLayout">
+           <item>
+            <widget class="QCheckBox" name="approxStatsCheckBox">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>Compute approximate band statistics using 
+overviews or a subset of image tiles.</string>
+             </property>
+             <property name="whatsThis">
+              <string>Compute approximate band statistics using 
+overviews or a subset of image tiles.</string>
+             </property>
+             <property name="text">
+              <string>Approx Stats</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="computeStatsButton">
+             <property name="toolTip">
+              <string>Start band statistics computation.</string>
+             </property>
+             <property name="text">
+              <string>Compute Statistics</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="computeHistogramButton">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Compute Histogram</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="histogramGroupBox">
+         <property name="title">
+          <string>Histogram</string>
+         </property>
+         <layout class="QVBoxLayout" name="histogramVerticalLayout">
+          <item>
+           <widget class="QGraphicsView" name="histogramGraphicsView"/>
+          </item>
+          <item>
+           <widget class="QTableWidget" name="histogramTableWidget">
+            <attribute name="horizontalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
+            <column>
+             <property name="text">
+              <string>Class Start</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Class Stop</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Value</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="colorTableTab">
+      <attribute name="title">
+       <string>Color Table</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="colorTabVerticalLayout">
+       <item>
+        <layout class="QHBoxLayout" name="colorHorizontalLayout">
+         <item>
+          <layout class="QFormLayout" name="colorFormLayout">
+           <item row="0" column="0">
+            <widget class="QLabel" name="ctInterpretationLabel">
+             <property name="text">
+              <string>Color interpetation:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLabel" name="ctInterpretationValue">
+             <property name="text">
+              <string>color interpretation value</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="colorsNumberLabel">
+             <property name="text">
+              <string>Number of entries:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLabel" name="colorsNumberValue">
+             <property name="text">
+              <string>number of entries value</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="colorTableWidget">
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Red</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Green</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Blue</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Alpha</string>
           </property>
          </column>
         </widget>

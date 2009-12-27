@@ -1,95 +1,96 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>gdalInfoWidget</class>
- <widget class="QWidget" name="gdalInfoWidget" >
-  <property name="geometry" >
+ <widget class="QWidget" name="gdalInfoWidget">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>617</width>
-    <height>395</height>
+    <width>521</width>
+    <height>421</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
-   <property name="margin" >
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" name="gdalHorizontalLayout" >
+    <layout class="QHBoxLayout" name="gdalHorizontalLayout">
      <item>
-      <widget class="QGroupBox" name="gdalVersionGroupBox" >
-       <property name="title" >
+      <widget class="QGroupBox" name="gdalVersionGroupBox">
+       <property name="title">
         <string>Version</string>
        </property>
-       <layout class="QGridLayout" name="versionGridLayout" >
-        <item row="0" column="0" >
-         <widget class="QLabel" name="gdalReleaseNameLabel" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+       <layout class="QGridLayout" name="versionGridLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="gdalReleaseNameLabel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Release Name:</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="1" >
-         <widget class="QLabel" name="gdalReleaseNameValue" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+        <item row="0" column="1">
+         <widget class="QLabel" name="gdalReleaseNameValue">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>1</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="sizeIncrement" >
+          <property name="sizeIncrement">
            <size>
             <width>1</width>
             <height>0</height>
            </size>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>1.5.2</string>
           </property>
-          <property name="textInteractionFlags" >
+          <property name="textInteractionFlags">
            <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
           </property>
          </widget>
         </item>
-        <item row="1" column="0" >
-         <widget class="QLabel" name="gdalReleaseDateLabel" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Preferred" hsizetype="Maximum" >
+        <item row="1" column="0">
+         <widget class="QLabel" name="gdalReleaseDateLabel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Relaease Date:</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="1" >
-         <widget class="QLabel" name="gdalReleaseDateValue" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+        <item row="1" column="1">
+         <widget class="QLabel" name="gdalReleaseDateValue">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>1</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="sizeIncrement" >
+          <property name="sizeIncrement">
            <size>
             <width>1</width>
             <height>0</height>
            </size>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>DD/MM/AAAA</string>
           </property>
-          <property name="textInteractionFlags" >
+          <property name="textInteractionFlags">
            <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
           </property>
          </widget>
@@ -98,71 +99,71 @@
       </widget>
      </item>
      <item>
-      <widget class="QGroupBox" name="gdalCacheGroupBox" >
-       <property name="title" >
+      <widget class="QGroupBox" name="gdalCacheGroupBox">
+       <property name="title">
         <string>Cache</string>
        </property>
-       <layout class="QGridLayout" name="cacheGridLayout" >
-        <item row="0" column="0" >
-         <widget class="QLabel" name="gdalCacheMaxLabel" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+       <layout class="QGridLayout" name="cacheGridLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="gdalCacheMaxLabel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Cache Max:</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="1" >
-         <widget class="QLabel" name="gdalCacheMaxValue" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+        <item row="0" column="1">
+         <widget class="QLabel" name="gdalCacheMaxValue">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>1</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="sizeIncrement" >
+          <property name="sizeIncrement">
            <size>
             <width>1</width>
             <height>0</height>
            </size>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>max cache value</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="0" >
-         <widget class="QLabel" name="gdalCacheUsedLabel" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+        <item row="1" column="0">
+         <widget class="QLabel" name="gdalCacheUsedLabel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Cache Used:</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="1" >
-         <widget class="QLabel" name="gdalCacheUsedValue" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+        <item row="1" column="1">
+         <widget class="QLabel" name="gdalCacheUsedValue">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>1</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="sizeIncrement" >
+          <property name="sizeIncrement">
            <size>
             <width>1</width>
             <height>0</height>
            </size>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>used cache value</string>
           </property>
          </widget>
@@ -173,41 +174,41 @@
     </layout>
    </item>
    <item>
-    <widget class="QGroupBox" name="gdalDriversGroupBox" >
-     <property name="title" >
+    <widget class="QGroupBox" name="gdalDriversGroupBox">
+     <property name="title">
       <string>Available Drivers</string>
      </property>
-     <layout class="QVBoxLayout" name="driversVerticalLayout" >
+     <layout class="QVBoxLayout" name="driversVerticalLayout">
       <item>
-       <layout class="QHBoxLayout" name="gdalDriverHorizontalLayout" >
+       <layout class="QHBoxLayout" name="gdalDriverHorizontalLayout">
         <item>
-         <widget class="QLabel" name="gdalDriversNumLabel" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+         <widget class="QLabel" name="gdalDriversNumLabel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Number of available drivers:</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="gdalDriversNumValue" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+         <widget class="QLabel" name="gdalDriversNumValue">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>1</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="sizeIncrement" >
+          <property name="sizeIncrement">
            <size>
             <width>1</width>
             <height>0</height>
            </size>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>number of drivers</string>
           </property>
          </widget>
@@ -215,58 +216,58 @@
        </layout>
       </item>
       <item>
-       <widget class="QTableWidget" name="gdalDriversTableWidget" >
-        <property name="editTriggers" >
+       <widget class="QTableWidget" name="gdalDriversTableWidget">
+        <property name="editTriggers">
          <set>QAbstractItemView::NoEditTriggers</set>
         </property>
-        <property name="horizontalScrollMode" >
+        <property name="horizontalScrollMode">
          <enum>QAbstractItemView::ScrollPerPixel</enum>
         </property>
-        <property name="sortingEnabled" >
+        <property name="sortingEnabled">
          <bool>true</bool>
         </property>
         <column>
-         <property name="text" >
+         <property name="text">
           <string>Short Name</string>
          </property>
         </column>
         <column>
-         <property name="text" >
+         <property name="text">
           <string>Long Name</string>
          </property>
         </column>
         <column>
-         <property name="text" >
+         <property name="text">
           <string>Description</string>
          </property>
         </column>
         <column>
-         <property name="text" >
+         <property name="text">
           <string>Help Topic</string>
          </property>
         </column>
         <column>
-         <property name="text" >
+         <property name="text">
           <string>Extension</string>
          </property>
         </column>
         <column>
-         <property name="text" >
+         <property name="text">
           <string>Mime Type</string>
          </property>
         </column>
         <column>
-         <property name="text" >
+         <property name="text">
           <string>Creation Data Types</string>
          </property>
         </column>
         <column>
-         <property name="text" >
+         <property name="text">
           <string>Creation Option List</string>
          </property>
         </column>
         <column>
-         <property name="text" >
+         <property name="text">
           <string>Metadata</string>
          </property>
         </column>

@@ -32,7 +32,7 @@ from osgeo import gdal
 from PyQt4 import QtCore, QtGui
 
 from gsdview.widgets import get_filedialog, FileEntryWidget
-from gsdview.qt4support import getuiform, geticon
+from gsdview.qt4support import getuiform, geticon, overrideCursor
 
 from gsdview.gdalbackend import gdalsupport
 
@@ -52,58 +52,54 @@ class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
             self.gdalVersionGroupBox.hide()
 
         self.updateCacheInfo()
-
-        #~ gdal.GetConfigOption('CPL_DEBUG', 'OFF')
-        #~ gdal.GetConfigOption('GDAL_PAM_ENABLED', "NULL")
-        #~ gdal.GetConfigOption(GDAL_DATA) (path of the GDAL "data" directory)
-        #~ #gdal.GetConfigOption(GDAL_CACHEMAX) (memory used internally for caching in megabytes)
-
         self.setGdalDriversTab()
 
     def setGdalDriversTab(self):
         self.gdalDriversNumValue.setText(str(gdal.GetDriverCount()))
 
-        tableWidget = self.gdalDriversTableWidget
-        #tableWidget.clear()
-        #tableWidget.setHorizontalHeaderLabels(['Software', 'Version', 'Home Page'])
-        tableWidget.verticalHeader().hide()
-        hheader = tableWidget.horizontalHeader()
-        hheader.resizeSections(QtGui.QHeaderView.ResizeToContents)
+        tablewidget = self.gdalDriversTableWidget
+        tablewidget.verticalHeader().hide()
+
+        hheader = tablewidget.horizontalHeader()
+        #hheader.resizeSections(QtGui.QHeaderView.ResizeToContents)
+        fontinfo = QtGui.QFontInfo(tablewidget.font())
+        hheader.setDefaultSectionSize(10*fontinfo.pixelSize())
         hheader.setStretchLastSection(True)
-        tableWidget.setRowCount(gdal.GetDriverCount())
-        sortingenabled = tableWidget.isSortingEnabled()
-        tableWidget.setSortingEnabled(False)
+
+        sortingenabled = tablewidget.isSortingEnabled()
+        tablewidget.setSortingEnabled(False)
+        tablewidget.setRowCount(gdal.GetDriverCount())
 
         for row in range(gdal.GetDriverCount()):
             driver = gdal.GetDriver(row)
             # @TODO: check for available ingo in gdal 1.5 and above
-            tableWidget.setItem(row, 0, QtGui.QTableWidgetItem(driver.ShortName))
-            tableWidget.setItem(row, 1, QtGui.QTableWidgetItem(driver.LongName))
-            tableWidget.setItem(row, 2, QtGui.QTableWidgetItem(driver.GetDescription()))
-            tableWidget.setItem(row, 3, QtGui.QTableWidgetItem(str(driver.HelpTopic)))
+            tablewidget.setItem(row, 0, QtGui.QTableWidgetItem(driver.ShortName))
+            tablewidget.setItem(row, 1, QtGui.QTableWidgetItem(driver.LongName))
+            tablewidget.setItem(row, 2, QtGui.QTableWidgetItem(driver.GetDescription()))
+            tablewidget.setItem(row, 3, QtGui.QTableWidgetItem(str(driver.HelpTopic)))
 
             metadata = driver.GetMetadata()
             if metadata:
-                tableWidget.setItem(row, 4, QtGui.QTableWidgetItem(str(metadata.pop(gdal.DMD_EXTENSION, ''))))
-                tableWidget.setItem(row, 5, QtGui.QTableWidgetItem(str(metadata.pop(gdal.DMD_MIMETYPE, ''))))
-                tableWidget.setItem(row, 6, QtGui.QTableWidgetItem(str(metadata.pop(gdal.DMD_CREATIONDATATYPES, ''))))
+                tablewidget.setItem(row, 4, QtGui.QTableWidgetItem(str(metadata.pop(gdal.DMD_EXTENSION, ''))))
+                tablewidget.setItem(row, 5, QtGui.QTableWidgetItem(str(metadata.pop(gdal.DMD_MIMETYPE, ''))))
+                tablewidget.setItem(row, 6, QtGui.QTableWidgetItem(str(metadata.pop(gdal.DMD_CREATIONDATATYPES, ''))))
 
                 data = metadata.pop(gdal.DMD_CREATIONOPTIONLIST, '')
                 # @TODO: parse xml
-                tableItem = QtGui.QTableWidgetItem(data)
-                tableItem.setToolTip(data)
-                tableWidget.setItem(row, 7, tableItem)
+                tableitem = QtGui.QTableWidgetItem(data)
+                tableitem.setToolTip(data)
+                tablewidget.setItem(row, 7, tableitem)
 
                 metadata.pop(gdal.DMD_HELPTOPIC, '')
                 metadata.pop(gdal.DMD_LONGNAME, '')
 
                 metadatalist = ['%s=%s' % (k, v) for k, v in metadata.items()]
-                tableItem = QtGui.QTableWidgetItem(', '.join(metadatalist))
-                tableItem.setToolTip('\n'.join(metadatalist))
-                tableWidget.setItem(row, 8, tableItem)
+                tableitem = QtGui.QTableWidgetItem(', '.join(metadatalist))
+                tableitem.setToolTip('\n'.join(metadatalist))
+                tablewidget.setItem(row, 8, tableitem)
 
-        tableWidget.setSortingEnabled(sortingenabled)
-        tableWidget.sortItems(0, QtCore.Qt.AscendingOrder)
+        tablewidget.setSortingEnabled(sortingenabled)
+        tablewidget.sortItems(0, QtCore.Qt.AscendingOrder)
 
     def updateCacheInfo(self):
         self.gdalCacheMaxValue.setText('%.3f MB' % (gdal.GetCacheMax()/1024.**2))
@@ -199,6 +195,7 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
         layout.addWidget(buttonbox)
 
         dialog.setLayout(layout)
+        buttonbox.setFocus()
         dialog.exec_()
 
     def load(self, settings):
@@ -262,6 +259,10 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
                 self.ogrDriverPathEntryWidget.setText(ogrdriverpath)
                 self.ogrDriverPathCheckBox.setChecked(False)
 
+            # @TODO: complete
+            #~ gdal.GetConfigOption('CPL_DEBUG', 'OFF')
+            #~ gdal.GetConfigOption('GDAL_PAM_ENABLED', "NULL")
+
             # extra options
             # @TODO
 
@@ -307,6 +308,10 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
             else:
                 settings.remove('OGR_DRIVER_PATH')
 
+            # @TODO: complete
+            #~ gdal.GetConfigOption('CPL_DEBUG', 'OFF')
+            #~ gdal.GetConfigOption('GDAL_PAM_ENABLED', "NULL")
+
             # extra options
             # @TODO
         finally:
@@ -319,18 +324,29 @@ class MajorObjectInfoDialog(QtGui.QDialog):
         if hasattr(self, 'setupUi'):
             self.setupUi(self)
 
-        # Metadata Tab
-        metadatalist = gdalobj.GetMetadata_List()
+        self._obj = gdalobj
+
+        self.updateMetadata()
+
+        if hasattr(self, 'domainComboBox'):
+            self.connect(self.domainComboBox,
+                         QtCore.SIGNAL('activated(const QString&)'),
+                         self.updateMetadata)
+
+    def updateMetadata(self, domain=''):
+        domain = str(domain)    # it could be a QString
+        metadatalist = self._obj.GetMetadata_List(domain)
         if metadatalist:
             self.metadataNumValue.setText(str(len(metadatalist)))
             self._setMetadata(self.metadataTableWidget, metadatalist)
+        else:
+            self.metadataNumValue.setText('0')
+            self._cleartable(self.metadataTableWidget)
 
-    def _setMetadata(self, tablewidget, metadatalist):
-        self._cleartable(tablewidget)
-
+    @staticmethod
+    def _setMetadata(tablewidget, metadatalist):
+        MajorObjectInfoDialog._cleartable(tablewidget)
         if not metadatalist:
-            header = tablewidget.horizontalHeader()
-            header.setStretchLastSection(True)
             return
 
         tablewidget.setRowCount(len(metadatalist))
@@ -348,12 +364,22 @@ class MajorObjectInfoDialog(QtGui.QDialog):
         header.setStretchLastSection(True)
         tablewidget.setSortingEnabled(sortingenabled)
 
-    def _cleartable(self, tablewidget):
+    @staticmethod
+    def _cleartable(tablewidget):
         labels = [str(tablewidget.horizontalHeaderItem(col).text())
                                 for col in range(tablewidget.columnCount())]
         tablewidget.clear()
         tablewidget.setHorizontalHeaderLabels(labels)
+        header = tablewidget.horizontalHeader()
+        header.setStretchLastSection(True)
         #tablewidget.setRowCount(0)
+
+
+def _setupImageStructureInfo(widget, metadata):
+    widget.compressionValue.setText(metadata.get('COMPRESSION', ''))
+    widget.nbitsValue.setText(metadata.get('NBITS', ''))
+    widget.interleaveValue.setText(metadata.get('INTERLEAVE', ''))
+    widget.pixelTypeValue.setText(metadata.get('PIXELTYPE', ''))
 
 
 BandInfoDialogBase = getuiform('banddialog', __name__)
@@ -363,43 +389,199 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         assert band, 'a valid GDAL raster band expected'
         super(BandInfoDialog, self).__init__(band, parent, flags)
 
+        self.connect(self.computeStatsButton, QtCore.SIGNAL('clicked()'),
+                     self.computeStats)
+
         # Set tab icons
         self.tabWidget.setTabIcon(0, geticon('info.svg', 'gsdview'))
         self.tabWidget.setTabIcon(1, geticon('metadata.svg', __name__))
+        self.tabWidget.setTabIcon(2, geticon('statistics.svg', __name__))
+        self.tabWidget.setTabIcon(3, geticon('color.svg', __name__))
 
-        # Info Tab
+        # Tabs
         self._setupInfoTab(band)
+        self._setupStatistics(band)
+        self._setupColorTable(band.GetRasterColorTable())
 
     def _setupInfoTab(self, band):
+        # Color interpretaion
+        colorint = band.GetRasterColorInterpretation()
+        colorint = gdal.GetColorInterpretationName(colorint)
+
         # Info
         self.descriptionValue.setText(band.GetDescription().strip())
+        # @COMPATIBILITY: GDAL 1.5.x doesn't support this API
+        try:
+            bandno = band.GetBand()
+        except AttributeError:
+            self.bandNumberLabel.hide()
+            self.bandNumberValue.hide()
+        else:
+            self.bandNumberValue.setText(str(bandno))
+        self.colorInterpretationValue.setText(colorint)
         self.overviewCountValue.setText(str(band.GetOverviewCount()))
+        # @COMPATIBILITY: GDAL 1.5.x doesn't support this API
+        try:
+            hasArbitaryOvr = band.HasArbitraryOverviews()
+        except AttributeError:
+            self.hasArbitraryOverviewsLabel.hide()
+            self.hasArbitraryOverviewsValue.hide()
+        else:
+            self.hasArbitraryOverviewsValue.setText(str(hasArbitaryOvr))
+
+        # @TODO: checksum
+        #~ band.Checksum                   ??
 
         # Data
         self.xSizeValue.setText(str(band.XSize))
         self.ySizeValue.setText(str(band.YSize))
-        self.dataTypeValue.setText(gdal.GetDataTypeName(band.DataType))
-        self.offsetValue.setText(str(band.GetOffset()))
-        self.scaleValue.setText(str(band.GetScale()))
         self.blockSizeValue.setText(str(band.GetBlockSize()))
-
-        # Statisics
-        self.minimumValue.setText(str(band.GetMinimum()))
-        self.maximumValue.setText(str(band.GetMaximum()))
         self.noDataValue.setText(str(band.GetNoDataValue()))
 
-        # Color
-        colorint = band.GetRasterColorInterpretation()
-        colorint = gdal.GetColorInterpretationName(colorint)
-        self.colorInterpretationValue.setText(colorint)
+        self.dataTypeValue.setText(gdal.GetDataTypeName(band.DataType))
+        # @COMPATIBILITY: GDAL 1.5.x doesn't support this API
+        try:
+            unitType = band.GetUnitType()
+        except AttributeError:
+            self.unitTypeLabel.hide()
+            self.unitTypeValue.hide()
+        else:
+            self.unitTypeValue.setText(str(unitType))
+        self.offsetValue.setText(str(band.GetOffset()))
+        self.scaleValue.setText(str(band.GetScale()))
 
-        # @TODO: handle color table
-        self.colorTableValue.setText(str(band.GetRasterColorTable()))
+        _setupImageStructureInfo(self, band.GetMetadata('IMAGE_STRUCTURE'))
 
-        #~ band.Checksum                   ??
-        #~ band.ComputeBandStats           ??
-        #~ band.ComputeRasterMinMax        ??
-        #~ band.GetStatistics(approx_ok, force)    --> (min, max, mean, stddev)
+    def _setupStatistics(self, band):
+        # @NOTE: it is not possible to use
+        #
+        #           band.GetStatistics(approx_ok=True, force=False)
+        #
+        #        thar ensure aquick computation, because currently python
+        #        bindings don't provide any method to detect is result is
+        #        valid or not.
+        #        As a workaround check for statistics metadata
+        #        (STATISTICS_MINIMUM, STATISTICS_MAXIMUM, STATISTICS_MEAN,
+        #        STATISTICS_STDDEV)
+
+        metadata = band.GetMetadata()
+        if metadata.get('STATISTICS_STDDEV') is None:
+            value = self.tr('Not computed')
+            self.minimumValue.setText(value)
+            self.maximumValue.setText(value)
+            self.meanValue.setText(value)
+            self.stdValue.setText(value)
+        else:
+            min_, max_, mean_, std_ = band.GetStatistics(True, True)
+            self.minimumValue.setText(str(min_))
+            self.maximumValue.setText(str(max_))
+            self.meanValue.setText(str(mean_))
+            self.stdValue.setText(str(std_))
+            self.computeStatsButton.setEnabled(False)
+
+        if not hasattr(band, 'GetDefaultHistogram') or True:
+            self.histogramGroupBox.hide()
+            self.statisticsVerticalLayout.addStretch()
+            self.computeHistogramButton.hide()
+            self.statsButtonsVerticalLayout.addStretch()
+        else:
+            metadata = band.GetMetadata()
+            if metadata.get('HISTOGRAM') is None:  # (???)
+                pass
+            else:
+                pass
+
+    @staticmethod
+    def _rgb2qcolor(red, green, blue, alpha=255):
+        qcolor = QtGui.QColor()
+        qcolor.setRgb(red, green, blue, alpha)
+        return qcolor
+
+    @staticmethod
+    def _gray2qcolor(gray):
+        qcolor = QtGui.QColor()
+        qcolor.setRgb(gray, gray, gray)
+        return qcolor
+
+    @staticmethod
+    def _cmyk2qcolor(cyan, magenta, yellow, black=255):
+        qcolor = QtGui.QColor()
+        qcolor.setCmyk(cyan, magenta, yellow, black)
+        return qcolor
+
+    @staticmethod
+    def _hsv2qcolor(hue, lightness, saturation, a=0):
+        qcolor = QtGui.QColor()
+        qcolor.setHsv(hue, lightness, saturation, a)
+        return qcolor
+
+    def _setupColorTable(self, colortable):
+        if colortable is None:
+            return
+        ncolors = colortable.GetCount()
+        colorint = colortable.GetPaletteInterpretation()
+
+        label = gdalsupport.colorinterpretations[colorint]['label']
+        self.ctInterpretationValue.setText(label)
+        self.colorsNumberValue.setText(str(ncolors))
+
+        mapping = gdalsupport.colorinterpretations[colorint]['inverse']
+        labels = [mapping[k] for k in sorted(mapping.keys())]
+        labels.append('Color')
+
+
+
+        tablewidget = self.colorTableWidget
+
+        tablewidget.setRowCount(ncolors)
+        tablewidget.setColumnCount(len(labels))
+
+        tablewidget.setHorizontalHeaderLabels(labels)
+        tablewidget.setVerticalHeaderLabels([str(i) for i in range(ncolors)])
+
+        colors = gdalsupport.colortable2numpy(colortable)
+
+        if colorint == gdal.GPI_RGB:
+            func = BandInfoDialog._rgb2qcolor
+        elif colorint == gdal.GPI_Gray:
+            func = BandInfoDialog._gray2qcolor
+        elif colorint == gdal.GPI_CMYK:
+            func = BandInfoDialog._cmyk2qcolor
+        elif colorint == gdal.GPI_HLS:
+            func = BandInfoDialog._hsv2qcolor
+        else:
+            raise ValueError('invalid color intepretatin: "%s"' % colorint)
+
+        brush = QtGui.QBrush()
+        brush.setStyle(QtCore.Qt.SolidPattern)
+
+        for row, color in enumerate(colors):
+            for chan, value in enumerate(color):
+                tablewidget.setItem(row, chan,
+                                    QtGui.QTableWidgetItem(str(value)))
+            qcolor = func(*color)
+            brush.setColor(qcolor)
+            item = QtGui.QTableWidgetItem()
+            item.setBackground(brush)
+            tablewidget.setItem(row, chan+1, item)
+
+        hheader = tablewidget.horizontalHeader()
+        hheader.resizeSections(QtGui.QHeaderView.ResizeToContents)
+
+    @overrideCursor
+    def computeStats(self):
+        # @TODO: use an external process (??)
+
+        band = self._obj
+        approx = self.approxStatsCheckBox.isChecked()
+        # @COMPATIBILITY: GDAL 1.5.x doesn't support this API
+        if hasattr(band, 'ComputeStatistics'):
+            # New API
+            # @TODO: use calback for progress reporting
+            band.ComputeStatistics(approx) # , callback=None, callback_data=None)
+        else:
+            min_, max_, mean_, std_ = band.GetStatistics(approx, True)
+        self._setupStatistics(band)
 
 
 DatasetInfoDialogBase = getuiform('datasetdialog', __name__)
@@ -409,11 +591,32 @@ class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
         assert dataset, 'a valid GDAL dataset expected'
         super(DatasetInfoDialog, self).__init__(dataset, parent, flags)
 
-        # Set tab icons
+        # Contect menu
+        self.actionCopy.setIcon(geticon('copy.svg', __name__))
+        self.fileListContextMenu = QtGui.QMenu(self.tr('Edit'),
+                                               self.fileListWidget)
+        self.fileListContextMenu.addAction(self.actionCopy)
+        self.connect(self.actionCopy, QtCore.SIGNAL('triggered()'),
+                     self.copyCurrentItemText)
+
+        self.connect(self.fileListWidget,
+                     QtCore.SIGNAL('customContextMenuRequested(const QPoint&)'),
+                     #self.fileListContextMenu.popup)
+                     self.popupFileListContextMenu)
+
+        # Set icons
         self.tabWidget.setTabIcon(0, geticon('info.svg', 'gsdview'))
         self.tabWidget.setTabIcon(1, geticon('metadata.svg', __name__))
         self.tabWidget.setTabIcon(2, geticon('gcp.svg', __name__))
         self.tabWidget.setTabIcon(3, geticon('driver.svg', __name__))
+        if hasattr(dataset, 'GetFileList'):
+            self.tabWidget.setTabIcon(4, geticon('multiple-documents.svg',
+                                                 __name__))
+            for file_ in dataset.GetFileList():
+                self.fileListWidget.addItem(file_)
+        else:
+            #self.tabWidget.setTabEnabled(4, False)
+            self.tabWidget.removeTab(4)
 
         # Info Tab
         self._setupInfoTab(dataset)
@@ -434,13 +637,17 @@ class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
                                     dataset.GetDescription())#, exc_info=True)
 
     def _setupInfoTab(self, dataset):
-        self.descriptionValue.setText(os.path.basename(dataset.GetDescription()))
+        description = os.path.basename(dataset.GetDescription())
+        self.descriptionValue.setText(description)
+        self.descriptionValue.setCursorPosition(0)
         self.rasterCountValue.setText(str(dataset.RasterCount))
         self.xSizeValue.setText(str(dataset.RasterXSize))
         self.ySizeValue.setText(str(dataset.RasterYSize))
 
         self.projectionValue.setText(dataset.GetProjection())
         self.projectionRefValue.setText(dataset.GetProjectionRef())
+
+        _setupImageStructureInfo(self, dataset.GetMetadata('IMAGE_STRUCTURE'))
 
         xoffset, a11, a12, yoffset, a21, a22 = dataset.GetGeoTransform()
         self.xOffsetValue.setText(str(xoffset))
@@ -504,56 +711,17 @@ p, li { white-space: pre-wrap; }
         header.setStretchLastSection(True)
         tablewidget.setSortingEnabled(sortingenabled)
 
+    def popupFileListContextMenu(self, point):
+        point = self.fileListWidget.mapToGlobal(point)
+        self.fileListContextMenu.popup(point)
+
+    def copyCurrentItemText(self):
+        item = self.fileListWidget.currentItem()
+        clipboard = QtGui.qApp.clipboard()
+        clipboard.setText(item.text())
 
 #~ class SubDatasetInfoDialog(DatasetInfoDialog):
 
     #~ def __init__(self, subdataset, parent=None, flags=QtCore.Qt.Widget):
         #~ assert dataset, 'a valid GDAL dataset expected'
         #~ DatasetInfoDialog.__init__(self, subdataset, parent, flags)
-
-
-if __name__ == '__main__':
-    import sys
-    sys.path.insert(0, os.path.join(os.path.dirname(__file__),
-                                    os.pardir, os.pardir))
-
-    def test_gdalinfowidget():
-        app = QtGui.QApplication(sys.argv)
-        dialog = QtGui.QDialog()
-        layout = QtGui.QVBoxLayout()
-        layout.addWidget(GDALInfoWidget())
-        dialog.setLayout(layout)
-        dialog.show()
-        app.exec_()
-
-    def test_datasetdialog(dataset):
-        app = QtGui.QApplication(sys.argv)
-        dialog = QtGui.QDialog()
-        layout = QtGui.QVBoxLayout()
-        layout.addWidget(GDALPreferencesPage())
-        dialog.setLayout(layout)
-        dialog.show()
-        app.exec_()
-
-        app = QtGui.QApplication(sys.argv)
-        dialog = DatasetInfoDialog(dataset)
-        dialog.show()
-        sys.exit(app.exec_())
-
-    def test_rasterbanddialog(band):
-        app = QtGui.QApplication(sys.argv)
-        dialog = BandInfoDialog(band)
-        dialog.show()
-        sys.exit(app.exec_())
-
-    logging.basicConfig(level=logging.DEBUG)
-    #~ test_gdalinfowidget()
-    #~ test_gdalpreferencespage()
-
-    filename = 'ASA_IMM_1PXPDE20020730_095830_000001002008_00108_02166_0066.N1'
-    filename = os.path.join(os.path.expanduser('~'), filename)
-    dataset_ = gdal.Open(filename)
-    band_ = dataset_.GetRasterBand(1)
-
-    test_datasetdialog(dataset_)
-    #~ test_rasterbanddialog(band_)

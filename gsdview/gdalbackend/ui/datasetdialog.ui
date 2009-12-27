@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>478</width>
-    <height>513</height>
+    <width>531</width>
+    <height>568</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,79 +32,65 @@
       <attribute name="toolTip">
        <string>General information about the dataset.</string>
       </attribute>
-      <layout class="QVBoxLayout" name="infoTabVerticalLayout">
+      <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <layout class="QHBoxLayout" name="infoHorizontalLayout">
-         <property name="sizeConstraint">
-          <enum>QLayout::SetMinimumSize</enum>
-         </property>
          <item>
-          <layout class="QGridLayout" name="infoGridLayout">
-           <item row="0" column="0">
-            <widget class="QLabel" name="descriptionLabel">
-             <property name="text">
-              <string>Description:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="descriptionValue">
-             <property name="text">
-              <string>description value</string>
-             </property>
-             <property name="wordWrap">
-              <bool>true</bool>
-             </property>
-             <property name="textInteractionFlags">
-              <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="rasterCountLabel">
-             <property name="text">
-              <string>Raster count:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QLabel" name="rasterCountValue">
-             <property name="text">
-              <string>raster count value</string>
-             </property>
-             <property name="textInteractionFlags">
-              <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <spacer name="infoHorizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+          <widget class="QGroupBox" name="infoGroupBox">
+           <property name="title">
+            <string>Info</string>
            </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
+           <layout class="QFormLayout" name="infoFormLayout">
+            <item row="0" column="0">
+             <widget class="QLabel" name="descriptionLabel">
+              <property name="text">
+               <string>Description:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="rasterCountLabel">
+              <property name="text">
+               <string>Raster count:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLabel" name="rasterCountValue">
+              <property name="text">
+               <string>raster count value</string>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="descriptionValue">
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </item>
         </layout>
        </item>
        <item>
-        <widget class="QGroupBox" name="rasterGroupBox">
-         <property name="title">
-          <string>Raster</string>
-         </property>
-         <property name="checkable">
-          <bool>false</bool>
-         </property>
-         <layout class="QHBoxLayout" name="rasterHorizontalLayout">
-          <item>
-           <layout class="QGridLayout" name="rasterGridLayout">
+        <layout class="QHBoxLayout" name="imageHorizontalLayout">
+         <item>
+          <widget class="QGroupBox" name="rasterGroupBox">
+           <property name="title">
+            <string>Raster</string>
+           </property>
+           <property name="checkable">
+            <bool>false</bool>
+           </property>
+           <layout class="QFormLayout" name="rasterFormLayout">
+            <property name="fieldGrowthPolicy">
+             <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+            </property>
             <item row="0" column="0">
              <widget class="QLabel" name="xSizeLabel">
               <property name="text">
@@ -140,22 +126,150 @@
              </widget>
             </item>
            </layout>
-          </item>
-          <item>
-           <spacer name="rasterHorizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>195</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="imageStructureGroupBox">
+           <property name="title">
+            <string>Image Structure</string>
+           </property>
+           <layout class="QFormLayout" name="imageStructureFormLayout">
+            <item row="0" column="0">
+             <widget class="QLabel" name="compressionLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Compression:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="compressionValue">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>The compression type used for this dataset or band.
+
+There is no fixed catalog of compression type names, but where a given 
+format includes a COMPRESSION creation option, the same list of values 
+should be used here as there.</string>
+              </property>
+              <property name="whatsThis">
+               <string>The compression type used for this dataset or band.
+
+There is no fixed catalog of compression type names, but where a given 
+format includes a COMPRESSION creation option, the same list of values 
+should be used here as there.</string>
+              </property>
+              <property name="text">
+               <string>compression value</string>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="nbitsLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Numbero of bits:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLabel" name="nbitsValue">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>The actual number of bits used for this band, or the bands of this dataset.
+
+Normally only present when the number of bits is non-standard for the 
+datatype, such as when a 1 bit TIFF is represented through GDAL as GDT_Byte.</string>
+              </property>
+              <property name="whatsThis">
+               <string>The actual number of bits used for this band, or the bands of this dataset.
+
+Normally only present when the number of bits is non-standard for the 
+datatype, such as when a 1 bit TIFF is represented through GDAL as GDT_Byte.</string>
+              </property>
+              <property name="text">
+               <string>nbits value</string>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="interleaveLabel">
+              <property name="text">
+               <string>Interleave:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLabel" name="interleaveValue">
+              <property name="toolTip">
+               <string>This only applies on datasets, and the value should be one 
+of PIXEL, LINE or BAND. It can be used as a data access hint.</string>
+              </property>
+              <property name="whatsThis">
+               <string>This only applies on datasets, and the value should be one 
+of PIXEL, LINE or BAND. It can be used as a data access hint.</string>
+              </property>
+              <property name="text">
+               <string>interleave value</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="pixelTypeLabel">
+              <property name="text">
+               <string>Pixel type:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLabel" name="pixelTypeValue">
+              <property name="toolTip">
+               <string>This may appear on a GDT_Byte band (or the corresponding dataset) 
+and have the value SIGNEDBYTE to indicate the unsigned byte values 
+between 128 and 255 should be interpreted as being values between -128 
+and -1 for applications that recognise the SIGNEDBYTE type.</string>
+              </property>
+              <property name="whatsThis">
+               <string>This may appear on a GDT_Byte band (or the corresponding dataset) 
+and have the value SIGNEDBYTE to indicate the unsigned byte values 
+between 128 and 255 should be interpreted as being values between -128 
+and -1 for applications that recognise the SIGNEDBYTE type.</string>
+              </property>
+              <property name="text">
+               <string>pixel type value</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <widget class="QGroupBox" name="transformGroupBox">
@@ -199,13 +313,6 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="5">
-             <widget class="QLabel" name="pix1Value">
-              <property name="text">
-               <string>pixel</string>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="6">
              <widget class="QLabel" name="mul11Label">
               <property name="text">
@@ -213,7 +320,76 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="7">
+            <item row="0" column="9">
+             <widget class="QLabel" name="plus12Label">
+              <property name="text">
+               <string>+</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="11">
+             <widget class="QLabel" name="mul12Label">
+              <property name="text">
+               <string>x</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="yLabel">
+              <property name="text">
+               <string>y</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1" colspan="2">
+             <widget class="QLabel" name="eqLabel2">
+              <property name="text">
+               <string>=</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="3">
+             <widget class="QLabel" name="yOffsetValue">
+              <property name="toolTip">
+               <string>Y offset</string>
+              </property>
+              <property name="whatsThis">
+               <string>Y offset</string>
+              </property>
+              <property name="text">
+               <string>yoffset</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="4">
+             <widget class="QLabel" name="plus21Label">
+              <property name="text">
+               <string>+</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="6">
+             <widget class="QLabel" name="mul21Label">
+              <property name="text">
+               <string>x</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="9">
+             <widget class="QLabel" name="plus22Label">
+              <property name="text">
+               <string>+</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="11">
+             <widget class="QLabel" name="mul22Label">
+              <property name="text">
+               <string>x</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="5">
              <widget class="QLabel" name="a11Value">
               <property name="toolTip">
                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -234,97 +410,14 @@ p, li { white-space: pre-wrap; }
               </property>
              </widget>
             </item>
-            <item row="0" column="8">
-             <widget class="QLabel" name="plus12Label">
-              <property name="text">
-               <string>+</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="9">
-             <widget class="QLabel" name="line1Value">
-              <property name="text">
-               <string>line</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="10">
-             <widget class="QLabel" name="mul12Label">
-              <property name="text">
-               <string>x</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="11">
-             <widget class="QLabel" name="a12Value">
-              <property name="toolTip">
-               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;A&lt;/span&gt;&lt;span style=&quot; font-size:12pt; vertical-align:sub;&quot;&gt;12&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="whatsThis">
-               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;A&lt;/span&gt;&lt;span style=&quot; font-size:12pt; vertical-align:sub;&quot;&gt;12&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="text">
-               <string>a12</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="yLabel">
-              <property name="text">
-               <string>y</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1" colspan="2">
-             <widget class="QLabel" name="eqLabel2">
-              <property name="text">
-               <string>=</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="3">
-             <widget class="QLabel" name="yOffsetValue">
-              <property name="toolTip">
-               <string>Y offset</string>
-              </property>
-              <property name="whatsThis">
-               <string>Y offset</string>
-              </property>
-              <property name="text">
-               <string>yoffset</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="4">
-             <widget class="QLabel" name="plus21Label">
-              <property name="text">
-               <string>+</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="5">
-             <widget class="QLabel" name="pix2Value">
+            <item row="0" column="7">
+             <widget class="QLabel" name="pix1Value">
               <property name="text">
                <string>pixel</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="6">
-             <widget class="QLabel" name="mul21Label">
-              <property name="text">
-               <string>x</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="7">
+            <item row="2" column="5">
              <widget class="QLabel" name="a21Value">
               <property name="toolTip">
                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -345,28 +438,14 @@ p, li { white-space: pre-wrap; }
               </property>
              </widget>
             </item>
-            <item row="1" column="8">
-             <widget class="QLabel" name="plus22Label">
+            <item row="2" column="7">
+             <widget class="QLabel" name="pix2Value">
               <property name="text">
-               <string>+</string>
+               <string>pixel</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="9">
-             <widget class="QLabel" name="line2Value">
-              <property name="text">
-               <string>line</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="10">
-             <widget class="QLabel" name="mul22Label">
-              <property name="text">
-               <string>x</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="11">
+            <item row="2" column="10">
              <widget class="QLabel" name="a22Value">
               <property name="toolTip">
                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -384,6 +463,41 @@ p, li { white-space: pre-wrap; }
               </property>
               <property name="text">
                <string>a22</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="12">
+             <widget class="QLabel" name="line2Value">
+              <property name="text">
+               <string>line</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="10">
+             <widget class="QLabel" name="a12Value">
+              <property name="toolTip">
+               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;A&lt;/span&gt;&lt;span style=&quot; font-size:12pt; vertical-align:sub;&quot;&gt;12&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="whatsThis">
+               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;A&lt;/span&gt;&lt;span style=&quot; font-size:12pt; vertical-align:sub;&quot;&gt;12&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="text">
+               <string>a12</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="12">
+             <widget class="QLabel" name="line1Value">
+              <property name="text">
+               <string>line</string>
               </property>
              </widget>
             </item>
@@ -406,101 +520,52 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="projectionGroupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>200</height>
-          </size>
-         </property>
-         <property name="title">
-          <string>Projection</string>
-         </property>
-         <property name="checkable">
-          <bool>false</bool>
-         </property>
-         <layout class="QGridLayout" name="projectionGridLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="projectionLabel">
-            <property name="text">
-             <string>Projection:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QTextBrowser" name="projectionValue">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="sizeIncrement">
-             <size>
-              <width>0</width>
-              <height>10</height>
-             </size>
-            </property>
-            <property name="baseSize">
-             <size>
-              <width>0</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>The projection reference string for this dataset in OGC WKT or PROJ.4 format.</string>
-            </property>
-            <property name="whatsThis">
-             <string>The projection reference string for this dataset in OGC WKT or PROJ.4 format.</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="projectionRefLabel">
-            <property name="text">
-             <string>ProjectionRef:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QTextBrowser" name="projectionRefValue">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="sizeIncrement">
-             <size>
-              <width>0</width>
-              <height>10</height>
-             </size>
-            </property>
-            <property name="baseSize">
-             <size>
-              <width>0</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>The projection definition string for this dataset.</string>
-            </property>
-            <property name="whatsThis">
-             <string>The projection definition string for this dataset.
+        <layout class="QHBoxLayout" name="projectionHorizontalLayout">
+         <item>
+          <widget class="QGroupBox" name="projectionGroupBox">
+           <property name="title">
+            <string>Projection</string>
+           </property>
+           <property name="checkable">
+            <bool>false</bool>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+             <widget class="QTextBrowser" name="projectionValue">
+              <property name="toolTip">
+               <string>The projection reference string for this dataset in OGC WKT or PROJ.4 format.</string>
+              </property>
+              <property name="whatsThis">
+               <string>The projection reference string for this dataset in OGC WKT or PROJ.4 format.</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="projectionRefGroupBox">
+           <property name="title">
+            <string>ProjectionRef</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <widget class="QTextBrowser" name="projectionRefValue">
+              <property name="toolTip">
+               <string>The projection definition string for this dataset.</string>
+              </property>
+              <property name="whatsThis">
+               <string>The projection definition string for this dataset.
 
 The returned string defines the projection coordinate system of the image in
 OpenGIS WKT format.</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -513,7 +578,51 @@ OpenGIS WKT format.</string>
       </attribute>
       <layout class="QVBoxLayout" name="metadataTabVerticalLayout">
        <item>
-        <layout class="QHBoxLayout" name="metadataNumHorizontalLayout">
+        <layout class="QHBoxLayout" name="metadataHorizontalLayout">
+         <item>
+          <widget class="QLabel" name="domainLabel">
+           <property name="text">
+            <string>Domain:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="domainComboBox">
+           <item>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>SUBDATASETS</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>IMAGE_STRUCTURE</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>RPC</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <spacer name="metadataHorizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
          <item>
           <widget class="QLabel" name="metadataNumLabel">
            <property name="sizePolicy">
@@ -981,6 +1090,20 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="filesTab">
+      <attribute name="title">
+       <string>Files</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="filesTabVerticalLayout">
+       <item>
+        <widget class="QListWidget" name="fileListWidget">
+         <property name="contextMenuPolicy">
+          <enum>Qt::CustomContextMenu</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item>
@@ -994,6 +1117,17 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
   </layout>
+  <action name="actionCopy">
+   <property name="text">
+    <string>&amp;Copy</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy to clipboard</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>
