@@ -260,6 +260,79 @@ def isRGB(dataset, strict=False):
     return True
 
 
+### Color table helpers #####################################################
+colorinterpretations = {
+    gdal.GPI_Gray: {
+        'nchannels': 1,
+        'label': 'Gray',
+        'direct': {
+            'Grayscale': 0,
+        },
+        'inverse': {
+            0: 'Grayscale',
+        },
+    },
+    gdal.GPI_RGB: {
+        'nchannels': 4,
+        'label': 'RGB',
+        'direct': {
+            'Red': 0,
+            'Green': 1,
+            'Blue': 2,
+            'Alpha': 3,
+        },
+        'inverse': {
+            0: 'Red',
+            1: 'Green',
+            2: 'Blue',
+            3: 'Alpha',
+        },
+    },
+    gdal.GPI_CMYK: {
+        'nchannels': 4,
+        'label': 'CMYK',
+        'direct': {
+            'Cyan': 0,
+            'Magenta': 1,
+            'Yellow': 2,
+            'Black': 3,
+        },
+        'inverse': {
+            0: 'Cyan',
+            1: 'Magenta',
+            2: 'Yellow',
+            3: 'Black',
+        },
+    },
+    gdal.GPI_HLS: {
+        'nchannels': 3,
+        'label': 'HLS',
+        'direct': {
+            'Hue': 0,
+            'Lightness': 1,
+            'Saturation': 2,
+        },
+        'inverse': {
+            0: 'Hue',
+            1: 'Lightness',
+            2: 'Saturation',
+        },
+    },
+}
+
+
+def colortable2numpy(colortable):
+    ncolors = colortable.GetCount()
+    colors = numpy.zeros((ncolors, 4), numpy.uint8)
+    for row in range(ncolors):
+        colors[row] = colortable.GetColorEntry(row)
+
+    colorint = colortable.GetPaletteInterpretation()
+    nchannels = colorinterpretations[colorint]['nchannels']
+
+    return colors[...,:nchannels]
+
+
 ### Coordinate conversion helpers ############################################
 # @TODO: remove
 def _fixedGCPs(gcps):

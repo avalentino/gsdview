@@ -28,6 +28,7 @@ __revision__ = '$Revision$'
 
 import numpy
 
+from osgeo import gdal
 from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
 
 from PyQt4 import QtCore, QtGui
@@ -36,6 +37,23 @@ from gsdview import gsdtools
 from gsdview.qt4support import numpy2qimage
 
 from gsdview.gdalbackend import gdalsupport
+
+
+def gdalcolorentry2qcolor(colrentry, interpretation=gdal.GPI_RGB):
+    qcolor = QtGui.QColor()
+
+    if interpretation == gdal.GPI_RGB:
+        qcolor.setRgb(colrentry.c1, colrentry.c2, colrentry.c3, colrentry.c4)
+    elif interpretation == gdal.GPI_Gray:
+        qcolor.setRgb(colrentry.c1, colrentry.c1, colrentry.c1)
+    elif interpretation == gdal.GPI_CMYK:
+        qcolor.setCmyk(colrentry.c1, colrentry.c2, colrentry.c3, colrentry.c4)
+    elif interpretation == gdal.GPI_HLS:
+        qcolor.setHsv(colrentry.c1, colrentry.c2, colrentry.c3) #, colrentry.c4)
+    else:
+        raise ValueError('invalid color intepretatin: "%s"' % interpretation)
+
+    return qcolor
 
 
 # @TODO: move GraphicsView here
