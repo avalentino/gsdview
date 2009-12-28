@@ -43,17 +43,19 @@ def test_rasterbanddialog(band):
     dialog.show()
     sys.exit(app.exec_())
 
-def main():
+def main(imagestruct=True):
     logging.basicConfig(level=logging.DEBUG)
 
     filename = '../../plugins/worldmap/images/world_4320x2160.jpg'
 
-    #~ pctfilename = 'world_pct.jpeg'
-    #~ if not os.path.exists(pctfilename):
-        #~ import subprocess
+    if imagestruct is False:
+        # convert to palatted image
+        pctfilename = 'world_pct.jpeg'
+        if not os.path.exists(pctfilename):
+            import subprocess
 
-        #~ subprocess.call(('rgb2pct.py',  filename, pctfilename))
-    #~ filename = pctfilename
+            subprocess.call(('rgb2pct.py',  filename, pctfilename))
+        filename = pctfilename
 
     dataset_ = gdal.Open(filename)
     band_ = dataset_.GetRasterBand(1)
@@ -64,4 +66,5 @@ def main():
 if __name__ == '__main__':
     #~ test_gdalinfowidget()
     #~ test_gdalpreferencespage()
-    main()
+    #~ main()
+    main(False)

@@ -1022,9 +1022,6 @@ overviews or a subset of image tiles.</string>
            </item>
            <item>
             <widget class="QPushButton" name="computeHistogramButton">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
              <property name="text">
               <string>Compute Histogram</string>
              </property>
@@ -1050,12 +1047,12 @@ overviews or a subset of image tiles.</string>
             </attribute>
             <column>
              <property name="text">
-              <string>Class Start</string>
+              <string>Class Min</string>
              </property>
             </column>
             <column>
              <property name="text">
-              <string>Class Stop</string>
+              <string>Class Max</string>
              </property>
             </column>
             <column>
@@ -1064,6 +1061,37 @@ overviews or a subset of image tiles.</string>
              </property>
             </column>
            </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="histogramHorizontalLayout">
+            <item>
+             <spacer name="histogramHorizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="numberOfClassesLabel">
+              <property name="text">
+               <string>Number of classes:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="numberOfClassesValue">
+              <property name="text">
+               <string>number of classes value</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -1129,9 +1157,6 @@ overviews or a subset of image tiles.</string>
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
-         <attribute name="horizontalHeaderStretchLastSection">
-          <bool>true</bool>
-         </attribute>
          <attribute name="horizontalHeaderStretchLastSection">
           <bool>true</bool>
          </attribute>

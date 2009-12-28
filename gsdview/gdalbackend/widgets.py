@@ -391,6 +391,8 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
         self.connect(self.computeStatsButton, QtCore.SIGNAL('clicked()'),
                      self.computeStats)
+        self.connect(self.computeHistogramButton, QtCore.SIGNAL('clicked()'),
+                     self.computeHistogram)
 
         # Set tab icons
         self.tabWidget.setTabIcon(0, geticon('info.svg', 'gsdview'))
@@ -401,6 +403,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         # Tabs
         self._setupInfoTab(band)
         self._setupStatistics(band)
+        self._setupHistogram(band)
         self._setupColorTable(band.GetRasterColorTable())
 
     def _setupInfoTab(self, band):
@@ -452,6 +455,21 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
         _setupImageStructureInfo(self, band.GetMetadata('IMAGE_STRUCTURE'))
 
+    @overrideCursor
+    def computeStats(self):
+        # @TODO: use an external process (??)
+
+        band = self._obj
+        approx = self.approxStatsCheckBox.isChecked()
+        # @COMPATIBILITY: GDAL 1.5.x doesn't support this API
+        if hasattr(band, 'ComputeStatistics'):
+            # New API
+            # @TODO: use calback for progress reporting
+            band.ComputeStatistics(approx)#, callback=None, callback_data=None)
+        else:
+            min_, max_, mean_, std_ = band.GetStatistics(approx, True)
+        self._setupStatistics(band)
+
     def _setupStatistics(self, band):
         # @NOTE: it is not possible to use
         #
@@ -479,17 +497,77 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
             self.stdValue.setText(str(std_))
             self.computeStatsButton.setEnabled(False)
 
-        if not hasattr(band, 'GetDefaultHistogram') or True:
+    @overrideCursor
+    def computeHistogram(self):
+        # @TODO: use an external process (??)
+
+        band = self._obj
+        approx = self.approxStatsCheckBox.isChecked()
+        # @COMPATIBILITY: GDAL 1.5.x doesn't support this API
+        if hasattr(band, 'GetHistogram'):
+            # @TODO: pop up a dialog for histogra configuration:
+            #        * min
+            #        * max
+            #        * nbuckets
+            #        * include_out_of_range
+            #        * approx_ok
+            # @TODO: use calback for progress reporting
+            band.GetHistogram(approx_ok=approx)#, callback=None, callback_data=None)
+            self._setupStatistics(band)
+            self._setupHistogram(band)
+
+    def _resetHistogram(self):
+        tablewidget = self.histogramTableWidget
+        self.numberOfClassesValue.setText('')
+        self._cleartable(tablewidget)
+
+    def _setupHistogram(self, band):
+        if not hasattr(band, 'GetDefaultHistogram'):
             self.histogramGroupBox.hide()
             self.statisticsVerticalLayout.addStretch()
             self.computeHistogramButton.hide()
             self.statsButtonsVerticalLayout.addStretch()
+            return
+
+        # @TODO: remove
+        self.histogramGraphicsView.hide()
+
+        if band.DataType in (gdal.GDT_CInt16, gdal.GDT_CInt32,
+                             gdal.GDT_CFloat32, gdal.GDT_CFloat64):
+            self.computeHistogramButton.setEnabled(False)
+            return
+
+        if gdal.VersionInfo() < '1700':
+            if self.computeHistogramButton.enabled() == False:
+                # Histogram already computed
+                hist = band.GetDefaultHistogram()
         else:
-            metadata = band.GetMetadata()
-            if metadata.get('HISTOGRAM') is None:  # (???)
-                pass
-            else:
-                pass
+            # @WARNING: causes a crash in GDAL < 1.7.0 (r18405)
+            # @SEEALSO: http://trac.osgeo.org/gdal/ticket/3304
+            hist = band.GetDefaultHistogram(force=False)
+
+        if hist:
+            histmin, histmax, bucketcount = hist[:3]
+            hist = hist[3]
+            w = (histmax - histmin) / bucketcount
+
+            self.numberOfClassesValue.setText(str(bucketcount))
+
+            tablewidget = self.histogramTableWidget
+            tablewidget.setRowCount(bucketcount)
+
+            for row in range(bucketcount):
+                start = histmin + row
+                stop = start + w
+                tablewidget.setItem(row, 0,
+                                    QtGui.QTableWidgetItem(str(start)))
+                tablewidget.setItem(row, 1,
+                                    QtGui.QTableWidgetItem(str(stop)))
+                tablewidget.setItem(row, 2,
+                                    QtGui.QTableWidgetItem(str(hist[row])))
+            self.computeHistogramButton.setEnabled(False)
+        else:
+            self._resetHistogram()
 
     @staticmethod
     def _rgb2qcolor(red, green, blue, alpha=255):
@@ -516,8 +594,14 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         return qcolor
 
     def _setupColorTable(self, colortable):
+        tablewidget = self.colorTableWidget
+
         if colortable is None:
+            self.ctInterpretationValue.setText('')
+            self.colorsNumberValue.setText('')
+            self._cleartable(tablewidget)
             return
+
         ncolors = colortable.GetCount()
         colorint = colortable.GetPaletteInterpretation()
 
@@ -528,10 +612,6 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         mapping = gdalsupport.colorinterpretations[colorint]['inverse']
         labels = [mapping[k] for k in sorted(mapping.keys())]
         labels.append('Color')
-
-
-
-        tablewidget = self.colorTableWidget
 
         tablewidget.setRowCount(ncolors)
         tablewidget.setColumnCount(len(labels))
@@ -567,21 +647,6 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
         hheader = tablewidget.horizontalHeader()
         hheader.resizeSections(QtGui.QHeaderView.ResizeToContents)
-
-    @overrideCursor
-    def computeStats(self):
-        # @TODO: use an external process (??)
-
-        band = self._obj
-        approx = self.approxStatsCheckBox.isChecked()
-        # @COMPATIBILITY: GDAL 1.5.x doesn't support this API
-        if hasattr(band, 'ComputeStatistics'):
-            # New API
-            # @TODO: use calback for progress reporting
-            band.ComputeStatistics(approx) # , callback=None, callback_data=None)
-        else:
-            min_, max_, mean_, std_ = band.GetStatistics(approx, True)
-        self._setupStatistics(band)
 
 
 DatasetInfoDialogBase = getuiform('datasetdialog', __name__)
