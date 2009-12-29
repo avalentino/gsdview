@@ -520,6 +520,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
     @overrideCursor
     def computeStats(self):
+        logging.info('start statistics computation')
         # @TODO: use an external process (??)
 
         band = self._obj
@@ -531,6 +532,13 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
             band.ComputeStatistics(approx)#, callback=None, callback_data=None)
         else:
             min_, max_, mean_, std_ = band.GetStatistics(approx, True)
+            # @COMPATIBILITY: GDAL 1.5.x and 1.6.x (??)
+            if gdal.VersionInfo() < '1700':
+                band.SetStatistics(min_, max_, mean_, std_)
+            if self.domainComboBox.currentText() == '':
+                print 'self.updateMetadata()'
+                self.updateMetadata()
+        logging.debug('statistics computation completed')
         self._setupStatistics(band)
 
     def _setupStatistics(self, band):
@@ -628,8 +636,6 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         if not hasattr(band, 'GetDefaultHistogram'):
             self.histogramGroupBox.hide()
             self.statisticsVerticalLayout.addStretch()
-            self.computeHistogramButton.hide()
-            self.statsButtonsVerticalLayout.addStretch()
             return
 
         if band.DataType in (gdal.GDT_CInt16, gdal.GDT_CInt32,
