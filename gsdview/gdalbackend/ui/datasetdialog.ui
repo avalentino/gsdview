@@ -22,6 +22,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="contextMenuPolicy">
+      <enum>Qt::ActionsContextMenu</enum>
+     </property>
      <property name="currentIndex">
       <number>0</number>
      </property>
@@ -662,6 +665,9 @@ OpenGIS WKT format.</string>
        </item>
        <item>
         <widget class="QTableWidget" name="metadataTableWidget">
+         <property name="contextMenuPolicy">
+          <enum>Qt::ActionsContextMenu</enum>
+         </property>
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
@@ -674,6 +680,12 @@ OpenGIS WKT format.</string>
          <property name="columnCount">
           <number>2</number>
          </property>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
          <column>
           <property name="text">
            <string>Name</string>
@@ -830,6 +842,9 @@ OpenGIS WKT format.</string>
               <width>0</width>
               <height>10</height>
              </size>
+            </property>
+            <property name="contextMenuPolicy">
+             <enum>Qt::ActionsContextMenu</enum>
             </property>
             <property name="editTriggers">
              <set>QAbstractItemView::NoEditTriggers</set>
@@ -1058,6 +1073,9 @@ p, li { white-space: pre-wrap; }
               <verstretch>4</verstretch>
              </sizepolicy>
             </property>
+            <property name="contextMenuPolicy">
+             <enum>Qt::ActionsContextMenu</enum>
+            </property>
             <property name="toolTip">
              <string>GDAL driver metadata.</string>
             </property>
@@ -1073,6 +1091,12 @@ p, li { white-space: pre-wrap; }
             <property name="sortingEnabled">
              <bool>true</bool>
             </property>
+            <attribute name="horizontalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
+            <attribute name="horizontalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
             <column>
              <property name="text">
               <string>Name</string>
@@ -1098,7 +1122,7 @@ p, li { white-space: pre-wrap; }
        <item>
         <widget class="QListWidget" name="fileListWidget">
          <property name="contextMenuPolicy">
-          <enum>Qt::CustomContextMenu</enum>
+          <enum>Qt::ActionsContextMenu</enum>
          </property>
         </widget>
        </item>
@@ -1126,6 +1150,14 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="shortcut">
     <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionSelectAll">
+   <property name="text">
+    <string>Select &amp;All</string>
+   </property>
+   <property name="toolTip">
+    <string>Select all items</string>
    </property>
   </action>
  </widget>

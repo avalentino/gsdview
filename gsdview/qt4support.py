@@ -74,6 +74,53 @@ def callExpensiveFunc(func, *args, **kwargs):
     finally:
         QtGui.QApplication.restoreOverrideCursor()
 
+
+def copyItemSelection(selection):
+    '''Copy the QItemSelection to clipboard.'''
+
+    lines = []
+    for itemrange in selection:
+        model = itemrange.model()
+        parent = itemrange.parent()
+        for row in range(itemrange.top(), itemrange.bottom() + 1):
+            parts = []
+            for col in range(itemrange.left(), itemrange.right() + 1):
+                index = model.index(row, col, parent)
+                parts.append(str(model.data(index).toString()))
+            line = '\t'.join(parts)
+            lines.append(line)
+
+    data = '\n'.join(lines)
+
+    clipboard = QtGui.qApp.clipboard()
+    clipboard.setText(data, QtGui.QClipboard.Clipboard)
+    clipboard.setText(data, QtGui.QClipboard.Selection)
+
+    # @TODO: check
+    #data = QtCore.QByteArray()
+    #data.append('\n'.join(lines))
+
+    #mimedata = QtCore.QMimeData()
+    #mimedata.setData('text/csv', data)
+
+    #clipboard = QtGui.qApp.clipboard()
+    #clipboard.setMimeData(mimedata, QtGui.QClipboard.Clipboard)
+    #clipboard.setMimeData(mimedata, QtGui.QClipboard.Selection)
+
+    return data
+
+def selectAllItems(itemview):
+    '''Select all items if an QAbstractItemView.'''
+
+    model = itemview.model()
+    topleft = model.index(0, 0)
+    bottomright = model.index(model.rowCount()-1, model.columnCount()-1)
+
+    selection = QtGui.QItemSelection(topleft, bottomright)
+    itemview.selectionModel().select(selection,
+                                     QtGui.QItemSelectionModel.Select)
+
+
 try:
     raise ImportError # @TODO: remove
     from PyQt4.Qwt5 import toQImage as _toQImage

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>520</width>
+    <width>526</width>
     <height>538</height>
    </rect>
   </property>
@@ -789,6 +789,9 @@ Normally only present when the number of bits is non-standard for the datatype, 
        </item>
        <item>
         <widget class="QTableWidget" name="metadataTableWidget">
+         <property name="contextMenuPolicy">
+          <enum>Qt::ActionsContextMenu</enum>
+         </property>
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
@@ -798,6 +801,12 @@ Normally only present when the number of bits is non-standard for the datatype, 
          <property name="sortingEnabled">
           <bool>true</bool>
          </property>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
          <column>
           <property name="text">
            <string>Name</string>
@@ -1083,6 +1092,9 @@ overviews or a subset of image tiles.</string>
          <layout class="QVBoxLayout" name="histogramVericalLayout">
           <item>
            <widget class="QTableWidget" name="histogramTableWidget">
+            <property name="contextMenuPolicy">
+             <enum>Qt::ActionsContextMenu</enum>
+            </property>
             <attribute name="horizontalHeaderStretchLastSection">
              <bool>true</bool>
             </attribute>
@@ -1217,6 +1229,9 @@ the histogram computation.</string>
        </item>
        <item>
         <widget class="QTableWidget" name="colorTableWidget">
+         <property name="contextMenuPolicy">
+          <enum>Qt::ActionsContextMenu</enum>
+         </property>
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
@@ -1260,6 +1275,25 @@ the histogram computation.</string>
     </widget>
    </item>
   </layout>
+  <action name="actionCopy">
+   <property name="text">
+    <string>&amp;Copy</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy to clipboard</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionSelectAll">
+   <property name="text">
+    <string>Select &amp;All</string>
+   </property>
+   <property name="toolTip">
+    <string>Select all items</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>

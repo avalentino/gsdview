@@ -32,14 +32,13 @@ import numpy
 from osgeo import gdal
 from PyQt4 import QtCore, QtGui
 
+from gsdview import qt4support
 from gsdview.widgets import get_filedialog, FileEntryWidget
-from gsdview.qt4support import getuiform, geticon
-from gsdview.qt4support import overrideCursor, callExpensiveFunc
 
 from gsdview.gdalbackend import gdalsupport
 
 
-GDALInfoWidgetBase = getuiform('gdalinfo', __name__)
+GDALInfoWidgetBase = qt4support.getuiform('gdalinfo', __name__)
 class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget):
@@ -112,14 +111,14 @@ class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
         QtGui.QWidget.showEvent(self, event)
 
 
-GDALPreferencesPageBase = getuiform('gdalpage', __name__)
+GDALPreferencesPageBase = qt4support.getuiform('gdalpage', __name__)
 class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget):
         super(GDALPreferencesPage, self).__init__(parent, flags)
         self.setupUi(self)
 
-        self.infoButton.setIcon(geticon('info.svg', 'gsdview'))
+        self.infoButton.setIcon(qt4support.geticon('info.svg', 'gsdview'))
 
         # Avoid promoted widgets
         DirectoryOnly = QtGui.QFileDialog.DirectoryOnly
@@ -328,12 +327,25 @@ class MajorObjectInfoDialog(QtGui.QDialog):
 
         self._obj = gdalobj
 
-        self.updateMetadata()
-
+        # Contect menu
+        self.actionCopy.setIcon(qt4support.geticon('copy.svg', __name__))
+        #self.actionSelectAll.setIcon(qt4support.geticon('selectall.svg',
+        #                                                __name__))
+        self.connect(self.actionCopy, QtCore.SIGNAL('triggered()'),
+                     self.copySelectedItems)
+        self.connect(self.actionSelectAll, QtCore.SIGNAL('triggered()'),
+                     self.selectedAllItems)
         if hasattr(self, 'domainComboBox'):
             self.connect(self.domainComboBox,
                          QtCore.SIGNAL('activated(const QString&)'),
                          self.updateMetadata)
+
+        # Context menu actions
+        for action in (self.actionCopy, self.actionSelectAll):
+            self.metadataTableWidget.addAction(action)
+
+        # Init tabs
+        self.updateMetadata()
 
     def updateMetadata(self, domain=''):
         domain = str(domain)    # it could be a QString
@@ -376,6 +388,19 @@ class MajorObjectInfoDialog(QtGui.QDialog):
         header.setStretchLastSection(True)
         #tablewidget.setRowCount(0)
 
+    @staticmethod
+    def copySelectedItems():
+        widget = QtGui.qApp.focusWidget()
+        assert hasattr(widget, 'selectionModel')
+        selection = widget.selectionModel().selection()
+        qt4support.copyItemSelection(selection)
+
+    @staticmethod
+    def selectedAllItems():
+        widget = QtGui.qApp.focusWidget()
+        assert hasattr(widget, 'selectionModel')
+        qt4support.selectAllItems(widget)
+
 
 def _setupImageStructureInfo(widget, metadata):
     widget.compressionValue.setText(metadata.get('COMPRESSION', ''))
@@ -384,7 +409,7 @@ def _setupImageStructureInfo(widget, metadata):
     widget.pixelTypeValue.setText(metadata.get('PIXELTYPE', ''))
 
 
-HistogramConfigDialogBase = getuiform('histoconfig', __name__)
+HistogramConfigDialogBase = qt4support.getuiform('histoconfig', __name__)
 class HistogramConfigDialog(QtGui.QDialog, HistogramConfigDialogBase):
     def __init__(self, parent=None, flags=QtCore.Qt.Widget):
         super(HistogramConfigDialog, self).__init__(parent, flags)
@@ -440,7 +465,7 @@ class HistogramConfigDialog(QtGui.QDialog, HistogramConfigDialogBase):
         self.maxSpinBox.setMaximum(max_)
 
 
-BandInfoDialogBase = getuiform('banddialog', __name__)
+BandInfoDialogBase = qt4support.getuiform('banddialog', __name__)
 class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
     def __init__(self, band, parent=None, flags=QtCore.Qt.Widget):
@@ -458,10 +483,17 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
                      lambda chk: self.computeHistogramButton.setEnabled(True))
 
         # Set tab icons
+        geticon = qt4support.geticon
         self.tabWidget.setTabIcon(0, geticon('info.svg', 'gsdview'))
         self.tabWidget.setTabIcon(1, geticon('metadata.svg', __name__))
         self.tabWidget.setTabIcon(2, geticon('statistics.svg', __name__))
         self.tabWidget.setTabIcon(3, geticon('color.svg', __name__))
+
+        # Context menu actions
+        for action in (self.actionCopy, self.actionSelectAll):
+            #self.metadataTableWidget.addAction(action) # set in parent class
+            self.histogramTableWidget.addAction(action)
+            self.colorTableWidget.addAction(action)
 
         # Tabs
         self._setupInfoTab(band)
@@ -518,7 +550,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
         _setupImageStructureInfo(self, band.GetMetadata('IMAGE_STRUCTURE'))
 
-    @overrideCursor
+    @qt4support.overrideCursor
     def computeStats(self):
         logging.info('start statistics computation')
         # @TODO: use an external process (??)
@@ -615,14 +647,15 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
                 approx = dialog.approxCheckBox.isChecked()
 
                 # @TODO: use calback for progress reporting
-                callExpensiveFunc(band.GetHistogram,
-                                  min_, max_, nbuckets,
-                                  include_out_of_range, approx)
-                                  #callback=None, callback_data=None)
+                qt4support.callExpensiveFunc(
+                                band.GetHistogram,
+                                min_, max_, nbuckets,
+                                include_out_of_range, approx)
+                                #callback=None, callback_data=None)
             else:
                 # @TODO: use calback for progress reporting
-                callExpensiveFunc(band.GetDefaultHistogram)
-                                  #callback=None, callback_data=None)
+                qt4support.callExpensiveFunc(band.GetDefaultHistogram)
+                                        #callback=None, callback_data=None)
 
             self._setupStatistics(band)
             self._setupHistogram(band)
@@ -757,27 +790,15 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         hheader.resizeSections(QtGui.QHeaderView.ResizeToContents)
 
 
-DatasetInfoDialogBase = getuiform('datasetdialog', __name__)
+DatasetInfoDialogBase = qt4support.getuiform('datasetdialog', __name__)
 class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
 
     def __init__(self, dataset, parent=None, flags=QtCore.Qt.Widget):
         assert dataset, 'a valid GDAL dataset expected'
         super(DatasetInfoDialog, self).__init__(dataset, parent, flags)
 
-        # Contect menu
-        self.actionCopy.setIcon(geticon('copy.svg', __name__))
-        self.fileListContextMenu = QtGui.QMenu(self.tr('Edit'),
-                                               self.fileListWidget)
-        self.fileListContextMenu.addAction(self.actionCopy)
-        self.connect(self.actionCopy, QtCore.SIGNAL('triggered()'),
-                     self.copyCurrentItemText)
-
-        self.connect(self.fileListWidget,
-                     QtCore.SIGNAL('customContextMenuRequested(const QPoint&)'),
-                     #self.fileListContextMenu.popup)
-                     self.popupFileListContextMenu)
-
         # Set icons
+        geticon = qt4support.geticon
         self.tabWidget.setTabIcon(0, geticon('info.svg', 'gsdview'))
         self.tabWidget.setTabIcon(1, geticon('metadata.svg', __name__))
         self.tabWidget.setTabIcon(2, geticon('gcp.svg', __name__))
@@ -790,6 +811,13 @@ class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
         else:
             #self.tabWidget.setTabEnabled(4, False)
             self.tabWidget.removeTab(4)
+
+        # Context menu actions
+        for action in (self.actionCopy, self.actionSelectAll):
+            #self.metadataTableWidget.addAction(action) # set in parent class
+            self.gcpsTableWidget.addAction(action)
+            self.driverMetadataTableWidget.addAction(action)
+            self.fileListWidget.addAction(action)
 
         # Info Tab
         self._setupInfoTab(dataset)
@@ -884,14 +912,6 @@ p, li { white-space: pre-wrap; }
         header.setStretchLastSection(True)
         tablewidget.setSortingEnabled(sortingenabled)
 
-    def popupFileListContextMenu(self, point):
-        point = self.fileListWidget.mapToGlobal(point)
-        self.fileListContextMenu.popup(point)
-
-    def copyCurrentItemText(self):
-        item = self.fileListWidget.currentItem()
-        clipboard = QtGui.qApp.clipboard()
-        clipboard.setText(item.text())
 
 #~ class SubDatasetInfoDialog(DatasetInfoDialog):
 
