@@ -28,11 +28,13 @@ __revision__ = '$Revision$'
 import os
 import logging
 
+import numpy
 from osgeo import gdal
 from PyQt4 import QtCore, QtGui
 
 from gsdview.widgets import get_filedialog, FileEntryWidget
-from gsdview.qt4support import getuiform, geticon, overrideCursor
+from gsdview.qt4support import getuiform, geticon
+from gsdview.qt4support import overrideCursor, callExpensiveFunc
 
 from gsdview.gdalbackend import gdalsupport
 
@@ -382,6 +384,62 @@ def _setupImageStructureInfo(widget, metadata):
     widget.pixelTypeValue.setText(metadata.get('PIXELTYPE', ''))
 
 
+HistogramConfigDialogBase = getuiform('histoconfig', __name__)
+class HistogramConfigDialog(QtGui.QDialog, HistogramConfigDialogBase):
+    def __init__(self, parent=None, flags=QtCore.Qt.Widget):
+        super(HistogramConfigDialog, self).__init__(parent, flags)
+        self.setupUi(self)
+
+        # Make it not resizable
+        w = self.maximumSize().width()
+        h = self.size().height()
+        self.setMaximumSize(w, h)
+
+        # Colors
+        self._default_palette = self.minSpinBox.palette()
+        self._error_palette = QtGui.QPalette(self._default_palette)
+
+        color = QtGui.QColor(QtCore.Qt.red)
+        self._error_palette.setColor(QtGui.QPalette.Text, color)
+        color.setAlpha(50)
+        self._error_palette.setColor(QtGui.QPalette.Base, color)
+
+        self.connect(self.minSpinBox, QtCore.SIGNAL('editingFinished()'),
+                     self.validate)
+        self.connect(self.maxSpinBox, QtCore.SIGNAL('editingFinished()'),
+                     self.validate)
+
+    def validate(self):
+        if self.minSpinBox.value() >= self.maxSpinBox.value():
+            self.minSpinBox.lineEdit().setPalette(self._error_palette)
+            self.maxSpinBox.lineEdit().setPalette(self._error_palette)
+            return False
+        self.minSpinBox.lineEdit().setPalette(self._default_palette)
+        self.maxSpinBox.lineEdit().setPalette(self._default_palette)
+        return True
+
+    def setLimits(self, dtype):
+        min_ = -2**15 - 0.5
+        max_ = 2**16 - 0.5
+        if dtype in (numpy.uint8, numpy.uint16, numpy.uint32, numpy.uint64):
+            # Unsigned
+            min_ = -0.5
+            if dtype == numpy.uint8:
+                max_ = 255.5
+            else:
+                max_ = 2**16 - 0.5
+        elif dtype == numpy.int8:
+            min_ = -128.5
+            max_ = 127.5
+        elif dtype == numpy.int16:
+            max_ = 2**15 + 0.5
+
+        self.minSpinBox.setMinimum(min_)
+        self.minSpinBox.setMaximum(max_)
+        self.maxSpinBox.setMinimum(min_)
+        self.maxSpinBox.setMaximum(max_)
+
+
 BandInfoDialogBase = getuiform('banddialog', __name__)
 class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
@@ -393,6 +451,11 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
                      self.computeStats)
         self.connect(self.computeHistogramButton, QtCore.SIGNAL('clicked()'),
                      self.computeHistogram)
+        self.connect(self.approxStatsCheckBox, QtCore.SIGNAL('toggled(bool)'),
+                     lambda chk: self.computeStatsButton.setEnabled(True))
+        self.connect(self.customHistogramCheckBox,
+                     QtCore.SIGNAL('toggled(bool)'),
+                     lambda chk: self.computeHistogramButton.setEnabled(True))
 
         # Set tab icons
         self.tabWidget.setTabIcon(0, geticon('info.svg', 'gsdview'))
@@ -497,7 +560,6 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
             self.stdValue.setText(str(std_))
             self.computeStatsButton.setEnabled(False)
 
-    @overrideCursor
     def computeHistogram(self):
         # @TODO: use an external process (??)
 
@@ -505,20 +567,61 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         approx = self.approxStatsCheckBox.isChecked()
         # @COMPATIBILITY: GDAL 1.5.x doesn't support this API
         if hasattr(band, 'GetHistogram'):
-            # @TODO: pop up a dialog for histogra configuration:
-            #        * min
-            #        * max
-            #        * nbuckets
-            #        * include_out_of_range
-            #        * approx_ok
-            # @TODO: use calback for progress reporting
-            band.GetHistogram(approx_ok=approx)#, callback=None, callback_data=None)
+            if self.customHistogramCheckBox.isChecked():
+                dialog = HistogramConfigDialog(self)
+
+                # @COMPATIBILITY: bug in GDAL 1.6.x line
+                # @WARNING: causes a crash in GDAL < 1.7.0 (r18405)
+                # @SEEALSO: http://trac.osgeo.org/gdal/ticket/3304
+                if gdal.VersionInfo() < '1700':
+                    dialog.approxCheckBox.setChecked(True)
+                    dialog.approxCheckBox.setEnabled(False)
+
+                try:
+                    dtype = gdalsupport.typemap[band.DataType]
+                except KeyError:
+                    pass
+                else:
+                    dialog.setLimits(dtype)
+
+                done = False
+                while not done:
+                    ret = dialog.exec_()
+                    if ret == QtGui.QDialog.Rejected:
+                        return
+                    if dialog.validate() is False:
+                        msg = self.tr('The histogram minimum have been set to '
+                                      'a value that is greater or equal of '
+                                      'the histogram maximum.'
+                                      '\n'
+                                      'Please fix it.')
+                        QtGui.QMessageBox.warning(self, self.tr('WARNING!'),
+                                                  msg)
+                    else:
+                        done = True
+
+                min_ = dialog.minSpinBox.value()
+                max_ = dialog.maxSpinBox.value()
+                nbuckets = dialog.nBucketsSpinBox.value()
+                include_out_of_range = dialog.outOfRangeCheckBox.isChecked()
+                approx = dialog.approxCheckBox.isChecked()
+
+                # @TODO: use calback for progress reporting
+                callExpensiveFunc(band.GetHistogram,
+                                  min_, max_, nbuckets,
+                                  include_out_of_range, approx)
+                                  #callback=None, callback_data=None)
+            else:
+                # @TODO: use calback for progress reporting
+                callExpensiveFunc(band.GetDefaultHistogram)
+                                  #callback=None, callback_data=None)
+
             self._setupStatistics(band)
             self._setupHistogram(band)
 
     def _resetHistogram(self):
         tablewidget = self.histogramTableWidget
-        self.numberOfClassesValue.setText('')
+        self.numberOfClassesValue.setText('0')
         self._cleartable(tablewidget)
 
     def _setupHistogram(self, band):
@@ -528,9 +631,6 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
             self.computeHistogramButton.hide()
             self.statsButtonsVerticalLayout.addStretch()
             return
-
-        # @TODO: remove
-        self.histogramGraphicsView.hide()
 
         if band.DataType in (gdal.GDT_CInt16, gdal.GDT_CInt32,
                              gdal.GDT_CFloat32, gdal.GDT_CFloat64):
@@ -565,7 +665,9 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
                                     QtGui.QTableWidgetItem(str(stop)))
                 tablewidget.setItem(row, 2,
                                     QtGui.QTableWidgetItem(str(hist[row])))
-            self.computeHistogramButton.setEnabled(False)
+            self.computeHistogramButton.setEnabled(False)   # @TODO: check
+
+            # @TODO: plotting
         else:
             self._resetHistogram()
 

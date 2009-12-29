@@ -149,6 +149,30 @@ GEOMETRY_AS_COLLECTION
 ATTRIBUTES_SKIP
 KML_DEBUG'''
 
+typemap = {
+    gdal.GDT_Byte:      numpy.uint8,
+    gdal.GDT_Int16:     numpy.int16,
+    gdal.GDT_UInt16:    numpy.uint16,
+    gdal.GDT_CInt16:    numpy.complex64,
+    gdal.GDT_Int32:     numpy.int32,
+    gdal.GDT_UInt32:    numpy.uint32,
+    gdal.GDT_CInt32:    numpy.complex128,
+    gdal.GDT_Float32:   numpy.float32,
+    gdal.GDT_Float64:   numpy.float64,
+    gdal.GDT_CFloat32:  numpy.complex64,
+    gdal.GDT_CFloat64:  numpy.complex128,
+
+    numpy.int8:         gdal.GDT_Byte,
+    numpy.uint8:        gdal.GDT_Byte,
+    numpy.int16:        gdal.GDT_Int16,
+    numpy.uint16:       gdal.GDT_UInt16,
+    numpy.int32:        gdal.GDT_Int32,
+    numpy.uint32:       gdal.GDT_UInt32,
+    numpy.float32:      gdal.GDT_Float32,
+    numpy.float64:      gdal.GDT_Float64,
+    numpy.complex64:    gdal.GDT_CFloat32,
+    numpy.complex128:   gdal.GDT_CFloat64,
+}
 
 def uniqueDatasetID(prod):
     # @TODO: use also gdal.Band.Checksum or similia

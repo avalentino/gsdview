@@ -43,6 +43,12 @@ def test_rasterbanddialog(band):
     dialog.show()
     sys.exit(app.exec_())
 
+def test_histogram_config():
+    app = QtGui.QApplication(sys.argv)
+    dialog = HistogramConfigDialog()
+    dialog.show()
+    sys.exit(app.exec_())
+
 def main(imagestruct=True):
     logging.basicConfig(level=logging.DEBUG)
 
@@ -66,5 +72,6 @@ def main(imagestruct=True):
 if __name__ == '__main__':
     #~ test_gdalinfowidget()
     #~ test_gdalpreferencespage()
-    #~ main()
-    main(False)
+    #~ test_histogram_config()
+    main()
+    #~ main(False)

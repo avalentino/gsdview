@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>498</width>
+    <width>520</width>
     <height>538</height>
    </rect>
   </property>
@@ -816,230 +816,271 @@ Normally only present when the number of bits is non-standard for the datatype, 
       <attribute name="title">
        <string>Statistics</string>
       </attribute>
-      <layout class="QVBoxLayout" name="statisticsVerticalLayout">
+      <layout class="QVBoxLayout" name="statisticsVerticalLayout" stretch="0,10">
        <item>
-        <layout class="QHBoxLayout" name="statisticsHorizontalLayout">
-         <item>
-          <layout class="QFormLayout" name="statisticsFormLayout">
-           <item row="0" column="0">
-            <widget class="QLabel" name="minimumLabel">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>Minimum:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="minimumValue">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="toolTip">
-              <string>The minimum value for this band.
+        <widget class="QGroupBox" name="statisticsGroupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title">
+          <string>Statistics</string>
+         </property>
+         <layout class="QHBoxLayout" name="statisticsHorizontalLayout">
+          <item>
+           <layout class="QFormLayout" name="statisticsFormLayout">
+            <item row="0" column="0">
+             <widget class="QLabel" name="minimumLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Minimum:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="minimumValue">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>The minimum value for this band.
 
 For file formats that don't know this intrinsically, the minimum supported 
 value for the data type will generally be returned (or None).</string>
-             </property>
-             <property name="whatsThis">
-              <string>The minimum value for this band.
+              </property>
+              <property name="whatsThis">
+               <string>The minimum value for this band.
 
 For file formats that don't know this intrinsically, the minimum supported 
 value for the data type will generally be returned (or None).</string>
-             </property>
-             <property name="text">
-              <string>minimum value</string>
-             </property>
-             <property name="textInteractionFlags">
-              <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="maximumLabel">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>Maximum:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QLabel" name="maximumValue">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="toolTip">
-              <string>The maximum value for this band.
+              </property>
+              <property name="text">
+               <string>minimum value</string>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="maximumLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Maximum:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLabel" name="maximumValue">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>The maximum value for this band.
 
 For file formats that don't know this intrinsically, the maximum supported 
 value for the data type will generally be returned (or None).</string>
-             </property>
-             <property name="whatsThis">
-              <string>The maximum value for this band.
+              </property>
+              <property name="whatsThis">
+               <string>The maximum value for this band.
 
 For file formats that don't know this intrinsically, the maximum supported 
 value for the data type will generally be returned (or None).</string>
-             </property>
-             <property name="text">
-              <string>maximum value</string>
-             </property>
-             <property name="textInteractionFlags">
-              <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="meanLabel">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>Mean:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QLabel" name="meanValue">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="toolTip">
-              <string>The maximum value for this band.
+              </property>
+              <property name="text">
+               <string>maximum value</string>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="meanLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Mean:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLabel" name="meanValue">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>The maximum value for this band.
 
 For file formats that don't know this intrinsically, the maximum supported 
 value for the data type will generally be returned (or None).</string>
-             </property>
-             <property name="whatsThis">
-              <string>The maximum value for this band.
+              </property>
+              <property name="whatsThis">
+               <string>The maximum value for this band.
 
 For file formats that don't know this intrinsically, the maximum supported 
 value for the data type will generally be returned (or None).</string>
-             </property>
-             <property name="text">
-              <string>mean value</string>
-             </property>
-             <property name="textInteractionFlags">
-              <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="stdLabel">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>Standard Deviation:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="QLabel" name="stdValue">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="toolTip">
-              <string>The maximum value for this band.
+              </property>
+              <property name="text">
+               <string>mean value</string>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="stdLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Standard Deviation:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLabel" name="stdValue">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>The maximum value for this band.
 
 For file formats that don't know this intrinsically, the maximum supported 
 value for the data type will generally be returned (or None).</string>
-             </property>
-             <property name="whatsThis">
-              <string>The maximum value for this band.
+              </property>
+              <property name="whatsThis">
+               <string>The maximum value for this band.
 
 For file formats that don't know this intrinsically, the maximum supported 
 value for the data type will generally be returned (or None).</string>
-             </property>
-             <property name="text">
-              <string>standard deviation value</string>
-             </property>
-             <property name="textInteractionFlags">
-              <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QVBoxLayout" name="statsButtonsVerticalLayout">
-           <item>
-            <widget class="QCheckBox" name="approxStatsCheckBox">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="toolTip">
-              <string>Compute approximate band statistics using 
+              </property>
+              <property name="text">
+               <string>standard deviation value</string>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="statisticsHorizontalSpacer1">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="statButtondVerticalLayout">
+            <item>
+             <widget class="QCheckBox" name="approxStatsCheckBox">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="toolTip">
+               <string>Compute approximate band statistics using 
 overviews or a subset of image tiles.</string>
-             </property>
-             <property name="whatsThis">
-              <string>Compute approximate band statistics using 
+              </property>
+              <property name="whatsThis">
+               <string>Compute approximate band statistics using 
 overviews or a subset of image tiles.</string>
-             </property>
-             <property name="text">
-              <string>Approx Stats</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="computeStatsButton">
-             <property name="toolTip">
-              <string>Start band statistics computation.</string>
-             </property>
-             <property name="text">
-              <string>Compute Statistics</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="computeHistogramButton">
-             <property name="text">
-              <string>Compute Histogram</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
+              </property>
+              <property name="text">
+               <string>Approx Stats</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="computeStatsButton">
+              <property name="toolTip">
+               <string>Start band statistics computation
+(may take a long time).</string>
+              </property>
+              <property name="text">
+               <string>Compute Statistics</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="dummyLabel">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="statisticsHorizontalSpacer2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
        </item>
        <item>
         <widget class="QGroupBox" name="histogramGroupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="title">
           <string>Histogram</string>
          </property>
-         <layout class="QVBoxLayout" name="histogramVerticalLayout">
-          <item>
-           <widget class="QGraphicsView" name="histogramGraphicsView"/>
-          </item>
+         <layout class="QVBoxLayout" name="histogramVericalLayout">
           <item>
            <widget class="QTableWidget" name="histogramTableWidget">
             <attribute name="horizontalHeaderStretchLastSection">
@@ -1065,6 +1106,28 @@ overviews or a subset of image tiles.</string>
           <item>
            <layout class="QHBoxLayout" name="histogramHorizontalLayout">
             <item>
+             <widget class="QCheckBox" name="customHistogramCheckBox">
+              <property name="toolTip">
+               <string>Pops up a dialog that allow to customize 
+the histogram computation.</string>
+              </property>
+              <property name="text">
+               <string>Custom</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="computeHistogramButton">
+              <property name="toolTip">
+               <string>Start histogram computation 
+(may take a long time).</string>
+              </property>
+              <property name="text">
+               <string>Compute</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <spacer name="histogramHorizontalSpacer">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -1087,7 +1150,7 @@ overviews or a subset of image tiles.</string>
             <item>
              <widget class="QLabel" name="numberOfClassesValue">
               <property name="text">
-               <string>number of classes value</string>
+               <string>value</string>
               </property>
              </widget>
             </item>
@@ -1207,8 +1270,8 @@ overviews or a subset of image tiles.</string>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>257</x>
+     <y>528</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -1223,8 +1286,8 @@ overviews or a subset of image tiles.</string>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>325</x>
+     <y>528</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

@@ -67,6 +67,13 @@ def overrideCursor(func):
             QtGui.QApplication.restoreOverrideCursor()
     return aux
 
+def callExpensiveFunc(func, *args, **kwargs):
+    QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
+    try:
+        return func(*args, **kwargs)
+    finally:
+        QtGui.QApplication.restoreOverrideCursor()
+
 try:
     raise ImportError # @TODO: remove
     from PyQt4.Qwt5 import toQImage as _toQImage
