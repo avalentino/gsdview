@@ -654,6 +654,39 @@ def ovrBestIndex(gdalobj, ovrlevel=None, policy='NEAREST'):
         return ovrBestIndex(band)
 
 
+def ovrComputeLevels(gdalobj, ovrsize=OVRMEMSIE, factor=3):
+    '''Copute the overview levels to be generated.
+
+    GSDView relies on overfiews to provide a confortable image
+    navigation experience (scroll, pan, zoom etc).
+    This function evaluated the number and overview factor to be
+    pre-calculated in order to provide such a confortable experience.
+
+    '''
+
+    maxfactor = ovrLevelForSize(gdalobj, ovrsize)
+    if maxfactor == 1:
+        return []
+
+    metadata = gdalobj.GetMetadata('IMAGE_STRUCTURE')
+    compressed = bool(metadata.get('COMPRESSION'))
+    if compressed:
+        startexponent = 0
+    else:
+        startexponent = 1
+
+    maxesponent = numpy.ceil(maxfactor**(1./factor))
+    exponents = numpy.arange(startexponent, maxesponent+1)
+    missinglevels = factor ** exponents
+    missinglevels = missinglevels.astype(numpy.int)
+
+    # Remove exixtng levels to avoid re-computation
+    levels = ovrLevels(gdalobj)
+    missinglevels = sorted(set(missinglevels).difference(levels))
+
+    return missinglevels
+
+
 def ovrRead(dataset, x=0, y=0, w=None, h=None, ovrindex=None,
             bstart=1, bcount=None, dtype=None):
     '''Read an image block from overviews of all spacified bands.

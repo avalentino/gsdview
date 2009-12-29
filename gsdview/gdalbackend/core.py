@@ -484,11 +484,7 @@ class GDALBackend(QtCore.QObject):
         if not isinstance(item.parent(), modelitems.CachedDatasetItem):
             return
 
-        band = item
-        levels = gdalsupport.ovrLevels(band)
-        # @TODO: improve this: lower limit should depend on the actual data size
-        missingOverviewLevels = (3, 9, 27)
-        missingOverviewLevels = sorted(set(missingOverviewLevels).difference(levels))
+        missingOverviewLevels = gdalsupport.ovrComputeLevels(item)
 
         # @NOTE: overviews are computed for all bands so I do this at
         #        application level, before a specific band is choosen.
