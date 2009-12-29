@@ -85,7 +85,7 @@ class ItemModelMainWindow(MdiMainWindow):
         self.treeview.setModel(self.datamodel)
         self.treeview.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.treeview.header().hide()
-        self.treeview.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+
         self.connect(self.treeview,
                      QtCore.SIGNAL('clicked(const QModelIndex&)'),
                      self.setActiveWinFromIndex)

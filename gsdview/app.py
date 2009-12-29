@@ -194,6 +194,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         # @TODO: force the log level set from command line
         #self.logger.setLevel(level)
 
+        self.treeview.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.connect(self.treeview,
                      QtCore.SIGNAL('customContextMenuRequested(const QPoint&)'),
                      self.itemContextMenu)
