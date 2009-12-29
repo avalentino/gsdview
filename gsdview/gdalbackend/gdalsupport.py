@@ -524,6 +524,8 @@ def coordinate_mapper(dataset):
 
 
 ### Overviews handling helpers ###############################################
+OVRMEMSIE = 300*1024    # 300kbytes
+
 class MissingOvrError(Exception):
     def __init__(self, ovrlevel):
         super(MissingOvrError, self).__init__(ovrlevel)
@@ -545,7 +547,7 @@ def ovrLevelAdjust(ovrlevel, xsize):
     return int(round(xsize / float(oxsize)))
 
 
-def ovrLevelForSize(gdalobj, ovrsize=300*1024):
+def ovrLevelForSize(gdalobj, ovrsize=OVRMEMSIE):
     '''Compute the overview factor that fits the ovrsize request.
 
     Default ovrsize = 300 KBytes ==> about 554x554 pixels paletted or
@@ -560,8 +562,8 @@ def ovrLevelForSize(gdalobj, ovrsize=300*1024):
 
         #bytePerPixel = gdal.GetDataTypeSize(band.DataType) / 8
         bytesperpixel = 1   # the quicklook image is always converted to byte
-        datasetsize = band.XSize * band.YSize * bytesperpixel
-        ovrlevel = numpy.sqrt(datasetsize / float(ovrsize))
+        datasize = band.XSize * band.YSize * bytesperpixel
+        ovrlevel = numpy.sqrt(datasize / float(ovrsize))
         ovrlevel = max(round(ovrlevel), 1)
 
         return ovrLevelAdjust(ovrlevel, band.XSize)
