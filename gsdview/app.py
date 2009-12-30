@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 ### Copyright (C) 2008-2009 Antonio Valentino <a_valentino@users.sf.net>
@@ -730,8 +729,3 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         finally:
             self.progressbar.hide()
             self.statusBar().showMessage('Ready.')
-
-
-if __name__ == '__main__':
-    from gsdview.launch import main
-    main()
