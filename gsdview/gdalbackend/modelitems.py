@@ -208,7 +208,10 @@ class DatasetItem(MajorObjectItem):
 
         # TODO: improve attribute name
         self.cmapper = gdalsupport.coordinate_mapper(self._obj)
-        self.scene, self.graphicsitem = self._setup_scene()
+        scene, graphicsitem = self._setup_scene()
+
+        self.scene = scene
+        self.graphicsitem = graphicsitem
 
     def _checkedopen(self, filename, mode=gdal.GA_ReadOnly):
         gdalobj = gdal.Open(filename, mode)
@@ -337,6 +340,7 @@ class DatasetItem(MajorObjectItem):
 
 class CachedDatasetItem(DatasetItem):
     _typeoffset = DatasetItem._typeoffset + 1
+
     CACHEDIR = os.path.expanduser(os.path.join('~', '.gsdview', 'cache'))
 
     def __init__(self, filename):
@@ -382,9 +386,6 @@ class CachedDatasetItem(DatasetItem):
                                             os.path.basename(vrtfilename))
         return vrtfilename
 
-    ###########################################################################
-    ### BEGIN #################################################################
-    # @TODO: check
     def reopen(self):
         gdalobj = gdal.Open(self.vrtfilename, self._mode)
         if gdalobj.RasterCount != self.RasterCount:
@@ -392,20 +393,15 @@ class CachedDatasetItem(DatasetItem):
                             'unexpected number of raster bands')
             return
 
-        # @WARNING: an error here would require node removel
+        # @WARNING: an error here would require node removal
         for index in range(1, self.RasterCount+1):
             item = self.GetRasterBand(index)
-            # @WARNING: using private interface
-            #item._obj = gdalobj.GetRasterBand(index)
-            #item._reopen()
             item._reopen(gdalobj.GetRasterBand(index))
 
         self._obj = gdalobj
         #self.model().itemChanged(self)
         self.model().emit(QtCore.SIGNAL('itemChanged(QStandardItem*)'), self)
 
-    ### END ###################################################################
-    ###########################################################################
 
 def datasetitem(filename):
     # Some dataset has only sub-datasets (no raster band).

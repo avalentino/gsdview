@@ -568,7 +568,6 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
             if gdal.VersionInfo() < '1700':
                 band.SetStatistics(min_, max_, mean_, std_)
             if self.domainComboBox.currentText() == '':
-                print 'self.updateMetadata()'
                 self.updateMetadata()
         logging.debug('statistics computation completed')
         self._setupStatistics(band)

@@ -571,6 +571,12 @@ class GraphicsViewSubWindow(ItemSubWindow): #QtGui.QMdiSubWindow):
         self.setWidget(graphicsview)
 
     # @TODO: move elsewhere
+    # @FIXME: this sometimes causes an error:
+    #
+    # Traceback (most recent call last):
+    #   File "/home/antonio/projects/gsdview/hgsdview/gsdview/gdalbackend/core.py", line 584, in onItemsClosed
+    #     self.close()
+    # RuntimeError: underlying C/C++ object has been deleted
     def onItemsClosed(self, modelindex, start, end):
         if not modelindex.isValid():
             return

@@ -524,7 +524,7 @@ def coordinate_mapper(dataset):
 
 
 ### Overviews handling helpers ###############################################
-OVRMEMSIE = 300*1024    # 300kbytes
+OVRMEMSIE = 400*1024    # 400kbytes
 
 class MissingOvrError(Exception):
     def __init__(self, ovrlevel):
@@ -550,8 +550,8 @@ def ovrLevelAdjust(ovrlevel, xsize):
 def ovrLevelForSize(gdalobj, ovrsize=OVRMEMSIE):
     '''Compute the overview factor that fits the ovrsize request.
 
-    Default ovrsize = 300 KBytes ==> about 554x554 pixels paletted or
-    277x277 pixels RGB32.
+    Default ovrsize = 300 KBytes ==> about 640x640 pixels paletted or
+    320x320 pixels RGB32.
 
     '''
 
@@ -622,7 +622,7 @@ def ovrBestIndex(gdalobj, ovrlevel=None, policy='NEAREST'):
         # gdalobj is a raster band
         band = gdalobj
         if ovrlevel is None:
-            ovrlevel = ovrLevelForSize(band) # 300K
+            ovrlevel = ovrLevelForSize(band) # 400K
         levels = numpy.asarray(ovrLevels(band))
         if len(levels) == 0:
             raise MissingOvrError(ovrlevel)
