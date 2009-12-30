@@ -273,10 +273,10 @@ class DatasetItem(MajorObjectItem):
         return [self.child(index) for index in range(self.RasterCount,
                                                      self.rowCount())]
 
-    def _setup_child_bands(self):
+    def _setup_child_bands(self, gdalobj):
         # @NOTE: raster bands are always inserted before subdatasets
-        for index in range(self.rowCount(), self._obj.RasterCount):
-            item = BandItem(self._obj.GetRasterBand(index+1))
+        for index in range(self.rowCount(), gdalobj.RasterCount):
+            item = BandItem(gdalobj.GetRasterBand(index+1))
             if not item.text():
                 description = '%s n. %d' % (QtGui.qApp.tr('Raster Band'),
                                             index+1)
@@ -284,9 +284,7 @@ class DatasetItem(MajorObjectItem):
                 item.setToolTip(description)
             self.appendRow(item)
 
-    def _setup_child_subdatasets(self, gdalobj=None):
-        if not gdalobj:
-            gdalobj = self._obj
+    def _setup_child_subdatasets(self, gdalobj):
         #~ subdatasets = self._obj.GetSubDatasets()
         #~ subdatasets = subdatasets[self.rowCount():]
         #~ for index, (path, extrainfo) in enumerate(subdatasets):
@@ -322,9 +320,8 @@ class DatasetItem(MajorObjectItem):
             self.appendRow(item)
 
     def _setup_children(self):
-        # @NOTE: a dataset can't have both raster bands and subdatasets
-        self._setup_child_bands()
-        self._setup_child_subdatasets()
+        self._setup_child_bands(self._obj)
+        self._setup_child_subdatasets(self._obj)
 
     #~ def _close(self):
         #~ self._obj.FlushCache()
@@ -343,19 +340,34 @@ class CachedDatasetItem(DatasetItem):
 
     CACHEDIR = os.path.expanduser(os.path.join('~', '.gsdview', 'cache'))
 
-    def __init__(self, filename):
+    def __init__(self, filename, mode=gdal.GA_Update):
+        # @TODO: check
+        if mode == gdal.GA_ReadOnly:
+            logging.warning('GDAL open mode ignored in cached datasets.')
+            mode = gdal.GA_Update
+
         filename = os.path.abspath(filename)
-        gdalobj = self._checkedopen(filename)
-        self.vrtfilename = self._vrtinit(gdalobj)
-        #del gdalobj
-
-        super(CachedDatasetItem, self).__init__(self.vrtfilename, gdal.GA_Update)
-        self._setup_child_subdatasets(gdalobj)
-
-        # if description include the filename then set the basename of the
-        # original dataset
-        if os.path.basename(self.vrtfilename) in self.text():
+        gdalobj = self._checkedopen(filename, gdal.GA_ReadOnly)
+        # @NOTE: drop DataSetItem initializer
+        MajorObjectItem.__init__(self, gdalobj)
+        if os.path.basename(filename) in self.text():
             self.setText(os.path.basename(filename))
+        self.filename = filename
+        self._mode = mode
+
+        vrtfilename, vrtobj = self._vrtinit(self._obj)
+
+        self.vrtfilename = vrtfilename
+        self._vrtobj = vrtobj
+
+        self._setup_children()
+
+        # TODO: improve attribute name
+        self.cmapper = gdalsupport.coordinate_mapper(self._obj)
+        scene, graphicsitem = self._setup_scene()
+
+        self.scene = scene
+        self.graphicsitem = graphicsitem
 
     def _vrtinit(self, gdalobj, cachedir=None):
         # Build the virtual dataset filename
@@ -369,26 +381,63 @@ class CachedDatasetItem(DatasetItem):
 
         # Create the virtual dataset
         # @TODO: check 'openshared'
-        _vrtdataset = None
+        vrtdataset = None
         if os.path.exists(vrtfilename):
             # @TODO: check if opening the dataset in update mode
             #        (gdal.GA_Update) is a better solution
-            _vrtdataset = gdal.Open(vrtfilename)
+            vrtdataset = gdal.Open(vrtfilename, gdal.GA_Update)
 
-        if _vrtdataset is None:
+        if vrtdataset is None:
             # Hendle both non existing self.vrtfilename and errors in opening
             # existing self.vrtfilename
             driver = gdal.GetDriverByName('VRT')
-            _vrtdataset = driver.CreateCopy(vrtfilename, gdalobj)
+            vrtdataset = driver.CreateCopy(vrtfilename, gdalobj)
 
-        if _vrtdataset is None:
+        if vrtdataset is None:
             raise ValueError('unable to open the GDAL virtual dataset: "%s"' %
                                             os.path.basename(vrtfilename))
-        return vrtfilename
+        return vrtfilename, vrtdataset
+
+    # Give items the same iterface of GDAL objects.
+    # NOTE: the widgets module doesn't need to import modelitems
+    def __getattr__(self, name):
+        if name in ('GetDriver', 'GetSubDatasets', ):
+            return getattr(self._obj, name)
+        return getattr(self._vrtobj, name)
+
+    def GetMetadata(self, domain=''):
+        # @TODO: handle domain.startswith('xml:') and domain == 'OVERVIEW'
+        if domain in ('IMAGE_STRUCTURE', 'SUBDATASETS'):
+            return self._obj.GetMetadata(domain)
+        return self._obj.GetMetadata(domain)
+
+    def GetMetadata_Dict(self, domain=''):
+        # @TODO: handle domain.startswith('xml:') and domain == 'OVERVIEW'
+        if domain in ('IMAGE_STRUCTURE', 'SUBDATASETS'):
+            return self._obj.GetMetadata_Dict(domain)
+        return self._obj.GetMetadata_Dict(domain)
+
+    def GetMetadata_List(self, domain=''):
+        # @TODO: handle domain.startswith('xml:') and domain == 'OVERVIEW'
+        if domain in ('IMAGE_STRUCTURE', 'SUBDATASETS'):
+            return self._obj.GetMetadata_List(domain)
+        return self._obj.GetMetadata_List(domain)
+
+    if hasattr(gdal.Dataset, 'GetMetadataItem'):
+        def GetMetadataItem(self, domain=''):
+            # @TODO: handle domain.startswith('xml:') and domain == 'OVERVIEW'
+            if domain in ('IMAGE_STRUCTURE', 'SUBDATASETS'):
+                return self._obj.GetMetadataItem(domain)
+            return self._obj.GetMetadataItem(domain)
+
+    def _setup_children(self):
+        self._setup_child_bands(self._vrtobj)
+        self._setup_child_subdatasets(self._obj)
 
     def reopen(self):
-        gdalobj = gdal.Open(self.vrtfilename, self._mode)
-        if gdalobj.RasterCount != self.RasterCount:
+        gdalobj = gdal.Open(self.vrtfilename, gdal.GA_Update)
+
+        if gdalobj.RasterCount < self.RasterCount:
             logging.warning('unable to reopen dataset: '
                             'unexpected number of raster bands')
             return
@@ -398,7 +447,9 @@ class CachedDatasetItem(DatasetItem):
             item = self.GetRasterBand(index)
             item._reopen(gdalobj.GetRasterBand(index))
 
-        self._obj = gdalobj
+        self._vrtobj = gdalobj
+
+        # @TODO: check
         #self.model().itemChanged(self)
         self.model().emit(QtCore.SIGNAL('itemChanged(QStandardItem*)'), self)
 
