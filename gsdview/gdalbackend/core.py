@@ -478,13 +478,19 @@ class GDALBackend(QtCore.QObject):
 
         #######################################################################
         ### BEGIN #############################################################
-        # @TODO: improve ptocessing tools handling and remove this workaround
-        if isinstance(item, modelitems.DatasetItem):
-            item = item.GetRasterBand(1)
-        if not isinstance(item.parent(), modelitems.CachedDatasetItem):
-            return
+        #missingOverviewLevels = gdalsupport.ovrComputeLevels(item)
 
-        missingOverviewLevels = gdalsupport.ovrComputeLevels(item)
+        if not isinstance(item, modelitems.DatasetItem):
+            dataset = item.parent()
+        else:
+            dataset = item
+        assert isinstance(dataset, modelitems.DatasetItem)
+        assert isinstance(dataset, modelitems.CachedDatasetItem)
+
+        # @WARNING: use dataset for levels computation because the
+        #           IMAGE_STRUCTURE metadata are not propagated from
+        #           CachedDatasetItem to raster bands
+        missingOverviewLevels = gdalsupport.ovrComputeLevels(dataset)
 
         # @NOTE: overviews are computed for all bands so I do this at
         #        application level, before a specific band is choosen.
@@ -512,7 +518,6 @@ class GDALBackend(QtCore.QObject):
             self._mainwin.statusBar().showMessage(
                                             'Quick look image generation ...')
 
-            dataset = item.parent()
             vrtfilename = dataset.vrtfilename
             args = [os.path.basename(vrtfilename)]
             args.extend(map(str, missingOverviewLevels))
