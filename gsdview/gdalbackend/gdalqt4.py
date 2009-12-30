@@ -81,7 +81,7 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
         ovrlevel = 1
         ovrindex = None
 
-        if levelOfDetail < 1 and band.GetOverviewCount() > 0:
+        if band.GetOverviewCount() > 0:
             reqlevel = 1. / levelOfDetail
             try:
                 ovrindex = gdalsupport.ovrBestIndex(band, reqlevel)
