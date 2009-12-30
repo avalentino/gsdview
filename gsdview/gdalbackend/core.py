@@ -456,18 +456,12 @@ class GDALBackend(QtCore.QObject):
         try:
             subwin = GraphicsViewSubWindow(item)    #self._mainwin.mdiarea)
             subwin.setWindowState(QtCore.Qt.WindowMaximized)
-            self.connect(
-                    self._mainwin.datamodel,
-                    QtCore.SIGNAL('rowsAboutToBeRemoved(const QModelIndex&, '
-                                  'int, int)'),
-                    subwin.onItemsClosed)
+
             self._mainwin.mdiarea.addSubWindow(subwin)
             self._mainwin.monitor.register(subwin.widget())
 
             self.connect(subwin, QtCore.SIGNAL('destroyed()'),
                          self._mainwin.subWindowClosed)
-                         #self._mainwin,
-                         #QtCore.SIGNAL('subWindowClosed()'))
 
             if maximized:
                 subwin.showMaximized()
@@ -553,7 +547,7 @@ class GDALBackend(QtCore.QObject):
     ### END ###################################################################
     ###########################################################################
 
-    # @TODO: Open, Masked bands, Compute statistics, Compute histogram
+    # @TODO: Open, Masked bands
     # @TODO: dataset --> Build overviews
 
     ### Overview ##############################################################
@@ -563,7 +557,7 @@ class GDALBackend(QtCore.QObject):
 from gsdview.mainwin import ItemSubWindow
 
 # @TODO: move elsewhere
-class GraphicsViewSubWindow(ItemSubWindow): #QtGui.QMdiSubWindow):
+class GraphicsViewSubWindow(ItemSubWindow):
 
     def __init__(self, item, parent=None, flags=QtCore.Qt.Widget):
         super(GraphicsViewSubWindow, self).__init__(item, parent, flags)
@@ -574,23 +568,3 @@ class GraphicsViewSubWindow(ItemSubWindow): #QtGui.QMdiSubWindow):
         graphicsview = QtGui.QGraphicsView(scene)
         graphicsview.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
         self.setWidget(graphicsview)
-
-    # @TODO: move elsewhere
-    # @FIXME: this sometimes causes an error:
-    #
-    # Traceback (most recent call last):
-    #   File "/home/antonio/projects/gsdview/hgsdview/gsdview/gdalbackend/core.py", line 584, in onItemsClosed
-    #     self.close()
-    # RuntimeError: underlying C/C++ object has been deleted
-    def onItemsClosed(self, modelindex, start, end):
-        if not modelindex.isValid():
-            return
-        parentitem = modelindex.model().itemFromIndex(modelindex)
-        if parentitem == self.item:
-            self.close()
-            return
-        for row in range(start, end+1):
-            item = parentitem.child(row)
-            if item == self.item:
-                self.close()
-                break

@@ -63,6 +63,7 @@ class MdiMainWindow(QtGui.QMainWindow):
     def subWindowClosed(self):
         self.emit(QtCore.SIGNAL('subWindowClosed()'))
 
+
 class ItemSubWindow(QtGui.QMdiSubWindow):
 
     def __init__(self, item, parent=None, flags=QtCore.Qt.Widget):
@@ -92,6 +93,10 @@ class ItemModelMainWindow(MdiMainWindow):
         self.connect(self.mdiarea,
                      QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
                      self.setActiveIndexFromWin)
+        self.connect(self.datamodel,
+                     QtCore.SIGNAL('rowsAboutToBeRemoved(const QModelIndex&, '
+                                   'int, int)'),
+                     self.onItemsClosed)
 
         # setup the treeview dock
         treeviewdock = QtGui.QDockWidget(self.tr('Data Browser'), self)
@@ -136,8 +141,19 @@ class ItemModelMainWindow(MdiMainWindow):
         else:
             self.treeview.setCurrentIndex(index)
 
+    def onItemsClosed(self, modelindex, start, end):
+        if not modelindex.isValid():
+            return
+        parentitem = modelindex.model().itemFromIndex(modelindex)
+        for row in range(start, end+1):
+            item = parentitem.child(row)
+            for subwin in self.mdiarea.subWindowList():
+                if subwin.item == parentitem:
+                    subwin.close()
+                    # just une window per item (??)
+                    break
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     from qt4support import geticon
     ### Test MdiMainWindow ####################################################
     def test_mdimainwin():
