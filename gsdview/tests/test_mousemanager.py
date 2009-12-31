@@ -26,7 +26,7 @@ class MainWin(QtGui.QMainWindow):
         self.setCentralWidget(self.graphicsview)
 
         self.mousemanager.register(self.graphicsview)
-        
+
         # File Actions
         self.fileactions = self._setupFileActions()
 
@@ -39,8 +39,13 @@ class MainWin(QtGui.QMainWindow):
         self.addToolBar(toolbar)
 
         # Mouse Actions
-        self.menuBar().addMenu(self.mousemanager.menu)
-        self.addToolBar(self.mousemanager.toolbar)
+        menu = QtGui.QMenu('Mouse')
+        menu.addActions(self.mousemanager.actions.actions())
+        self.menuBar().addMenu(menu)
+        
+        toolbar = QtGui.QToolBar('Mouse')
+        toolbar.addActions(self.mousemanager.actions.actions())
+        self.addToolBar(toolbar)
 
         # Help action
         self.helpactions = self._setupHelsActions()

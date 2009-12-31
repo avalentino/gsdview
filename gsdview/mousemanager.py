@@ -193,22 +193,17 @@ class MouseManager(QtCore.QObject):
         self._moderegistry = []
         self.actions = QtGui.QActionGroup(self)
         self.actions.setExclusive(True)
-
-        self.menu = QtGui.QMenu('Mouse')
-        self.menu.setObjectName('mousemenu')
-        self.toolbar = QtGui.QToolBar('Mouse')
-        self.toolbar.setObjectName('mousetoolbar')
         
         if stdmodes:
             self.registerStandardModes()
             
-    def registerStandardModes(self, addtogui=True):
+    def registerStandardModes(self):
         for mode in (PointerMode(), ScrollHandMode()): #, RubberBandMode()):
-            self.addMode(mode, addtogui)
+            self.addMode(mode)
         if len(self._moderegistry) and not self.actions.checkedAction():
             self.actions.actions()[0].setChecked(True)
         
-    def _newModeAction(self, mode, parent=None):
+    def _newModeAction(self, mode, parent):
         action = QtGui.QAction(mode.icon, self.tr(mode.label), parent)
         action.setCheckable(True)
         self.connect(action, QtCore.SIGNAL('triggered()'),
@@ -231,8 +226,6 @@ class MouseManager(QtCore.QObject):
         index = names.index(name)
         action = self.actions.actions()[index]
         self.actions.removeAction(action)
-        self.menu.removeAction(action)
-        self.toolbar.removeAction(action)
         del self._moderegistry[index]
         #~ if actin.checked() and self._moderegistry:
             #~ self.actions.actions()[0].setChecked(True)
@@ -242,12 +235,10 @@ class MouseManager(QtCore.QObject):
     def modes(self):
         return tuple(m.name for m in self._moderegistry)
 
-    def addMode(self, mode, addtogui=False):
+    def addMode(self, mode):
         action = self._newModeAction(mode, self.actions)
         self.actions.addAction(action)
         self._moderegistry.append(mode)
-        self.menu.addAction(action)
-        self.toolbar.addAction(action)
         
     def getModeDescriptor(self, name=None):
         '''Return the mouse mode object'''
