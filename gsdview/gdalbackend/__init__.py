@@ -43,8 +43,12 @@ DontUseExceptions = GDALBackend.DontUseExceptions
 _backendobj = None
 
 def init(mainwin):
+    import os
+    import sys
+    
     from osgeo import gdal
-
+    
+    from gsdview import utils
     from gsdview import qt4support
 
     from gsdview.gdalbackend import widgets
@@ -100,6 +104,27 @@ def init(mainwin):
                                                          #~ 'cache')))
     UseExceptions()
 
+    # Fix path for GDAL tools
+    if sys.platform == 'darwin':
+        gdaladdobin = utils.which('gdaladdo')
+        if not gdaladdobin:
+            frameworkroot = os.path.join(os.path.dirname(gdal.__file__), 
+                                         os.pardir, os.pardir, os.pardir)
+            frameworkroot = os.path.abspath(frameworkroot)
+            binpath = os.path.join(frameworkroot, 'unix', 'bin')
+            PATH = os.getenv('PATH', '')
+            if binpath not in PATH:
+                PATH = os.pathsep.join((binpath, PATH))
+                os.environ['PATH'] = PATH
+                
+                import logging
+                logging.info('GDAL binary path added to system path: %s' % 
+                                                                        binpath)
+    #elif sys.platform[:3] == 'win':
+    #    gdaladdobin = utils.which('gdaladdo')
+    #    if not gdaladdobin:
+    #        pass
+    
     return _backendobj
 
 
@@ -111,6 +136,7 @@ def _definefunc(methodname):
     func.__name__ = methodname
     return func
 
+
 # @TODO: check (maybe it is better to make it explicitly)
 globals_ = globals()
 for methodname in dir(GDALBackend):
@@ -119,8 +145,10 @@ for methodname in dir(GDALBackend):
         globals_[methodname] = _definefunc(methodname)
 del methodname, globals_, _definefunc
 
+
 def close(mainwin):
     saveSettings(mainwin.settings)
+
 
 def loadSettings(settings):
     import os
@@ -162,6 +190,7 @@ def loadSettings(settings):
             return
     finally:
         settings.endGroup()
+
 
 def saveSettings(settings):
     # @NOTE: GDAL preferences are only modified via preferences dialog

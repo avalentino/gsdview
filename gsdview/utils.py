@@ -29,6 +29,7 @@ __all__ = ['getresource']
 
 import os
 import sys
+import stat
 import platform
 import traceback
 import email.utils
@@ -62,6 +63,7 @@ def _getresource(resource, package):
         datadir = os.path.dirname(os.path.abspath(m.__file__))
         return os.path.join(datadir, resource)
 
+
 def getresource(resource, package=None):
     '''Return the resurce path.
 
@@ -93,6 +95,7 @@ def getresource(resource, package=None):
 
     return os.path.join(datadir, resource)
 
+
 def format_platform_info():
     platform_info = ['architecture: %s %s\n' % platform.architecture()]
     platform_info.append('platform: %s' % platform.platform())
@@ -108,6 +111,7 @@ def format_platform_info():
                                             platform.python_implementation())
 
     return platform_info
+
 
 def foramt_bugreport(exctype=None, excvalue=None, tracebackobj=None):
     if (exctype, excvalue, tracebackobj) == (None, None, None):
@@ -127,3 +131,43 @@ def foramt_bugreport(exctype=None, excvalue=None, tracebackobj=None):
     msg.extend(format_platform_info())
 
     return msg
+
+
+if sys.platform[:3] == 'win':
+    def isexecutable(cmd):
+        '''Check if "cmd" actually is an executable program.'''
+
+        cmd = cmd.lower()
+        if os.path.isfile(cmd) and cmd.endswith(('.exe', '.bat')):
+            return True
+        for ext in '.exe', '.bat':
+            if os.path.isfile(cmd + ext):
+                return True
+        return False
+else:
+    def isexecutable(cmd):
+        '''Check if "cmd" actually is an executable program.'''
+
+        if os.path.isfile(cmd):
+            mode = os.stat(cmd)[stat.ST_MODE]
+            if ((mode & stat.S_IXUSR) or (mode & stat.S_IXGRP) or
+                                                    (mode & stat.S_IXOTH)):
+                return True
+        return False
+
+
+def which(cmd, env=None):
+    '''Return the full path of the program (cnd) or None.
+
+    >>> which('ls')
+    '/bin/ls'
+
+    '''
+	
+    if not env:
+        env = os.environ
+
+    for dir_ in env.get('PATH', '').split(os.pathsep):
+        exe = os.path.join(dir_, cmd)
+        if isexecutable(exe):
+            return exe
