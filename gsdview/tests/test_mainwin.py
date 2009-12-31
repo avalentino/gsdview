@@ -255,7 +255,7 @@ class TestMdiMainWindow(MdiMainWindow):
                                          "contents to the clipboard"))
         self.connect(self.cutAct, QtCore.SIGNAL("triggered()"), self.cut)
 
-        icon = geticon('copy.svg', 'gsdview')
+        icon = geticon('copy.svg', 'gsdview.gdalbackend')
         self.copyAct = QtGui.QAction(icon, self.tr("&Copy"), self)
         self.copyAct.setShortcut(self.tr("Ctrl+C"))
         self.copyAct.setStatusTip(self.tr("Copy the current selection's "
