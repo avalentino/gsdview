@@ -19,10 +19,7 @@ class MainWin(QtGui.QMainWindow):
         self.mousemanager = MouseManager(self)
 
         self.scene = QtGui.QGraphicsScene(self)
-        #self.scene.installEventFilter(self.mousemanager)
         self.graphicsview = QtGui.QGraphicsView(self.scene, self)
-        #self.graphicsview.installEventFilter(self.mousemanager)
-        self.graphicsview.verticalScrollBar().installEventFilter(self.mousemanager)
         self.setCentralWidget(self.graphicsview)
 
         self.mousemanager.register(self.graphicsview)

@@ -280,12 +280,12 @@ class MouseManager(QtCore.QObject):
         
         obj.installEventFilter(self)
         
-        scene = None
         try:
-            scene = obj.scene()
+            obj.verticalScrollBar().installEventFilter(self)
         except AttributeError:
-            pass
-        else:
+            # it is a QGraphicsScene
+            scene = obj.scene()
+            
             # Avoid event filter duplication
             scene.removeEventFilter(self)
             scene.installEventFilter(self)
