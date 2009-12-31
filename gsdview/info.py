@@ -72,7 +72,7 @@ all_versions = [
                     'http://www.riverbankcomputing.co.uk/software/sip'),
     ('PyQt4', QtCore.PYQT_VERSION_STR,
                     'http://www.riverbankcomputing.co.uk/software/pyqt'),
-    ('Qt', QtCore.QT_VERSION_STR, 'http://www.trolltech.com/qt'), # @TODO: check QtCore.qVersio()
+    ('Qt', QtCore.QT_VERSION_STR, 'http://qt.nokia.com'), # @TODO: check QtCore.qVersio()
     ('numpy', numpy.version.version, 'http://www.scipy.org'),
     # @TODO: Qsci.QSCINTILLA_VERSION_STR
 ]
