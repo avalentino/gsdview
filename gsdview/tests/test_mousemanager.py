@@ -3,7 +3,8 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.join(os.pardir, os.pardir))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 
+                                                os.pardir, os.pardir)))
 
 from PyQt4 import QtCore, QtGui
 
@@ -18,12 +19,14 @@ class MainWin(QtGui.QMainWindow):
         self.mousemanager = MouseManager(self)
 
         self.scene = QtGui.QGraphicsScene(self)
-        self.scene.installEventFilter(self.mousemanager)
+        #self.scene.installEventFilter(self.mousemanager)
         self.graphicsview = QtGui.QGraphicsView(self.scene, self)
-        self.graphicsview.installEventFilter(self.mousemanager)
+        #self.graphicsview.installEventFilter(self.mousemanager)
         self.graphicsview.verticalScrollBar().installEventFilter(self.mousemanager)
         self.setCentralWidget(self.graphicsview)
 
+        self.mousemanager.register(self.graphicsview)
+        
         # File Actions
         self.fileactions = self._setupFileActions()
 
