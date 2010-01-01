@@ -13,12 +13,15 @@ gsdview.qt4support
    
       actionGroupToMenu
       actionGroupToToolbar
+      callExpensiveFunc
+      copyItemSelection
       geticon
       geticonfile
       getuifile
       getuiform
       numpy2qimage
       overrideCursor
+      selectAllItems
    
    
 

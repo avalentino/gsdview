@@ -11,15 +11,20 @@ Main Application
 
    gsdview
    gsdview.app
+   gsdview.appsite
+   gsdview.assistanthelper
    gsdview.graphicsview
    gsdview.gsdtools
    gsdview.info
    gsdview.launch
    gsdview.mainwin
+   gsdview.mousemanager
    gsdview.pluginmanager
    gsdview.qt4support
+   gsdview.qtwindowlistmenu
    gsdview.utils
    gsdview.widgets
+
    gsdview.gdalbackend
    gsdview.gdalbackend.core
    gsdview.gdalbackend.gdalexectools
@@ -28,11 +33,11 @@ Main Application
    gsdview.gdalbackend.info
    gsdview.gdalbackend.modelitems
    gsdview.gdalbackend.widgets
+
    exectools
    exectools.exectools
    exectools.gtktools
    exectools.qt4tools
-
 
 ..
    gsdview.exectools.recipe_440544

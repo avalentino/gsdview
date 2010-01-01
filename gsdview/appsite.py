@@ -22,13 +22,14 @@
 '''Site configuration module.
 
 :DATADIR: system configuration, auxdata, images, etc.
-:DOCDIR: doumentation
+:DOCSDIR: doumentation
 :LICENSEFILE: license file
 :SYSPLUGINSDIR: system plugins directory
+:USERCONFIGDIR: user configuration directory (default `~/.gsdview`)
 
 '''
 
-__all__ = ['DATADIR', 'DOCDIR', 'LICENSEFILE', 'SYSPLUGINSDIR', 'USERCFGDIR']
+__all__ = ['DATADIR', 'DOCSDIR', 'LICENSEFILE', 'SYSPLUGINSDIR', 'USERCONFIGDIR']
 
 
 import os

@@ -67,35 +67,35 @@ class QtWindowListMenu(QtGui.QMenu):
 
     .. seealso:: QMdiArea, QMdiSubWindow, QMenuBar, QAction
 
-    .. enum:: StandardAction
+    The *StandardAction* enumeration specifies the standard menu items
+    of a QtWindowListMenu.
 
-    This enum specifies the standard menu items of a QtWindowListMenu.
-
-    * CloseAction
-    * CloseAllAction
-    * TileAction
-    * CascadeAction
-    * NextAction
-    * PrevAction
+    :Enum:
+      * CloseAction
+      * CloseAllAction
+      * TileAction
+      * CascadeAction
+      * NextAction
+      * PrevAction
 
     .. seealso:: standardAction()
 
     :Methods:
 
-    * QtWindowListMenu(QWidget *parent = 0)
-    * attachToMdiArea(QMdiArea *mdiArea)
-    * QMdiArea *attachedMdiArea() const
-    * setWindowIcon(const QMdiSubWindow *window, const QIcon &icon)
-    * QIcon windowIcon(const QMdiSubWindow *window) const
-    * setDefaultIcon(const QIcon &icon)
-    * QIcon defaultIcon() const
-    * QAction *standardAction(StandardAction item) const
+      * QtWindowListMenu(QWidget \*parent = 0)
+      * attachToMdiArea(QMdiArea \*mdiArea)
+      * QMdiArea \*attachedMdiArea() const
+      * setWindowIcon(const QMdiSubWindow \*window, const QIcon &icon)
+      * QIcon windowIcon(const QMdiSubWindow \*window) const
+      * setDefaultIcon(const QIcon &icon)
+      * QIcon defaultIcon() const
+      * QAction \*standardAction(StandardAction item) const
 
-    :protected SLOTS:
+    :SLOTS:
 
-    * syncWithMdiArea()
-    * activateWindow(QAction *act)
-    * windowDestroyed(QObject *obj)
+      * syncWithMdiArea()
+      * activateWindow(QAction \*act)
+      * windowDestroyed(QObject \*obj)
 
     '''
 

@@ -12,6 +12,7 @@ gsdview.gdalbackend.gdalqt4
    .. autosummary::
    
       GDALTypeCodeToNumericTypeCode
+      gdalcolorentry2qcolor
       numpy2qimage
    
    

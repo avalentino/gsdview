@@ -11,11 +11,13 @@ gsdview.gdalbackend.gdalsupport
 
    .. autosummary::
    
+      colortable2numpy
       coordinate_mapper
       gdalFilters
       getDriverList
       isRGB
       ovrBestIndex
+      ovrComputeLevels
       ovrLevelAdjust
       ovrLevelForSize
       ovrLevels

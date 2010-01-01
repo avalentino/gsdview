@@ -1,0 +1,28 @@
+gsdview.mousemanager
+====================
+
+.. automodule:: gsdview.mousemanager
+   :members:
+   :undoc-members:
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MouseManager
+      MouseMode
+      PointerMode
+      RubberBandMode
+      ScrollHandMode
+   
+   
+
+   
+   
+   

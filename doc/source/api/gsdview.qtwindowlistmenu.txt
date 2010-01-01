@@ -1,0 +1,24 @@
+gsdview.qtwindowlistmenu
+========================
+
+.. automodule:: gsdview.qtwindowlistmenu
+   :members:
+   :undoc-members:
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      QtWindowListMenu
+   
+   
+
+   
+   
+   

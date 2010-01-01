@@ -28,10 +28,12 @@ gsdview.widgets
       ExceptionDialogBase
       FileEntryWidget
       GSDViewExceptionDialog
+      GSDViewExceptionDialogBase
       GeneralPreferencesPage
       GeneralPreferencesPageBase
       PreferencesDialog
       PreferencesDialogBase
+      QsciExceptionDialog
    
    
 

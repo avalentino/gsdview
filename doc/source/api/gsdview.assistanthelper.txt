@@ -1,0 +1,24 @@
+gsdview.assistanthelper
+=======================
+
+.. automodule:: gsdview.assistanthelper
+   :members:
+   :undoc-members:
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Assistant
+   
+   
+
+   
+   
+   

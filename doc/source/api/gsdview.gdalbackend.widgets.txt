@@ -12,8 +12,6 @@ gsdview.gdalbackend.widgets
    .. autosummary::
    
       get_filedialog
-      geticon
-      getuiform
    
    
 
@@ -32,6 +30,8 @@ gsdview.gdalbackend.widgets
       GDALInfoWidgetBase
       GDALPreferencesPage
       GDALPreferencesPageBase
+      HistogramConfigDialog
+      HistogramConfigDialogBase
       MajorObjectInfoDialog
    
    

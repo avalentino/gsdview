@@ -693,7 +693,7 @@ def ovrRead(dataset, x=0, y=0, w=None, h=None, ovrindex=None,
 
     This function read a data block from the overview corresponding to
     *ovrindex* for all *bcount* raster bands starting drom the
-    *bstart*th one.
+    *bstart*\ th one.
 
     Parameters:
 
