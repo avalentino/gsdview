@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2009 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -20,12 +20,12 @@
 
 '''Mouse manager for the Qt4 graphics framework.
 
-Mouse management for the Qt4 graphics framework is implemented by a set 
-of MouseMode objects, that provide specific event handlers and behave 
-like a descriptor, and a manager object that catches mouse events and 
+Mouse management for the Qt4 graphics framework is implemented by a set
+of MouseMode objects, that provide specific event handlers and behave
+like a descriptor, and a manager object that catches mouse events and
 dispatch them to the appropriate hendler.
 
-The MouseManager provides methods for eddeing/removing mouse modes, 
+The MouseManager provides methods for eddeing/removing mouse modes,
 making the system expandible, and also methods to register objects
 (QGraphicsScene and QGraphicsView) to be controlled.
 
@@ -43,10 +43,10 @@ from gsdview import qt4support
 
 class MouseMode(QtCore.QObject):
     '''Base class for mouse mode desctiptors.
-    
+
     Qt Graphics Framework mouse mode descriptors define some basic
     property for mouse related matters:
-    
+
     - cursor
     - dragmode
     - eventFilter
@@ -55,20 +55,20 @@ class MouseMode(QtCore.QObject):
     - icon
 
     The first three properties (not to be intender as python progremming
-    language property) are strongly characterizing of the way the mouse 
+    language property) are strongly characterizing of the way the mouse
     works.
-    
-    In particular the eventFilter method is used to filter all events 
+
+    In particular the eventFilter method is used to filter all events
     coming from graphics scenes an graphics views.
-    
+
     .. note:: in order to work properly the eventFilter should be installed
-              on both graphics scene and view and also on the scrollbars of 
-              the graphics view. 
+              on both graphics scene and view and also on the scrollbars of
+              the graphics view.
               So please always use the register method of MouseManager for
               a proper installaton of al event filters.
-    
+
     '''
-    
+
     dragmode = QtGui.QGraphicsView.NoDrag
     cursor = None
     icon = QtGui.QIcon()
@@ -77,19 +77,19 @@ class MouseMode(QtCore.QObject):
 
     def eventFilter(self, obj, event):
         '''Basic implementation of the eventFilter method.
-        
+
         The dafault implementation makes some basic operation such setting
         the mouse cursor anc dispatch the event to specific methods:
-        
+
         - sceneEventFilter
         - viewEventFilter
         - scrollbarEventFilter
-        
-        In most of the cases derived classes only need to specialize one or 
+
+        In most of the cases derived classes only need to specialize one or
         more of this specific methods.
-        
+
         '''
-        
+
         if isinstance(obj, QtGui.QGraphicsScene):
             return self.sceneEventFilter(obj, event)
         elif isinstance(obj, QtGui.QGraphicsView):
@@ -193,16 +193,16 @@ class MouseManager(QtCore.QObject):
         self._moderegistry = []
         self.actions = QtGui.QActionGroup(self)
         self.actions.setExclusive(True)
-        
+
         if stdmodes:
             self.registerStandardModes()
-            
+
     def registerStandardModes(self):
         for mode in (PointerMode(), ScrollHandMode()): #, RubberBandMode()):
             self.addMode(mode)
         if len(self._moderegistry) and not self.actions.checkedAction():
             self.actions.actions()[0].setChecked(True)
-        
+
     def _newModeAction(self, mode, parent):
         action = QtGui.QAction(mode.icon, self.tr(mode.label), parent)
         action.setCheckable(True)
@@ -239,7 +239,7 @@ class MouseManager(QtCore.QObject):
         action = self._newModeAction(mode, self.actions)
         self.actions.addAction(action)
         self._moderegistry.append(mode)
-        
+
     def getModeDescriptor(self, name=None):
         '''Return the mouse mode object'''
 
@@ -266,26 +266,26 @@ class MouseManager(QtCore.QObject):
         '''Events dispatcher'''
 
         return self.getModeDescriptor().eventFilter(obj, event)
-    
+
     def register(self, obj):
         '''Register a Qt graphics object to be monitored by the mouse manager.
-        
+
         QGraphicsScene and QGrapgicsViews (and descending classes) objects
         can be registered to be monitored by the mouse manager.
-        
-        Scene objects associated to views (passes as argument) are 
+
+        Scene objects associated to views (passes as argument) are
         automatically registered.
 
         '''
-        
+
         obj.installEventFilter(self)
-        
+
         try:
             obj.verticalScrollBar().installEventFilter(self)
         except AttributeError:
             # it is a QGraphicsScene
             scene = obj.scene()
-            
+
             if scene:
                 # Avoid event filter duplication
                 scene.removeEventFilter(self)
@@ -293,15 +293,14 @@ class MouseManager(QtCore.QObject):
 
     def unregister(self, obj):
         '''Unregister monitored objects.
-        
-        If the object passed as argument is not a registered object 
+
+        If the object passed as argument is not a registered object
         nothing happens.
-        
-        .. note:: this method never tries to unregister scene objects 
+
+        .. note:: this method never tries to unregister scene objects
                   associated to the view passed as argument.
-                  
+
         '''
-        
+
         obj.removeEventFilter(self)
-    
-        
+

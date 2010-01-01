@@ -4,14 +4,14 @@ A Sphinx theme for SourceForge hosted projects
 :Author: Antonio Valentino
 :Contact: a_valentino@users.sf.net
 :Version: 1.0
-:Copyright (C): 2009 Antonio Valentino
+:Copyright (C): 2009-2010 Antonio Valentino
 
 
-All `SourceForge.net`_ projects that use the `SourceForge.net`_ project web 
-services are required to display the `SourceForge.net`_ logo on all web pages, 
+All `SourceForge.net`_ projects that use the `SourceForge.net`_ project web
+services are required to display the `SourceForge.net`_ logo on all web pages,
 per the `Project Web, Shell and Database Services`__ site document.
 
-It is also common practice for SF hosted projects to display links to the 
+It is also common practice for SF hosted projects to display links to the
 *SF project page*, *SF downloads page*, etc, in the project website.
 
 .. _`SourceForge.net`: http://sourceforge.net
@@ -31,21 +31,21 @@ Summary of changes against the standard theme
 SourceForge project info
 ------------------------
 
-The *unixname* and the *groupid*, of the project are needed to compute the 
+The *unixname* and the *groupid*, of the project are needed to compute the
 project paths on `SourceForge.net`_ site.
-It is strongly recommended to to provide both *unixname* and *groupid* 
+It is strongly recommended to to provide both *unixname* and *groupid*
 parameters.
-It can be done by setting the `html_theme_options` in the documentation 
+It can be done by setting the `html_theme_options` in the documentation
 `conf.py` as shown in the following example::
 
     html_theme_options = {
         'unixname': 'gsdview',
         'groupid': '226458',
     }
-    
+
 If the *unixname* is not provided it is assumed: unixname = lower(project)
 
-.. warning:: if the *groupid* is not provided links needing it, and **SF logo** 
+.. warning:: if the *groupid* is not provided links needing it, and **SF logo**
              are not displayed.
 
 
@@ -70,20 +70,20 @@ The sidebar *links* section
 ---------------------------
 
 The *sporceforge* theme provides a custom html template for sidebars.
-It adds to the sidebar a `Links` section with standard links to SF hosted 
+It adds to the sidebar a `Links` section with standard links to SF hosted
 project pages and an optional list of user provided additional links.
 
-In order to display the customized sidebar, and the hence SF links, 
+In order to display the customized sidebar, and the hence SF links,
 the `sfpagesidebar.html` template ave to be associated to the target document
 using the `html_sidebars` optionin the `conf.py` file::
 
     html_sidebars = {'index': 'sfpagesidebar.html'}
 
-`SourceForge.net`_ also provides `hosted apps`_, a number of well-written 
-Open Source applications which are useful to developers for personal use and 
+`SourceForge.net`_ also provides `hosted apps`_, a number of well-written
+Open Source applications which are useful to developers for personal use and
 critical to meeting the needs of Open Source software development projects.
 
-If the project provides a trac_ site hosted on `SourceForge.net`_ it is 
+If the project provides a trac_ site hosted on `SourceForge.net`_ it is
 possible to include a link pointing to it in the sidebar using the `hastrac`
 theme option::
 
@@ -94,7 +94,7 @@ theme option::
 .. _`hosted apps`: https://sourceforge.net/apps/trac/sourceforge/wiki/Hosted%20Apps
 .. _trac: http://trac.edgewall.org
 
-Additional links can be specified using the `extralinks` theme option:: 
+Additional links can be specified using the `extralinks` theme option::
 
     html_theme_options = {
         'extralinks': [
@@ -102,7 +102,7 @@ Additional links can be specified using the `extralinks` theme option::
         ],
     }
 
-It is also possible to suppress *SF project linksé and  display only 
+It is also possible to suppress *SF project linksé and  display only
 *extralinks* by using the `nosflinks` option::
 
     html_theme_options = {
@@ -113,7 +113,7 @@ It is also possible to suppress *SF project linksé and  display only
 A common example
 ----------------
 
-Here it is a summery of options to set in the `conf.py` file in order to use 
+Here it is a summery of options to set in the `conf.py` file in order to use
 the *sourceforge* sphinx theme::
 
     html_theme = 'sourceforge'

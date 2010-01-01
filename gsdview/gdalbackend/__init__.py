@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2009 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -45,9 +45,9 @@ _backendobj = None
 def init(mainwin):
     import os
     import sys
-    
+
     from osgeo import gdal
-    
+
     from gsdview import utils
     from gsdview import qt4support
 
@@ -108,7 +108,7 @@ def init(mainwin):
     if sys.platform == 'darwin':
         gdaladdobin = utils.which('gdaladdo')
         if not gdaladdobin:
-            frameworkroot = os.path.join(os.path.dirname(gdal.__file__), 
+            frameworkroot = os.path.join(os.path.dirname(gdal.__file__),
                                          os.pardir, os.pardir, os.pardir)
             frameworkroot = os.path.abspath(frameworkroot)
             binpath = os.path.join(frameworkroot, 'unix', 'bin')
@@ -116,15 +116,15 @@ def init(mainwin):
             if binpath not in PATH:
                 PATH = os.pathsep.join((binpath, PATH))
                 os.environ['PATH'] = PATH
-                
+
                 import logging
-                logging.info('GDAL binary path added to system path: %s' % 
+                logging.info('GDAL binary path added to system path: %s' %
                                                                         binpath)
     #elif sys.platform[:3] == 'win':
     #    gdaladdobin = utils.which('gdaladdo')
     #    if not gdaladdobin:
     #        pass
-    
+
     return _backendobj
 
 

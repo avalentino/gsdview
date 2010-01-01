@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2009 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -163,7 +163,7 @@ def which(cmd, env=None):
     '/bin/ls'
 
     '''
-	
+
     if not env:
         env = os.environ
 

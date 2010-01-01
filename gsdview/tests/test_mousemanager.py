@@ -1,9 +1,28 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+
+### This file is part of exectools.
+
+### This module is free software; you can redistribute it and/or modify
+### it under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 2 of the License, or
+### (at your option) any later version.
+
+### This module is distributed in the hope that it will be useful,
+### but WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+### GNU General Public License for more details.
+
+### You should have received a copy of the GNU General Public License
+### along with this module; if not, write to the Free Software
+### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                 os.pardir, os.pardir)))
 
 from PyQt4 import QtCore, QtGui
@@ -39,7 +58,7 @@ class MainWin(QtGui.QMainWindow):
         menu = QtGui.QMenu('Mouse')
         menu.addActions(self.mousemanager.actions.actions())
         self.menuBar().addMenu(menu)
-        
+
         toolbar = QtGui.QToolBar('Mouse')
         toolbar.addActions(self.mousemanager.actions.actions())
         self.addToolBar(toolbar)
@@ -107,7 +126,7 @@ class MainWin(QtGui.QMainWindow):
         title = self.tr('MouseManager Example')
         text = ['<h1>Mouse Manager</h1>'
                 '<p>Example program for the Mouse manager component.</p>',
-                '<p>Copyright (C): 2009 '
+                '<p>Copyright (C): 2009-2010 '
                 '<a href="mailto:a_valentino@users.sf.net">'
                     'Antonio Valentino'
                 '<a>.</p>']

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2009 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -401,7 +401,7 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
                  parent=None, flags=QtCore.Qt.Widget, fill=True): # QtCore.Qt.Dialog
         super(ExceptionDialog, self).__init__(parent, flags)
         self.setupUi(self)
-        
+
         closebutton = self.buttonBox.button(QtGui.QDialogButtonBox.Close)
         closebutton.setDefault(True)
 
@@ -437,13 +437,13 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
         self.connect(self.textLabel,
                      QtCore.SIGNAL('linkActivated(const QString&)'),
                      self._linkActivated)
-                     
+
         if fill:
             if not self._excInfoSet():
                 self.setExcInfo(*sys.exc_info())
             else:
                 self._fill()
-            
+
     def _linkActivated(self, link):
         if 'mailto' in str(link):
             self.sendBugReport()
@@ -462,7 +462,7 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
 
     def _setTracebackText(self, text):
         self.tracebackTextEdit.document().setPlainText(text)
-                
+
     def setTraceback(self, tb):
         if not isinstance(tb, basestring):
             self.tracebackobj = tb
@@ -566,11 +566,11 @@ try:
 
         def __init__(self, exctype=None, excvalue=None, tracebackobj=None,
                      parent=None, flags=QtCore.Qt.Widget): # QtCore.Qt.Dialog
-  
-            super(QsciExceptionDialog, self).__init__(exctype, excvalue, 
-                                                      tracebackobj, 
+
+            super(QsciExceptionDialog, self).__init__(exctype, excvalue,
+                                                      tracebackobj,
                                                       parent, flags, False)
-                                                      
+
             self.groupboxVerticalLayout.removeWidget(self.tracebackTextEdit)
             self.tracebackTextEdit.setParent(None)
             del self.tracebackTextEdit
@@ -604,13 +604,13 @@ try:
 
         def _setTracebackText(self, text):
             self.tracebackTextEdit.setText(text)
-    
+
     GSDViewExceptionDialogBase = QsciExceptionDialog
-                
+
 except ImportError:
     GSDViewExceptionDialogBase = ExceptionDialog
 
-            
+
 class GSDViewExceptionDialog(GSDViewExceptionDialogBase):
     def __init__(self, *args, **kwargs):
         super(GSDViewExceptionDialog, self).__init__(*args, **kwargs)
