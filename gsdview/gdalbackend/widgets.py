@@ -65,7 +65,6 @@ class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
         #hheader.resizeSections(QtGui.QHeaderView.ResizeToContents)
         fontinfo = QtGui.QFontInfo(tablewidget.font())
         hheader.setDefaultSectionSize(10*fontinfo.pixelSize())
-        hheader.setStretchLastSection(True)
 
         sortingenabled = tablewidget.isSortingEnabled()
         tablewidget.setSortingEnabled(False)
@@ -178,9 +177,7 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
                 self._extraoptions[key] = value
 
         hheader = self.extraOptTableWidget.horizontalHeader()
-        #hheader.hide()
         hheader.resizeSections(QtGui.QHeaderView.ResizeToContents)
-        hheader.setStretchLastSection(True)
 
     def showinfo(self):
         dialog = QtGui.QDialog(self)
@@ -373,9 +370,6 @@ class MajorObjectInfoDialog(QtGui.QDialog):
             tablewidget.setItem(row, 1, QtGui.QTableWidgetItem(value))
 
         # Fix table header behaviour
-        header = tablewidget.horizontalHeader()
-        #~ header.resizeSections(QtGui.QHeaderView.ResizeToContents)
-        header.setStretchLastSection(True)
         tablewidget.setSortingEnabled(sortingenabled)
 
     @staticmethod
@@ -384,8 +378,6 @@ class MajorObjectInfoDialog(QtGui.QDialog):
                                 for col in range(tablewidget.columnCount())]
         tablewidget.clear()
         tablewidget.setHorizontalHeaderLabels(labels)
-        header = tablewidget.horizontalHeader()
-        header.setStretchLastSection(True)
         #tablewidget.setRowCount(0)
 
     @staticmethod
@@ -890,8 +882,6 @@ p, li { white-space: pre-wrap; }
 
         self._cleartable(tablewidget)
         if not gcplist:
-            header = tablewidget.horizontalHeader()
-            header.setStretchLastSection(True)
             return
 
         self.gcpsNumValue.setText(str(len(gcplist)))
@@ -911,9 +901,6 @@ p, li { white-space: pre-wrap; }
             #~ item.setToolTip(1, gcp.Info)
 
         # Fix table header behaviour
-        header = tablewidget.horizontalHeader()
-        #~ header.resizeSections(QtGui.QHeaderView.ResizeToContents)
-        header.setStretchLastSection(True)
         tablewidget.setSortingEnabled(sortingenabled)
 
 

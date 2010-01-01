@@ -715,6 +715,9 @@ Normally only present when the number of bits is non-standard for the datatype, 
            <property name="toolTip">
             <string>GDAL Metadata domain</string>
            </property>
+           <property name="editable">
+            <bool>true</bool>
+           </property>
            <item>
             <property name="text">
              <string/>
@@ -801,9 +804,6 @@ Normally only present when the number of bits is non-standard for the datatype, 
          <property name="sortingEnabled">
           <bool>true</bool>
          </property>
-         <attribute name="horizontalHeaderStretchLastSection">
-          <bool>true</bool>
-         </attribute>
          <attribute name="horizontalHeaderStretchLastSection">
           <bool>true</bool>
          </attribute>

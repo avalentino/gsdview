@@ -590,6 +590,9 @@ OpenGIS WKT format.</string>
          </item>
          <item>
           <widget class="QComboBox" name="domainComboBox">
+           <property name="editable">
+            <bool>true</bool>
+           </property>
            <item>
             <property name="text">
              <string/>
@@ -848,6 +851,12 @@ OpenGIS WKT format.</string>
             <property name="horizontalScrollMode">
              <enum>QAbstractItemView::ScrollPerPixel</enum>
             </property>
+            <attribute name="horizontalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
+            <attribute name="horizontalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
             <column>
              <property name="text">
               <string>Pixel</string>
