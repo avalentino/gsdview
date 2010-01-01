@@ -656,6 +656,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
                 qt4support.callExpensiveFunc(band.GetDefaultHistogram)
                                         #callback=None, callback_data=None)
 
+            self.computeHistogramButton.setEnabled(False)
             self._setupStatistics(band)
             self._setupHistogram(band)
 
@@ -676,9 +677,11 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
             return
 
         if gdal.VersionInfo() < '1700':
-            if self.computeHistogramButton.enabled() == False:
+            if self.computeHistogramButton.isEnabled() == False:
                 # Histogram already computed
                 hist = band.GetDefaultHistogram()
+            else:
+                hist = None
         else:
             # @WARNING: causes a crash in GDAL < 1.7.0 (r18405)
             # @SEEALSO: http://trac.osgeo.org/gdal/ticket/3304
@@ -703,7 +706,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
                                     QtGui.QTableWidgetItem(str(stop)))
                 tablewidget.setItem(row, 2,
                                     QtGui.QTableWidgetItem(str(hist[row])))
-            self.computeHistogramButton.setEnabled(False)   # @TODO: check
+            self.computeHistogramButton.setEnabled(False)
 
             # @TODO: plotting
         else:
@@ -740,6 +743,8 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
             self.ctInterpretationValue.setText('')
             self.colorsNumberValue.setText('')
             self._cleartable(tablewidget)
+            # Disable the color table tab
+            self.tabWidget.setTabEnabled(3, False)
             return
 
         ncolors = colortable.GetCount()

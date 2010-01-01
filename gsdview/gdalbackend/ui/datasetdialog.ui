@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>531</width>
-    <height>568</height>
+    <height>608</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,50 +35,49 @@
       <attribute name="toolTip">
        <string>General information about the dataset.</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout">
+      <layout class="QVBoxLayout" name="infoTabVerticalLayout">
        <item>
-        <layout class="QHBoxLayout" name="infoHorizontalLayout">
-         <item>
-          <widget class="QGroupBox" name="infoGroupBox">
-           <property name="title">
-            <string>Info</string>
-           </property>
-           <layout class="QFormLayout" name="infoFormLayout">
-            <item row="0" column="0">
-             <widget class="QLabel" name="descriptionLabel">
-              <property name="text">
-               <string>Description:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="rasterCountLabel">
-              <property name="text">
-               <string>Raster count:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLabel" name="rasterCountValue">
-              <property name="text">
-               <string>raster count value</string>
-              </property>
-              <property name="textInteractionFlags">
-               <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="descriptionValue">
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-        </layout>
+        <widget class="QGroupBox" name="infoGroupBox">
+         <property name="title">
+          <string>Info</string>
+         </property>
+         <layout class="QFormLayout" name="infoFormLayout">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::ExpandingFieldsGrow</enum>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="descriptionLabel">
+            <property name="text">
+             <string>Description:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="rasterCountLabel">
+            <property name="text">
+             <string>Raster count:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLabel" name="rasterCountValue">
+            <property name="text">
+             <string>raster count value</string>
+            </property>
+            <property name="textInteractionFlags">
+             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="descriptionValue">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="imageHorizontalLayout">
@@ -683,9 +682,6 @@ OpenGIS WKT format.</string>
          <attribute name="horizontalHeaderStretchLastSection">
           <bool>true</bool>
          </attribute>
-         <attribute name="horizontalHeaderStretchLastSection">
-          <bool>true</bool>
-         </attribute>
          <column>
           <property name="text">
            <string>Name</string>
@@ -1091,9 +1087,6 @@ p, li { white-space: pre-wrap; }
             <property name="sortingEnabled">
              <bool>true</bool>
             </property>
-            <attribute name="horizontalHeaderStretchLastSection">
-             <bool>true</bool>
-            </attribute>
             <attribute name="horizontalHeaderStretchLastSection">
              <bool>true</bool>
             </attribute>
