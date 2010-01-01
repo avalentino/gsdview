@@ -459,6 +459,7 @@ class GDALBackend(QtCore.QObject):
 
             self._mainwin.mdiarea.addSubWindow(subwin)
             self._mainwin.monitor.register(subwin.widget())
+            self._mainwin.mousemanager.register(subwin.widget())
 
             self.connect(subwin, QtCore.SIGNAL('destroyed()'),
                          self._mainwin.subWindowClosed)
@@ -566,5 +567,4 @@ class GraphicsViewSubWindow(ItemSubWindow):
 
         scene = item.scene
         graphicsview = QtGui.QGraphicsView(scene)
-        graphicsview.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
         self.setWidget(graphicsview)

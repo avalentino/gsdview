@@ -39,6 +39,7 @@ from gsdview import info
 from gsdview import utils
 from gsdview import qt4support
 from gsdview import graphicsview
+from gsdview import mousemanager
 from gsdview import pluginmanager
 
 from gsdview.mainwin import ItemModelMainWindow
@@ -74,8 +75,9 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
     - pluginmanager
     - backends
 
-    - controller
-    - montior
+    - controller        external tool controller
+    - monitor           graphics scenes/views monitor
+    - mousemanager      mouse manager for graphics scenes/views
 
     - mdiarea           (inherited from MdiMainWindow)
     - datamodel         (inherited from ItemModelMainWindow)
@@ -93,10 +95,6 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         title = self.tr('GSDView Open Source Edition v. %1').arg(info.version)
         self.setWindowTitle(title)
         self.setObjectName('gsdview-mainwin')
-
-        # GraphicsViewMonitor
-        logger.debug('Setting up "monitor" component ...')
-        self.monitor = graphicsview.GraphicsViewMonitor()
 
         # Dialogs
         logger.debug('Setting up file dialog ...')
@@ -118,11 +116,17 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         self.statusBar().addPermanentWidget(self.progressbar)
         self.progressbar.hide()
 
+        # Miscellanea
         logger.debug('Miscellanea setup ...')
         self.cachedir = None
 
+        # GraphicsViewMonitor and mouse manager
+        logger.debug('Setting up "monitor" components ...')
+        self.monitor = graphicsview.GraphicsViewMonitor()
+        self.mousemanager = mousemanager.MouseManager(self)
+        self.mousemanager.mode = 'hand'
+
         # Plugin Manager
-        #self.plugins = {}
         self.backends = []
         self.pluginmanager = pluginmanager.PluginManager(self, SYSPLUGINSDIR)
         self.preferencesdialog.addPage(
@@ -162,6 +166,12 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         # File menu end toolbar
         self._addMenuFromActions(self.fileActions, self.tr('&File'))
         self._addToolBarFromActions(self.fileActions, self.tr('File toolbar'))
+                                    
+        # Image menu and toolbar
+        self.imagemenu = self._addMenuFromActions(self.mousemanager.actions, 
+                                                  self.tr('&Image'))
+        self._addToolBarFromActions(self.mousemanager.actions, 
+                                    self.tr('Mouse toolbar'))
 
         # Setup plugins
         logger.debug(self.tr('Setup plugins ...'))

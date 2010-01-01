@@ -46,12 +46,9 @@ __version__ = info.__version__
 
 def init(mainwin):
     zoomTool = ZoomTool(mainwin)
-    mainwin.menuBar().addMenu(zoomTool.menu)
+    mainwin.imagemenu.addSeparator()
+    mainwin.imagemenu.addActions(zoomTool.actions.actions())
     mainwin.addToolBar(zoomTool.toolbar)
-
-    # @TODO: check the API / use QWidget.findChild(name)
-    #mainwin.menuBar().insertMenu(mainwin.helpMenu, zoomTool.menu)
-    #mainwin.insertToolBar(mainwin.helpToolBar, zoomTool.toolbar)
 
     zoomTool.actions.setEnabled(False)
     zoomTool.connect(mainwin.mdiarea,
