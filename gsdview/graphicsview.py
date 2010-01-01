@@ -147,8 +147,9 @@ class GraphicsViewMonitor(QtCore.QObject):
         # Many views can refer to the same scene so before installing a new
         # event filter old ones are removed
         scene = graphicsview.scene()
-        scene.removeEventFilter(self)
-        scene.installEventFilter(self)
+        if scene:
+            scene.removeEventFilter(self)
+            scene.installEventFilter(self)
 
     ### SIGNALS ###############################################################
     def scrolled(self, graphicsview):

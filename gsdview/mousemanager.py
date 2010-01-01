@@ -286,9 +286,10 @@ class MouseManager(QtCore.QObject):
             # it is a QGraphicsScene
             scene = obj.scene()
             
-            # Avoid event filter duplication
-            scene.removeEventFilter(self)
-            scene.installEventFilter(self)
+            if scene:
+                # Avoid event filter duplication
+                scene.removeEventFilter(self)
+                scene.installEventFilter(self)
 
     def unregister(self, obj):
         '''Unregister monitored objects.
