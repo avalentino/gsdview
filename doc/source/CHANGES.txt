@@ -17,17 +17,36 @@ Changes from 0.6.0 to 0.6.1 (in development)
 * Basic support for RGB views (`#1`_)
 * Use global exception hook to catch un-handled exceptions (close `#11`_).
   An error dialog is showed and the application quits.
-
-* New mouse manager component (`#24`_).
+* New mouse manager component (`#24`_)
+* Strongly improved GDAL info dialogs (enhancement ˆ#22ˆ_).
+  Now dialogs show more info including:
+  
+  - image structure metadata
+  - histograms (only in table form at the moment) 
+  - color tables
+  - metadata for ˆIMAGE_STRUCTUREˆ, ˆSUBDATASETSˆ and ˆRPCˆ domains 
+    (standard domain was already available)
+  
+* Auto detect GDAL framework binaries  on Mac OS X (close ˆ#20ˆ_)
+* Reduced a bit the time required for datasets opening (see ˆ#12ˆ_)
+* Improved the algorithm to determine the overview levels to compute at 
+  band opening time (see ˆ#23ˆ_)
 * Now it is possible to pre-compile UI files into python modules and use
   generated modules to set the GUI up.
   If pre-compiled python forms are not available the GUI is set up using 
   Qt UI files directly.
-* Bug fix
+* Bug fix (ˆ#15ˆ_, ˆ#21ˆ_, ˆ#31ˆ_)
 
 .. _`#1`: https://sourceforge.net/apps/trac/gsdview/ticket/1
 .. _`#11`: https://sourceforge.net/apps/trac/gsdview/ticket/11
+.. _`#12`: https://sourceforge.net/apps/trac/gsdview/ticket/12
+.. _`#15`: https://sourceforge.net/apps/trac/gsdview/ticket/15
+.. _`#20`: https://sourceforge.net/apps/trac/gsdview/ticket/20
+.. _`#21`: https://sourceforge.net/apps/trac/gsdview/ticket/21
+.. _`#22`: https://sourceforge.net/apps/trac/gsdview/ticket/22
+.. _`#21`: https://sourceforge.net/apps/trac/gsdview/ticket/23
 .. _`#24`: https://sourceforge.net/apps/trac/gsdview/ticket/24
+.. _`#31`: https://sourceforge.net/apps/trac/gsdview/ticket/31
 
 
 Changes from 0.5.9 to 0.6.0 (24/08/2009)
