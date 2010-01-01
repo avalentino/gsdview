@@ -458,8 +458,9 @@ class GDALBackend(QtCore.QObject):
             subwin.setWindowState(QtCore.Qt.WindowMaximized)
 
             self._mainwin.mdiarea.addSubWindow(subwin)
-            self._mainwin.monitor.register(subwin.widget())
-            self._mainwin.mousemanager.register(subwin.widget())
+            grephicsview = subwin.widget()
+            self._mainwin.monitor.register(grephicsview)
+            self._mainwin.mousemanager.register(grephicsview)
 
             self.connect(subwin, QtCore.SIGNAL('destroyed()'),
                          self._mainwin.subWindowClosed)

@@ -166,11 +166,11 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         # File menu end toolbar
         self._addMenuFromActions(self.fileActions, self.tr('&File'))
         self._addToolBarFromActions(self.fileActions, self.tr('File toolbar'))
-                                    
+
         # Image menu and toolbar
-        self.imagemenu = self._addMenuFromActions(self.mousemanager.actions, 
+        self.imagemenu = self._addMenuFromActions(self.mousemanager.actions,
                                                   self.tr('&Image'))
-        self._addToolBarFromActions(self.mousemanager.actions, 
+        self._addToolBarFromActions(self.mousemanager.actions,
                                     self.tr('Mouse toolbar'))
 
         # Setup plugins
@@ -645,6 +645,8 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
             plugin.saveSettings(settings)
 
     def updateSettingsMenu(self):
+        # @TODO: rewrite; it should not be needed to copy the menu into a
+        #        new one
         self.settings_submenu.clear()
         menu = self.createPopupMenu()
 
