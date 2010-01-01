@@ -395,10 +395,15 @@ class PreferencesDialog(QtGui.QDialog, PreferencesDialogBase):
 ExceptionDialogBase = qt4support.getuiform('exceptiondialog', __name__)
 class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
 
+    # @TODO: traceback highlighting
+
     def __init__(self, exctype=None, excvalue=None, tracebackobj=None,
-                 parent=None, flags=QtCore.Qt.Widget): # QtCore.Qt.Dialog
+                 parent=None, flags=QtCore.Qt.Widget, fill=True): # QtCore.Qt.Dialog
         super(ExceptionDialog, self).__init__(parent, flags)
         self.setupUi(self)
+        
+        closebutton = self.buttonBox.button(QtGui.QDialogButtonBox.Close)
+        closebutton.setDefault(True)
 
         style = QtGui.qApp.style()
 
@@ -418,33 +423,6 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
         self.connect(savebutton, QtCore.SIGNAL('clicked()'), self.saveBugReport)
         self.savebutton = savebutton
 
-        try:
-            from PyQt4 import Qsci
-            self.groupboxVerticalLayout.removeWidget(self.tracebackTextEdit)
-            self.tracebackTextEdit.setParent(None)
-            del self.tracebackTextEdit
-
-            self.tracebackTextEdit = Qsci.QsciScintilla()
-            self.groupboxVerticalLayout.addWidget(self.tracebackTextEdit)
-
-            self.tracebackTextEdit.setMarginLineNumbers(
-                                        Qsci.QsciScintilla.NumberMargin, True)
-            self.tracebackTextEdit.setMarginWidth(
-                                        Qsci.QsciScintilla.NumberMargin, 30)
-
-            lexer = Qsci.QsciLexerPython()
-            self.tracebackTextEdit.setLexer(lexer)
-            self.tracebackTextEdit.recolor()
-
-            self.tracebackTextEdit.setReadOnly(True)
-
-            self.connect(self.tracebackGroupBox,
-                         QtCore.SIGNAL('toggled(bool)'),
-                         self.tracebackTextEdit,
-                         QtCore.SLOT('setVisible(bool)'))
-        except ImportError:
-            pass
-
         title = 'Critical error: unhandled exception occurred'
         self.setWindowTitle(self.tr(title))
 
@@ -456,15 +434,16 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
         self.excvalue = excvalue
         self.tracebackobj = tracebackobj
 
-        if not self._excInfoSet():
-            self.setExcInfo(*sys.exc_info())
-        else:
-            self._fill()
-
         self.connect(self.textLabel,
                      QtCore.SIGNAL('linkActivated(const QString&)'),
                      self._linkActivated)
-
+                     
+        if fill:
+            if not self._excInfoSet():
+                self.setExcInfo(*sys.exc_info())
+            else:
+                self._fill()
+            
     def _linkActivated(self, link):
         if 'mailto' in str(link):
             self.sendBugReport()
@@ -479,15 +458,18 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
         self.errorMsgLabel.setText(text)
 
     def traceback(self):
-        return self.tracebackTextEdit.text()
+        return self.tracebackTextEdit.document().toPlainText()
 
+    def _setTracebackText(self, text):
+        self.tracebackTextEdit.document().setPlainText(text)
+                
     def setTraceback(self, tb):
         if not isinstance(tb, basestring):
             self.tracebackobj = tb
             tb = ''.join(traceback.format_tb(tb))
         else: # @TODO: check
             self.resetExcInfo()
-        self.tracebackTextEdit.setText(tb)
+        self._setTracebackText(tb)
 
     def timeStamp(self):
         return self.timestampLabel.text()
@@ -506,7 +488,7 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
             self.setTimeStamp()
         else:
             self.setErrorMsg('None')
-            self.tracebackTextEdit.setText('None')
+            self._setTracebackText('None')
             self.setTimeStamp('None')
 
     def setExcInfo(self, exctype, excvalue, tracebackobj):
@@ -577,8 +559,59 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
             finally:
                 fd.close()
 
+try:
+    from PyQt4 import Qsci
 
-class GSDViewExceptionDialog(ExceptionDialog):
+    class QsciExceptionDialog(ExceptionDialog):
+
+        def __init__(self, exctype=None, excvalue=None, tracebackobj=None,
+                     parent=None, flags=QtCore.Qt.Widget): # QtCore.Qt.Dialog
+  
+            super(QsciExceptionDialog, self).__init__(exctype, excvalue, 
+                                                      tracebackobj, 
+                                                      parent, flags, False)
+                                                      
+            self.groupboxVerticalLayout.removeWidget(self.tracebackTextEdit)
+            self.tracebackTextEdit.setParent(None)
+            del self.tracebackTextEdit
+
+            self.tracebackTextEdit = Qsci.QsciScintilla()
+            self.groupboxVerticalLayout.addWidget(self.tracebackTextEdit)
+
+            self.tracebackTextEdit.setMarginLineNumbers(
+                                        Qsci.QsciScintilla.NumberMargin, True)
+            self.tracebackTextEdit.setMarginWidth(
+                                        Qsci.QsciScintilla.NumberMargin, 30)
+
+            lexer = Qsci.QsciLexerPython()
+            self.tracebackTextEdit.setLexer(lexer)
+            self.tracebackTextEdit.recolor()
+
+            self.tracebackTextEdit.setReadOnly(True)
+
+            self.connect(self.tracebackGroupBox,
+                         QtCore.SIGNAL('toggled(bool)'),
+                         self.tracebackTextEdit,
+                         QtCore.SLOT('setVisible(bool)'))
+
+            if not self._excInfoSet():
+                self.setExcInfo(*sys.exc_info())
+            else:
+                self._fill()
+
+        def traceback(self):
+            return self.tracebackTextEdit.text()
+
+        def _setTracebackText(self, text):
+            self.tracebackTextEdit.setText(text)
+    
+    GSDViewExceptionDialogBase = QsciExceptionDialog
+                
+except ImportError:
+    GSDViewExceptionDialogBase = ExceptionDialog
+
+            
+class GSDViewExceptionDialog(GSDViewExceptionDialogBase):
     def __init__(self, *args, **kwargs):
         super(GSDViewExceptionDialog, self).__init__(*args, **kwargs)
         text = ('Please file a bug report at '
