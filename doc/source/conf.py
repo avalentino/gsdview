@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # GSDView documentation build configuration file, created by
-# sphinx-quickstart on Mon Apr 13 23:26:15 2009.
+# sphinx-quickstart on Sat Jan  2 12:17:35 2010.
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #
@@ -24,9 +24,14 @@ sys.path.insert(1, os.path.abspath('../../gsdview/plugins'))
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.autosummary',
-              'sphinx.ext.todo', 'sphinx.ext.ifconfig',
-              'sphinx.ext.coverage', 'sphinx.ext.pngmath']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.todo',
+    'sphinx.ext.ifconfig',
+    'sphinx.ext.pngmath',
+    'sphinx.ext.extlinks',
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -91,6 +96,8 @@ pygments_style = 'sphinx'
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
 
+# External links configuration
+extlinks = {'issue': ('http://sourceforge.net/apps/trac/gsdview/ticket/', '#')}
 
 # -- Options for HTML output ---------------------------------------------------
 
@@ -211,3 +218,37 @@ latex_logo = 'images/logo_large.pdf'
 
 # If false, no module index is generated.
 #latex_use_modindex = True
+
+
+# -- Options for Epub output ---------------------------------------------------
+
+# Bibliographic Dublin Core info.
+#epub_title = ''
+#epub_author = ''
+#epub_publisher = ''
+#epub_copyright = ''
+
+# The language of the text. It defaults to the language option
+# or en if the language is not set.
+#epub_language = ''
+
+# The scheme of the identifier. Typical schemes are ISBN or URL.
+#epub_scheme = ''
+
+# The unique identifier of the text. This can be a ISBN number
+# or the project homepage.
+#epub_identifier = ''
+
+# A unique identification for the text.
+#epub_uid = ''
+
+# HTML files that should be inserted before the pages created by sphinx.
+# The format is a list of tuples containing the path and title.
+#epub_pre_files = []
+
+# HTML files shat should be inserted after the pages created by sphinx.
+# The format is a list of tuples containing the path and title.
+#epub_post_files = []
+
+# A list of files that should not be packed into the epub file.
+#epub_exclude_files = []

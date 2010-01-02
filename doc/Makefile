@@ -12,7 +12,7 @@ PAPEROPT_a4     = -D latex_paper_size=a4
 PAPEROPT_letter = -D latex_paper_size=letter
 ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) source
 
-.PHONY: help clean html dirhtml pickle json htmlhelp qthelp latex latexpdf changes linkcheck doctest api
+.PHONY: help clean html dirhtml pickle json htmlhelp qthelp epub latex latexpdf changes linkcheck doctest api
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
@@ -23,6 +23,7 @@ help:
 	@echo "  htmlhelp  to make HTML files and a HTML help project"
 	@echo "  qthelp    to make HTML files and a qthelp project"
 	@echo "  devhelp   to make HTML files and a Devhelp project"
+	@echo "  epub      to make an epub"
 	@echo "  latex     to make LaTeX files, you can set PAPER=a4 or PAPER=letter"
 	@echo "  latexpdf  to make LaTeX files and run them through pdflatex"
 	@echo "  changes   to make an overview of all changed/added/deprecated items"
@@ -76,6 +77,11 @@ devhelp:
 	@echo "# mkdir -p $$HOME/.local/share/devhelp/GSDView"
 	@echo "# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/GSDView"
 	@echo "# devhelp"
+
+epub:
+	$(SPHINXBUILD) -b epub $(ALLSPHINXOPTS) $(BUILDDIR)/epub
+	@echo
+	@echo "Build finished. The epub file is in $(BUILDDIR)/epub."
 
 latex:
 	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(BUILDDIR)/latex

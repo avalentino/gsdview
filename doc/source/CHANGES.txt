@@ -11,14 +11,15 @@
 ChangeLog
 =========
 
+
 Changes from 0.6.0 to 0.6.1 (in development)
 --------------------------------------------
 
-* Basic support for RGB views (`#1`_)
-* Use global exception hook to catch un-handled exceptions (close `#11`_).
+* Basic support for RGB views (:issue:`1`)
+* Use global exception hook to catch un-handled exceptions (close :issue:`11`).
   An error dialog is showed and the application quits.
-* New mouse manager component (`#24`_)
-* Strongly improved GDAL info dialogs (enhancement ˆ#22ˆ_ and `#32`_).
+* New mouse manager component (:issue:`24`)
+* Strongly improved GDAL info dialogs (enhancement :issue:`22` and :issue:`32`).
   Now dialogs show more info including:
 
   - image structure metadata
@@ -27,33 +28,21 @@ Changes from 0.6.0 to 0.6.1 (in development)
   - metadata for ˆIMAGE_STRUCTUREˆ, ˆSUBDATASETSˆ and ˆRPCˆ domains
     (standard domain was already available)
 
-* Auto detect GDAL framework binaries  on Mac OS X (close ˆ#20ˆ_)
-* Reduced a bit the time required for datasets opening (see ˆ#12ˆ_)
+* Auto detect GDAL framework binaries  on Mac OS X (close :issue:`20`)
+* Reduced a bit the time required for datasets opening (see :issue:`12`)
 * Improved the algorithm to determine the overview levels to compute at
-  band opening time (see ˆ#23ˆ_)
+  band opening time (see :issue:`23`)
 * Now it is possible to pre-compile UI files into python modules and use
   generated modules to set the GUI up.
   If pre-compiled python forms are not available the GUI is set up using
   Qt UI files directly.
-* Bug fix (ˆ#15ˆ_, ˆ#21ˆ_, ˆ#31ˆ_)
-
-.. _`#1`: https://sourceforge.net/apps/trac/gsdview/ticket/1
-.. _`#11`: https://sourceforge.net/apps/trac/gsdview/ticket/11
-.. _`#12`: https://sourceforge.net/apps/trac/gsdview/ticket/12
-.. _`#15`: https://sourceforge.net/apps/trac/gsdview/ticket/15
-.. _`#20`: https://sourceforge.net/apps/trac/gsdview/ticket/20
-.. _`#21`: https://sourceforge.net/apps/trac/gsdview/ticket/21
-.. _`#22`: https://sourceforge.net/apps/trac/gsdview/ticket/22
-.. _`#23`: https://sourceforge.net/apps/trac/gsdview/ticket/23
-.. _`#24`: https://sourceforge.net/apps/trac/gsdview/ticket/24
-.. _`#31`: https://sourceforge.net/apps/trac/gsdview/ticket/31
-.. _`#32`: https://sourceforge.net/apps/trac/gsdview/ticket/32
+* Bug fix (:issue:`15`, :issue:`21`, :issue:`31`)
 
 
 Changes from 0.5.9 to 0.6.0 (24/08/2009)
 ----------------------------------------
 
-* New plugin manager module (close `#2`_):
+* New plugin manager module (close :issue:`2`):
 
   - configurable search path for plugins
   - support for zip imports and eggs (**not tested**)
@@ -61,22 +50,15 @@ Changes from 0.5.9 to 0.6.0 (24/08/2009)
     via GUI
 
 * Fixed bug in sub-datasets handling
-* Improved debian packaging (close `#3`_)
+* Improved debian packaging (close :issue:`3`)
 * API reference added to documentation
-* Resources handling refactoring (close `#6`_)
+* Resources handling refactoring (close :issue:`6`)
 * Initial support for `pyinstaller <http://www.pyinstaller.org>`_
-  packaging (`#8`_)
+  packaging (:issue:`8`)
 * Improved project layout: exectools in now an independent python package,
-  no more a sub-package of gsdview (close `#10`_)
+  no more a sub-package of gsdview (close :issue:`10`)
 * `setuptools <http://http//pypi.python.org/pypi/setuptools>`_ suport
-  (close `#7`_)
-
-.. _`#2`: https://sourceforge.net/apps/trac/gsdview/ticket/2
-.. _`#3`: https://sourceforge.net/apps/trac/gsdview/ticket/3
-.. _`#6`: https://sourceforge.net/apps/trac/gsdview/ticket/6
-.. _`#7`: https://sourceforge.net/apps/trac/gsdview/ticket/7
-.. _`#8`: https://sourceforge.net/apps/trac/gsdview/ticket/8
-.. _`#10`: https://sourceforge.net/apps/trac/gsdview/ticket/10
+  (close :issue:`7`)
 
 
 Changes from 0.3.0 to 0.5.9 (10/05/2009)

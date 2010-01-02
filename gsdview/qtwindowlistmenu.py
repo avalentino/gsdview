@@ -378,7 +378,7 @@ class QtWindowListMenu(QtGui.QMenu):
 
     def standardAction(self, item):
         '''Returns a pointer to the standard navigation action of this
-        menu specified by \a item. This can be used to customize the
+        menu specified by *item*. This can be used to customize the
         look, shortcut, tool tip, etc. of this item, or to provide
         alternative access to it through a tool button etc.
 
