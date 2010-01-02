@@ -40,6 +40,9 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="contextMenuPolicy">
+         <enum>Qt::ActionsContextMenu</enum>
+        </property>
         <property name="dragDropMode">
          <enum>QAbstractItemView::InternalMove</enum>
         </property>
@@ -156,6 +159,9 @@
        <height>0</height>
       </size>
      </property>
+     <property name="contextMenuPolicy">
+      <enum>Qt::ActionsContextMenu</enum>
+     </property>
      <property name="verticalScrollMode">
       <enum>QAbstractItemView::ScrollPerPixel</enum>
      </property>
@@ -166,7 +172,10 @@
       <bool>true</bool>
      </attribute>
      <attribute name="verticalHeaderVisible">
-      <bool>false</bool>
+      <bool>true</bool>
+     </attribute>
+     <attribute name="verticalHeaderVisible">
+      <bool>true</bool>
      </attribute>
      <column>
       <property name="text">

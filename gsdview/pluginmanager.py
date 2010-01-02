@@ -40,7 +40,8 @@ try:
 except ImportError:
     logging.getLogger(__name__).debug('"pkg_resources" not found.')
 
-from gsdview.qt4support import getuiform, geticon   # @TODO: check dependency
+# @TODO: check dependency - getuiform, geticon, setViewContextActions
+from gsdview import qt4support
 
 
 class PluginManager(object):
@@ -293,7 +294,7 @@ class PluginManager(object):
             settings.endGroup()
 
 
-PluginManagerGuiBase = getuiform('pluginmanager', __name__)
+PluginManagerGuiBase = qt4support.getuiform('pluginmanager', __name__)
 class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
 
     def __init__(self, pluginmanager, parent=None, flags=QtCore.Qt.Widget):
@@ -301,6 +302,7 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
         self.setupUi(self)
 
         # Set icons
+        geticon = qt4support.geticon
         self.addButton.setIcon(geticon('add.svg', __name__))
         self.removeButton.setIcon(geticon('remove.svg', __name__))
         self.editButton.setIcon(geticon('edit.svg', __name__))
@@ -310,14 +312,14 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
         # Set plugin manager attribute
         self.pluginmanager = pluginmanager
 
+        # Context menu
+        qt4support.setViewContextActions(self.pathListWidget)
+        qt4support.setViewContextActions(self.pluginsTableWidget)
+
         # @TODO: check edit triggers
         #int(self.pathListWidget.editTriggers() & self.pathListWidget.DoubleClicked)
 
         tablewidget = self.pluginsTableWidget
-
-        tablewidget.verticalHeader().setVisible(False)
-        tablewidget.horizontalHeader().setStretchLastSection(True)
-
         self.connect(self.pathListWidget,
                      QtCore.SIGNAL('itemSelectionChanged()'),
                      self.pathSelectionChanged)
@@ -457,7 +459,7 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
                                 QtGui.QTableWidgetItem(short_description))
 
             # info
-            icon = geticon('info.svg', __name__)
+            icon = qt4support.geticon('info.svg', __name__)
             w = QtGui.QPushButton(icon, '', tablewidget)
             tablewidget.setCellWidget(index, 2, w)
             w.connect(w, QtCore.SIGNAL('clicked()'),
@@ -545,7 +547,7 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
         d.exec_()
 
 
-PluginInfoFormBase = getuiform('plugininfo', __name__)
+PluginInfoFormBase = qt4support.getuiform('plugininfo', __name__)
 class PluginInfoForm(QtGui.QFrame, PluginInfoFormBase):
 
     def __init__(self, plugin=None, active=None, parent=None,

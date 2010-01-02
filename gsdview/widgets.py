@@ -88,6 +88,9 @@ class AboutDialog(QtGui.QDialog, AboutDialogBase):
         super(AboutDialog, self).__init__(parent, flags)
         self.setupUi(self)
 
+        # Context menu actions
+        qt4support.setViewContextActions(self.versionsTableWidget)
+
         # Set icons
         logofile = qt4support.geticonfile('GSDView.png', __name__)
         self.setLogo(logofile)
@@ -112,8 +115,6 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview">http://sourcefor
 
     def setVersions(self):
         tablewidget = self.versionsTableWidget
-        #tableWidget.clear()
-        #tableWidget.setHorizontalHeaderLabels(['Software', 'Version', 'Home Page'])
         tablewidget.verticalHeader().hide()
         tablewidget.horizontalHeader().setStretchLastSection(True)
         tablewidget.setRowCount(len(info.all_versions))

@@ -45,6 +45,9 @@ class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
         super(GDALInfoWidget, self).__init__(parent, flags)
         self.setupUi(self)
 
+        # Context menu actions
+        qt4support.setViewContextActions(self.gdalDriversTableWidget)
+
         # @TODO: check for available info in gdal 1.5 and above
         try:
             self.gdalReleaseNameValue.setText(gdal.VersionInfo('RELEASE_NAME'))
@@ -147,6 +150,9 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
 
         # info button
         self.connect(self.infoButton, QtCore.SIGNAL('clicked()'), self.showinfo)
+
+        # Context menu actions
+        qt4support.setViewContextActions(self.extraOptTableWidget)
 
         # standard options
         cachesize = gdal.GetCacheMax()
@@ -324,22 +330,13 @@ class MajorObjectInfoDialog(QtGui.QDialog):
 
         self._obj = gdalobj
 
-        # Contect menu
-        self.actionCopy.setIcon(qt4support.geticon('copy.svg', __name__))
-        #self.actionSelectAll.setIcon(qt4support.geticon('selectall.svg',
-        #                                                __name__))
-        self.connect(self.actionCopy, QtCore.SIGNAL('triggered()'),
-                     self.copySelectedItems)
-        self.connect(self.actionSelectAll, QtCore.SIGNAL('triggered()'),
-                     self.selectedAllItems)
         if hasattr(self, 'domainComboBox'):
             self.connect(self.domainComboBox,
                          QtCore.SIGNAL('activated(const QString&)'),
                          self.updateMetadata)
 
-        # Context menu actions
-        for action in (self.actionCopy, self.actionSelectAll):
-            self.metadataTableWidget.addAction(action)
+        # Contect menu
+        qt4support.setViewContextActions(self.metadataTableWidget)
 
         # Init tabs
         self.updateMetadata()
@@ -352,11 +349,11 @@ class MajorObjectInfoDialog(QtGui.QDialog):
             self._setMetadata(self.metadataTableWidget, metadatalist)
         else:
             self.metadataNumValue.setText('0')
-            self._cleartable(self.metadataTableWidget)
+            qt4support.clearTable(self.metadataTableWidget)
 
     @staticmethod
     def _setMetadata(tablewidget, metadatalist):
-        MajorObjectInfoDialog._cleartable(tablewidget)
+        qt4support.clearTable(tablewidget)
         if not metadatalist:
             return
 
@@ -371,27 +368,6 @@ class MajorObjectInfoDialog(QtGui.QDialog):
 
         # Fix table header behaviour
         tablewidget.setSortingEnabled(sortingenabled)
-
-    @staticmethod
-    def _cleartable(tablewidget):
-        labels = [str(tablewidget.horizontalHeaderItem(col).text())
-                                for col in range(tablewidget.columnCount())]
-        tablewidget.clear()
-        tablewidget.setHorizontalHeaderLabels(labels)
-        #tablewidget.setRowCount(0)
-
-    @staticmethod
-    def copySelectedItems():
-        widget = QtGui.qApp.focusWidget()
-        assert hasattr(widget, 'selectionModel')
-        selection = widget.selectionModel().selection()
-        qt4support.copyItemSelection(selection)
-
-    @staticmethod
-    def selectedAllItems():
-        widget = QtGui.qApp.focusWidget()
-        assert hasattr(widget, 'selectionModel')
-        qt4support.selectAllItems(widget)
 
 
 def _setupImageStructureInfo(widget, metadata):
@@ -482,10 +458,8 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.tabWidget.setTabIcon(3, geticon('color.svg', __name__))
 
         # Context menu actions
-        for action in (self.actionCopy, self.actionSelectAll):
-            #self.metadataTableWidget.addAction(action) # set in parent class
-            self.histogramTableWidget.addAction(action)
-            self.colorTableWidget.addAction(action)
+        qt4support.setViewContextActions(self.histogramTableWidget)
+        qt4support.setViewContextActions(self.colorTableWidget)
 
         # Tabs
         self._setupInfoTab(band)
@@ -655,7 +629,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
     def _resetHistogram(self):
         tablewidget = self.histogramTableWidget
         self.numberOfClassesValue.setText('0')
-        self._cleartable(tablewidget)
+        qt4support.clearTable(tablewidget)
 
     def _setupHistogram(self, band):
         if not hasattr(band, 'GetDefaultHistogram'):
@@ -734,7 +708,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         if colortable is None:
             self.ctInterpretationValue.setText('')
             self.colorsNumberValue.setText('')
-            self._cleartable(tablewidget)
+            qt4support.clearTable(tablewidget)
             # Disable the color table tab
             self.tabWidget.setTabEnabled(3, False)
             return
@@ -809,16 +783,12 @@ class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
             self.tabWidget.removeTab(4)
 
         # Context menu actions
-        for action in (self.actionCopy, self.actionSelectAll):
-            #self.metadataTableWidget.addAction(action) # set in parent class
-            self.gcpsTableWidget.addAction(action)
-            self.driverMetadataTableWidget.addAction(action)
-            self.fileListWidget.addAction(action)
+        qt4support.setViewContextActions(self.gcpsTableWidget)
+        qt4support.setViewContextActions(self.driverMetadataTableWidget)
+        qt4support.setViewContextActions(self.fileListWidget)
 
-        # Info Tab
+        # Setup Tabs
         self._setupInfoTab(dataset)
-
-        # Driver Tab
         self._setupDriverTab(dataset.GetDriver())
 
         # It seems there is a bug in GDAL that causes incorrect GCPs handling
@@ -880,7 +850,7 @@ p, li { white-space: pre-wrap; }
         self.gcpsProjectionValue.setText(projection)
         tablewidget = self.gcpsTableWidget
 
-        self._cleartable(tablewidget)
+        qt4support.clearTable(tablewidget)
         if not gcplist:
             return
 

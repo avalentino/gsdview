@@ -66,12 +66,12 @@ def main(imagestruct=True):
     dataset_ = gdal.Open(filename)
     band_ = dataset_.GetRasterBand(1)
 
-    #~ test_datasetdialog(dataset_)
-    test_rasterbanddialog(band_)
+    test_datasetdialog(dataset_)
+    #~ test_rasterbanddialog(band_)
 
 if __name__ == '__main__':
     #~ test_gdalinfowidget()
     #~ test_gdalpreferencespage()
     #~ test_histogram_config()
-    main()
-    #~ main(False)
+    #~ main()
+    main(False)

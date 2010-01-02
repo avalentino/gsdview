@@ -42,10 +42,13 @@ intToWinState = {
     int(QtCore.Qt.WindowActive):        QtCore.Qt.WindowActive,
 }
 
+
+### Menus and toolbars helpers ###############################################
 def actionGroupToMenu(actionGroup, label, mainwin):
     menu = QtGui.QMenu(label, mainwin)
     menu.addActions(actionGroup.actions())
     return menu
+
 
 def actionGroupToToolbar(actionGroup, label, name=None):
     if name is None:
@@ -58,6 +61,7 @@ def actionGroupToToolbar(actionGroup, label, name=None):
     toolbar.addActions(actionGroup.actions())
     return toolbar
 
+### Application cursor helpers ###############################################
 def overrideCursor(func):
     def aux(*args, **kwargs):
         QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
@@ -67,6 +71,7 @@ def overrideCursor(func):
             QtGui.QApplication.restoreOverrideCursor()
     return aux
 
+
 def callExpensiveFunc(func, *args, **kwargs):
     QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
     try:
@@ -75,9 +80,38 @@ def callExpensiveFunc(func, *args, **kwargs):
         QtGui.QApplication.restoreOverrideCursor()
 
 
-def copyItemSelection(selection):
-    '''Copy the QItemSelection to clipboard.'''
+### Table model/view hepers ##################################################
+def clearTable(tablewidget):
+    '''Remove contents from a table widget preserving labels. '''
 
+    labels = [str(tablewidget.horizontalHeaderItem(col).text())
+                            for col in range(tablewidget.columnCount())]
+    tablewidget.clear()
+    tablewidget.setHorizontalHeaderLabels(labels)
+    tablewidget.setRowCount(0)
+
+
+def selectAllItems(itemview):
+    '''Select all items in an QAbstractItemView.'''
+
+    model = itemview.model()
+    topleft = model.index(0, 0)
+    try:
+        # Should work for tables: 'columnCount' is private in lists
+        bottomright = model.index(model.rowCount()-1, model.columnCount()-1)
+    except AttributeError:
+        # Assume it is a list
+        bottomright = model.index(model.rowCount()-1)
+
+    selection = QtGui.QItemSelection(topleft, bottomright)
+    itemview.selectionModel().select(selection,
+                                     QtGui.QItemSelectionModel.Select)
+
+def copySelectedItems(itemview):
+    '''Copy selected items of an QAbstractItemView to the clipboard and
+    also return copied data.'''
+
+    selection = itemview.selectionModel().selection()
     lines = []
     for itemrange in selection:
         model = itemrange.model()
@@ -92,9 +126,10 @@ def copyItemSelection(selection):
 
     data = '\n'.join(lines)
 
-    clipboard = QtGui.qApp.clipboard()
-    clipboard.setText(data, QtGui.QClipboard.Clipboard)
-    clipboard.setText(data, QtGui.QClipboard.Selection)
+    if data:
+        clipboard = QtGui.qApp.clipboard()
+        clipboard.setText(data, QtGui.QClipboard.Clipboard)
+        clipboard.setText(data, QtGui.QClipboard.Selection)
 
     # @TODO: check
     #data = QtCore.QByteArray()
@@ -109,18 +144,34 @@ def copyItemSelection(selection):
 
     return data
 
-def selectAllItems(itemview):
-    '''Select all items if an QAbstractItemView.'''
 
-    model = itemview.model()
-    topleft = model.index(0, 0)
-    bottomright = model.index(model.rowCount()-1, model.columnCount()-1)
+def setViewContextActions(widget):
+    assert widget.contextMenuPolicy() == QtCore.Qt.ActionsContextMenu
 
-    selection = QtGui.QItemSelection(topleft, bottomright)
-    itemview.selectionModel().select(selection,
-                                     QtGui.QItemSelectionModel.Select)
+    #if widget.contextMenuPolicy() != QtCore.Qt.ActionsContextMenu:
+    #    widget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+
+    icon = geticon('copy.svg', __name__)
+    action = QtGui.QAction(icon, widget.tr('&Copy'), widget)
+    action.setObjectName('copy')
+    action.setShortcut(widget.tr('Ctrl+C'))
+    action.setToolTip(widget.tr('Copy selected items'))
+    widget.connect(action, QtCore.SIGNAL('triggered()'),
+                   lambda: copySelectedItems(widget))
+    widget.addAction(action)
+
+    #icon = geticon('selectall.svg', __name__)
+    icon = QtGui.QIcon()
+    action = QtGui.QAction(icon, widget.tr('Select &All'), widget)
+    action.setObjectName('selectall')
+    #action.setShortcut(widget.tr('Ctrl+A'))
+    action.setToolTip(widget.tr('Select all items'))
+    widget.connect(action, QtCore.SIGNAL('triggered()'),
+                   lambda: selectAllItems(widget))
+    widget.addAction(action)
 
 
+### QImage helpers ###########################################################
 try:
     raise ImportError # @TODO: remove
     from PyQt4.Qwt5 import toQImage as _toQImage
