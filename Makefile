@@ -5,8 +5,7 @@
 ### :Revision: $Revision$
 ### :Date: $Date$
 
-XP=xsltproc -''-nonet
-DB2MAN=/usr/share/sgml/docbook/stylesheet/xsl/nwalsh/manpages/docbook.xsl
+RST2MAN=rst2man.py
 
 .PHONY: default docs html pdf man clean cleanall sdist bdist deb rpmspec rpm ui
 
@@ -25,16 +24,18 @@ pdf: doc/GSDView.pdf
 
 man: debian/gsdview.1
 
-debian/gsdview.1: debian/manpage.xml
-	$(XP) -o $@ $(DB2MAN) $<
+debian/gsdview.1: debian/manpage.rst
+	$(RST2MAN) $< $@
 
 clean:
 	cd doc && $(MAKE) clean
 	$(RM) -r MANIFEST build dist gsdview.egg-info
 	$(RM) $(shell find . -name '*.pyc') $(shell find . -name '*~')
-	cd debian && $(RM) -r gsdview gsdview.* gsdview*.1 files pycompat
-	$(RM) python-build-stamp-* debian/stamp-makefile-build
-	cd pkg && $(MAKE) clean
+	$(RM) -r debian/gsdview debian/python-module-stampdir
+	$(RM) debian/gsdview.* debian/gsdview*.1 debian/files debian/pycompat \
+		  debian/python-module-stampdir
+	$(RM) python-build-stamp-*
+	$(MAKE) -C pkg clean
 
 sdist: docs
 	python setup.py sdist
