@@ -97,8 +97,9 @@ def cmdline_ui():
 
     from gsdview import info
 
-    parser = OptionParser(prog='GSDView',
-                    usage='%prog [options] [FILENAME [FILENAME [...]]]',
+    parser = OptionParser(prog='gsdview',
+                    #usage='%prog [options] [FILENAME [FILENAME [...]]]',
+                    usage='%prog [options]',
                     version='%%prog Open Source Edition %s' % info.version,
                     description=info.description,
                     epilog='Home Page: %s' % info.website)
