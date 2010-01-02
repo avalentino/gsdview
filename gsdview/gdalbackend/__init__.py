@@ -33,7 +33,7 @@ __all__ = ['init', 'close', 'loadSettings', 'saveSettings',
            'UseExceptions', 'DontUseExceptions',
            'openFile', 'openImageView', 'openItemMatadataView',
            'openRGBImageView', 'openSubDataset', 'closeItem',
-           'findItemFromFilename', 'itemActions' 'itemContextMenu'
+           'findItemFromFilename', 'itemActions', 'itemContextMenu'
 ]
 
 

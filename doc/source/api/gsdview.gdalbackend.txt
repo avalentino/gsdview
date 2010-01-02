@@ -18,6 +18,8 @@ gsdview.gdalbackend
       findItemFromFilename
       getUseExceptions
       init
+      itemActions
+      itemContextMenu
       loadSettings
       openFile
       openImageView
