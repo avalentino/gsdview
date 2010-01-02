@@ -36,6 +36,7 @@ Changes from 0.6.0 to 0.6.1 (in development)
   generated modules to set the GUI up.
   If pre-compiled python forms are not available the GUI is set up using
   Qt UI files directly.
+* Now use docutils for generating the manpage (:issue:`33`)
 * Bug fix (:issue:`15`, :issue:`21`, :issue:`31`)
 
 
