@@ -27,10 +27,13 @@ __revision__ = '$Revision$'
 __requires__ = []
 
 __all__ = ['init', 'close', 'loadSettings', 'saveSettings',
-           'openFile', 'UseExceptions', 'DontUseExceptions',
            'name','version', 'short_description','description',
            'author', 'author_email', 'copyright', 'license_type',
-           'website', 'website_label',
+           'website', 'website_label', 'getUseExceptions',
+           'UseExceptions', 'DontUseExceptions',
+           'openFile', 'openImageView', 'openItemMatadataView',
+           'openRGBImageView', 'openSubDataset', 'closeItem',
+           'findItemFromFilename', 'itemActions' 'itemContextMenu'
 ]
 
 
@@ -39,6 +42,7 @@ from core import GDALBackend
 
 UseExceptions = GDALBackend.UseExceptions
 DontUseExceptions = GDALBackend.DontUseExceptions
+getUseExceptions = GDALBackend.getUseExceptions
 
 _backendobj = None
 
@@ -139,9 +143,8 @@ def _definefunc(methodname):
 
 # @TODO: check (maybe it is better to make it explicitly)
 globals_ = globals()
-for methodname in dir(GDALBackend):
-    if (not methodname.startswith('_') and
-                    methodname not in ('UseExceptions', 'DontUseExceptions')):
+for methodname in __all__:
+    if not methodname in globals_ and methodname in GDALBackend.__dict__:
         globals_[methodname] = _definefunc(methodname)
 del methodname, globals_, _definefunc
 

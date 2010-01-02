@@ -13,65 +13,18 @@ gsdview.gdalbackend
    
       DontUseExceptions
       UseExceptions
-      blockSignals
-      buildOverviews
-      childEvent
-      children
       close
       closeItem
-      connect
-      connectNotify
-      customEvent
-      deleteLater
-      destroyed
-      disconnect
-      disconnectNotify
-      dumpObjectInfo
-      dumpObjectTree
-      dynamicPropertyNames
-      emit
-      event
-      eventFilter
-      findChild
-      findChildren
       findItemFromFilename
       getUseExceptions
-      inherits
       init
-      installEventFilter
-      isWidgetType
-      itemActions
-      itemContextMenu
-      killTimer
       loadSettings
-      metaObject
-      moveToThread
-      newImageView
-      objectName
-      onItemActivated
       openFile
       openImageView
       openItemMatadataView
       openRGBImageView
       openSubDataset
-      parent
-      property
-      pyqtConfigure
-      receivers
-      removeEventFilter
       saveSettings
-      sender
-      setObjectName
-      setParent
-      setProperty
-      showItemProperties
-      signalsBlocked
-      startTimer
-      staticMetaObject
-      thread
-      timerEvent
-      tr
-      trUtf8
    
    
 
