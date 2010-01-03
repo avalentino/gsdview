@@ -97,7 +97,7 @@ pygments_style = 'sphinx'
 #modindex_common_prefix = []
 
 # External links configuration
-extlinks = {'issue': ('http://sourceforge.net/apps/trac/gsdview/ticket/', '#')}
+extlinks = {'issue': ('http://sourceforge.net/apps/trac/gsdview/ticket/%s', '#')}
 
 # -- Options for HTML output ---------------------------------------------------
 
