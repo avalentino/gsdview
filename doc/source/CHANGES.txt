@@ -37,7 +37,10 @@ Changes from 0.6.0 to 0.6.1 (in development)
   If pre-compiled python forms are not available the GUI is set up using
   Qt UI files directly.
 * Now use docutils for generating the manpage (:issue:`33`)
+* Packaging using pyinstaller_ (:issue:`8`)
 * Bug fix (:issue:`15`, :issue:`21`, :issue:`31`)
+
+.. pyinstaller: http://www.pyinstaller.org
 
 
 Changes from 0.5.9 to 0.6.0 (24/08/2009)
