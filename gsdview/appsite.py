@@ -54,4 +54,5 @@ DOCSDIR = os.path.join(GSDVIEWROOT, 'doc')
 LICENSEFILE = os.path.join(GSDVIEWROOT, 'LICENSE.txt')
 USERCONFIGDIR = os.path.expanduser(os.path.join('~', '.gsdview'))
 
-del GSDVIEWROOT
+# @NOTE: Needed to locate GDAL executables in case of frozen app
+# del GSDVIEWROOT

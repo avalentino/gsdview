@@ -4,6 +4,19 @@
 #   http://groups.google.com/group/PyInstaller/browse_thread/thread/dbe36a6fd985631b?hl=en#
 
 GSDVIEWROOT = '..'
+if sys.platform == 'darwin':
+    GDALROOT = '/Libraries/Frameworks/GDALFramework/Current/unix'
+    GDAL_DATA = os.path.join(GDALROOT, 'share', 'gdal')
+    GDALADDO = os.path.join(GDALROOT, 'bin', 'gdaladdo')
+elif sys.platform[:3] == 'win':
+    GDALROOT = r'c:\gdal170'
+    GDAL_DATA = os.path.join(GDALROOT, 'data')
+    GDALADDO = os.path.join(GDALROOT, 'bin', 'gdaladdo.exe')
+else:
+    # Standard unix
+    GDALROOT = '/usr'
+    GDAL_DATA = os.path.join(GDALROOT, 'share', 'gdal15')
+    GDALADDO = os.path.join(GDALROOT, 'bin', 'gdaladdo')
 
 a = Analysis([os.path.join(HOMEPATH,'support', '_mountzlib.py'),
               os.path.join(HOMEPATH,'support', 'useUnicode.py'),
@@ -41,10 +54,9 @@ exe = EXE(pyz,
           Tree(os.path.join(GSDVIEWROOT, 'doc', 'html'),
                os.path.join('docs', 'html')),
 
-          # GDAL tools and data @TODO: make it cross platform
-          #[('gdaladdo.exe', os.path.join(GDALROOT, 'bin', 'gdaladdo.exe'), 'DATA'),
-          #],
-          #Tree(os.path.join(GDALROOT, 'data'), 'data'),
+          # GDAL tools and data
+          [(os.path.basename(GDALADDO), GDALADDO, 'DATA'),],
+          Tree(os.path.join(GDAL_DATA), 'data'),
 
           name=os.path.join(GSDVIEWROOT, 'dist', 'onefile', 'gsdview'),
           debug=False,

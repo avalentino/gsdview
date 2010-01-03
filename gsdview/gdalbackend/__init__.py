@@ -109,7 +109,18 @@ def init(mainwin):
     UseExceptions()
 
     # Fix path for GDAL tools
-    if sys.platform == 'darwin':
+    if getattr(sys, 'frozen', False):
+        from gsdview import appsite
+        os.environ['PATH'] = os.path.join(appsite.GSDVIEWROOT,
+                                          os.getenv('PATH', ''))
+        gdal.SetConfigOption('GDAL_DATA',
+                             os.path.join(appsite.GSDVIEWROOT, 'data'))
+        # @TODO: check
+        #if mainwin.settings.value('GDAL_DATA').isValid():
+        #    msg = mainwin.tr('"GDAL_DATA" from the user configuration file '
+        #                     'overrides the default value')
+        #    QtGui.QMessageBox.warning(mainwin, mainwin.tr('WARNING'), msg)
+    elif sys.platform == 'darwin':
         gdaladdobin = utils.which('gdaladdo')
         if not gdaladdobin:
             frameworkroot = os.path.join(os.path.dirname(gdal.__file__),
