@@ -14,7 +14,8 @@ gsdview.qt4support
       actionGroupToMenu
       actionGroupToToolbar
       callExpensiveFunc
-      copyItemSelection
+      clearTable
+      copySelectedItems
       geticon
       geticonfile
       getuifile
@@ -22,6 +23,7 @@ gsdview.qt4support
       numpy2qimage
       overrideCursor
       selectAllItems
+      setViewContextActions
    
    
 

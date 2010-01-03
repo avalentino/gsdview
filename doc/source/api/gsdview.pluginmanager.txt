@@ -7,13 +7,6 @@ gsdview.pluginmanager
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-   
-      geticon
-      getuiform
-   
    
 
    
