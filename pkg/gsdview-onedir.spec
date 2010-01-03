@@ -9,9 +9,9 @@ DEVELOPMENT_MODE = False
 #DEVELOPMENT_MODE = True
 GSDVIEWROOT = '..'
 if sys.platform == 'darwin':
-    GDALROOT = '/Libraries/Frameworks/GDALFramework/Current/unix'
-    GDAL_DATA = os.path.join(GDALROOT, 'share', 'gdal')
-    GDALADDO = os.path.join(GDALROOT, 'bin', 'gdaladdo')
+    GDALROOT = '/Library/Frameworks/GDAL.framework'
+    GDAL_DATA = os.path.join(GDALROOT, 'Resources', 'gdal')
+    GDALADDO = os.path.join(GDALROOT, 'unix', 'bin', 'gdaladdo')
 elif sys.platform[:3] == 'win':
     GDALROOT = r'c:\gdal170'
     GDAL_DATA = os.path.join(GDALROOT, 'data')
