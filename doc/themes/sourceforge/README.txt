@@ -91,7 +91,7 @@ theme option::
         'hastrac': True,
     }
 
-.. _`hosted apps`: https://sourceforge.net/apps/trac/sourceforge/wiki/Hosted%20Apps
+.. _`hosted apps`: http://sourceforge.net/apps/trac/sourceforge/wiki/Hosted%20Apps
 .. _trac: http://trac.edgewall.org
 
 Additional links can be specified using the `extralinks` theme option::

@@ -53,7 +53,7 @@ copyright = 'Copyright (C) 2008-2010 %s <%s>' % (author, author_email)
 license_type = 'GNU GPL'
 website = 'http://gsdview.sourceforge.net'
 website_label = website
-download_url = 'http://sourceforge.net/project/showfiles.php?group_id=226458'
+download_url = 'http://sourceforge.net/projects/gsdview/files'
 
 #artists = None
 #documenters = ('AV',)

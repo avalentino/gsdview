@@ -28,4 +28,4 @@ __ `GSDView project page`_
 
 
 .. _`GSDView project page`: http://sourceforge.net/projects/gsdview
-.. _download: http://sourceforge.net/project/showfiles.php?group_id=226458
+.. _download: http://sourceforge.net/projects/gsdview/files

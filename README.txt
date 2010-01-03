@@ -27,7 +27,7 @@ GSDView is modular and has a simple plug-in architecture.
 At the moment GSDView is at a very early development stage.
 
 .. _Python: http://www.python.org
-.. _Qt4: http://trolltech.com/products/qt
+.. _Qt4: http://qt.nokia.com/products
 __ gdal_
 
 
