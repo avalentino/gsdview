@@ -26,6 +26,7 @@ __revision__ = '$Revision$'
 
 import os
 import platform
+import subprocess
 from glob import glob
 
 from gsdview import info
@@ -38,6 +39,8 @@ kwargs = {}
 
 # Using ``setuptools`` enables lots of goodies, such as building eggs.
 from distutils import log
+from distutils.util import newer
+from distutils.command.build import build as Build
 try:
     from setuptools import setup, find_packages
     from setuptools.command.install_lib import install_lib
@@ -47,12 +50,22 @@ except ImportError:
     from distutils.command.install_lib import install_lib
     has_setuptools = False
 
-try:
-    from sphinx.setup_command import BuildDoc
-    cmdclass['build_sphinx'] = BuildDoc
-except ImportError:
-    log.info('Sphinx not found.')
+class ExtendedBuild(Build):
+    def run(self):
+        Build.run(self)
+        try:
+            self.run_command('build_sphinx')
+        except:
+            log.warn("Couldn't build documentation:\n%s" %
+                     traceback.format_exception(*sys.exc_info()))
 
+        srcman = os.path.join('debian', 'manpage.rst')
+        dstman = os.path.join('debian', PKGNAME + '.1')
+        if newer(srcman, dstman):
+            log.info('buiding man page')
+            subprocess.check_call(('rst2man.py', srcman, dstman))
+
+cmdclass['build'] = ExtendedBuild
 
 # Fix the install_lib command in order to generate an updated appsite.py file
 class InstallLib(install_lib):
