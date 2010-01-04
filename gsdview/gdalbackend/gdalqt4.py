@@ -62,6 +62,16 @@ def gdalcolorentry2qcolor(colrentry, interpretation=gdal.GPI_RGB):
 class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
     def __init__(self, gdalobj, parent=None, scene=None):
         QtGui.QGraphicsItem.__init__(self, parent, scene)
+        # @COMPATIBILITY: Qt >= 4.6.0 needs this flag to be set otherwise the
+        #                 exact exposedRect is not computed
+        # @SEEALSO: ItemUsesExtendedStyleOption item at
+        # http://doc.qt.nokia.com/4.6/qgraphicsitem.html#GraphicsItemFlag-enum
+        try:
+            self.setFlag(QtGui.QGraphicsItem.ItemUsesExtendedStyleOptions)
+        except AttributeError:
+            ItemUsesExtendedStyleOptions = 0x200
+            self.setFlag(ItemUsesExtendedStyleOptions)
+
         self.gdalobj = gdalobj
         try:
             # dataset
@@ -76,6 +86,24 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
 
     def boundingRect(self):
         return self._boundingRect
+
+    @staticmethod
+    def _levelOfDetailFromTransform(worldTransform):
+        # @COMPATIBILITY: since Qt v. 4.6.0 the levelOfDetail attribute of
+        # QStyleOptionGraphicsItem is deprecated
+        # @SEEALSO: ItemUsesExtendedStyleOption item at
+        # http://doc.qt.nokia.com/4.6/qgraphicsitem.html#GraphicsItemFlag-enum
+        #
+        # From qt/src/gui/styles/qstyleoption.cpp:5130
+        if worldTransform.type() <= QtGui.QTransform.TxTranslate:
+            return 1    # Translation only? The LOD is 1.
+
+        # Two unit vectors.
+        v1 = QtCore.QLineF(0, 0, 1, 0)
+        v2 = QtCore.QLineF(0, 0, 0, 1)
+        # LOD is the transformed area of a 1x1 rectangle.
+        return numpy.sqrt(worldTransform.map(v1).length() *
+                                                worldTransform.map(v2).length())
 
     def _bestOvrLevel(self, band, levelOfDetail):
         ovrlevel = 1
@@ -171,13 +199,20 @@ class GdalGraphicsItem(BaseGdalGraphicsItem):
 
         return gsdtools.compute_lin_LUT(min_, max_, lower, upper)
 
-    def boundingRect(self):
-        return self._boundingRect
-
     def paint(self, painter, option, widget):
-        ovrband, ovrlevel, ovrindex = self._bestOvrLevel(self.gdalobj,
-                                                         option.levelOfDetail)
+        # @COMPATIBILITY: since Qt v. 4.6.0 the levelOfDetail attribute of
+        # QStyleOptionGraphicsItem is deprecated
+        # @SEEALSO: ItemUsesExtendedStyleOption item at
+        # http://doc.qt.nokia.com/4.6/qgraphicsitem.html#GraphicsItemFlag-enum
+        if hasattr(option, 'levelOfDetailFromTransform'):
+            levelOfDetail = option.levelOfDetailFromTransform(painter.transform())
+        elif QtCore.QT_VERSION_STR >= '4.6.0':
+            levelOfDetail = self._levelOfDetailFromTransform(painter.transform())
+        else:
+            levelOfDetail = option.levelOfDetail
 
+        ovrband, ovrlevel, ovrindex = self._bestOvrLevel(self.gdalobj, 
+                                                         levelOfDetail)
         x, y, w, h = self._clipRect(ovrband,
                                     option.exposedRect.toAlignedRect(),
                                     ovrlevel)

@@ -455,7 +455,7 @@ class GDALBackend(QtCore.QObject):
         #        (complex dataset should not be opened)
         try:
             subwin = GraphicsViewSubWindow(item)    #self._mainwin.mdiarea)
-            subwin.setWindowState(QtCore.Qt.WindowMaximized)
+            #subwin.setWindowState(QtCore.Qt.WindowMaximized) # @TODO: check
 
             self._mainwin.mdiarea.addSubWindow(subwin)
             grephicsview = subwin.widget()
