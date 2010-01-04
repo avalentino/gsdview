@@ -258,6 +258,8 @@ except ImportError:
 
     logging.debug('Using SIP version of numpy2qimage.')
 
+
+### Resources helpers #########################################################
 def getuifile(name, package=None):
     '''Return the ui file path.
 

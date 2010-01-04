@@ -74,6 +74,7 @@ all_versions = [
                     'http://www.riverbankcomputing.co.uk/software/pyqt'),
     ('Qt', QtCore.QT_VERSION_STR, 'http://qt.nokia.com'), # @TODO: check QtCore.qVersio()
     ('numpy', numpy.version.version, 'http://www.scipy.org'),
+    # @TODO: platfotm and os info (including platform.mac_ver)
     # @TODO: Qsci.QSCINTILLA_VERSION_STR
 ]
 

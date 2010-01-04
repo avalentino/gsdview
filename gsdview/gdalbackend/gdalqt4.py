@@ -62,6 +62,7 @@ def gdalcolorentry2qcolor(colrentry, interpretation=gdal.GPI_RGB):
 class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
     def __init__(self, gdalobj, parent=None, scene=None):
         QtGui.QGraphicsItem.__init__(self, parent, scene)
+
         # @COMPATIBILITY: Qt >= 4.6.0 needs this flag to be set otherwise the
         #                 exact exposedRect is not computed
         # @SEEALSO: ItemUsesExtendedStyleOption item at
@@ -150,6 +151,7 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
                             w * ovrlevel,
                             h * ovrlevel)
 
+
 # @TODO: use a factory function
 class GdalGraphicsItem(BaseGdalGraphicsItem):
     def __init__(self, band, parent=None, scene=None):
@@ -235,6 +237,7 @@ class GdalGraphicsItem(BaseGdalGraphicsItem):
         rect = self._targetRect(x, y, w, h, ovrlevel)
         image = numpy2qimage(data)
         painter.drawImage(rect, image)
+
 
 class GdalRgbGraphicsItem(BaseGdalGraphicsItem):
     def __init__(self, dataset, parent=None, scene=None):

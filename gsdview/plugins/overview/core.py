@@ -159,12 +159,6 @@ class BandOverviewDock(QtGui.QDockWidget):
                              'are too large')
                 return
 
-            try:
-                # Assume the item is a raster band
-                ovrBand = item.GetOverview(ovrindex)
-            except AttributeError:
-                gdalsupport.ovrRead(item, ovrindex=ovrindex)
-
             # @TODO: check
             scene = item.scene
             self.graphicsview.setScene(scene)
