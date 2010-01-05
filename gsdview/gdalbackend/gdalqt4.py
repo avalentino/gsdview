@@ -167,7 +167,8 @@ class GdalGraphicsItem(BaseGdalGraphicsItem):
             dtype = numpy.typeDict[dtype]
         if numpy.iscomplexobj(dtype()):
             # @TODO: raise ItemTypeError or NotImplementedError
-            raise NotImplementedError('support for "%s" data type not avalable')
+            raise NotImplementedError('support for "%s" data type not '
+                                      'avalable' % dtype.__name__)
 
     def compute_default_LUT(self, band=None, data=None):
         if band is None:
@@ -202,6 +203,8 @@ class GdalGraphicsItem(BaseGdalGraphicsItem):
         return gsdtools.compute_lin_LUT(min_, max_, lower, upper)
 
     def paint(self, painter, option, widget):
+        #print 'paint', widget.parent()
+
         # @COMPATIBILITY: since Qt v. 4.6.0 the levelOfDetail attribute of
         # QStyleOptionGraphicsItem is deprecated
         # @SEEALSO: ItemUsesExtendedStyleOption item at
@@ -213,11 +216,19 @@ class GdalGraphicsItem(BaseGdalGraphicsItem):
         else:
             levelOfDetail = option.levelOfDetail
 
-        ovrband, ovrlevel, ovrindex = self._bestOvrLevel(self.gdalobj, 
+        ovrband, ovrlevel, ovrindex = self._bestOvrLevel(self.gdalobj,
                                                          levelOfDetail)
         x, y, w, h = self._clipRect(ovrband,
                                     option.exposedRect.toAlignedRect(),
                                     ovrlevel)
+
+        # @TODO: threshold check
+        #threshold = 1600*1600
+        #if w * h > threshold:
+        #    newoption = QtGui.QStyleOptionGraphicsItem(option)
+        #    newoption.levelOfDetail = option.levelOfDetail * threshold / (w * h)
+        #    print 'newoption.levelOfDetail', newoption.levelOfDetail
+        #    return self.paint(painter, newoption, widget)
 
         data = ovrband.ReadAsArray(x, y, w, h)
 
