@@ -31,6 +31,8 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from gsdview.qt4support import overrideCursor
+from gsdview.gdalbackend import gdalsupport
+
 
 class NavigationGraphicsView(QtGui.QGraphicsView):
     BOXCOLOR = QtGui.QColor(QtCore.Qt.red)
@@ -145,20 +147,11 @@ class BandOverviewDock(QtGui.QDockWidget):
 
     @overrideCursor
     def setItem(self, item):
-        # @TODO: fix
-        # @WARNING: this method contains backend specific code
-        if item.backend != 'gdalbackend':
-            logging.warning('only "gdalbackend" is supported by "overview" '
-                            'plugin')
-            return
+        assert item.backend == 'gdalbackend'
 
         self.graphicsview.setUpdatesEnabled(False)
         try:
             self.reset()
-
-            # @TODO: fix
-            from osgeo import gdal
-            from gsdview.gdalbackend import gdalsupport
 
             try:
                 level = gdalsupport.ovrLevelForSize(item, self.OVRMAXSIZE)

@@ -24,7 +24,7 @@
 __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
-__version__  = (0,6,0)
+__version__  = (0,6,1)
 
 __all__ = ['name', 'version', 'short_description', 'description',
            'author', 'author_email', 'copyright', 'license_type',
@@ -32,7 +32,7 @@ __all__ = ['name', 'version', 'short_description', 'description',
 
 
 name = 'overview'
-version = '.'.join(map(str, __version__)) + 'a'
+version = '.'.join(map(str, __version__))
 
 short_description = 'Band overview plugin for GSDView'
 description = '''The band overview plugin allows to display the overview of

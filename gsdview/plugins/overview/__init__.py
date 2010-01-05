@@ -24,7 +24,7 @@
 __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
-__requires__ = []
+__requires__ = ['gdalbackend']
 
 __all__ = ['BandOverviewDock', 'init', 'close',
            'name','version', 'short_description','description',
