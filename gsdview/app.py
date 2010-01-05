@@ -37,6 +37,7 @@ from exectools.qt4tools import Qt4ToolController, Qt4DialogLoggingHandler
 
 from gsdview import info
 from gsdview import utils
+from gsdview import errors
 from gsdview import qt4support
 from gsdview import graphicsview
 from gsdview import mousemanager
@@ -46,6 +47,7 @@ from gsdview.mainwin import ItemModelMainWindow
 from gsdview.appsite import USERCONFIGDIR, SYSPLUGINSDIR
 from gsdview.widgets import AboutDialog, PreferencesDialog
 from gsdview.widgets import GSDViewExceptionDialog as ExceptionDialog
+
 
 class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
     # @TODO:
@@ -687,7 +689,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
                         else:
                             self.logger.info('file %s" already open' % filename)
                         break
-                    except RuntimeError:
+                    except errors.OpenError:
                         #self.logger.exception('exception caught')
                         self.logger.debug('Backend "%s" failed to open file '
                                           '"%s"' % (backendname, filename))

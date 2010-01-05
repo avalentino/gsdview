@@ -32,6 +32,7 @@ from osgeo import gdal
 from PyQt4 import QtCore, QtGui
 
 from gsdview import qt4support
+from gsdview.errors import OpenError
 
 from gsdview.gdalbackend import info
 from gsdview.gdalbackend import gdalqt4
@@ -217,9 +218,14 @@ class DatasetItem(MajorObjectItem):
         self.graphicsitem = graphicsitem
 
     def _checkedopen(self, filename, mode=gdal.GA_ReadOnly):
-        gdalobj = gdal.Open(filename, mode)
+        try:
+            gdalobj = gdal.Open(filename, mode)
+        except RuntimeError, e:
+            # NOTE: this is needed when GDAL exceptions are enabled
+            raise OpenError(str(e))
+
         if gdalobj is None:
-            raise RuntimeError('"%s" is not a valid GDAL dataset' %
+            raise OpenError('"%s" is not a valid GDAL dataset' %
                                                     os.path.basename(filename))
         return gdalobj
 
@@ -463,7 +469,7 @@ def datasetitem(filename):
     # CachedDatasetItem does
     try:
         return CachedDatasetItem(filename)
-    except RuntimeError:
+    except OpenError:
         # @TODO: remove virtualfile created by CachedDatasetItem
         return DatasetItem(filename)
 
