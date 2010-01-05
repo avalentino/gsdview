@@ -135,11 +135,14 @@ class BandItem(MajorObjectItem):
             self.appendRow(item)
 
     def _setup_scene(self, parent=None):
-        # @TODO: check for scenes with no parent
-        scene = QtGui.QGraphicsScene(parent)
-        graphicsitem = gdalqt4.GdalGraphicsItem(self)
-        scene.addItem(graphicsitem)
-        return scene, graphicsitem
+        try:
+            # @TODO: check for scenes with no parent
+            scene = QtGui.QGraphicsScene(parent)
+            graphicsitem = gdalqt4.GdalGraphicsItem(self)
+            scene.addItem(graphicsitem)
+            return scene, graphicsitem
+        except NotImplementedError:  #(NoImplementedError, TypeError):
+            return None, None
 
     #~ def _close(self):
         #~ self._obj.FlushCache()

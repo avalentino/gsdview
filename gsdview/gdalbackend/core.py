@@ -432,6 +432,14 @@ class GDALBackend(QtCore.QObject):
             item = self._mainwin.currentItem()
         assert isinstance(item, modelitems.BandItem)
 
+        if not item.scene:
+            if not item.GetDescription():
+                msg = 'band "%s" is not visualizable' % (item.row() + 1)
+            else:
+                msg = 'band "%s" is not visualizable' % item.GetDescription()
+            self._mainwin.logger.warning(msg)
+            return
+
         # only open a new view if there is no other on the item selected
         if len(item.scene.views()) == 0:
             self.newImageView(item)
