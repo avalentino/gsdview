@@ -46,8 +46,19 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
     def setbox(self, box):
         assert isinstance(box, (QtCore.QRect, QtCore.QRectF))
         self._viewbox = box
-        #self.update()
-        self.scene().update()
+        if self.isVisible():
+            # @WARNING: calling "update" on the scene causes a repaint of
+            #           *all* attached views and for each view the entire
+            #           exposedRect is updated.
+            #           Using QGraphicsView.invalidateScene with the
+            #           QtGui.QGraphicsScene.ForegroundLayer parameter
+            #           should be faster an repaint only one layer of the
+            #           current view.
+
+            # @TODO: check
+            #self.invalidateScene(self.sceneRect(),
+            #                     QtGui.QGraphicsScene.ForegroundLayer)
+            self.scene().update()
 
     viewbox = property(getbox, setbox, doc='viewport box in scene coordinates')
 
@@ -159,7 +170,6 @@ class BandOverviewDock(QtGui.QDockWidget):
                              'are too large')
                 return
 
-            # @TODO: check
             scene = item.scene
             self.graphicsview.setScene(scene)
             self.graphicsview.setSceneRect(scene.sceneRect())
@@ -174,6 +184,7 @@ class BandOverviewDock(QtGui.QDockWidget):
             self.updateMainViewBox()
         finally:
             self.graphicsview.setUpdatesEnabled(True)
+            self.graphicsview.update()
 
     def centerMainViewOn(self, scenepos):
         view = self.mainwin.currentGraphicsView()

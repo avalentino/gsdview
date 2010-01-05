@@ -52,7 +52,9 @@ def init(mainwin):
         try:
             item = subwin.item
         except AttributeError:
-            overviewPanel.reset()
+            # @TODO: check
+            #overviewPanel.reset()
+            pass
         else:
             overviewPanel.setItem(item)
 
@@ -100,7 +102,6 @@ def init(mainwin):
                            QtCore.SIGNAL('mouseMoved(QPointF,Qt::MouseButtons,'
                                          'QGraphicsView::DragMode)'),
                            onNewPos)
-
 
 def close(mainwin):
     saveSettings(mainwin.settings)
