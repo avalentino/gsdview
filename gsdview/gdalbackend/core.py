@@ -450,27 +450,20 @@ class GDALBackend(QtCore.QObject):
         else:
             maximized = True
 
-        # @TODO: if item data type is not supported by GraphicsItem
-        #        an exception should be raised
-        #        (complex dataset should not be opened)
-        try:
-            subwin = GraphicsViewSubWindow(item)    #self._mainwin.mdiarea)
-            #subwin.setWindowState(QtCore.Qt.WindowMaximized) # @TODO: check
+	    subwin = GraphicsViewSubWindow(item)
 
-            self._mainwin.mdiarea.addSubWindow(subwin)
-            grephicsview = subwin.widget()
-            self._mainwin.monitor.register(grephicsview)
-            self._mainwin.mousemanager.register(grephicsview)
+	    self._mainwin.mdiarea.addSubWindow(subwin)
+	    grephicsview = subwin.widget()
+	    self._mainwin.monitor.register(grephicsview)
+	    self._mainwin.mousemanager.register(grephicsview)
 
-            self.connect(subwin, QtCore.SIGNAL('destroyed()'),
-                         self._mainwin.subWindowClosed)
+	    self.connect(subwin, QtCore.SIGNAL('destroyed()'),
+	                 self._mainwin.subWindowClosed)
 
-            if maximized:
-                subwin.showMaximized()
-            else:
-                subwin.show()
-        except NotImplementedError: #ItemTypeError:
-            return
+        if maximized:
+            subwin.showMaximized()
+        else:
+            subwin.show()
 
         #######################################################################
         ### BEGIN #############################################################
