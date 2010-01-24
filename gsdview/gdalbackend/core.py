@@ -458,15 +458,15 @@ class GDALBackend(QtCore.QObject):
         else:
             maximized = True
 
-	    subwin = GraphicsViewSubWindow(item)
+        subwin = GraphicsViewSubWindow(item)
 
-	    self._mainwin.mdiarea.addSubWindow(subwin)
-	    grephicsview = subwin.widget()
-	    self._mainwin.monitor.register(grephicsview)
-	    self._mainwin.mousemanager.register(grephicsview)
+        self._mainwin.mdiarea.addSubWindow(subwin)
+        grephicsview = subwin.widget()
+        self._mainwin.monitor.register(grephicsview)
+        self._mainwin.mousemanager.register(grephicsview)
 
-	    self.connect(subwin, QtCore.SIGNAL('destroyed()'),
-	                 self._mainwin.subWindowClosed)
+        self.connect(subwin, QtCore.SIGNAL('destroyed()'),
+                     self._mainwin.subWindowClosed)
 
         if maximized:
             subwin.showMaximized()
