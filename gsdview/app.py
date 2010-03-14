@@ -673,6 +673,9 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
 
     ### File actions ##########################################################
     def openFile(self):
+        # @TODO: remove; this is a temporary workaround for a Qt bug in Cocoa version
+        self.filedialog.selectNameFilter(self.filedialog.selectedNameFilter())
+        
         # @TODO: allow multiple file selection
         if self.filedialog.exec_():
             filename = str(self.filedialog.selectedFiles()[0])

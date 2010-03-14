@@ -62,7 +62,7 @@ def init(mainwin):
     #UseExceptions()
 
     # set file dialog filters
-    mainwin.filedialog.setFilters(gdalsupport.gdalFilters())
+    mainwin.filedialog.setNameFilters(gdalsupport.gdalFilters())
 
     # update versions info in about dialog
     mainwin.aboutdialog.addSoftwareVersion('GDAL',
