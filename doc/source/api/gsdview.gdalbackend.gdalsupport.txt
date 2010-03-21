@@ -15,6 +15,7 @@ gsdview.gdalbackend.gdalsupport
       coordinate_mapper
       gdalFilters
       getDriverList
+      hasFastStats
       isRGB
       ovrBestIndex
       ovrComputeLevels

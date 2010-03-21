@@ -234,6 +234,10 @@ def isRGB(dataset, strict=False):
 
     '''
 
+    if not hasattr(dataset, 'RasterCount'):
+        # It is not a GDAL dataset
+        return False
+
     if dataset.RasterCount not in (3, 4):
         return False
 
@@ -258,6 +262,35 @@ def isRGB(dataset, strict=False):
         return False
 
     return True
+
+
+def hasFastStats(band, approx_ok=True):
+    '''Return true if band statistics can be retrieved quickly.
+
+    If precomputed stistics in band metadata or small enough band
+    overviews does exist then it is assumed that band statistics can
+    be retriewed in a very quick way.
+
+    if the *approx_ok* only precomputed statistics are taken into
+    account.
+
+    '''
+
+    metadata = band.GetMetadata()
+    stats = [metadata.get(name) for name in ('STATISTICS_MIN',
+                                             'STATISTICS_MAX',
+                                             'STATISTICS_MEAN',
+                                             'STATISTICS_STDDEV')]
+    result = bool(None in stats)
+    if approx_ok:
+        try:
+            indx = ovrBestIndex(band, policy='GREATER')
+        except MissingOvrError:
+            pass
+        else:
+            result = True
+
+    return result
 
 
 ### Color table helpers #####################################################

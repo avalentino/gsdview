@@ -551,20 +551,19 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         #        (STATISTICS_MINIMUM, STATISTICS_MAXIMUM, STATISTICS_MEAN,
         #        STATISTICS_STDDEV)
 
-        metadata = band.GetMetadata()
-        if metadata.get('STATISTICS_STDDEV') is None:
+        if gdalsupport.hasFastStats(band, approx_ok=False):
+            vmin, vmax, mean, stddev = band.GetStatistics(True, True)
+            self.minimumValue.setText(str(vmin))
+            self.maximumValue.setText(str(vmax))
+            self.meanValue.setText(str(mean))
+            self.stdValue.setText(str(stddev))
+            self.computeStatsButton.setEnabled(False)
+        else:
             value = self.tr('Not computed')
             self.minimumValue.setText(value)
             self.maximumValue.setText(value)
             self.meanValue.setText(value)
             self.stdValue.setText(value)
-        else:
-            min_, max_, mean_, std_ = band.GetStatistics(True, True)
-            self.minimumValue.setText(str(min_))
-            self.maximumValue.setText(str(max_))
-            self.meanValue.setText(str(mean_))
-            self.stdValue.setText(str(std_))
-            self.computeStatsButton.setEnabled(False)
 
     def computeHistogram(self):
         # @TODO: use an external process (??)
