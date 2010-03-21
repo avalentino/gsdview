@@ -11,15 +11,24 @@ gsdview.gsdtools
 
    .. autosummary::
    
-      apply_LUT
-      compute_lin_LUT
-      compute_lin_LUT2
-      fix_LUT
-      ovr_lut
+      histogram_equalized_lut
+      linear_lut
+      log_lut
+      root
+      square
    
    
 
    
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BaseStretcher
+      LUTStretcher
+      LinearStretcher
+      LogarithmicStretcher
    
    
 

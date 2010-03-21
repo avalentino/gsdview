@@ -13,6 +13,7 @@ gsdview.gdalbackend.gdalqt4
    
       GDALTypeCodeToNumericTypeCode
       gdalcolorentry2qcolor
+      graphicsItemFactory
       numpy2qimage
    
    
@@ -24,8 +25,10 @@ gsdview.gdalbackend.gdalqt4
    .. autosummary::
    
       BaseGdalGraphicsItem
+      GdalComplexGraphicsItem
       GdalGraphicsItem
       GdalRgbGraphicsItem
+      UIntGdalGraphicsItem
    
    
 

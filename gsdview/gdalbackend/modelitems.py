@@ -142,7 +142,7 @@ class BandItem(MajorObjectItem):
         try:
             # @TODO: check for scenes with no parent
             scene = QtGui.QGraphicsScene(parent)
-            graphicsitem = gdalqt4.GdalGraphicsItem(self)
+            graphicsitem = gdalqt4.graphicsItemFactory(self)
             scene.addItem(graphicsitem)
             return scene, graphicsitem
         except NotImplementedError:  #(NoImplementedError, TypeError):

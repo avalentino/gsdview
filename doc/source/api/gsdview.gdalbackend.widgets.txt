@@ -11,6 +11,7 @@ gsdview.gdalbackend.widgets
 
    .. autosummary::
    
+      GDALTypeCodeToNumericTypeCode
       get_filedialog
    
    
