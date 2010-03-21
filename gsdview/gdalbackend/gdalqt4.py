@@ -85,6 +85,11 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
         self._boundingRect = QtCore.QRectF(0, 0, w, h)
         #self.read_threshold = 1600*1200
 
+        self.stretch = gsdtools.LinearStretcher()
+        # @TODO: use lazy gaphicsitem inirialization
+        # @TODO: initilize stretching explicitly
+        self._stretch_initialized = False
+
     def boundingRect(self):
         return self._boundingRect
 
@@ -168,12 +173,119 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
                     band = band.GetOverview(ovrindex)
         return band, ovrlevel, ovrindex
 
+    @staticmethod
+    def _defaultStretch(band, data=None, nsigma=5):
+        # @NOTE: statistics computation is potentially slow so first check
+        #        if fast statistics retriewing is possible
+
+        if band and gdalsupport.hasFastStats(band):
+            vmin, vmax, mean, stddev = band.GetStatistics(True, True)
+        elif data is not None and data.size <= 4*1024**2:
+            vmin = data.min()
+            vmax = data.max()
+            mean = data.mean()
+            stddev = data.std()
+        elif band and band.DataType == gdal.GDT_Byte:
+            return 0, 255
+        else:
+            return None, None
+
+        lower = max(mean - nsigma * stddev, 0)
+        upper = min(mean + nsigma * stddev, vmax)
+
+        return lower, upper
+
+    def setDefaultStretch(self, data=None):
+        lower, upper = self._defaultStretch(self.gdalobj, data)
+
+        if None in (lower, upper) or (lower == upper):
+            self._stretch_initialized = False
+            return
+
+        self.stretch.set_range(lower, upper)
+        self._stretch_initialized = True
+
+    @staticmethod
+    def _dataRange(band, data=None):
+        if band and gdalsupport.hasFastStats(band):
+            vmin, vmax, mean, stddev = band.GetStatistics(True, True)
+            return vmin, vmax
+        elif data is not None and data.size <= 4*1024**2:
+            return data.min(), data.max()
+        elif band:
+            tmap = {
+                gdal.GDT_Byte:      (0, 255),
+                gdal.GDT_UInt16:    (0, 2**16-1),
+                gdal.GDT_UInt32:    (0, 2**32-1),
+                gdal.GDT_Int16:     (-2**15, 2**15-1),
+                gdal.GDT_Int32:     (-2**31, 2**31-1),
+                gdal.GDT_CInt16:    (0, 2**15 * numpy.sqrt(2)),
+                gdal.GDT_CInt32:    (0, 2**32 * numpy.sqrt(2)),
+                gdal.GDT_CFloat32:  (0, None),
+                gdal.GDT_CFloat64:  (0, None),
+            }
+            return tmap.get(band.DataType, (None, None))
+        else:
+            return None, None
+
+    def dataRange(self, data=None):
+        return None, None
+
+
+class UIntGdalGraphicsItem(BaseGdalGraphicsItem):
+    '''GDAL graphics item specialized for 8 and 16 it unsigned integers.
+
+    Uses an unchecked LUT for transformations.
+
+    '''
+
+
+    def __init__(self, band, parent=None, scene=None):
+        super(UIntGdalGraphicsItem, self).__init__(band, parent, scene)
+
+        # @TODO: maybe it is batter to use a custo mexception: ItemTypeError
+        if band.DataType not in (gdal.GDT_Byte, gdal.GDT_UInt16):
+            typename = gdal.GetDataTypeName(band.DataType)
+            raise ValueError('invalid data type: "%s"' % typename)
+
+        dtype = numpy.dtype(GDALTypeCodeToNumericTypeCode(band.DataType))
+        self.stretch = gsdtools.LUTStretcher(fill=2**(8*dtype.itemsize))
+        self._stretch_initialized = False
+
+    def dataRange(self, data=None):
+        return self._dataRange(self.gdalobj, data)
+
+    def paint(self, painter, option, widget):
+        levelOfDetail = self._levelOfDetail(option, painter)
+        ovrband, ovrlevel, ovrindex = self._bestOvrLevel(self.gdalobj,
+                                                         levelOfDetail)
+        x, y, w, h = self._clipRect(ovrband,
+                                    option.exposedRect.toAlignedRect(),
+                                    ovrlevel)
+
+        # @TODO: threshold check
+        # @WARNING: option.levelOfDetail is no more usable
+        #threshold = 1600*1600
+        #if w * h > threshold:
+        #    newoption = QtGui.QStyleOptionGraphicsItem(option)
+        #    newoption.levelOfDetail = option.levelOfDetail*threshold/(w*h)
+        #    print 'newoption.levelOfDetail', newoption.levelOfDetail
+        #    return self.paint(painter, newoption, widget)
+
+        data = ovrband.ReadAsArray(x, y, w, h)
+
+        if not self._stretch_initialized:
+            self.setDefaultStretch(data)
+        data = self.stretch(data)
+        image = numpy2qimage(data)
+
+        rect = self._targetRect(x, y, w, h, ovrlevel)
+        painter.drawImage(rect, image)
+
 
 class GdalGraphicsItem(BaseGdalGraphicsItem):
     def __init__(self, band, parent=None, scene=None):
         super(GdalGraphicsItem, self).__init__(band, parent, scene)
-
-        self._lut = self.compute_default_LUT()
 
         if gdal.DataTypeIsComplex(band.DataType):
             # @TODO: raise ItemTypeError or NotImplementedError
@@ -181,33 +293,8 @@ class GdalGraphicsItem(BaseGdalGraphicsItem):
             raise NotImplementedError('support for "%s" data type not '
                                       'avalable' % typename)
 
-    def compute_default_LUT(self, band=None, data=None):
-        if band is None:
-            band = self.gdalobj
-        # @TOOD: fix flags (approx, force)
-        #min_, max_, mean, stddev = self.band.GetStatistics(False, True)
-
-        # @WARNING: this is potentially slow
-        # @TODO: check for overviews and if no one is peresent flag as
-        #        uninizialized
-        try:
-            indx = gdalsupport.ovrBestIndex(band, policy='GREATER')
-        except gdalsupport.MissingOvrError:
-            if data is not None:
-                min_ = data.min()
-                max_ = data.max()
-                mean = data.mean()
-                stddev = data.std()
-            else:
-                return None
-        else:
-            min_, max_, mean, stddev = band.GetStatistics(True, True)
-
-        N = 3
-        lower = round(max(mean - N * stddev, 0))
-        upper = round(min(mean + N * stddev, max_))
-
-        return gsdtools.compute_lin_LUT(min_, max_, lower, upper)
+    def dataRange(self, data=None):
+        return self._dataRange(self.gdalobj, data)
 
     def paint(self, painter, option, widget):
         #print 'paint', widget.parent()
@@ -229,18 +316,46 @@ class GdalGraphicsItem(BaseGdalGraphicsItem):
 
         data = ovrband.ReadAsArray(x, y, w, h)
 
-        if numpy.iscomplexobj(data):
+        if not self._stretch_initialized:
+            self.setDefaultStretch(data)
+        data = self.stretch(data)
+
+        rect = self._targetRect(x, y, w, h, ovrlevel)
+        image = numpy2qimage(data)
+        painter.drawImage(rect, image)
+
+
+class GdalComplexGraphicsItem(GdalGraphicsItem):
+    def __init__(self, band, parent=None, scene=None):
+        # @NOTE: skip GdalGraphicsItem __init__
+        BaseGdalGraphicsItem.__init__(self, band, parent, scene)
+
+    def dataRange(self, data=None):
+        return self._dataRange(self.gdalobj, numpy.abs(data))
+
+    def paint(self, painter, option, widget):
+        levelOfDetail = self._levelOfDetail(option, painter)
+        ovrband, ovrlevel, ovrindex = self._bestOvrLevel(self.gdalobj,
+                                                         levelOfDetail)
+        x, y, w, h = self._clipRect(ovrband,
+                                    option.exposedRect.toAlignedRect(),
+                                    ovrlevel)
+
+        # @TODO: threshold check
+        #threshold = 1600*1600
+        #if w * h > threshold:
+        #    newoption = QtGui.QStyleOptionGraphicsItem(option)
+        #    newoption.levelOfDetail = option.levelOfDetail * threshold / (w * h)
+        #    print 'newoption.levelOfDetail', newoption.levelOfDetail
+        #    return self.paint(painter, newoption, widget)
+
+        data = ovrband.ReadAsArray(x, y, w, h)
+
             data = numpy.abs(data)
-        if self._lut is None:
-            self._lut = self.compute_default_LUT(ovrband, data)
-        try:
-            data = gsdtools.apply_LUT(data, self._lut)
-        except IndexError:
-            # If the gdal approx stats evaluation is used it than is possible
-            # that the image maximum is under-estimated. Fix the LUT.
-            new_lut = gsdtools.fix_LUT(data, self._lut)
-            self._lut = new_lut
-            data = gsdtools.apply_LUT(data, self._lut)
+        if not self._stretch_initialized:
+            self.setDefaultStretch(data)
+
+        data = self.stretch(data)
 
         rect = self._targetRect(x, y, w, h, ovrlevel)
         image = numpy2qimage(data)
