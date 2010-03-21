@@ -316,7 +316,8 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         icon = qt4support.geticon('close.svg', __name__)
         action = QtGui.QAction(icon, self.tr('&Close'), actionsgroup)
         action.setObjectName('close')
-        action.setShortcut(self.tr('Ctrl+W'))
+        # 'Ctrl+W' shortcu is used for closing windows
+        #action.setShortcut(self.tr('Ctrl+W'))
         action.setToolTip(self.tr('Close the current file'))
         action.setStatusTip(self.tr('Close the current file'))
         self.connect(action, QtCore.SIGNAL('triggered()'), self.closeFile)
