@@ -368,7 +368,7 @@ class GDALBackend(QtCore.QObject):
             name = name[:-4] + 'InfoDialog'
             dialogclass = getattr(widgets, name, None)
             if dialogclass:
-                dialog = dialogclass(item._obj) # @TODO: check
+                dialog = dialogclass(item)
                 dialog.exec_()
                 break
         else:
