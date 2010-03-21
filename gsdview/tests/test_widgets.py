@@ -25,9 +25,14 @@ import logging
 
 from PyQt4 import QtGui
 
-sys.path.insert(0, os.path.join(os.pardir, os.pardir))
+# Fix sys path
+from os.path import abspath, dirname
+GSDVIEWROOT = abspath(os.path.join(dirname(__file__), os.pardir, os.pardir))
+sys.path.insert(0, GSDVIEWROOT)
+
 
 from gsdview.widgets import *
+
 
 def test_aboutdialog():
     app = QtGui.QApplication(sys.argv)
@@ -75,6 +80,7 @@ def test_exceptiondialog():
         d.show()
         app.exec_()
     print 'done.'
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

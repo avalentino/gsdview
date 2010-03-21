@@ -2,14 +2,20 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.join(os.pardir, os.pardir, os.pardir))
-
 import logging
 
 from osgeo import gdal
 from PyQt4 import QtGui
 
+# Fix sys path
+from os.path import abspath, dirname
+GSDVIEWROOT = abspath(os.path.join(dirname(__file__),
+                                   os.pardir, os.pardir, os.pardir))
+sys.path.insert(0, GSDVIEWROOT)
+
+
 from gsdview.gdalbackend.widgets import *
+
 
 def test_gdalinfowidget():
     app = QtGui.QApplication(sys.argv)
@@ -52,11 +58,15 @@ def test_histogram_config():
 def main(imagestruct=True):
     logging.basicConfig(level=logging.DEBUG)
 
-    filename = '../../plugins/worldmap/images/world_4320x2160.jpg'
+    filename = os.path.join(GSDVIEWROOT, 'gsdview', 'plugins',
+                            'worldmap', 'images', 'world_4320x2160.jpg')
 
     if imagestruct is False:
         # convert to palatted image
         pctfilename = 'world_pct.jpeg'
+        pctfilename = os.path.join(GSDVIEWROOT, 'gsdview', 'gdalbackend',
+                                   'tests', 'world_pct.jpeg')
+
         if not os.path.exists(pctfilename):
             import subprocess
 
