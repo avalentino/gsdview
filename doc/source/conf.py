@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # GSDView documentation build configuration file, created by
-# sphinx-quickstart on Sat Jan  2 12:17:35 2010.
+# sphinx-quickstart on Sun Mar 21 10:54:41 2010.
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #
@@ -17,10 +17,14 @@ import sys, os
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.append(os.path.abspath('.'))
-sys.path.insert(0, os.path.abspath('../..'))
-sys.path.insert(1, os.path.abspath('../../gsdview/plugins'))
+GSDVIEWROOT = os.path.abspath(os.path.join(os.pardir, os.pardir))
+sys.path.insert(0, GSDVIEWROOT)
+sys.path.insert(1, os.path.join(GSDVIEWROOT, 'gsdview', 'plugins'))
 
 # -- General configuration -----------------------------------------------------
+
+# If your documentation needs a minimal Sphinx version, state it here.
+#needs_sphinx = '1.0'
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
@@ -69,12 +73,9 @@ release = RELEASE
 # Else, today_fmt is used as the format for a strftime call.
 #today_fmt = '%B %d, %Y'
 
-# List of documents that shouldn't be included in the build.
-unused_docs = ['latestnews']
-
-# List of directories, relative to source directory, that shouldn't be searched
-# for source files.
-exclude_trees = []
+# List of patterns, relative to source directory, that match files and
+# directories to ignore when looking for source files.
+exclude_patterns = ['latestnews']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
@@ -96,8 +97,16 @@ pygments_style = 'sphinx'
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
 
+# -- Extensions configuration --------------------------------------------------
+
 # External links configuration
 extlinks = {'issue': ('http://sourceforge.net/apps/trac/gsdview/ticket/%s', '#')}
+
+# Auto summary generation
+autosummary_generate = ['reference']
+
+# Enable todo list reporting
+todo_include_todos = True
 
 # -- Options for HTML output ---------------------------------------------------
 
@@ -252,3 +261,6 @@ latex_logo = 'images/logo_large.pdf'
 
 # A list of files that should not be packed into the epub file.
 #epub_exclude_files = []
+
+# The depth of the table of contents in toc.ncx.
+#epub_tocdepth = 3

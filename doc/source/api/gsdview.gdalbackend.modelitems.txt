@@ -32,4 +32,10 @@ gsdview.gdalbackend.modelitems
 
    
    
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      OpenError
+   
    

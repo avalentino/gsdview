@@ -7,7 +7,6 @@ Main Application
 
 .. autosummary::
    :toctree: api/
-   :template: module.rst
 
    gsdview
    gsdview.app
@@ -49,7 +48,6 @@ Plugins
 
 .. autosummary::
    :toctree: api/
-   :template: module.rst
 
    logplane
    overview

@@ -42,6 +42,7 @@ gsdview.gdalbackend.gdalsupport
 
    .. autosummary::
    
-      CoordinateMapper
+      InvalidProjection
+      MissingOvrError
    
    

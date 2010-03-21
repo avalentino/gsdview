@@ -39,12 +39,6 @@ exectools
 
    .. autosummary::
    
-      BaseOStream
-      BaseOutputHandler
-      BaseToolController
-      GenericToolDescriptor
-      OFStream
-      Popen
-      ToolDescriptor
+      CalledProcessError
    
    
