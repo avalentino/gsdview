@@ -26,12 +26,12 @@ __date__     = '$Date$'
 __revision__ = '$Revision$'
 
 
-import numpy
+import logging
 
+import numpy
+from PyQt4 import QtCore, QtGui
 from osgeo import gdal
 from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
-
-from PyQt4 import QtCore, QtGui
 
 from gsdview import gsdtools
 from gsdview.qt4support import numpy2qimage
@@ -60,7 +60,7 @@ def gdalcolorentry2qcolor(colrentry, interpretation=gdal.GPI_RGB):
 
 class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
     def __init__(self, gdalobj, parent=None, scene=None):
-        QtGui.QGraphicsItem.__init__(self, parent, scene)
+        super(BaseGdalGraphicsItem, self).__init__(parent, scene)
 
         # @COMPATIBILITY: Qt >= 4.6.0 needs this flag to be set otherwise the
         #                 exact exposedRect is not computed
@@ -75,54 +75,18 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
         self.gdalobj = gdalobj
         try:
             # dataset
-            self._boundingRect = QtCore.QRectF(0, 0,
-                                               gdalobj.RasterXSize,
-                                               gdalobj.RasterYSize)
+            w = gdalobj.RasterXSize
+            h = gdalobj.RasterYSize
         except AttributeError:
             # raster band
-            self._boundingRect = QtCore.QRectF(0, 0,
-                                               gdalobj.XSize,
-                                               gdalobj.YSize)
+            w = gdalobj.XSize
+            h = gdalobj.YSize
+
+        self._boundingRect = QtCore.QRectF(0, 0, w, h)
+        #self.read_threshold = 1600*1200
 
     def boundingRect(self):
         return self._boundingRect
-
-    @staticmethod
-    def _levelOfDetailFromTransform(worldTransform):
-        # @COMPATIBILITY: since Qt v. 4.6.0 the levelOfDetail attribute of
-        # QStyleOptionGraphicsItem is deprecated
-        # @SEEALSO: ItemUsesExtendedStyleOption item at
-        # http://doc.qt.nokia.com/4.6/qgraphicsitem.html#GraphicsItemFlag-enum
-        #
-        # From qt/src/gui/styles/qstyleoption.cpp:5130
-        if worldTransform.type() <= QtGui.QTransform.TxTranslate:
-            return 1    # Translation only? The LOD is 1.
-
-        # Two unit vectors.
-        v1 = QtCore.QLineF(0, 0, 1, 0)
-        v2 = QtCore.QLineF(0, 0, 0, 1)
-        # LOD is the transformed area of a 1x1 rectangle.
-        return numpy.sqrt(worldTransform.map(v1).length() *
-                                                worldTransform.map(v2).length())
-
-    def _bestOvrLevel(self, band, levelOfDetail):
-        ovrlevel = 1
-        ovrindex = None
-
-        if band.GetOverviewCount() > 0:
-            reqlevel = 1. / levelOfDetail
-            try:
-                ovrindex = gdalsupport.ovrBestIndex(band, reqlevel)
-            except gdalsupport.MissingOvrError:
-                pass
-            else:
-                ovrlevel = gdalsupport.ovrLevels(band)[ovrindex]
-                if abs(reqlevel - 1) < abs(reqlevel - ovrlevel):
-                    ovrlevel = 1
-                    ovrindex = None
-                else:
-                    band = band.GetOverview(ovrindex)
-        return band, ovrlevel, ovrindex
 
     def _clipRect(self, ovrband, rect, ovrlevel):
         boundingRect = self._boundingRect
@@ -150,24 +114,72 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
                             w * ovrlevel,
                             h * ovrlevel)
 
+    @staticmethod
+    def _levelOfDetailFromTransform(worldTransform):
+        # @COMPATIBILITY: since Qt v. 4.6.0 the levelOfDetail attribute of
+        # QStyleOptionGraphicsItem is deprecated
+        # @SEEALSO: ItemUsesExtendedStyleOption item at
+        # http://doc.qt.nokia.com/4.6/qgraphicsitem.html#GraphicsItemFlag-enum
+        #
+        # From qt/src/gui/styles/qstyleoption.cpp:5130
+        if worldTransform.type() <= QtGui.QTransform.TxTranslate:
+            return 1    # Translation only? The LOD is 1.
 
-# @TODO: use a factory function
+        # Two unit vectors.
+        v1 = QtCore.QLineF(0, 0, 1, 0)
+        v2 = QtCore.QLineF(0, 0, 0, 1)
+        # LOD is the transformed area of a 1x1 rectangle.
+        return numpy.sqrt(worldTransform.map(v1).length() *
+                                                worldTransform.map(v2).length())
+
+    @staticmethod
+    def _levelOfDetail(option, painter):
+        # @COMPATIBILITY: since Qt v. 4.6.0 the levelOfDetail attribute of
+        # QStyleOptionGraphicsItem is deprecated
+        # @SEEALSO: ItemUsesExtendedStyleOption item at
+        # http://doc.qt.nokia.com/4.6/qgraphicsitem.html#GraphicsItemFlag-enum
+        if hasattr(option, 'levelOfDetailFromTransform'):
+            levelOfDetail = option.levelOfDetailFromTransform(
+                                                    painter.transform())
+        elif QtCore.QT_VERSION_STR >= '4.6.0':
+            levelOfDetail = BaseGdalGraphicsItem._levelOfDetailFromTransform(
+                                                        painter.transform())
+        else:
+            levelOfDetail = option.levelOfDetail
+        return levelOfDetail
+
+    @staticmethod
+    def _bestOvrLevel(band, levelOfDetail):
+        ovrlevel = 1
+        ovrindex = None
+
+        if band.GetOverviewCount() > 0:
+            reqlevel = 1. / levelOfDetail
+            try:
+                ovrindex = gdalsupport.ovrBestIndex(band, reqlevel)
+            except gdalsupport.MissingOvrError:
+                pass
+            else:
+                ovrlevel = gdalsupport.ovrLevels(band)[ovrindex]
+                if abs(reqlevel - 1) < abs(reqlevel - ovrlevel):
+                    ovrlevel = 1
+                    ovrindex = None
+                else:
+                    band = band.GetOverview(ovrindex)
+        return band, ovrlevel, ovrindex
+
+
 class GdalGraphicsItem(BaseGdalGraphicsItem):
     def __init__(self, band, parent=None, scene=None):
-        BaseGdalGraphicsItem.__init__(self, band, parent, scene)
+        super(GdalGraphicsItem, self).__init__(band, parent, scene)
+
         self._lut = self.compute_default_LUT()
 
-        #~ if band.DataType in (gdal.GDT_CInt16, gdal.GDT_CInt32):
-            #~ logging.warning('complex integer dataset')
-
-        # @TODO: gdal.DataTypeIsComplex (??)
-        dtype = GDALTypeCodeToNumericTypeCode(band.DataType)
-        if isinstance(dtype, basestring):
-            dtype = numpy.typeDict[dtype]
-        if numpy.iscomplexobj(dtype()):
+        if gdal.DataTypeIsComplex(band.DataType):
             # @TODO: raise ItemTypeError or NotImplementedError
+            typename = gdal.GetDataTypeName(band.DataType)
             raise NotImplementedError('support for "%s" data type not '
-                                      'avalable' % dtype.__name__)
+                                      'avalable' % typename)
 
     def compute_default_LUT(self, band=None, data=None):
         if band is None:
@@ -191,10 +203,6 @@ class GdalGraphicsItem(BaseGdalGraphicsItem):
         else:
             min_, max_, mean, stddev = band.GetStatistics(True, True)
 
-        # @TODO: check
-        #lower = 0
-        #upper = round(max_)
-
         N = 3
         lower = round(max(mean - N * stddev, 0))
         upper = round(min(mean + N * stddev, max_))
@@ -203,18 +211,7 @@ class GdalGraphicsItem(BaseGdalGraphicsItem):
 
     def paint(self, painter, option, widget):
         #print 'paint', widget.parent()
-
-        # @COMPATIBILITY: since Qt v. 4.6.0 the levelOfDetail attribute of
-        # QStyleOptionGraphicsItem is deprecated
-        # @SEEALSO: ItemUsesExtendedStyleOption item at
-        # http://doc.qt.nokia.com/4.6/qgraphicsitem.html#GraphicsItemFlag-enum
-        if hasattr(option, 'levelOfDetailFromTransform'):
-            levelOfDetail = option.levelOfDetailFromTransform(painter.transform())
-        elif QtCore.QT_VERSION_STR >= '4.6.0':
-            levelOfDetail = self._levelOfDetailFromTransform(painter.transform())
-        else:
-            levelOfDetail = option.levelOfDetail
-
+        levelOfDetail = self._levelOfDetail(option, painter)
         ovrband, ovrlevel, ovrindex = self._bestOvrLevel(self.gdalobj,
                                                          levelOfDetail)
         x, y, w, h = self._clipRect(ovrband,
@@ -222,6 +219,7 @@ class GdalGraphicsItem(BaseGdalGraphicsItem):
                                     ovrlevel)
 
         # @TODO: threshold check
+        # @WARNING: option.levelOfDetail is no more usable
         #threshold = 1600*1600
         #if w * h > threshold:
         #    newoption = QtGui.QStyleOptionGraphicsItem(option)
@@ -257,8 +255,8 @@ class GdalRgbGraphicsItem(BaseGdalGraphicsItem):
 
     def paint(self, painter, option, widget):
         band = self.gdalobj.GetRasterBand(1)
-        ovrband, ovrlevel, ovrindex = self._bestOvrLevel(band,
-                                                         option.levelOfDetail)
+        levelOfDetail = self._levelOfDetail(option, painter)
+        ovrband, ovrlevel, ovrindex = self._bestOvrLevel(band, levelOfDetail)
         x, y, w, h = self._clipRect(ovrband,
                                     option.exposedRect.toAlignedRect(),
                                     ovrlevel)
@@ -268,3 +266,25 @@ class GdalRgbGraphicsItem(BaseGdalGraphicsItem):
         rect = self._targetRect(x, y, w, h, ovrlevel)
         image = numpy2qimage(data)
         painter.drawImage(rect, image)
+
+
+def graphicsItemFactory(gdalobj, parent=None, scene=None):
+    '''Factory function for GDAL graphics items.
+
+    Instantiates on object of the GDAL graphics item class taht best
+    fits the *gdalobj* passed as argument.
+
+    '''
+
+    if gdalsupport.isRGB(gdalobj):
+        logging.debug('new GdalRgbGraphicsItem')
+        return GdalRgbGraphicsItem(gdalobj, parent, scene)
+    elif gdalobj.DataType in (gdal.GDT_Byte, gdal.GDT_UInt16):
+        logging.debug('new GdalUIntGraphicsItem')
+        return UIntGdalGraphicsItem(gdalobj, parent, scene)
+    #~ elif gdal.DataTypeIsComplex(gdalobj.DataType):
+        #~ logging.debug('new GdalComplexGraphicsItem')
+        #~ return GdalComplexGraphicsItem(gdalobj, parent, scene)
+    else:
+        logging.debug('new GdalGraphicsItem')
+        return GdalGraphicsItem(gdalobj, parent, scene)
