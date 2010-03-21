@@ -135,7 +135,7 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
         v2 = QtCore.QLineF(0, 0, 0, 1)
         # LOD is the transformed area of a 1x1 rectangle.
         return numpy.sqrt(worldTransform.map(v1).length() *
-                                                worldTransform.map(v2).length())
+                                            worldTransform.map(v2).length())
 
     @staticmethod
     def _levelOfDetail(option, painter):
@@ -351,7 +351,7 @@ class GdalComplexGraphicsItem(GdalGraphicsItem):
 
         data = ovrband.ReadAsArray(x, y, w, h)
 
-            data = numpy.abs(data)
+        data = numpy.abs(data)
         if not self._stretch_initialized:
             self.setDefaultStretch(data)
 
