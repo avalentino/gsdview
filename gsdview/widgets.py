@@ -139,6 +139,8 @@ class FileEntryWidget(QtGui.QWidget):
         QtGui.QWidget.__init__(self, parent, flags)
 
         self.__completer = QtGui.QCompleter(self)
+        # @TODO: use QFileSystemModel instraed
+        #model = QtGui.QFileSystemModel(self.__completer)
         model = QtGui.QDirModel(self.__completer)
         #model.setFilter(QtCore.QDir.AllEntries)
         #self.completer.setCompletionMode(QtGui.QCompleter.InlineCompletion)

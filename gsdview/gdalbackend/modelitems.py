@@ -53,7 +53,7 @@ class MajorObjectItem(QtGui.QStandardItem):
         # @TODO: don't use self._obj if __getattr__ is set
         #description = os.path.basename(self._obj.GetDescription())
         if self._obj:
-            description = self._obj.GetDescription()
+            description = self._obj.GetDescription().strip()
         else:
             description = ''
 
@@ -102,16 +102,19 @@ class BandItem(MajorObjectItem):
         self.scene = None
         self.graphicsitem = None
 
-        # @TODO: check
-        self.scene, self.graphicsitem = self._setup_scene()
+        # @TODO: lazy behaviour: postpone the scene/view initialization when
+        #        it is actualy needed
+        scene, graphicsitem = self._setup_scene()
+        self.scene = scene
+        self.graphicsitem = graphicsitem
 
     def footprint(self):
         return self.parent().footprint()
 
-    def get_cmapper(self):
+    # readonly # @TODO: check
+    @property
+    def cmapper(self):
         return self.parent().cmapper
-
-    cmapper = property(get_cmapper) # readonly # @TODO: check
 
     def GetOverview(self, index):
         if (index < 0) or (index >= self._obj.GetOverviewCount()):
@@ -149,9 +152,6 @@ class BandItem(MajorObjectItem):
         #~ self._obj.FlushCache()
         #~ super(BandItem, self).close()
 
-    ###########################################################################
-    ### BEGIN #################################################################
-    # @TODO: check
     def _reopen(self, gdalobj=None):
         if not gdalobj:
             # assume self._obj has already been set from caller
@@ -167,9 +167,6 @@ class BandItem(MajorObjectItem):
         self._setup_children()
         #self.model().itemChanged(self)
         self.model().emit(QtCore.SIGNAL('itemChanged(QStandardItem*)'), self)
-
-    ### END ###################################################################
-    ###########################################################################
 
 
 class OverviewItem(BandItem):
@@ -212,8 +209,10 @@ class DatasetItem(MajorObjectItem):
 
         # TODO: improve attribute name
         self.cmapper = gdalsupport.coordinate_mapper(self._obj)
-        scene, graphicsitem = self._setup_scene()
 
+        # @TODO: lazy behaviour: postpone the scene/view initialization when
+        #        it is actualy needed
+        scene, graphicsitem = self._setup_scene()
         self.scene = scene
         self.graphicsitem = graphicsitem
 
@@ -231,6 +230,8 @@ class DatasetItem(MajorObjectItem):
 
     def _setup_scene(self, parent=None):
         try:
+            # @TODO: check
+            #graphicsitem = gdalqt4.graphicsItemFactory(self)
             graphicsitem = gdalqt4.GdalRgbGraphicsItem(self)
         except TypeError:
             # dataset is not an RGB image
@@ -373,8 +374,10 @@ class CachedDatasetItem(DatasetItem):
 
         # TODO: improve attribute name
         self.cmapper = gdalsupport.coordinate_mapper(self._obj)
-        scene, graphicsitem = self._setup_scene()
 
+        # @TODO: lazy behaviour: postpone the scene/view initialization when
+        #        it is actualy needed
+        scene, graphicsitem = self._setup_scene()
         self.scene = scene
         self.graphicsitem = graphicsitem
 

@@ -58,7 +58,6 @@ def gdalcolorentry2qcolor(colrentry, interpretation=gdal.GPI_RGB):
 
 # @TODO: move GraphicsView here
 
-
 class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
     def __init__(self, gdalobj, parent=None, scene=None):
         QtGui.QGraphicsItem.__init__(self, parent, scene)
