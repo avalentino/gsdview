@@ -30,6 +30,7 @@ import logging
 
 import numpy
 from osgeo import gdal
+from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
 from PyQt4 import QtCore, QtGui
 
 from gsdview import qt4support
@@ -583,7 +584,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
                     dialog.approxCheckBox.setEnabled(False)
 
                 try:
-                    dtype = gdalsupport.typemap[band.DataType]
+                    dtype = GDALTypeCodeToNumericTypeCode(band.DataType)
                 except KeyError:
                     pass
                 else:
