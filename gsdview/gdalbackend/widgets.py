@@ -412,25 +412,25 @@ class HistogramConfigDialog(QtGui.QDialog, HistogramConfigDialogBase):
         return True
 
     def setLimits(self, dtype):
-        min_ = -2**15 - 0.5
-        max_ = 2**16 - 0.5
+        vmin = -2**15 - 0.5
+        vmax = 2**16 - 0.5
         if dtype in (numpy.uint8, numpy.uint16, numpy.uint32, numpy.uint64):
             # Unsigned
-            min_ = -0.5
+            vmin = -0.5
             if dtype == numpy.uint8:
-                max_ = 255.5
+                vmax = 255.5
             else:
-                max_ = 2**16 - 0.5
+                vmax = 2**16 - 0.5
         elif dtype == numpy.int8:
-            min_ = -128.5
-            max_ = 127.5
+            vmin = -128.5
+            vmax = 127.5
         elif dtype == numpy.int16:
-            max_ = 2**15 + 0.5
+            vmax = 2**15 + 0.5
 
-        self.minSpinBox.setMinimum(min_)
-        self.minSpinBox.setMaximum(max_)
-        self.maxSpinBox.setMinimum(min_)
-        self.maxSpinBox.setMaximum(max_)
+        self.minSpinBox.setMinimum(vmin)
+        self.minSpinBox.setMaximum(vmax)
+        self.maxSpinBox.setMinimum(vmin)
+        self.maxSpinBox.setMaximum(vmax)
 
 
 BandInfoDialogBase = qt4support.getuiform('banddialog', __name__)
@@ -529,10 +529,10 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
             # @TODO: use calback for progress reporting
             band.ComputeStatistics(approx)#, callback=None, callback_data=None)
         else:
-            min_, max_, mean_, std_ = band.GetStatistics(approx, True)
+            vmin, vmax, mean, stddev = band.GetStatistics(approx, True)
             # @COMPATIBILITY: GDAL 1.5.x and 1.6.x (??)
             if gdal.VersionInfo() < '1700':
-                band.SetStatistics(min_, max_, mean_, std_)
+                band.SetStatistics(vmin, vmax, mean, stddev)
             if self.domainComboBox.currentText() == '':
                 self.updateMetadata()
         logging.debug('statistics computation completed')
@@ -605,8 +605,8 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
                     else:
                         done = True
 
-                min_ = dialog.minSpinBox.value()
-                max_ = dialog.maxSpinBox.value()
+                vmin = dialog.minSpinBox.value()
+                vmax = dialog.maxSpinBox.value()
                 nbuckets = dialog.nBucketsSpinBox.value()
                 include_out_of_range = dialog.outOfRangeCheckBox.isChecked()
                 approx = dialog.approxCheckBox.isChecked()
@@ -614,7 +614,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
                 # @TODO: use calback for progress reporting
                 qt4support.callExpensiveFunc(
                                 band.GetHistogram,
-                                min_, max_, nbuckets,
+                                vmin, vmax, nbuckets,
                                 include_out_of_range, approx)
                                 #callback=None, callback_data=None)
             else:
