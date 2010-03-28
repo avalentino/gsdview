@@ -220,6 +220,11 @@ class DatasetItem(MajorObjectItem):
         try:
             gdalobj = gdal.Open(filename, mode)
         except RuntimeError, e:
+            # @TODO: fix
+            # @NOTE: explicitly reset the GDAL error status to workaround
+            #        bug #3077 (http://trac.osgeo.org/gdal/ticket/3077)
+            gdal.ErrorReset()
+
             # NOTE: this is needed when GDAL exceptions are enabled
             raise OpenError(str(e))
 

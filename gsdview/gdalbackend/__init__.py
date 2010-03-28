@@ -106,7 +106,11 @@ def init(mainwin):
     #~ gdal.SetConfigOption('GDAL_PAM_PROXY_DIR',
                          #~ os.path.expanduser(os.path.join('~', '.gsdview',
                                                          #~ 'cache')))
-    UseExceptions()
+    # @TODO: fix
+    # @NOTE: explicitly disable GDAL exceptions due to bug #3077 
+    #        (http://trac.osgeo.org/gdal/ticket/3077)
+    #UseExceptions()
+    DontUseExceptions()
 
     # Fix path for GDAL tools
     if getattr(sys, 'frozen', False):
