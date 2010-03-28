@@ -84,10 +84,10 @@ class StretchController(QtCore.QObject):
         self.dialog.setEnabled(True)
 
         imin, imax = item.stretch.range
-        maximum, minimum = item.dataRange()
+        minimum, maximum = item.dataRange()
 
         # @TODO: remove this
-        minimum = None
+        #minimum = None
 
         if minimum is not None:
             self.dialog.stretchwidget.setMinimum(minimum)
@@ -95,9 +95,9 @@ class StretchController(QtCore.QObject):
             self.dialog.stretchwidget.setMinimum(min(imin, 0))
 
         if maximum is not None:
-            self.dialog.stretchwidget.setMinimum(maximum)
+            self.dialog.stretchwidget.setMaximum(maximum)
         else:
-            self.dialog.stretchwidget.setMinimum(max(imax, 2*imax))
+            self.dialog.stretchwidget.setMaximum(max(imax, 2*imax))
 
         self.dialog.stretchwidget.setMinStretch(imin)
         self.dialog.stretchwidget.setMaxStretch(imax)
