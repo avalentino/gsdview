@@ -327,6 +327,7 @@ class LUTStretcher(BaseStretcher):
             data = data - self.offset
         if data.dtype != self.dtype:
             data = data.clip(0, len(self.lut)-1, out=data)
+            data = data.astype('uint32')
         return self.lut[data]
 
     @property
@@ -338,9 +339,13 @@ class LUTStretcher(BaseStretcher):
     def set_range(self, imin, imax, fill=None):
         if (imin, imax) == self.range:
             return
-        assert imin != imax
+        if imin == imax:
+            self.lut[...] = imin
+            return self.lut 
+
         omax = self.max
         omin = self.min
+        #assert omin != omax
         self.offset = imin
         if imin < 0:
             imin = 0

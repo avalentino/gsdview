@@ -279,6 +279,6 @@ class StretchDialog(QtGui.QDialog, StretchDialogBase):
             logging.info('unable to set state: %s' % str(e))
 
     def values(self):
-        # @TODO: fix
-        #return self.stretchwidget.values()
-        return 0, self.stretchwidget.maxStretch()
+        return self.stretchwidget.values()
+        # @TODO: working on linux
+        #return 0, self.stretchwidget.maxStretch()
