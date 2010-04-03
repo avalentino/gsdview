@@ -137,6 +137,7 @@ class GDALBackend(QtCore.QObject):
     def onItemActivated(self, index):
         defaultActionsMap = {
             modelitems.BandItem: 'actionOpenImageView',
+            modelitems.DatasetItem: 'actionOpenRGBImageView',
             modelitems.SubDatasetItem: 'actionOpenSubDatasetItem',
         }
         item = self._mainwin.datamodel.itemFromIndex(index)
@@ -383,9 +384,11 @@ class GDALBackend(QtCore.QObject):
         assert isinstance(item, modelitems.DatasetItem)
 
         if not item.scene:
-            title = self.tr('WARNING')
-            msg = self.tr("This dataset can't be opened in RGB mode.")
-            QtGui.QMessageBox.warning(self._mainwin, title, msg)
+            msg = "This dataset can't be opened in RGB mode."
+            self._mainwin.logger.info(msg)
+            #title = self.tr('WARNING')
+            #msg = self.tr(msg)
+            #QtGui.QMessageBox.warning(self._mainwin, title, msg)
             return
         # only open a new view if there is no other on the item selected
         if len(item.scene.views()) == 0:
@@ -406,6 +409,8 @@ class GDALBackend(QtCore.QObject):
         item = self._mainwin.currentItem()
         assert isinstance(item, modelitems.SubDatasetItem)
         if item.isopen():
+            if gdalsupport.isRGB(item):
+                self.openRGBImageView(item)
             return
 
         try:
