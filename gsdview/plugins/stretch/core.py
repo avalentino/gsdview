@@ -114,15 +114,28 @@ class StretchController(QtCore.QObject):
 
     def onSubWindowActivated(self, subwindow):
         if not subwindow:
-            self.action.setEnabled(False)
+            self.action.setEnabled(self.dialog.isVisible())
             self.dialog.setEnabled(False)
             return
-        self.action.setEnabled(True)
-        item = self.currentGraphicsItem(subwindow)
 
-        if item and self.dialog.isVisible():
-            self.dialog.setEnabled(False)
-            self.reset(item)
+        item = self.currentGraphicsItem(subwindow)
+        try:
+            stretchable = item.stretch is not None
+        except AttributeError:
+            stretchable = False
+
+        if stretchable:
+            self.action.setEnabled(True)
+            if self.dialog.isVisible():
+                self.dialog.setEnabled(True)
+                self.reset(item)
+        else:
+            if self.dialog.isVisible():
+                self.action.setEnabled(True)
+                self.dialog.setEnabled(False)
+            else:
+                self.action.setEnabled(False)
+
 
     # @TODO: remove
     #~ def onItemClicked(self, index):

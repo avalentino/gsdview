@@ -367,6 +367,7 @@ class GdalRgbGraphicsItem(BaseGdalGraphicsItem):
         if not gdalsupport.isRGB(dataset):
             raise TypeError('RGB or RGBA iamge expected')
         BaseGdalGraphicsItem.__init__(self, dataset, parent, scene)
+        self.stretch = None
 
     def paint(self, painter, option, widget):
         band = self.gdalobj.GetRasterBand(1)
