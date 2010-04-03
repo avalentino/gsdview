@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>advancedstretch</class>
- <widget class="QWidget" name="advancedstretch">
+ <class>doubleslider</class>
+ <widget class="QWidget" name="doubleslider">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -15,9 +15,9 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="minStretchLayout">
+    <layout class="QHBoxLayout" name="lowLayout">
      <item>
-      <spacer name="minLeftSpacer">
+      <spacer name="lowLeftSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -30,7 +30,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QDoubleSpinBox" name="minStretchSpinBox">
+      <widget class="QDoubleSpinBox" name="lowSpinBox">
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
@@ -43,7 +43,7 @@
       </widget>
      </item>
      <item>
-      <spacer name="minRightSpacer">
+      <spacer name="lowRightSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -84,7 +84,7 @@
      <item>
       <layout class="QVBoxLayout" name="slidersLayout">
        <item>
-        <widget class="QSlider" name="minSlider">
+        <widget class="QSlider" name="lowSlider">
          <property name="maximum">
           <number>255</number>
          </property>
@@ -97,7 +97,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QSlider" name="maxSlider">
+        <widget class="QSlider" name="highSlider">
          <property name="maximum">
           <number>255</number>
          </property>
@@ -127,9 +127,9 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="maxStretchLayout">
+    <layout class="QHBoxLayout" name="highLayout">
      <item>
-      <spacer name="maxLeftSpacer">
+      <spacer name="highLeftSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -142,7 +142,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QDoubleSpinBox" name="maxStretchSpinBox">
+      <widget class="QDoubleSpinBox" name="highSpinBox">
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
@@ -155,7 +155,7 @@
       </widget>
      </item>
      <item>
-      <spacer name="maxRightSpacer">
+      <spacer name="highRightSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>

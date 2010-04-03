@@ -43,60 +43,56 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
         self.setupUi(self)
         self._floatmode = False
         self.connect(self.minSpinBox, QtCore.SIGNAL('valueChanged(double)'),
-                     self.setMinimum)
+                     self._onMinimumChanged)
         self.connect(self.maxSpinBox, QtCore.SIGNAL('valueChanged(double)'),
-                     self.setMaximum)
-        self.connect(self.minSlider, QtCore.SIGNAL('valueChanged(int)'),
-                     self._setMinStretchFromSlider)
-        self.connect(self.maxSlider, QtCore.SIGNAL('valueChanged(int)'),
-                     self._setMaxStretchFromSlider)
-        self.connect(self.minStretchSpinBox,
-                     QtCore.SIGNAL('valueChanged(double)'),
-                     self.setMinStretch)
-        self.connect(self.maxStretchSpinBox,
-                     QtCore.SIGNAL('valueChanged(double)'),
-                     self.setMaxStretch)
+                     self._onMaximumChanged)
+        self.connect(self.lowSlider, QtCore.SIGNAL('valueChanged(int)'),
+                     self._onLowSliderChanged)
+        self.connect(self.highSlider, QtCore.SIGNAL('valueChanged(int)'),
+                     self._onHighSliderChanged)
+        self.connect(self.lowSpinBox, QtCore.SIGNAL('valueChanged(double)'),
+                     self.setLow)
+        self.connect(self.highSpinBox, QtCore.SIGNAL('valueChanged(double)'),
+                     self.setHigh)
 
-        self.connect(self.minStretchSpinBox,
-                     QtCore.SIGNAL('valueChanged(double)'),
+        self.connect(self.lowSpinBox, QtCore.SIGNAL('valueChanged(double)'),
                      lambda value: self.emit(QtCore.SIGNAL('valueChanged()')))
-        self.connect(self.maxStretchSpinBox,
-                     QtCore.SIGNAL('valueChanged(double)'),
+        self.connect(self.highSpinBox, QtCore.SIGNAL('valueChanged(double)'),
                      lambda value: self.emit(QtCore.SIGNAL('valueChanged()')))
 
-    def _getFloatmode(self):
+    def _getFloatMode(self):
         return self._floatmode
 
-    def _setFloatmode(self, floatmode=True):
+    def _setFloatMode(self, floatmode=True):
         floatmode = bool(floatmode)
         if floatmode == self._floatmode:
             return
         self._floatmode = floatmode
         if self._floatmode:
-            self.minSlider.setRange(0, 1000)
-            self.maxSlider.setRange(0, 1000)
-            self.minSlider.setValue(self._pos(self.minStretchSpinBox.value()))
-            self.maxSlider.setValue(self._pos(self.maxStretchSpinBox.value()))
+            self.lowSlider.setRange(0, 1000)
+            self.highSlider.setRange(0, 1000)
+            self.lowSlider.setValue(self._pos(self.lowSpinBox.value()))
+            self.highSlider.setValue(self._pos(self.highSpinBox.value()))
         else:
             vmin = self.minSpinBox.value()
             vmax = self.minSpinBox.value()
-            self.minSlider.setRange(vmin, vmax)
-            self.maxSlider.setRange(vmin, vmax)
-            self.minSlider.setValue(self.minStretchSpinBox.value())
-            self.maxSlider.setValue(self.maxStretchSpinBox.value())
+            self.lowSlider.setRange(vmin, vmax)
+            self.highSlider.setRange(vmin, vmax)
+            self.lowSlider.setValue(self.lowSpinBox.value())
+            self.highSlider.setValue(self.highSpinBox.value())
 
-    floatmode = property(_getFloatmode, _setFloatmode,
+    floatmode = property(_getFloatMode, _setFloatMode,
                          doc='Set the tretch widget in floating point mode.')
 
     def _pos(self, value):
-        N = self.maxSlider.maximum() - self.minSlider.minimum()
+        N = self.highSlider.maximum() - self.lowSlider.minimum()
         k = (self.maxSpinBox.value() - self.minSpinBox.value()) / float(N)
         if k == 0:
             return 0
         return (value - self.minSpinBox.value()) / k
 
     def _value(self, pos):
-        N = self.maxSlider.maximum() - self.minSlider.minimum()
+        N = self.highSlider.maximum() - self.lowSlider.minimum()
         k = (self.maxSpinBox.value() - self.minSpinBox.value()) / float(N)
         return k * pos + self.minSpinBox.value()
 
@@ -106,86 +102,90 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
             value = self._pos(spinbox.value())
         slider.setValue(value)
 
-    def minStretch(self):
-        return self.minStretchSpinBox.value()
+    def low(self):
+        return self.lowSpinBox.value()
 
-    def setMinStretch(self, value):
-        self._setValue(value, self.minStretchSpinBox, self.minSlider)
-        if self.minStretchSpinBox.value() > self.maxStretchSpinBox.value():
-            self.maxStretchSpinBox.setValue(self.minStretchSpinBox.value())
+    def setLow(self, value):
+        self._setValue(value, self.lowSpinBox, self.lowSlider)
+        if self.lowSpinBox.value() > self.highSpinBox.value():
+            self.highSpinBox.setValue(self.lowSpinBox.value())
 
-    def maxStretch(self):
-        return self.maxStretchSpinBox.value()
+    def high(self):
+        return self.highSpinBox.value()
 
-    def setMaxStretch(self, value):
-        self._setValue(value, self.maxStretchSpinBox, self.maxSlider)
-        if self.minStretchSpinBox.value() > self.maxStretchSpinBox.value():
-            self.minStretchSpinBox.setValue(self.maxStretchSpinBox.value())
+    def setHigh(self, value):
+        self._setValue(value, self.highSpinBox, self.highSlider)
+        if self.lowSpinBox.value() > self.highSpinBox.value():
+            self.lowSpinBox.setValue(self.highSpinBox.value())
 
-    def _setMinStretchFromSlider(self, value):
+    def _onLowSliderChanged(self, value):
         if self.floatmode:
             value = self._value(value)
             N = max(self.maxStretchSpinBox.decimals(), 1)
             if abs(value - self.maxStretchSpinBox.value()) < 1./N:
                 return
-        self.setMinStretch(value)
+        self.setLow(value)
 
-    def _setMaxStretchFromSlider(self, value):
+    def _onHighSliderChanged(self, value):
         if self.floatmode:
             value = self._value(value)
             N = max(self.maxStretchSpinBox.decimals(), 1)
             if abs(value - self.maxStretchSpinBox.value()) < 1./N:
                 return
-        self.setMaxStretch(value)
+        self.setHigh(value)
 
     def values(self):
-        return self.minStretch(), self.maxStretch()
+        return self.low(), self.high()
 
     def minimum(self):
         return self.minSpinBox.value()
 
     def setMinimum(self, value):
         self.minSpinBox.setValue(value)
+
+    def _onMinimumChanged(self, value):
         if self.minSpinBox.value() > self.maxSpinBox.value():
             self.maxSpinBox.setValue(self.minSpinBox.value())
 
-        self.minStretchSpinBox.setMinimum(value)
-        self.maxStretchSpinBox.setMinimum(value)
+        self.lowSpinBox.setMinimum(value)
+        self.highSpinBox.setMinimum(value)
 
         if self.floatmode:
-            vmin = self._pos(self.minStretchSpinBox.value())
-            self.minSlider.setValue(vmin)
-            vmax = self._pos(self.maxStretchSpinBox.value())
-            self.maxSlider.setValue(vmax)
+            vmin = self._pos(self.lowSpinBox.value())
+            self.lowSlider.setValue(vmin)
+            vmax = self._pos(self.highSpinBox.value())
+            self.highSlider.setValue(vmax)
         else:
-            self.minSlider.setMinimum(value)
-            self.maxSlider.setMinimum(value)
+            self.lowSlider.setMinimum(value)
+            self.highSlider.setMinimum(value)
 
-        if self.minStretchSpinBox.value() > self.maxStretchSpinBox.value():
-            self.maxStretchSpinBox.setValue(self.minStretchSpinBox.value())
+        if self.lowSpinBox.value() > self.highSpinBox.value():
+            self.highSpinBox.setValue(self.lowSpinBox.value())
 
     def maximum(self):
         return self.maxSpinBox.value()
 
     def setMaximum(self, value):
         self.maxSpinBox.setValue(value)
+
+    def _onMaximumChanged(self, value):
         if self.minSpinBox.value() > self.maxSpinBox.value():
             self.minSpinBox.setValue(self.maxSpinBox.value())
 
-        self.minStretchSpinBox.setMaximum(value)
-        self.maxStretchSpinBox.setMaximum(value)
+        self.lowSpinBox.setMaximum(value)
+        self.highSpinBox.setMaximum(value)
 
         if self.floatmode:
-            vmin = self._pos(self.minStretchSpinBox.value())
-            self.minSlider.setValue(vmin)
-            vmax = self._pos(self.maxStretchSpinBox.value())
-            self.maxSlider.setValue(vmax)
+            vmin = self._pos(self.lowSpinBox.value())
+            self.lowSlider.setValue(vmin)
+            vmax = self._pos(self.highSpinBox.value())
+            self.highSlider.setValue(vmax)
         else:
-            self.minSlider.setMaximum(value)
-            self.maxSlider.setMaximum(value)
+            self.lowSlider.setMaximum(value)
+            self.highSlider.setMaximum(value)
 
-        if self.minStretchSpinBox.value() > self.maxStretchSpinBox.value():
-            self.minStretchSpinBox.setValue(self.maxStretchSpinBox.value())
+        if self.lowSpinBox.value() > self.highSpinBox.value():
+            self.lowSpinBox.setValue(self.highSpinBox.value())
 
     def setState(self, d):
         self.minSpinBox.setMinimum(d['minSpinBox.minimum'])
@@ -196,8 +196,8 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
         self.floatmode = d['floatmode']
         self.setMinimum(d['minimum'])
         self.setMaximum(d['maximum'])
-        self.setMinStretch(d['minStretch'])
-        self.setMaxStretch(d['maxStretch'])
+        self.setLow(d['low'])
+        self.setHigh(d['high'])
 
     def state(self, d=None):
         if d is None:
@@ -206,8 +206,8 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
         d['floatmode'] = self.floatmode
         d['minimum'] = self.minimum()
         d['maximum'] = self.maximum()
-        d['minStretch'] = self.minStretch()
-        d['maxStretch'] = self.maxStretch()
+        d['low'] = self.low()
+        d['high'] = self.high()
 
         d['minSpinBox.minimum'] = self.minSpinBox.minimum()
         d['minSpinBox.maximum'] = self.minSpinBox.maximum()
@@ -243,19 +243,19 @@ class StretchDialog(QtGui.QDialog, StretchDialogBase):
                      QtCore.SIGNAL('valueChanged()'),
                      lambda: self.emit(QtCore.SIGNAL('valueChanged()')))
 
-        #~ self.connect(self.stretchwidget.minStretchSpinBox,
+        #~ self.connect(self.stretchwidget.lowSpinBox,
                      #~ QtCore.SIGNAL('valueChanged(double)'),
                      #~ lambda value: self.emit(QtCore.SIGNAL('valueChanged()')))
-        #~ self.connect(self.stretchwidget.maxStretchSpinBox,
+        #~ self.connect(self.stretchwidget.highSpinBox,
                      #~ QtCore.SIGNAL('valueChanged(double)'),
                      #~ lambda value: self.emit(QtCore.SIGNAL('valueChanged()')))
 
     def advanced(self):
-        return self.stretchwidget.minStretchSpinBox.isVisible()
+        return self.stretchwidget.lowSpinBox.isVisible()
 
     def setAdvanced(self, advmode=True):
-        self.stretchwidget.minStretchSpinBox.setVisible(advmode)
-        self.stretchwidget.minSlider.setVisible(advmode)
+        self.stretchwidget.lowSpinBox.setVisible(advmode)
+        self.stretchwidget.lowSlider.setVisible(advmode)
 
     def _getFloatmode(self):
         return self.stretchwidget.floatmode

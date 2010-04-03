@@ -99,8 +99,8 @@ class StretchController(QtCore.QObject):
         else:
             self.dialog.stretchwidget.setMaximum(max(imax, 2*imax))
 
-        self.dialog.stretchwidget.setMinStretch(imin)
-        self.dialog.stretchwidget.setMaxStretch(imax)
+        self.dialog.stretchwidget.setLow(imin)
+        self.dialog.stretchwidget.setHigh(imax)
         self.dialog.saveState()
 
     # @TODO: move to main app (??)
