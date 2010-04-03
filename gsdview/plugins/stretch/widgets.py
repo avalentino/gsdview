@@ -121,16 +121,16 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
     def _onLowSliderChanged(self, value):
         if self.floatmode:
             value = self._value(value)
-            N = max(self.maxStretchSpinBox.decimals(), 1)
-            if abs(value - self.maxStretchSpinBox.value()) < 1./N:
+            N = 10.**self.lowSpinBox.decimals()
+            if abs(value - self.lowSpinBox.value()) < 1./N:
                 return
         self.setLow(value)
 
     def _onHighSliderChanged(self, value):
         if self.floatmode:
             value = self._value(value)
-            N = max(self.maxStretchSpinBox.decimals(), 1)
-            if abs(value - self.maxStretchSpinBox.value()) < 1./N:
+            N = 10.**self.highSpinBox.decimals()
+            if abs(value - self.highSpinBox.value()) < 1./N:
                 return
         self.setHigh(value)
 
