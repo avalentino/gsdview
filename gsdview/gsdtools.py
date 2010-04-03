@@ -276,9 +276,9 @@ class LinearStretcher(BaseStretcher):
             data = self.scale * data
         return super(LinearStretcher, self).__call__(data)
 
-    # @TODO: id the API is compatible use range = property(get_range, set_range)
+    # @TODO: if the API is compatible use range = property(get_range, set_range)
     @property
-    def range():
+    def range(self):
         imin = self.min / self.scale + self.offset
         imax = self.max / self.scale + self.offset
         return imin, imax
