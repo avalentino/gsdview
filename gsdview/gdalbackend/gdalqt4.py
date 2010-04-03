@@ -397,9 +397,9 @@ def graphicsItemFactory(gdalobj, parent=None, scene=None):
     elif gdalobj.DataType in (gdal.GDT_Byte, gdal.GDT_UInt16):
         logging.debug('new GdalUIntGraphicsItem')
         return UIntGdalGraphicsItem(gdalobj, parent, scene)
-    #~ elif gdal.DataTypeIsComplex(gdalobj.DataType):
-        #~ logging.debug('new GdalComplexGraphicsItem')
-        #~ return GdalComplexGraphicsItem(gdalobj, parent, scene)
+    elif gdal.DataTypeIsComplex(gdalobj.DataType):
+        logging.debug('new GdalComplexGraphicsItem')
+        return GdalComplexGraphicsItem(gdalobj, parent, scene)
     else:
         logging.debug('new GdalGraphicsItem')
         return GdalGraphicsItem(gdalobj, parent, scene)
