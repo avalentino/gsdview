@@ -60,6 +60,9 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
         self.connect(self.highSpinBox, QtCore.SIGNAL('valueChanged(double)'),
                      lambda value: self.emit(QtCore.SIGNAL('valueChanged()')))
 
+        self._fixStep(self.minSpinBox)
+        self._fixStep(self.maxSpinBox)
+
     def _getFloatMode(self):
         return self._floatmode
 
@@ -137,6 +140,12 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
     def values(self):
         return self.low(), self.high()
 
+    @staticmethod
+    def _fixStep(spinbox):
+        newstep = abs(spinbox.value()) / 20
+        newstep = max(int(newstep), 1)
+        spinbox.setSingleStep(newstep)
+
     def minimum(self):
         return self.minSpinBox.value()
 
@@ -162,6 +171,8 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
         if self.lowSpinBox.value() > self.highSpinBox.value():
             self.highSpinBox.setValue(self.lowSpinBox.value())
 
+        self._fixStep(self.minSpinBox)
+
     def maximum(self):
         return self.maxSpinBox.value()
 
@@ -186,6 +197,8 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
 
         if self.lowSpinBox.value() > self.highSpinBox.value():
             self.lowSpinBox.setValue(self.highSpinBox.value())
+
+        self._fixStep(self.maxSpinBox)
 
     def setState(self, d):
         self.minSpinBox.setMinimum(d['minSpinBox.minimum'])
