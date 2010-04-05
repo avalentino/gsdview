@@ -7,11 +7,15 @@
 
 DEVELOPMENT_MODE = False
 #DEVELOPMENT_MODE = True
+EXTRA_QT_RESOURCES = []
 GSDVIEWROOT = '..'
 if sys.platform == 'darwin':
     GDALROOT = '/Library/Frameworks/GDAL.framework'
     GDAL_DATA = os.path.join(GDALROOT, 'Resources', 'gdal')
     GDALADDO = os.path.join(GDALROOT, 'unix', 'bin', 'gdaladdo')
+    # Workaround fo pyinstaller bug #157 (http://www.pyinstaller.org/ticket/157)
+    EXTRA_QT_RESOURCES = Tree('/Library/Frameworks/QtGui.framework/Versions/4/Resources/qt_menu.nib', os.path.join('Resources', 'qt_menu.nib'))
+    #EXTRA_QT_RESOURCES = Tree(os.path.join(QtCore.QLibraryInfo.LibrariesPath, 'QtGui.framework/Versions/4/Resources/qt_menu.nib'), os.path.join('Resources', 'qt_menu.nib'))
 elif sys.platform[:3] == 'win':
     GDALROOT = r'c:\gdal170'
     GDAL_DATA = os.path.join(GDALROOT, 'data')
@@ -85,7 +89,17 @@ coll = COLLECT(exe,
                [(os.path.basename(GDALADDO), GDALADDO, 'DATA'),],
                Tree(os.path.join(GDAL_DATA), 'data'),
 
+               # Workaround fo pyinstaller bug #157 (http://www.pyinstaller.org/ticket/157)
+               EXTRA_QT_RESOURCES,
+
                strip=False,
                upx=True,
                name=os.path.join(GSDVIEWROOT, 'dist', 'gsdview'),
 )
+
+BUILD_BUNDLE = True
+if sys.platform == 'darwin' and BUILD_BUNDLE:
+    sys.path.insert(0, os.path.abspath(os.pardir))
+    from gsdview import info
+    app = BUNDLE(exe, appname=info.name, version=info.version)
+
