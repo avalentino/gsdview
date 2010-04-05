@@ -44,7 +44,7 @@ from exectools.qt4tools import Qt4StreamLoggingHandler
 
 # Info
 name = 'logplane'
-version = '.'.join(map(str, __version__)) + 'a'
+version = '.'.join(map(str, __version__))
 
 short_description = 'Log plane for GSDView'
 description = __doc__

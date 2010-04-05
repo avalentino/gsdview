@@ -24,7 +24,6 @@
 __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
-__requires__ = []
 
 __all__ = ['init', 'close', 'loadSettings', 'saveSettings',
            'name','version', 'short_description','description',
@@ -33,11 +32,13 @@ __all__ = ['init', 'close', 'loadSettings', 'saveSettings',
            'UseExceptions', 'DontUseExceptions',
            'openFile', 'openImageView', 'openItemMatadataView',
            'openRGBImageView', 'openSubDataset', 'closeItem',
-           'findItemFromFilename', 'itemActions', 'itemContextMenu'
+           'findItemFromFilename', 'itemActions', 'itemContextMenu',
 ]
 
-
+# @TODO: should use absolute imports (from gsdview.gdalbackend import something)
 from info import *
+from info import __version__, __requires__
+
 from core import GDALBackend
 
 UseExceptions = GDALBackend.UseExceptions
@@ -107,7 +108,7 @@ def init(mainwin):
                          #~ os.path.expanduser(os.path.join('~', '.gsdview',
                                                          #~ 'cache')))
     # @TODO: fix
-    # @NOTE: explicitly disable GDAL exceptions due to bug #3077 
+    # @NOTE: explicitly disable GDAL exceptions due to bug #3077
     #        (http://trac.osgeo.org/gdal/ticket/3077)
     #UseExceptions()
     DontUseExceptions()

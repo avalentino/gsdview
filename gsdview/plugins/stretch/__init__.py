@@ -24,7 +24,6 @@
 __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date: 2010/02/14 22:02:21 $'
 __revision__ = '$Revision: 36b7b35ff3b6 $'
-__requires__ = []       # @TODO: move to the info file
 
 __all__ = ['init', 'close', 'WorldmapPanel',
            'name','version', 'short_description','description',
@@ -33,6 +32,7 @@ __all__ = ['init', 'close', 'WorldmapPanel',
 ]
 
 from stretch.info import *
+from stretch.info import __version__, __requires__
 
 _controller = None
 

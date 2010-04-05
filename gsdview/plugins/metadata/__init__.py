@@ -24,7 +24,6 @@
 __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
-__requires__ = []       # @TODO: move this to the info file
 
 __all__ = ['MetadataViewer', 'init', 'close',
            'name','version', 'short_description','description',
@@ -33,15 +32,12 @@ __all__ = ['MetadataViewer', 'init', 'close',
 ]
 
 
-from metadata import info
 from metadata.info import *
+from metadata.info import __version__, __requires__
 
 from PyQt4 import QtCore
 
 from metadata.core import MetadataViewer
-
-
-__version__ = info.__version__
 
 
 def init(mainwin):

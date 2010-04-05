@@ -24,7 +24,6 @@
 __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
-__requires__ = []       # @TODO: move to the info file
 
 __all__ = ['init', 'close', 'WorldmapPanel',
            'name','version', 'short_description','description',
@@ -33,15 +32,11 @@ __all__ = ['init', 'close', 'WorldmapPanel',
 ]
 
 
-from worldmap import info
 from worldmap.info import *
+from worldmap.info import __version__, __requires__
 
 from PyQt4 import QtCore
-
 from worldmap.core import WorldmapPanel
-
-
-__version__ = info.__version__
 
 
 def init(mainwin):

@@ -24,7 +24,6 @@
 __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
-__requires__ = []       # @TODO: move to the info file
 
 __all__ = ['CoordinateView', 'init', 'close',
            'name','version', 'short_description','description',
@@ -33,16 +32,15 @@ __all__ = ['CoordinateView', 'init', 'close',
 ]
 
 
-from positiontracker import info
 from positiontracker.info import *
+from positiontracker.info import __version__, __requires__
 
 from PyQt4 import QtCore
-
 from positiontracker.coordinateview import CoordinateView, GeoCoordinateView
 
-__version__ = info.__version__
 
 _controller = None
+
 
 def init(mainwin):
     statusbar = mainwin.statusBar()

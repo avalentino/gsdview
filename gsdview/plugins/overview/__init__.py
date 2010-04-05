@@ -24,7 +24,6 @@
 __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
-__requires__ = ['gdalbackend']
 
 __all__ = ['BandOverviewDock', 'init', 'close',
            'name','version', 'short_description','description',
@@ -32,15 +31,11 @@ __all__ = ['BandOverviewDock', 'init', 'close',
            'website', 'website_label',
 ]
 
-from overview import info
 from overview.info import *
+from overview.info import __version__, __requires__
 
 from PyQt4 import QtCore
-
 from overview.core import BandOverviewDock
-
-
-__version__ = info.__version__
 
 
 def init(mainwin):
@@ -111,4 +106,3 @@ def loadSettings(settings):
 
 def saveSettings(settings):
     pass
-

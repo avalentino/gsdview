@@ -24,7 +24,6 @@
 __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
-__requires__ = []       # @TODO: move to the info file
 
 __all__ = ['ZoomTool', 'init', 'close',
            'name','version', 'short_description','description',
@@ -33,15 +32,11 @@ __all__ = ['ZoomTool', 'init', 'close',
 ]
 
 
-from zoom import info
 from zoom.info import *
+from zoom.info import __version__, __requires__
 
 from PyQt4 import QtCore
-
 from zoom.core import ZoomTool
-
-
-__version__ = info.__version__
 
 
 def init(mainwin):

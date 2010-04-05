@@ -55,10 +55,6 @@ website = 'http://gsdview.sourceforge.net'
 website_label = website
 download_url = 'http://sourceforge.net/projects/gsdview/files'
 
-#artists = None
-#documenters = ('AV',)
-#thanks = None
-#translator_credits = None
 
 # @TODO: check (too many imports)
 import sip
