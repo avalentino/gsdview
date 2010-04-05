@@ -110,9 +110,14 @@ class PluginManager(object):
             return False
 
     def _check_deps(self, module):
-        for depstring in module.__requires__:
-            if not self._check_dependency(depstring):
-                return False
+        try:
+            for depstring in module.__requires__:
+                if not self._check_dependency(depstring):
+                    return False
+        except Exception:
+            logger = logging.getLogger('gsdview')
+            logger.error('error checking dependencies for module: %s' % module)
+            raise
         return True
 
     def load_module(self, module, name=None):
