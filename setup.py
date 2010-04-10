@@ -25,7 +25,9 @@ __date__     = '$Date$'
 __revision__ = '$Revision$'
 
 import os
+import sys
 import platform
+import traceback
 import subprocess
 from glob import glob
 
