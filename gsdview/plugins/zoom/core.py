@@ -34,12 +34,12 @@ from gsdview import qt4support
 
 
 class ZoomTool(QtCore.QObject):
-    def __init__(self, mainwin):
-        QtCore.QObject.__init__(self, mainwin)
-        self.mainwin = mainwin
+    def __init__(self, app):
+        QtCore.QObject.__init__(self, app)
+        self.app = app
         self.actions = self._setupActions()
         self.menu = qt4support.actionGroupToMenu(
-                                    self.actions, self.tr('&Zoom'), mainwin)
+                                    self.actions, self.tr('&Zoom'), app)
         self.toolbar = qt4support.actionGroupToToolbar(self.actions,
                                                        self.tr('Zoom toolbar'))
 
@@ -79,7 +79,7 @@ class ZoomTool(QtCore.QObject):
         return actions
 
     def currentview(self):
-        subwin = self.mainwin.mdiarea.currentSubWindow()
+        subwin = self.app.mdiarea.currentSubWindow()
         graphicsview = subwin.widget()
         if isinstance(graphicsview, QtGui.QGraphicsView):
             return graphicsview
@@ -99,7 +99,7 @@ class ZoomTool(QtCore.QObject):
             view.scale(factor, factor)
 
     def zoomFit(self):
-        subwin = self.mainwin.mdiarea.currentSubWindow()
+        subwin = self.app.mdiarea.currentSubWindow()
         try:
             view = subwin.widget()
             view.fitInView(subwin.item.graphicsitem, QtCore.Qt.KeepAspectRatio)

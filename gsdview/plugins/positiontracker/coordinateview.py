@@ -26,8 +26,6 @@ __date__     = '$Date$'
 __revision__ = '$Revision$'
 
 
-from info import *
-
 from PyQt4 import QtGui
 
 

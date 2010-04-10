@@ -35,28 +35,27 @@ __all__ = ['ZoomTool', 'init', 'close',
 from zoom.info import *
 from zoom.info import __version__, __requires__
 
-from PyQt4 import QtCore
-from zoom.core import ZoomTool
 
+def init(app):
+    from PyQt4 import QtCore
+    from zoom.core import ZoomTool
 
-def init(mainwin):
-    zoomTool = ZoomTool(mainwin)
-    mainwin.imagemenu.addSeparator()
-    mainwin.imagemenu.addActions(zoomTool.actions.actions())
-    mainwin.addToolBar(zoomTool.toolbar)
+    zoomTool = ZoomTool(app)
+    app.imagemenu.addSeparator()
+    app.imagemenu.addActions(zoomTool.actions.actions())
+    app.addToolBar(zoomTool.toolbar)
 
     zoomTool.actions.setEnabled(False)
-    zoomTool.connect(mainwin.mdiarea,
+    zoomTool.connect(app.mdiarea,
                      QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
                      lambda w: zoomTool.actions.setEnabled(True))
-    zoomTool.connect(mainwin,
-                     QtCore.SIGNAL('subWindowClosed()'),
+    zoomTool.connect(app, QtCore.SIGNAL('subWindowClosed()'),
                      lambda: zoomTool.actions.setEnabled(
-                                    bool(mainwin.mdiarea.activeSubWindow())))
+                                    bool(app.mdiarea.activeSubWindow())))
 
 
-def close(mainwin):
-    saveSettings(mainwin.settings)
+def close(app):
+    saveSettings(app.settings)
 
 def loadSettings(settings):
     pass

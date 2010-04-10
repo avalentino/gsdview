@@ -73,6 +73,8 @@ class MajorObjectItem(QtGui.QStandardItem):
         while self.hasChildren():
             try:
                 self.child(0)._close()
+                #~ if hasarrt(self.child(0), '_obj'):
+                    #~ self.child(0)._obj = None
             except AttributeError:
                 logging.debug('unexpected child item class: "%s"' %
                                                 type(self.child(0)).__name__)
@@ -151,6 +153,7 @@ class BandItem(MajorObjectItem):
     #~ def _close(self):
         #~ self._obj.FlushCache()
         #~ super(BandItem, self).close()
+        #~ self._obj = None
 
     def _reopen(self, gdalobj=None):
         if not gdalobj:
@@ -347,6 +350,7 @@ class DatasetItem(MajorObjectItem):
         parent = self.parent()
         if not parent:
             parent = self.model().invisibleRootItem()
+        #~ self._obj = None
         parent.removeRow(self.row())
 
 

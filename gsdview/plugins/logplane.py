@@ -33,15 +33,6 @@ __all__ = ['init', 'close', 'loadSettings', 'saveSettings',
            'website', 'website_label',
 ]
 
-
-import logging
-
-from PyQt4 import QtCore, QtGui
-
-from exectools.qt4tools import Qt4OStream
-from exectools.qt4tools import Qt4OutputPlane
-from exectools.qt4tools import Qt4StreamLoggingHandler
-
 # Info
 name = 'logplane'
 version = '.'.join(map(str, __version__))
@@ -57,15 +48,23 @@ website = 'http://gsdview.sourceforge.net'
 website_label = website
 
 
-def init(mainwin):
-    panel = QtGui.QDockWidget('Output Log', mainwin)
+def init(app):
+    import logging
+
+    from PyQt4 import QtCore, QtGui
+
+    from exectools.qt4tools import Qt4OStream
+    from exectools.qt4tools import Qt4OutputPlane
+    from exectools.qt4tools import Qt4StreamLoggingHandler
+
+    panel = QtGui.QDockWidget('Output Log', app)
     # @TODO: try to add actions to a QTextEdit widget instead of using a
     #        custom widget
     logplane = Qt4OutputPlane()
     panel.setWidget(logplane)
 
     panel.setObjectName('outputPanel')
-    mainwin.addDockWidget(QtCore.Qt.BottomDockWidgetArea, panel)
+    app.addDockWidget(QtCore.Qt.BottomDockWidgetArea, panel)
 
     # setupLogger
     fmt = ('%(levelname)s: %(filename)s line %(lineno)d in %(funcName)s: '
@@ -74,13 +73,13 @@ def init(mainwin):
     formatter = logging.Formatter(fmt)
     #formatter = logging.Formatter('%(levelname)s: %(message)s')
     handler = Qt4StreamLoggingHandler(logplane)
-    #handler.setLevel(mainwin.logger.level) # NOTSET
+    #handler.setLevel(app.logger.level) # NOTSET
     handler.setFormatter(formatter)
-    mainwin.logger.addHandler(handler)
+    app.logger.addHandler(handler)
 
     # setupController
     # @TODO: fix for multiple tools
-    mainwin.controller.tool.stdout_handler.stream = Qt4OStream(logplane)
+    app.controller.tool.stdout_handler.stream = Qt4OStream(logplane)
 
     # @TODO: fix
     # @WARNING: modify class attribute
@@ -93,12 +92,12 @@ def init(mainwin):
     QtCore.QObject.connect(logplane, QtCore.SIGNAL('planeHideRequest()'),
                            panel.hide)
 
-def close(mainwin):
-    saveSettings(mainwin.settings)
-    #mainwin.logger.remove(_global_aux.pop('handler'))
-    #mainwin.controller.tool.stdout_handler.stream = _global_aux.pop('old_stream')
-    #panel = mainwin.findChild(QtGui.QDockWidget, 'outputPanel')
-    #mainwin.removeDockWidget(panel)
+def close(app):
+    saveSettings(app.settings)
+    #app.logger.remove(_global_aux.pop('handler'))
+    #app.controller.tool.stdout_handler.stream = _global_aux.pop('old_stream')
+    #panel = app.findChild(QtGui.QDockWidget, 'outputPanel')
+    #app.removeDockWidget(panel)
 
 def loadSettings(settings):
     pass

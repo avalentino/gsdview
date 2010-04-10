@@ -38,7 +38,6 @@ __all__ = ['init', 'close', 'loadSettings', 'saveSettings',
 # @TODO: should use absolute imports (from gsdview.gdalbackend import something)
 from info import *
 from info import __version__, __requires__
-
 from core import GDALBackend
 
 UseExceptions = GDALBackend.UseExceptions
@@ -47,7 +46,7 @@ getUseExceptions = GDALBackend.getUseExceptions
 
 _backendobj = None
 
-def init(mainwin):
+def init(app):
     import os
     import sys
 
@@ -63,25 +62,25 @@ def init(mainwin):
     #UseExceptions()
 
     # set file dialog filters
-    mainwin.filedialog.setNameFilters(gdalsupport.gdalFilters())
+    app.filedialog.setNameFilters(gdalsupport.gdalFilters())
 
     # update versions info in about dialog
-    mainwin.aboutdialog.addSoftwareVersion('GDAL',
-                                           gdal.VersionInfo('RELEASE_NAME'),
-                                           'http://www.gdal.org')
+    app.aboutdialog.addSoftwareVersion('GDAL',
+                                        gdal.VersionInfo('RELEASE_NAME'),
+                                        'http://www.gdal.org')
 
     # GDAL icon
     icon = qt4support.geticon('GDALLogoColor.svg', __name__)
 
     # add a new page in the about dialog
-    page = widgets.GDALInfoWidget(mainwin.aboutdialog)
-    tabindex = mainwin.aboutdialog.tabWidget.addTab(page, icon, 'GDAL')
-    widget = mainwin.aboutdialog.tabWidget.widget(tabindex)
+    page = widgets.GDALInfoWidget(app.aboutdialog)
+    tabindex = app.aboutdialog.tabWidget.addTab(page, icon, 'GDAL')
+    widget = app.aboutdialog.tabWidget.widget(tabindex)
     widget.setObjectName('gdalTab')
 
     # update the settings dialog
-    page = widgets.GDALPreferencesPage(mainwin.preferencesdialog)
-    mainwin.preferencesdialog.addPage(page, icon, 'GDAL')
+    page = widgets.GDALPreferencesPage(app.preferencesdialog)
+    app.preferencesdialog.addPage(page, icon, 'GDAL')
 
     ### BEGIN #################################################################
     # @TODO: improve processing tools handling and remove this workaround
@@ -89,18 +88,18 @@ def init(mainwin):
 
     # @NOTE: the textview is fixed by logplane initializer
     textview = None
-    handler = gdalexectools.GdalOutputHandler(textview, mainwin.statusBar(),
-                                              mainwin.progressbar)
+    handler = gdalexectools.GdalOutputHandler(textview, app.statusBar(),
+                                              app.progressbar)
     tool = gdalexectools.GdalAddOverviewDescriptor(stdout_handler=handler)
-    mainwin.controller.tool = tool
+    app.controller.tool = tool
     ### END ###################################################################
 
     # @TODO: check
     # register the backend
-    mainwin.backends.append(name)
+    app.backends.append(name)
 
     global _backendobj
-    _backendobj = GDALBackend(mainwin)
+    _backendobj = GDALBackend(app)
 
     # @TODO: fix
     #~ gdal.SetConfigOption('GDAL_PAM_ENABLED', 'YES')
@@ -121,10 +120,10 @@ def init(mainwin):
         gdal.SetConfigOption('GDAL_DATA',
                              os.path.join(appsite.GSDVIEWROOT, 'data'))
         # @TODO: check
-        #if mainwin.settings.value('GDAL_DATA').isValid():
-        #    msg = mainwin.tr('"GDAL_DATA" from the user configuration file '
+        #if app.settings.value('GDAL_DATA').isValid():
+        #    msg = app.tr('"GDAL_DATA" from the user configuration file '
         #                     'overrides the default value')
-        #    QtGui.QMessageBox.warning(mainwin, mainwin.tr('WARNING'), msg)
+        #    QtGui.QMessageBox.warning(app, app.tr('WARNING'), msg)
     elif sys.platform == 'darwin':
         gdaladdobin = utils.which('gdaladdo')
         if not gdaladdobin:
@@ -165,8 +164,8 @@ for methodname in __all__:
 del methodname, globals_, _definefunc
 
 
-def close(mainwin):
-    saveSettings(mainwin.settings)
+def close(app):
+    saveSettings(app.settings)
 
 
 def loadSettings(settings):
@@ -197,15 +196,15 @@ def loadSettings(settings):
         logging.debug('run "gdal.AllRegister()"')
 
         # update the about dialog
-        tabWidget = _backendobj._mainwin.aboutdialog.tabWidget
+        tabWidget = _backendobj._app.aboutdialog.tabWidget
         for index in range(tabWidget.count()):
             if tabWidget.tabText(index) == 'GDAL':
                 gdalinfowidget = tabWidget.widget(index)
                 gdalinfowidget.setGdalDriversTab()
                 break
         else:
-            _backendobj._mainwin.logger.debug('GDAL page ot found in the '
-                                              'about dialog')
+            _backendobj._app.logger.debug('GDAL page ot found in the '
+                                          'about dialog')
             return
     finally:
         settings.endGroup()

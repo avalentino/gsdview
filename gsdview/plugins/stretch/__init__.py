@@ -34,25 +34,29 @@ __all__ = ['init', 'close', 'WorldmapPanel',
 from stretch.info import *
 from stretch.info import __version__, __requires__
 
+# @TODO: check the name (use _instance instead)
 _controller = None
 
-def init(mainwin):
+def init(app):
     from PyQt4 import QtGui
     from stretch.core import StretchController
 
     global _controller
-    _controller = StretchController(mainwin)
+    _controller = StretchController(app)
 
-    mainwin.imagemenu.addSeparator()
-    mainwin.imagemenu.addAction(_controller.action)
+    app.imagemenu.addSeparator()
+    app.imagemenu.addAction(_controller.action)
 
-    toolbar = QtGui.QToolBar(mainwin.tr('Stretching Toolbar'))
+    toolbar = QtGui.QToolBar(app.tr('Stretching Toolbar'))
     toolbar.setObjectName('stretchingToolbar')
     toolbar.addAction(_controller.action)
-    mainwin.addToolBar(toolbar)
+    app.addToolBar(toolbar)
 
-def close(mainwin):
-    saveSettings(mainwin.settings)
+def close(app):
+    saveSettings(app.settings)
+
+    global _controller
+    _controller = None
 
 def loadSettings(settings):
     pass

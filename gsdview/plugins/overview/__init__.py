@@ -34,16 +34,17 @@ __all__ = ['BandOverviewDock', 'init', 'close',
 from overview.info import *
 from overview.info import __version__, __requires__
 
-from PyQt4 import QtCore
-from overview.core import BandOverviewDock
 
+def init(app):
+    from PyQt4 import QtCore
+    from overview.core import BandOverviewDock
 
-def init(mainwin):
-    overviewPanel = BandOverviewDock(mainwin)
+    overviewPanel = BandOverviewDock(app)
     overviewPanel.setObjectName('bandOverviewPanel') # @TODO: check
-    mainwin.addDockWidget(QtCore.Qt.LeftDockWidgetArea, overviewPanel)
+    app.addDockWidget(QtCore.Qt.LeftDockWidgetArea, overviewPanel)
 
-    def onWindowMapped(subwin, overviewPanel=overviewPanel, mainwin=mainwin):
+    # @TODO: move to core module - controller
+    def onWindowMapped(subwin, overviewPanel=overviewPanel, app=app):
         try:
             item = subwin.item
         except AttributeError:
@@ -53,34 +54,32 @@ def init(mainwin):
         else:
             overviewPanel.setItem(item)
 
-    def onWindowClosed(overviewPanel=overviewPanel, mainwin=mainwin):
-        if len(mainwin.mdiarea.subWindowList()) == 0:
+    def onWindowClosed(overviewPanel=overviewPanel, app=app):
+        if len(app.mdiarea.subWindowList()) == 0:
             overviewPanel.reset()
 
-    mainwin.connect(mainwin.mdiarea,
-                    QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
-                    onWindowMapped)
-    mainwin.connect(mainwin, QtCore.SIGNAL('subWindowClosed()'),
-                    onWindowClosed)
+    app.connect(app.mdiarea,
+                QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
+                onWindowMapped)
+    app.connect(app, QtCore.SIGNAL('subWindowClosed()'), onWindowClosed)
 
-    def onItemChanged(item, mainwin=mainwin, overviewPanel=overviewPanel):
+    def onItemChanged(item, app=app, overviewPanel=overviewPanel):
         if hasattr(item, 'scene'):
-            srcview = mainwin.currentGraphicsView()
+            srcview = app.currentGraphicsView()
             if (srcview and srcview.scene() is item.scene
                                 and not overviewPanel.graphicsview.scene()):
                 overviewPanel.setItem(item)
 
-    mainwin.connect(mainwin.datamodel,
-                    QtCore.SIGNAL('itemChanged(QStandardItem*)'),
-                    onItemChanged)
+    app.connect(app.datamodel, QtCore.SIGNAL('itemChanged(QStandardItem*)'),
+                onItemChanged)
 
-    QtCore.QObject.connect(mainwin.monitor,
+    QtCore.QObject.connect(app.monitor,
                            QtCore.SIGNAL('scrolled(QGraphicsView*)'),
                            overviewPanel.updateMainViewBox)
-    QtCore.QObject.connect(mainwin.monitor,
+    QtCore.QObject.connect(app.monitor,
                            QtCore.SIGNAL('viewportResized(QGraphicsView*)'),
                            overviewPanel.updateMainViewBox)
-    QtCore.QObject.connect(mainwin.monitor,
+    QtCore.QObject.connect(app.monitor,
                            QtCore.SIGNAL('resized(QGraphicsView*, QSize)'),
                            overviewPanel.updateMainViewBox)
 
@@ -98,8 +97,8 @@ def init(mainwin):
                                          'QGraphicsView::DragMode)'),
                            onNewPos)
 
-def close(mainwin):
-    saveSettings(mainwin.settings)
+def close(app):
+    saveSettings(app.settings)
 
 def loadSettings(settings):
     pass

@@ -35,21 +35,22 @@ __all__ = ['CoordinateView', 'init', 'close',
 from positiontracker.info import *
 from positiontracker.info import __version__, __requires__
 
-from PyQt4 import QtCore
-from positiontracker.coordinateview import CoordinateView, GeoCoordinateView
-
-
+# @TODO: check the name (use _instance instead)
 _controller = None
 
 
-def init(mainwin):
-    statusbar = mainwin.statusBar()
+def init(app):
+    from PyQt4 import QtCore
+    from positiontracker.core import Controller
+    from positiontracker.coordinateview import CoordinateView, GeoCoordinateView
+
+    statusbar = app.statusBar()
 
     # image coordinates
     coorview = CoordinateView()
     statusbar.addPermanentWidget(coorview)
     coorview.hide()
-    QtCore.QObject.connect(mainwin.monitor,
+    QtCore.QObject.connect(app.monitor,
                            QtCore.SIGNAL('leave(QGraphicsScene*)'),
                            coorview.hide)
 
@@ -57,55 +58,17 @@ def init(mainwin):
     geocoorview = GeoCoordinateView()
     statusbar.addPermanentWidget(geocoorview)
     geocoorview.hide()
-    QtCore.QObject.connect(mainwin.monitor,
+    QtCore.QObject.connect(app.monitor,
                            QtCore.SIGNAL('leave(QGraphicsScene*)'),
                            geocoorview.hide)
 
-    # @TODO: move to core.py (??)
-    class Controller(QtCore.QObject):
-        def __init__(self, mainwin, coorview, geocoorview):
-            QtCore.QObject.__init__(self, mainwin)
-
-            self.coorview = coorview
-            self.geocoorview = geocoorview
-
-            mainwin.progressbar.installEventFilter(self)
-
-            self.connect(mainwin.monitor,
-                         QtCore.SIGNAL('mouseMoved(QGraphicsScene*, '
-                                       'QPointF, Qt::MouseButtons)'),
-                         self.onMouseMoved)
-
-        def eventFilter(self, obj, event):
-            if event.type() == QtCore.QEvent.Show:
-                self.coorview.hide()
-                self.geocoorview.hide()
-            return obj.eventFilter(obj, event)
-
-        def onMouseMoved(self, scene, pos, buttons):
-            mainwin = self.parent() # @TODO: fix
-
-            if mainwin.progressbar.isVisible():
-                return
-
-            coorview.updatePos(pos)
-
-            item = mainwin.currentItem()
-            try:
-                cmapper = item.cmapper
-            except AttributeError:
-                cmapper = None
-            geocoorview.updatePos(pos, cmapper)
-
     # Keep alive the controller object after function exit
-    # @TODO: avoid the use of "global"
     global _controller
-    _controller = Controller(mainwin, coorview, geocoorview)
+    _controller = Controller(app, coorview, geocoorview)
 
-def close(mainwin):
-    saveSettings(mainwin.settings)
+def close(app):
+    saveSettings(app.settings)
 
-    # @TODO: avoid the use of "global"
     global _controller
     _controller = None
 

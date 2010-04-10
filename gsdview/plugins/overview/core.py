@@ -54,7 +54,7 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
             #           exposedRect is updated.
             #           Using QGraphicsView.invalidateScene with the
             #           QtGui.QGraphicsScene.ForegroundLayer parameter
-            #           should be faster an repaint only one layer of the
+            #           should be faster and repaint only one layer of the
             #           current view.
 
             # @TODO: check
@@ -123,12 +123,12 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
 class BandOverviewDock(QtGui.QDockWidget):
     OVRMAXSIZE = 10 * 1024**2 # 10MB
 
-    def __init__(self, mainwin): #, flags=0):
+    def __init__(self, app): #, flags=0):
         #title = self.tr('Dataset Browser')
-        QtGui.QDockWidget.__init__(self, 'Band Overview', mainwin) #, flags)
+        QtGui.QDockWidget.__init__(self, 'Band Overview', app) #, flags)
         #self.setObjectName('datasetBroeserPanel') # @TODO: check
 
-        self.mainwin = mainwin  # @TODO: check
+        self.app = app  # @TODO: check
         self.graphicsview = NavigationGraphicsView(self)
         self.setWidget(self.graphicsview)
 
@@ -180,7 +180,7 @@ class BandOverviewDock(QtGui.QDockWidget):
             self.graphicsview.update()
 
     def centerMainViewOn(self, scenepos):
-        view = self.mainwin.currentGraphicsView()
+        view = self.app.currentGraphicsView()
         if view:
             if self.graphicsview.scene():
                 assert view.scene() == self.graphicsview.scene() # @TODO: check
@@ -192,8 +192,8 @@ class BandOverviewDock(QtGui.QDockWidget):
 
         if not srcview:
             # @TODO: check API
-            srcview = self.mainwin.currentGraphicsView()
-        elif srcview is not self.mainwin.currentGraphicsView():
+            srcview = self.app.currentGraphicsView()
+        elif srcview is not self.app.currentGraphicsView():
             # current view not yet updated: do nothing
             return
 

@@ -35,16 +35,16 @@ __all__ = ['init', 'close', 'WorldmapPanel',
 from worldmap.info import *
 from worldmap.info import __version__, __requires__
 
-from PyQt4 import QtCore
-from worldmap.core import WorldmapPanel
 
+def init(app):
+    from PyQt4 import QtCore
+    from worldmap.core import WorldmapPanel
 
-def init(mainwin):
-    worldmapPanel = WorldmapPanel(mainwin)
+    worldmapPanel = WorldmapPanel(app)
     worldmapPanel.setObjectName('worldmapPanel') # @TODO: check
-    mainwin.addDockWidget(QtCore.Qt.BottomDockWidgetArea, worldmapPanel)
+    app.addDockWidget(QtCore.Qt.BottomDockWidgetArea, worldmapPanel)
 
-
+    # @TODO: move to core module - controller
     def setItemFootprint(item, worldmapPanel=worldmapPanel):
         try:
             footprint = item.footprint()
@@ -65,42 +65,39 @@ def init(mainwin):
         else:
             setItemFootprint(item)
 
-    def onItemClicked(index, mainwin=mainwin):
-        if not mainwin.mdiarea.activeSubWindow():
-            item = mainwin.datamodel.itemFromIndex(index)
+    def onItemClicked(index, app=app):
+        if not app.mdiarea.activeSubWindow():
+            item = app.datamodel.itemFromIndex(index)
             setItemFootprint(item)
 
-    mainwin.connect(mainwin.mdiarea,
-                    QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
-                    onSubWindowActivated)
+    app.connect(app.mdiarea, QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
+                onSubWindowActivated)
 
-    mainwin.connect(mainwin.treeview,
-                    QtCore.SIGNAL('clicked(const QModelIndex&)'),
-                    onItemClicked)
+    app.connect(app.treeview, QtCore.SIGNAL('clicked(const QModelIndex&)'),
+                onItemClicked)
 
-    def onModelChanged(index=None, start=None, stop=None, mainwin=mainwin):
-        window = mainwin.mdiarea.activeSubWindow()
+    def onModelChanged(index=None, start=None, stop=None, app=app):
+        window = app.mdiarea.activeSubWindow()
         if window:
             onSubWindowActivated(window)
         else:
-            item = mainwin.currentItem()
+            item = app.currentItem()
             setItemFootprint(item)
 
-    mainwin.connect(mainwin, QtCore.SIGNAL('subWindowClosed()'),
-                    onModelChanged)
+    app.connect(app, QtCore.SIGNAL('subWindowClosed()'), onModelChanged)
 
     # @WARNING: rowsInserted/rowsRemoved don't work
     # @TODO: fix
-    mainwin.connect(mainwin.datamodel,
-                    QtCore.SIGNAL('rowsInserted(const QModelIndex&,int,int)'),
-                    onModelChanged)
+    app.connect(app.datamodel,
+                QtCore.SIGNAL('rowsInserted(const QModelIndex&,int,int)'),
+                onModelChanged)
 
-    mainwin.connect(mainwin.datamodel,
-                    QtCore.SIGNAL('rowsRemoved(const QModelIndex&,int,int)'),
-                    onModelChanged)
+    app.connect(app.datamodel,
+                QtCore.SIGNAL('rowsRemoved(const QModelIndex&,int,int)'),
+                onModelChanged)
 
-def close(mainwin):
-    saveSettings(mainwin.settings)
+def close(app):
+    saveSettings(app.settings)
 
 def loadSettings(settings):
     pass

@@ -140,7 +140,7 @@ class StretchController(QtCore.QObject):
     # @TODO: remove
     #~ def onItemClicked(self, index):
         #~ if not self.app.mdiarea.activeSubWindow():
-            #~ item = mainwin.datamodel.itemFromIndex(index)
+            #~ item = self.app.datamodel.itemFromIndex(index)
             #~ self.reset(item)
 
     #~ def onModelChanged(self, index=None, start=None, stop=None):

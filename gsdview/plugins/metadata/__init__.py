@@ -35,16 +35,16 @@ __all__ = ['MetadataViewer', 'init', 'close',
 from metadata.info import *
 from metadata.info import __version__, __requires__
 
-from PyQt4 import QtCore
 
-from metadata.core import MetadataViewer
+def init(app):
+    from PyQt4 import QtCore
+    from metadata.core import MetadataViewer
 
-
-def init(mainwin):
-    metadataviewer = MetadataViewer(mainwin)
+    metadataviewer = MetadataViewer(app)
     metadataviewer.setObjectName('metadataViewerPanel') # @TODO: check
-    mainwin.addDockWidget(QtCore.Qt.BottomDockWidgetArea, metadataviewer)
+    app.addDockWidget(QtCore.Qt.BottomDockWidgetArea, metadataviewer)
 
+    # @TODO: move to core module - controller
     def setItemMetadata(item, metadataviewer=metadataviewer):
         if not item:
             metadataviewer.clear()
@@ -65,38 +65,35 @@ def init(mainwin):
             return
         metadataviewer.setMetadata(metadata)
 
-    def onItemClicked(index, mainwin=mainwin):
-        #if not mainwin.mdiarea.activeSubWindow():
-        item = mainwin.datamodel.itemFromIndex(index)
+    def onItemClicked(index, app=app):
+        #if not app.mdiarea.activeSubWindow():
+        item = app.datamodel.itemFromIndex(index)
         setItemMetadata(item)
 
-    mainwin.connect(mainwin.treeview,
-                    QtCore.SIGNAL('clicked(const QModelIndex&)'),
-                    onItemClicked)
+    app.connect(app.treeview, QtCore.SIGNAL('clicked(const QModelIndex&)'),
+                onItemClicked)
 
-    def onSubWindowChanged(window=None, mainwin=mainwin):
+    def onSubWindowChanged(window=None, app=app):
         if not window:
-            window = mainwin.mdiarea.activeSubWindow()
+            window = app.mdiarea.activeSubWindow()
         if window:
             try:
                 item = window.item
             except AttributeError:
                 item = None
         else:
-            item = mainwin.currentItem()
+            item = app.currentItem()
 
         setItemMetadata(item)
 
-    mainwin.connect(mainwin.mdiarea,
-                    QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
-                    onSubWindowChanged)
+    app.connect(app.mdiarea, QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
+                onSubWindowChanged)
 
-    mainwin.connect(mainwin, QtCore.SIGNAL('subWindowClosed()'),
-                    onSubWindowChanged)
+    app.connect(app, QtCore.SIGNAL('subWindowClosed()'), onSubWindowChanged)
 
 
-def close(mainwin):
-    saveSettings(mainwin.settings)
+def close(app):
+    saveSettings(app.settings)
 
 def loadSettings(settings):
     pass

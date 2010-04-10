@@ -64,20 +64,18 @@ class GDALBackend(QtCore.QObject):
     def getUseExceptions():
         return gdal.GetConfigOption('PYHTON_USE_EXCEPTIONS', 'FALSE') == 'TRUE'
 
-    def __init__(self, mainwin, parent=None):
-        if parent is None:
-            parent = mainwin
-        QtCore.QObject.__init__(self, parent)
-        self._mainwin = mainwin
+    def __init__(self, app):
+        QtCore.QObject.__init__(self, app)
+        self._app = app
         self._actionsmap = {}
         self._setupActions()
 
-        self.connect(self._mainwin.treeview,
+        self.connect(self._app.treeview,
                      QtCore.SIGNAL('activated(const QModelIndex&)'),
                      self.onItemActivated)
 
         # @TODO: improve ptocessing tools handling and remove this workaround
-        self.connect(self._mainwin.controller, QtCore.SIGNAL('finished()'),
+        self.connect(self._app.controller, QtCore.SIGNAL('finished()'),
                      self._finalize)
 
     def findItemFromFilename(self, filename):
@@ -94,7 +92,7 @@ class GDALBackend(QtCore.QObject):
 
         filename = os.path.abspath(filename)
         filename = os.path.normpath(filename)
-        root = self._mainwin.datamodel.invisibleRootItem()
+        root = self._app.datamodel.invisibleRootItem()
         for index in range(root.rowCount()):
             try:
                 item = root.child(index)
@@ -108,10 +106,10 @@ class GDALBackend(QtCore.QObject):
     def openFile(self, filename):
         item = self.findItemFromFilename(filename)
         if item:
-            self._mainwin.treeview.setCurrentIndex(item.index())
+            self._app.treeview.setCurrentIndex(item.index())
 
             # @TODO: remove selection code
-            sm = self._mainwin.treeview.selectionModel()
+            sm = self._app.treeview.selectionModel()
             sm.select(item.index(), QtGui.QItemSelectionModel.Select)
 
             # @TODO: maybe it is better to use an exception here
@@ -132,7 +130,7 @@ class GDALBackend(QtCore.QObject):
         if actions:
             return qt4support.actionGroupToMenu(actions,
                                                 self.tr('Context menu'),
-                                                self._mainwin.treeview)
+                                                self._app.treeview)
 
     def onItemActivated(self, index):
         defaultActionsMap = {
@@ -140,7 +138,7 @@ class GDALBackend(QtCore.QObject):
             modelitems.DatasetItem: 'actionOpenRGBImageView',
             modelitems.SubDatasetItem: 'actionOpenSubDatasetItem',
         }
-        item = self._mainwin.datamodel.itemFromIndex(index)
+        item = self._app.datamodel.itemFromIndex(index)
         for itemtype in defaultActionsMap:
             if isinstance(item, itemtype):
                 actions = self._actionsmap[type(item).__name__]
@@ -325,7 +323,7 @@ class GDALBackend(QtCore.QObject):
                 openaction.setEnabled(False)
             else:
                 # @TODO: remove this to allow multiple views on the same item
-                for subwin in self._mainwin.mdiarea.subWindowList():
+                for subwin in self._app.mdiarea.subWindowList():
                     if subwin.item == item:
                         openaction.setEnabled(False)
                         break
@@ -359,10 +357,10 @@ class GDALBackend(QtCore.QObject):
     ### Major object ##########################################################
     def openItemMatadataView(self):
         # @TODO: implementation
-        self._mainwin.logger.info('method not yet implemented')
+        self._app.logger.info('method not yet implemented')
 
     def showItemProperties(self):
-        item = self._mainwin.currentItem()
+        item = self._app.currentItem()
         for itemtype in item.__class__.__mro__:
             name = itemtype.__name__
             assert name.endswith('Item')
@@ -373,22 +371,22 @@ class GDALBackend(QtCore.QObject):
                 dialog.exec_()
                 break
         else:
-            self._mainwin.logger.debug('unable to show info dialog for "%s" '
-                                       'item class' % (item.__class__.__name__))
+            self._app.logger.debug('unable to show info dialog for "%s" '
+                                   'item class' % (item.__class__.__name__))
 
     ### Driver ################################################################
     ### Dataset ###############################################################
     def openRGBImageView(self, item=None):
         if item is None:
-            item = self._mainwin.currentItem()
+            item = self._app.currentItem()
         assert isinstance(item, modelitems.DatasetItem)
 
         if not item.scene:
             msg = "This dataset can't be opened in RGB mode."
-            self._mainwin.logger.info(msg)
+            self._app.logger.info(msg)
             #title = self.tr('WARNING')
             #msg = self.tr(msg)
-            #QtGui.QMessageBox.warning(self._mainwin, title, msg)
+            #QtGui.QMessageBox.warning(self._app, title, msg)
             return
         # only open a new view if there is no other on the item selected
         if len(item.scene.views()) == 0:
@@ -396,17 +394,17 @@ class GDALBackend(QtCore.QObject):
 
     def buildOverviews(self):
         # @TODO: implementation
-        self._mainwin.logger.info('method not yet implemented')
+        self._app.logger.info('method not yet implemented')
 
     # @TODO: add band, add virtual band, open GCPs view
 
     def closeItem(self):
-        item = self._mainwin.currentItem()
+        item = self._app.currentItem()
         item.close()
 
     ### Sub-dataset ###########################################################
     def openSubDataset(self):
-        item = self._mainwin.currentItem()
+        item = self._app.currentItem()
         assert isinstance(item, modelitems.SubDatasetItem)
         if item.isopen():
             if gdalsupport.isRGB(item):
@@ -428,13 +426,13 @@ class GDALBackend(QtCore.QObject):
 
         for row in range(item.rowCount()):
             child = item.child(row)
-            self._mainwin.treeview.expand(child.index())
+            self._app.treeview.expand(child.index())
 
     ### Raster Band ###########################################################
     @qt4support.overrideCursor
     def openImageView(self, item=None):
         if item is None:
-            item = self._mainwin.currentItem()
+            item = self._app.currentItem()
         assert isinstance(item, modelitems.BandItem)
 
         if not item.scene:
@@ -442,7 +440,7 @@ class GDALBackend(QtCore.QObject):
                 msg = 'band "%s" is not visualizable' % (item.row() + 1)
             else:
                 msg = 'band "%s" is not visualizable' % item.GetDescription()
-            self._mainwin.logger.warning(msg)
+            self._app.logger.warning(msg)
             return
 
         # only open a new view if there is no other on the item selected
@@ -451,13 +449,13 @@ class GDALBackend(QtCore.QObject):
 
     def newImageView(self, item=None):
         if item is None:
-            item = self._mainwin.currentItem()
+            item = self._app.currentItem()
         #assert isinstance(item, modelitems.BandItem)
         assert isinstance(item, (modelitems.BandItem, modelitems.DatasetItem))
 
         # @TODO: check if any graphics view is open on the selected item
 
-        winlist = self._mainwin.mdiarea.subWindowList()
+        winlist = self._app.mdiarea.subWindowList()
         if len(winlist):
             maximized = winlist[0].windowState() & QtCore.Qt.WindowMaximized
         else:
@@ -465,13 +463,13 @@ class GDALBackend(QtCore.QObject):
 
         subwin = GraphicsViewSubWindow(item)
 
-        self._mainwin.mdiarea.addSubWindow(subwin)
+        self._app.mdiarea.addSubWindow(subwin)
         grephicsview = subwin.widget()
-        self._mainwin.monitor.register(grephicsview)
-        self._mainwin.mousemanager.register(grephicsview)
+        self._app.monitor.register(grephicsview)
+        self._app.mousemanager.register(grephicsview)
 
         self.connect(subwin, QtCore.SIGNAL('destroyed()'),
-                     self._mainwin.subWindowClosed)
+                     self._app.subWindowClosed)
 
         if maximized:
             subwin.showMaximized()
@@ -499,25 +497,25 @@ class GDALBackend(QtCore.QObject):
         #        Maybe ths is not the best policy and overviews should be
         #        computed only when needed instead
         if missingOverviewLevels:
-            self._mainwin.logger.debug('missingOverviewLevels: %s' %
+            self._app.logger.debug('missingOverviewLevels: %s' %
                                                         missingOverviewLevels)
 
             # @TODO: temporary close the dataset; il will be re-opened
             #        after the worker process ending to loaf changes
             #del dataset
 
-            subProc = self._mainwin.controller.subprocess
+            subProc = self._app.controller.subprocess
             if subProc.state() != subProc.NotRunning:
-                self._mainwin.logger.warning('unable to perform overview '
-                                             'computation: the subprocess '
-                                             'controller is currently busy.')
+                self._app.logger.warning('unable to perform overview '
+                                         'computation: the subprocess '
+                                         'controller is currently busy.')
                 return
             else:
-                self._mainwin.logger.debug('Run the subprocess.')
+                self._app.logger.debug('Run the subprocess.')
 
             # Run an external process for overviews computation
-            self._mainwin.progressbar.show()
-            self._mainwin.statusBar().showMessage(
+            self._app.progressbar.show()
+            self._app.statusBar().showMessage(
                                             'Quick look image generation ...')
 
             vrtfilename = dataset.vrtfilename
@@ -530,27 +528,27 @@ class GDALBackend(QtCore.QObject):
             #           order to be able to retrieve it in the finalization
             #           method.
             #           Finalization also reset the attribute.
-            self._mainwin.controller.tool._dataset = dataset
+            self._app.controller.tool._dataset = dataset
 
             #self.subprocess.setEnvironmet(...)
             datasetCacheDir = os.path.dirname(vrtfilename)
             subProc.setWorkingDirectory(datasetCacheDir)
-            self._mainwin.controller.run_tool(*args)
+            self._app.controller.run_tool(*args)
 
     def _finalize(self):
         # @TODO: check if opening the dataset in update mode
         #        (gdal.GA_Update) is a better solution
 
-        dataset = getattr(self._mainwin.controller.tool, '_dataset', None)
+        dataset = getattr(self._app.controller.tool, '_dataset', None)
         if not dataset:
-            self._mainwin.logger.debug('unable to retrieve dataset for finalization')
+            self._app.logger.debug('unable to retrieve dataset for finalization')
             return
 
-        self._mainwin.controller.tool._dataset = None
+        self._app.controller.tool._dataset = None
         dataset.reopen()
         for row in range(dataset.rowCount()):
             item = dataset.child(row)
-            self._mainwin.treeview.expand(item.index())
+            self._app.treeview.expand(item.index())
 
     ### END ###################################################################
     ###########################################################################
