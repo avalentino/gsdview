@@ -27,20 +27,34 @@ __revision__ = '$Revision$'
 
 from PyQt4 import QtCore
 
+from positiontracker.coordinateview import CoordinateView, GeoCoordinateView
 
-class Controller(QtCore.QObject):
-    def __init__(self, app, coorview, geocoorview):
-        QtCore.QObject.__init__(self, app)
 
+class TrackingTool(QtCore.QObject):
+    def __init__(self, app):
+        super(TrackingTool, self).__init__(app)
         self.app = app
+
+        # image coordinates
+        coorview = CoordinateView()
+        coorview.hide()
+        QtCore.QObject.connect(app.monitor,
+                               QtCore.SIGNAL('leave(QGraphicsScene*)'),
+                               coorview.hide)
+
+        # geographic coordinates
+        geocoorview = GeoCoordinateView()
+        geocoorview.hide()
+        QtCore.QObject.connect(app.monitor,
+                               QtCore.SIGNAL('leave(QGraphicsScene*)'),
+                               geocoorview.hide)
+
         self.coorview = coorview
         self.geocoorview = geocoorview
 
-        app.progressbar.installEventFilter(self)
-
         self.connect(self.app.monitor,
-                     QtCore.SIGNAL('mouseMoved(QGraphicsScene*, '
-                                   'QPointF, Qt::MouseButtons)'),
+                     QtCore.SIGNAL('mouseMoved(QGraphicsScene*, QPointF, '
+                                   'Qt::MouseButtons)'),
                      self.onMouseMoved)
 
     def eventFilter(self, obj, event):

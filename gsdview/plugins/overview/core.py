@@ -219,3 +219,68 @@ class BandOverviewDock(QtGui.QDockWidget):
 
     def reset(self):
         self.graphicsview.setScene(None)
+
+
+class OverviewController(QtCore.QObject):
+    def __init__(self, app):
+        super(OverviewController, self).__init__(app)
+        self.app = app
+
+        self.panel = BandOverviewDock(app)
+        self.panel.setObjectName('bandOverviewPanel') # @TODO: check
+        app.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.panel)
+
+        # Connect signals
+        self.connect(app.mdiarea,
+                     QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
+                     self.onWindowMapped)
+        self.connect(app, QtCore.SIGNAL('subWindowClosed()'),
+                     self.onWindowClosed)
+
+        self.connect(app.datamodel,
+                     QtCore.SIGNAL('itemChanged(QStandardItem*)'),
+                     self.onItemChanged)
+
+        self.connect(app.monitor, QtCore.SIGNAL('scrolled(QGraphicsView*)'),
+                     self.panel.updateMainViewBox)
+        self.connect(app.monitor,
+                     QtCore.SIGNAL('viewportResized(QGraphicsView*)'),
+                     self.panel.updateMainViewBox)
+        self.connect(app.monitor,
+                     QtCore.SIGNAL('resized(QGraphicsView*, QSize)'),
+                     self.panel.updateMainViewBox)
+
+        self.connect(self.panel.graphicsview,
+                     QtCore.SIGNAL('mousePressed(QPointF,Qt::MouseButtons,'
+                                   'QGraphicsView::DragMode)'),
+                     self.onNewPos)
+        self.connect(self.panel.graphicsview,
+                     QtCore.SIGNAL('mouseMoved(QPointF,Qt::MouseButtons,'
+                                   'QGraphicsView::DragMode)'),
+                     self.onNewPos)
+
+    def onWindowMapped(self, subwin):
+        try:
+            item = subwin.item
+        except AttributeError:
+            # @TODO: check
+            #self.panel.reset()
+            pass
+        else:
+            self.panel.setItem(item)
+
+    def onWindowClosed(self):
+        if len(self.app.mdiarea.subWindowList()) == 0:
+            self.panel.reset()
+
+    def onItemChanged(self, item):
+        if hasattr(item, 'scene'):
+            srcview = self.app.currentGraphicsView()
+            if (srcview and srcview.scene() is item.scene
+                                and not self.panel.graphicsview.scene()):
+                self.panel.setItem(item)
+
+    # @TODO: translate into an event handler
+    def onNewPos(self, pos, buttons, dragmode):
+        if buttons & QtCore.Qt.LeftButton:
+            self.panel.centerMainViewOn(pos)

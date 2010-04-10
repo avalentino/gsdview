@@ -25,7 +25,7 @@ __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date: 2010/02/14 22:02:21 $'
 __revision__ = '$Revision: 36b7b35ff3b6 $'
 
-__all__ = ['init', 'close', 'WorldmapPanel',
+__all__ = ['init', 'close', 'loadSettings', 'saveSettings',
            'name','version', 'short_description','description',
            'author', 'author_email', 'copyright', 'license_type',
            'website', 'website_label',
@@ -34,29 +34,27 @@ __all__ = ['init', 'close', 'WorldmapPanel',
 from stretch.info import *
 from stretch.info import __version__, __requires__
 
-# @TODO: check the name (use _instance instead)
-_controller = None
+
+_instance = None
+
 
 def init(app):
-    from PyQt4 import QtGui
-    from stretch.core import StretchController
+    from stretch.core import StretchTool
 
-    global _controller
-    _controller = StretchController(app)
+    tool = StretchTool(app)
 
     app.imagemenu.addSeparator()
-    app.imagemenu.addAction(_controller.action)
+    app.imagemenu.addAction(tool.action)
+    app.addToolBar(tool.toolbar)
 
-    toolbar = QtGui.QToolBar(app.tr('Stretching Toolbar'))
-    toolbar.setObjectName('stretchingToolbar')
-    toolbar.addAction(_controller.action)
-    app.addToolBar(toolbar)
+    global _instance
+    _instance = tool
 
 def close(app):
     saveSettings(app.settings)
 
-    global _controller
-    _controller = None
+    global _instance
+    _instance = None
 
 def loadSettings(settings):
     pass

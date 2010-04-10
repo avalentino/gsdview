@@ -25,37 +25,43 @@ __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
 
-__all__ = ['ZoomTool', 'init', 'close',
+__all__ = ['init', 'close', 'loadSettings', 'saveSettings',
            'name','version', 'short_description','description',
            'author', 'author_email', 'copyright', 'license_type',
            'website', 'website_label',
 ]
 
-
 from zoom.info import *
 from zoom.info import __version__, __requires__
 
 
+_instance = None
+
+
 def init(app):
     from PyQt4 import QtCore
-    from zoom.core import ZoomTool
+    from zoom.core import AppZoomTool
 
-    zoomTool = ZoomTool(app)
+    tool = AppZoomTool(app)
     app.imagemenu.addSeparator()
-    app.imagemenu.addActions(zoomTool.actions.actions())
-    app.addToolBar(zoomTool.toolbar)
+    app.imagemenu.addActions(tool.actions.actions())
+    app.addToolBar(tool.toolbar)
 
-    zoomTool.actions.setEnabled(False)
-    zoomTool.connect(app.mdiarea,
-                     QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
-                     lambda w: zoomTool.actions.setEnabled(True))
-    zoomTool.connect(app, QtCore.SIGNAL('subWindowClosed()'),
-                     lambda: zoomTool.actions.setEnabled(
+    tool.actions.setEnabled(False)
+    tool.connect(app.mdiarea,
+                 QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
+                 lambda w: tool.actions.setEnabled(bool(w)))
+    tool.connect(app, QtCore.SIGNAL('subWindowClosed()'),
+                 lambda: tool.actions.setEnabled(
                                     bool(app.mdiarea.activeSubWindow())))
 
+    global _instance
+    _instance = tool
 
 def close(app):
     saveSettings(app.settings)
+    global _instance
+    _instance = None
 
 def loadSettings(settings):
     pass

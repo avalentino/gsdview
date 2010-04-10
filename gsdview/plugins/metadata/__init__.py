@@ -25,75 +25,35 @@ __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
 
-__all__ = ['MetadataViewer', 'init', 'close',
+__all__ = ['init', 'close', 'loadSettings', 'saveSettings',
            'name','version', 'short_description','description',
            'author', 'author_email', 'copyright', 'license_type',
            'website', 'website_label',
 ]
 
-
 from metadata.info import *
 from metadata.info import __version__, __requires__
 
 
+_instance = None
+
+
 def init(app):
     from PyQt4 import QtCore
-    from metadata.core import MetadataViewer
+    from metadata.core import MetadataController
 
-    metadataviewer = MetadataViewer(app)
-    metadataviewer.setObjectName('metadataViewerPanel') # @TODO: check
-    app.addDockWidget(QtCore.Qt.BottomDockWidgetArea, metadataviewer)
+    controller = MetadataController(app)
+    app.addDockWidget(QtCore.Qt.BottomDockWidgetArea, controller.panel)
 
-    # @TODO: move to core module - controller
-    def setItemMetadata(item, metadataviewer=metadataviewer):
-        if not item:
-            metadataviewer.clear()
-            return
-
-        # @TODO: fix
-        # @WARNING: this method contains backend specific code
-        if item.backend != 'gdalbackend':
-            import logging
-            logging.warning('only "gdalbackend" is supported by "overview" '
-                            'plugin')
-            return
-
-        try:
-            metadata = item.GetMetadata_List()
-        except RuntimeError:
-            # closed sub-dataset
-            return
-        metadataviewer.setMetadata(metadata)
-
-    def onItemClicked(index, app=app):
-        #if not app.mdiarea.activeSubWindow():
-        item = app.datamodel.itemFromIndex(index)
-        setItemMetadata(item)
-
-    app.connect(app.treeview, QtCore.SIGNAL('clicked(const QModelIndex&)'),
-                onItemClicked)
-
-    def onSubWindowChanged(window=None, app=app):
-        if not window:
-            window = app.mdiarea.activeSubWindow()
-        if window:
-            try:
-                item = window.item
-            except AttributeError:
-                item = None
-        else:
-            item = app.currentItem()
-
-        setItemMetadata(item)
-
-    app.connect(app.mdiarea, QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
-                onSubWindowChanged)
-
-    app.connect(app, QtCore.SIGNAL('subWindowClosed()'), onSubWindowChanged)
+    global _instance
+    _instance = controller
 
 
 def close(app):
     saveSettings(app.settings)
+
+    global _instance
+    _instance = None
 
 def loadSettings(settings):
     pass

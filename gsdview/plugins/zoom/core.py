@@ -34,12 +34,13 @@ from gsdview import qt4support
 
 
 class ZoomTool(QtCore.QObject):
-    def __init__(self, app):
-        QtCore.QObject.__init__(self, app)
-        self.app = app
+    def __init__(self, view=None, parent=None):
+        super(ZoomTool, self).__init__(parent)
+        self._view = view
+
         self.actions = self._setupActions()
         self.menu = qt4support.actionGroupToMenu(
-                                    self.actions, self.tr('&Zoom'), app)
+                                    self.actions, self.tr('&Zoom'), parent)
         self.toolbar = qt4support.actionGroupToToolbar(self.actions,
                                                        self.tr('Zoom toolbar'))
 
@@ -79,12 +80,7 @@ class ZoomTool(QtCore.QObject):
         return actions
 
     def currentview(self):
-        subwin = self.app.mdiarea.currentSubWindow()
-        graphicsview = subwin.widget()
-        if isinstance(graphicsview, QtGui.QGraphicsView):
-            return graphicsview
-        else:
-            return None
+        return self._view
 
     def zoomIn(self):
         factor = 1.2    # @TODO: make this configurable
@@ -99,14 +95,29 @@ class ZoomTool(QtCore.QObject):
             view.scale(factor, factor)
 
     def zoomFit(self):
-        subwin = self.app.mdiarea.currentSubWindow()
-        try:
-            view = subwin.widget()
-            view.fitInView(subwin.item.graphicsitem, QtCore.Qt.KeepAspectRatio)
-        except AttributeError, e:
-            logging.debug(str(e))
+        view = self.currentview()
+        if view:
+            view.fitInView(view.sceneRect(), QtCore.Qt.KeepAspectRatio)
 
     def zoom100(self):
         view = self.currentview()
         if view:
             view.setMatrix(QtGui.QMatrix())
+
+
+class AppZoomTool(ZoomTool):
+    def __init__(self, app):
+        super(AppZoomTool, self).__init__(None, app)
+        self.app = app
+
+    def currentview(self):
+        subwin = self.app.mdiarea.currentSubWindow()
+        try:
+            view = subwin.widget()
+        except AttributeError, e:
+            logging.debug(str(e))
+        else:
+            if isinstance(view, QtGui.QGraphicsView):
+                return view
+            else:
+                return None

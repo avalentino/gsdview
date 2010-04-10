@@ -185,6 +185,70 @@ class WorldmapPanel(QtGui.QDockWidget):
         self.fitItem = self.worldmapitem
         self._fitInView()
 
+
+class WorldmapController(QtCore.QObject):
+    def __init__(self, app):
+        super(WorldmapController, self).__init__(app)
+        self.app = app
+
+        self.panel = WorldmapPanel(app)
+        self.panel.setObjectName('worldmapPanel') # @TODO: check
+
+        self.connect(app.mdiarea,
+                     QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
+                     self.onSubWindowActivated)
+
+        self.connect(app.treeview,
+                     QtCore.SIGNAL('clicked(const QModelIndex&)'),
+                     self.onItemClicked)
+
+        self.connect(app, QtCore.SIGNAL('subWindowClosed()'),
+                     self.onModelChanged)
+
+        # @WARNING: rowsInserted/rowsRemoved don't work
+        # @TODO: fix
+        self.connect(app.datamodel,
+                     QtCore.SIGNAL('rowsInserted(const QModelIndex&,int,int)'),
+                     self.onModelChanged)
+
+        self.connect(app.datamodel,
+                     QtCore.SIGNAL('rowsRemoved(const QModelIndex&,int,int)'),
+                     self.onModelChanged)
+
+    def setItemFootprint(self, item):
+        try:
+            footprint = item.footprint()
+        except AttributeError:
+            footprint = None
+
+        self.panel.setFootprint(footprint)
+
+    def onSubWindowActivated(self, subwindow):
+        if not subwindow:
+            return
+
+        try:
+            item = subwindow.item
+        except AttributeError:
+            # the window has not an associated item in the datamodel
+            pass
+        else:
+            self.setItemFootprint(item)
+
+    def onItemClicked(self, index):
+        if not self.app.mdiarea.activeSubWindow():
+            item = self.app.datamodel.itemFromIndex(index)
+            self.setItemFootprint(item)
+
+    def onModelChanged(self, index=None, start=None, stop=None):
+        window = self.app.mdiarea.activeSubWindow()
+        if window:
+            self.onSubWindowActivated(window)
+        else:
+            item = self.app.currentItem()
+            self.setItemFootprint(item)
+
+
 if __name__ == '__main__':
     import sys
 

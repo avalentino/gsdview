@@ -25,52 +25,38 @@ __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
 
-__all__ = ['CoordinateView', 'init', 'close',
+__all__ = ['init', 'close', 'loadSettings', 'saveSettings',
            'name','version', 'short_description','description',
            'author', 'author_email', 'copyright', 'license_type',
            'website', 'website_label',
 ]
 
-
 from positiontracker.info import *
 from positiontracker.info import __version__, __requires__
 
-# @TODO: check the name (use _instance instead)
-_controller = None
+
+_instance = None
 
 
 def init(app):
-    from PyQt4 import QtCore
-    from positiontracker.core import Controller
-    from positiontracker.coordinateview import CoordinateView, GeoCoordinateView
+    from positiontracker.core import TrackingTool
+
+    tool = TrackingTool(app)
 
     statusbar = app.statusBar()
+    statusbar.addPermanentWidget(tool.coorview)
+    statusbar.addPermanentWidget(tool.geocoorview)
 
-    # image coordinates
-    coorview = CoordinateView()
-    statusbar.addPermanentWidget(coorview)
-    coorview.hide()
-    QtCore.QObject.connect(app.monitor,
-                           QtCore.SIGNAL('leave(QGraphicsScene*)'),
-                           coorview.hide)
+    app.progressbar.installEventFilter(tool)
 
-    # geographic coordinates
-    geocoorview = GeoCoordinateView()
-    statusbar.addPermanentWidget(geocoorview)
-    geocoorview.hide()
-    QtCore.QObject.connect(app.monitor,
-                           QtCore.SIGNAL('leave(QGraphicsScene*)'),
-                           geocoorview.hide)
-
-    # Keep alive the controller object after function exit
-    global _controller
-    _controller = Controller(app, coorview, geocoorview)
+    global _instance
+    _instance = tool
 
 def close(app):
     saveSettings(app.settings)
 
-    global _controller
-    _controller = None
+    global _instance
+    _instance = None
 
 def loadSettings(settings):
     pass

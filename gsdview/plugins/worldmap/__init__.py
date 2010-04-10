@@ -25,79 +25,34 @@ __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
 
-__all__ = ['init', 'close', 'WorldmapPanel',
+__all__ = ['init', 'close', 'loadSettings', 'saveSettings',
            'name','version', 'short_description','description',
            'author', 'author_email', 'copyright', 'license_type',
            'website', 'website_label',
 ]
 
-
 from worldmap.info import *
 from worldmap.info import __version__, __requires__
 
 
+_instance = None
+
+
 def init(app):
     from PyQt4 import QtCore
-    from worldmap.core import WorldmapPanel
+    from worldmap.core import WorldmapController
 
-    worldmapPanel = WorldmapPanel(app)
-    worldmapPanel.setObjectName('worldmapPanel') # @TODO: check
-    app.addDockWidget(QtCore.Qt.BottomDockWidgetArea, worldmapPanel)
+    controller = WorldmapController(app)
+    app.addDockWidget(QtCore.Qt.BottomDockWidgetArea, controller.panel)
 
-    # @TODO: move to core module - controller
-    def setItemFootprint(item, worldmapPanel=worldmapPanel):
-        try:
-            footprint = item.footprint()
-        except AttributeError:
-            footprint = None
-
-        worldmapPanel.setFootprint(footprint)
-
-    def onSubWindowActivated(subwindow):
-        if not subwindow:
-            return
-
-        try:
-            item = subwindow.item
-        except AttributeError:
-            # the window has not an associated item in the datamodel
-            pass
-        else:
-            setItemFootprint(item)
-
-    def onItemClicked(index, app=app):
-        if not app.mdiarea.activeSubWindow():
-            item = app.datamodel.itemFromIndex(index)
-            setItemFootprint(item)
-
-    app.connect(app.mdiarea, QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
-                onSubWindowActivated)
-
-    app.connect(app.treeview, QtCore.SIGNAL('clicked(const QModelIndex&)'),
-                onItemClicked)
-
-    def onModelChanged(index=None, start=None, stop=None, app=app):
-        window = app.mdiarea.activeSubWindow()
-        if window:
-            onSubWindowActivated(window)
-        else:
-            item = app.currentItem()
-            setItemFootprint(item)
-
-    app.connect(app, QtCore.SIGNAL('subWindowClosed()'), onModelChanged)
-
-    # @WARNING: rowsInserted/rowsRemoved don't work
-    # @TODO: fix
-    app.connect(app.datamodel,
-                QtCore.SIGNAL('rowsInserted(const QModelIndex&,int,int)'),
-                onModelChanged)
-
-    app.connect(app.datamodel,
-                QtCore.SIGNAL('rowsRemoved(const QModelIndex&,int,int)'),
-                onModelChanged)
+    global _instance
+    _instance = controller
 
 def close(app):
     saveSettings(app.settings)
+
+    global _instance
+    _instance = None
 
 def loadSettings(settings):
     pass

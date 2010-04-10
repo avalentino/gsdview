@@ -25,7 +25,7 @@ __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
 
-__all__ = ['BandOverviewDock', 'init', 'close',
+__all__ = ['init', 'close', 'loadSettings' 'saveSettings',
            'name','version', 'short_description','description',
            'author', 'author_email', 'copyright', 'license_type',
            'website', 'website_label',
@@ -35,70 +35,20 @@ from overview.info import *
 from overview.info import __version__, __requires__
 
 
+_instance = None
+
+
 def init(app):
-    from PyQt4 import QtCore
-    from overview.core import BandOverviewDock
+    from overview.core import OverviewController
 
-    overviewPanel = BandOverviewDock(app)
-    overviewPanel.setObjectName('bandOverviewPanel') # @TODO: check
-    app.addDockWidget(QtCore.Qt.LeftDockWidgetArea, overviewPanel)
-
-    # @TODO: move to core module - controller
-    def onWindowMapped(subwin, overviewPanel=overviewPanel, app=app):
-        try:
-            item = subwin.item
-        except AttributeError:
-            # @TODO: check
-            #overviewPanel.reset()
-            pass
-        else:
-            overviewPanel.setItem(item)
-
-    def onWindowClosed(overviewPanel=overviewPanel, app=app):
-        if len(app.mdiarea.subWindowList()) == 0:
-            overviewPanel.reset()
-
-    app.connect(app.mdiarea,
-                QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
-                onWindowMapped)
-    app.connect(app, QtCore.SIGNAL('subWindowClosed()'), onWindowClosed)
-
-    def onItemChanged(item, app=app, overviewPanel=overviewPanel):
-        if hasattr(item, 'scene'):
-            srcview = app.currentGraphicsView()
-            if (srcview and srcview.scene() is item.scene
-                                and not overviewPanel.graphicsview.scene()):
-                overviewPanel.setItem(item)
-
-    app.connect(app.datamodel, QtCore.SIGNAL('itemChanged(QStandardItem*)'),
-                onItemChanged)
-
-    QtCore.QObject.connect(app.monitor,
-                           QtCore.SIGNAL('scrolled(QGraphicsView*)'),
-                           overviewPanel.updateMainViewBox)
-    QtCore.QObject.connect(app.monitor,
-                           QtCore.SIGNAL('viewportResized(QGraphicsView*)'),
-                           overviewPanel.updateMainViewBox)
-    QtCore.QObject.connect(app.monitor,
-                           QtCore.SIGNAL('resized(QGraphicsView*, QSize)'),
-                           overviewPanel.updateMainViewBox)
-
-    # @TODO: translate into an event handler
-    def onNewPos(pos, buttons, dragmode, overviewPanel=overviewPanel):
-        if buttons & QtCore.Qt.LeftButton:
-            overviewPanel.centerMainViewOn(pos)
-
-    QtCore.QObject.connect(overviewPanel.graphicsview,
-                           QtCore.SIGNAL('mousePressed(QPointF,Qt::MouseButtons,'
-                                         'QGraphicsView::DragMode)'),
-                           onNewPos)
-    QtCore.QObject.connect(overviewPanel.graphicsview,
-                           QtCore.SIGNAL('mouseMoved(QPointF,Qt::MouseButtons,'
-                                         'QGraphicsView::DragMode)'),
-                           onNewPos)
+    global _instance
+    _instance = OverviewController(app)
 
 def close(app):
     saveSettings(app.settings)
+
+    global _instance
+    _instance = None
 
 def loadSettings(settings):
     pass

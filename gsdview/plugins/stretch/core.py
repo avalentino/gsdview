@@ -31,10 +31,12 @@ from gsdview import qt4support
 
 from stretch.widgets import StretchDialog
 
-class StretchController(QtCore.QObject):
+
+class StretchTool(QtCore.QObject):
     def __init__(self, app):
-        super(StretchController, self).__init__()
+        super(StretchTool, self).__init__(app)
         self.app = app
+
         self.dialog = StretchDialog(parent=app)
         self.dialog.hide()
 
@@ -54,6 +56,10 @@ class StretchController(QtCore.QObject):
         self.connect(self.dialog,
                      QtCore.SIGNAL('valueChanged()'),
                      self.onStretchChanged)
+
+        self.toolbar = QtGui.QToolBar(app.tr('Stretching Toolbar'))
+        self.toolbar.setObjectName('stretchingToolbar')
+        self.toolbar.addAction(self.action)
 
     def _setupAction(self):
         icon = qt4support.geticon('stretching.svg', __name__)

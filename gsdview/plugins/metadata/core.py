@@ -67,3 +67,60 @@ class MetadataViewer(QtGui.QDockWidget):
         self.infoTable.clear()
         self.infoTable.setHorizontalHeaderLabels(['Name', 'Value'])
         self.infoTable.setRowCount(0)
+
+
+class MetadataController(QtCore.QObject):
+    def __init__(self, app):
+        super(MetadataController, self).__init__(app)
+        self.app = app
+
+        self.panel = MetadataViewer(app)
+        self.panel.setObjectName('metadataViewerPanel') # @TODO: check
+
+        # Connect signals
+        self.connect(app.treeview,
+                     QtCore.SIGNAL('clicked(const QModelIndex&)'),
+                     self.onItemClicked)
+        self.connect(app.mdiarea,
+                     QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
+                     self.onSubWindowChanged)
+        self.connect(app, QtCore.SIGNAL('subWindowClosed()'),
+                     self.onSubWindowChanged)
+
+    def setItemMetadata(self, item):
+        if not item:
+            self.panel.clear()
+            return
+
+        # @TODO: fix
+        # @WARNING: this method contains backend specific code
+        if item.backend != 'gdalbackend':
+            import logging
+            logging.warning('only "gdalbackend" is supported by "overview" '
+                            'plugin')
+            return
+
+        try:
+            metadata = item.GetMetadata_List()
+        except RuntimeError:
+            # closed sub-dataset
+            return
+        self.panel.setMetadata(metadata)
+
+    def onItemClicked(self, index):
+        #if not app.mdiarea.activeSubWindow():
+        item = self.app.datamodel.itemFromIndex(index)
+        self.setItemMetadata(item)
+
+    def onSubWindowChanged(self, window=None):
+        if not window:
+            window = self.app.mdiarea.activeSubWindow()
+        if window:
+            try:
+                item = window.item
+            except AttributeError:
+                item = None
+        else:
+            item = self.app.currentItem()
+
+        self.setItemMetadata(item)
