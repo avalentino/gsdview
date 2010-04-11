@@ -19,6 +19,8 @@ Changes from 0.6.0 to 0.6.1 (in development)
 * Use global exception hook to catch un-handled exceptions (close :issue:`11`).
   An error dialog is showed and the application quits.
 * New mouse manager component (:issue:`24`)
+* Refactoring of graphics items components
+* New tool (plugin) for image stretching (close :issue:`37`)
 * Strongly improved GDAL info dialogs (enhancement :issue:`22` and :issue:`32`).
   Now dialogs show more info including:
 
@@ -28,6 +30,7 @@ Changes from 0.6.0 to 0.6.1 (in development)
   - metadata for ˆIMAGE_STRUCTUREˆ, ˆSUBDATASETSˆ and ˆRPCˆ domains
     (standard domain was already available)
 
+* Plugins refactoring
 * Auto detect GDAL framework binaries on Mac OS X (close :issue:`20`)
 * Improved support for Mac OS X (:issue:`14`, :issue:`15`, :issue:`16`,
   :issue:`17`). None Qt >= 4.6.2 is required on Mac OS X.
@@ -40,8 +43,8 @@ Changes from 0.6.0 to 0.6.1 (in development)
   Qt UI files directly.
 * Now use docutils for generating the manpage (:issue:`33`)
 * Packaging using pyinstaller_ (:issue:`8`)
-* Other bug fix (:issue:`21`, :issue:`31`)
-* Plugins refactoring
+* Other bug fix (:issue:`21`, :issue:`31`, :issue:`36`)
+
 
 .. pyinstaller: http://www.pyinstaller.org
 
