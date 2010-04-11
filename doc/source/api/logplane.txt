@@ -20,14 +20,6 @@ logplane
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-   
-      Qt4OStream
-      Qt4OutputPlane
-      Qt4StreamLoggingHandler
-   
    
 
    

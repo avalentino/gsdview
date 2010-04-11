@@ -20,12 +20,6 @@ overview
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-   
-      BandOverviewDock
-   
    
 
    

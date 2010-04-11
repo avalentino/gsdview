@@ -23,6 +23,7 @@ overview.core
    
       BandOverviewDock
       NavigationGraphicsView
+      OverviewController
    
    
 

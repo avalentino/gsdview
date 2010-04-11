@@ -15,6 +15,7 @@ metadata.core
 
    .. autosummary::
    
+      MetadataController
       MetadataViewer
    
    

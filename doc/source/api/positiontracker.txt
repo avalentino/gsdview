@@ -20,13 +20,6 @@ positiontracker
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-   
-      CoordinateView
-      GeoCoordinateView
-   
    
 
    

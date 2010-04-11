@@ -20,12 +20,6 @@ zoom
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-   
-      ZoomTool
-   
    
 
    

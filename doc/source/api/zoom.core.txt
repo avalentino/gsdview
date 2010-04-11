@@ -15,6 +15,7 @@ zoom.core
 
    .. autosummary::
    
+      AppZoomTool
       ZoomTool
    
    

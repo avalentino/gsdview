@@ -20,12 +20,6 @@ metadata
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-   
-      MetadataViewer
-   
    
 
    

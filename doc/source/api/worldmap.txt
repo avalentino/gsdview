@@ -20,12 +20,6 @@ worldmap
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-   
-      WorldmapPanel
-   
    
 
    

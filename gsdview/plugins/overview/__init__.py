@@ -25,7 +25,7 @@ __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
 
-__all__ = ['init', 'close', 'loadSettings' 'saveSettings',
+__all__ = ['init', 'close', 'loadSettings', 'saveSettings',
            'name','version', 'short_description','description',
            'author', 'author_email', 'copyright', 'license_type',
            'website', 'website_label',

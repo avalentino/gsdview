@@ -41,6 +41,7 @@ def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0, omax=None):
     LUT (see below).
 
     :Parameters:
+    
         vmin : {int, float}
             minimum value (positive or null). Default 0
         vmax : {int, float}
@@ -53,10 +54,12 @@ def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0, omax=None):
                 * vmax + 1 if bool(fill) == False
                 * max(vmax + 1, 2**nbits) if fill == True
                 * max(vmax + 1, fill) id fille is an number
+                
         omin : @TBW
         omax : @TBW
 
     :Return:
+    
         LUT
 
     '''
@@ -104,6 +107,7 @@ def histogram_equalized_lut(hist, dtype='uint8', fill=False):
     '''Compute a histogram equalized LUT.
 
     :Parameters:
+    
         hist : ndarray
             histogram to be equalized
         dtype : numpy.dtype (uint8 or uint16)
@@ -116,6 +120,7 @@ def histogram_equalized_lut(hist, dtype='uint8', fill=False):
             itself.
 
     :Return:
+    
         LUT
 
     '''
@@ -209,7 +214,7 @@ def square(dtype='uint8'):
 class BaseStretcher(object):
     '''Base class for stretcher objects.
 
-    The base implementation of the *__call__ * method just performs
+    The base implementation of the *__call__* method just performs
     clipping and type conversion (both are optional).
 
     .. note:: outout extrema (*min* and *max*) have to be compatible
