@@ -67,7 +67,7 @@ Changes from 0.5.9 to 0.6.0 (24/08/2009)
   packaging (:issue:`8`)
 * Improved project layout: exectools in now an independent python package,
   no more a sub-package of gsdview (close :issue:`10`)
-* `setuptools <http://http//pypi.python.org/pypi/setuptools>`_ suport
+* `setuptools <http://pypi.python.org/pypi/setuptools>`_ suport
   (close :issue:`7`)
 
 
