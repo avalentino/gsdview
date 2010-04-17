@@ -1,0 +1,20 @@
+Index: pyinstaller/Build.py
+===================================================================
+--- pyinstaller/Build.py	(revision 818)
++++ pyinstaller/Build.py	(working copy)
+@@ -383,6 +383,15 @@
+         Python executable to the libpython, so bindepend doesn't include
+         it in its output.
+         """
++        # minimal patch for OSX.  Loader expects "Python" framework lib to be bundled
++        if target_platform == "darwin":
++            lib = os.path.join(sys.exec_prefix,'Python')
++            try:
++                exists = os.stat(lib)
++                binaries.append(('Python', lib, 'BINARY'))
++            except:
++                print 'Warning: could not find python framework to bundle'
++
+         if target_platform != 'linux2': return
+ 
+         name = 'libpython%d.%d.so' % sys.version_info[:2]

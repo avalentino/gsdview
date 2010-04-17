@@ -10,8 +10,9 @@ if sys.platform == 'darwin':
     GDAL_DATA = os.path.join(GDALROOT, 'Resources', 'gdal')
     GDALADDO = os.path.join(GDALROOT, 'unix', 'bin', 'gdaladdo')
     # Workaround fo pyinstaller bug #157 (http://www.pyinstaller.org/ticket/157)
-    EXTRA_QT_RESOURCES = Tree('/Library/Frameworks/QtGui.framework/Versions/4/Resources/qt_menu.nib', os.path.join('Resources', 'qt_menu.nib'))
-    #EXTRA_QT_RESOURCES = Tree(os.path.join(QtCore.QLibraryInfo.LibrariesPath, 'QtGui.framework/Versions/4/Resources/qt_menu.nib'), os.path.join('Resources', 'qt_menu.nib'))
+    EXTRA_QT_RESOURCES = Tree('/Library/Frameworks/QtGui.framework/Resources/qt_menu.nib', os.path.join('Resources', 'qt_menu.nib'))
+    #EXTRA_QT_RESOURCES = Tree(os.path.join(QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.LibrariesPath), 
+    #                          'QtGui.framework/Resources/qt_menu.nib'), os.path.join('Resources', 'qt_menu.nib'))
 elif sys.platform[:3] == 'win':
     GDALROOT = r'c:\gdal170'
     GDAL_DATA = os.path.join(GDALROOT, 'data')
