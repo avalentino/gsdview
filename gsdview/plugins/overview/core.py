@@ -263,9 +263,7 @@ class OverviewController(QtCore.QObject):
         try:
             item = subwin.item
         except AttributeError:
-            # @TODO: check
-            #self.panel.reset()
-            pass
+            self.panel.reset()
         else:
             self.panel.setItem(item)
 
