@@ -320,7 +320,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         #action.setShortcut(self.tr('Ctrl+W'))
         action.setToolTip(self.tr('Close the current file'))
         action.setStatusTip(self.tr('Close the current file'))
-        self.connect(action, QtCore.SIGNAL('triggered()'), self.closeFile)
+        self.connect(action, QtCore.SIGNAL('triggered()'), self.closeItem)
         actionsgroup.addAction(action)
 
         # Separator
@@ -700,7 +700,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
                 else:
                     self.logger.error('Unable to open file "%s"' % filename)
 
-    def closeFile(self):
+    def closeItem(self):
         # @TODO: extend for multiple datasets
         #~ self.emit(QtCore.SIGNAL('closeGdalDataset()'))
 
@@ -742,7 +742,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
                 msg = ('An error occurred during the quicklook generation.\n'
                        'Now close the dataset.')
                 QtGui.QMessageBox.warning(self, '', msg)
-                self.closeFile()   # @TODO: check
+                self.closeItem()   # @TODO: check
                 return
         finally:
             self.progressbar.hide()
