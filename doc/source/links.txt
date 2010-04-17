@@ -56,7 +56,7 @@ NEST_
     in the future Sentinel-1. 
     
     In addition, NEST supports handling of products from third party missions 
-    including JERS-1, ALOS PALSAR, TerraSAR-X, Radarsat-1 & 2 and Cosmo-Skymed.
+    including JERS-1, ALOS PALSAR, TerraSAR-X, Radarsat-1 & 2 and COSMO-Skymed.
 BEST_
     Basic Envisat SAR Toolbox: the ESA collection of executable software 
     tools that has been developed to facilitate the use of their SAR data
@@ -67,7 +67,7 @@ BESTGUI_
     BESTGUI aims to be an improved GUI front-end for UNIX platforms 
     (it also run on Windows\ :sup:`TM`), with a prettier look and feel and some 
     useful additional features.
-ASF_ tools
+`ASF tools`_
     Converting and geocoding tools of the Alaska Satellite Facility (ASF_):
     
     MapReady
@@ -119,7 +119,8 @@ GMT_
 .. _BEST: http://earth.esa.int/services/best
 .. _BESTGUI: http://bestgui.sourceforge.net
 .. _NEST: http://www.array.ca/nest
-.. _ASF: http://www.asf.alaska.edu/sardatacenter/softwaretools
+.. _ASF: http://www.asf.alaska.edu
+.. _`ASF tools`: http://www.asf.alaska.edu/sardatacenter/softwaretools
 .. _BEAM: http://www.brockmann-consult.de/cms/web/beam
 .. _PolSARPro: http://earth.esa.int/polsarpro
 .. _EnviView: http://earth.esa.int/enviview
@@ -232,6 +233,7 @@ Free EO Data
 ERS_
     * `Earthquakes <http://earth.esa.int/category/index.cfm?fcategoryid=37>`_
       (L’Aquila, Haiti and Sichuan)
+    * Sample ERS products can be found at `acres/ers <ftp://anonymous@acres.ga.gov.au/acres/samples/ers>`_
 ENVISAT_
     * `Sample products <http://envisat.esa.int/services/sample_products>`_
     * `Envisat auxiliary data <http://earth.esa.int/services/auxiliary_data>`_
@@ -240,19 +242,30 @@ ENVISAT_
 TerraSAR-X_
     * `Sample TerraSAR-X products <http://www.infoterra.de/tsx/freedata/start.php>`_ 
       can be found at Infoterra_ (`ditect ftp link <ftp://infoterra:itd@delivery.infoterra.de>`_)
+Radarsat1_
+    * Sample Radarsat1 products can be found at 
+      `acres/radarsat <ftp://anonymous@acres.ga.gov.au/acres/samples/radarsat>`_
+      and on `Ohio state university web site <http://bprc.osu.edu/rsl/radarsat/data>`_
 Radarsat2_
     * `MDA Sample products <http://www.radarsat2.info/product/demo_set>`_
-    * `Radarset2 sample products provided by ESA <http://envisat.esa.int/services/sample_products/ra2mwr>`_
-    * `Radarset2 sample products for polarimetry <http://earth.esa.int/polsarpro/datasets.html>`_
+    * Radarset2 `sample products provided by ESA <http://envisat.esa.int/services/sample_products/ra2mwr>`_
+    * Radarset2 `sample products for polarimetry <http://earth.esa.int/polsarpro/datasets.html>`_
 ALOS_
-    * Sample ALOS PALSAR products can found at 
+    * Free ALOS sample products can found at 
       `ALOS Restec <http://www.alos-restec.jp/sampledata_e.html>`_, 
-      `Acres <ftp://acres.ga.gov.au/>`_ and `ASF <ftp://asf-ftp.asf.alaska.edu>`_
+      `acres/alos <ftp://anonymous@acres.ga.gov.au/acres/samples/alos>`_ and 
+      `ASF/ALOS <http://www.asf.alaska.edu/aadn/sample_data>`_
     * `Earthquakes <http://earth.esa.int/category/index.cfm?fcategoryid=37>`_
       (L’Aquila, Haiti and Sichuan)
-JERS
-    * Sample JERS products can be found at `Acres <ftp://acres.ga.gov.au/>`_
-Polarimetry
+JERS_
+    Sample JERS products can be found at `acres/jers <ftp://anonymous@acres.ga.gov.au/acres/samples/jers>`_
+ASTER_
+    Sample ASTER products can be found at `acres/aster <ftp://anonymous@acres.ga.gov.au/acres/samples/aster>`_
+Landsat_
+    * landsat.org provides `Free ortorectified <http://www.landsat.org/ortho>`_ data
+    * Sample Landsat5 and Landsat7 products can be found at 
+      `acres <ftp://anonymous@acres.ga.gov.au/acres/samples>`_
+Polarimetry_
     The `PolSARpro sample dataset <http://earth.esa.int/polsarpro/datasets.html>`_
     includes data of various airbone (AIRSAR, CONVAIR, EMISAR, ESAR, PISAR) 
     and spacebone sensors (Radarsat2).
@@ -272,6 +285,16 @@ Free UAVSAR_ data on ASF_ site
 LAADS_ Web
     MODIS level 1 and atmosphere data products
 
+.. _ERS: http://earth.esa.int/ers
+.. _ENVISAT: http://envisat.esa.int
+.. _TerraSAR-X: http://www.dlr.de/TerraSAR-X
+.. _Radarsat1: http://www.asc-csa.gc.ca/eng/satellites/radarsat1
+.. _Radarsat2: http://www.radarsat2.info
+.. _ALOS: http://www.eorc.jaxa.jp/ALOS/en
+.. _JERS: http://www.eorc.jaxa.jp/JERS-1/en
+.. _ASTER: http://asterweb.jpl.nasa.gov
+.. _Landsat: http://landsat.org
+.. _Polarimetry: http://en.wikipedia.org/wiki/Synthetic_aperture_radar#Polarimetry
 .. _Infoterra: http://www.infoterra.de
 .. _GSHHS: http://www.ngdc.noaa.gov/mgg/shorelines/gshhs.html
 .. _UAVSAR: http://uavsar.asfdaac.alaska.edu
