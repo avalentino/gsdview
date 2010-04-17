@@ -69,12 +69,12 @@ class MajorObjectItem(QtGui.QStandardItem):
     def type(self):
         return QtGui.QStandardItem.UserType + self._typeoffset
 
-    def _close(self):
+    def _closeChildren(self):
         while self.hasChildren():
             try:
-                self.child(0)._close()
-                #~ if hasarrt(self.child(0), '_obj'):
-                    #~ self.child(0)._obj = None
+                self.child(0)._closeChildren()
+                if hasattr(self.child(0), '_obj'):
+                    self.child(0)._obj = None
             except AttributeError:
                 logging.debug('unexpected child item class: "%s"' %
                                                 type(self.child(0)).__name__)
@@ -150,10 +150,13 @@ class BandItem(MajorObjectItem):
         except NotImplementedError:  #(NoImplementedError, TypeError):
             return None, None
 
-    #~ def _close(self):
-        #~ self._obj.FlushCache()
-        #~ super(BandItem, self).close()
-        #~ self._obj = None
+    def close(self):
+        self._obj.FlushCache()
+        super(BandItem, self).close()
+        self.graphicsitem = None
+        self.scene.clear()
+        self.scene = None
+        self._obj = None
 
     def _reopen(self, gdalobj=None):
         if not gdalobj:
@@ -166,9 +169,8 @@ class BandItem(MajorObjectItem):
                             'unexpected number of overviews')
             return
 
-        #~ self._close()    # @TODO: remove
+        #~ self._closeChildren()    # @TODO: remove
         self._setup_children()
-        #self.model().itemChanged(self)
         self.model().emit(QtCore.SIGNAL('itemChanged(QStandardItem*)'), self)
 
 
@@ -341,16 +343,16 @@ class DatasetItem(MajorObjectItem):
         self._setup_child_bands(self._obj)
         self._setup_child_subdatasets(self._obj)
 
-    #~ def _close(self):
+    #~ def _closeChildren(self):
         #~ self._obj.FlushCache()
-        #~ super(DatasetItem, self)._close()
+        #~ super(DatasetItem, self)._closeChildren()
 
     def close(self):
-        self._close()
+        self._closeChildren()
         parent = self.parent()
         if not parent:
             parent = self.model().invisibleRootItem()
-        #~ self._obj = None
+        self._obj = None
         parent.removeRow(self.row())
 
 
@@ -538,9 +540,9 @@ class SubDatasetItem(CachedDatasetItem):
 
     def close(self):
         # @NOTE: don't call the parent "close()" method because DatasetItem
-        #        reoves itself from the model when closed and this is not the
+        #        removes itself from the model when closed and this is not the
         #        desired behaviour
-        self._close()
+        self._closeChildren()
         self._obj = None
         self._mode = None
         self.cmapper = None
