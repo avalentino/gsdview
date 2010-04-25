@@ -9,9 +9,10 @@ include gsdview.desktop
 recursive-include gsdview *.py *.ui *.svg *.png *.jpg
 recursive-include exectools *.py
 
-include doc/Makefile doc/make.bat
+include doc/Makefile doc/make.bat doc/gsdview.1
 recursive-include doc/source *.txt *.rst *.html *.pdf *.png *.svg *.ico *.py
 recursive-include doc/html *
+recursive-include doc/themes *
 
 include scripts/*.pyw
 recursive-include debian *

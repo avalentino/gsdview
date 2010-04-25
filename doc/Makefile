@@ -109,9 +109,9 @@ text:
 	@echo "Build finished. The text files are in $(BUILDDIR)/text."
 
 man:
-	$(SPHINXBUILD) -b man $(ALLSPHINXOPTS) $(BUILDDIR)/man
+	$(SPHINXBUILD) -b man $(ALLSPHINXOPTS) .
 	@echo
-	@echo "Build finished. The manual pages are in $(BUILDDIR)/man."
+	@echo "Build finished. The manual pages are in doc."
 
 changes:
 	$(SPHINXBUILD) -b changes $(ALLSPHINXOPTS) $(BUILDDIR)/changes

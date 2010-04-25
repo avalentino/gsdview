@@ -5,7 +5,6 @@
 ### :Revision: $Revision$
 ### :Date: $Date$
 
-RST2MAN=rst2man.py
 
 .PHONY: default docs html pdf man clean cleanall sdist bdist deb rpmspec rpm ui
 
@@ -24,7 +23,7 @@ pdf: doc/GSDView.pdf
 
 man:
 	make -C doc $@
-	cd debian && ln -fs ../doc/build/man/gsdview.1
+	cd debian && ln -fs ../doc/gsdview.1
 
 clean:
 	cd doc && $(MAKE) clean
@@ -36,7 +35,7 @@ clean:
 	$(RM) python-build-stamp-*
 	$(MAKE) -C pkg clean
 
-sdist: docs
+sdist: docs ui
 	python setup.py sdist
 
 # Not available in setuptools (??)
@@ -52,7 +51,6 @@ rpmspec:
 	python setup.py bdist_rpm --spec-only
 
 rpm: sdist
-	#@sudo tools/build-rpm.sh
 	python setup.py bdist_rpm
 
 
@@ -70,6 +68,7 @@ ui: $(PYUIFILES)
 	pyuic4 -x $< -o $@
 
 cleanall: clean
+	$(RM) doc/gsdview.1
 	$(RM) $(PYUIFILES)
 	$(RM) gsdview/ui/__init__.py gsdview/gdalbackend/ui/__init__.py \
           gsdview/plugins/stretch/ui/__init__.py
