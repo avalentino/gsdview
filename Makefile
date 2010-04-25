@@ -56,16 +56,20 @@ rpm: sdist
 	python setup.py bdist_rpm
 
 
-UIFILES = $(wildcard gsdview/ui/*.ui) $(wildcard gsdview/gdalbackend/ui/*.ui)
+UIFILES = $(wildcard gsdview/ui/*.ui)\
+          $(wildcard gsdview/gdalbackend/ui/*.ui)\
+          $(wildcard gsdview/plugins/stretch/ui/*.ui)
 PYUIFILES = $(patsubst %.ui,%.py,$(UIFILES))
 
 ui: $(PYUIFILES)
 	touch gsdview/ui/__init__.py
 	touch gsdview/gdalbackend/ui/__init__.py
+	touch gsdview/plugins/stretch/ui/__init__.py
 
 %.py: %.ui
 	pyuic4 -x $< -o $@
 
 cleanall: clean
 	$(RM) $(PYUIFILES)
-	$(RM) gsdview/ui/__init__.py gsdview/gdalbackend/ui/__init__.py
+	$(RM) gsdview/ui/__init__.py gsdview/gdalbackend/ui/__init__.py \
+          gsdview/plugins/stretch/ui/__init__.py

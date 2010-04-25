@@ -52,22 +52,31 @@ except ImportError:
     from distutils.command.install_lib import install_lib
     has_setuptools = False
 
+try:
+    from sphinx.setup_command import BuildDoc
+
+    class BuildMan(BuildDoc):
+        def initialize_options(self):
+            BuildDoc.initialize_options(self)
+            self.builder = 'man'
+
+    cmdclass['build_man'] = BuildMan
+except ImportError:
+    pass
+
+
 class ExtendedBuild(Build):
     def run(self):
         Build.run(self)
         try:
             self.run_command('build_sphinx')
+            self.run_command('build_man')
         except:
             log.warn("Couldn't build documentation:\n%s" %
                      traceback.format_exception(*sys.exc_info()))
 
-        srcman = os.path.join('debian', 'manpage.rst')
-        dstman = os.path.join('debian', PKGNAME + '.1')
-        if newer(srcman, dstman):
-            log.info('buiding man page')
-            subprocess.check_call(('rst2man.py', srcman, dstman))
-
 cmdclass['build'] = ExtendedBuild
+
 
 # Fix the install_lib command in order to generate an updated appsite.py file
 class InstallLib(install_lib):
