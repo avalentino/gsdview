@@ -1,30 +1,17 @@
-=========
- gsdview
-=========
+:orphan:
 
-----------------------------------------------------
-lightweight viewer for geo-spatial data and products
-----------------------------------------------------
-
-:Author:            Antonio Valentino <a_valentino@users.sf.net>
-:Date:              2010-01-02
-:Copyright:         Copyright (C) 2008-2010 Antonio Valentino.
-                    License GNU GPL v. 2.0
-:Version:           0.6.1
-:Manual section:    1
-:Manual group:
-
-.. TODO: authors and author with name <email>
+gsdview manual page
+===================
 
 
-SYNOPSIS
-========
+Synopsis
+--------
 
-  gsdview [options]
+**gsdview** [*options*]
 
 
-DESCRIPTION
-===========
+Description
+-----------
 
 *GSDView Open Source Edition* is a lightweight viewer for geo-spatial data and
 products.
@@ -33,36 +20,35 @@ frotend for the GDAL library and tools.
 GSDView is modular and has a simple plug-in architecture.
 
 
-OPTIONS
-=======
+Options
+-------
 
 --version               Show this program's version number and exit.
 --help, -h              Show this help message and exit.
 
 
-FILES
-=====
+Files
+-----
 
-~/.gsdview/gsdview.ini
+:file:`~/.gsdview/gsdview.ini`
     GSDView preferences file
-~/.gsdview/gsdview.log
+:file:`~/.gsdview/gsdview.log`
     session log file
-~/.gsdview/cache
+:file:`~/.gsdview/cache`
     cache directory
 
 
-SEE ALSO
-========
+See also
+--------
 
 *GSDView Open Source Edition* <http://gsdview.sourceforge.net>
 
 GDAL <http://www.gdal.org>
 
 
-BUGS
-====
+Bugs
+----
 
 Please refer to the *GSDView Open Source Edition* issue tracker system at
 http://sf.net/apps/trac/gsdview for an updated list of known
 issues with the latest release.
-

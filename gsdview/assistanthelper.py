@@ -32,15 +32,7 @@ from PyQt4 import QtCore, QtGui
 class Assistant(object):
     '''Helper class controllig an external QAssistant proces
 
-    :Methods:
-
-    * startAssistant()
-    * showDocumentation(page)
-    * close()
-
-    :Attributes:
-
-    * proc - QProcess
+    :ivar proc: QProcess
 
     '''
 

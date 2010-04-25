@@ -407,9 +407,7 @@ class GtkOutputHandler(BaseOutputHandler):
     def _handle_percentage(self, data):
         '''Handle percentage of a precess execution
 
-        :Parameters:
-
-        - 'data' : percentage
+        :param data: percentage
 
         '''
 
@@ -421,11 +419,10 @@ class GtkOutputHandler(BaseOutputHandler):
     def handle_progress(self, data):
         '''Handle progress data
 
-        :Parameters:
-
-        - `data`: a list containing an item for each named group in the
-          "progress" regular expression: (pulse, percentage, text) for the
-          default implementation.  Each item can be None.
+        :param data: a list containing an item for each named group in
+                     the "progress" regular expression: (pulse,
+                     percentage, text) for the default implementation.
+                     Each item can be None.
 
         '''
 

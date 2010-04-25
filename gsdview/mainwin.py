@@ -36,11 +36,9 @@ from gsdview.qtwindowlistmenu import QtWindowListMenu
 class MdiMainWindow(QtGui.QMainWindow):
     '''Base class for MDI applications.
 
-    :attributes:
-
-    - mdiarea
-    - windowactions
-    - windowmenu
+    :ivar mdiarea:       QMdiArea
+    :ivar windowactions: sub-windows actions
+    :ivar windowmenu:    sub-windows menu
 
     :signals:
 

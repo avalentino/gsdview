@@ -218,11 +218,10 @@ class BaseOutputHandler(object):
         The user, anyway, can provide a custom implementation in
         derived classes.
 
-        :Parameters:
-
-        - `data`: a list containing an item for each named group in the
-          "progress" regular expression: (pulse, percentage, text) for
-          the default implementation.  Each item can be None.
+        :param data: a list containing an item for each named group in
+                     the "progress" regular expression: (pulse,
+                     percentage, text) for the default implementation.
+                     Each item can be None.
 
         '''
 
@@ -246,10 +245,8 @@ class BaseOutputHandler(object):
         The user, anyway, can provide a custom implementation in
         derived classes.
 
-        :Parameters:
-
-        - `data`: an entire output line (including the trailing "end
-          of line" character.
+        :param data: an entire output line (including the trailing
+                     "end of line" character.
 
         '''
 
@@ -267,16 +264,15 @@ class BaseOutputHandler(object):
 class ToolDescriptor(object):
     '''Command line tool desctiptor
 
-    :Attributes:
+    :ivar executable:     full path of the tool executable or just the
+                          tool program name if it is in the system
+                          search path
+    :ivar cwd:            program working directory
+    :ivar env:            environment
+    :ivar stdout_handler: the OutputHandler for the stdout of the tool
+    :ivar stderr_handler: the OutputHandler for the stderr of the tool
 
-    - `executable`: full path of the tool executable or just the tool
-                      program name if it is in the system search path
-    - `cwd`: program working directory
-    - `env`: environment
-    - `stdout_handler`: the OutputHandler for the stdout of the tool
-    - `stderr_handler`: the OutputHandler for the stderr of the tool
-
-    @TODO: shell
+    .. todo:: shell
 
     '''
 

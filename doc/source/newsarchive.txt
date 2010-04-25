@@ -18,6 +18,20 @@ __ `GSDView project page`_
 
 .. include:: latestnews.txt
 
+:10/05/2009: GSDView Open Source Edition v. 0.6.0 alpha 1 released.
+
+             Almost complete application re-write:
+             new architecture that allows multiple data access backends
+             (currently only GDAL backend is provided), updated dataset
+             browser with new contextual actions, Multiple Document
+             Interface (MDI), new preference dialog, improved GDAL
+             configuration handling.
+
+:30/08/2008: New Home Page.
+
+             The project Home Page has been completely rewritten.
+             Now the sphinx_ tool is used to generate the entire
+             documentation set.
 
 :18/05/2008: First public release available.
 
@@ -29,3 +43,6 @@ __ `GSDView project page`_
 
 .. _`GSDView project page`: http://sourceforge.net/projects/gsdview
 .. _download: http://sourceforge.net/projects/gsdview/files
+.. _sphinx: http://sphinx.pocoo.org
+.. _SourceForge: http://sourceforge.net
+

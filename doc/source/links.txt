@@ -1,9 +1,11 @@
-GSDView Links
-=============
+Links
+=====
 
+GSDView Links
+-------------
 
 GSDView Open Edition
---------------------
+~~~~~~~~~~~~~~~~~~~~
 
 * `GSDView Open Edition Home Page <http://gsdview.sourceforge.net>`_
 * SourceForge `Project Page <http://sourceforge.net/projects/gsdview>`_
@@ -13,14 +15,14 @@ GSDView Open Edition
 
 
 GSDView Pro Edition
--------------------
+~~~~~~~~~~~~~~~~~~~
 
 * `GSDView Pro Edition Home Page <http://www.consorzio-innova.com/static/gsdview/index.html>`_
 * `EOMAG <http://www.eomag.eu/articles/726/qualitative-analysis-of-the-first-real-cosmo-skymed-sar-data>`_
 
 
 Citations
----------
+~~~~~~~~~
 
 * `Global Change Master Directory <http://gcmd.nasa.gov/records/GSDView.html>`_ - NASA
 * `CEOS Land Surface Imaging Constellation Portal
@@ -36,10 +38,10 @@ Citations
 
 
 Open source resources
-=====================
+---------------------
 
 Tools
------
+~~~~~
 
 OpenEV_
     Application for viewing and analysing raster and vector geospatial data
@@ -109,6 +111,9 @@ EOLI-SA_
     Earth Observation Catalogue and Ordering Services.
 Radarworks_
     Matlab toolbox mainly intended for polarimetric SAR data processing.
+Opticks_
+    Opticks_ is an expandable remote sensing and imagery analysis software 
+    platform that is free and open source.
 GRASS_
     Geographic Resources Analysis Support System
 GMT_
@@ -126,15 +131,16 @@ GMT_
 .. _EnviView: http://earth.esa.int/enviview
 .. _EOLI-SA: http://earth.esa.int/EOLi/EOLi.html
 .. _Radarworks: http://www.radarworks.com
+.. _Opticks: http://opticks.org
 .. _GRASS: http://grass.itc.it
 .. _GMT: http://gmt.soest.hawaii.edu
 
 
 InSAR tools
------------
+~~~~~~~~~~~
 
 DORIS_
-    Delft Object-oriented Radar Interferometric Software - InSAR / DInSAR 
+    Delft Object-oriented Radar Interferometric Software - InSAR/DInSAR 
     processor.
 StaMPS_
     StaMPS stands for "Stanford Method for Persistent Scatterers". 
@@ -168,7 +174,7 @@ IDIOT_
 
 
 Libraries
----------
+~~~~~~~~~
 
 GDAL_
     Geospatial Data Abstraction Library
@@ -183,7 +189,7 @@ OTB_
 
 
 Commercial and freeware EO Software
-===================================
+-----------------------------------
 
 DIAPASON_
     Differential Interferometric Automated Process Applied to Survey Of Nature, 
@@ -228,12 +234,15 @@ FreeView_
 
 
 Free EO Data
-============
+------------
+
+Optical and SAR imagery
+~~~~~~~~~~~~~~~~~~~~~~~
 
 ERS_
     * `Earthquakes <http://earth.esa.int/category/index.cfm?fcategoryid=37>`_
       (L’Aquila, Haiti and Sichuan)
-    * Sample ERS products can be found at `acres/ers <ftp://anonymous@acres.ga.gov.au/acres/samples/ers>`_
+    * Sample ERS products can be found at Acres_
 ENVISAT_
     * `Sample products <http://envisat.esa.int/services/sample_products>`_
     * `Envisat auxiliary data <http://earth.esa.int/services/auxiliary_data>`_
@@ -243,9 +252,8 @@ TerraSAR-X_
     * `Sample TerraSAR-X products <http://www.infoterra.de/tsx/freedata/start.php>`_ 
       can be found at Infoterra_ (`ditect ftp link <ftp://infoterra:itd@delivery.infoterra.de>`_)
 Radarsat1_
-    * Sample Radarsat1 products can be found at 
-      `acres/radarsat <ftp://anonymous@acres.ga.gov.au/acres/samples/radarsat>`_
-      and on `Ohio state university web site <http://bprc.osu.edu/rsl/radarsat/data>`_
+    Sample Radarsat1 products can be found at Acres_ and on
+    `Ohio state university web site <http://bprc.osu.edu/rsl/radarsat/data>`_
 Radarsat2_
     * `MDA Sample products <http://www.radarsat2.info/product/demo_set>`_
     * Radarset2 `sample products provided by ESA <http://envisat.esa.int/services/sample_products/ra2mwr>`_
@@ -253,30 +261,20 @@ Radarsat2_
 ALOS_
     * Free ALOS sample products can found at 
       `ALOS Restec <http://www.alos-restec.jp/sampledata_e.html>`_, 
-      `acres/alos <ftp://anonymous@acres.ga.gov.au/acres/samples/alos>`_ and 
-      `ASF/ALOS <http://www.asf.alaska.edu/aadn/sample_data>`_
+      Acres_ and `ASF/ALOS <http://www.asf.alaska.edu/aadn/sample_data>`_
     * `Earthquakes <http://earth.esa.int/category/index.cfm?fcategoryid=37>`_
       (L’Aquila, Haiti and Sichuan)
 JERS_
-    Sample JERS products can be found at `acres/jers <ftp://anonymous@acres.ga.gov.au/acres/samples/jers>`_
+    Sample JERS products can be found at Acres_
 ASTER_
-    Sample ASTER products can be found at `acres/aster <ftp://anonymous@acres.ga.gov.au/acres/samples/aster>`_
+    Sample ASTER products can be found at Acres_
 Landsat_
     * landsat.org provides `Free ortorectified <http://www.landsat.org/ortho>`_ data
-    * Sample Landsat5 and Landsat7 products can be found at 
-      `acres <ftp://anonymous@acres.ga.gov.au/acres/samples>`_
+    * Sample Landsat5 and Landsat7 products can be found at Acres_
 Polarimetry_
     The `PolSARpro sample dataset <http://earth.esa.int/polsarpro/datasets.html>`_
     includes data of various airbone (AIRSAR, CONVAIR, EMISAR, ESAR, PISAR) 
     and spacebone sensors (Radarsat2).
-GSHHS_
-    Global Self-consistent, Hierarchical, High-resolution Shoreline Database
-    is a high-resolution shoreline data set amalgamated from two data bases 
-    (the CIA world database WDBII, and the World Vector Shoreline database) in 
-    the public domain. 
-        
-    The shorelines are constructed entirely from hierarchically arranged closed
-    polygons. 
 Free UAVSAR_ data on ASF_ site
     NASA's Uninhabited Aerial Vehicle Synthetic Aperture Radar or UAVSAR, 
     is a reconfigurable, polarimetric L-band SAR sensor, specifically designed 
@@ -294,15 +292,30 @@ LAADS_ Web
 .. _JERS: http://www.eorc.jaxa.jp/JERS-1/en
 .. _ASTER: http://asterweb.jpl.nasa.gov
 .. _Landsat: http://landsat.org
+.. _Acres: ftp://anonymous@acres.ga.gov.au/acres/samples
 .. _Polarimetry: http://en.wikipedia.org/wiki/Synthetic_aperture_radar#Polarimetry
 .. _Infoterra: http://www.infoterra.de
-.. _GSHHS: http://www.ngdc.noaa.gov/mgg/shorelines/gshhs.html
 .. _UAVSAR: http://uavsar.asfdaac.alaska.edu
 .. _LAADS: http://ladsweb.nascom.nasa.gov
 
 
+Vector data
+~~~~~~~~~~~
+
+GSHHS_
+    Global Self-consistent, Hierarchical, High-resolution Shoreline Database
+    is a high-resolution shoreline data set amalgamated from two data bases 
+    (the CIA world database WDBII, and the World Vector Shoreline database) in 
+    the public domain. 
+        
+    The shorelines are constructed entirely from hierarchically arranged closed
+    polygons. 
+
+.. _GSHHS: http://www.ngdc.noaa.gov/mgg/shorelines/gshhs.html
+
+
 DEM
----
+~~~
 
 SRTM_
     NASA High accuracy global DEM for topographic phase correction.

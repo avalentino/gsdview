@@ -60,30 +60,28 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
 
     '''Main window class for GSDView application.
 
-    :attributes:
+    :ivar filedialog:         file dialog instance
+    :ivar aboutdialog:        about dialog instance
+    :ivar preferencedsdialog: prefernces dialog instance
+    :ivar progressbar:        progress bar instance
+    :ivar settings_submenu:   settings sub-menu
+    :ivar settings:           application settings
+    :ivar logger:             application sandard logger
+    :ivar cachedir:           cache directory path
+    :ivar fileActions:        actions associated to file menu
+    :ivar settingsActions:    settings actions
+    :ivar helpActions:        help actions
 
-    - filedialog
-    - aboutdialog
-    - preferencedsdialog
-    - progressbar
-    - settings_submenu
-    - settings
-    - logger
-    - cachedir
-    - fileActions
-    - settingsActions
-    - helpActions
+    :ivar pluginmanager:      plugin manager instance
+    :ivar backends:           backends list
 
-    - pluginmanager
-    - backends
+    :ivar controller:         external tool controller
+    :ivar monitor:            graphics scenes/views monitor
+    :ivar mousemanager:       mouse manager for graphics scenes/views
 
-    - controller        external tool controller
-    - monitor           graphics scenes/views monitor
-    - mousemanager      mouse manager for graphics scenes/views
-
-    - mdiarea           (inherited from MdiMainWindow)
-    - datamodel         (inherited from ItemModelMainWindow)
-    - treeview          (inherited from ItemModelMainWindow)
+    :ivar mdiarea:            (inherited from MdiMainWindow)
+    :ivar datamodel:          (inherited from ItemModelMainWindow)
+    :ivar treeview:           (inherited from ItemModelMainWindow)
 
     '''
 
@@ -263,11 +261,9 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
     def excepthook(self, exctype, excvalue, tracebackobj):
         '''Global function to catch unhandled exceptions.
 
-        :parameters:
-
-        - exctype: exception class
-        - excvalue: exception instance
-        - tracebackobj: traceback object
+        :param exctype:      exception class
+        :param excvalue:     exception instance
+        :param tracebackobj: traceback object
 
         '''
 
@@ -676,7 +672,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
     def openFile(self):
         # @TODO: remove; this is a temporary workaround for a Qt bug in Cocoa version
         self.filedialog.selectNameFilter(self.filedialog.selectedNameFilter())
-        
+
         # @TODO: allow multiple file selection
         if self.filedialog.exec_():
             filename = str(self.filedialog.selectedFiles()[0])

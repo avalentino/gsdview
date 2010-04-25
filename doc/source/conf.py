@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # GSDView documentation build configuration file, created by
-# sphinx-quickstart on Sun Mar 21 10:54:41 2010.
+# sphinx-quickstart on Sun Apr 18 18:58:30 2010.
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #
@@ -24,7 +24,7 @@ sys.path.insert(1, os.path.join(GSDVIEWROOT, 'gsdview', 'plugins'))
 # -- General configuration -----------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
-#needs_sphinx = '1.0'
+needs_sphinx = '1.0'
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
@@ -32,9 +32,10 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.todo',
-    'sphinx.ext.ifconfig',
     'sphinx.ext.pngmath',
-    'sphinx.ext.extlinks',
+    'sphinx.ext.ifconfig',
+    'sphinx.ext.viewcode',    # sphinx >= 1.0
+    'sphinx.ext.extlinks',    # sphinx >= 1.0
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -75,7 +76,7 @@ release = RELEASE
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['latestnews']
+exclude_patterns = ['latestnews.txt']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
@@ -166,7 +167,7 @@ html_sidebars = {'index': 'sfpagesidebar.html'}
 #html_additional_pages = {}
 
 # If false, no module index is generated.
-#html_use_modindex = True
+#html_domain_indices = True
 
 # If false, no index is generated.
 #html_use_index = True
@@ -226,16 +227,26 @@ latex_logo = 'images/logo_large.pdf'
 #latex_appendices = []
 
 # If false, no module index is generated.
-#latex_use_modindex = True
+#latex_domain_indices = True
+
+
+# -- Options for manual page output --------------------------------------------
+
+# One entry per manual page. List of tuples
+# (source start file, name, description, authors, manual section).
+man_pages = [
+    ('manpage', 'gsdview', u'Geo-spatial data viewer',
+     [u'Antonio Valentino'], 1)
+]
 
 
 # -- Options for Epub output ---------------------------------------------------
 
 # Bibliographic Dublin Core info.
-#epub_title = ''
-#epub_author = ''
-#epub_publisher = ''
-#epub_copyright = ''
+epub_title = u'GSDView open edition'
+epub_author = u'Antonio Valentino'
+epub_publisher = u'Antonio Valentino'
+epub_copyright = u'2008-2010, Antonio Valentino'
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.

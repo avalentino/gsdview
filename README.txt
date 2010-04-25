@@ -49,20 +49,18 @@ In order to run GSDView you should have the following software installed:
 * PyQt_ 4.5 or higher
 * numpy_ 1.2.1  or higher
 * gdal_ 1.5.2 or higher
-* PyQwt_ 5.2  or higher (recommended)
 
 .. _SIP: http://www.riverbankcomputing.co.uk/software/sip
 .. _PyQt: http://www.riverbankcomputing.co.uk/software/pyqt
 .. _numpy: http://www.numpy.org
 .. _gdal: http://www.gdal.org
-.. _PyQwt: http://pyqwt.sourceforge.net
 
 .. hint::
 
    Ubuntu_ and Debian_ users can resolve all dependencies by running the
    following command as superuser::
 
-     # apt-get install python-qt4 python-gdal gdal-bin python-qwt5-qt4
+     # apt-get install python-qt4 python-gdal gdal-bin
 
 .. _Ubuntu: http://www.ubuntu.com
 .. _Debian: http://www.debian.org

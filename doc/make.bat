@@ -2,7 +2,9 @@
 
 REM Command file for Sphinx documentation
 
-set SPHINXBUILD=sphinx-build
+if "%SPHINXBUILD%" == "" (
+	set SPHINXBUILD=sphinx-build
+)
 set BUILDDIR=build
 set ALLSPHINXOPTS=-d %BUILDDIR%/doctrees %SPHINXOPTS% source
 if NOT "%PAPER%" == "" (
@@ -14,18 +16,21 @@ if "%1" == "" goto help
 if "%1" == "help" (
 	:help
 	echo.Please use `make ^<target^>` where ^<target^> is one of
-	echo.  html      to make standalone HTML files
-	echo.  dirhtml   to make HTML files named index.html in directories
-	echo.  pickle    to make pickle files
-	echo.  json      to make JSON files
-	echo.  htmlhelp  to make HTML files and a HTML help project
-	echo.  qthelp    to make HTML files and a qthelp project
-	echo.  devhelp   to make HTML files and a Devhelp project
-	echo.  epub      to make an epub
-	echo.  latex     to make LaTeX files, you can set PAPER=a4 or PAPER=letter
-	echo.  changes   to make an overview over all changed/added/deprecated items
-	echo.  linkcheck to check all external links for integrity
-	echo.  doctest   to run all doctests embedded in the documentation if enabled
+	echo.  html       to make standalone HTML files
+	echo.  dirhtml    to make HTML files named index.html in directories
+	echo.  singlehtml to make a single large HTML file
+	echo.  pickle     to make pickle files
+	echo.  json       to make JSON files
+	echo.  htmlhelp   to make HTML files and a HTML help project
+	echo.  qthelp     to make HTML files and a qthelp project
+	echo.  devhelp    to make HTML files and a Devhelp project
+	echo.  epub       to make an epub
+	echo.  latex      to make LaTeX files, you can set PAPER=a4 or PAPER=letter
+	echo.  text       to make text files
+	echo.  man        to make manual pages
+	echo.  changes    to make an overview over all changed/added/deprecated items
+	echo.  linkcheck  to check all external links for integrity
+	echo.  doctest    to run all doctests embedded in the documentation if enabled
 	goto end
 )
 
@@ -37,9 +42,9 @@ if "%1" == "clean" (
 )
 
 if "%1" == "html" (
-	%SPHINXBUILD% -b html %ALLSPHINXOPTS% html
+	%SPHINXBUILD% -b html %ALLSPHINXOPTS% %BUILDDIR%/html
 	echo.
-	echo.Build finished. The HTML pages are in html.
+	echo.Build finished. The HTML pages are in %BUILDDIR%/html.
 	goto end
 )
 
@@ -47,6 +52,13 @@ if "%1" == "dirhtml" (
 	%SPHINXBUILD% -b dirhtml %ALLSPHINXOPTS% %BUILDDIR%/dirhtml
 	echo.
 	echo.Build finished. The HTML pages are in %BUILDDIR%/dirhtml.
+	goto end
+)
+
+if "%1" == "singlehtml" (
+	%SPHINXBUILD% -b singlehtml %ALLSPHINXOPTS% %BUILDDIR%/singlehtml
+	echo.
+	echo.Build finished. The HTML pages are in %BUILDDIR%/singlehtml.
 	goto end
 )
 
@@ -84,7 +96,7 @@ if "%1" == "qthelp" (
 )
 
 if "%1" == "devhelp" (
-	%SPHINXBUILD% -b devhelp %ALLSPHINXOPTS% build/devhelp
+	%SPHINXBUILD% -b devhelp %ALLSPHINXOPTS% %BUILDDIR%/devhelp
 	echo.
 	echo.Build finished.
 	goto end
@@ -101,6 +113,20 @@ if "%1" == "latex" (
 	%SPHINXBUILD% -b latex %ALLSPHINXOPTS% %BUILDDIR%/latex
 	echo.
 	echo.Build finished; the LaTeX files are in %BUILDDIR%/latex.
+	goto end
+)
+
+if "%1" == "text" (
+	%SPHINXBUILD% -b text %ALLSPHINXOPTS% %BUILDDIR%/text
+	echo.
+	echo.Build finished. The text files are in %BUILDDIR%/text.
+	goto end
+)
+
+if "%1" == "man" (
+	%SPHINXBUILD% -b man %ALLSPHINXOPTS% %BUILDDIR%/man
+	echo.
+	echo.Build finished. The manual pages are in %BUILDDIR%/man.
 	goto end
 )
 

@@ -192,10 +192,8 @@ class DatasetItem(MajorObjectItem):
     This class implements both the QStandardItem and the gdal.Dataset
     interface.
 
-    :Attributes:
-
-    - filename
-    - cmapper -- coordiante mapper
+    :ivar filename: dataset filename
+    :ivar cmapper:  coordiante mapper
 
     '''
 
