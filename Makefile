@@ -22,10 +22,9 @@ pdf: doc/GSDView.pdf
 	cd doc/build/latex && make
 	cp doc/build/latex/GSDView.pdf doc
 
-man: debian/gsdview.1
-
-debian/gsdview.1: debian/manpage.rst
-	$(RST2MAN) $< $@
+man:
+	make -C doc $@
+	cd debian && ln -fs ../doc/build/man/gsdview.1
 
 clean:
 	cd doc && $(MAKE) clean
@@ -56,8 +55,6 @@ rpm: sdist
 	#@sudo tools/build-rpm.sh
 	python setup.py bdist_rpm
 
-#debian/bestgui.1:: debian/manpage.xml
-#	$(XP) -o $@ $(DB2MAN) $<
 
 UIFILES = $(wildcard gsdview/ui/*.ui) $(wildcard gsdview/gdalbackend/ui/*.ui)
 PYUIFILES = $(patsubst %.ui,%.py,$(UIFILES))
