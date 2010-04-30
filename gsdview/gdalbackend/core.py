@@ -572,4 +572,5 @@ class GraphicsViewSubWindow(ItemSubWindow):
 
         scene = item.scene
         graphicsview = QtGui.QGraphicsView(scene)
+        graphicsview.setMouseTracking(True)
         self.setWidget(graphicsview)

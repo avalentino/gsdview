@@ -36,6 +36,11 @@ from PyQt4 import QtCore, QtGui
 class GraphicsView(QtGui.QGraphicsView):
     pass
 
+    # @TODO: check
+    #~ def __init__(self, *args, **kargs):
+        #~ super(GraphicsView, self).__init__(*args, **kargs)
+        #~ graphicsview.setMouseTracking(True)
+
     # @TODO: move to GraphicsViewMonitor
     #~ def enterEvent(self, event):
         #~ self.emit(QtCore.SIGNAL('enter()'))

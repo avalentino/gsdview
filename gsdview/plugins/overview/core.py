@@ -41,6 +41,7 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
         super(NavigationGraphicsView, self).__init__(parent) #, flags)
         self._viewbox = None
         self._autoscale = True
+        self.setMouseTracking(True)
 
     def getbox(self):
         return self._viewbox
