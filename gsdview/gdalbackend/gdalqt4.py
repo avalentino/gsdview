@@ -331,7 +331,9 @@ class GdalComplexGraphicsItem(GdalGraphicsItem):
         BaseGdalGraphicsItem.__init__(self, band, parent, scene)
 
     def dataRange(self, data=None):
-        return self._dataRange(self.gdalobj, numpy.abs(data))
+        if data:
+            data = numpy.abs(data)
+        return self._dataRange(self.gdalobj, data)
 
     def paint(self, painter, option, widget):
         levelOfDetail = self._levelOfDetail(option, painter)
