@@ -707,10 +707,14 @@ def ovrComputeLevels(gdalobj, ovrsize=OVRMEMSIE, estep=3, threshold = 0.1):
     candidates = missinglevels
     missinglevels = []
     for level in candidates:
-        index = ovrBestIndex(gdalobj, level)
-        bestlevel = levels[index]
-        if bestlevel and abs(bestlevel - level)/float(level) < threshold:
-            continue
+        try:
+            index = ovrBestIndex(gdalobj, level)
+        except MissingOvrError:
+            pass
+        else:
+            bestlevel = levels[index]
+            if bestlevel and abs(bestlevel - level)/float(level) < threshold:
+                continue
         missinglevels.append(level)
 
     return missinglevels
