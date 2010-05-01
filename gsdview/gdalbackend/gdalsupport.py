@@ -548,7 +548,12 @@ def ovrLevelAdjust(ovrlevel, xsize):
     '''Adjust the overview level
 
     Replicate the GDALOvLevelAdjust function from
-    gdal/gcore/gdaldefaultoverviews.cpp
+    gdal/gcore/gdaldefaultoverviews.cpp:
+
+    .. code-block:: c
+
+        int nOXSize = (nXSize + nOvLevel - 1) / nOvLevel;
+        return (int) (0.5 + nXSize / (double) nOXSize);
 
     '''
 
@@ -583,7 +588,7 @@ def ovrLevelForSize(gdalobj, ovrsize=OVRMEMSIE):
         return ovrLevelForSize(band, ovrsize/4)
 
 
-def ovrLevels(gdalobj):
+def ovrLevels(gdalobj, raw=False):
     '''Return availabe overview levels.'''
 
     if hasattr(gdalobj, 'GetOverviewCount'):
@@ -594,7 +599,8 @@ def ovrLevels(gdalobj):
         for index in range(band.GetOverviewCount()):
             ovrXSize = band.GetOverview(index).XSize
             ovrlevel = round(band.XSize / float(ovrXSize))
-            ovrlevel = ovrLevelAdjust(ovrlevel, band.XSize)
+            if not raw:
+                ovrlevel = ovrLevelAdjust(ovrlevel, band.XSize)
             levels.append(ovrlevel)
 
         return levels
@@ -602,7 +608,7 @@ def ovrLevels(gdalobj):
         # assume gdalobj is a dataset
         dataset = gdalobj
         band = dataset.GetRasterBand(1)
-        return ovrLevels(band)
+        return ovrLevels(band, raw)
 
 
 def ovrBestIndex(gdalobj, ovrlevel=None, policy='NEAREST'):
@@ -660,16 +666,20 @@ def ovrBestIndex(gdalobj, ovrlevel=None, policy='NEAREST'):
         # assume gdalobj is a dataset
         dataset = gdalobj
         band = dataset.GetRasterBand(1)
-        return ovrBestIndex(band)
+        return ovrBestIndex(band, ovrlevel, policy)
 
 
-def ovrComputeLevels(gdalobj, ovrsize=OVRMEMSIE, factor=3):
+def ovrComputeLevels(gdalobj, ovrsize=OVRMEMSIE, estep=3, threshold = 0.1):
     '''Copute the overview levels to be generated.
 
     GSDView relies on overfiews to provide a confortable image
     navigation experience (scroll, pan, zoom etc).
-    This function evaluated the number and overview factor to be
+    This function evaluated the number and overview factors to be
     pre-calculated in order to provide such a confortable experience.
+
+    :ivar estep: step for overview levels computation::
+
+                   estep = 3 ==> 3, 9, 27, 81, ...
 
     '''
 
@@ -684,14 +694,24 @@ def ovrComputeLevels(gdalobj, ovrsize=OVRMEMSIE, factor=3):
     else:
         startexponent = 1
 
-    maxesponent = numpy.ceil(maxfactor**(1./factor))
+    maxesponent = numpy.ceil(maxfactor**(1./estep))
     exponents = numpy.arange(startexponent, maxesponent+1)
-    missinglevels = factor ** exponents
+    missinglevels = estep ** exponents
     missinglevels = missinglevels.astype(numpy.int)
 
     # Remove exixtng levels to avoid re-computation
     levels = ovrLevels(gdalobj)
     missinglevels = sorted(set(missinglevels).difference(levels))
+
+    # remove levels close to target ones (threshold 10%)
+    candidates = missinglevels
+    missinglevels = []
+    for level in candidates:
+        index = ovrBestIndex(gdalobj, level)
+        bestlevel = levels[index]
+        if bestlevel and abs(bestlevel - level)/float(level) < threshold:
+            continue
+        missinglevels.append(level)
 
     return missinglevels
 
