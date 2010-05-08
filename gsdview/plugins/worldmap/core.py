@@ -33,6 +33,17 @@ from PyQt4 import QtCore, QtGui
 from gsdview import qt4support
 
 
+# @TODO: make it available a an utility function
+# @TODO: support vectors
+def _geonormalize(x, range=360.):
+    halfrange = range/2.
+    if -halfrange <= x <= halfrange:
+        x = x % range
+    if x > halfrange:
+        x -= range
+    return x
+
+
 class WorldmapPanel(QtGui.QDockWidget):
     # @TODO: use zoom plugin
 
@@ -160,6 +171,18 @@ class WorldmapPanel(QtGui.QDockWidget):
         self.clear()
         if not polygon:
             return
+
+        lon = numpy.asarray([p.x() for p in polygon])
+        lat = numpy.asarray([p.y() for p in polygon])
+
+        mlon = lon.mean()
+        mlat = lat.mean()
+
+        delta = mlon - _geonormalize(mlon)
+        if delta:
+            lon -= delta
+            mlon -= delta
+            polygon.translate(-delta, 0)
 
         self.box = self.plot(polygon)
 
