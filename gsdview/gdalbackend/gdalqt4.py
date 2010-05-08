@@ -146,7 +146,7 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
         if hasattr(option, 'levelOfDetailFromTransform'):
             levelOfDetail = option.levelOfDetailFromTransform(
                                                     painter.transform())
-        elif QtCore.QT_VERSION_STR >= '4.6.0':
+        elif QtCore.qVersion() >= '4.6.0':
             levelOfDetail = BaseGdalGraphicsItem._levelOfDetailFromTransform(
                                                         painter.transform())
         else:

@@ -29,6 +29,7 @@ import os
 import sys
 import email
 import logging
+import platform
 import traceback
 
 from PyQt4 import QtCore, QtGui
@@ -114,6 +115,7 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview">http://sourcefor
 
 
     def setVersions(self):
+        self.platformValue.setText(platform.platform())
         tablewidget = self.versionsTableWidget
         tablewidget.verticalHeader().hide()
         tablewidget.horizontalHeader().setStretchLastSection(True)

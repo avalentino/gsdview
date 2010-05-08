@@ -31,7 +31,7 @@ Citations
 * `Softpedia <http://mac.softpedia.com/get/Math-Scientific/GSDView.shtml>`_
 * `WareSeeker.com <http://mac.wareseeker.com/Games/absolute-farkle-3.5.zip/c73c3092a>`_
 * `softbb.org <http://softbb.org/MAC/Math-Scientific/20091205/585268.aspx>`_
-* GSDView `code analysis <http://www.ohloh.net/p/gsdview/analyses/latest>`_ on 
+* GSDView `code analysis <http://www.ohloh.net/p/gsdview/analyses/latest>`_ on
   `ohloh.net <http://www.ohloh.net>`_
 
 .. `European Wireless 2009 <ftp://lenst.det.unifi.it/pub/LenLar/proceedings/2009/wv09/WVITAE09/PDF/AUTHOR/WV091401.PDF>`_
@@ -48,71 +48,71 @@ OpenEV_
 RAT_
     RAdar Tools (or RAT) is an open source IDL SAR processing tool provided by
     the Technical University of Berlin.
-    It provides various advanced SAR image processing tasks (SAR, PolSAR, 
-    PolInSAR & InSAR) and supports SAR SLCs and detected imagery of RADARSAT-1, 
+    It provides various advanced SAR image processing tasks (SAR, PolSAR,
+    PolInSAR & InSAR) and supports SAR SLCs and detected imagery of RADARSAT-1,
     JERS-1, ERS-1/2, and ALOS PALSAR.
 NEST_
     The Next ESA SAR Toolbox (NEST) is a user friendly open source toolbox for
-    reading, post-processing, analysing and visualising the large archive of 
-    data (from Level 1) from ESA SAR missions including ERS-1 & 2, ENVISAT and 
-    in the future Sentinel-1. 
-    
-    In addition, NEST supports handling of products from third party missions 
+    reading, post-processing, analysing and visualising the large archive of
+    data (from Level 1) from ESA SAR missions including ERS-1 & 2, ENVISAT and
+    in the future Sentinel-1.
+
+    In addition, NEST supports handling of products from third party missions
     including JERS-1, ALOS PALSAR, TerraSAR-X, Radarsat-1 & 2 and COSMO-Skymed.
 BEST_
-    Basic Envisat SAR Toolbox: the ESA collection of executable software 
+    Basic Envisat SAR Toolbox: the ESA collection of executable software
     tools that has been developed to facilitate the use of their SAR data
 BESTGUI_
-    BESTGUI is a Graphical User Interface (GUI) for BEST written in Python 
-    and GTK+.  It allows you to easily generate parameters files for BEST and 
+    BESTGUI is a Graphical User Interface (GUI) for BEST written in Python
+    and GTK+.  It allows you to easily generate parameters files for BEST and
     launch the processing from the GUI.
-    BESTGUI aims to be an improved GUI front-end for UNIX platforms 
-    (it also run on Windows\ :sup:`TM`), with a prettier look and feel and some 
+    BESTGUI aims to be an improved GUI front-end for UNIX platforms
+    (it also run on Windows\ :sup:`TM`), with a prettier look and feel and some
     useful additional features.
 `ASF tools`_
     Converting and geocoding tools of the Alaska Satellite Facility (ASF_):
-    
+
     MapReady
-        Software in the MapReady Remote Sensing Tool Kit accepts level 1 
-        detected SAR data, single look complex SAR data, and optical data from 
-        ASF_ and some other facilities. It can terrain correct, geocode, 
+        Software in the MapReady Remote Sensing Tool Kit accepts level 1
+        detected SAR data, single look complex SAR data, and optical data from
+        ASF_ and some other facilities. It can terrain correct, geocode,
         and save to several common imagery formats including GeoTIFF.
-        
-        Polarimetric decompositions can be applied to multi-pol SAR data. 
-        Other software included in the package are an image viewer, 
-        metadata viewer, a projection coordinate converter, and a variety of 
+
+        Polarimetric decompositions can be applied to multi-pol SAR data.
+        Other software included in the package are an image viewer,
+        metadata viewer, a projection coordinate converter, and a variety of
         command line tools.
     Convert to Vector
-        Convert to Vector is a small program made to transform point or scene 
-        information to various other formats that are compatible with external 
-        applications such as Google Earth, GIS software such as ArcGIS, 
+        Convert to Vector is a small program made to transform point or scene
+        information to various other formats that are compatible with external
+        applications such as Google Earth, GIS software such as ArcGIS,
         text editors, and spreadsheets.
     SAR Training Processor
         The SAR Training Processor (STP) is a graphical tool written to assist
         in learning and teaching the flow of SAR processing.
 
 BEAM_
-    A toolbox for viewing, analyzing and processing of remote sensing data. 
-    Originally developed to facilitate the utilization of image data from 
+    A toolbox for viewing, analyzing and processing of remote sensing data.
+    Originally developed to facilitate the utilization of image data from
     Envisat's optical instruments, BEAM now supports a growing number of other
     sensors such as MODIS, AVNIR, PRISM and CHRIS/Proba.
 PolSARPro_
     The Polarimetric SAR Data Processing and Educational Tool aims to facilitate
     the accessibility and exploitation of multi-polarized SAR datasets including
-    those from ESA Third Party Missions (ALOS PALSAR), Envisat ASAR 
+    those from ESA Third Party Missions (ALOS PALSAR), Envisat ASAR
     Alternating Polarization mode products, RADARSAT-2 and TerraSAR-X.
 EnviView_
-    EnviView is a free application, that allows Envisat data users to open any 
-    Envisat data file, and examine its contents. 
-    It provides simple visualisation capabilities, and allows data to be 
+    EnviView is a free application, that allows Envisat data users to open any
+    Envisat data file, and examine its contents.
+    It provides simple visualisation capabilities, and allows data to be
     exported to HDF for use in other software packages.
 EOLI-SA_
-    EOLi (Earth Observation Link) is the European Space Agency's client for 
+    EOLi (Earth Observation Link) is the European Space Agency's client for
     Earth Observation Catalogue and Ordering Services.
 Radarworks_
     Matlab toolbox mainly intended for polarimetric SAR data processing.
 Opticks_
-    Opticks_ is an expandable remote sensing and imagery analysis software 
+    Opticks_ is an expandable remote sensing and imagery analysis software
     platform that is free and open source.
 GRASS_
     Geographic Resources Analysis Support System
@@ -140,36 +140,36 @@ InSAR tools
 ~~~~~~~~~~~
 
 DORIS_
-    Delft Object-oriented Radar Interferometric Software - InSAR/DInSAR 
+    Delft Object-oriented Radar Interferometric Software - InSAR/DInSAR
     processor.
 StaMPS_
-    StaMPS stands for "Stanford Method for Persistent Scatterers". 
-    Although the original version was developed at Stanford University, 
-    subsequent development has taken place at the University of Iceland and 
+    StaMPS stands for "Stanford Method for Persistent Scatterers".
+    Although the original version was developed at Stanford University,
+    subsequent development has taken place at the University of Iceland and
     Delft University of Technology.
-    
-    The package is no longer limited to persistent scatterers, 
+
+    The package is no longer limited to persistent scatterers,
     but also incorporates a small baseline and a combined time series method.
 ROI_PAC_
-    Repeat Orbit Interferometry PACkage by Caltech/Jet Propulsion Laboratory, 
+    Repeat Orbit Interferometry PACkage by Caltech/Jet Propulsion Laboratory,
     mainly for interferometric SAR processing.
 IDIOT_
-    InSAR Deformation Inspection and Observation Tool (I.D.I.O.T.) is a software 
-    package for fully automatic generation of differential SAR interferograms 
-    from ENVISAT single look complex SAR data. 
-    
-    Its main purpose is to simplify as much as possible the generation of 
-    differential SAR interferograms, even for complete novices in SAR 
-    interferometry. 
-    
-    I.D.I.O.T. uses the freely available DEM of the SRTM mission to compensate 
-    for topography and can work with both the coarse header orbits or precise 
-    orbit information. All interferometric processing steps are implemented 
+    InSAR Deformation Inspection and Observation Tool (I.D.I.O.T.) is a software
+    package for fully automatic generation of differential SAR interferograms
+    from ENVISAT single look complex SAR data.
+
+    Its main purpose is to simplify as much as possible the generation of
+    differential SAR interferograms, even for complete novices in SAR
+    interferometry.
+
+    I.D.I.O.T. uses the freely available DEM of the SRTM mission to compensate
+    for topography and can work with both the coarse header orbits or precise
+    orbit information. All interferometric processing steps are implemented
     having maximum interferogram quality and precision in mind.
 
 .. _DORIS: http://enterprise.lr.tudelft.nl/doris
 .. _StaMPS: http://enterprise.lr.tudelft.nl/%7Eahooper/stamps/index.html
-.. _ROI_PAC: http://www.openchannelfoundation.org/projects/ROI_PAC
+.. _ROI_PAC: http://roipac.org
 .. _IDIOT: http://srv-43-200.bv.tu-berlin.de/idiot
 
 
@@ -192,34 +192,34 @@ Commercial and freeware EO Software
 -----------------------------------
 
 DIAPASON_
-    Differential Interferometric Automated Process Applied to Survey Of Nature, 
+    Differential Interferometric Automated Process Applied to Survey Of Nature,
     a general purpose DInSAR processor by CNES/Altamira Information
 `Gamma Remote Sensing`_
-    Complete software to support the entire processing of SAR data 
+    Complete software to support the entire processing of SAR data
     (SAR processing, InSAR, DInSAR, classification)
 InfoPACK_
-    Commercial high level library of routines for SAR image understanding, 
+    Commercial high level library of routines for SAR image understanding,
     implementing specially developed algorithms optimised for SAR data.
 Photomod_ Radar
     Spaceborne SAR data processing
 SARscape_
     Specialized ENVI extension for processing of SAR/InSAR data
 HighView_
-    HighView is based on GeoSage's state-of-the-art and highly efficient image 
-    fusion algorithms that have been developed over the past few years and has 
-    been extensively tested with a variety of imagery sources. HighView is the 
-    unique image fusion tool for both advanced image-pansharpening and adaptive 
+    HighView is based on GeoSage's state-of-the-art and highly efficient image
+    fusion algorithms that have been developed over the past few years and has
+    been extensively tested with a variety of imagery sources. HighView is the
+    unique image fusion tool for both advanced image-pansharpening and adaptive
     image stretching.
 `ER Viewer`_
-    ERDAS ER Viewer is a free, easy-to-use image viewer featuring interactive 
-    roaming and zooming with very large JPEG 2000 and ECW files.  
-    It can also read most other common file types.  
-    Installing ERDAS ER Viewer also lets you embed large geospatial images in 
+    ERDAS ER Viewer is a free, easy-to-use image viewer featuring interactive
+    roaming and zooming with very large JPEG 2000 and ECW files.
+    It can also read most other common file types.
+    Installing ERDAS ER Viewer also lets you embed large geospatial images in
     your Microsoft Word documents.
 FreeView_
-    Geomatica FreeView is a flexible data viewing tool supporting over 100 
-    raster and vector formats for loading, viewing, selection, and enhancement. 
-    FreeView is useful for any geospatial data viewing application, 
+    Geomatica FreeView is a flexible data viewing tool supporting over 100
+    raster and vector formats for loading, viewing, selection, and enhancement.
+    FreeView is useful for any geospatial data viewing application,
     and is freely distributable.
 
 .. _DIAPASON: http://www.altamira-information.com/html/1-18215-InSAR-Software--Training.php
@@ -249,7 +249,7 @@ ENVISAT_
     * `Earthquakes <http://earth.esa.int/category/index.cfm?fcategoryid=37>`_
       (L’Aquila, Haiti and Sichuan)
 TerraSAR-X_
-    * `Sample TerraSAR-X products <http://www.infoterra.de/tsx/freedata/start.php>`_ 
+    * `Sample TerraSAR-X products <http://www.infoterra.de/tsx/freedata/start.php>`_
       can be found at Infoterra_ (`ditect ftp link <ftp://infoterra:itd@delivery.infoterra.de>`_)
 Radarsat1_
     Sample Radarsat1 products can be found at Acres_ and on
@@ -259,8 +259,8 @@ Radarsat2_
     * Radarset2 `sample products provided by ESA <http://envisat.esa.int/services/sample_products/ra2mwr>`_
     * Radarset2 `sample products for polarimetry <http://earth.esa.int/polsarpro/datasets.html>`_
 ALOS_
-    * Free ALOS sample products can found at 
-      `ALOS Restec <http://www.alos-restec.jp/sampledata_e.html>`_, 
+    * Free ALOS sample products can found at
+      `ALOS Restec <http://www.alos-restec.jp/sampledata_e.html>`_,
       Acres_ and `ASF/ALOS <http://www.asf.alaska.edu/aadn/sample_data>`_
     * `Earthquakes <http://earth.esa.int/category/index.cfm?fcategoryid=37>`_
       (L’Aquila, Haiti and Sichuan)
@@ -273,12 +273,12 @@ Landsat_
     * Sample Landsat5 and Landsat7 products can be found at Acres_
 Polarimetry_
     The `PolSARpro sample dataset <http://earth.esa.int/polsarpro/datasets.html>`_
-    includes data of various airbone (AIRSAR, CONVAIR, EMISAR, ESAR, PISAR) 
+    includes data of various airbone (AIRSAR, CONVAIR, EMISAR, ESAR, PISAR)
     and spacebone sensors (Radarsat2).
 Free UAVSAR_ data on ASF_ site
-    NASA's Uninhabited Aerial Vehicle Synthetic Aperture Radar or UAVSAR, 
-    is a reconfigurable, polarimetric L-band SAR sensor, specifically designed 
-    to acquire airborne repeat-track SAR data for differential interferometric 
+    NASA's Uninhabited Aerial Vehicle Synthetic Aperture Radar or UAVSAR,
+    is a reconfigurable, polarimetric L-band SAR sensor, specifically designed
+    to acquire airborne repeat-track SAR data for differential interferometric
     measurements.
 LAADS_ Web
     MODIS level 1 and atmosphere data products
@@ -304,12 +304,12 @@ Vector data
 
 GSHHS_
     Global Self-consistent, Hierarchical, High-resolution Shoreline Database
-    is a high-resolution shoreline data set amalgamated from two data bases 
-    (the CIA world database WDBII, and the World Vector Shoreline database) in 
-    the public domain. 
-        
+    is a high-resolution shoreline data set amalgamated from two data bases
+    (the CIA world database WDBII, and the World Vector Shoreline database) in
+    the public domain.
+
     The shorelines are constructed entirely from hierarchically arranged closed
-    polygons. 
+    polygons.
 
 .. _GSHHS: http://www.ngdc.noaa.gov/mgg/shorelines/gshhs.html
 
