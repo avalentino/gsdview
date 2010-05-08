@@ -2,17 +2,18 @@ Source: gsdview
 Section: science
 Priority: extra
 Maintainer: Antonio Valentino <a_valentino@users.sf.net>
-XS-Python-Version: >= 2.4
-Build-Depends: cdbs (>= 0.4.49), debhelper (>= 7) , python-central (>= 0.6.0),
-               python-sphinx, texlive-base-bin, docutils (>= 0.6) | rst2man
-Standards-Version: 3.8.0
+XS-Python-Version: >= 2.5
+Build-Depends: cdbs (>= 0.4.49), debhelper (>= 7), python-central (>= 0.6.0),
+               python, python-sphinx, texlive-base-bin, python-docutils (>= 0.6)
+Standards-Version: 3.8.4
 Homepage: http://sourceforge.net/projects/gsdview
 
 Package: gsdview
 Architecture: all
-Depends: ${python:Depends}, python-qt4, python-gdal, gdal-bin, libjs-jquery
+Depends: ${misc:Depends}, ${python:Depends}, python-qt4, python-gdal, gdal-bin,
+         libjs-jquery
 XB-Python-Version: ${python:Versions}
-Recommends: python-qwt5-qt4
+Recommends: libproj0
 Description: Geo-Spatial Data Viewer
  It is a lightweight viewer for geo-spatial data and products written in
  Python and Qt4.
