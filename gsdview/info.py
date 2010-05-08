@@ -33,7 +33,7 @@ __all__ = ['name', 'version', 'short_description', 'description',
 import sys
 
 name = 'GSDView'
-version = '.'.join(map(str, __version__)) + 'b'
+version = '.'.join(map(str, __version__))
 
 short_description = 'Geo-Spatial Data Viewer Open Source Edition'
 description = '''GSDView (Geo-Spatial Data Viewer) is a lightweight
