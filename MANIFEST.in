@@ -5,6 +5,7 @@ include Makefile
 include run.py
 include gsdview.desktop
 #recursive-include images *.svg
+prune images
 
 recursive-include gsdview *.py *.ui *.svg *.png *.jpg
 recursive-include exectools *.py

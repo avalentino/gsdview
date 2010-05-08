@@ -3,7 +3,7 @@
     =======
 
     :Source: README.txt
-    :Version: 0.6.1
+    :Version: 0.6.2
     :Author: Antonio Valentino
     :Contact: a_valentino@users.sf.net
     :URL: http://gsdview.sourceforge.net
