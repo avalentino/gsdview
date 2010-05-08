@@ -57,6 +57,7 @@ download_url = 'http://sourceforge.net/projects/gsdview/files'
 
 
 # @TODO: check (too many imports)
+import platform
 import sip
 from PyQt4 import QtCore
 import numpy
@@ -68,11 +69,17 @@ all_versions = [
                     'http://www.riverbankcomputing.co.uk/software/sip'),
     ('PyQt4', QtCore.PYQT_VERSION_STR,
                     'http://www.riverbankcomputing.co.uk/software/pyqt'),
-    ('Qt', QtCore.QT_VERSION_STR, 'http://qt.nokia.com'), # @TODO: check QtCore.qVersio()
+    ('Qt', QtCore.qVersion(), 'http://qt.nokia.com'),
     ('numpy', numpy.version.version, 'http://www.scipy.org'),
-    # @TODO: platfotm and os info (including platform.mac_ver)
-    # @TODO: Qsci.QSCINTILLA_VERSION_STR
 ]
+
+try:
+    from PyQt4 import Qsci
+except ImportError:
+    pass
+else:
+    all_versions.append(('QScintilla', Qsci.QSCINTILLA_VERSION_STR,
+                    'http://www.riverbankcomputing.co.uk/software/qscintilla'))
 
 def all_versions_str():
     return '\n'.join('%s v. %s (%s)' % (sw, version_, link)
