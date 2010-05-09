@@ -81,6 +81,15 @@ else:
     all_versions.append(('QScintilla', Qsci.QSCINTILLA_VERSION_STR,
                     'http://www.riverbankcomputing.co.uk/software/qscintilla'))
 
+if hasattr(platform, 'linux_distributio'):
+    all_versions.append(('GNU/Linux', platform.linux_distributio()[0], ''))
+elif hasattr(platform,   'mac_ver'):
+    all_versions.append(('Mac OS X', platform.mac_ver()[0], 
+                         'http://www.apple.com/macosx'))
+elif hasattr(platform, 'win32_ver'):
+    all_versions.append(('Windows', platform.win32_ver()[0], 
+                         'http://www.microsoft.com/windows'))
+
 def all_versions_str():
     return '\n'.join('%s v. %s (%s)' % (sw, version_, link)
                                         for sw, version_, link in all_versions)
