@@ -18,6 +18,13 @@ __ `GSDView project page`_
 
 .. include:: latestnews.txt
 
+:24/08/2009: GSDView Open Source Edition v. 0.6.0 released.
+
+             With respect to the alpha version a serious bug in
+             sub-datasets handling has been fixed.
+             New component (PluginManager) for plugin management.
+             It is configurable via preferences dialog.
+
 :10/05/2009: GSDView Open Source Edition v. 0.6.0 alpha 1 released.
 
              Almost complete application re-write:

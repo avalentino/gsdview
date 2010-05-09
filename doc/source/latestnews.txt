@@ -1,3 +1,13 @@
+:09/05/2010: Binary package for `Mac OS X`_ released
+
+             The long waited binary package for `Mac OS X`_ is now available.
+             The package provides a standalone executable of GSDView 0.6.1 
+             with a couple of micro-patches backported from trunk.
+             
+             While GSDView 0.6.1 is considered quite stable the package for
+             `Mac OS X`_ is brand new and it is considered beta quality, 
+             so any kind of feedback is welcome.
+
 :09/05/2010: GSDView Open Source Edition v. 0.6.1 released.
 
              This new release brings some major improvement to GSDView
@@ -7,10 +17,4 @@
              Also there is a new dialog that shows detailed info about
              application crashes and allow the user to submit bug reports.
 
-:24/08/2009: GSDView Open Source Edition v. 0.6.0 released.
-
-             With respect to the alpha version a serious bug in
-             sub-datasets handling has been fixed.
-             New component (PluginManager) for plugin management.
-             It is configurable via preferences dialog.
-
+.. _`Mac OS X`: http://www.apple.com/macosx
