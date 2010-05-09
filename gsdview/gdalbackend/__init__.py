@@ -115,8 +115,8 @@ def init(app):
     # Fix path for GDAL tools
     if getattr(sys, 'frozen', False):
         from gsdview import appsite
-        os.environ['PATH'] = os.path.join(appsite.GSDVIEWROOT,
-                                          os.getenv('PATH', ''))
+        os.environ['PATH'] = os.pathsep.join((appsite.GSDVIEWROOT,
+                                              os.getenv('PATH', '')))
         gdal.SetConfigOption('GDAL_DATA',
                              os.path.join(appsite.GSDVIEWROOT, 'data'))
         # @TODO: check
