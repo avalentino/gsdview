@@ -678,7 +678,6 @@ def ovrComputeLevels(gdalobj, ovrsize=OVRMEMSIE, estep=3, threshold = 0.1):
     pre-calculated in order to provide such a confortable experience.
 
     :ivar estep: step for overview levels computation::
-
                    estep = 3 ==> 3, 9, 27, 81, ...
 
     '''

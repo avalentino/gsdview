@@ -6,7 +6,7 @@
 ### :Date: $Date$
 
 
-.PHONY: default docs html pdf man clean cleanall sdist bdist deb rpmspec rpm ui
+.PHONY: default docs html pdf man clean distclean sdist bdist deb rpmspec rpm ui
 
 default: docs
 
@@ -67,7 +67,7 @@ ui: $(PYUIFILES)
 %.py: %.ui
 	pyuic4 -x $< -o $@
 
-cleanall: clean
+distclean: clean
 	$(RM) doc/gsdview.1
 	$(RM) $(PYUIFILES)
 	$(RM) gsdview/ui/__init__.py gsdview/gdalbackend/ui/__init__.py \
