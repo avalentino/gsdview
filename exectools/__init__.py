@@ -176,11 +176,12 @@ class BaseOutputHandler(object):
         data = self._buffer.read()
         match = self._progress_pattern.match(data)
         if match:
-            result = [match.group('pulse'),
-                      match.group('percentage'),
-                      match.group('text')]
-            if result == [None, None, None]:
-                result = None
+            result = {
+                'pulse': match.group('pulse'),
+                'percentage': match.group('percentage'),
+                'text': match.group('text'),
+                'rawdata': data,
+            }
         else:
             result = None
 
@@ -190,8 +191,9 @@ class BaseOutputHandler(object):
             self._buffer.seek(pos)
             return None
 
-        if result[1] is not None:
-            result[1] = float(result[1])
+        if result['percentage'] is not None:
+            result['percentage'] = float(result['percentage'])
+
         return result
 
     def get_line(self):
@@ -231,7 +233,10 @@ class BaseOutputHandler(object):
         '''
 
         if self.stream:
-            pulse, percentage, text = data
+            pulse = data.get('pulse')
+            percentage = data.get('percentage')
+            text = data.get('text')
+
             result = []
             if pulse:
                 result.append(pulse)
@@ -509,6 +514,7 @@ class BaseToolController(object):
 
         self.subprocess = None
         self._stopped = False
+        #self._tool = None
 
     def prerun_hook(self, cmd):
         '''Hook method for extra pre-run actions.

@@ -295,7 +295,10 @@ class Qt4OutputHandler(BaseOutputHandler):
 
         '''
 
-        pulse, percentage, text = data
+        pulse = data.get('pulse')
+        percentage = data.get('percentage')
+        text = data.get('text')
+
         if pulse:
             self._handle_pulse(pulse)
         if percentage is not None:

@@ -71,7 +71,10 @@ class GdalOutputHandler(Qt4OutputHandler):
                                 #        to 1000 instead.
 
     def handle_progress(self, data):
-        pulse, percentage, text = data
+        pulse = data.get('pulse')
+        percentage = data.get('percentage')
+        text = data.get('text')
+
         if pulse:
             if self.progressbar:
                 self.percentage = min(100, self.percentage + 2.5)
