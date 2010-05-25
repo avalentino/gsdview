@@ -5,7 +5,6 @@ __author__  = 'Antonio Valentino <antonio.valentino@tiscali.it>'
 __date__    = '$Date: 2006/03/11 23:18:40 $'
 __version__ = '$Revision: 1.15 $'
 
-import os
 import time
 import logging
 
@@ -104,9 +103,9 @@ class GtkShell(object):
 
         ### Setup high level components and initialize the parent classes ###
         handler = GtkOutputHandler(outputplane, self.statusbar)
-        tool = exectools.GenericToolDescriptor('', stdout_handler=handler)
+        tool = exectools.ToolDescriptor('', stdout_handler=handler)
         self.controller = GtkToolController(logger=self.logger)
-        self.controller.tool = tool
+        self.controller._tool = tool
         self.controller.connect('finished', self.on_finished)
 
         ###
@@ -114,7 +113,7 @@ class GtkShell(object):
 
         self.logger.debug('gtkshell session started at %s.' % time.asctime())
         self.logger.debug('"shell" flag set to %s.' %
-                                                self.controller.tool.shell)
+                                                self.controller._tool.shell)
         self.load_history()
 
     def main(self):
@@ -185,10 +184,10 @@ class GtkShell(object):
             self.cmdbox.append_text(cmd)
 
             prompt = '$' # or '#'
-            stream = self.controller.tool.stdout_handler.stream
+            stream = self.controller._tool.stdout_handler.stream
             stream.write('%s %s\n' % (prompt, cmd), 'cmd')
 
-            if not self.controller.tool.shell:
+            if not self.controller._tool.shell:
                 cmd = cmd.split()
             try:
                 self.state = 'running'

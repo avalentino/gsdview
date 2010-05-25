@@ -78,7 +78,7 @@ def init(app):
 
     # setupController
     # @TODO: fix for multiple tools
-    app.controller.tool.stdout_handler.stream = Qt4OStream(logplane)
+    app.controller._tool.stdout_handler.stream = Qt4OStream(logplane)
 
     # @TODO: fix
     # @WARNING: modify class attribute
@@ -94,7 +94,7 @@ def init(app):
 def close(app):
     saveSettings(app.settings)
     #app.logger.remove(_global_aux.pop('handler'))
-    #app.controller.tool.stdout_handler.stream = _global_aux.pop('old_stream')
+    #app.controller._tool.stdout_handler.stream = _global_aux.pop('old_stream')
     #panel = app.findChild(QtGui.QDockWidget, 'outputPanel')
     #app.removeDockWidget(panel)
 

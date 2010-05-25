@@ -5,7 +5,6 @@ __author__  = 'Antonio Valentino <antonio.valentino@tiscali.it>'
 __date__    = '$Date: 2006/03/11 23:18:40 $'
 __version__ = '$Revision: 1.15 $'
 
-import os
 import sys
 import time
 import logging
@@ -92,9 +91,9 @@ class Qt4Shell(QtGui.QMainWindow):
 
         ### Setup high level components and initialize the parent classes ###
         handler = Qt4OutputHandler(outputplane, self.statusBar())
-        tool = exectools.GenericToolDescriptor('', stdout_handler=handler)
+        tool = exectools.ToolDescriptor('', stdout_handler=handler)
         self.controller = Qt4ToolController(self.logger, parent=self)
-        self.controller.tool = tool
+        self.controller._tool = tool
         self.controller.connect(self.controller, QtCore.SIGNAL('finished()'),
                                 self.reset)
 

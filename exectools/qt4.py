@@ -482,19 +482,19 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         try:
             # retrieve residual data
             # @TODO: check id it is actualli needed
-            if self.tool.stdout_handler:
+            if self._tool.stdout_handler:
                 byteArray = self.subprocess.readAllStandardOutput()
-                self.tool.stdout_handler.feed(byteArray.data())
-            if self.tool.stderr_handler:
+                self._tool.stdout_handler.feed(byteArray.data())
+            if self._tool.stderr_handler:
                 byteArray = self.subprocess.readAllStandardError()
-                self.tool.stderr_handler.feed(byteArray.data())
+                self._tool.stderr_handler.feed(byteArray.data())
 
             # close the pipe and wait for the subprocess termination
             self.subprocess.close()
-            if self.tool.stdout_handler:
-                self.tool.stdout_handler.close()
-            if self.tool.stderr_handler:
-                self.tool.stderr_handler.close()
+            if self._tool.stdout_handler:
+                self._tool.stdout_handler.close()
+            if self._tool.stderr_handler:
+                self._tool.stderr_handler.close()
 
             if exitCode != EX_OK:
                 if self._stopped:
@@ -526,10 +526,10 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
                                                 'the process is still running'
         self.subprocess.setProcessState(self.subprocess.NotRunning)
 
-        if self.tool.stdout_handler:
-            self.tool.stdout_handler.reset()
-        if self.tool.stderr_handler:
-            self.tool.stderr_handler.reset()
+        if self._tool.stdout_handler:
+            self._tool.stdout_handler.reset()
+        if self._tool.stderr_handler:
+            self._tool.stderr_handler.reset()
 
         self._stopped = False
 
@@ -538,14 +538,14 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
 
         byteArray = self.subprocess.readAllStandardOutput()
         if not byteArray.isEmpty():
-            self.tool.stdout_handler.feed(byteArray.data())
+            self._tool.stdout_handler.feed(byteArray.data())
 
     def handle_stderr(self, *args):
         '''Handle standard error'''
 
         byteArray = self.subprocess.readAllStandardError()
         if not byteArray.isEmpty():
-            self.tool.stderr_handler.feed(byteArray.data())
+            self._tool.stderr_handler.feed(byteArray.data())
 
     def handle_error(self, error):
         '''Handle a error in process execution
@@ -605,17 +605,17 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
 
         assert self.subprocess.state() == self.subprocess.NotRunning
 
-        if self.tool.stdout_handler:
-            self.tool.stdout_handler.reset()
+        if self._tool.stdout_handler:
+            self._tool.stdout_handler.reset()
         # @TODO: check
-        #if self.tool.stderr_handler:
-        #    self.tool.stderr_handler.reset()
-        cmd = self.tool.cmdline(*args)
+        #if self._tool.stderr_handler:
+        #    self._tool.stderr_handler.reset()
+        cmd = self._tool.cmdline(*args)
         self.prerun_hook(cmd)
         cmd = ' '.join(cmd)
 
-        #self.subprocess.setEnvironmet(...)         # <-- self.tool.env
-        #self.subprocess.setWorkingDirectory(...)   # <-- self.tool.cwd
+        #self.subprocess.setEnvironmet(...)         # <-- self._tool.env
+        #self.subprocess.setWorkingDirectory(...)   # <-- self._tool.cwd
 
         self.subprocess.start(cmd)
         self.subprocess.closeWriteChannel()

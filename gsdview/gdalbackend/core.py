@@ -528,7 +528,7 @@ class GDALBackend(QtCore.QObject):
             #           order to be able to retrieve it in the finalization
             #           method.
             #           Finalization also reset the attribute.
-            self._app.controller.tool._dataset = dataset
+            self._app.controller._tool._dataset = dataset
 
             #self.subprocess.setEnvironmet(...)
             datasetCacheDir = os.path.dirname(vrtfilename)
@@ -539,12 +539,12 @@ class GDALBackend(QtCore.QObject):
         # @TODO: check if opening the dataset in update mode
         #        (gdal.GA_Update) is a better solution
 
-        dataset = getattr(self._app.controller.tool, '_dataset', None)
+        dataset = getattr(self._app.controller._tool, '_dataset', None)
         if not dataset:
             self._app.logger.debug('unable to retrieve dataset for finalization')
             return
 
-        self._app.controller.tool._dataset = None
+        self._app.controller._tool._dataset = None
         dataset.reopen()
         for row in range(dataset.rowCount()):
             item = dataset.child(row)

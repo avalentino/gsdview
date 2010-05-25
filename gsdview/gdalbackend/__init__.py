@@ -91,7 +91,7 @@ def init(app):
     handler = gdalexectools.GdalOutputHandler(textview, app.statusBar(),
                                               app.progressbar)
     tool = gdalexectools.GdalAddOverviewDescriptor(stdout_handler=handler)
-    app.controller.tool = tool
+    app.controller._tool = tool
     ### END ###################################################################
 
     # @TODO: check

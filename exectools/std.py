@@ -61,12 +61,12 @@ class StdToolController(BaseToolController):
             closefds = True
             startupinfo = None
 
-        if self.tool.stdout_handler:
-            self.tool.stdout_handler.reset()
+        if self._tool.stdout_handler:
+            self._tool.stdout_handler.reset()
         # @TODO: check
-        #if self.tool.stderr_handler:
-        #    self.tool.stderr_handler.reset()
-        cmd = self.tool.cmdline(*args)
+        #if self._tool.stderr_handler:
+        #    self._tool.stderr_handler.reset()
+        cmd = self._tool.cmdline(*args)
         self.prerun_hook(*cmd)
 
         try:
@@ -74,10 +74,10 @@ class StdToolController(BaseToolController):
                                                 stdin = subprocess2.PIPE,
                                                 stdout = subprocess2.PIPE,
                                                 stderr = subprocess2.STDOUT,
-                                                cwd = self.tool.cwd,
-                                                env = self.tool.env,
+                                                cwd = self._tool.cwd,
+                                                env = self._tool.env,
                                                 close_fds = closefds,
-                                                shell = self.tool.shell,
+                                                shell = self._tool.shell,
                                                 startupinfo = startupinfo)
             self.subprocess.stdin.close()
             self.connect_output_handlers()

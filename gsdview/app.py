@@ -32,7 +32,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from exectools import GenericToolDescriptor
+from exectools import ToolDescriptor
 from exectools.qt4 import Qt4ToolController, Qt4DialogLoggingHandler
 
 from gsdview import info
@@ -442,9 +442,9 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         #~ tool = GdalAddOverviewDescriptor(stdout_handler=handler)
 
         # @TODO: rewrite and remove this workaround
-        tool = GenericToolDescriptor('echo')  # dummy tool
+        tool = ToolDescriptor('echo')  # dummy tool
         controller = Qt4ToolController(logger, parent=self)
-        controller.tool = tool
+        controller._tool = tool
         controller.connect(controller, QtCore.SIGNAL('finished()'),
                            self.processingDone)
 

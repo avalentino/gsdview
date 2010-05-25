@@ -35,7 +35,7 @@ import logging
 from cStringIO import StringIO
 
 __all__ = ['EX_OK', 'BaseOStream', 'OFStream', 'BaseOutputHandler',
-           'BaseToolController', 'ToolDescriptor', 'GenericToolDescriptor']
+           'BaseToolController', 'ToolDescriptor']
 
 if sys.platform[:3] == 'win':
     EX_OK = 0
@@ -131,7 +131,7 @@ class BaseOutputHandler(object):
         }
 
     def reset(self):
-        '''Reset the handler instance
+        '''Reset the handler instance.
 
         Loses all unprocessed data. This is called implicitly at
         instantiation time.
@@ -154,7 +154,7 @@ class BaseOutputHandler(object):
         self.reset()
 
     def feed(self, data):
-        '''Feed some data to the parser
+        '''Feed some data to the parser.
 
         It is processed insofar as it consists of complete elements;
         incomplete data is buffered until more data is fed or close()
@@ -216,7 +216,7 @@ class BaseOutputHandler(object):
                 break
 
     def handle_progress(self, data):
-        '''Handle progress data
+        '''Handle progress data.
 
         This method is not meant to be called by the user.
 
@@ -243,7 +243,7 @@ class BaseOutputHandler(object):
             self.stream.flush()
 
     def handle_line(self, data):
-        '''Handle output lines
+        '''Handle output lines.
 
         This method is not meant to be directly called by the user.
 
@@ -283,6 +283,15 @@ class ToolDescriptor(object):
 
     .. todo:: shell
 
+    Example::
+
+        handler = BaseOutputHandler()
+        ll = ToolDescriptor(cmd='ls', args='-l', stdout_handler=handler)
+        cntroller.run_tool(ll)
+
+        cmd = ToolDescriptor(stdout_handler=handler)
+        cntroller.run_tool(cmd, 'ls', '-l')
+
     '''
 
     def __init__(self, executable, args=None, cwd=None, env=None,
@@ -291,65 +300,28 @@ class ToolDescriptor(object):
         self.executable = executable
         self.args = args
         self.cwd = cwd
-        self.env = env
+        self._env = env
+        self.envmerge = True
         self.shell = False  # @WARNING: shell proceses can't be stopped
 
         self.stdout_handler = stdout_handler
         self.stderr_handler = stderr_handler
 
-    def get_args(self, *args, **kwargs):
-        # @TODO: quoting
-        parts = ['%s=%s' % (key, value) for key, value in kwargs.items()]
-        if self.args:
-            parts.extend(str(arg) for arg in self.args)
-        parts.extend(str(arg) for arg in args)
-        return parts
+    @property
+    def env(self):
+        if not self._env or self.envmerge:
+            env = os.environ.copy()
+            env.update(self._env)
+            return env
+        else:
+            return self._env
+
+    @env.setter
+    def env(self, env):
+        self._env = env
 
     def cmdline(self, *args, **kwargs):
-        parts = [self.executable]
-        parts.extend(self.get_args(*args, **kwargs))
-        return parts
-
-    def __str__(self):
-        return ' '.join(self.cmdline())
-
-    # @TODO: fix
-    #~ self._shell = None      # @TODO: check shell property
-
-    #~ def _get_shell(self):
-        #~ return self._shell is not None
-
-    #~ def _set_shell(self, shell):
-        #~ if not shell:
-            #~ self._shell = None
-        #~ else:
-            #~ if sys.platform[:3] == 'win':
-                #~ self._shell = 'cmd /C "%s"'
-            #~ else:
-                #~ self._shell = 'sh -c "%s"'
-
-    #~ shell = property(_get_shell, _set_shell)
-
-    #~ def set_shellcmd(self, cmd):
-        #~ self._shell = cmd
-
-    #~ def _shellcmd_eval(self, cmd):
-        #~ if '%s' in self._shell:
-            #~ return self._shell % cmd
-        #~ else:
-            #~ return '%s "%s"' % (self._shell, cmd)
-
-
-class GenericToolDescriptor(ToolDescriptor):
-    '''Generic tool descriptor
-
-    The command line can be entirely defined by means of arguments
-    passed to the `cmdline` method.
-
-    '''
-
-    def cmdline(self, *args, **kwargs):
-        '''Generate the complete command-line for the tool
+        '''Generate the complete command-line for the tool.
 
         This method is meant to be used together with "subprocess"
         so the "comman-line" actually is a list of strings.
@@ -360,20 +332,38 @@ class GenericToolDescriptor(ToolDescriptor):
 
         The command line is build as follows::
 
-          executable keword-arguments args
+          executable keyword-arguments args
 
         If you need a command-line in single string form use something
         like::
 
-          ' '.join(tooldescriptorinstance.cmdline(arg1, arg2, arg3))
+          ' '.join(tool.cmdline(arg1, arg2, arg3))
 
         '''
 
-        return self.get_args(*args, **kwargs)
+        if self.args is not None:
+            args = list(self.args) + list(args)
+
+        executable = self.executable
+        if not executable:
+            try:
+                executable = args[0]
+                args = args[1:]
+            except IndexError:
+                raise ValueError('"executable" not set')
+
+        parts = [executable]
+        parts.extend('%s=%s' % (key, value) for key, value in kwargs.items())
+        parts.extend(str(arg) for arg in args)
+
+        return parts
+
+    def __str__(self):
+        return ' '.join(self.cmdline())
 
 
 class BaseToolController(object):
-    '''Base class for controlling command line tools
+    '''Base class for controlling command line tools.
 
     A tool controller runs an external tool in controlled way.
     The output of the child process is handled by the controller and,
@@ -389,15 +379,16 @@ class BaseToolController(object):
         self.subprocess = None
         self._stopped = False
 
-        self.tool = None
+        self._tool = None
 
-        if not logger:
-            self.logger = logging.getLogger()
+        if logger is None or isinstance(logger, basestring):
+            self.logger = logging.getLogger(logger)
         else:
+            assert isinstance(logger, logging.Logger)
             self.logger = logger
 
     def finalize_run_hook(self):
-        '''Hook method for extra finalization tasks
+        '''Hook method for extra finalization tasks.
 
         This method is always called after finalization and before
         controller reset.
@@ -437,29 +428,29 @@ class BaseToolController(object):
                 # retrieve residual data
                 if sys.platform[:3] == 'win':
                     # using read() here hangs on win32
-                    if self.tool.stdout_handler:
+                    if self._tool.stdout_handler:
                         data = self.subprocess.recv()
                         while data:
-                            self.tool.stdout_handler.feed(data)
+                            self._tool.stdout_handler.feed(data)
                             data = self.subprocess.recv()
-                    if self.tool.stderr_handler:
+                    if self._tool.stderr_handler:
                         data = self.subprocess.recv_err()
                         while data:
-                            self.tool.stderr_handler.feed(data)
+                            self._tool.stderr_handler.feed(data)
                             data = self.subprocess.recv_err()
                 else:
                     try:
-                        if self.tool.stdout_handler:
+                        if self._tool.stdout_handler:
                             data = self.subprocess.stdout.read()
-                            self.tool.stdout_handler.feed(data)
+                            self._tool.stdout_handler.feed(data)
                     except ValueError:
                         # I/O operation on closed file.
                         pass
 
                     try:
-                        if self.tool.stderr_handler:
+                        if self._tool.stderr_handler:
                             data = self.subprocess.stderr.read()
-                            self.tool.stderr_handler.feed(data)
+                            self._tool.stderr_handler.feed(data)
                     except ValueError:
                         # I/O operation on closed file.
                         pass
@@ -474,10 +465,10 @@ class BaseToolController(object):
 
                 # wait for the subprocess termination
                 self.subprocess.wait()
-                if self.tool.stdout_handler:
-                    self.tool.stdout_handler.close()
-                if self.tool.stderr_handler:
-                    self.tool.stderr_handler.close()
+                if self._tool.stdout_handler:
+                    self._tool.stdout_handler.close()
+                if self._tool.stderr_handler:
+                    self._tool.stderr_handler.close()
 
                 if self.subprocess.returncode != EX_OK:
                     if self._stopped:
@@ -496,7 +487,7 @@ class BaseToolController(object):
             self.reset_controller()
 
     def reset_controller(self):
-        '''Reset the tool controller instance
+        '''Reset the tool controller instance.
 
         Kill the controlled subprocess and reset the controller
         instance losing all unprocessed data.
@@ -510,16 +501,17 @@ class BaseToolController(object):
                 self.subprocess.returncode is not None), \
                                         'the process is still running'
 
-        if self.tool.stdout_handler:
-            self.tool.stdout_handler.reset()
-        if self.tool.stderr_handler:
-            self.tool.stderr_handler.reset()
+        if self._tool:
+            if self._tool.stdout_handler:
+                self._tool.stdout_handler.reset()
+            if self._tool.stderr_handler:
+                self._tool.stderr_handler.reset()
 
         self.subprocess = None
         self._stopped = False
 
     def prerun_hook(self, cmd):
-        '''Hook method for extra pre-run actions
+        '''Hook method for extra pre-run actions.
 
         This method is always called before the controlled subprocess
         is actually started.  The user can provide its own custom
@@ -544,7 +536,7 @@ class BaseToolController(object):
         pass
 
     def handle_stdout(self, *args):
-        '''Handle standard output data
+        '''Handle standard output data.
 
         This method is not meant to be directly called by the user.
 
@@ -560,11 +552,11 @@ class BaseToolController(object):
         else:
             data = self.subprocess.recv()
             if data:
-                self.tool.stdout_handler.feed(data)
+                self._tool.stdout_handler.feed(data)
             return True
 
     def handle_stderr(self, *args):
-        '''Handle standard  error
+        '''Handle standard  error.
 
         This method is not meant to be directly called by the user.
 
@@ -580,14 +572,14 @@ class BaseToolController(object):
         else:
             data = self.subprocess.recv_err()
             if data:
-                self.tool.stderr_handler.feed(data)
+                self._tool.stderr_handler.feed(data)
             return True
 
     def run_tool(self, *args):
         raise NotImplementedError
 
     def stop_tool(self, force=True):
-        '''Stop the execution of controlled subprocess
+        '''Stop the execution of controlled subprocess.
 
         When this method is invoked the controller instance is always
         reset even if the controller is unable to stop the subprocess.
