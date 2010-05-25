@@ -32,7 +32,6 @@ import os
 import sys
 import locale
 import logging
-import subprocess2
 from cStringIO import StringIO
 
 __all__ = ['EX_OK', 'BaseOStream', 'OFStream', 'BaseOutputHandler',
@@ -116,8 +115,8 @@ class BaseOutputHandler(object):
 
         # NOTE: pulse, percentage and text are all optional. The regexp
         #       consumes the '\r' character in any case.
-        pattern = ('[ \t]'
-                   '*\r+'
+        pattern = ('[ \t]*'
+                   '\r+'
                    '[ \t]*'
                    '(?P<pulse>[\\\|/-])?'
                    '[ \t]*'
@@ -273,8 +272,12 @@ class ToolDescriptor(object):
     :ivar executable:     full path of the tool executable or just the
                           tool program name if it is in the system
                           search path
+    :ivar args:           default args for command
     :ivar cwd:            program working directory
-    :ivar env:            environment
+    :ivar env:            environment dictionary
+    :ivar envmerge:       if set to True (default) it is the :ref:`env`
+                          dictionaty is used to update the system
+                          environment.
     :ivar stdout_handler: the OutputHandler for the stdout of the tool
     :ivar stderr_handler: the OutputHandler for the stderr of the tool
 
@@ -581,52 +584,7 @@ class BaseToolController(object):
             return True
 
     def run_tool(self, *args):
-        '''Run an external tool in controlled way
-
-        The output of the child process is handled by the controller
-        and, optionally, notifications can be achieved at sub-process
-        termination.
-
-        '''
-
-        assert self.subprocess is None
-        if sys.platform[:3] == 'win':
-            closefds = False
-            startupinfo = subprocess2.STARTUPINFO()
-            startupinfo.dwFlags |= subprocess2.STARTF_USESHOWWINDOW
-        else:
-            closefds = True
-            startupinfo = None
-
-        if self.tool.stdout_handler:
-            self.tool.stdout_handler.reset()
-        # @TODO: check
-        #if self.tool.stderr_handler:
-        #    self.tool.stderr_handler.reset()
-        cmd = self.tool.cmdline(*args)
-        self.prerun_hook(*cmd)
-
-        try:
-            self.subprocess = subprocess2.Popen(cmd,
-                                                stdin = subprocess2.PIPE,
-                                                stdout = subprocess2.PIPE,
-                                                stderr = subprocess2.STDOUT,
-                                                cwd = self.tool.cwd,
-                                                env = self.tool.env,
-                                                close_fds = closefds,
-                                                shell = self.tool.shell,
-                                                startupinfo = startupinfo)
-            self.subprocess.stdin.close()
-            self.connect_output_handlers()
-        except OSError:
-            if not isinstance(args, basestring):
-                args = ' '.join(args)
-            msg = 'Unable to execute: "%s"' % args
-            self.logger.error(msg, exc_info=True)
-            self.reset_controller()
-        except:
-            self.reset_controller()
-            raise
+        raise NotImplementedError
 
     def stop_tool(self, force=True):
         '''Stop the execution of controlled subprocess
