@@ -33,7 +33,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from exectools import GenericToolDescriptor
-from exectools.qt4tools import Qt4ToolController, Qt4DialogLoggingHandler
+from exectools.qt4 import Qt4ToolController, Qt4DialogLoggingHandler
 
 from gsdview import info
 from gsdview import utils

@@ -53,9 +53,8 @@ def init(app):
 
     from PyQt4 import QtCore, QtGui
 
-    from exectools.qt4tools import Qt4OStream
-    from exectools.qt4tools import Qt4OutputPlane
-    from exectools.qt4tools import Qt4StreamLoggingHandler
+    from exectools.qt4 import Qt4OStream, Qt4OutputPlane
+    from exectools.qt4 import Qt4StreamLoggingHandler
 
     panel = QtGui.QDockWidget('Output Log', app)
     # @TODO: try to add actions to a QTextEdit widget instead of using a

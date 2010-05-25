@@ -12,9 +12,9 @@ import logging
 import gtk
 
 import exectools
-from exectools.gtktools import GtkOutputPlane, GtkOutputHandler
-from exectools.gtktools import GtkDialogLoggingHandler, GtkStreamLoggingHandler
-from exectools.gtktools import GtkToolController
+from exectools.gtk2 import GtkOutputPlane, GtkOutputHandler
+from exectools.gtk2 import GtkDialogLoggingHandler, GtkStreamLoggingHandler
+from exectools.gtk2 import GtkToolController
 
 class GtkShell(object):
     historyfile = 'history.txt'
