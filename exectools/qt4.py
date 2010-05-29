@@ -229,7 +229,7 @@ class Qt4OutputHandler(BaseOutputHandler):
             self.blinker = None
 
     def feed(self, data):
-        '''Feed some data to the parser
+        '''Feed some data to the parser.
 
         It is processed insofar as it consists of complete elements;
         incomplete data is buffered until more data is fed or close()
@@ -286,7 +286,7 @@ class Qt4OutputHandler(BaseOutputHandler):
             self.progressbar.setValue(data)
 
     def handle_progress(self, data):
-        '''Handle progress data
+        '''Handle progress data.
 
         :param data: a list containing an item for each named group in
                      the "progress" regular expression: (pulse,
@@ -411,7 +411,7 @@ class Qt4DialogLoggingHandler(logging.Handler):
 
 
 class Qt4ToolController(QtCore.QObject, BaseToolController):
-    '''Qt4 tool controller
+    '''Qt4 tool controller.
 
     :signals:
 
@@ -460,7 +460,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
                         self.handle_error)
 
     def finalize_run(self, *args, **kwargs):
-        '''Perform finalization actions
+        '''Perform finalization actions.
 
         This method is called when the controlled process terminates
         to perform finalization actions like:
@@ -484,7 +484,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
 
         try:
             # retrieve residual data
-            # @TODO: check id it is actualli needed
+            # @TODO: check if it is actually needed
             if self._tool.stdout_handler:
                 byteArray = self.subprocess.readAllStandardOutput()
                 self._tool.stdout_handler.feed(byteArray.data())
@@ -551,7 +551,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
             self._tool.stderr_handler.feed(byteArray.data())
 
     def handle_error(self, error):
-        '''Handle a error in process execution
+        '''Handle a error in process execution.
 
         Can be handle different types of errors:
 
@@ -593,12 +593,17 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
             msg = ('An unknown error occurred. This is the default return '
                    'value of error().')
             #level = logging.ERROR # @TODO: check
+        else:
+            msg = ''
 
-        self.logger.log(level, msg)
-        self.emit(QtCore.SIGNAL('finished()'))
+        if msg:
+            self.logger.log(level, msg)
+
+        # @TODO: check
+        #self.emit(QtCore.SIGNAL('finished()'))
 
     def run_tool(self, *args):
-        '''Run an external tool in controlled way
+        '''Run an external tool in controlled way.
 
         The output of the child process is handled by the controller
         and, optionally, notifications can be achieved at sub-process
@@ -611,15 +616,22 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         if self._tool.stdout_handler:
             self._tool.stdout_handler.reset()
         # @TODO: check
-        #if self._tool.stderr_handler:
-        #    self._tool.stderr_handler.reset()
+        if self._tool.stderr_handler:
+            self._tool.stderr_handler.reset()
+
         cmd = self._tool.cmdline(*args)
         self.prerun_hook(cmd)
         cmd = ' '.join(cmd)
 
-        #self.subprocess.setEnvironmet(...)         # <-- self._tool.env
-        #self.subprocess.setWorkingDirectory(...)   # <-- self._tool.cwd
+        if self._tool.env:
+            qenv = [QtCore.QString('%s=%s' % (key, val))
+                                        for key, val in self._tool.env.items()]
+            self.subprocess.setEnvironment(qenv)
 
+        if self._tool.cwd:
+            self.subprocess.setWorkingDirectory(self._tool.cwd)
+
+        logging.debug('Starting: %s' % cmd)
         self.subprocess.start(cmd)
         self.subprocess.closeWriteChannel()
 
@@ -633,7 +645,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
             self.subprocess.kill()
 
     def stop_tool(self, force=True):
-        '''Stop the execution of controlled subprocess
+        '''Stop the execution of controlled subprocess.
 
         When this method is invoked the controller instance is always
         reset even if the controller is unable to stop the subprocess.
@@ -656,5 +668,4 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
                                                         self.subprocess.pid())
                 self.logger.warning(msg)
 
-        QtGui.qApp.processEvents()
         self.reset_controller()

@@ -32,7 +32,7 @@ from exectools import BaseToolController
 import subprocess2
 
 class StdToolController(BaseToolController):
-    '''Class for controlling command line tools
+    '''Class for controlling command line tools.
 
     A tool controller runs an external tool in controlled way.
     The output of the child process is handled by the controller and,
@@ -44,7 +44,7 @@ class StdToolController(BaseToolController):
     '''
 
     def run_tool(self, *args):
-        '''Run an external tool in controlled way
+        '''Run an external tool in controlled way.
 
         The output of the child process is handled by the controller
         and, optionally, notifications can be achieved at sub-process
@@ -63,9 +63,8 @@ class StdToolController(BaseToolController):
 
         if self._tool.stdout_handler:
             self._tool.stdout_handler.reset()
-        # @TODO: check
-        #if self._tool.stderr_handler:
-        #    self._tool.stderr_handler.reset()
+        if self._tool.stderr_handler:
+            self._tool.stderr_handler.reset()
         cmd = self._tool.cmdline(*args)
         self.prerun_hook(*cmd)
 

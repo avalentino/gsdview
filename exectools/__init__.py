@@ -272,7 +272,7 @@ class BaseOutputHandler(object):
 
 
 class ToolDescriptor(object):
-    '''Command line tool desctiptor
+    '''Command line tool desctiptor.
 
     :ivar executable:     full path of the tool executable or just the
                           tool program name if it is in the system
@@ -314,9 +314,10 @@ class ToolDescriptor(object):
 
     @property
     def env(self):
-        if not self._env or self.envmerge:
+        if self.envmerge:
             env = os.environ.copy()
-            env.update(self._env)
+            if self._env:
+                env.update(self._env)
             return env
         else:
             return self._env
@@ -408,7 +409,7 @@ class BaseToolController(object):
         pass
 
     def finalize_run(self, *args, **kwargs):
-        '''Perform finalization actions
+        '''Perform finalization actions.
 
         This method is called when the controlled process terminates
         to perform finalization actions like:

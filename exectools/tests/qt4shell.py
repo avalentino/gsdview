@@ -5,7 +5,6 @@ __author__  = 'Antonio Valentino <antonio.valentino@tiscali.it>'
 __date__    = '$Date: 2006/03/11 23:18:40 $'
 __version__ = '$Revision: 1.15 $'
 
-import sys
 import time
 import logging
 
@@ -232,6 +231,7 @@ class Qt4Shell(QtGui.QMainWindow):
         #~ self.cmdbox.clearEdirText()
 
 if __name__ == '__main__':
+    import sys
     app = QtGui.QApplication(sys.argv)
     mainwin = Qt4Shell(debug=True)
     mainwin.show()
