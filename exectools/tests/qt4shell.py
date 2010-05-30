@@ -12,7 +12,7 @@ from PyQt4 import QtCore, QtGui
 
 import exectools
 from exectools.qt4 import Qt4OutputPlane, Qt4OutputHandler
-from exectools.qt4 import Qt4DialogLoggingHandler, Qt4StreamLoggingHandler
+from exectools.qt4 import Qt4DialogLoggingHandler, Qt4LoggingHandler
 from exectools.qt4 import Qt4ToolController
 
 class Qt4Shell(QtGui.QMainWindow):
@@ -75,7 +75,7 @@ class Qt4Shell(QtGui.QMainWindow):
         self.logger = logging.getLogger()
 
         formatter = logging.Formatter('%(levelname)s: %(message)s')
-        handler = Qt4StreamLoggingHandler(outputplane)
+        handler = Qt4LoggingHandler(outputplane)
         handler.setLevel(level)
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
@@ -89,7 +89,7 @@ class Qt4Shell(QtGui.QMainWindow):
         self.logger.setLevel(level)
 
         ### Setup high level components and initialize the parent classes ###
-        handler = Qt4OutputHandler(outputplane, self.statusBar())
+        handler = Qt4OutputHandler(self.logger, self.statusBar())
         tool = exectools.ToolDescriptor('', stdout_handler=handler)
         self.controller = Qt4ToolController(self.logger, parent=self)
         self.controller._tool = tool

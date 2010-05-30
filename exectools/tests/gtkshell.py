@@ -12,7 +12,7 @@ import gtk
 
 import exectools
 from exectools.gtk2 import GtkOutputPlane, GtkOutputHandler
-from exectools.gtk2 import GtkDialogLoggingHandler, GtkStreamLoggingHandler
+from exectools.gtk2 import GtkDialogLoggingHandler, GtkLoggingHandler
 from exectools.gtk2 import GtkToolController
 
 class GtkShell(object):
@@ -88,7 +88,7 @@ class GtkShell(object):
         self.logger = logging.getLogger()
 
         formatter = logging.Formatter('%(levelname)s: %(message)s')
-        handler = GtkStreamLoggingHandler(outputplane)
+        handler = GtkLoggingHandler(outputplane)
         handler.setLevel(level)
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
@@ -102,7 +102,7 @@ class GtkShell(object):
         self.logger.setLevel(level)
 
         ### Setup high level components and initialize the parent classes ###
-        handler = GtkOutputHandler(outputplane, self.statusbar)
+        handler = GtkOutputHandler(self.logger, self.statusbar)
         tool = exectools.ToolDescriptor('', stdout_handler=handler)
         self.controller = GtkToolController(logger=self.logger)
         self.controller._tool = tool
@@ -182,10 +182,6 @@ class GtkShell(object):
         if cmd:
             self.entry.set_text('')
             self.cmdbox.append_text(cmd)
-
-            prompt = '$' # or '#'
-            stream = self.controller._tool.stdout_handler.stream
-            stream.write('%s %s\n' % (prompt, cmd), 'cmd')
 
             if not self.controller._tool.shell:
                 cmd = cmd.split()

@@ -30,85 +30,48 @@ version = '.'.join(map(str, __version__))
 import re
 import os
 import sys
-import locale
 import logging
 from cStringIO import StringIO
 
-__all__ = ['EX_OK', 'BaseOStream', 'OFStream', 'BaseOutputHandler',
-           'BaseToolController', 'ToolDescriptor']
+__all__ = ['EX_OK', 'PROGRESS', 'TAGS', 'level2tag',
+           'BaseOutputHandler', 'BaseToolController', 'ToolDescriptor']
 
 if sys.platform[:3] == 'win':
     EX_OK = 0
 else:
     EX_OK = os.EX_OK
 
-class BaseOStream(object):
-    '''Base class for the output stream'''
+PROGRESS = 15
+TAGS = ['error', 'warning', 'info', 'progress', 'debug', 'cmd']
 
-    def __init__(self, *args, **kwargs):
-        super(BaseOStream, self).__init__()
-        self.srcencoding = locale.getpreferredencoding()
-        self.dstencoding = self.srcencoding
-        self.formats = {}
+_LEVEL2TAG = {
+    logging.CRITICAL: 'error',
+    logging.ERROR: 'error',
+    logging.WARNING: 'warning',
+    logging.INFO: 'info',
+    PROGRESS: 'progress',
+    logging.DEBUG: 'debug',
+    logging.NOTSET: '',
+}
 
-    def _fixencoding(self, data):
-        # @TODO: test on win32
-        if self.srcencoding != self.dstencoding:
-            try:
-                data = data.decode(self.srcencoding, 'replace')
-                data = data.encode(self.dstencoding, 'replace')
-            except UnicodeDecodeError, e:
-                data = str(e)
-                logging.warning('unicode error.', exc_info=True)
-        return data
-
-    def flush(self):
-        '''Flush the stream buffers'''
-
-        pass
-
-    def write(self, data, format_=None):
-        '''Write data on the output stream'''
-
-        pass
-
-
-class OFStream(BaseOStream):
-    '''Output file stream'''
-
-    def __init__(self, fileobj=sys.stdout):
-        super(OFStream, self).__init__(fileobj)
-        self.fileobj = fileobj
-        self.formats = {'progress': '\r%s'}
-
-    def flush(self):
-        '''Flush the file buffer'''
-
-        self.fileobj.flush()
-
-    def write(self, data, format_=None):
-        '''Write data to file'''
-
-        data = self._fixencoding(data)
-
-        if isinstance(format_, basestring):
-            format_ = self.formats.get(format_, '')
-
-        if format_:
-            data = format_ % data
-
-        self.fileobj.write(data)
-
+def level2tag(level):
+    # @TODO: intermediate levels
+    return _LEVEL2TAG.get(level, '')
 
 class BaseOutputHandler(object):
     '''Base class for output handlers'''
 
-    def __init__(self, stream=None):
+    def __init__(self, logger=None):
         super(BaseOutputHandler, self).__init__()
         self._buffer = StringIO()
         self._wpos  = self._buffer.tell()
 
-        self.stream = stream
+        if logger is None or isinstance(logger, basestring):
+            self.logger = logging.getLogger(logger)
+        else:
+            # @TODO: remove assertion
+            assert isinstance(logger, logging.Logger)
+            self.logger = logger
 
         self.percentage_fmt = '%5.1f %%'
         self.handlers = ['progress', 'line']
@@ -202,7 +165,7 @@ class BaseOutputHandler(object):
         pos = self._buffer.tell()
         data = self._buffer.readline()
         if data and (data[-1] == '\n'):
-            return data
+            return data[:-1]
         self._buffer.seek(pos)
         return None
 
@@ -232,20 +195,26 @@ class BaseOutputHandler(object):
 
         '''
 
-        if self.stream:
-            pulse = data.get('pulse')
-            percentage = data.get('percentage')
-            text = data.get('text')
+        pulse = data.get('pulse')
+        percentage = data.get('percentage')
+        text = data.get('text')
 
-            result = []
-            if pulse:
-                result.append(pulse)
-            if percentage is not None:
-                result.append(self.percentage_fmt % percentage)
-            if text:
-                result.append(text)
-            self.stream.write(' '.join(result), 'progress')
-            self.stream.flush()
+        result = []
+        if pulse:
+            result.append(pulse)
+        if percentage is not None:
+            result.append(self.percentage_fmt % percentage)
+        if text:
+            result.append(text)
+
+        extra = {
+            'tag': 'progress',
+            'pulse': pulse,
+            'percentage': percentage,
+            'text': text,
+        }
+
+        self.logger.log(PROGRESS, ' '.join(result), extra=extra)
 
     def handle_line(self, data):
         '''Handle output lines.
@@ -260,15 +229,13 @@ class BaseOutputHandler(object):
 
         '''
 
-        if self.stream:
-            for tag_name, pattern in self._text_patterns.items():
-                match = pattern.search(data)
-                if match:
-                    self.stream.write(data, tag_name)
-                    break
-            else:
-                self.stream.write(data)
-            self.stream.flush()
+        for tag_name, pattern in self._text_patterns.items():
+            match = pattern.search(data)
+            if match:
+                self.logger.info(data, extra={'tag': tag_name})
+                break
+        else:
+            self.logger.info(data)
 
 
 class ToolDescriptor(object):
@@ -537,7 +504,7 @@ class BaseToolController(object):
         if not isinstance(cmd, basestring):
             cmd = ' '.join(cmd)
 
-        self.logger.info('%s %s' % (prompt, cmd))
+        self.logger.info('%s %s' % (prompt, cmd), extra={'tag': 'cmd'})
 
     def connect_output_handlers(self):
         pass
@@ -618,6 +585,8 @@ class BaseToolController(object):
 if(__name__ == '__main__'):
     import time
 
+    logging.basicConfig(level=logging.DEBUG)
+
     class DummyToolController(BaseToolController):
 
         def connect_output_handlers(self):
@@ -625,7 +594,7 @@ if(__name__ == '__main__'):
                 self.handle_stdout()
                 time.sleep(0.1)
 
-    h = BaseOutputHandler(OFStream())
+    h = BaseOutputHandler()
     h.feed('\rline\n')
     h.feed('\r-')
     h.feed(' \r/')

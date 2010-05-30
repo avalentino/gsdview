@@ -29,7 +29,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from exectools import BaseOStream, BaseOutputHandler, BaseToolController, EX_OK
+from exectools import BaseOutputHandler, BaseToolController, EX_OK, level2tag
 
 
 class Qt4Blinker(QtGui.QLabel):
@@ -54,67 +54,6 @@ class Qt4Blinker(QtGui.QLabel):
 
     def reset(self):
         self.setEnabled(True)
-
-
-class Qt4OStream(BaseOStream):
-    '''Qt4 Output Stream'''
-
-    def __init__(self, textview=None):
-        super(Qt4OStream, self).__init__(textview)
-        if textview is None:
-            textview = QtGui.QTextEdit()
-        self.textview = textview
-
-        # @TODO: improve formats handling add/remove/list/edit
-        self._formats = self._setupFormats()
-
-    def _setupFormats(self):
-        '''Setup a different format for the different message types.'''
-
-        fmap = {}
-
-        fmt = QtGui.QTextCharFormat()
-        fmt.setForeground(QtGui.QColor('red'))
-        fmap['error'] = fmt
-
-        fmt = QtGui.QTextCharFormat()
-        fmt.setForeground(QtGui.QColor('orange'))
-        fmap['warning'] = fmt
-
-        fmt = QtGui.QTextCharFormat()
-        fmt.setForeground(QtGui.QColor('blue'))
-        fmap['info'] = fmt
-
-        fmt = QtGui.QTextCharFormat()
-        fmt.setForeground(QtGui.QColor('gray'))
-        fmap['debug'] = fmt
-
-        fmt = QtGui.QTextCharFormat()
-        fmt.setFontWeight(QtGui.QFont.Bold)
-        fmap['cmd'] = fmt
-
-        return fmap
-
-    def flush(self):
-        #QtGui.qApp.processEvents()     # @TODO: check
-        pass
-
-    def write(self, data, format_=None):
-        '''Write data on the output stream'''
-
-        data = self._fixencoding(data)
-
-        if isinstance(format_, basestring):
-            format_ = self._formats.get(format_, '')
-
-        if format_:
-            oldFormat = self.textview.currentCharFormat()
-            self.textview.setCurrentCharFormat(format_)
-            self.textview.insertPlainText(data)
-            self.textview.setCurrentCharFormat(oldFormat)
-        else:
-            self.textview.insertPlainText(data)
-        self.textview.ensureCursorVisible()
 
 
 class Qt4OutputPlane(QtGui.QTextEdit):
@@ -200,23 +139,16 @@ class Qt4OutputHandler(BaseOutputHandler):
 
     _statusbar_timeout = 2000 # ms
 
-    def __init__(self, textview=None, statusbar=None, progressbar=None,
+    def __init__(self, logger=None, statusbar=None, progressbar=None,
                  blinker=None):
-        if textview:
-            stream = Qt4OStream(textview)
-        else:
-            stream = None
-
-        BaseOutputHandler.__init__(self, stream)
+        super(Qt4OutputHandler, self).__init__(logger)
 
         self.statusbar = statusbar
-
         if self.statusbar:
             if blinker is None:
                 blinker = Qt4Blinker()
                 statusbar.addPermanentWidget(blinker)
                 blinker.hide()
-            self.blinker = blinker
 
             if progressbar is None:
                 progressbar = QtGui.QProgressBar(self.statusbar)
@@ -224,9 +156,9 @@ class Qt4OutputHandler(BaseOutputHandler):
                 statusbar.addPermanentWidget(progressbar) #, 1) # stretch = 1
                 progressbar.hide()
             self.progressbar = progressbar
-        else:
-            self.progressbar = None
-            self.blinker = None
+
+        self.progressbar = progressbar
+        self.blinker = blinker
 
     def feed(self, data):
         '''Feed some data to the parser.
@@ -249,7 +181,7 @@ class Qt4OutputHandler(BaseOutputHandler):
         super(Qt4OutputHandler, self).close()
 
     def reset(self):
-        '''Reset the handler instance
+        '''Reset the handler instance.
 
         Loses all unprocessed data. This is called implicitly at
         instantiation time.
@@ -275,7 +207,7 @@ class Qt4OutputHandler(BaseOutputHandler):
                 self.blinker.pulse()
 
     def _handle_percentage(self, data):
-        '''Handle percentage of a precess execution
+        '''Handle percentage of a precess execution.
 
         :param data: percentage
 
@@ -310,40 +242,69 @@ class Qt4OutputHandler(BaseOutputHandler):
         QtGui.qApp.processEvents() # might slow too mutch
 
 
-class Qt4StreamLoggingHandler(logging.StreamHandler):
-    '''Qt4 handler for the logging stream'''
+class Qt4LoggingHandler(logging.Handler):
+    '''Custom handler for logging on Qt4 textviews'''
 
-    # @TODO: move to a bese class
-    level2tag = {
-        logging.CRITICAL: 'error',
-        # FATAL = CRITICAL
-        logging.ERROR: 'error',
-        logging.WARNING: 'warning',
-        # WARN = WARNING
-        logging.INFO: 'info',
-        logging.DEBUG: 'debug',
-        logging.NOTSET: '',
-    }
+    def __init__(self, textview):
+        logging.Handler.__init__(self)
+        self.textview = textview
+        self._formats = self._setupFormats()
 
-    def __init__(self, stream=None):
-        if stream is None:
-            stream = Qt4OStream()
+    def _setupFormats(self):
+        '''Setup a different format for the different message types.'''
 
-        if isinstance(stream, QtGui.QTextEdit):
-            stream = Qt4OStream(stream)
+        fmap = {}
 
-        assert isinstance(stream, Qt4OStream)
-        logging.StreamHandler.__init__(self, stream)
+        fmt = QtGui.QTextCharFormat()
+        fmt.setForeground(QtGui.QColor('red'))
+        fmap['error'] = fmt
 
-    # @TODO: move to a bese class
+        fmt = QtGui.QTextCharFormat()
+        fmt.setForeground(QtGui.QColor('orange'))
+        fmap['warning'] = fmt
+
+        fmt = QtGui.QTextCharFormat()
+        fmt.setForeground(QtGui.QColor('blue'))
+        fmap['info'] = fmt
+
+        fmt = QtGui.QTextCharFormat()
+        fmt.setForeground(QtGui.QColor('gray'))
+        fmap['debug'] = fmt
+
+        fmt = QtGui.QTextCharFormat()
+        fmt.setFontWeight(QtGui.QFont.Bold)
+        fmap['cmd'] = fmt
+
+        return fmap
+
+    def _flush(self):
+        QtGui.qApp.processEvents()
+
+    def _write(self, data, format_=None):
+        '''Write data on the textview'''
+
+        if isinstance(format_, basestring):
+            format_ = self._formats.get(format_, '')
+
+        if data and not data.endswith('\n'):
+            data += '\n'
+
+        if format_:
+            oldFormat = self.textview.currentCharFormat()
+            self.textview.setCurrentCharFormat(format_)
+            self.textview.insertPlainText(data)
+            self.textview.setCurrentCharFormat(oldFormat)
+        else:
+            self.textview.insertPlainText(data)
+        self.textview.ensureCursorVisible()
+
     def emit(self, record):
-        # @TODO: docstring
-
         try:
             msg = self.format(record)
-            tag = self.level2tag.get(record.levelno, '')
-            self.stream.write('%s\n' % msg, tag)
-            self.flush()
+            tag = getattr(record, 'tag', level2tag(record.levelno))
+            self._write('%s' % msg, tag)
+            # @TODO: check
+            #self._flush()
         except (KeyboardInterrupt, SystemExit):
             raise
         except:

@@ -35,7 +35,7 @@ import gobject
 
 import subprocess2
 
-from exectools import BaseOStream, BaseOutputHandler, BaseToolController
+from exectools import BaseOutputHandler, BaseToolController, level2tag
 
 class Popen(gobject.GObject, subprocess2.Popen):
 
@@ -75,8 +75,8 @@ class Popen(gobject.GObject, subprocess2.Popen):
             gobject.source_remove(tag)
 
     if sys.platform[:3] == 'win':
-        import msvcrt
         import errno
+        import msvcrt
         from subprocess import pywintypes
         from win32pipe import PeekNamedPipe
 
@@ -168,43 +168,6 @@ class GtkBlinker(gtk.Image):
 
         self.set_sensitive(True)
 
-class GtkOStream(BaseOStream):
-    '''GTK output stream'''
-
-    def __init__(self, textview=None):
-        super(GtkOStream, self).__init__(textview)
-        if textview is None:
-            textview = gtk.TextView()
-        self.textview = textview
-
-        # @TODO: improve formats handling add/remove/list/edit
-
-    def flush(self):
-        '''Flush the stream buffers'''
-
-        while gtk.events_pending():
-            gtk.main_iteration(False)
-
-    def write(self, data, format=None):
-        '''Write data on the output stream'''
-
-        data = self._fixencoding(data)
-        buf = self.textview.get_buffer()
-        textiter = buf.get_end_iter()
-
-        if format:
-            tagtable = buf.get_tag_table()
-            tag = tagtable.lookup(format)
-        else:
-            tag = None
-
-        if tag:
-            buf.insert_with_tags(textiter, data, tag)
-        else:
-            buf.insert(textiter, data)
-
-        buf.place_cursor(buf.get_end_iter())
-        self.textview.scroll_mark_onscreen(buf.get_mark('insert'))
 
 # @TODO: check
 class GtkOutputPlane(gtk.TextView):
@@ -317,14 +280,14 @@ class GtkOutputPlane(gtk.TextView):
         # Save As
         item = gtk.ImageMenuItem(gtk.STOCK_SAVE_AS)
         item.set_name('save_as')
-        item.connect('activate', lambda self, w: self.save(), None)
+        item.connect('activate', lambda item, w: self.save(), None)
         item.show()
         menu.append(item)
 
         # Clear OutputLog
         item = gtk.ImageMenuItem(gtk.STOCK_CLEAR)
         item.set_name('clear')
-        item.connect('activate', lambda self, w: self.clear(), None)
+        item.connect('activate', lambda item, w: self.clear(), None)
         item.show()
         menu.append(item)
 
@@ -336,30 +299,36 @@ class GtkOutputPlane(gtk.TextView):
             item.show()
             menu.append(item)
 
+
 class GtkOutputHandler(BaseOutputHandler):
     '''GTK progress handler'''
 
-    def __init__(self, textview, statusbar, progressbar=None, blinker=None):
-        stream = GtkOStream(textview)
-        super(GtkOutputHandler, self).__init__(stream)
+    def __init__(self, logger=None, statusbar=None, progressbar=None,
+                 blinker=None):
+        super(GtkOutputHandler, self).__init__(logger)
 
-        self.context_id = statusbar.get_context_id('progress')
         self.statusbar = statusbar
+        if self.statusbar:
+            self.context_id = statusbar.get_context_id('progress')
 
-        if progressbar is None:
-            progressbar = gtk.ProgressBar()
-            statusbar.pack_end(progressbar)
-            progressbar.hide()
+            if blinker is None:
+                blinker = GtkBlinker()
+                statusbar.pack_end(blinker, expand=False)
+                blinker.hide()
+
+            if progressbar is None:
+                progressbar = gtk.ProgressBar()
+                statusbar.pack_end(progressbar)
+                progressbar.hide()
+
+        else:
+            self.context_id = None
+
         self.progressbar = progressbar
-
-        if blinker is None:
-            blinker = GtkBlinker()
-            statusbar.pack_end(blinker, expand=False)
-            blinker.hide()
         self.blinker = blinker
 
     def feed(self, data):
-        '''Feed some data to the parser
+        '''Feed some data to the parser.
 
         It is processed insofar as it consists of complete elements;
         incomplete data is buffered until more data is fed or close()
@@ -380,7 +349,7 @@ class GtkOutputHandler(BaseOutputHandler):
         super(GtkOutputHandler, self).close()
 
     def reset(self):
-        '''Reset the handler instance
+        '''Reset the handler instance.
 
         Loses all unprocessed data. This is called implicitly at
         instantiation time.
@@ -405,7 +374,7 @@ class GtkOutputHandler(BaseOutputHandler):
                 self.blinker.pulse()
 
     def _handle_percentage(self, data):
-        '''Handle percentage of a precess execution
+        '''Handle percentage of a precess execution.
 
         :param data: percentage
 
@@ -417,7 +386,7 @@ class GtkOutputHandler(BaseOutputHandler):
             self.progressbar.set_fraction(data / 100.)
 
     def handle_progress(self, data):
-        '''Handle progress data
+        '''Handle progress data.
 
         :param data: a list containing an item for each named group in
                      the "progress" regular expression: (pulse,
@@ -446,36 +415,46 @@ class GtkOutputHandler(BaseOutputHandler):
             gtk.main_iteration(False)
 
 
-class GtkStreamLoggingHandler(logging.StreamHandler):
-    '''GTK handler for the logging stream'''
+class GtkLoggingHandler(logging.Handler):
+    '''Custom handler for logging on GTK+ textviews'''
 
-    level2tag = {
-        logging.CRITICAL: 'error',
-        # FATAL = CRITICAL
-        logging.ERROR: 'error',
-        logging.WARNING: 'warning',
-        # WARN = WARNING
-        logging.INFO: 'info',
-        logging.DEBUG: 'debug',
-        logging.NOTSET: '',
-    }
+    def __init__(self, textview):
+        assert textview is not None
+        self.textview = textview
+        logging.Handler.__init__(self)
 
-    def __init__(self, stream=None):
-        if stream is None:
-            stream = GtkOStream()
+    def _write(self, data, format=None):
+        buf = self.textview.get_buffer()
+        textiter = buf.get_end_iter()
 
-        if isinstance(stream, gtk.TextView):
-            stream = GtkOStream(stream)
+        if format:
+            tagtable = buf.get_tag_table()
+            tag = tagtable.lookup(format)
+        else:
+            tag = None
 
-        assert isinstance(stream, GtkOStream)
-        logging.StreamHandler.__init__(self, stream)
+        if data and not data.endswith('\n'):
+            data += '\n'
+
+        if tag:
+            buf.insert_with_tags(textiter, data, tag)
+        else:
+            buf.insert(textiter, data)
+
+        buf.place_cursor(buf.get_end_iter())
+        self.textview.scroll_mark_onscreen(buf.get_mark('insert'))
+
+    def _flush(self):
+        while gtk.events_pending():
+            gtk.main_iteration(False)
 
     def emit(self, record):
         try:
             msg = self.format(record)
-            tag = self.level2tag.get(record.levelno, '')
-            self.stream.write('%s\n' % msg, tag)
-            self.flush()
+            tag = getattr(record, 'tag', level2tag(record.levelno))
+            self._write('%s' % msg, tag)
+            # @TODO: check
+            #self._flush()
         except (KeyboardInterrupt, SystemExit):
             raise
         except:
@@ -551,7 +530,7 @@ class GtkToolController(gobject.GObject, BaseToolController):
         self._handlers = []
 
     def finalize_run(self, *args, **kwargs):
-        '''Perform finalization actions
+        '''Perform finalization actions.
 
         This method is called when the controlled process terminates
         to perform finalization actions like:
@@ -571,7 +550,7 @@ class GtkToolController(gobject.GObject, BaseToolController):
         self.emit('finished')
 
     def reset_controller(self):
-        '''Reset the tool controller instance
+        '''Reset the tool controller instance.
 
         Kill the controlled subprocess and reset the controller
         instance losing all unprocessed data.
@@ -618,8 +597,9 @@ class GtkToolController(gobject.GObject, BaseToolController):
         if self._tool.stdout_handler:
             self._tool.stdout_handler.reset()
         # @TODO: check
-        #if self._tool.stderr_handler:
-        #    self._tool.stderr_handler.reset()
+        if self._tool.stderr_handler:
+            self._tool.stderr_handler.reset()
+
         cmd = self._tool.cmdline(*args)
         self.prerun_hook(cmd)
 
@@ -646,6 +626,9 @@ class GtkToolController(gobject.GObject, BaseToolController):
 
     def handle_finished(self, *args):
         '''Handle process termination'''
+
+        if not self._stopped:
+            self.logger.debug('finished PID=%d' % self.subprocess.pid)
 
         self.finalize_run()
 

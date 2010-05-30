@@ -53,8 +53,8 @@ def init(app):
 
     from PyQt4 import QtCore, QtGui
 
-    from exectools.qt4 import Qt4OStream, Qt4OutputPlane
-    from exectools.qt4 import Qt4StreamLoggingHandler
+    import exectools
+    from exectools.qt4 import Qt4OutputPlane, Qt4LoggingHandler
 
     panel = QtGui.QDockWidget('Output Log', app)
     # @TODO: try to add actions to a QTextEdit widget instead of using a
@@ -71,21 +71,21 @@ def init(app):
 
     formatter = logging.Formatter(fmt)
     #formatter = logging.Formatter('%(levelname)s: %(message)s')
-    handler = Qt4StreamLoggingHandler(logplane)
+    handler = Qt4LoggingHandler(logplane)
     #handler.setLevel(app.logger.level) # NOTSET
     handler.setFormatter(formatter)
     app.logger.addHandler(handler)
 
     # setupController
     # @TODO: fix for multiple tools
-    app.controller._tool.stdout_handler.stream = Qt4OStream(logplane)
+    #app.controller._tool.stdout_handler.stream = Qt4OStream(logplane)
 
     # @TODO: fix
     # @WARNING: modify class attribute
-    handler.level2tag[logging.getLevelName('TRACE')] = 'trace'
+    exectools._LEVEL2TAG[logging.getLevelName('TRACE')] = 'trace'
     fmt = QtGui.QTextCharFormat()
     fmt.setForeground(QtGui.QColor('green'))
-    handler.stream._formats['trace'] = fmt
+    handler._formats['trace'] = fmt
 
     # Connect signals
     QtCore.QObject.connect(logplane, QtCore.SIGNAL('planeHideRequest()'),
