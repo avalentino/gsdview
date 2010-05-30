@@ -34,9 +34,9 @@ Main Application
    gsdview.gdalbackend.widgets
 
    exectools
-   exectools.exectools
-   exectools.gtktools
-   exectools.qt4tools
+   exectools.std
+   exectools.qt4
+   exectools.gtk2
 
 ..
    gsdview.exectools.recipe_440544

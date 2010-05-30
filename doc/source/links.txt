@@ -33,6 +33,7 @@ Citations
 * `softbb.org <http://softbb.org/MAC/Math-Scientific/20091205/585268.aspx>`_
 * GSDView `code analysis <http://www.ohloh.net/p/gsdview/analyses/latest>`_ on
   `ohloh.net <http://www.ohloh.net>`_
+* http://www.soft4000.com/mac/download-gsdview-061-pre2-060-free
 
 .. `European Wireless 2009 <ftp://lenst.det.unifi.it/pub/LenLar/proceedings/2009/wv09/WVITAE09/PDF/AUTHOR/WV091401.PDF>`_
 

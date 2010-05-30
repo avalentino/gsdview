@@ -1,11 +1,17 @@
-exectools.gtktools
-==================
+exectools.gtk2
+==============
 
-.. automodule:: exectools.gtktools
+.. automodule:: exectools.gtk2
    :members:
    :undoc-members:
 
    
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      level2tag
    
    
 
@@ -15,15 +21,13 @@ exectools.gtktools
 
    .. autosummary::
    
-      BaseOStream
       BaseOutputHandler
       BaseToolController
       GtkBlinker
       GtkDialogLoggingHandler
-      GtkOStream
+      GtkLoggingHandler
       GtkOutputHandler
       GtkOutputPlane
-      GtkStreamLoggingHandler
       GtkToolController
       Popen
    

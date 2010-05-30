@@ -12,8 +12,7 @@ exectools
    .. autosummary::
    
       StringIO
-      call
-      check_call
+      level2tag
    
    
 
@@ -23,22 +22,12 @@ exectools
 
    .. autosummary::
    
-      BaseOStream
       BaseOutputHandler
       BaseToolController
-      GenericToolDescriptor
-      OFStream
-      Popen
       ToolDescriptor
    
    
 
    
-   
-   .. rubric:: Exceptions
-
-   .. autosummary::
-   
-      CalledProcessError
    
    

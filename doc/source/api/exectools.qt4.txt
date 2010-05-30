@@ -1,7 +1,7 @@
-exectools.exectools
-===================
+exectools.qt4
+=============
 
-.. automodule:: exectools.exectools
+.. automodule:: exectools.qt4
    :members:
    :undoc-members:
 
@@ -11,7 +11,7 @@ exectools.exectools
 
    .. autosummary::
    
-      StringIO
+      level2tag
    
    
 
@@ -21,12 +21,14 @@ exectools.exectools
 
    .. autosummary::
    
-      BaseOStream
       BaseOutputHandler
       BaseToolController
-      GenericToolDescriptor
-      OFStream
-      ToolDescriptor
+      Qt4Blinker
+      Qt4DialogLoggingHandler
+      Qt4LoggingHandler
+      Qt4OutputHandler
+      Qt4OutputPlane
+      Qt4ToolController
    
    
 

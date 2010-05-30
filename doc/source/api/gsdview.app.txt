@@ -18,11 +18,11 @@ gsdview.app
       AboutDialog
       ExceptionDialog
       GSDView
-      GenericToolDescriptor
       ItemModelMainWindow
       PreferencesDialog
       Qt4DialogLoggingHandler
       Qt4ToolController
+      ToolDescriptor
    
    
 
