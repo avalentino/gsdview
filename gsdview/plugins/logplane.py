@@ -53,7 +53,6 @@ def init(app):
 
     from PyQt4 import QtCore, QtGui
 
-    import exectools
     from exectools.qt4 import Qt4OutputPlane, Qt4LoggingHandler
 
     panel = QtGui.QDockWidget('Output Log', app)
@@ -66,26 +65,10 @@ def init(app):
     app.addDockWidget(QtCore.Qt.BottomDockWidgetArea, panel)
 
     # setupLogger
-    fmt = ('%(levelname)s: %(filename)s line %(lineno)d in %(funcName)s: '
-           '%(message)s')
-
-    formatter = logging.Formatter(fmt)
-    #formatter = logging.Formatter('%(levelname)s: %(message)s')
+    formatter = logging.Formatter('%(levelname)s: %(message)s')
     handler = Qt4LoggingHandler(logplane)
-    #handler.setLevel(app.logger.level) # NOTSET
     handler.setFormatter(formatter)
     app.logger.addHandler(handler)
-
-    # setupController
-    # @TODO: fix for multiple tools
-    #app.controller._tool.stdout_handler.stream = Qt4OStream(logplane)
-
-    # @TODO: fix
-    # @WARNING: modify class attribute
-    exectools._LEVEL2TAG[logging.getLevelName('TRACE')] = 'trace'
-    fmt = QtGui.QTextCharFormat()
-    fmt.setForeground(QtGui.QColor('green'))
-    handler._formats['trace'] = fmt
 
     # Connect signals
     QtCore.QObject.connect(logplane, QtCore.SIGNAL('planeHideRequest()'),
