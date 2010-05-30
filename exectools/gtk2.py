@@ -576,7 +576,7 @@ class GtkToolController(gobject.GObject, BaseToolController):
                                 self.handle_connection_broken)
         self.subprocess.connect('finished', self.handle_finished)
 
-    def run_tool(self, *args):
+    def run_tool(self, tool, *args):
         '''Run an external tool in controlled way
 
         The output of the child process is handled by the controller
@@ -586,6 +586,9 @@ class GtkToolController(gobject.GObject, BaseToolController):
         '''
 
         assert self.subprocess is None
+
+        self._tool = tool
+
         if sys.platform[:3] == 'win':
             closefds = False
             startupinfo = subprocess2.STARTUPINFO()
@@ -596,12 +599,12 @@ class GtkToolController(gobject.GObject, BaseToolController):
 
         if self._tool.stdout_handler:
             self._tool.stdout_handler.reset()
-        # @TODO: check
         if self._tool.stderr_handler:
             self._tool.stderr_handler.reset()
 
         cmd = self._tool.cmdline(*args)
         self.prerun_hook(cmd)
+        self.logger.debug('"shell" flag set to %s.' % self._tool.shell)
 
         try:
             self.subprocess = Popen(cmd,

@@ -437,14 +437,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         return logger
 
     def setupController(self, logger, statusbar, progressbar):
-        # @TODO: move to plugin (??)
-        #~ handler = GdalOutputHandler(None, statusbar, progressbar)
-        #~ tool = GdalAddOverviewDescriptor(stdout_handler=handler)
-
-        # @TODO: rewrite and remove this workaround
-        tool = ToolDescriptor('echo')  # dummy tool
         controller = Qt4ToolController(logger, parent=self)
-        controller._tool = tool
         controller.connect(controller, QtCore.SIGNAL('finished()'),
                            self.processingDone)
 

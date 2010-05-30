@@ -103,17 +103,14 @@ class GtkShell(object):
 
         ### Setup high level components and initialize the parent classes ###
         handler = GtkOutputHandler(self.logger, self.statusbar)
-        tool = exectools.ToolDescriptor('', stdout_handler=handler)
+        self.tool = exectools.ToolDescriptor('', stdout_handler=handler)
         self.controller = GtkToolController(logger=self.logger)
-        self.controller._tool = tool
         self.controller.connect('finished', self.on_finished)
 
-        ###
+        ### Final setup ###
         self._state = 'ready'   # or maybe __state
 
         self.logger.debug('gtkshell session started at %s.' % time.asctime())
-        self.logger.debug('"shell" flag set to %s.' %
-                                                self.controller._tool.shell)
         self.load_history()
 
     def main(self):
@@ -182,12 +179,11 @@ class GtkShell(object):
         if cmd:
             self.entry.set_text('')
             self.cmdbox.append_text(cmd)
+            cmd = cmd.split()
 
-            if not self.controller._tool.shell:
-                cmd = cmd.split()
             try:
                 self.state = 'running'
-                self.controller.run_tool(*cmd)
+                self.controller.run_tool(self.tool, *cmd)
                 #~ raise RuntimeError('simulated runtime error')
             except (KeyboardInterrupt, SystemExit):
                 raise

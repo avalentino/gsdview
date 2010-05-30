@@ -490,12 +490,15 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
                                                 'the process is still running'
         self.subprocess.setProcessState(self.subprocess.NotRunning)
 
-        if self._tool.stdout_handler:
-            self._tool.stdout_handler.reset()
-        if self._tool.stderr_handler:
-            self._tool.stderr_handler.reset()
+        if self._tool:
+            if self._tool.stdout_handler:
+                self._tool.stdout_handler.reset()
+            if self._tool.stderr_handler:
+                self._tool.stderr_handler.reset()
 
+        self.subprocess.close()
         self._stopped = False
+        self._tool = None
 
     def handle_stdout(self, *args):
         '''Handle standard output'''
@@ -563,7 +566,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         # @TODO: check
         #self.emit(QtCore.SIGNAL('finished()'))
 
-    def run_tool(self, *args):
+    def run_tool(self, tool, *args):
         '''Run an external tool in controlled way.
 
         The output of the child process is handled by the controller
@@ -574,9 +577,10 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
 
         assert self.subprocess.state() == self.subprocess.NotRunning
 
+        self._tool = tool
+
         if self._tool.stdout_handler:
             self._tool.stdout_handler.reset()
-        # @TODO: check
         if self._tool.stderr_handler:
             self._tool.stderr_handler.reset()
 
@@ -592,7 +596,8 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         if self._tool.cwd:
             self.subprocess.setWorkingDirectory(self._tool.cwd)
 
-        logging.debug('Starting: %s' % cmd)
+        self.logger.debug('"shell" flag set to %s.' % self._tool.shell)
+        self.logger.debug('Starting: %s' % cmd)
         self.subprocess.start(cmd)
         self.subprocess.closeWriteChannel()
 

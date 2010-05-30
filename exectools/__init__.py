@@ -482,7 +482,7 @@ class BaseToolController(object):
 
         self.subprocess = None
         self._stopped = False
-        #self._tool = None
+        self._tool = None
 
     def prerun_hook(self, cmd):
         '''Hook method for extra pre-run actions.
@@ -549,7 +549,7 @@ class BaseToolController(object):
                 self._tool.stderr_handler.feed(data)
             return True
 
-    def run_tool(self, *args):
+    def run_tool(self, tool, *args):
         raise NotImplementedError
 
     def stop_tool(self, force=True):

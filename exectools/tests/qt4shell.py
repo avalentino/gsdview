@@ -90,9 +90,8 @@ class Qt4Shell(QtGui.QMainWindow):
 
         ### Setup high level components and initialize the parent classes ###
         handler = Qt4OutputHandler(self.logger, self.statusBar())
-        tool = exectools.ToolDescriptor('', stdout_handler=handler)
+        self.tool = exectools.ToolDescriptor('', stdout_handler=handler)
         self.controller = Qt4ToolController(self.logger, parent=self)
-        self.controller._tool = tool
         self.controller.connect(self.controller, QtCore.SIGNAL('finished()'),
                                 self.reset)
 
@@ -101,7 +100,6 @@ class Qt4Shell(QtGui.QMainWindow):
         self._state = 'ready'   # or maybe __state
 
         self.logger.debug('qt4shell session started at %s.' % time.asctime())
-        self.logger.debug('"shell" flag set to %s.' % tool.shell)
         self.load_history()
 
     def closeEvent(self, event):
@@ -190,7 +188,7 @@ class Qt4Shell(QtGui.QMainWindow):
         if cmd:
             self.state = 'running'
             try:
-                self.controller.run_tool(cmd)
+                self.controller.run_tool(self.tool, cmd)
                 #~ raise RuntimeError('simulated runtime error')
             except (KeyboardInterrupt, SystemExit):
                 raise

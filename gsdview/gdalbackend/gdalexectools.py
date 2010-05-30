@@ -60,9 +60,9 @@ class GdalOutputHandler(Qt4OutputHandler):
 
     '''
 
-    def __init__(self, textview=None, statusbar=None, progressbar=None,
+    def __init__(self, logger=None, statusbar=None, progressbar=None,
                  blinker=None):
-        super(GdalOutputHandler, self).__init__(textview, statusbar,
+        super(GdalOutputHandler, self).__init__(logger, statusbar,
                                                 progressbar, blinker)
         #pattern = '(?P<percentage>\d{1,3})|(?P<pulse>\.)|((?P<text> - done\.?)$)'
         pattern = '(?P<percentage>\d{1,3})|(?P<pulse>\.)|( - (?P<text>done\.?)\n)'

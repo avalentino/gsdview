@@ -77,7 +77,6 @@ def init(app):
 def close(app):
     saveSettings(app.settings)
     #app.logger.remove(_global_aux.pop('handler'))
-    #app.controller._tool.stdout_handler.stream = _global_aux.pop('old_stream')
     #panel = app.findChild(QtGui.QDockWidget, 'outputPanel')
     #app.removeDockWidget(panel)
 

@@ -82,18 +82,6 @@ def init(app):
     page = widgets.GDALPreferencesPage(app.preferencesdialog)
     app.preferencesdialog.addPage(page, icon, 'GDAL')
 
-    ### BEGIN #################################################################
-    # @TODO: improve processing tools handling and remove this workaround
-    from gsdview.gdalbackend import gdalexectools
-
-    # @NOTE: the textview is fixed by logplane initializer
-    textview = None
-    handler = gdalexectools.GdalOutputHandler(textview, app.statusBar(),
-                                              app.progressbar)
-    tool = gdalexectools.GdalAddOverviewDescriptor(stdout_handler=handler)
-    app.controller._tool = tool
-    ### END ###################################################################
-
     # @TODO: check
     # register the backend
     app.backends.append(name)

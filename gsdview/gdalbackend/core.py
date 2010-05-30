@@ -35,6 +35,7 @@ from gsdview import qt4support
 from gsdview.gdalbackend import widgets
 from gsdview.gdalbackend import modelitems
 from gsdview.gdalbackend import gdalsupport
+from gsdview.gdalbackend import gdalexectools
 
 
 class GDALBackend(QtCore.QObject):
@@ -77,6 +78,11 @@ class GDALBackend(QtCore.QObject):
         # @TODO: improve ptocessing tools handling and remove this workaround
         self.connect(self._app.controller, QtCore.SIGNAL('finished()'),
                      self._finalize)
+
+        handler = gdalexectools.GdalOutputHandler(app.logger, app.statusBar(),
+                                                  app.progressbar)
+        self.addotool = gdalexectools.GdalAddOverviewDescriptor(
+                                                        stdout_handler=handler)
 
     def findItemFromFilename(self, filename):
         '''Serch for and return the (dataset) item corresponding to filename.
@@ -528,23 +534,23 @@ class GDALBackend(QtCore.QObject):
             #           order to be able to retrieve it in the finalization
             #           method.
             #           Finalization also reset the attribute.
-            self._app.controller._tool._dataset = dataset
+            self.addotool._dataset = dataset
 
             #self.subprocess.setEnvironmet(...)
             datasetCacheDir = os.path.dirname(vrtfilename)
             subProc.setWorkingDirectory(datasetCacheDir)
-            self._app.controller.run_tool(*args)
+            self._app.controller.run_tool(self.addotool, *args)
 
     def _finalize(self):
         # @TODO: check if opening the dataset in update mode
         #        (gdal.GA_Update) is a better solution
 
-        dataset = getattr(self._app.controller._tool, '_dataset', None)
+        dataset = getattr(self.addotool, '_dataset', None)
         if not dataset:
             self._app.logger.debug('unable to retrieve dataset for finalization')
             return
 
-        self._app.controller._tool._dataset = None
+        self.addotool._dataset = None
         dataset.reopen()
         for row in range(dataset.rowCount()):
             item = dataset.child(row)
