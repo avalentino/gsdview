@@ -53,6 +53,8 @@ class Qt4Blinker(QtGui.QLabel):
         pass
 
     def reset(self):
+        '''Reset the blinker'''
+
         self.setEnabled(True)
 
 
@@ -100,10 +102,7 @@ class Qt4OutputPlane(QtGui.QTextEdit):
     def contextMenuEvent(self, event):
         menu = QtGui.QTextEdit.createStandardContextMenu(self)
         menu.addSeparator()
-
-        for action in self.actions.actions():
-            menu.addAction(action)
-
+        menu.addActions(self.actions.actions())
         menu.exec_(event.globalPos())
 
     def _report(self):
@@ -239,7 +238,6 @@ class Qt4OutputHandler(BaseOutputHandler):
             if self.statusbar:
                 self.statusbar.showMessage(text, self._statusbar_timeout)
             self._handle_pulse()
-        #QtGui.qApp.processEvents() # might slow too mutch
 
 
 class Qt4LoggingHandler(logging.Handler):
@@ -309,6 +307,7 @@ class Qt4LoggingHandler(logging.Handler):
             raise
         except:
             self.handleError(record)
+
 
 class Qt4DialogLoggingHandler(logging.Handler):
     '''Qt4 handler for the logging dialog'''
