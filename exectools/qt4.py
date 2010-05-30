@@ -239,7 +239,7 @@ class Qt4OutputHandler(BaseOutputHandler):
             if self.statusbar:
                 self.statusbar.showMessage(text, self._statusbar_timeout)
             self._handle_pulse()
-        QtGui.qApp.processEvents() # might slow too mutch
+        #QtGui.qApp.processEvents() # might slow too mutch
 
 
 class Qt4LoggingHandler(logging.Handler):
