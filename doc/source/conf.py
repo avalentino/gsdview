@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# GSDView documentation build configuration file, created by
-# sphinx-quickstart on Sun Apr 18 18:58:30 2010.
+# GSDView Open Edition documentation build configuration file, created by
+# sphinx-quickstart on Fri Jun  4 19:10:57 2010.
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #
@@ -111,8 +111,8 @@ todo_include_todos = True
 
 # -- Options for HTML output ---------------------------------------------------
 
-# The theme to use for HTML and HTML Help pages.  Major themes that come with
-# Sphinx are currently 'default' and 'sphinxdoc'.
+# The theme to use for HTML and HTML Help pages.  See the documentation for
+# a list of builtin themes.
 html_theme = 'sourceforge'
 
 # Theme options are theme-specific and customize the look and feel of a theme
@@ -220,6 +220,12 @@ latex_logo = 'images/logo_large.pdf'
 # not chapters.
 #latex_use_parts = False
 
+# If true, show page references after internal links.
+#latex_show_pagerefs = False
+
+# If true, show URL addresses after external links.
+#latex_show_urls = False
+
 # Additional stuff for the LaTeX preamble.
 #latex_preamble = ''
 
@@ -243,7 +249,7 @@ man_pages = [
 # -- Options for Epub output ---------------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = u'GSDView open edition'
+epub_title = u'GSDView Open Edition'
 epub_author = u'Antonio Valentino'
 epub_publisher = u'Antonio Valentino'
 epub_copyright = u'2008-2010, Antonio Valentino'
