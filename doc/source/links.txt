@@ -19,7 +19,8 @@ GSDView Pro Edition
 
 * `GSDView Pro Edition Home Page <http://www.consorzio-innova.com/static/gsdview/index.html>`_
 * `EOMAG <http://www.eomag.eu/articles/726/qualitative-analysis-of-the-first-real-cosmo-skymed-sar-data>`_
-* `SWB on ESA technology forum <http://www.technology-forum.com/fileadmin/technologies/1274093701_SWB.pdf>`_ (PDF)
+* SWB on ESA technology forum
+  (`PDF <http://www.technology-forum.com/fileadmin/technologies/1274093701_SWB.pdf>`_)
 
 
 Citations
