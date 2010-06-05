@@ -78,8 +78,8 @@ class GeoCoordinateView(CoordinateView):
         self.show()
 
         # @TODO: the imgToGeoPoints method should return the same type
-        vlat, vlon = cmapper.imgToGeoPoints(scenepos.y(), scenepos.x())
-        lat, lon = vlat[0], vlon[0]     # @TODO: fix
+        vlon, vlat = cmapper.imgToGeoPoints(scenepos.x(), scenepos.y())
+        lon, lat = vlon[0], vlat[0]    # @TODO: fix
 
         self.xedit.setText(str(lon))
         self.yedit.setText(str(lat))

@@ -186,13 +186,11 @@ class WorldmapPanel(QtGui.QDockWidget):
 
         self.box = self.plot(polygon)
 
-        lon = numpy.asarray([p.x() for p in polygon]).mean()
-        lat = numpy.asarray([p.y() for p in polygon]).mean()
         points = QtGui.QPolygonF([
-            QtCore.QPointF(lon - self.bigBoxSize/2, lat - self.bigBoxSize/2),
-            QtCore.QPointF(lon + self.bigBoxSize/2, lat - self.bigBoxSize/2),
-            QtCore.QPointF(lon + self.bigBoxSize/2, lat + self.bigBoxSize/2),
-            QtCore.QPointF(lon - self.bigBoxSize/2, lat + self.bigBoxSize/2),
+            QtCore.QPointF(mlon - self.bigBoxSize/2, mlat - self.bigBoxSize/2),
+            QtCore.QPointF(mlon + self.bigBoxSize/2, mlat - self.bigBoxSize/2),
+            QtCore.QPointF(mlon + self.bigBoxSize/2, mlat + self.bigBoxSize/2),
+            QtCore.QPointF(mlon - self.bigBoxSize/2, mlat + self.bigBoxSize/2),
         ])
         self.bigbox = self.plot(points)
 

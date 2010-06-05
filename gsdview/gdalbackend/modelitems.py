@@ -262,7 +262,7 @@ class DatasetItem(MajorObjectItem):
         if not self.cmapper:
             return
 
-        lat, lon = self.cmapper.imgToGeoGrid([0.5, self.RasterXSize - 0.5],
+        lon, lat = self.cmapper.imgToGeoGrid([0.5, self.RasterXSize - 0.5],
                                              [0.5, self.RasterYSize - 0.5])
         polygon = QtGui.QPolygonF([QtCore.QPointF(lon[0, 0], lat[0, 0]),
                                    QtCore.QPointF(lon[0, 1], lat[0, 1]),

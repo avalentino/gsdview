@@ -467,52 +467,52 @@ class CoordinateMapper(object):
         Pin = numpy.array((x, y))
         return numpy.dot(M, Pin) + C
 
-    def imgToGeoPoints(self, line, pixel):
-        '''Coordinate conversion: (line,pixel) --> (lat,lon).'''
+    def imgToGeoPoints(self, pixel, line):
+        '''Coordinate conversion: (pixel,line) --> (lon,lat).'''
 
         M, C = self._direct_transform
-        xy = self._transform(line, pixel, M, C)
+        xy = self._transform(pixel, line, M, C)
         if self._srTransform:
             for index, (x, y) in enumerate(xy.transpose()):
                 xy[:, index] = self._srTransform.TransformPoint(x, y)[:2]
         # @TODO: check single point
-        return xy[1], xy[0]
+        return xy[0], xy[1] #, 0    # @TODO: h
 
-    def geoToImgPoints(self, lat, lon):
-        '''Coordinate conversion: (lat,lon) --> (line,pixel).'''
+    def geoToImgPoints(self, lon, lat, h=0):
+        '''Coordinate conversion: (lon,lat) --> (pixel,line).'''
 
         M, C = self._inverse_transform
         rc = self._transform(lon, lat, M, C)
         # @TODO: check single point
         return rc[0], rc[1]
 
-    def imgToGeoGrid(self, line, pixel):
-        '''Coordinate conversion: (line,pixel) --> (lat,lon) on regular grids.
+    def imgToGeoGrid(self, pixel, line):
+        '''Coordinate conversion: (pixel,line) --> (lon,lat) on regular grids.
 
-        Elements of the return (lat, lon) touple are 2D array with shape
-        (len(line), len(pixels)).
+        Elements of the return (lon, lat) touple are 2D array with shape
+        (len(pixels), len(line)).
 
         '''
 
         # @TODO: check single point
-        px, py = numpy.meshgrid(line, pixel)
-        lat, lon = self.imgToGeoPoints(px, py)
-        lat.shape = lon.shape = (len(line), len(pixel)) # @TODO: check
+        px , py = numpy.meshgrid(pixel, line)
+        lon, lat = self.imgToGeoPoints(px, py)
+        lon.shape = lat.shape = (len(pixel), len(line)) # @TODO: check
 
-        return lat, lon
+        return lon, lat #, 0    # @TODO: h
 
-    def geoToImgGrid(self, lat, lon):
-        '''Coordinate conversion: (lat,lon) --> (line,pixel) on regular grids.
+    def geoToImgGrid(self, lon, lat):
+        '''Coordinate conversion: (lon,lat) --> (pixel,line) on regular grids.
 
-        Elements of the return (line, pixel) touple are 2D array with shape
+        Elements of the return (pixel,line) touple are 2D array with shape
         (len(lon), len(lat)).
 
         '''
 
         # @TODO: check single point
         px, py = numpy.meshgrid(lon, lat)
-        line, pixel = self.geoToImgPoints(px, py)
-        line.shape = pixel.shape = (len(lon), len(lat)) # @TODO: check
+        pixel, line = self.geoToImgPoints(px, py)
+        pixel.shape = line.shape = (len(lon), len(lat)) # @TODO: check
 
         return line, pixel
 
