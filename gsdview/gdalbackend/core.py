@@ -76,7 +76,7 @@ class GDALBackend(QtCore.QObject):
                      self.onItemActivated)
 
         # @TODO: improve ptocessing tools handling and remove this workaround
-        self.connect(self._app.controller, QtCore.SIGNAL('finished()'),
+        self.connect(self._app.controller, QtCore.SIGNAL('finished(int)'),
                      self._finalize)
 
         handler = gdalexectools.GdalOutputHandler(app.logger, app.statusBar(),
@@ -541,7 +541,7 @@ class GDALBackend(QtCore.QObject):
             subProc.setWorkingDirectory(datasetCacheDir)
             self._app.controller.run_tool(self.addotool, *args)
 
-    def _finalize(self):
+    def _finalize(self, returncode=0):
         # @TODO: check if opening the dataset in update mode
         #        (gdal.GA_Update) is a better solution
 

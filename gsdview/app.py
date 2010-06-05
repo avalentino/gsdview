@@ -438,7 +438,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
 
     def setupController(self, logger, statusbar, progressbar):
         controller = Qt4ToolController(logger, parent=self)
-        controller.connect(controller, QtCore.SIGNAL('finished()'),
+        controller.connect(controller, QtCore.SIGNAL('finished(int)'),
                            self.processingDone)
 
         return controller
@@ -724,10 +724,10 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         self.progressbar.show()
         self.progressbar.setValue(int(100.*fract))
 
-    def processingDone(self):
+    def processingDone(self, returncode=0):
         self.controller.reset_controller()
         try:
-            if self.controller.subprocess.exitCode() != 0: # timeout 30000 ms
+            if returncode != 0:
                 msg = ('An error occurred during the quicklook generation.\n'
                        'Now close the dataset.')
                 QtGui.QMessageBox.warning(self, '', msg)
