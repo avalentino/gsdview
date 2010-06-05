@@ -232,7 +232,7 @@ class GtkShell(object):
     def on_clear_entry(self, widget=None):
         self.entry.set_text('')
 
-    def on_finished(self, widhet=None):
+    def on_finished(self, widget=None, returncode=0):
         self.reset()
 
 if __name__ == '__main__':

@@ -35,7 +35,8 @@ import gobject
 
 import subprocess2
 
-from exectools import BaseOutputHandler, BaseToolController, level2tag
+from exectools import BaseOutputHandler, level2tag
+from exectools.std import StdToolController
 
 class Popen(gobject.GObject, subprocess2.Popen):
 
@@ -487,8 +488,6 @@ class GtkDialogLoggingHandler(logging.Handler):
         self.formatter = None
 
     def emit(self, record):
-        # @TODO: docstring
-
         try:
             msgtype = self.levelsmap[record.levelno]
             self.dialog.set_property('message-type', msgtype)
@@ -517,16 +516,17 @@ class GtkDialogLoggingHandler(logging.Handler):
             self.handleError(record)
 
 
-class GtkToolController(gobject.GObject, BaseToolController):
+class GtkToolController(gobject.GObject, StdToolController):
     '''GTK tool controller'''
 
     __gsignals__ = {
-        'finished': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (),),
+        'finished': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
+                                                    (gobject.TYPE_INT,),),
     }
 
     def __init__(self, logger=None):
         gobject.GObject.__init__(self)
-        BaseToolController.__init__(self, logger)
+        StdToolController.__init__(self, logger)
         self._handlers = []
 
     def finalize_run(self, *args, **kwargs):
@@ -546,8 +546,9 @@ class GtkToolController(gobject.GObject, BaseToolController):
 
         '''
 
+        returncode = self.subprocess.returncode
         super(GtkToolController, self).finalize_run()
-        self.emit('finished')
+        self.emit('finished', returncode)
 
     def reset_controller(self):
         '''Reset the tool controller instance.
@@ -576,7 +577,7 @@ class GtkToolController(gobject.GObject, BaseToolController):
                                 self.handle_connection_broken)
         self.subprocess.connect('finished', self.handle_finished)
 
-    def run_tool(self, tool, *args):
+    def run_tool(self, tool, *args, **kwargs):
         '''Run an external tool in controlled way
 
         The output of the child process is handled by the controller
@@ -602,7 +603,7 @@ class GtkToolController(gobject.GObject, BaseToolController):
         if self._tool.stderr_handler:
             self._tool.stderr_handler.reset()
 
-        cmd = self._tool.cmdline(*args)
+        cmd = self._tool.cmdline(*args, **kwargs)
         self.prerun_hook(cmd)
         self.logger.debug('"shell" flag set to %s.' % self._tool.shell)
 

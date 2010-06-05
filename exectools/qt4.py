@@ -375,10 +375,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
 
     :signals:
 
-    * externalToolStarted()
-    * failedToStart(PyQt_PyObject tooldescriptor)
-    * finished(PyQt_PyObject tooldescriptor, int exitCode)
-    * planeHideRequest()
+    * finished(int exitCode)
 
     '''
 
@@ -387,12 +384,6 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
     def __init__(self, logger=None, parent=None):
         QtCore.QObject.__init__(self, parent)
         BaseToolController.__init__(self, logger)
-        # @TODO: check
-        # It is important the subprocess has a parent
-        #~ if not parent:
-            #~ # @TODO: fix
-            #~ parent = self.stdout_handler.stream.textview.topLevelWidget() # exists?
-            #~ #parent = QtGui.qApp.topLevelWidgets()[0]
         self.subprocess = QtCore.QProcess(parent)
         self.subprocess.setProcessChannelMode(QtCore.QProcess.MergedChannels)
 
@@ -413,13 +404,8 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
                         self.subprocess,
                         QtCore.SIGNAL('finished(int, QProcess::ExitStatus)'),
                         self.finalize_run)
-        # @TODO: remove
-        QtCore.QObject.connect(
-                        self.subprocess,
-                        QtCore.SIGNAL('error()'),
-                        self.handle_error)
 
-    def finalize_run(self, *args, **kwargs):
+    def finalize_run(self, exitCode=None, exitStatus=None, **kwargs):
         '''Perform finalization actions.
 
         This method is called when the controlled process terminates
@@ -437,10 +423,8 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
 
         '''
 
-        if args:
-            exitCode = args[0]
-        else:
-            exitCode = None
+        if not self._tool:
+            return
 
         try:
             # retrieve residual data
@@ -459,23 +443,22 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
             if self._tool.stderr_handler:
                 self._tool.stderr_handler.close()
 
-            if exitCode != EX_OK:
-                if self._stopped:
-                    self.logger.info('Execution stopped by the user.')
-                else:
+            if self._stopped:
+                self.logger.info('Execution stopped by the user.')
+            elif exitCode != EX_OK:
                     msg = ('Process (PID=%d) exited with return code %d.' %
                                            (self.subprocess.pid(),
                                             self.subprocess.exitCode()))
                     self.logger.warning(msg)
 
-            # Call finalize hook is available
+            # Call finalize hook if available
             self.finalize_run_hook()
         finally:
             # @TODO: check
             # Protect for unexpected errors in the feed and close methods of
             # the stdout_handler
             self.reset_controller()
-            self.emit(QtCore.SIGNAL('finished()'))
+            self.emit(QtCore.SIGNAL('finished(int)'), exitCode)
 
     def reset_controller(self):
         if self.subprocess.state() != self.subprocess.NotRunning:
@@ -537,7 +520,6 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         elif error == QtCore.QProcess.Crashed:
             msg = 'The process crashed some time after starting successfully.'
             level = logging.ERROR
-            #~ self.finalize() # @TODO: check
         elif error == QtCore.QProcess.Timedout:
             msg = ('The last waitFor...() function timed out. The state of '
                    'QProcess is unchanged, and you can try calling '
@@ -565,7 +547,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         # @TODO: check
         #self.emit(QtCore.SIGNAL('finished()'))
 
-    def run_tool(self, tool, *args):
+    def run_tool(self, tool, *args, **kwargs):
         '''Run an external tool in controlled way.
 
         The output of the child process is handled by the controller
@@ -583,7 +565,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         if self._tool.stderr_handler:
             self._tool.stderr_handler.reset()
 
-        cmd = self._tool.cmdline(*args)
+        cmd = self._tool.cmdline(*args, **kwargs)
         self.prerun_hook(cmd)
         cmd = ' '.join(cmd)
 
@@ -622,6 +604,9 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
 
         '''
 
+        if self._stopped:
+            return
+
         if self.subprocess.state() != self.subprocess.NotRunning:
             self.logger.debug('Execution stopped by the user.')
             self._stopped = True
@@ -633,4 +618,3 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
                                                         self.subprocess.pid())
                 self.logger.warning(msg)
 
-        self.reset_controller()

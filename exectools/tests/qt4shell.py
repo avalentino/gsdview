@@ -92,8 +92,9 @@ class Qt4Shell(QtGui.QMainWindow):
         handler = Qt4OutputHandler(self.logger, self.statusBar())
         self.tool = exectools.ToolDescriptor('', stdout_handler=handler)
         self.controller = Qt4ToolController(self.logger, parent=self)
-        self.controller.connect(self.controller, QtCore.SIGNAL('finished()'),
-                                self.reset)
+        self.controller.connect(self.controller,
+                                QtCore.SIGNAL('finished(int)'),
+                                lambda returncode: self.reset())
 
         ###
         #self.shell = True
