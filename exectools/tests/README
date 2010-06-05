@@ -1,0 +1,10 @@
+HOWTO run test programs
+-----------------------
+
+::
+  $ env PYTHONPATH=../..:$PTHONPATH python qt4shell.py
+
+
+::
+
+  $ env PYTHONPATH=../..:$PTHONPATH python gtkshell.py
