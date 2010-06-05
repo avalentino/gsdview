@@ -99,7 +99,7 @@ def selectAllItems(itemview):
     try:
         # Should work for tables: 'columnCount' is private in lists
         bottomright = model.index(model.rowCount()-1, model.columnCount()-1)
-    except AttributeError:
+    except (TypeError, AttributeError):
         # Assume it is a list
         bottomright = model.index(model.rowCount()-1)
 
@@ -146,8 +146,8 @@ def copySelectedItems(itemview):
 
 
 def setViewContextActions(widget):
-    assert widget.contextMenuPolicy() == QtCore.Qt.ActionsContextMenu
-
+    assert (widget.contextMenuPolicy() == QtCore.Qt.ActionsContextMenu), \
+        'menu policy is not "QtCore.Qt.ActionsContextMenu"'
     #if widget.contextMenuPolicy() != QtCore.Qt.ActionsContextMenu:
     #    widget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 

@@ -28,6 +28,8 @@ __revision__ = '$Revision$'
 
 from PyQt4 import QtCore, QtGui
 
+from gsdview import qt4support
+
 
 class MetadataViewer(QtGui.QDockWidget):
     def __init__(self, parent=None, flags=QtCore.Qt.Widget):
@@ -42,6 +44,10 @@ class MetadataViewer(QtGui.QDockWidget):
         #self.tableWidget.horizontalHeader().hide()
         # @TODO: comment if you want allow the uset to edit items
         self.infoTable.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.infoTable.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+
+        qt4support.setViewContextActions(self.infoTable)
+
         self.setWidget(self.infoTable)
 
     def setMetadata(self, metadatalist):
