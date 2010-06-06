@@ -2,8 +2,6 @@ logplane
 ========
 
 .. automodule:: logplane
-   :members:
-   :undoc-members:
 
    
    

@@ -2,8 +2,6 @@ metadata
 ========
 
 .. automodule:: metadata
-   :members:
-   :undoc-members:
 
    
    

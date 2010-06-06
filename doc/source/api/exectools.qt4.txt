@@ -2,8 +2,6 @@ exectools.qt4
 =============
 
 .. automodule:: exectools.qt4
-   :members:
-   :undoc-members:
 
    
    

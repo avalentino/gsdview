@@ -2,8 +2,6 @@ overview.info
 =============
 
 .. automodule:: overview.info
-   :members:
-   :undoc-members:
 
    
    

@@ -2,8 +2,6 @@ gsdview.mainwin
 ===============
 
 .. automodule:: gsdview.mainwin
-   :members:
-   :undoc-members:
 
    
    

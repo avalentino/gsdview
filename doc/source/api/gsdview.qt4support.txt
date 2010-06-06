@@ -2,8 +2,6 @@ gsdview.qt4support
 ==================
 
 .. automodule:: gsdview.qt4support
-   :members:
-   :undoc-members:
 
    
    

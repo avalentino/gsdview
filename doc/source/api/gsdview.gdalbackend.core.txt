@@ -2,8 +2,6 @@ gsdview.gdalbackend.core
 ========================
 
 .. automodule:: gsdview.gdalbackend.core
-   :members:
-   :undoc-members:
 
    
    

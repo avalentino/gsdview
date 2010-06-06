@@ -2,8 +2,6 @@ exectools.std
 =============
 
 .. automodule:: exectools.std
-   :members:
-   :undoc-members:
 
    
    

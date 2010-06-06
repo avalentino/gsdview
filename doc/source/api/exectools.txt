@@ -2,8 +2,6 @@ exectools
 =========
 
 .. automodule:: exectools
-   :members:
-   :undoc-members:
 
    
    

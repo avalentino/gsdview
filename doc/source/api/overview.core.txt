@@ -2,8 +2,6 @@ overview.core
 =============
 
 .. automodule:: overview.core
-   :members:
-   :undoc-members:
 
    
    

@@ -2,8 +2,6 @@ gsdview.gdalbackend.modelitems
 ==============================
 
 .. automodule:: gsdview.gdalbackend.modelitems
-   :members:
-   :undoc-members:
 
    
    

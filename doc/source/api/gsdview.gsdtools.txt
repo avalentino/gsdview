@@ -2,8 +2,6 @@ gsdview.gsdtools
 ================
 
 .. automodule:: gsdview.gsdtools
-   :members:
-   :undoc-members:
 
    
    

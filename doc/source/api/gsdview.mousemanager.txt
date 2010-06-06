@@ -2,8 +2,6 @@ gsdview.mousemanager
 ====================
 
 .. automodule:: gsdview.mousemanager
-   :members:
-   :undoc-members:
 
    
    

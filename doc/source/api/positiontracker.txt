@@ -2,8 +2,6 @@ positiontracker
 ===============
 
 .. automodule:: positiontracker
-   :members:
-   :undoc-members:
 
    
    

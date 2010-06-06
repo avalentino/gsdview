@@ -2,8 +2,6 @@ zoom.core
 =========
 
 .. automodule:: zoom.core
-   :members:
-   :undoc-members:
 
    
    

@@ -2,8 +2,6 @@ gsdview.qtwindowlistmenu
 ========================
 
 .. automodule:: gsdview.qtwindowlistmenu
-   :members:
-   :undoc-members:
 
    
    

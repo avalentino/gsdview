@@ -2,8 +2,6 @@ gsdview.launch
 ==============
 
 .. automodule:: gsdview.launch
-   :members:
-   :undoc-members:
 
    
    

@@ -100,14 +100,18 @@ pygments_style = 'sphinx'
 
 # -- Extensions configuration --------------------------------------------------
 
-# External links configuration
-extlinks = {'issue': ('http://sourceforge.net/apps/trac/gsdview/ticket/%s', '#')}
+# Autodoc configuration
+autodoc_default_flags = ['members', 'undoc-members', 'inherited-members',
+                         'show-inheritance']
 
 # Auto summary generation
 autosummary_generate = ['reference']
 
 # Enable todo list reporting
 todo_include_todos = True
+
+# External links configuration
+extlinks = {'issue': ('http://sf.net/apps/trac/gsdview/ticket/%s', '#')}
 
 # -- Options for HTML output ---------------------------------------------------
 

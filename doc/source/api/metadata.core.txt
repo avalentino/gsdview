@@ -2,8 +2,6 @@ metadata.core
 =============
 
 .. automodule:: metadata.core
-   :members:
-   :undoc-members:
 
    
    

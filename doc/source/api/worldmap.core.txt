@@ -2,8 +2,6 @@ worldmap.core
 =============
 
 .. automodule:: worldmap.core
-   :members:
-   :undoc-members:
 
    
    

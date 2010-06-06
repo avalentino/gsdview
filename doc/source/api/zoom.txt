@@ -2,8 +2,6 @@ zoom
 ====
 
 .. automodule:: zoom
-   :members:
-   :undoc-members:
 
    
    

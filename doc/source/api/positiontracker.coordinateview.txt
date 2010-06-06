@@ -2,8 +2,6 @@ positiontracker.coordinateview
 ==============================
 
 .. automodule:: positiontracker.coordinateview
-   :members:
-   :undoc-members:
 
    
    

@@ -2,8 +2,6 @@ gsdview.assistanthelper
 =======================
 
 .. automodule:: gsdview.assistanthelper
-   :members:
-   :undoc-members:
 
    
    

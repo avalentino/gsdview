@@ -2,8 +2,6 @@ gsdview.widgets
 ===============
 
 .. automodule:: gsdview.widgets
-   :members:
-   :undoc-members:
 
    
    

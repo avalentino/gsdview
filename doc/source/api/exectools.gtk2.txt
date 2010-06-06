@@ -2,8 +2,6 @@ exectools.gtk2
 ==============
 
 .. automodule:: exectools.gtk2
-   :members:
-   :undoc-members:
 
    
    
@@ -22,7 +20,6 @@ exectools.gtk2
    .. autosummary::
    
       BaseOutputHandler
-      BaseToolController
       GtkBlinker
       GtkDialogLoggingHandler
       GtkLoggingHandler
@@ -30,6 +27,7 @@ exectools.gtk2
       GtkOutputPlane
       GtkToolController
       Popen
+      StdToolController
    
    
 
