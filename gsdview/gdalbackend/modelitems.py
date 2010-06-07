@@ -82,15 +82,15 @@ class MajorObjectItem(QtGui.QStandardItem):
 
 
 class BandItem(MajorObjectItem):
-    '''Raster band item
+    '''Raster band item.
 
     This class implements both the QStandardItem and the gdal.Band interface.
     It also as attatched a graphics scene containing a GdalGraphicsItem
 
-    :Extra attributes:
+    :Attributes:
 
-    - scene
-    - graphicsitem
+    - :attr:`scene`
+    - :attr:`graphicsitem`
 
     '''
 
@@ -113,9 +113,11 @@ class BandItem(MajorObjectItem):
     def footprint(self):
         return self.parent().footprint()
 
-    # readonly # @TODO: check
+    # readonly
     @property
     def cmapper(self):
+        '''Coordinate mapper object.'''
+
         return self.parent().cmapper
 
     def GetOverview(self, index):

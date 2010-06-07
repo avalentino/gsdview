@@ -146,7 +146,7 @@ class GtkShell(object):
                                                         (self.historyfile, e))
 
     def _reset(self):
-        self.controller.reset_controller()
+        self.controller._reset()
         self.cmdbutton.set_label(gtk.STOCK_EXECUTE)
         self.cmdbox.set_sensitive(True)
         self.entry.grab_focus()

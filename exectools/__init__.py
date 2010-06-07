@@ -279,8 +279,7 @@ class ToolDescriptor(object):
         self.stdout_handler = stdout_handler
         self.stderr_handler = stderr_handler
 
-    @property
-    def env(self):
+    def _getenv(self):
         if self.envmerge:
             env = os.environ.copy()
             if self._env:
@@ -289,10 +288,25 @@ class ToolDescriptor(object):
         else:
             return self._env
 
-    # @COMPATIBILITY: property.setter nedds Python >= 2.6
-    @env.setter
-    def env(self, env):
+    def _setenv(self, env):
         self._env = env
+
+    env = property(_getenv, _setenv, doc='the tool environment')
+
+    ## @COMPATIBILITY: property.setter nedds Python >= 2.6
+    #@property
+    #def env(self):
+    #    if self.envmerge:
+    #        env = os.environ.copy()
+    #        if self._env:
+    #            env.update(self._env)
+    #        return env
+    #    else:
+    #        return self._env
+    #
+    #@env.setter
+    #def env(self, env):
+    #    self._env = env
 
     def cmdline(self, *args, **kwargs):
         '''Generate the complete command-line for the tool.
@@ -351,7 +365,7 @@ class BaseToolController(object):
     def __init__(self, logger=None):
         super(BaseToolController, self).__init__()
         self.subprocess = None
-        self._stopped = False
+        self._userstop = False
 
         self._tool = None
 
@@ -361,8 +375,9 @@ class BaseToolController(object):
             assert isinstance(logger, logging.Logger)
             self.logger = logger
 
-    # @TODO: check
-    #stopped = property(lambda self: self._stopped)
+    userstop = property(lambda self: self._userstop,
+                        doc='tells whenever the process has been stopped by '
+                            'the user')
 
     def finalize_run_hook(self):
         '''Hook method for extra finalization tasks.
@@ -382,8 +397,27 @@ class BaseToolController(object):
     def finalize_run(self, *args, **kwargs):
         raise NotImplementedError('finalize_run')
 
-    def reset_controller(self):
-        raise NotImplementedError('reset_controller')
+    def _reset(self):
+        '''Internal reset.
+
+        Kill the controlled subprocess and reset I/O channels loosing
+        all unprocessed data.
+
+        '''
+
+        if self._tool:
+            if self._tool.stdout_handler:
+                self._tool.stdout_handler.reset()
+            if self._tool.stderr_handler:
+                self._tool.stderr_handler.reset()
+
+
+    def reset(self):
+        '''Reset the tool controller instance'''
+
+        self._reset()
+        self._userstop = False
+        self._tool = None
 
     def prerun_hook(self, cmd):
         '''Hook method for extra pre-run actions.

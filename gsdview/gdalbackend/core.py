@@ -528,6 +528,7 @@ class GDALBackend(QtCore.QObject):
             args = [os.path.basename(vrtfilename)]
             args.extend(map(str, missingOverviewLevels))
 
+            # @TODO: fix
             # @WARNING: this is a real mess.
             #
             #           The dataset is attarched to the tool descriptor in
@@ -544,17 +545,20 @@ class GDALBackend(QtCore.QObject):
     def _finalize(self, returncode=0):
         # @TODO: check if opening the dataset in update mode
         #        (gdal.GA_Update) is a better solution
-
         dataset = getattr(self.addotool, '_dataset', None)
         if not dataset:
-            self._app.logger.debug('unable to retrieve dataset for finalization')
+            self._app.logger.debug('unable to retrieve dataset for '
+                                   'finalization')
             return
 
         self.addotool._dataset = None
-        dataset.reopen()
-        for row in range(dataset.rowCount()):
-            item = dataset.child(row)
-            self._app.treeview.expand(item.index())
+        # @TODO: check
+        # only reload if processing finished successfully
+        if returncode == 0:
+            dataset.reopen()
+            for row in range(dataset.rowCount()):
+                item = dataset.child(row)
+                self._app.treeview.expand(item.index())
 
     ### END ###################################################################
     ###########################################################################

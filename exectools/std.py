@@ -52,8 +52,7 @@ class StdToolController(BaseToolController):
 
         '''
 
-        assert self.subprocess is None
-
+        self.reset()
         self._tool = tool
 
         if sys.platform[:3] == 'win':
@@ -88,9 +87,9 @@ class StdToolController(BaseToolController):
                 args = ' '.join(args)
             msg = 'Unable to execute: "%s"' % args
             self.logger.error(msg, exc_info=True)
-            self.reset_controller()
+            self._reset()
         except:
-            self.reset_controller()
+            self._reset()
             raise
 
     def finalize_run(self, *args, **kwargs):
@@ -161,7 +160,7 @@ class StdToolController(BaseToolController):
                 if self._tool.stderr_handler:
                     self._tool.stderr_handler.close()
 
-                if self._stopped:
+                if self._userstop:
                     self.logger.info('Execution stopped by the user.')
                 elif self.subprocess.returncode != EX_OK:
                     msg = ('Process (PID=%d) exited with return code %d.' %
@@ -174,13 +173,13 @@ class StdToolController(BaseToolController):
         finally:
             # Protect for unexpected errors in the feed and close methods of
             # the outputhandler
-            self.reset_controller()
+            self._reset()
 
-    def reset_controller(self):
-        '''Reset the tool controller instance.
+    def _reset(self):
+        '''Internal reset.
 
-        Kill the controlled subprocess and reset the controller
-        instance losing all unprocessed data.
+        Kill the controlled subprocess and reset I/O channels loosing
+        all unprocessed data.
 
         '''
 
@@ -191,15 +190,18 @@ class StdToolController(BaseToolController):
                 self.subprocess.returncode is not None), \
                                         'the process is still running'
 
-        if self._tool:
-            if self._tool.stdout_handler:
-                self._tool.stdout_handler.reset()
-            if self._tool.stderr_handler:
-                self._tool.stderr_handler.reset()
+        super(StdToolController, self)._reset()
 
+    def reset(self):
+        '''Reset the tool controller instance.
+
+        Kill the controlled subprocess and reset the controller
+        instance loosing all unprocessed data.
+
+        '''
+
+        super(StdToolController, self).reset()
         self.subprocess = None
-        self._stopped = False
-        self._tool = None
 
     def handle_stdout(self, *args):
         '''Handle standard output data.
@@ -257,18 +259,18 @@ class StdToolController(BaseToolController):
         # @TODO: fix stop function with shell=True
         if self.subprocess:
             self.logger.debug('Execution stopped by the user.')
-            self._stopped = True
+            self._userstop = True
             stopped = self.subprocess.stop(force)
             if not stopped:
                 msg = ('Unable to stop the sub-process (PID=%d).' %
                                                         self.subprocess.pid)
                 self.logger.warning(msg)
-                self.reset_controller()
+                self._reset()
             # The subprocess is successfully stopped.
             # The output handler will provide to the finalization
             # NOTE: return without reset
         else:
-            self.reset_controller()
+            self._reset()
 
 
 # @TODO: logging handler for progress

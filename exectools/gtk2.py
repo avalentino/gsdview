@@ -67,10 +67,11 @@ class Popen(gobject.GObject, subprocess2.Popen):
         return True
 
     def close(self):
-        if self.stdout:
-            self.stdout.close()
-        if self.stderr:
-            self.stderr.close()
+        # @NOTE: don't close system stdout and stderr
+        #if self.stdout:
+        #    self.stdout.close()
+        #if self.stderr:
+        #    self.stderr.close()
 
         for tag in self._watch_tags:
             gobject.source_remove(tag)
@@ -550,11 +551,11 @@ class GtkToolController(gobject.GObject, StdToolController):
         super(GtkToolController, self).finalize_run()
         self.emit('finished', returncode)
 
-    def reset_controller(self):
-        '''Reset the tool controller instance.
+    def _reset(self):
+        '''Internal reset.
 
-        Kill the controlled subprocess and reset the controller
-        instance losing all unprocessed data.
+        Kill the controlled subprocess and reset I/O channels loosing
+        all unprocessed data.
 
         '''
 
@@ -562,7 +563,8 @@ class GtkToolController(gobject.GObject, StdToolController):
             self.disconnect(handler_id)
         if self.subprocess:
             self.subprocess.close()
-        super(GtkToolController, self).reset_controller()
+
+        super(GtkToolController, self)._reset()
 
     def connect_output_handlers(self):
         '''Connect output handlers'''
@@ -586,8 +588,7 @@ class GtkToolController(gobject.GObject, StdToolController):
 
         '''
 
-        assert self.subprocess is None
-
+        self.reset()
         self._tool = tool
 
         if sys.platform[:3] == 'win':
@@ -622,16 +623,18 @@ class GtkToolController(gobject.GObject, StdToolController):
                 cmd = ' '.join(cmd)
             msg = 'Unable to execute: "%s"' % cmd
             self.logger.error(msg, exc_info=True)
-            self.reset_controller()
-            self.emit('finished')
+            self._reset()
+
+            # ..seealso:: http://tldp.org/LDP/abs/html/exitcodes.html
+            self.emit('finished', 126)   # @TODO: check
         except:
-            self.reset_controller()
+            self._reset()
             raise
 
     def handle_finished(self, *args):
         '''Handle process termination'''
 
-        if not self._stopped:
+        if not self._userstop:
             self.logger.debug('finished PID=%d' % self.subprocess.pid)
 
         self.finalize_run()
@@ -639,7 +642,7 @@ class GtkToolController(gobject.GObject, StdToolController):
     def handle_ioerror(self, *args):
         '''Handle a IO error while process execution'''
 
-        if not self._stopped:
+        if not self._userstop:
             msg = 'I/O error from sub-process PID=%d' % self.subprocess.pid
             #self.logger.error(msg)
             self.logger.debug(msg)
@@ -647,7 +650,7 @@ class GtkToolController(gobject.GObject, StdToolController):
     def handle_connection_broken(self, *args):
         '''Handle a connection broken'''
 
-        if not self._stopped:
+        if not self._userstop:
             msg = ('Connection broken with sub-process PID=%d' %
                                                         self.subprocess.pid)
             #self.logger.error(msg)

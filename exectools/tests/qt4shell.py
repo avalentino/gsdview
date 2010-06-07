@@ -138,7 +138,7 @@ class Qt4Shell(QtGui.QMainWindow):
                                                         (self.historyfile, e))
 
     def _reset(self):
-        self.controller.reset_controller()
+        self.controller.reset()
         # @TOD: use icons here
         self.cmdbutton.setText('Run')
         self.cmdbox.setEnabled(True)

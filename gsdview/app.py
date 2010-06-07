@@ -32,7 +32,6 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from exectools import ToolDescriptor
 from exectools.qt4 import Qt4ToolController, Qt4DialogLoggingHandler
 
 from gsdview import info
@@ -725,14 +724,13 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         self.progressbar.setValue(int(100.*fract))
 
     def processingDone(self, returncode=0):
-        self.controller.reset_controller()
+        self.controller.reset()
         try:
             if returncode != 0:
                 msg = ('An error occurred during the quicklook generation.\n'
                        'Now close the dataset.')
                 QtGui.QMessageBox.warning(self, '', msg)
                 self.closeItem()   # @TODO: check
-                return
         finally:
             self.progressbar.hide()
             self.statusBar().showMessage('Ready.')
