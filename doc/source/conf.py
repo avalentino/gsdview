@@ -101,6 +101,7 @@ pygments_style = 'sphinx'
 # -- Extensions configuration --------------------------------------------------
 
 # Autodoc configuration
+autoclass_content = 'both'
 autodoc_default_flags = ['members', 'undoc-members', 'inherited-members',
                          'show-inheritance']
 

@@ -543,6 +543,12 @@ class GDALBackend(QtCore.QObject):
             self._app.controller.run_tool(self.addotool, *args)
 
     def _finalize(self, returncode=0):
+        # @TODO: this method should be run before controller.reset() is called
+        #        in order to be able to query the controller itsef
+        #        (e.g. check if the external tool has been stopped by the user)
+
+        # @TODO: try to use finalization callback in main app
+
         # @TODO: check if opening the dataset in update mode
         #        (gdal.GA_Update) is a better solution
         dataset = getattr(self.addotool, '_dataset', None)

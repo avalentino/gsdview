@@ -241,42 +241,74 @@ class BaseOutputHandler(object):
 class ToolDescriptor(object):
     '''Command line tool desctiptor.
 
-    :ivar executable:     full path of the tool executable or just the
-                          tool program name if it is in the system
-                          search path
-    :ivar args:           default args for command
-    :ivar cwd:            program working directory
-    :ivar env:            environment dictionary
-    :ivar envmerge:       if set to True (default) it is the :ref:`env`
-                          dictionaty is used to update the system
-                          environment.
-    :ivar stdout_handler: the OutputHandler for the stdout of the tool
-    :ivar stderr_handler: the OutputHandler for the stderr of the tool
-
-    .. todo:: shell
+    A :class:`ToolDescriptor` instance describes a command line tool
+    (:attr:`executable`), how to run it (:attr:`args`, :attr:`cwd`,
+    :attr:`env`) and how to handle its output (:attr:`stdout_handler`,
+    :attr:`stderr_handler`).
 
     Example::
 
         handler = BaseOutputHandler()
-        ll = ToolDescriptor(cmd='ls', args='-l', stdout_handler=handler)
-        cntroller.run_tool(ll)
+        ll = ToolDescriptor(executable='ls', args=['-l'],
+                            stdout_handler=handler)
+        controller.run_tool(ll)
 
+        # In this case no executabe is set in the descriptor.
         cmd = ToolDescriptor(stdout_handler=handler)
-        cntroller.run_tool(cmd, 'ls', '-l')
+
+        # The executable name is passed at execution time (first argument)
+        controller.run_tool(cmd, 'ls', '-l')
 
     '''
 
     def __init__(self, executable, args=None, cwd=None, env=None,
                  stdout_handler=None, stderr_handler=None):
-        super(ToolDescriptor, self).__init__()
-        self.executable = executable
-        self.args = args
-        self.cwd = cwd
-        self._env = env
-        self.envmerge = True
-        self.shell = False  # @WARNING: shell proceses can't be stopped
+        '''
 
+        :param executable:     full path of the tool executable or just
+                               the tool program name if it is in the 
+                               system search path
+        :param args:           default args for command (list of strings)
+        :type args:            list
+        :param cwd:            program working directory
+        :param env:            environment dictionary
+        :param envmerge:       if set to True (default) it is the
+                               :ref:`env` dictionaty is used to update
+                               the system environment
+        :param stdout_handler: `OutputHandler` for the stdout of the tool
+        :param stderr_handler: `OutputHandler` for the stderr of the tool
+
+        '''
+
+        super(ToolDescriptor, self).__init__()
+
+        #: full path of the tool executable or just the tool program name
+        #  if it is in the system search path
+        self.executable = executable
+
+        #: default args for command
+        self.args = args
+
+        #: program working directory
+        self.cwd = cwd
+
+        #: if set to True (default) then the :attr:`env` dictionaty is used
+        #: to update the system environment
+        self.envmerge = True
+        self._env = env
+
+        #: is set to true the external too is executed in a system shell
+        #:
+        #: .. warning:: some implementation don't allow to stop a subprocess
+        #:              executed via shell
+        self.shell = False
+
+        #: the *OutputHandler* for the stdout of the tool
+        #:
+        #: .. seealso:: :class:`BaseOutputHandler`
         self.stdout_handler = stdout_handler
+
+        #: the *OutputHandler* for the stderr of the tool
         self.stderr_handler = stderr_handler
 
     def _getenv(self):
@@ -316,7 +348,7 @@ class ToolDescriptor(object):
 
         If the executable attribute is not set (evaluate false) then
         the first non-keyword argument is considered to be the
-        executable tool  name.
+        executable tool name.
 
         The command line is build as follows::
 
@@ -358,12 +390,22 @@ class BaseToolController(object):
     optionally, notifications can be achieved at sub-process
     termination.
 
-    A tool controller also allow to stop the controlled process.
+    A tool controller also allows to stop the controlled process.
+
+    .. note:: after the process termination the user can still query
+              both :attr:`subprocess` and :attr:`stopped` for getting
+              info about the executed process.
+
+              The user should have care of calling :meth:`reset` when
+              info n executed process are no more needed or before
+              executing a new process.
 
     '''
 
     def __init__(self, logger=None):
         super(BaseToolController, self).__init__()
+
+        #: the subprocess instance
         self.subprocess = None
         self._userstop = False
 

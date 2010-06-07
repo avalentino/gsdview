@@ -20,7 +20,6 @@ gsdview.app
       PreferencesDialog
       Qt4DialogLoggingHandler
       Qt4ToolController
-      ToolDescriptor
    
    
 
