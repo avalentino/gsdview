@@ -266,7 +266,7 @@ class ToolDescriptor(object):
         '''
 
         :param executable:     full path of the tool executable or just
-                               the tool program name if it is in the 
+                               the tool program name if it is in the
                                system search path
         :param args:           default args for command (list of strings)
         :type args:            list

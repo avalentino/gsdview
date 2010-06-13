@@ -87,11 +87,6 @@ class BandItem(MajorObjectItem):
     This class implements both the QStandardItem and the gdal.Band interface.
     It also as attatched a graphics scene containing a GdalGraphicsItem
 
-    :Attributes:
-
-    - :attr:`scene`
-    - :attr:`graphicsitem`
-
     '''
 
     iconfile = qt4support.geticon('rasterband.svg', __name__)
@@ -101,7 +96,11 @@ class BandItem(MajorObjectItem):
         assert band is not None
         super(BandItem, self).__init__(band)
         self._setup_children()
+
+        #: graphics scene associated to the raster band
         self.scene = None
+
+        #: graphics item representing the raster band
         self.graphicsitem = None
 
         # @TODO: lazy behaviour: postpone the scene/view initialization when
@@ -194,9 +193,6 @@ class DatasetItem(MajorObjectItem):
     This class implements both the QStandardItem and the gdal.Dataset
     interface.
 
-    :ivar filename: dataset filename
-    :ivar cmapper:  coordiante mapper
-
     '''
 
     iconfile = qt4support.geticon('dataset.svg', __name__)
@@ -208,17 +204,23 @@ class DatasetItem(MajorObjectItem):
         super(DatasetItem, self).__init__(gdalobj)
         if os.path.basename(filename) in self.text():
             self.setText(os.path.basename(filename))
+
+        #: dataset filename
         self.filename = filename
         self._mode = mode
         self._setup_children()
 
-        # TODO: improve attribute name
+        #: coordiante mapper
         self.cmapper = gdalsupport.coordinate_mapper(self._obj)
 
         # @TODO: lazy behaviour: postpone the scene/view initialization when
         #        it is actualy needed
         scene, graphicsitem = self._setup_scene()
+
+        #: graphics scene associated to the item
         self.scene = scene
+
+        #: graphics item representing the dataset
         self.graphicsitem = graphicsitem
 
     def _checkedopen(self, filename, mode=gdal.GA_ReadOnly):
@@ -373,23 +375,30 @@ class CachedDatasetItem(DatasetItem):
         MajorObjectItem.__init__(self, gdalobj)
         if os.path.basename(filename) in self.text():
             self.setText(os.path.basename(filename))
+
+        #: dataset filename
         self.filename = filename
         self._mode = mode
 
         vrtfilename, vrtobj = self._vrtinit(self._obj)
 
+        #: filename of the cached virtual dataset
         self.vrtfilename = vrtfilename
         self._vrtobj = vrtobj
 
         self._setup_children()
 
-        # TODO: improve attribute name
+        #: coordinate mapper
         self.cmapper = gdalsupport.coordinate_mapper(self._obj)
 
         # @TODO: lazy behaviour: postpone the scene/view initialization when
         #        it is actualy needed
         scene, graphicsitem = self._setup_scene()
+
+        #: graphics scene associated to the item
         self.scene = scene
+
+        #: graphics item representing the dataset
         self.graphicsitem = graphicsitem
 
     def _vrtinit(self, gdalobj, cachedir=None):
@@ -478,6 +487,8 @@ class CachedDatasetItem(DatasetItem):
 
 
 def datasetitem(filename):
+    '''Factory for dataset items.'''
+
     # Some dataset has only sub-datasets (no raster band).
     # In this case it is not possible to use a virtual datasets like
     # CachedDatasetItem does
@@ -497,12 +508,17 @@ class SubDatasetItem(CachedDatasetItem):
         self.setText(extrainfo)
         self.setToolTip(extrainfo)
 
+        #: dataset filename
         self.filename = gdalfilename
-        self.extrainfo = extrainfo
 
-        # @TODO: check
+        #: GDAL sub-dataset info
+        self.extrainfo = extrainfo
         self._mode = None
+
+        #: coordinate mapper
         self.cmapper = None
+
+        #: filename of the cached virtual dataset
         self.vrtfilename = None
 
         # @TODO: check if it is possible that self._obj not None at this point

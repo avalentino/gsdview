@@ -48,6 +48,7 @@ class GdalAddOverviewDescriptor(exectools.ToolDescriptor):
         super(GdalAddOverviewDescriptor, self).__init__(
                     executable, args, cwd, env, stdout_handler, stderr_handler)
 
+
 class GdalOutputHandler(Qt4OutputHandler):
     '''Handler for the GDAL simple progress report to terminal.
 
@@ -96,6 +97,7 @@ class GdalOutputHandler(Qt4OutputHandler):
     def reset(self):
         super(GdalOutputHandler, self).reset()
         self.percentage = 0.
+
 
 if __name__ == '__main__':
     def test_GdalOutputHandler_re():
