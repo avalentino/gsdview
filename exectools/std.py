@@ -43,6 +43,12 @@ class StdToolController(BaseToolController):
 
     '''
 
+    @property
+    def isbusy(self):
+        '''If True then the controller is already running a subprocess.'''
+
+        return self.subclasses is not None
+
     def run_tool(self, tool, *args, **kwargs):
         '''Run an external tool in controlled way.
 

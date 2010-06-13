@@ -405,6 +405,12 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
                         QtCore.SIGNAL('finished(int, QProcess::ExitStatus)'),
                         self.finalize_run)
 
+    @property
+    def isbusy(self):
+        '''If True then the controller is already running a subprocess.'''
+
+        return self.subprocess.state() != self.subprocess.NotRunning
+
     def finalize_run(self, exitCode=None, exitStatus=None, **kwargs):
         '''Perform finalization actions.
 

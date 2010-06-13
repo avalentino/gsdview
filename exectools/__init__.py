@@ -417,9 +417,17 @@ class BaseToolController(object):
             assert isinstance(logger, logging.Logger)
             self.logger = logger
 
-    userstop = property(lambda self: self._userstop,
-                        doc='tells whenever the process has been stopped by '
-                            'the user')
+    @property
+    def isbusy(self):
+        '''If True then the controller is already running a subprocess.'''
+
+        raise NotImplementedError('BaseToolController.busy')
+
+    @property
+    def userstop(self):
+        '''If True the process has been stopped by the user.'''
+
+        return self._userstop
 
     def finalize_run_hook(self):
         '''Hook method for extra finalization tasks.
