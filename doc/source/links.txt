@@ -247,7 +247,7 @@ ERS_
       (L’Aquila, Haiti and Sichuan)
     * Sample ERS products can be found at Acres_
 ENVISAT_
-    * `Sample products <http://envisat.esa.int/services/sample_products>`_
+    * `ENVISAT sample products <http://envisat.esa.int/services/sample_products>`_
     * `Envisat auxiliary data <http://earth.esa.int/services/auxiliary_data>`_
     * `Earthquakes <http://earth.esa.int/category/index.cfm?fcategoryid=37>`_
       (L’Aquila, Haiti and Sichuan)
@@ -272,7 +272,9 @@ JERS_
 ASTER_
     Sample ASTER products can be found at Acres_
 Landsat_
-    * landsat.org provides `Free ortorectified <http://www.landsat.org/ortho>`_ data
+    * landsat.org provides free 
+      `sample products <http://landsat.usgs.gov/products_sample_products.php>`_
+      and free `orto-rectified <http://www.landsat.org/ortho>`_ data
     * Sample Landsat5 and Landsat7 products can be found at Acres_
 Polarimetry_
     The `PolSARpro sample dataset <http://earth.esa.int/polsarpro/datasets.html>`_
@@ -284,7 +286,23 @@ Free UAVSAR_ data on ASF_ site
     to acquire airborne repeat-track SAR data for differential interferometric
     measurements.
 LAADS_ Web
-    MODIS level 1 and atmosphere data products
+    MODIS level 1 and atmosphere data products.
+RapidEye_
+    RapidEye_  demo products. Standard Image Products (Level 1B or a Level 3A) 
+    of Griffith, New South Wales, Australia.
+WorldView
+    WorldView-1_ and WorldView-2_ products are available on the 
+    `DigitalGlobe demo products page`_.
+QuickBird
+    QuickBird products are available on the `DigitalGlobe demo products page`_.
+Spot
+    Spot Spot3D and SpotMap products are available on the 
+    `SpotImage demo products page`_.
+Formosat-2
+    Formosat-2 products are available on the `SpotImage demo products page`_.
+Kompsat-2
+    Kompsat-2 products are available on the `SpotImage demo products page`_.
+
 
 .. _ERS: http://earth.esa.int/ers
 .. _ENVISAT: http://envisat.esa.int
@@ -300,6 +318,12 @@ LAADS_ Web
 .. _Infoterra: http://www.infoterra.de
 .. _UAVSAR: http://uavsar.asfdaac.alaska.edu
 .. _LAADS: http://ladsweb.nascom.nasa.gov
+.. _RapidEye: http://www.rapideye.de/home/products/demonstration-products
+.. _`DigitalGlobe demo products page`: http://www.digitalglobe.com/index.php/70/Product+Samples
+.. _WorldView-1: http://www.digitalglobe.com/index.php/86/WorldView-1
+.. _WorldView-2: http://www.digitalglobe.com/index.php/88/WorldView-2
+.. _QuickBird: http://www.digitalglobe.com/index.php/85/QuickBird
+.. _`SpotImage demo products page`: http://www.spotimage.com/web/en/2604-demonstration-products.php
 
 
 Vector data
@@ -313,8 +337,12 @@ GSHHS_
 
     The shorelines are constructed entirely from hierarchically arranged closed
     polygons.
+NaturalEarth_
+    Public domain map dataset available at 1:10m, 1:50m, and 1:110 million 
+    scales.
 
 .. _GSHHS: http://www.ngdc.noaa.gov/mgg/shorelines/gshhs.html
+.. _NaturalEarth: http://www.naturalearthdata.com
 
 
 DEM
@@ -333,4 +361,13 @@ NOAA_
 .. _SRTM3: http://dds.cr.usgs.gov/srtm/version2_1/SRTM3
 .. _GTOPO30: http://www1.gsi.go.jp/geowww/globalmap-gsi/gtopo30/gtopo30.html
 .. _NOAA: http://www.ngdc.noaa.gov/mgg/topo/globe.html
+
+
+Other
+~~~~~
+
+BlueMarble_
+    Blue Marble globe images.
+
+.. _BlueMarble: http://earthobservatory.nasa.gov/Features/BlueMarble
 
