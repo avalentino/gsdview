@@ -145,7 +145,12 @@ class ItemModelMainWindow(MdiMainWindow):
         for row in range(start, end+1):
             item = parentitem.child(row)
             for subwin in self.mdiarea.subWindowList():
-                if subwin.item == parentitem:
+                if subwin.item == item:
                     subwin.close()
-                    # just une window per item (??)
+                    # just une window per run (??)
                     break
+        for subwin in self.mdiarea.subWindowList():
+            if subwin.item == parentitem:
+                subwin.close()
+                # just une window per run (??)
+                break
