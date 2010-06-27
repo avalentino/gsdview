@@ -63,6 +63,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
     :ivar aboutdialog:        about dialog instance
     :ivar preferencedsdialog: prefernces dialog instance
     :ivar progressbar:        progress bar instance
+    :ivar stopbutton:         stop button for external tools
     :ivar settings_submenu:   settings sub-menu
     :ivar settings:           application settings
     :ivar logger:             application sandard logger
@@ -107,6 +108,14 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         self.preferencesdialog = PreferencesDialog(self)
         self.connect(self.preferencesdialog, QtCore.SIGNAL('apply()'),
                      self.applySettings)
+
+        # Stop button
+        logger.debug('Setting up the stop button ...')
+        qstyle = QtGui.qApp.style()
+        icon = qstyle.standardIcon(QtGui.QStyle.SP_BrowserStop)
+        self.stopbutton = QtGui.QPushButton(icon, self.tr('Stop'), self)
+        self.statusBar().addPermanentWidget(self.stopbutton)
+        self.stopbutton.hide()
 
         # Progressbar
         logger.debug('Setting up the progress bar ...')
@@ -283,6 +292,10 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
             return
         self._busy = True
 
+        # @TODO: sometimes a RuntimeError is raised claiming that the
+        #        "underlying C/C++ object has been deleted".
+        #        Try to build the dialog without parent (self) and check
+        #        modality.
         dialog = ExceptionDialog(exctype, excvalue, tracebackobj, self)
         #dialog.show()
         ret = dialog.exec_()
@@ -379,6 +392,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         self.settingsActions = self._setupSettingsActions()
         self.helpActions = self._setupHelpActions()
         # @TODO: tree view actions: expand/collapse all, expand/collapse subtree
+        # @TODO: stop action
 
     def _addMenuFromActions(self, actions, name):
         menu = qt4support.actionGroupToMenu(actions, name, self)
@@ -437,8 +451,12 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
 
     def setupController(self, logger, statusbar, progressbar):
         controller = Qt4ToolController(logger, parent=self)
+        controller.connect(controller.subprocess, QtCore.SIGNAL('started()'),
+                           self.processingStarted)
         controller.connect(controller, QtCore.SIGNAL('finished(int)'),
                            self.processingDone)
+        self.connect(self.stopbutton, QtCore.SIGNAL('clicked()'),
+                     controller.stop_tool)
 
         return controller
 
@@ -719,12 +737,19 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
                 root.removeRow(item.row())
 
     ### Auxiliary methods ####################################################
+    def processingStarted(self, msg=None):
+        if msg:
+            self.statusBar().showMessage(msg)
+        self.progressbar.show()
+        self.stopbutton.setEnabled(True)
+        self.stopbutton.show()
+
     def updateProgressBar(self, fract):
         self.progressbar.show()
         self.progressbar.setValue(int(100.*fract))
 
     def processingDone(self, returncode=0):
-        self.controller.reset()
+        #self.controller.reset() # @TODO: remove
         try:
             if returncode != 0:
                 msg = ('An error occurred during the quicklook generation.\n'
@@ -733,4 +758,6 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
                 self.closeItem()   # @TODO: check
         finally:
             self.progressbar.hide()
+            self.stopbutton.setEnabled(False)
+            self.stopbutton.hide()
             self.statusBar().showMessage('Ready.')
