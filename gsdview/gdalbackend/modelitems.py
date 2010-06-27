@@ -78,7 +78,10 @@ class MajorObjectItem(QtGui.QStandardItem):
             except AttributeError:
                 logging.debug('unexpected child item class: "%s"' %
                                                 type(self.child(0)).__name__)
-            self.removeRow(0)
+            # @NOTE: use takeRow instead of removeRow in order to avoid the
+            #        underlying C/C++ object is deleted before all sub-windows
+            #        that hold a reference to the stditem are destroyed
+            self.takeRow(0)
 
 
 class BandItem(MajorObjectItem):
@@ -354,8 +357,11 @@ class DatasetItem(MajorObjectItem):
         parent = self.parent()
         if not parent:
             parent = self.model().invisibleRootItem()
-        self._obj = None
-        parent.removeRow(self.row())
+        # @NOTE: use takeRow instead of removeRow in order to avoid the
+        #        underlying C/C++ object is deleted before all sub-windows
+        #        that hold a reference to the stditem are destroyed
+        parent.takeRow(self.row())
+        self._obj = None # @TODO: check
 
 
 class CachedDatasetItem(DatasetItem):
@@ -559,10 +565,10 @@ class SubDatasetItem(CachedDatasetItem):
         #        removes itself from the model when closed and this is not the
         #        desired behaviour
         self._closeChildren()
-        self._obj = None
         self._mode = None
         self.cmapper = None
         self.vrtfilename = None
+        self._obj = None
 
     def __getattr__(self, name):
         if self._obj:
