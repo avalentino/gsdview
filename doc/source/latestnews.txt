@@ -3,7 +3,7 @@
              GDAL 1.6.x series introduced a lot of new interesting features
              and a better progress handling.
              Dropping 1.5.x series allow to use this new features in the 
-             `development branch`_ and make GSDView even better.
+             `development branch`_ to make GSDView even better.
 
 :09/05/2010: Binary package for `Mac OS X`_ released.
 
