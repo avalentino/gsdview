@@ -29,6 +29,8 @@ __revision__ = '$Revision$'
 import logging
 
 import numpy
+from numpy import ma
+
 from PyQt4 import QtCore, QtGui
 from osgeo import gdal
 from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
@@ -55,6 +57,16 @@ def gdalcolorentry2qcolor(colrentry, interpretation=gdal.GPI_RGB):
 
     return qcolor
 
+def safeDataStats(data, nodata=None):
+    if nodata is not None:
+        data = ma.masked_equal(data, nodata)
+
+    stats = (data.min(), data.max(), data.mean(), data.std())
+    stddev = stats[-1]
+    if ma.isMaskedArray(stddev) or stddev == 0:
+        stats = (None, None, None, None)
+
+    return stats
 
 # @TODO: move GraphicsView here
 
@@ -163,7 +175,7 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
                 reqlevel = 1.
             else:
                 reqlevel = 1. / levelOfDetail
-                
+
             try:
                 ovrindex = gdalsupport.ovrBestIndex(band, reqlevel)
             except gdalsupport.MissingOvrError:
@@ -182,17 +194,21 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
         # @NOTE: statistics computation is potentially slow so first check
         #        if fast statistics retriewing is possible
 
+        stats = (None, None, None, None)
+
         if band and gdalsupport.hasFastStats(band):
-            vmin, vmax, mean, stddev = band.GetStatistics(True, True)
-        elif data is not None and data.size <= 4*1024**2:
-            vmin = data.min()
-            vmax = data.max()
-            mean = data.mean()
-            stddev = data.std()
-        elif band and band.DataType == gdal.GDT_Byte:
-            return 0, 255
-        else:
-            return None, None
+            stats = gdalsupport.safeStats(band)
+
+        if None in stats and data is not None and data.size <= 4*1024**2:
+            stats = safeDataStats(data, band.GetNoDataValue())
+
+        if None in stats:
+            if band and band.DataType == gdal.GDT_Byte:
+                return 0, 255
+            else:
+                return None, None
+
+        vmin, vmax, mean, stddev = stats
 
         lower = max(mean - nsigma * stddev, 0)
         upper = min(mean + nsigma * stddev, vmax)
@@ -212,11 +228,16 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
     @staticmethod
     def _dataRange(band, data=None):
         if band and gdalsupport.hasFastStats(band):
-            vmin, vmax, mean, stddev = band.GetStatistics(True, True)
-            return vmin, vmax
-        elif data is not None and data.size <= 4*1024**2:
-            return data.min(), data.max()
-        elif band:
+            vmin, vmax, mean, stddev = gdalsupport.safeStats(band)
+            if None not in (vmin, vmax, mean, stddev):
+                return vmin, vmax
+
+        if data is not None and data.size <= 4*1024**2:
+            vmin, vmax, mean, stddev = safeDataStats(band)
+            if None not in (vmin, vmax, mean, stddev):
+                return data.min(), data.max()
+
+        if band:
             tmap = {
                 gdal.GDT_Byte:      (0, 255),
                 gdal.GDT_UInt16:    (0, 2**16-1),
@@ -229,8 +250,8 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
                 gdal.GDT_CFloat64:  (0, None),
             }
             return tmap.get(band.DataType, (None, None))
-        else:
-            return None, None
+
+        return None, None
 
     def dataRange(self, data=None):
         return None, None
@@ -273,7 +294,6 @@ class UIntGdalGraphicsItem(BaseGdalGraphicsItem):
         #if w * h > threshold:
         #    newoption = QtGui.QStyleOptionGraphicsItem(option)
         #    newoption.levelOfDetail = option.levelOfDetail*threshold/(w*h)
-        #    print 'newoption.levelOfDetail', newoption.levelOfDetail
         #    return self.paint(painter, newoption, widget)
 
         data = ovrband.ReadAsArray(x, y, w, h)
@@ -301,7 +321,6 @@ class GdalGraphicsItem(BaseGdalGraphicsItem):
         return self._dataRange(self.gdalobj, data)
 
     def paint(self, painter, option, widget):
-        #print 'paint', widget.parent()
         levelOfDetail = self._levelOfDetail(option, painter)
         ovrband, ovrlevel, ovrindex = self._bestOvrLevel(self.gdalobj,
                                                          levelOfDetail)
@@ -315,7 +334,6 @@ class GdalGraphicsItem(BaseGdalGraphicsItem):
         #if w * h > threshold:
         #    newoption = QtGui.QStyleOptionGraphicsItem(option)
         #    newoption.levelOfDetail = option.levelOfDetail * threshold / (w * h)
-        #    print 'newoption.levelOfDetail', newoption.levelOfDetail
         #    return self.paint(painter, newoption, widget)
 
         data = ovrband.ReadAsArray(x, y, w, h)
@@ -352,7 +370,6 @@ class GdalComplexGraphicsItem(GdalGraphicsItem):
         #if w * h > threshold:
         #    newoption = QtGui.QStyleOptionGraphicsItem(option)
         #    newoption.levelOfDetail = option.levelOfDetail * threshold / (w * h)
-        #    print 'newoption.levelOfDetail', newoption.levelOfDetail
         #    return self.paint(painter, newoption, widget)
 
         data = ovrband.ReadAsArray(x, y, w, h)
