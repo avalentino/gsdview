@@ -515,17 +515,25 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         logging.debug('statistics computation completed')
         self._setupStatistics(band)
 
+    def _resetStatistics(self):
+        '''Reset statistics.'''
+
+        value = self.tr('Not computed')
+        self.minimumValue.setText(value)
+        self.maximumValue.setText(value)
+        self.meanValue.setText(value)
+        self.stdValue.setText(value)
+
     def _setupStatistics(self, band):
-        # @NOTE: it is not possible to use
+        # @NOTE: the band.GetStatistics method called with the second argument
+        #        set to False (o image rescanning) has been fixed in
+        #        r19666_ (1.6 branch) and r19665_ (1.7 branch)
+        #        see `ticket #3572` on `GDAL Trac`_.
         #
-        #           band.GetStatistics(approx_ok=True, force=False)
-        #
-        #        thar ensure aquick computation, because currently python
-        #        bindings don't provide any method to detect is result is
-        #        valid or not.
-        #        As a workaround check for statistics metadata
-        #        (STATISTICS_MINIMUM, STATISTICS_MAXIMUM, STATISTICS_MEAN,
-        #        STATISTICS_STDDEV)
+        # .. _r19666: http://trac.osgeo.org/gdal/changeset/19666
+        # .. _r19665: http://trac.osgeo.org/gdal/changeset/19665
+        # .. _`ticket #3572`: http://trac.osgeo.org/gdal/ticket/3572
+        # .. _`GDAL Trac`: http://trac.osgeo.org/gdal
 
         if gdalsupport.hasFastStats(band, approx_ok=False):
             vmin, vmax, mean, stddev = band.GetStatistics(True, True)
@@ -535,11 +543,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
             self.stdValue.setText(str(stddev))
             self.computeStatsButton.setEnabled(False)
         else:
-            value = self.tr('Not computed')
-            self.minimumValue.setText(value)
-            self.maximumValue.setText(value)
-            self.meanValue.setText(value)
-            self.stdValue.setText(value)
+            self._resetStatistics()
 
     def computeHistogram(self):
         # @TODO: use an external process (??)
@@ -761,15 +765,16 @@ class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
 
         # It seems there is a bug in GDAL that causes incorrect GCPs handling
         # when a subdatast is opened (a dataset is aready open)
-        # @TODO: check and, if the case, fiel a ticket on http://www.gdal.org
+        # @TODO: check and, if the case, file a ticket on http://www.gdal.org
 
         #~ self._setupGCPs(dataset.GetGCPs(), dataset.GetGCPProjection())
-        # @TODO: report a bug on GDAL trac
         try:
-            self._setupGCPs(dataset.GetGCPs(), dataset.GetGCPProjection())
+            gcplist = dataset.GetGCPs()
         except SystemError:
             logging.debug('unable to read GCPs from dataset %s' %
                                     dataset.GetDescription())#, exc_info=True)
+        else:
+            self._setupGCPs(gcplist, dataset.GetGCPProjection())
 
     def _setupInfoTab(self, dataset):
         description = os.path.basename(dataset.GetDescription())
@@ -813,15 +818,21 @@ p, li { white-space: pre-wrap; }
             self.driverMetadataNumValue.setText(str(len(metadatalist)))
             self._setMetadata(self.driverMetadataTableWidget, metadatalist)
 
+    def _resetGCPs(self):
+        tablewidget = self.gcpsTableWidget
+        qt4support.clearTable(tablewidget)
+        self.gcpsNumValue.setText('')
+        self.gcpsProjectionValue.setText('')
+
     def _setupGCPs(self, gcplist, projection):
-        # @TODO: improve
-        self.gcpsProjectionValue.setText(projection)
+        self._resetGCPs()
+        if not gcplist:
+            # Disable the GCPs tab
+            self.tabWidget.setTabEnabled(2, False)
+
         tablewidget = self.gcpsTableWidget
 
-        qt4support.clearTable(tablewidget)
-        if not gcplist:
-            return
-
+        self.gcpsProjectionValue.setText(projection)
         self.gcpsNumValue.setText(str(len(gcplist)))
 
         tablewidget.setRowCount(len(gcplist))
