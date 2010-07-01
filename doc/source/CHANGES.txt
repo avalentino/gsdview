@@ -21,6 +21,7 @@ Changes from 0.6.1 to 0.6.2 (in development)
 * Always use (x,y,z) convention for geometric transforms
 * Enabled complex selection on all lists and tables (close :issue:`51`)
 * New button for stopping external tools (close :issue:`41`)
+* Drop GDAL 1.5.x series: now GSDView requires GDAL 1.6.1 or higher
 
 
 Changes from 0.6.0 to 0.6.1 (09/05/2010)

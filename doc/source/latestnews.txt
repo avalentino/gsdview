@@ -1,4 +1,11 @@
-:09/05/2010: Binary package for `Mac OS X`_ released
+:01/07/2010: GDAL 1.5.x series dropped.
+
+             GDAL 1.6.x series introduced a lot of new interesting features
+             and a better progress handling.
+             Dropping 1.5.x series allow to use this new features in the 
+             `development branch`_ and make GSDView even better.
+
+:09/05/2010: Binary package for `Mac OS X`_ released.
 
              The long waited binary package for `Mac OS X`_ is now available.
              The package provides a standalone executable of GSDView 0.6.1 
@@ -18,3 +25,4 @@
              application crashes and allow the user to submit bug reports.
 
 .. _`Mac OS X`: http://www.apple.com/macosx
+.. _`development branch`: http://sourceforge.net/apps/trac/gsdview/browser/trunk

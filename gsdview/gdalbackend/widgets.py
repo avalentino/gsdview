@@ -475,24 +475,13 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
         # Info
         self.descriptionValue.setText(band.GetDescription().strip())
-        # @COMPATIBILITY: GDAL 1.5.x doesn't support this API
-        try:
-            bandno = band.GetBand()
-        except AttributeError:
-            self.bandNumberLabel.hide()
-            self.bandNumberValue.hide()
-        else:
-            self.bandNumberValue.setText(str(bandno))
+        bandno = band.GetBand()
+        self.bandNumberValue.setText(str(bandno))
         self.colorInterpretationValue.setText(colorint)
         self.overviewCountValue.setText(str(band.GetOverviewCount()))
-        # @COMPATIBILITY: GDAL 1.5.x doesn't support this API
-        try:
-            hasArbitaryOvr = band.HasArbitraryOverviews()
-        except AttributeError:
-            self.hasArbitraryOverviewsLabel.hide()
-            self.hasArbitraryOverviewsValue.hide()
-        else:
-            self.hasArbitraryOverviewsValue.setText(str(hasArbitaryOvr))
+
+        hasArbitaryOvr = band.HasArbitraryOverviews()
+        self.hasArbitraryOverviewsValue.setText(str(hasArbitaryOvr))
 
         # @TODO: checksum
         #~ band.Checksum                   ??
@@ -504,14 +493,8 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.noDataValue.setText(str(band.GetNoDataValue()))
 
         self.dataTypeValue.setText(gdal.GetDataTypeName(band.DataType))
-        # @COMPATIBILITY: GDAL 1.5.x doesn't support this API
-        try:
-            unitType = band.GetUnitType()
-        except AttributeError:
-            self.unitTypeLabel.hide()
-            self.unitTypeValue.hide()
-        else:
-            self.unitTypeValue.setText(str(unitType))
+        unitType = band.GetUnitType()
+        self.unitTypeValue.setText(str(unitType))
         self.offsetValue.setText(str(band.GetOffset()))
         self.scaleValue.setText(str(band.GetScale()))
 
@@ -524,18 +507,11 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
         band = self._obj
         approx = self.approxStatsCheckBox.isChecked()
-        # @COMPATIBILITY: GDAL 1.5.x doesn't support this API
-        if hasattr(band, 'ComputeStatistics'):
-            # New API
-            # @TODO: use calback for progress reporting
-            band.ComputeStatistics(approx)#, callback=None, callback_data=None)
-        else:
-            vmin, vmax, mean, stddev = band.GetStatistics(approx, True)
-            # @COMPATIBILITY: GDAL 1.5.x and 1.6.x (??)
-            if gdal.VersionInfo() < '1700':
-                band.SetStatistics(vmin, vmax, mean, stddev)
-            if self.domainComboBox.currentText() == '':
-                self.updateMetadata()
+        # @TODO: use calback for progress reporting
+        band.ComputeStatistics(approx)#, callback=None, callback_data=None)
+        # @TODO: check
+        #if self.domainComboBox.currentText() == '':
+        #    self.updateMetadata()
         logging.debug('statistics computation completed')
         self._setupStatistics(band)
 
@@ -570,57 +546,49 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
         band = self._obj
         approx = self.approxStatsCheckBox.isChecked()
-        # @COMPATIBILITY: GDAL 1.5.x doesn't support this API
-        if hasattr(band, 'GetHistogram'):
-            if self.customHistogramCheckBox.isChecked():
-                dialog = HistogramConfigDialog(self)
+        if self.customHistogramCheckBox.isChecked():
+            dialog = HistogramConfigDialog(self)
 
-                # @COMPATIBILITY: bug in GDAL 1.6.x line
-                # @WARNING: causes a crash in GDAL < 1.7.0 (r18405)
-                # @SEEALSO: http://trac.osgeo.org/gdal/ticket/3304
-                if gdal.VersionInfo() < '1700':
-                    dialog.approxCheckBox.setChecked(True)
-                    dialog.approxCheckBox.setEnabled(False)
+            # @COMPATIBILITY: bug in GDAL 1.6.x line
+            # @WARNING: causes a crash in GDAL < 1.6.4 (r18405)
+            # @SEEALSO: http://trac.osgeo.org/gdal/ticket/3304
+            if gdal.VersionInfo() < '1640':
+                dialog.approxCheckBox.setChecked(True)
+                dialog.approxCheckBox.setEnabled(False)
 
-                try:
-                    dtype = GDALTypeCodeToNumericTypeCode(band.DataType)
-                except KeyError:
-                    pass
-                else:
-                    dialog.setLimits(dtype)
-
-                done = False
-                while not done:
-                    ret = dialog.exec_()
-                    if ret == QtGui.QDialog.Rejected:
-                        return
-                    if dialog.validate() is False:
-                        msg = self.tr('The histogram minimum have been set to '
-                                      'a value that is greater or equal of '
-                                      'the histogram maximum.'
-                                      '\n'
-                                      'Please fix it.')
-                        QtGui.QMessageBox.warning(self, self.tr('WARNING!'),
-                                                  msg)
-                    else:
-                        done = True
-
-                vmin = dialog.minSpinBox.value()
-                vmax = dialog.maxSpinBox.value()
-                nbuckets = dialog.nBucketsSpinBox.value()
-                include_out_of_range = dialog.outOfRangeCheckBox.isChecked()
-                approx = dialog.approxCheckBox.isChecked()
-
-                # @TODO: use calback for progress reporting
-                qt4support.callExpensiveFunc(
-                                band.GetHistogram,
-                                vmin, vmax, nbuckets,
-                                include_out_of_range, approx)
-                                #callback=None, callback_data=None)
+            try:
+                dtype = GDALTypeCodeToNumericTypeCode(band.DataType)
+            except KeyError:
+                pass
             else:
-                # @TODO: use calback for progress reporting
-                qt4support.callExpensiveFunc(band.GetDefaultHistogram)
-                                        #callback=None, callback_data=None)
+                dialog.setLimits(dtype)
+
+            done = False
+            while not done:
+                ret = dialog.exec_()
+                if ret == QtGui.QDialog.Rejected:
+                    return
+                if dialog.validate() is False:
+                    msg = self.tr('The histogram minimum have been set to a '
+                                  'value that is greater or equal of the '
+                                  'histogram maximum.\n'
+                                  'Please fix it.')
+                    QtGui.QMessageBox.warning(self, self.tr('WARNING!'), msg)
+                else:
+                    done = True
+
+            vmin = dialog.minSpinBox.value()
+            vmax = dialog.maxSpinBox.value()
+            nbuckets = dialog.nBucketsSpinBox.value()
+            include_out_of_range = dialog.outOfRangeCheckBox.isChecked()
+            approx = dialog.approxCheckBox.isChecked()
+
+            # @TODO: use calback for progress reporting
+            qt4support.callExpensiveFunc(
+                            band.GetHistogram,
+                            vmin, vmax, nbuckets,
+                            include_out_of_range, approx)
+                            #callback=None, callback_data=None)
 
             self.computeHistogramButton.setEnabled(False)
             self._setupStatistics(band)

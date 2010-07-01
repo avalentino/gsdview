@@ -310,18 +310,8 @@ class DatasetItem(MajorObjectItem):
             self.appendRow(item)
 
     def _setup_child_subdatasets(self, gdalobj):
-        #~ subdatasets = self._obj.GetSubDatasets()
-        #~ subdatasets = subdatasets[self.rowCount():]
-        #~ for index, (path, extrainfo) in enumerate(subdatasets):
-            #~ # @TODO: pass full path for the sub-dataset filename (??)
-            #~ item = SubDatasetItem(path, extrainfo)
-            #~ if not item.text():
-                #~ description = '%s n. %d' % (QtGui.qApp.tr('Sub Datset'),
-                                            #~ index + self.rowCount())
-                #~ item.setText(description)
-                #~ item.setToolTip(description)
-            #~ self.appendRow(item)
-        # @COMPATIBILITY: workaround for GDAL versins older than 1.6.1
+        # @COMPATIBILITY: the GetSubDatasets() dataset method is only available
+        #                 in GDAL >= 1.6.1
         metadata = gdalobj.GetMetadata('SUBDATASETS')
         subdatasets = [key for key in metadata if key.endswith('NAME')]
         # HDF5 driver incorrectly starts subdataset enumeration from 0
@@ -330,7 +320,7 @@ class DatasetItem(MajorObjectItem):
             try:
                 path = metadata['SUBDATASET_%d_NAME' % index]
             except KeyError:
-                # @NOTE: this is another workaround for the bug in subdatasets
+                # @NOTE: this is a workaround for a bug in subdatasets
                 #        handling in HDF5 driver for GDAL < 1.6.1
                 continue
             extrainfo = metadata['SUBDATASET_%d_DESC' % index]
