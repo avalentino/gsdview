@@ -264,10 +264,11 @@ def isRGB(dataset, strict=False):
     return True
 
 
+### Statistics helpers ########################################################
 def hasFastStats(band, approx_ok=True):
     '''Return true if band statistics can be retrieved quickly.
 
-    If precomputed stistics in band metadata or small enough band
+    If precomputed stistics are in band metadata or small enough band
     overviews does exist then it is assumed that band statistics can
     be retriewed in a very quick way.
 
@@ -276,13 +277,27 @@ def hasFastStats(band, approx_ok=True):
 
     '''
 
-    metadata = band.GetMetadata()
-    stats = [metadata.get(name) for name in ('STATISTICS_MIN',
-                                             'STATISTICS_MAX',
-                                             'STATISTICS_MEAN',
-                                             'STATISTICS_STDDEV')]
-    result = bool(None in stats)
-    if approx_ok:
+    # @NOTE: the band.GetStatistics method called with the second argument
+    #        set to False (o image rescanning) has been fixed in
+    #        r19666_ (1.6 branch) and r19665_ (1.7 branch)
+    #        see `ticket #3572` on `GDAL Trac`_.
+    # .. _r19666: http://trac.osgeo.org/gdal/changeset/19666
+    # .. _r19665: http://trac.osgeo.org/gdal/changeset/19665
+    # .. _`ticket #3572`: http://trac.osgeo.org/gdal/ticket/3572
+    # .. _`GDAL Trac`: http://trac.osgeo.org/gdal
+
+    if ('1640' <= gdal.VersionInfo() < '1700') or (gdal.VersionInfo() > '1720'):
+        stats = band.GetStatistics(True, False)
+        result = bool(stats != [0, 0, 0, -1])
+    else:
+        metadata = band.GetMetadata()
+        stats = [metadata.get(name) for name in ('STATISTICS_MIN',
+                                                 'STATISTICS_MAX',
+                                                 'STATISTICS_MEAN',
+                                                 'STATISTICS_STDDEV')]
+        result = bool(None not in stats)
+
+    if not result and approx_ok:
         try:
             indx = ovrBestIndex(band, policy='GREATER')
         except MissingOvrError:
@@ -291,6 +306,18 @@ def hasFastStats(band, approx_ok=True):
             result = True
 
     return result
+
+def safeStats(band):
+    # @TODO:check
+    gdal.ErrorReset()
+    stats = band.GetStatistics(True, True)
+    # @TODO: check
+    #if gdal.GetLastErrorType() == 3 and gdal.GetLastErrorNo()) == 1:
+    if (gdal.GetLastErrorMsg() == 'Failed to compute statistics, '
+                                  'no valid pixels found in sampling.'):
+        stats = (None, None, None, None)
+
+    return stats
 
 
 ### Color table helpers #####################################################
