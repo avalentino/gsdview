@@ -232,7 +232,7 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         if not modelindex.isValid():
             return
         # @TODO: check
-        # @NOTE: set the current index so that action calback can retrieve
+        # @NOTE: set the current index so that action callback can retrieve
         #        the cottect item
         self.treeview.setCurrentIndex(modelindex)
         item = self.datamodel.itemFromIndex(modelindex)
