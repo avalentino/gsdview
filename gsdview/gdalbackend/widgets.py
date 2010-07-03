@@ -507,8 +507,17 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
         band = self._obj
         approx = self.approxStatsCheckBox.isChecked()
-        # @TODO: use calback for progress reporting
+        # @TODO: use callback for progress reporting
         band.ComputeStatistics(approx)#, callback=None, callback_data=None)
+
+        # @COMPATIBILITY: workaround fo flagging statistics as computed
+        # @SEALSO: ticket #3572 on GDAL Trac
+        stats = band.GetStatistics(True, True)
+        keys = ('STATISTICS_MIN', 'STATISTICS_MAX', 'STATISTICS_MEAN',
+                'STATISTICS_STDDEV')
+        for name, value in zip(keys, stats):
+            band.SetMetadataItem(name, str(value))
+
         # @TODO: check
         #if self.domainComboBox.currentText() == '':
         #    self.updateMetadata()
@@ -535,7 +544,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         # .. _`ticket #3572`: http://trac.osgeo.org/gdal/ticket/3572
         # .. _`GDAL Trac`: http://trac.osgeo.org/gdal
 
-        if gdalsupport.hasFastStats(band, approx_ok=False):
+        if gdalsupport.hasFastStats(band):
             vmin, vmax, mean, stddev = band.GetStatistics(True, True)
             self.minimumValue.setText(str(vmin))
             self.maximumValue.setText(str(vmax))
