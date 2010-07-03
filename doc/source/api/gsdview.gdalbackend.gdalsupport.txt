@@ -21,6 +21,7 @@ gsdview.gdalbackend.gdalsupport
       ovrLevelForSize
       ovrLevels
       ovrRead
+      safeStats
       uniqueDatasetID
    
    

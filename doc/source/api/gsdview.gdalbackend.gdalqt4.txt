@@ -13,6 +13,7 @@ gsdview.gdalbackend.gdalqt4
       gdalcolorentry2qcolor
       graphicsItemFactory
       numpy2qimage
+      safeDataStats
    
    
 
