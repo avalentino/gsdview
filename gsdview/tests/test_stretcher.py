@@ -30,7 +30,7 @@ sys.path.insert(0, GSDVIEWROOT)
 
 
 import numpy
-from gsdview.gsdtools import *
+from gsdview.imgutils import *
 
 
 class TestLinearStretcher(unittest.TestCase):

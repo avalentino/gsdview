@@ -35,7 +35,7 @@ from PyQt4 import QtCore, QtGui
 from osgeo import gdal
 from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
 
-from gsdview import gsdtools
+from gsdview import imgutils
 from gsdview.qt4support import numpy2qimage
 
 from gsdview.gdalbackend import gdalsupport
@@ -97,7 +97,7 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
         self._boundingRect = QtCore.QRectF(0, 0, w, h)
         #self.read_threshold = 1600*1200
 
-        self.stretch = gsdtools.LinearStretcher()
+        self.stretch = imgutils.LinearStretcher()
         # @TODO: use lazy gaphicsitem inirialization
         # @TODO: initilize stretching explicitly
         self._stretch_initialized = False
@@ -274,7 +274,7 @@ class UIntGdalGraphicsItem(BaseGdalGraphicsItem):
             raise ValueError('invalid data type: "%s"' % typename)
 
         dtype = numpy.dtype(GDALTypeCodeToNumericTypeCode(band.DataType))
-        self.stretch = gsdtools.LUTStretcher(fill=2**(8*dtype.itemsize))
+        self.stretch = imgutils.LUTStretcher(fill=2**(8*dtype.itemsize))
         self._stretch_initialized = False
 
     def dataRange(self, data=None):

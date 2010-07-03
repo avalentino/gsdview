@@ -13,7 +13,7 @@ Main Application
    gsdview.appsite
    gsdview.assistanthelper
    gsdview.graphicsview
-   gsdview.gsdtools
+   gsdview.imgutils
    gsdview.info
    gsdview.launch
    gsdview.mainwin

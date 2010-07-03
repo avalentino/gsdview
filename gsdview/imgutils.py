@@ -19,7 +19,7 @@
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
 
 
-'''Tools for geo-spatial data handling and visualization.'''
+'''Tools for geo-spatial images handling and visualization.'''
 
 __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'

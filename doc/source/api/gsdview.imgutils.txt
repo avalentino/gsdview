@@ -1,7 +1,7 @@
-gsdview.gsdtools
+gsdview.imgutils
 ================
 
-.. automodule:: gsdview.gsdtools
+.. automodule:: gsdview.imgutils
 
    
    
