@@ -462,11 +462,12 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         qt4support.setViewContextActions(self.histogramTableWidget)
         qt4support.setViewContextActions(self.colorTableWidget)
 
+        # @TODO: improve method names
         # Tabs
         self._setupInfoTab(band)
-        self._setupStatistics(band)
-        self._setupHistogram(band)
-        self._setupColorTable(band.GetRasterColorTable())
+        self._setupStatisticsBox(band)
+        self._setupHistogramBox(band)
+        self._setupColorTableTab(band.GetRasterColorTable())
 
     def _setupInfoTab(self, band):
         # Color interpretaion
@@ -522,9 +523,9 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         #if self.domainComboBox.currentText() == '':
         #    self.updateMetadata()
         logging.debug('statistics computation completed')
-        self._setupStatistics(band)
+        self._setupStatisticsBox(band)
 
-    def _resetStatistics(self):
+    def _resetStatisticsBox(self):
         '''Reset statistics.'''
 
         value = self.tr('Not computed')
@@ -533,7 +534,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.meanValue.setText(value)
         self.stdValue.setText(value)
 
-    def _setupStatistics(self, band):
+    def _setupStatisticsBox(self, band):
         # @NOTE: the band.GetStatistics method called with the second argument
         #        set to False (o image rescanning) has been fixed in
         #        r19666_ (1.6 branch) and r19665_ (1.7 branch)
@@ -552,7 +553,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
             self.stdValue.setText(str(stddev))
             self.computeStatsButton.setEnabled(False)
         else:
-            self._resetStatistics()
+            self._resetStatisticsBox()
 
     def computeHistogram(self):
         # @TODO: use an external process (??)
@@ -576,6 +577,17 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
             else:
                 dialog.setLimits(dtype)
 
+            tablewidget = self.histogramTableWidget
+            if tablewidget.rowCount() > 0:
+                item = tablewidget.item(0, 0)
+                vmin = float(item.text())
+                item = tablewidget.item(tablewidget.rowCount() - 1 , 1)
+                vmax = float(item.text())
+
+                dialog.minSpinBox.setValue(vmin)
+                dialog.maxSpinBox.setValue(vmax)
+                dialog.nBucketsSpinBox.setValue(tablewidget.rowCount())
+
             done = False
             while not done:
                 ret = dialog.exec_()
@@ -596,23 +608,50 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
             include_out_of_range = dialog.outOfRangeCheckBox.isChecked()
             approx = dialog.approxCheckBox.isChecked()
 
-            # @TODO: use calback for progress reporting
-            qt4support.callExpensiveFunc(
-                            band.GetHistogram,
-                            vmin, vmax, nbuckets,
-                            include_out_of_range, approx)
-                            #callback=None, callback_data=None)
+            # @TODO: use callback for progress reporting
+            hist = qt4support.callExpensiveFunc(
+                                band.GetHistogram,
+                                vmin, vmax, nbuckets,
+                                include_out_of_range, approx)
+                                #callback=None, callback_data=None)
 
-            self.computeHistogramButton.setEnabled(False)
-            self._setupStatistics(band)
-            self._setupHistogram(band)
+        else:
+            # @TODO: use callback for progress reporting
+            hist = qt4support.callExpensiveFunc(band.GetDefaultHistogram)
+                                                #callback=None,
+                                                #callback_data=None)
+            vmin, vmax, nbuckets, hist = hist
 
-    def _resetHistogram(self):
+        self.computeHistogramButton.setEnabled(False)
+        self._setupStatisticsBox(band) # @TODO: check
+        self._setHistogram(vmin, vmax, nbuckets, hist)
+
+    def _setHistogram(self, vmin, vmax, nbuckets, hist):
+        self.numberOfClassesValue.setText(str(nbuckets))
+
+        w = (vmax - vmin) / nbuckets
+
+        tablewidget = self.histogramTableWidget
+        tablewidget.setRowCount(nbuckets)
+
+        for row in range(nbuckets):
+            start = vmin + row * w
+            stop = start + w
+            tablewidget.setItem(row, 0,
+                                QtGui.QTableWidgetItem(str(start)))
+            tablewidget.setItem(row, 1,
+                                QtGui.QTableWidgetItem(str(stop)))
+            tablewidget.setItem(row, 2,
+                                QtGui.QTableWidgetItem(str(hist[row])))
+
+        # @TODO: plotting
+
+    def _resetHistogramBox(self):
         tablewidget = self.histogramTableWidget
         self.numberOfClassesValue.setText('0')
         qt4support.clearTable(tablewidget)
 
-    def _setupHistogram(self, band):
+    def _setupHistogramBox(self, band):
         if not hasattr(band, 'GetDefaultHistogram'):
             self.histogramGroupBox.hide()
             self.statisticsVerticalLayout.addStretch()
@@ -635,29 +674,10 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
             hist = band.GetDefaultHistogram(force=False)
 
         if hist:
-            histmin, histmax, bucketcount = hist[:3]
-            hist = hist[3]
-            w = (histmax - histmin) / bucketcount
-
-            self.numberOfClassesValue.setText(str(bucketcount))
-
-            tablewidget = self.histogramTableWidget
-            tablewidget.setRowCount(bucketcount)
-
-            for row in range(bucketcount):
-                start = histmin + row
-                stop = start + w
-                tablewidget.setItem(row, 0,
-                                    QtGui.QTableWidgetItem(str(start)))
-                tablewidget.setItem(row, 1,
-                                    QtGui.QTableWidgetItem(str(stop)))
-                tablewidget.setItem(row, 2,
-                                    QtGui.QTableWidgetItem(str(hist[row])))
+            self._setHistogram(*hist)
             self.computeHistogramButton.setEnabled(False)
-
-            # @TODO: plotting
         else:
-            self._resetHistogram()
+            self._resetHistogramBox()
 
     @staticmethod
     def _rgb2qcolor(red, green, blue, alpha=255):
@@ -683,7 +703,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         qcolor.setHsv(hue, lightness, saturation, a)
         return qcolor
 
-    def _setupColorTable(self, colortable):
+    def _setupColorTableTab(self, colortable):
         tablewidget = self.colorTableWidget
 
         if colortable is None:
