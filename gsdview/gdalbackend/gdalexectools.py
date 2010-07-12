@@ -33,20 +33,214 @@ import exectools
 from exectools.qt4 import Qt4OutputHandler
 
 from PyQt4 import QtGui
+from osgeo import gdal
 
 
-class GdalAddOverviewDescriptor(exectools.ToolDescriptor):
+class BaseGdalToolDescriptor(exectools.ToolDescriptor):
+
+    def gdal_config_options(self, cmd=''):
+        extra_args = []
+
+        if not 'GDAL_CACHEMAX' in cmd:
+            value = gdal.GetCacheMax()
+            extra_args.extend(('--config', 'GDAL_CACHEMAX', str(value)))
+
+        for key in ('CPL_DEBUG', 'GDAL_SKIP', 'GDAL_DATA',
+                    'GDAL_DRIVER_PATH', 'OGR_DRIVER_PATH'):
+            if not key in cmd:
+                value = gdal.GetConfigOption(key, None)
+                if value:
+                    extra_args.extend(('--config', key, value))
+
+        return extra_args
+
+    def cmdline(self, *args, **kwargs):
+        parts = super(BaseGdalToolDescriptor, self).cmdline(*args, **kwargs)
+
+        extra_args = self.gdal_config_options(parts)
+        if extra_args:
+            if not self.executable or isinstance(self.executable, basestring):
+                parts = [parts[0]] + extra_args + parts[1:]
+            else:
+                executable = list(self.executable)
+                parts = executable + extra_args + parts[len(executable):]
+
+        return parts
+
+
+class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
+
+    RESAMPLING_METHODS = (
+        'nearest',
+        'average',
+        'gauss',
+        'cubic',
+        'average_mp',
+        'average_magphase',
+        'mode',
+    )
+
+    TIFF_COMPRESSION_METHODS = (
+        'JPEG',
+        'LZW',
+        'PACKBITS',
+        'DEFLATE',
+    )
+
+    TIFF_INTERLEAVING_METHODS = ('PIXEL', 'BAND')
+
+    TIFF_USE_BIGTIFF_MODE = ('IF_NEEDED', 'IF_SAFER', 'YES', 'NO')
 
     def __init__(self, cwd=None, env=None,
                  stdout_handler=None, stderr_handler=None):
 
-
-        executable = 'gdaladdo'
-        args = []
-        #args.extend(['--config', 'USE_RRD', 'YES'])
-        args.extend(['-r', 'average'])
         super(GdalAddOverviewDescriptor, self).__init__(
-                    executable, args, cwd, env, stdout_handler, stderr_handler)
+                    'gdaladdo', [], cwd, env, stdout_handler, stderr_handler)
+
+        self._resampling_method = 'average'
+
+        #: use Erdas Imagine format (.aux) as overview format.
+        #: If None use GDAL defaults.
+        self.use_rrd = None
+
+        #: photometric interpretation: RGB, YCBCR, etc. (only for external
+        #: overviews in GeoTIFF format).
+        #: If None use GDAL defaults.
+        self.photometric_interpretation = None
+
+        self._compression_method = None
+        self._interleaving_method = None
+        self._use_bigtiff_mode = None
+
+        def resampling_method(self):
+            '''Resampling method for overviews computation.'''
+
+            return self._resampling_method
+
+        def set_resampleing_method(seff, method):
+            '''Set the resampling method for overviews computation.
+
+            If set to None use GDAL defaults.
+            Available resampling methods: %s.
+
+            ''' % ', '.join(GdalAddOverviewDescriptor.RESAMPLING_METHODS)
+
+            if method is not None and method not in self.RESAMPLING_METHODS:
+                raise ValueError('invalid resampling method: "%s". '
+                                 'Available methods are: %s' % (method,
+                                        ', '.join(self.RESAMPLING_METHODS)))
+            self._resampling_method = method
+
+        def compression_method(self):
+            '''TIFF compression method.
+
+            This attribute is only used if external overviews are
+            stored in GeoTIFF format.
+
+            '''
+
+            return self._compression_method
+
+        def set_compression_method(self, method):
+            '''Set the TIFF compression method.
+
+            This attribute is only used if external overviews are
+            stored in GeoTIFF format.
+
+            If set to None use GDAL defaults.
+            Available compression methods: %s.
+
+            ''' % ', '.join(GdalAddOverviewDescriptor.TIFF_COMPRESSION_METHODS)
+
+            self._compression_method = method
+
+        def interleaving_method(self):
+            '''Ovrviews interleaving method (%s).
+
+            This attribute is only used if external overviews are
+            stored in GeoTIFF format.
+
+            ''' % ' or '.join(GdalAddOverviewDescriptor.TIFF_INTERLEAVING_METHODS)
+
+            return self._interleaving_method
+
+        def set_interleaving_method(self, method):
+            '''Set the ovrview interleaving method.
+
+            This attribute is only used if external overviews are
+            stored in GeoTIFF format.
+
+            If set to None use GDAL defaults.
+            Possible interleaving methods are: %s.
+
+            ''' % ' or '.join(GdalAddOverviewDescriptor.TIFF_INTERLEAVING_METHODS)
+
+            self._interleaving_method = method
+
+        def use_bigtiff_mode(self):
+            '''Mode of using BigTIFF in overviews (%s).
+
+            This attribute is only used if external overviews are
+            stored in GeoTIFF format.
+
+            ''' % ' or '.join(GdalAddOverviewDescriptor.TIFF_USE_BIGTIFF_MODE)
+
+            return self._use_bigtiff_mode
+
+        def set_use_bigtiff_mode(self, mode):
+            '''Set the mode of using BigTIFF in overviews.
+
+            This attribute is only used if external overviews are
+            stored in GeoTIFF format.
+
+            If set to None use GDAL defaults.
+            Possible interleaving methods are: %s.
+
+            ''' % ' or '.join(GdalAddOverviewDescriptor.TIFF_USE_BIGTIFF_MODE)
+
+            self._use_bigtiff_mode = mode
+
+    def gdal_config_options(self, cmd=''):
+        extra_args = super(GdalAddOverviewDescriptor, self).gdal_config_options(cmd)
+
+        if self.use_rrd is not None and 'USE_RRD' not in cmd:
+            if self.use_rrd:
+                value = 'YES'
+            else:
+                value = 'NO'
+            extra_args.extend(('--config', 'USE_RRD', value))
+
+        if (self.photometric_interpretation is not None and
+            'PHOTOMETRIC_OVERVIEW' not in cmd):
+
+            extra_args.extend(('--config', 'PHOTOMETRIC_OVERVIEW',
+                               self.photometric_interpretation))
+
+        if (self._compression_method is not None and
+            'COMPRESS_OVERVIEW' not in cmd):
+
+            extra_args.extend(('--config', 'COMPRESS_OVERVIEW',
+                               self._compression_method))
+
+        if (self._interleaving_method is not None and
+            'INTERLEAVE_OVERVIEW' not in cmd):
+
+            extra_args.extend(('--config', 'INTERLEAVE_OVERVIEW',
+                               self._interleaving_method))
+
+        if (self._use_bigtiff_mode is not None and
+            'BIGTIFF_OVERVIEW' not in cmd):
+
+            extra_args.extend(('--config', 'BIGTIFF_OVERVIEW',
+                               self._use_bigtiff_mode))
+
+        return extra_args
+
+    def cmdline(self, *args, **kwargs):
+        if self._resampling_method is not None and '-r' not in args:
+            args = ['-r', self._resampling_method] + list(args)
+
+        return super(GdalAddOverviewDescriptor, self).cmdline(*args, **kwargs)
 
 
 class GdalOutputHandler(Qt4OutputHandler):
