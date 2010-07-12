@@ -372,7 +372,12 @@ class ToolDescriptor(object):
             except IndexError:
                 raise ValueError('"executable" not set')
 
-        parts = [executable]
+        if isinstance(executable, basestring):
+            parts = [executable]
+        else:
+            # handle cases like: executable = ['python', '-u', 'script.py']
+            parts = list(executable)
+
         parts.extend('%s=%s' % (key, value) for key, value in kwargs.items())
         parts.extend(str(arg) for arg in args)
 
