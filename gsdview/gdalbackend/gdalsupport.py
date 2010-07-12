@@ -265,6 +265,88 @@ def isRGB(dataset, strict=False):
 
 
 ### Statistics helpers ########################################################
+SAFE_GDAL_STATS = (('1640' <= gdal.VersionInfo() < '1700') or
+                   (gdal.VersionInfo() > '1720'))
+
+def GetCachedStatistics(band):
+    '''Retrieve cached statistics from a raster band.
+
+    GDAL usually stores pre-computed statistics in the raster band
+    metadata: STATISTICS_MINIMUM, STATISTICS_MAXIMUM, STATISTICS_MEAN
+    and STATISTICS_STDDEV.
+
+    This function retrieves cached statistics and returns them as a
+    four items tuple: (MINIMUM, MAXIMUM, MEAN, STDDEV).
+
+    '''
+
+    metadata = band.GetMetadata()
+    stats = [metadata.get(name) for name in ('STATISTICS_MINIMUM',
+                                             'STATISTICS_MAXIMUM',
+                                             'STATISTICS_MEAN',
+                                             'STATISTICS_STDDEV')]
+    return stats
+
+def SafeGetStatistics(band, approx_ok=False, force=True):
+    '''Safe replacement of gdal.Band.GetSrtatistics.
+
+    The standard version of GetSrtatistics not always allows to know
+    whenever statistics have beed actually computed or not (e.g. "force"
+    flag set to False and no statistics available).
+
+    This function gracefully handles this case an also cases in which
+    an error happend during statistics computation (e.g. to many nodata
+    values).
+
+    :param band:      GDAL raster band
+    :param approx_ok: if approximate statistics are sufficient, the
+                      approx_ok flag can be set to True in which case
+                      overviews, or a subset of image tiles may be used
+                      in computing the statistics (default: False)
+    :param force:     if force is False results will only be returned
+                      if it can be done quickly (ie. without scanning
+                      the data).
+                      If force is False and results cannot be returned
+                      efficiently, the function will return four None
+                      instead of actual statistics values.
+                      Dafault: True.
+    :returns:         a tuple containing (min, max, mean, stddev) if
+                      statistics can be retriewed according to the
+                      input flags.
+                      A tuple of four None if statistics are not
+                      available or can't be computer according to input
+                      flags or if some error occurs during computation.
+
+    '''
+
+    # @NOTE: the band.GetStatistics method called with the second argument
+    #        set to False (no image rescanning) has been fixed in
+    #        r19666_ (1.6 branch) and r19665_ (1.7 branch)
+    #        see `ticket #3572` on `GDAL Trac`_.
+    #
+    # .. _r19666: http://trac.osgeo.org/gdal/changeset/19666
+    # .. _r19665: http://trac.osgeo.org/gdal/changeset/19665
+    # .. _`ticket #3572`: http://trac.osgeo.org/gdal/ticket/3572
+    # .. _`GDAL Trac`: http://trac.osgeo.org/gdal
+
+    stats = (None, None, None, None)
+    if approx_ok and not SAFE_GDAL_STATS:
+        stats = GetCachedStatistics(band)
+
+    if None in stats:
+        if not force and not SAFE_GDAL_STATS:
+            raise ValueError('unable to retrieve statistics in a safe way.')
+
+        gdal.ErrorReset()
+        stats = band.GetStatistics(approx_ok, force)
+        if (gdal.GetLastErrorNo() == 1) and (gdal.GetLastErrorType() == 3):
+            stats = (None, None, None, None)
+            gdal.ErrorReset()
+        elif SAFE_GDAL_STATS and stats == [0, 0, 0, -1]:
+            stats = (None, None, None, None)
+
+    return stats
+
 def hasFastStats(band, approx_ok=True):
     '''Return true if band statistics can be retrieved quickly.
 
@@ -277,48 +359,22 @@ def hasFastStats(band, approx_ok=True):
 
     '''
 
-    # @NOTE: the band.GetStatistics method called with the second argument
-    #        set to False (o image rescanning) has been fixed in
-    #        r19666_ (1.6 branch) and r19665_ (1.7 branch)
-    #        see `ticket #3572` on `GDAL Trac`_.
-    # .. _r19666: http://trac.osgeo.org/gdal/changeset/19666
-    # .. _r19665: http://trac.osgeo.org/gdal/changeset/19665
-    # .. _`ticket #3572`: http://trac.osgeo.org/gdal/ticket/3572
-    # .. _`GDAL Trac`: http://trac.osgeo.org/gdal
-
-    if ('1640' <= gdal.VersionInfo() < '1700') or (gdal.VersionInfo() > '1720'):
+    if SAFE_GDAL_STATS:
         stats = band.GetStatistics(True, False)
         result = bool(stats != [0, 0, 0, -1])
     else:
-        metadata = band.GetMetadata()
-        stats = [metadata.get(name) for name in ('STATISTICS_MIN',
-                                                 'STATISTICS_MAX',
-                                                 'STATISTICS_MEAN',
-                                                 'STATISTICS_STDDEV')]
+        stats = GetCachedStatistics(band)
         result = bool(None not in stats)
 
     if not result and approx_ok:
         try:
-            indx = ovrBestIndex(band, policy='GREATER')
+            ovrBestIndex(band, policy='GREATER')
         except MissingOvrError:
             pass
         else:
             result = True
 
     return result
-
-def safeStats(band):
-    # @TODO:check
-    gdal.ErrorReset()
-    stats = band.GetStatistics(True, True)
-    # @TODO: check
-    #if gdal.GetLastErrorType() == 3 and gdal.GetLastErrorNo()) == 1:
-    if (gdal.GetLastErrorMsg() == 'Failed to compute statistics, '
-                                  'no valid pixels found in sampling.'):
-        stats = (None, None, None, None)
-
-    return stats
-
 
 ### Color table helpers #####################################################
 colorinterpretations = {

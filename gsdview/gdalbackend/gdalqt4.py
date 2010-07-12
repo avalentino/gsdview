@@ -197,7 +197,7 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
         stats = (None, None, None, None)
 
         if band and gdalsupport.hasFastStats(band):
-            stats = gdalsupport.safeStats(band)
+            stats = gdalsupport.SafeGetStatistics(band, True, True)
 
         if None in stats and data is not None and data.size <= 4*1024**2:
             stats = safeDataStats(data, band.GetNoDataValue())
@@ -228,7 +228,7 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
     @staticmethod
     def _dataRange(band, data=None):
         if band and gdalsupport.hasFastStats(band):
-            vmin, vmax, mean, stddev = gdalsupport.safeStats(band)
+            vmin, vmax, mean, stddev = gdalsupport.SafeGetStatistics(band, True)
             if None not in (vmin, vmax, mean, stddev):
                 return vmin, vmax
 
