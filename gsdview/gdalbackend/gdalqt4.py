@@ -245,7 +245,7 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
                 gdal.GDT_Int16:     (-2**15, 2**15-1),
                 gdal.GDT_Int32:     (-2**31, 2**31-1),
                 gdal.GDT_CInt16:    (0, 2**15 * numpy.sqrt(2)),
-                gdal.GDT_CInt32:    (0, 2**32 * numpy.sqrt(2)),
+                gdal.GDT_CInt32:    (0, 2**31 * numpy.sqrt(2)),
                 gdal.GDT_CFloat32:  (0, None),
                 gdal.GDT_CFloat64:  (0, None),
             }
