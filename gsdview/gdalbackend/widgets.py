@@ -514,7 +514,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         # @COMPATIBILITY: workaround fo flagging statistics as computed
         # @SEALSO: ticket #3572 on GDAL Trac
         stats = band.GetStatistics(True, True)
-        keys = ('STATISTICS_MIN', 'STATISTICS_MAX', 'STATISTICS_MEAN',
+        keys = ('STATISTICS_MINIMUM', 'STATISTICS_MAXIMUM', 'STATISTICS_MEAN',
                 'STATISTICS_STDDEV')
         for name, value in zip(keys, stats):
             band.SetMetadataItem(name, str(value))
@@ -536,7 +536,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
     def _setupStatisticsBox(self, band):
         # @NOTE: the band.GetStatistics method called with the second argument
-        #        set to False (o image rescanning) has been fixed in
+        #        set to False (no image rescanning) has been fixed in
         #        r19666_ (1.6 branch) and r19665_ (1.7 branch)
         #        see `ticket #3572` on `GDAL Trac`_.
         #
