@@ -69,6 +69,7 @@ class BaseGdalToolDescriptor(exectools.ToolDescriptor):
 
 
 class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
+    '''Tool descriptor for the gdaladdo utility program.'''
 
     RESAMPLING_METHODS = (
         'nearest',
@@ -239,6 +240,57 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
     def cmdline(self, *args, **kwargs):
         if self._resampling_method is not None and '-r' not in args:
             args = ['-r', self._resampling_method] + list(args)
+
+        return super(GdalAddOverviewDescriptor, self).cmdline(*args, **kwargs)
+
+
+class GdalInfoDescriptor(BaseGdalToolDescriptor):
+    '''Tool descriptor for the gdalinfo utility program.'''
+
+    def __init__(self, cwd=None, env=None,
+                 stdout_handler=None, stderr_handler=None):
+
+        super(GdalInfoDescriptor, self).__init__('gdalinfo', [], cwd, env,
+                                                 stdout_handler, stderr_handler)
+
+        #: force computation of the actual min/max values for each band in the
+        #: dataset.
+        self.mm = False
+
+        #: read and display image statistics. Force computation if no
+        #: statistics are stored in an image.
+        self.stats = False
+
+        #: suppress ground control points list printing. It may be useful for
+        #: datasets with huge amount of GCPs, such as L1B AVHRR or HDF4 MODIS
+        #: which contain thousands of the ones.
+        self.nogcp = False
+
+        #: suppress metadata printing. Some datasets may contain a lot of
+        #: metadata strings.
+        self.nomd = False
+
+        #: suppress printing of color table.
+        self.noct = False
+
+        #: force computation of the checksum for each band in the dataset.
+        self.checksum = False
+
+        #: report metadata for the specified domain.
+        self.mdd = None
+
+    def cmdline(self, *args, **kwargs):
+        extra_args = []
+        for name in ('mm', 'stats', 'hist', 'nogcp', 'nomd', 'noct',
+                     'checksum',):
+            flag = '-%s' % name
+            if getattr(self, name) is not None and flag not in args:
+                extra_args.append(flag)
+
+        if self.mdd is not None and '-mdd' not in args:
+            extra_args.extend(('-mdd', self.mdd))
+
+        args = extra_args.extend + list(args)
 
         return super(GdalAddOverviewDescriptor, self).cmdline(*args, **kwargs)
 
