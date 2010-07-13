@@ -28,9 +28,6 @@ __revision__ = '$Revision$'
 __all__ = ['GDALBackend']
 
 import os
-import glob
-import shutil
-import tempfile
 
 from osgeo import gdal
 from PyQt4 import QtCore, QtGui
@@ -38,164 +35,10 @@ from PyQt4 import QtCore, QtGui
 from gsdview import qt4support
 
 from gsdview.gdalbackend import widgets
+from gsdview.gdalbackend import helpers
 from gsdview.gdalbackend import modelitems
 from gsdview.gdalbackend import gdalsupport
 from gsdview.gdalbackend import gdalexectools
-
-
-class GdalAddoHelper(object):
-    '''Helper class for gdaladdo execution on live datasets.
-
-    In GSDView an external process running the gdaladdo is used to add
-    oveviews to (virtual) dataset that are already open in GSDView
-    itself.
-
-    Unfortunately, as far as I know, there is no way to safely handle
-    two dataset objects (pointing at the same vrt file) in two different
-    processes.
-
-    This helper class provides functions to perform overview
-    computation on a private environment and then move the ovr/aux
-    file back to the main cache folder of the dataset.
-    After that the dataset is re-opened an all changes are safely
-    reflected to the GUI.
-
-    In case the overview computation is stopped before completion then
-    the private gdaladdo environment is simply cleaned and no side
-    effect arises.
-
-    .. note:: if one wants to add overviews to a vrt dataset that
-              already has overviews (i.e. the ovr/aux file already
-              exists) then the ovr/aux file should be copyed in the
-              private gdaladdo environment before starting computation.
-
-              In this way the pre-existing overview are preserved but
-              the copy operation could be heavy weight.
-
-              Maybe some suggestion can be asked on the GDAl
-              mailing-list.
-
-    '''
-
-    def __init__(self, app, addotool):
-        super(GdalAddoHelper, self).__init__()
-        self.app = app
-        self.tool = addotool
-        self._datasetitem = None
-        self._tmpdir = None
-
-        QtCore.QObject.connect(self.controller, QtCore.SIGNAL('finished(int)'),
-                               self.finalize)
-
-    @property
-    def controller(self):
-        return self.app.controller
-
-    @property
-    def logger(self):
-        return self.app.logger
-
-    def _ovrfiles(self, dirname):
-        ovrfiles = []
-        for pattern in ('*.ovr', '*.aux'):
-            ovrfiles.extend(glob.glob(os.path.join(dirname, pattern)))
-        return ovrfiles
-
-    def _setup_tmpdir(self, dataset):
-        vrtdirname = os.path.dirname(dataset.vrtfilename)
-        try:
-            tmpdir = os.path.join(vrtdirname, 'tmp')
-            os.mkdir(tmpdir)
-        except OSError:
-            tmpdir = tempfile.mkdtemp()
-        shutil.copy(dataset.vrtfilename, tmpdir)
-
-        # make some check
-        ovrfiles = self._ovrfiles(tmpdir)
-        if ovrfiles:
-            self.logger.warning('existing ovr files will be ignored')
-
-        return tmpdir
-
-    def start_ovr_add(self, item):
-        #missingOverviewLevels = gdalsupport.ovrComputeLevels(item)
-
-        if not isinstance(item, modelitems.DatasetItem):
-            dataset = item.parent()
-        else:
-            dataset = item
-        assert isinstance(dataset, modelitems.DatasetItem)
-        assert isinstance(dataset, modelitems.CachedDatasetItem)
-
-        # @NOTE: use dataset for levels computation because the
-        #        IMAGE_STRUCTURE metadata are not propagated from
-        #        CachedDatasetItem to raster bands
-        missingOverviewLevels = gdalsupport.ovrComputeLevels(dataset)
-
-        # @NOTE: overviews are computed for all bands so I do this at
-        #        application level, before a specific band is choosen.
-        #        Maybe ths is not the best policy and overviews should be
-        #        computed only when needed instead
-        if missingOverviewLevels:
-            self.logger.debug('missingOverviewLevels: %s' %
-                                                        missingOverviewLevels)
-
-            if self.controller.isbusy:
-                self.logger.warning('unable to perform overview computation: '
-                                    'the subprocess controller is currently '
-                                    'busy.')
-                return
-            else:
-                self.logger.debug('Run the subprocess.')
-
-            # Run an external process for overviews computation
-            self.app.statusBar().showMessage('Quick look image generation ...')
-
-            self._tmpdir = self._setup_tmpdir(dataset)
-            vrtfilename = os.path.basename(dataset.vrtfilename)
-            vrtfilename = os.path.join(self._tmpdir, vrtfilename)
-            self._datasetitem = dataset
-
-            args = [os.path.basename(vrtfilename)]
-            args.extend(map(str, missingOverviewLevels))
-
-            self.tool.cwd = os.path.dirname(vrtfilename)
-            self.controller.run_tool(self.tool, *args)
-
-    def cleanup(self):
-        if self._tmpdir:
-            shutil.rmtree(self._tmpdir)
-
-        if os.path.exists(self._tmpdir):
-            self.logger.warning('unable ro remove remporary dir: "%s"' %
-                                                                self._tmpdir)
-        self._tmpdir = None
-
-    def finalize(self, returncode=0):
-        # @TODO: check if opening the dataset in update mode
-        #        (gdal.GA_Update) is a better solution
-
-        dataset = self._datasetitem
-
-        if not dataset:
-            self.logger.debug('unable to retrieve dataset for finalization')
-            return
-
-        # only reload if processing finished successfully
-        if returncode == 0 and not self.controller.userstop:
-            # move ovr files in the cache dir
-            dirname = os.path.dirname(dataset.vrtfilename)
-            ovrfiles = self._ovrfiles(self._tmpdir)
-            for ovrfile in ovrfiles:
-                shutil.move(ovrfile, dirname)
-
-            dataset.reopen()
-            for row in range(dataset.rowCount()):
-                item = dataset.child(row)
-                self.app.treeview.expand(item.index())
-
-        self.cleanup()
-        self._datasetitem = None
 
 
 class GDALBackend(QtCore.QObject):
@@ -228,6 +71,7 @@ class GDALBackend(QtCore.QObject):
     def __init__(self, app):
         QtCore.QObject.__init__(self, app)
         self._app = app
+        self._helpers = {}
         self._actionsmap = {}
         self._setupActions()
 
@@ -237,21 +81,21 @@ class GDALBackend(QtCore.QObject):
 
         handler = gdalexectools.GdalOutputHandler(app.logger, app.statusBar(),
                                                   app.progressbar)
+
+        # gdaladdo
         addotool = gdalexectools.GdalAddOverviewDescriptor(
                                                         stdout_handler=handler)
 
-        self._helper = GdalAddoHelper(app, addotool)
+        self._helpers['addo'] = helpers.GdalAddoHelper(app, addotool)
 
-    def _get_addotool(self):
-        return self._helper.tool
+        # gdalinfo for statistics computation
+        infotool = gdalexectools.GdalInfoDescriptor(stdout_handler=handler)
+        infotool.stats = True
+        infotool.nomd = True
+        infotool.nogcp = True
+        infotool.noct = True
 
-    def _set_addotool(self, tool):
-        self._helper.tool = tool
-
-    def _del_addotool(self):
-        self._helper.tool = None
-
-    addotool = property(_get_addotool, _set_addotool, _del_addotool)
+        self._helpers['stats'] = helpers.GdalStatsHelper(app, infotool)
 
     def findItemFromFilename(self, filename):
         '''Serch for and return the (dataset) item corresponding to filename.
@@ -652,7 +496,8 @@ class GDALBackend(QtCore.QObject):
             subwin.show()
 
         # @TODO: check
-        self._helper.start_ovr_add(item)
+        helper = self._helpers['addo']
+        helper.start(item)
 
     # @TODO: Open, Masked bands
     # @TODO: dataset --> Build overviews
