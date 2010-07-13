@@ -46,13 +46,13 @@ from gsdview import qt4support
 
 class PluginManager(object):
 
-    def __init__(self, mainwin, syspath=None):
+    def __init__(self, app, syspath=None):
         super(PluginManager, self).__init__()
         self.paths = []
         self.syspath = syspath
         self.plugins = {}
         self.autoload = []
-        self._mainwin = mainwin
+        self._app = app
 
     def _get_allplugins(self):
         plugins = set(self.plugins.keys())
@@ -129,7 +129,7 @@ class PluginManager(object):
 
         try:
             # @TODO: find a more general form to pass arguments to plugins
-            module.init(self._mainwin)
+            module.init(self._app)
             self.plugins[name] = module
             logger.info('"%s" plugin loaded.' % name)
         except Exception, e:   #AttributeError:
@@ -234,13 +234,13 @@ class PluginManager(object):
         for name in names:
             module = self.plugins.pop(name)
             # @TODO: find a more general form to pass arguments to plugins
-            module.close(self._mainwin)
+            module.close(self._app)
 
     def reset(self):
         for name in self.plugins.keys():
             plugin = self.plugins.pop(name)
             # @TODO: find a more general form to pass arguments to plugins
-            plugin.close(self._mainwin)
+            plugin.close(self._app)
         self.paths = []
 
     # @NOTE: this method is Qt specific
