@@ -285,6 +285,9 @@ def GetCachedStatistics(band):
                                              'STATISTICS_MAXIMUM',
                                              'STATISTICS_MEAN',
                                              'STATISTICS_STDDEV')]
+    if None not in stats:
+        stats = [float(item) for item in stats]
+
     return stats
 
 def SafeGetStatistics(band, approx_ok=False, force=True):
