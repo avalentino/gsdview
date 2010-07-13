@@ -464,7 +464,11 @@ class GDALBackend(QtCore.QObject):
 
         # only open a new view if there is no other on the item selected
         if len(item.scene.views()) == 0:
-            self.newImageView(item)
+            stats = gdalsupport.GetCachedStatistics(item)
+            if None in stats:
+                self._helpers['stats'].start(item)
+            else:
+                self.newImageView(item)
 
     def newImageView(self, item=None):
         if item is None:

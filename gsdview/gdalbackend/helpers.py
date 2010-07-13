@@ -31,7 +31,8 @@ import glob
 import shutil
 import tempfile
 
-from PyQt4 import QtCore#, QtGui
+from osgeo import gdal
+from PyQt4 import QtCore
 
 from gsdview.gdalbackend import modelitems
 from gsdview.gdalbackend import gdalsupport
@@ -171,7 +172,8 @@ class GdalAddoHelper(GdalHelper):
                                     'busy.')
                 return
             else:
-                self.logger.debug('Run the subprocess.')
+                self.logger.debug('run the "%s" subprocess.' %
+                                        os.path.basename(self.tool.executable))
 
             # Run an external process for overviews computation
             self.app.statusBar().showMessage('Quick look image generation ...')
@@ -217,10 +219,84 @@ class GdalAddoHelper(GdalHelper):
 class GdalStatsHelper(GdalHelper):
     '''Helper class for statistics pre-computation on live raster bands.'''
 
-    #~ def __init__(self, app, tool):
-        #~ super(GdalStatsHelper, self).__init__(app, tool)
-        #~ self._datasetitem = None
+    def __init__(self, app, tool):
+        super(GdalStatsHelper, self).__init__(app, tool)
+        self._datasetitem = None
+        self._banditem = None
 
-    def start(self, *args, **kargs):
-        pass
+    def start(self, item):
+        if not isinstance(item, modelitems.BandItem):
+            raise ValueError('invaòid band item: %s' % item)
 
+        dataset = item.parent()
+
+        if self.controller.isbusy:
+            self.logger.warning('unable to perform overview computation: '
+                                'the subprocess controller is currently '
+                                'busy.')
+            return
+        else:
+            self.logger.debug('run the "%s" subprocess.' %
+                                    os.path.basename(self.tool.executable))
+
+        # Run an external process for statistics computation
+        self.app.statusBar().showMessage('Compute coarse statistics ...')
+
+        self._tmpdir = self.setup_tmpdir(dataset)
+        vrtfilename = os.path.basename(dataset.vrtfilename)
+        vrtfilename = os.path.join(self._tmpdir, vrtfilename)
+
+        self._banditem = item
+        self._datasetitem = dataset
+
+        args = [os.path.basename(vrtfilename)]
+        self.tool.cwd = os.path.dirname(vrtfilename)
+        self.controller.run_tool(self.tool, *args)
+
+    def finalize(self, returncode=0):
+        # @TODO: check if opening the dataset in update mode
+        #        (gdal.GA_Update) is a better solution
+
+        dataset = self._datasetitem
+
+        if not dataset:
+            self.logger.debug('unable to retrieve dataset for finalization')
+            return
+
+        try:
+            # only update if processing finished successfully
+            if returncode == 0 and not self.controller.userstop:
+                # set computed statisstic values
+                bandno = self._banditem.GetBand()
+                tmpvrt = os.path.join(self._tmpdir,
+                                      os.path.basename(dataset.vrtfilename))
+                ds = gdal.Open(tmpvrt)
+                if not ds:
+                    self.logger.warning('unable to open temporary virtual '
+                                        'file for getting statistics.')
+                    return
+
+                band = ds.GetRasterBand(bandno)
+                if not band:
+                    self.logger.warning('unable to open raster band n. %d.' %
+                                                                        bandno)
+                    return
+
+                stats = gdalsupport.GetCachedStatistics(band)
+                if None in stats:
+                    self.logger.warning('unable to retrieve statistics.')
+                    return
+
+                names = ('STATISTICS_MINIMUM', 'STATISTICS_MAXIMUM',
+                         'STATISTICS_MEAN', 'STATISTICS_STDDEV')
+                for name, value in zip(names, stats):
+                    self._banditem.SetMetadataItem(name, str(value))
+
+        finally:
+            self.cleanup()
+            self._datasetitem = None
+
+            backend = self.app.pluginmanager.plugins['gdalbackend']
+            backend.newImageView(self._banditem)
+
+            self._banditem = None
