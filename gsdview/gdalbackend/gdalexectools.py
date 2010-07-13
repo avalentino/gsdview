@@ -261,6 +261,9 @@ class GdalInfoDescriptor(BaseGdalToolDescriptor):
         #: statistics are stored in an image.
         self.stats = False
 
+        #: report histogram information for all bands.
+        self.hist = False
+
         #: suppress ground control points list printing. It may be useful for
         #: datasets with huge amount of GCPs, such as L1B AVHRR or HDF4 MODIS
         #: which contain thousands of the ones.
@@ -269,6 +272,9 @@ class GdalInfoDescriptor(BaseGdalToolDescriptor):
         #: suppress metadata printing. Some datasets may contain a lot of
         #: metadata strings.
         self.nomd = False
+
+        #: suppress raster attribute table printing.
+        self.norat = False
 
         #: suppress printing of color table.
         self.noct = False
@@ -281,18 +287,18 @@ class GdalInfoDescriptor(BaseGdalToolDescriptor):
 
     def cmdline(self, *args, **kwargs):
         extra_args = []
-        for name in ('mm', 'stats', 'hist', 'nogcp', 'nomd', 'noct',
-                     'checksum',):
+        for name in ('mm', 'stats', 'hist', 'nogcp', 'nomd', 'norat',
+                     'noct', 'checksum',):
             flag = '-%s' % name
-            if getattr(self, name) is not None and flag not in args:
+            if getattr(self, name) and flag not in args:
                 extra_args.append(flag)
 
         if self.mdd is not None and '-mdd' not in args:
             extra_args.extend(('-mdd', self.mdd))
 
-        args = extra_args.extend + list(args)
+        args = extra_args + list(args)
 
-        return super(GdalAddOverviewDescriptor, self).cmdline(*args, **kwargs)
+        return super(GdalInfoDescriptor, self).cmdline(*args, **kwargs)
 
 
 class GdalOutputHandler(Qt4OutputHandler):
