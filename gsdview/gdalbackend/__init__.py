@@ -30,7 +30,7 @@ __all__ = ['init', 'close', 'loadSettings', 'saveSettings',
            'author', 'author_email', 'copyright', 'license_type',
            'website', 'website_label', 'getUseExceptions',
            'UseExceptions', 'DontUseExceptions',
-           'openFile', 'openImageView', 'openItemMatadataView',
+           'openFile', 'openImageView', 'newImageView', 'openItemMatadataView',
            'openRGBImageView', 'openSubDataset', 'closeItem',
            'findItemFromFilename', 'itemActions', 'itemContextMenu',
 ]
