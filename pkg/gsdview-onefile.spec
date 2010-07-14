@@ -3,24 +3,48 @@
 # Linux: policy change with system libraries :
 #   http://groups.google.com/group/PyInstaller/browse_thread/thread/dbe36a6fd985631b?hl=en#
 
+try:
+    from subprocess import check_output
+except ImportError:
+    def check_output(*popenargs, **kwargs):
+        from subprocess import Popen, CalledProcessError, PIPE
+
+        if 'stdout' in kwargs:
+            raise ValueError('stdout argument not allowed, it will be overridden.')
+        process = Popen(*popenargs, stdout=PIPE, **kwargs)
+        output, unused_err = process.communicate()
+        retcode = process.poll()
+        if retcode:
+            cmd = kwargs.get("args")
+            if cmd is None:
+                cmd = popenargs[0]
+            raise CalledProcessError(retcode, cmd, output=output)
+        return output
+
 EXTRA_QT_RESOURCES = []
 GSDVIEWROOT = '..'
+
 if sys.platform == 'darwin':
     GDALROOT = '/Library/Frameworks/GDAL.framework'
     GDAL_DATA = os.path.join(GDALROOT, 'Resources', 'gdal')
+    GDALINFO = os.path.join(GDALROOT, 'unix', 'bin', 'gdalinfo')
     GDALADDO = os.path.join(GDALROOT, 'unix', 'bin', 'gdaladdo')
     # Workaround fo pyinstaller bug #157 (http://www.pyinstaller.org/ticket/157)
     EXTRA_QT_RESOURCES = Tree('/Library/Frameworks/QtGui.framework/Resources/qt_menu.nib', os.path.join('Resources', 'qt_menu.nib'))
-    #EXTRA_QT_RESOURCES = Tree(os.path.join(QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.LibrariesPath), 
+    #EXTRA_QT_RESOURCES = Tree(os.path.join(QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.LibrariesPath),
     #                          'QtGui.framework/Resources/qt_menu.nib'), os.path.join('Resources', 'qt_menu.nib'))
 elif sys.platform[:3] == 'win':
     GDALROOT = r'c:\gdal170'
     GDAL_DATA = os.path.join(GDALROOT, 'data')
+    GDALINFO = os.path.join(GDALROOT, 'bin', 'gdalinfo.exe')
     GDALADDO = os.path.join(GDALROOT, 'bin', 'gdaladdo.exe')
 else:
     # Standard unix
-    GDALROOT = '/usr'
-    GDAL_DATA = os.path.join(GDALROOT, 'share', 'gdal15')
+    #GDALROOT = '/usr'
+    #GDAL_DATA = os.path.join(GDALROOT, 'share', 'gdal16')
+    GDALROOT = check_output(['gdal-config', '--prefix']).strip()
+    GDAL_DATA = check_output(['gdal-config', '--datadir']).strip()
+    GDALINFO = os.path.join(GDALROOT, 'bin', 'gdalinfo')
     GDALADDO = os.path.join(GDALROOT, 'bin', 'gdaladdo')
 
 a = Analysis([os.path.join(HOMEPATH,'support', '_mountzlib.py'),
@@ -60,9 +84,11 @@ exe = EXE(pyz,
                os.path.join('docs', 'html')),
 
           # GDAL tools and data
-          [(os.path.basename(GDALADDO), GDALADDO, 'DATA'),],
+          [(os.path.basename(GDALINFO), GDALINFO, 'DATA'),
+           (os.path.basename(GDALADDO), GDALADDO, 'DATA'),
+          ],
           Tree(os.path.join(GDAL_DATA), 'data'),
-          
+
           # Workaround fo pyinstaller bug #157 (http://www.pyinstaller.org/ticket/157)
           EXTRA_QT_RESOURCES,
 
@@ -79,4 +105,4 @@ BUILD_BUNDLE = True
 if sys.platform == 'darwin' and BUILD_BUNDLE:
     sys.path.insert(0, os.path.abspath(os.pardir))
     from gsdview import info
-    app = BUNDLE(exe, appname=info.name, version=info.version) 
+    app = BUNDLE(exe, appname=info.name, version=info.version)
