@@ -70,6 +70,10 @@ class GdalHelper(object):
     def logger(self):
         return self.app.logger
 
+    @property
+    def gdalbackend(self):
+        return self.app.pluginmanager.plugins['gdalbackend']
+
     def setup_tmpdir(self, dataset):
         '''Create a temporary diran copy the virtual file into it.'''
 
@@ -219,6 +223,8 @@ class GdalAddoHelper(GdalHelper):
 class GdalStatsHelper(GdalHelper):
     '''Helper class for statistics pre-computation on live raster bands.'''
 
+    # @TODO: test error control and user stop handling
+
     def __init__(self, app, tool):
         super(GdalStatsHelper, self).__init__(app, tool)
         self._datasetitem = None
@@ -252,6 +258,7 @@ class GdalStatsHelper(GdalHelper):
         args = [os.path.basename(vrtfilename)]
         self.tool.cwd = os.path.dirname(vrtfilename)
         self.controller.run_tool(self.tool, *args)
+        self.app.progressbar.setRange(0, 0)
 
     def finalize(self, returncode=0):
         # @TODO: check if opening the dataset in update mode
@@ -292,11 +299,18 @@ class GdalStatsHelper(GdalHelper):
                 for name, value in zip(names, stats):
                     self._banditem.SetMetadataItem(name, str(value))
 
+                # only try to open the new view if statistics have been
+                # computed successfully
+                #backend = self.app.pluginmanager.plugins['gdalbackend']
+                #backend.newImageView(self._banditem)
         finally:
             self.cleanup()
-            self._datasetitem = None
 
-            backend = self.app.pluginmanager.plugins['gdalbackend']
-            backend.newImageView(self._banditem)
+            # @TODO: check
+            # @NOTE: try to open the new view even if statistics have not
+            #        been computed successfully
+            self.gdalbackend.newImageView(self._banditem)
 
             self._banditem = None
+            self._datasetitem = None
+            self.app.progressbar.setRange(0, 100)
