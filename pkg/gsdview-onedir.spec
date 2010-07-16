@@ -124,8 +124,11 @@ coll = COLLECT(exe,
                name=os.path.join(GSDVIEWROOT, 'dist', 'gsdview'),
 )
 
-BUILD_BUNDLE = True
+# Bundle sipport for onedir mode still incomplete
+BUILD_BUNDLE = False
 if sys.platform == 'darwin' and BUILD_BUNDLE:
     sys.path.insert(0, os.path.abspath(os.pardir))
     from gsdview import info
-    app = BUNDLE(exe, appname=info.name, version=info.version)
+    app = BUNDLE(exe, 
+                 appname=os.path.join('dist', info.name), 
+                 version=info.version)

@@ -105,4 +105,6 @@ BUILD_BUNDLE = True
 if sys.platform == 'darwin' and BUILD_BUNDLE:
     sys.path.insert(0, os.path.abspath(os.pardir))
     from gsdview import info
-    app = BUNDLE(exe, appname=info.name, version=info.version)
+    app = BUNDLE(exe, 
+                 appname=os.path.join('dist', 'onefile', info.name), 
+                 version=info.version)

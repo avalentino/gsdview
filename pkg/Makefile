@@ -12,13 +12,13 @@ html:
 
 onedir: gsdview-onedir.spec html
 	$(PYINSTALLERROOT)/Build.py $<
-	cp -rv $(DISTROOT)/gsdview/* $(BUNDLEROOT)/Contents/MacOS
-	mv $(BUNDLEROOT)/Contents/MacOS/Resources/* $(BUNDLEROOT)/Contents/Resources
-	$(RM) -r $(BUNDLEROOT)/Contents/MacOS/Resources
+	#cp -rv $(DISTROOT)/gsdview/* $(BUNDLEROOT)/Contents/MacOS
+	#mv $(BUNDLEROOT)/Contents/MacOS/Resources/* $(BUNDLEROOT)/Contents/Resources
+	#$(RM) -r $(BUNDLEROOT)/Contents/MacOS/Resources
 
 onefile: gsdview-onefile.spec html
 	$(PYINSTALLERROOT)/Build.py $<
-
+	
 clean:
 	$(RM) *.pyc logdict*.log warngsdview*.txt *~
 	$(RM) -r $(GSDVIEWROOT)/dist/onefile
