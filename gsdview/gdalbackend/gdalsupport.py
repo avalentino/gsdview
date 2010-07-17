@@ -268,6 +268,9 @@ def isRGB(dataset, strict=False):
 SAFE_GDAL_STATS = (('1640' <= gdal.VersionInfo() < '1700') or
                    (gdal.VersionInfo() > '1720'))
 
+GDAL_STATS_KEYS = ('STATISTICS_MINIMUM', 'STATISTICS_MAXIMUM',
+                   'STATISTICS_MEAN', 'STATISTICS_STDDEV')
+
 def GetCachedStatistics(band):
     '''Retrieve cached statistics from a raster band.
 
@@ -281,10 +284,7 @@ def GetCachedStatistics(band):
     '''
 
     metadata = band.GetMetadata()
-    stats = [metadata.get(name) for name in ('STATISTICS_MINIMUM',
-                                             'STATISTICS_MAXIMUM',
-                                             'STATISTICS_MEAN',
-                                             'STATISTICS_STDDEV')]
+    stats = [metadata.get(name) for name in GDAL_STATS_KEYS]
     if None not in stats:
         stats = [float(item) for item in stats]
 

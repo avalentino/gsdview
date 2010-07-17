@@ -514,9 +514,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         # @COMPATIBILITY: workaround fo flagging statistics as computed
         # @SEALSO: ticket #3572 on GDAL Trac
         stats = band.GetStatistics(True, True)
-        keys = ('STATISTICS_MINIMUM', 'STATISTICS_MAXIMUM', 'STATISTICS_MEAN',
-                'STATISTICS_STDDEV')
-        for name, value in zip(keys, stats):
+        for name, value in zip(gdalsupport.GDAL_STATS_KEYS, stats):
             band.SetMetadataItem(name, str(value))
 
         # @TODO: check

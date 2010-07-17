@@ -294,9 +294,7 @@ class GdalStatsHelper(GdalHelper):
                     self.logger.warning('unable to retrieve statistics.')
                     return
 
-                names = ('STATISTICS_MINIMUM', 'STATISTICS_MAXIMUM',
-                         'STATISTICS_MEAN', 'STATISTICS_STDDEV')
-                for name, value in zip(names, stats):
+                for name, value in zip(gdalsupport.GDAL_STATS_KEYS, stats):
                     self._banditem.SetMetadataItem(name, str(value))
 
                 # only try to open the new view if statistics have been
