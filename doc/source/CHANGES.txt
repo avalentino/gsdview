@@ -22,8 +22,10 @@ Changes from 0.6.1 to 0.6.2 (in development)
 * Enabled complex selection on all lists and tables (close :issue:`51`)
 * New button for stopping external tools (close :issue:`41`)
 * Drop GDAL 1.5.x series: now GSDView requires GDAL 1.6.1 or higher
-* New gsdtools package providing extra utilities for geo-spatial data handling.
-  The gsdview.gsdtools module has been renamed into gsdview.imgutils.
+* Statistics and histograms computation now is fully asynchronous 
+  (close :issus:`28`).
+  Configuration of custom histogram parameters in the GDAL info dialogs is
+  temporary disabled.
 
 
 Changes from 0.6.0 to 0.6.1 (09/05/2010)
