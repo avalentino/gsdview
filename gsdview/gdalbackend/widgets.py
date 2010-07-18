@@ -30,7 +30,6 @@ import logging
 
 import numpy
 from osgeo import gdal
-from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
 from PyQt4 import QtCore, QtGui
 
 from gsdview import qt4support
@@ -342,15 +341,9 @@ class MajorObjectInfoDialog(QtGui.QDialog):
         # Init tabs
         self.updateMetadata()
 
-    def updateMetadata(self, domain=''):
-        domain = str(domain)    # it could be a QString
-        metadatalist = self._obj.GetMetadata_List(domain)
-        if metadatalist:
-            self.metadataNumValue.setText(str(len(metadatalist)))
-            self._setMetadata(self.metadataTableWidget, metadatalist)
-        else:
-            self.metadataNumValue.setText('0')
-            qt4support.clearTable(self.metadataTableWidget)
+    def _checkgdalobj(self):
+        if not self._obj:
+            raise ValueError('no GDAL object attached (self._obj is None).')
 
     @staticmethod
     def _setMetadata(tablewidget, metadatalist):
@@ -369,6 +362,33 @@ class MajorObjectInfoDialog(QtGui.QDialog):
 
         # Fix table header behaviour
         tablewidget.setSortingEnabled(sortingenabled)
+
+    def resetMetadata(self, domain=''):
+        self.metadataNumValue.setText('0')
+        qt4support.clearTable(self.metadataTableWidget)
+
+    def setMetadata(self, metadatalist):
+        self.metadataNumValue.setText(str(len(metadatalist)))
+        self._setMetadata(self.metadataTableWidget, metadatalist)
+
+    def updateMetadata(self, domain=''):
+        if self._obj is not None:
+            domain = str(domain)    # it could be a QString
+            metadatalist = self._obj.GetMetadata_List(domain)
+
+        if metadatalist:
+            self.setMetadata(metadatalist)
+        else:
+            self.resetMetadata()
+
+    def reset(self):
+        self.resetMetadata()
+
+    def update(self):
+        if self._obj is not None:
+            self.updateMetadata()
+        else:
+            self.reset()
 
 
 def _setupImageStructureInfo(widget, metadata):
@@ -437,8 +457,7 @@ class HistogramConfigDialog(QtGui.QDialog, HistogramConfigDialogBase):
 BandInfoDialogBase = qt4support.getuiform('banddialog', __name__)
 class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
-    def __init__(self, band, parent=None, flags=QtCore.Qt.Widget):
-        assert band, 'a valid GDAL raster band expected'
+    def __init__(self, band=None, parent=None, flags=QtCore.Qt.Widget):
         super(BandInfoDialog, self).__init__(band, parent, flags)
 
         self.connect(self.computeStatsButton, QtCore.SIGNAL('clicked()'),
@@ -462,14 +481,90 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         qt4support.setViewContextActions(self.histogramTableWidget)
         qt4support.setViewContextActions(self.colorTableWidget)
 
-        # @TODO: improve method names
-        # Tabs
-        self._setupInfoTab(band)
-        self._setupStatisticsBox(band)
-        self._setupHistogramBox(band)
-        self._setupColorTableTab(band.GetRasterColorTable())
+        if not hasattr(gdal.Band, 'GetDefaultHistogram'):
+            self.histogramGroupBox.hide()
+            self.statisticsVerticalLayout.addStretch()
 
-    def _setupInfoTab(self, band):
+        # Tabs
+        if band:
+            self.update()
+
+    @property
+    def band(self):
+        return self._obj
+
+    def setBand(self, band):
+        self._obj = band
+        if band is not None:
+            # @TODO: check type
+            self.update()
+        else:
+            self.reset()
+
+    def reset(self):
+        super(BandInfoDialog, self).reset()
+
+        self.resetInfoTab()
+        self.resetStatistics()
+        self.resetHistogram()
+        self.resetColorTable()
+
+    def update(self):
+        super(BandInfoDialog, self).update()
+
+        self.updateInfoTab()
+        self.updateStatistics()
+        self.updateHistogram()
+        self.updateColorTable()
+
+    def resetImageStructure(self):
+        _setupImageStructureInfo(self, {})
+
+    def setImageStructure(self, metadata):
+        if metadata is None:
+            self.resetImageStructure()
+
+        _setupImageStructureInfo(self, metadata)
+
+    def updateImageStructure(self):
+        if self.band is not None:
+            metadata = self.band.GetMetadata('IMAGE_STRUCTURE')
+        else:
+            metadata = {}
+
+        self.setImageStructure(metadata)
+
+    def resetInfoTab(self):
+        # Info
+        self.descriptionValue.setText('')
+        self.bandNumberValue.setText('')
+        self.colorInterpretationValue.setText('')
+        self.overviewCountValue.setText('0')
+        self.hasArbitraryOverviewsValue.setText('')
+
+        # @TODO: checksum
+        #~ band.Checksum                   ??
+
+        # Data
+        self.xSizeValue.setText('0')
+        self.ySizeValue.setText('0')
+        self.blockSizeValue.setText('0')
+        self.noDataValue.setText('')
+
+        self.dataTypeValue.setText('')
+        self.unitTypeValue.setText('')
+        self.offsetValue.setText('0')
+        self.scaleValue.setText('1')
+
+        self.resetImageStructure()
+
+    def updateInfoTab(self):
+        if self.band is None:
+            self.resetInfoTab()
+            return
+
+        band = self.band
+
         # Color interpretaion
         colorint = band.GetRasterColorInterpretation()
         colorint = gdal.GetColorInterpretationName(colorint)
@@ -499,16 +594,202 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.offsetValue.setText(str(band.GetOffset()))
         self.scaleValue.setText(str(band.GetScale()))
 
-        _setupImageStructureInfo(self, band.GetMetadata('IMAGE_STRUCTURE'))
+        self.updateImageStructure()
+
+    def resetStatistics(self):
+        '''Reset statistics.'''
+
+        value = self.tr('Not computed')
+        self.minimumValue.setText(value)
+        self.maximumValue.setText(value)
+        self.meanValue.setText(value)
+        self.stdValue.setText(value)
+
+    def setStatistics(self, vmin, vmax, mean, stddev):
+        self.minimumValue.setText(str(vmin))
+        self.maximumValue.setText(str(vmax))
+        self.meanValue.setText(str(mean))
+        self.stdValue.setText(str(stddev))
 
     @qt4support.overrideCursor
-    def computeStats(self):
-        logging.info('start statistics computation')
-        # @TODO: use an external process (??)
+    def updateStatistics(self):
+        if self.band is None:
+            self.resetStatistics()
+            return
 
-        band = self._obj
+        # @NOTE: the band.GetStatistics method called with the second argument
+        #        set to False (no image rescanning) has been fixed in
+        #        r19666_ (1.6 branch) and r19665_ (1.7 branch)
+        #        see `ticket #3572` on `GDAL Trac`_.
+        #
+        # .. _r19666: http://trac.osgeo.org/gdal/changeset/19666
+        # .. _r19665: http://trac.osgeo.org/gdal/changeset/19665
+        # .. _`ticket #3572`: http://trac.osgeo.org/gdal/ticket/3572
+        # .. _`GDAL Trac`: http://trac.osgeo.org/gdal
+
+        if gdalsupport.hasFastStats(self.band):
+            vmin, vmax, mean, stddev = self.band.GetStatistics(True, True)
+            self.setStatistics(vmin, vmax, mean, stddev)
+            self.computeStatsButton.setEnabled(False)
+        else:
+            self.resetStatistics()
+
+    def resetHistogram(self):
+        tablewidget = self.histogramTableWidget
+        self.numberOfClassesValue.setText('0')
+        qt4support.clearTable(tablewidget)
+
+    def setHistogram(self, vmin, vmax, nbuckets, hist):
+        self.numberOfClassesValue.setText(str(nbuckets))
+
+        w = (vmax - vmin) / nbuckets
+
+        tablewidget = self.histogramTableWidget
+        tablewidget.setRowCount(nbuckets)
+
+        for row in range(nbuckets):
+            start = vmin + row * w
+            stop = start + w
+            tablewidget.setItem(row, 0,
+                                QtGui.QTableWidgetItem(str(start)))
+            tablewidget.setItem(row, 1,
+                                QtGui.QTableWidgetItem(str(stop)))
+            tablewidget.setItem(row, 2,
+                                QtGui.QTableWidgetItem(str(hist[row])))
+
+        # @TODO: plotting
+
+    def updateHistogram(self):
+        if self.band is None:
+            self.resetHistogram()
+
+        if gdal.DataTypeIsComplex(self.band.DataType):
+            self.computeHistogramButton.setEnabled(False)
+            return
+        else:
+            self.computeHistogramButton.setEnabled(True)
+
+        if gdal.VersionInfo() < '1700':
+            # @TODO: check
+            if self.computeHistogramButton.isEnabled() == False:
+                # Histogram already computed
+                hist = self.band.GetDefaultHistogram()
+            else:
+                hist = None
+        else:
+            # @WARNING: causes a crash in GDAL < 1.7.0 (r18405)
+            # @SEEALSO: http://trac.osgeo.org/gdal/ticket/3304
+            hist = self.band.GetDefaultHistogram(force=False)
+
+        if hist:
+            self.setHistogram(*hist)
+            self.computeHistogramButton.setEnabled(False)
+        else:
+            self.resetHistogram()
+
+    @staticmethod
+    def _rgb2qcolor(red, green, blue, alpha=255):
+        qcolor = QtGui.QColor()
+        qcolor.setRgb(red, green, blue, alpha)
+        return qcolor
+
+    @staticmethod
+    def _gray2qcolor(gray):
+        qcolor = QtGui.QColor()
+        qcolor.setRgb(gray, gray, gray)
+        return qcolor
+
+    @staticmethod
+    def _cmyk2qcolor(cyan, magenta, yellow, black=255):
+        qcolor = QtGui.QColor()
+        qcolor.setCmyk(cyan, magenta, yellow, black)
+        return qcolor
+
+    @staticmethod
+    def _hsv2qcolor(hue, lightness, saturation, a=0):
+        qcolor = QtGui.QColor()
+        qcolor.setHsv(hue, lightness, saturation, a)
+        return qcolor
+
+    def resetColorTable(self):
+        self.ctInterpretationValue.setText('')
+        self.colorsNumberValue.setText('')
+        qt4support.clearTable(self.colorTableWidget)
+
+    def setColorTable(self, colortable):
+        if colortable is None:
+            self.resetColorTable()
+            return
+
+        ncolors = colortable.GetCount()
+        colorint = colortable.GetPaletteInterpretation()
+
+        label = gdalsupport.colorinterpretations[colorint]['label']
+        self.ctInterpretationValue.setText(label)
+        self.colorsNumberValue.setText(str(ncolors))
+
+        mapping = gdalsupport.colorinterpretations[colorint]['inverse']
+        labels = [mapping[k] for k in sorted(mapping.keys())]
+        labels.append('Color')
+
+        tablewidget = self.colorTableWidget
+
+        tablewidget.setRowCount(ncolors)
+        tablewidget.setColumnCount(len(labels))
+
+        tablewidget.setHorizontalHeaderLabels(labels)
+        tablewidget.setVerticalHeaderLabels([str(i) for i in range(ncolors)])
+
+        colors = gdalsupport.colortable2numpy(colortable)
+
+        if colorint == gdal.GPI_RGB:
+            func = BandInfoDialog._rgb2qcolor
+        elif colorint == gdal.GPI_Gray:
+            func = BandInfoDialog._gray2qcolor
+        elif colorint == gdal.GPI_CMYK:
+            func = BandInfoDialog._cmyk2qcolor
+        elif colorint == gdal.GPI_HLS:
+            func = BandInfoDialog._hsv2qcolor
+        else:
+            raise ValueError('invalid color intepretatin: "%s"' % colorint)
+
+        brush = QtGui.QBrush()
+        brush.setStyle(QtCore.Qt.SolidPattern)
+
+        for row, color in enumerate(colors):
+            for chan, value in enumerate(color):
+                tablewidget.setItem(row, chan,
+                                    QtGui.QTableWidgetItem(str(value)))
+            qcolor = func(*color)
+            brush.setColor(qcolor)
+            item = QtGui.QTableWidgetItem()
+            item.setBackground(brush)
+            tablewidget.setItem(row, chan+1, item)
+
+        hheader = tablewidget.horizontalHeader()
+        hheader.resizeSections(QtGui.QHeaderView.ResizeToContents)
+
+    def updateColorTable(self):
+        if self.band is None:
+            self.resetColorTable()
+        else:
+            colortable = self.band.GetRasterColorTable()
+
+            if colortable is None:
+                # Disable the color table tab
+                self.tabWidget.setTabEnabled(3, False)
+            else:
+                self.tabWidget.setTabEnabled(3, True)
+                self.setColorTable(colortable)
+
+    @qt4support.overrideCursor # @TODO: remove
+    def computeStats(self):
+        self._checkgdalobj()
+
+        logging.info('start statistics computation')
+
+        band = self.band
         approx = self.approxStatsCheckBox.isChecked()
-        # @TODO: use callback for progress reporting
         band.ComputeStatistics(approx)#, callback=None, callback_data=None)
 
         # @COMPATIBILITY: workaround fo flagging statistics as computed
@@ -521,42 +802,13 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         #if self.domainComboBox.currentText() == '':
         #    self.updateMetadata()
         logging.debug('statistics computation completed')
-        self._setupStatisticsBox(band)
+        self.updateStatistics()
 
-    def _resetStatisticsBox(self):
-        '''Reset statistics.'''
-
-        value = self.tr('Not computed')
-        self.minimumValue.setText(value)
-        self.maximumValue.setText(value)
-        self.meanValue.setText(value)
-        self.stdValue.setText(value)
-
-    def _setupStatisticsBox(self, band):
-        # @NOTE: the band.GetStatistics method called with the second argument
-        #        set to False (no image rescanning) has been fixed in
-        #        r19666_ (1.6 branch) and r19665_ (1.7 branch)
-        #        see `ticket #3572` on `GDAL Trac`_.
-        #
-        # .. _r19666: http://trac.osgeo.org/gdal/changeset/19666
-        # .. _r19665: http://trac.osgeo.org/gdal/changeset/19665
-        # .. _`ticket #3572`: http://trac.osgeo.org/gdal/ticket/3572
-        # .. _`GDAL Trac`: http://trac.osgeo.org/gdal
-
-        if gdalsupport.hasFastStats(band):
-            vmin, vmax, mean, stddev = band.GetStatistics(True, True)
-            self.minimumValue.setText(str(vmin))
-            self.maximumValue.setText(str(vmax))
-            self.meanValue.setText(str(mean))
-            self.stdValue.setText(str(stddev))
-            self.computeStatsButton.setEnabled(False)
-        else:
-            self._resetStatisticsBox()
-
+    @qt4support.overrideCursor # @TODO: remove
     def computeHistogram(self):
-        # @TODO: use an external process (??)
+        self._checkgdalobj()
 
-        band = self._obj
+        band = self.band
         approx = self.approxStatsCheckBox.isChecked()
         if self.customHistogramCheckBox.isChecked():
             dialog = HistogramConfigDialog(self)
@@ -568,6 +820,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
                 dialog.approxCheckBox.setChecked(True)
                 dialog.approxCheckBox.setEnabled(False)
 
+            from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
             try:
                 dtype = GDALTypeCodeToNumericTypeCode(band.DataType)
             except KeyError:
@@ -621,149 +874,14 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
             vmin, vmax, nbuckets, hist = hist
 
         self.computeHistogramButton.setEnabled(False)
-        self._setupStatisticsBox(band) # @TODO: check
-        self._setHistogram(vmin, vmax, nbuckets, hist)
-
-    def _setHistogram(self, vmin, vmax, nbuckets, hist):
-        self.numberOfClassesValue.setText(str(nbuckets))
-
-        w = (vmax - vmin) / nbuckets
-
-        tablewidget = self.histogramTableWidget
-        tablewidget.setRowCount(nbuckets)
-
-        for row in range(nbuckets):
-            start = vmin + row * w
-            stop = start + w
-            tablewidget.setItem(row, 0,
-                                QtGui.QTableWidgetItem(str(start)))
-            tablewidget.setItem(row, 1,
-                                QtGui.QTableWidgetItem(str(stop)))
-            tablewidget.setItem(row, 2,
-                                QtGui.QTableWidgetItem(str(hist[row])))
-
-        # @TODO: plotting
-
-    def _resetHistogramBox(self):
-        tablewidget = self.histogramTableWidget
-        self.numberOfClassesValue.setText('0')
-        qt4support.clearTable(tablewidget)
-
-    def _setupHistogramBox(self, band):
-        if not hasattr(band, 'GetDefaultHistogram'):
-            self.histogramGroupBox.hide()
-            self.statisticsVerticalLayout.addStretch()
-            return
-
-        if band.DataType in (gdal.GDT_CInt16, gdal.GDT_CInt32,
-                             gdal.GDT_CFloat32, gdal.GDT_CFloat64):
-            self.computeHistogramButton.setEnabled(False)
-            return
-
-        if gdal.VersionInfo() < '1700':
-            if self.computeHistogramButton.isEnabled() == False:
-                # Histogram already computed
-                hist = band.GetDefaultHistogram()
-            else:
-                hist = None
-        else:
-            # @WARNING: causes a crash in GDAL < 1.7.0 (r18405)
-            # @SEEALSO: http://trac.osgeo.org/gdal/ticket/3304
-            hist = band.GetDefaultHistogram(force=False)
-
-        if hist:
-            self._setHistogram(*hist)
-            self.computeHistogramButton.setEnabled(False)
-        else:
-            self._resetHistogramBox()
-
-    @staticmethod
-    def _rgb2qcolor(red, green, blue, alpha=255):
-        qcolor = QtGui.QColor()
-        qcolor.setRgb(red, green, blue, alpha)
-        return qcolor
-
-    @staticmethod
-    def _gray2qcolor(gray):
-        qcolor = QtGui.QColor()
-        qcolor.setRgb(gray, gray, gray)
-        return qcolor
-
-    @staticmethod
-    def _cmyk2qcolor(cyan, magenta, yellow, black=255):
-        qcolor = QtGui.QColor()
-        qcolor.setCmyk(cyan, magenta, yellow, black)
-        return qcolor
-
-    @staticmethod
-    def _hsv2qcolor(hue, lightness, saturation, a=0):
-        qcolor = QtGui.QColor()
-        qcolor.setHsv(hue, lightness, saturation, a)
-        return qcolor
-
-    def _setupColorTableTab(self, colortable):
-        tablewidget = self.colorTableWidget
-
-        if colortable is None:
-            self.ctInterpretationValue.setText('')
-            self.colorsNumberValue.setText('')
-            qt4support.clearTable(tablewidget)
-            # Disable the color table tab
-            self.tabWidget.setTabEnabled(3, False)
-            return
-
-        ncolors = colortable.GetCount()
-        colorint = colortable.GetPaletteInterpretation()
-
-        label = gdalsupport.colorinterpretations[colorint]['label']
-        self.ctInterpretationValue.setText(label)
-        self.colorsNumberValue.setText(str(ncolors))
-
-        mapping = gdalsupport.colorinterpretations[colorint]['inverse']
-        labels = [mapping[k] for k in sorted(mapping.keys())]
-        labels.append('Color')
-
-        tablewidget.setRowCount(ncolors)
-        tablewidget.setColumnCount(len(labels))
-
-        tablewidget.setHorizontalHeaderLabels(labels)
-        tablewidget.setVerticalHeaderLabels([str(i) for i in range(ncolors)])
-
-        colors = gdalsupport.colortable2numpy(colortable)
-
-        if colorint == gdal.GPI_RGB:
-            func = BandInfoDialog._rgb2qcolor
-        elif colorint == gdal.GPI_Gray:
-            func = BandInfoDialog._gray2qcolor
-        elif colorint == gdal.GPI_CMYK:
-            func = BandInfoDialog._cmyk2qcolor
-        elif colorint == gdal.GPI_HLS:
-            func = BandInfoDialog._hsv2qcolor
-        else:
-            raise ValueError('invalid color intepretatin: "%s"' % colorint)
-
-        brush = QtGui.QBrush()
-        brush.setStyle(QtCore.Qt.SolidPattern)
-
-        for row, color in enumerate(colors):
-            for chan, value in enumerate(color):
-                tablewidget.setItem(row, chan,
-                                    QtGui.QTableWidgetItem(str(value)))
-            qcolor = func(*color)
-            brush.setColor(qcolor)
-            item = QtGui.QTableWidgetItem()
-            item.setBackground(brush)
-            tablewidget.setItem(row, chan+1, item)
-
-        hheader = tablewidget.horizontalHeader()
-        hheader.resizeSections(QtGui.QHeaderView.ResizeToContents)
+        self.setHistogram(vmin, vmax, nbuckets, hist)
+        self.updateStatistics() # @TODO: check
 
 
 DatasetInfoDialogBase = qt4support.getuiform('datasetdialog', __name__)
 class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
 
-    def __init__(self, dataset, parent=None, flags=QtCore.Qt.Widget):
-        assert dataset, 'a valid GDAL dataset expected'
+    def __init__(self, dataset=None, parent=None, flags=QtCore.Qt.Widget):
         super(DatasetInfoDialog, self).__init__(dataset, parent, flags)
 
         # Set icons
@@ -772,38 +890,91 @@ class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
         self.tabWidget.setTabIcon(1, geticon('metadata.svg', __name__))
         self.tabWidget.setTabIcon(2, geticon('gcp.svg', __name__))
         self.tabWidget.setTabIcon(3, geticon('driver.svg', __name__))
-        if hasattr(dataset, 'GetFileList'):
-            self.tabWidget.setTabIcon(4, geticon('multiple-documents.svg',
-                                                 __name__))
-            for file_ in dataset.GetFileList():
-                self.fileListWidget.addItem(file_)
-        else:
-            #self.tabWidget.setTabEnabled(4, False)
-            self.tabWidget.removeTab(4)
+        self.tabWidget.setTabIcon(4, geticon('multiple-documents.svg',
+                                  __name__))
 
         # Context menu actions
         qt4support.setViewContextActions(self.gcpsTableWidget)
         qt4support.setViewContextActions(self.driverMetadataTableWidget)
         qt4support.setViewContextActions(self.fileListWidget)
 
+        if not hasattr(gdal.Dataset, 'GetFileList'):
+            self.tabWidget.setTabEnabled(4, False)
+            #self.tabWidget.removeTab(4)
+
         # Setup Tabs
-        self._setupInfoTab(dataset)
-        self._setupDriverTab(dataset.GetDriver())
+        if dataset:
+            self.update()
 
-        # It seems there is a bug in GDAL that causes incorrect GCPs handling
-        # when a subdatast is opened (a dataset is aready open)
-        # @TODO: check and, if the case, file a ticket on http://www.gdal.org
+    @property
+    def dataset(self):
+        return self._obj
 
-        #~ self._setupGCPs(dataset.GetGCPs(), dataset.GetGCPProjection())
-        try:
-            gcplist = dataset.GetGCPs()
-        except SystemError:
-            logging.debug('unable to read GCPs from dataset %s' %
-                                    dataset.GetDescription())#, exc_info=True)
+    def setDataset(self, dataset):
+        self._obj = dataset
+        if dataset is not None:
+            # @TODO: check type
+            self.update()
         else:
-            self._setupGCPs(gcplist, dataset.GetGCPProjection())
+            self.reset()
 
-    def _setupInfoTab(self, dataset):
+    def reset(self):
+        super(DatasetInfoDialog, self).reset()
+
+        self.resetInfoTab()
+        self.resetDriverTab()
+        self.resetGCPs()
+        self.resetFilesTab()
+
+    def update(self):
+        super(DatasetInfoDialog, self).update()
+
+        self.updateInfoTab()
+        self.updateDriverTab()
+        self.updateGCPs()
+        self.updateFilesTab()
+
+    def resetImageStructure(self):
+        _setupImageStructureInfo(self, {})
+
+    def setImageStructure(self, metadata):
+        if metadata is None:
+            self.resetImageStructure()
+
+        _setupImageStructureInfo(self, metadata)
+
+    def updateImageStructure(self):
+        if self.dataset is not None:
+            metadata = self.dataset.GetMetadata('IMAGE_STRUCTURE')
+        else:
+            metadata = {}
+
+        self.setImageStructure(metadata)
+
+    def resetInfoTab(self):
+        self.descriptionValue.setText('')
+        self.rasterCountValue.setText('0')
+        self.xSizeValue.setText('0')
+        self.ySizeValue.setText('0')
+
+        self.projectionValue.setText('')
+        self.projectionRefValue.setText('')
+
+        self.resetImageStructure()
+
+        self.xOffsetValue.setText('0')
+        self.yOffsetValue.setText('0')
+        self.a11Value.setText('1')
+        self.a12Value.setText('0')
+        self.a21Value.setText('0')
+        self.a22Value.setText('1')
+
+    def updateInfoTab(self):
+        if self.dataset is None:
+            self.resetInfoTab()
+            return
+
+        dataset = self.dataset
         description = os.path.basename(dataset.GetDescription())
         self.descriptionValue.setText(description)
         self.descriptionValue.setCursorPosition(0)
@@ -814,7 +985,7 @@ class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
         self.projectionValue.setText(dataset.GetProjection())
         self.projectionRefValue.setText(dataset.GetProjectionRef())
 
-        _setupImageStructureInfo(self, dataset.GetMetadata('IMAGE_STRUCTURE'))
+        self.updateImageStructure()
 
         xoffset, a11, a12, yoffset, a21, a22 = dataset.GetGeoTransform()
         self.xOffsetValue.setText(str(xoffset))
@@ -824,7 +995,17 @@ class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
         self.a21Value.setText(str(a21))
         self.a22Value.setText(str(a22))
 
-    def _setupDriverTab(self, driver):
+    def resetDriverTab(self):
+        self.driverShortNameValue.setText('')
+        self.driverLongNameValue.setText('')
+        self.driverDescriptionValue.setText('')
+        self.driverHelpTopicValue.setText('')
+        self.driverMetadataNumValue.setText('0')
+        qt4support.clearTable(self.driverMetadataTableWidget)
+
+    def setDriverTab(self, driver):
+        self.resetDriverTab()
+
         self.driverShortNameValue.setText(driver.ShortName)
         self.driverLongNameValue.setText(driver.LongName)
         self.driverDescriptionValue.setText(driver.GetDescription())
@@ -845,17 +1026,22 @@ p, li { white-space: pre-wrap; }
             self.driverMetadataNumValue.setText(str(len(metadatalist)))
             self._setMetadata(self.driverMetadataTableWidget, metadatalist)
 
-    def _resetGCPs(self):
+    def updateDriverTab(self):
+        if self.dataset is None:
+            self.resetDriverTab()
+            return
+
+        driver = self.dataset.GetDriver()
+        self.setDriverTab(driver)
+
+    def resetGCPs(self):
         tablewidget = self.gcpsTableWidget
         qt4support.clearTable(tablewidget)
         self.gcpsNumValue.setText('')
         self.gcpsProjectionValue.setText('')
 
-    def _setupGCPs(self, gcplist, projection):
-        self._resetGCPs()
-        if not gcplist:
-            # Disable the GCPs tab
-            self.tabWidget.setTabEnabled(2, False)
+    def setGCPs(self, gcplist, projection):
+        self.resetGCPs()
 
         tablewidget = self.gcpsTableWidget
 
@@ -867,18 +1053,60 @@ p, li { white-space: pre-wrap; }
         sortingenabled = tablewidget.isSortingEnabled()
         tablewidget.setSortingEnabled(False)
 
+        Item = QtGui.QTableWidgetItem
         for row, gcp in enumerate(gcplist):
-            tablewidget.setItem(row, 0, QtGui.QTableWidgetItem(str(gcp.GCPPixel)))
-            tablewidget.setItem(row, 1, QtGui.QTableWidgetItem(str(gcp.GCPLine)))
-            tablewidget.setItem(row, 2, QtGui.QTableWidgetItem(str(gcp.GCPX)))
-            tablewidget.setItem(row, 3, QtGui.QTableWidgetItem(str(gcp.GCPY)))
-            tablewidget.setItem(row, 4, QtGui.QTableWidgetItem(str(gcp.GCPZ)))
-            tablewidget.setItem(row, 5, QtGui.QTableWidgetItem(gcp.Info))
+            tablewidget.setItem(row, 0, Item(str(gcp.GCPPixel)))
+            tablewidget.setItem(row, 1, Item(str(gcp.GCPLine)))
+            tablewidget.setItem(row, 2, Item(str(gcp.GCPX)))
+            tablewidget.setItem(row, 3, Item(str(gcp.GCPY)))
+            tablewidget.setItem(row, 4, Item(str(gcp.GCPZ)))
+            tablewidget.setItem(row, 5, Item(gcp.Info))
             #~ item.setToolTip(1, gcp.Info)
 
         # Fix table header behaviour
         tablewidget.setSortingEnabled(sortingenabled)
 
+    def updateGCPs(self):
+        if self.dataset is None:
+            self.resetGCPs()
+        else:
+            # It seems there is a bug in GDAL that causes incorrect GCPs
+            # handling when a subdatast is opened (a dataset is aready open)
+            # @TODO: check and, if the case, file a ticket on
+            #        http://www.gdal.org
+
+            #self.setGCPs(dataset.GetGCPs(), dataset.GetGCPProjection())
+            try:
+                gcplist = self.dataset.GetGCPs()
+            except SystemError:
+                logging.debug('unable to read GCPs from dataset %s' %
+                                    self.dataset.GetDescription())
+                                    #, exc_info=True)
+            else:
+                if not gcplist:
+                    # Disable the GCPs tab
+                    self.tabWidget.setTabEnabled(2, False)
+                else:
+                    self.tabWidget.setTabEnabled(2, True)
+                    self.setGCPs(gcplist, self.dataset.GetGCPProjection())
+
+    def resetFilesTab(self):
+        #qt4support.clearTable(self.fileListWidget) # @TODO: check
+        self.fileListWidget.clear()
+
+    def setFiles(self, files):
+        self.tabWidget.setTabEnabled(4, True)
+
+        for filename in files:
+            self.fileListWidget.addItem(filename)
+
+    def updateFilesTab(self):
+        if self.dataset is not None:
+            self.tabWidget.setTabEnabled(4, True)
+            self.setFiles(self.dataset.GetFileList())
+        else:
+            self.resetFilesTab()
+            self.tabWidget.setTabEnabled(4, False)
 
 #~ class SubDatasetInfoDialog(DatasetInfoDialog):
 
