@@ -199,6 +199,8 @@ class Qt4OutputHandler(BaseOutputHandler):
     def _handle_pulse(self, data=None):
         '''Handle a blinker pulse'''
 
+        # @TODO: use signals
+
         if self.blinker:
             if not self.blinker.isVisible():
                 self.blinker.show()
@@ -211,6 +213,8 @@ class Qt4OutputHandler(BaseOutputHandler):
         :param data: percentage
 
         '''
+
+        # @TODO: use signals
 
         if self.progressbar:
             self.progressbar.show() # @TODO: check
@@ -225,6 +229,8 @@ class Qt4OutputHandler(BaseOutputHandler):
                      Each item can be None.
 
         '''
+
+        # @TODO: use signals
 
         pulse = data.get('pulse')
         percentage = data.get('percentage')
