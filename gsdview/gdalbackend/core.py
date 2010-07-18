@@ -72,8 +72,7 @@ class GDALBackend(QtCore.QObject):
         QtCore.QObject.__init__(self, app)
         self._app = app
         self._helpers = {}
-        self._actionsmap = {}
-        self._setupActions()
+        self._actionsmap = self._setupActions()
 
         self.connect(self._app.treeview,
                      QtCore.SIGNAL('activated(const QModelIndex&)'),
@@ -304,14 +303,19 @@ class GDALBackend(QtCore.QObject):
 
         return actionsgroup
 
-    def _setupActions(self):
-        self._actionsmap['MajorObjectItem'] = self._setupMajorObjectItemActions()
-        self._actionsmap['BandItem'] = self._setupBandItemActions()
-        self._actionsmap['OverviewItem'] = self._setupOverviewItemActions()
-        #self._actionsmap['VirtualBandItem'] = self._setupVirtualBandItemActions()
-        self._actionsmap['DatasetItem'] = self._setupDatasetItemActions()
-        self._actionsmap['CachedDatasetItem'] = self._actionsmap['DatasetItem']
-        self._actionsmap['SubDatasetItem'] = self._setupSubDatasetItemActions()
+    def _setupActions(self, actionsmap=None):
+        if actionsmap is None:
+            actionsmap = {}
+
+        actionsmap['MajorObjectItem'] = self._setupMajorObjectItemActions()
+        actionsmap['BandItem'] = self._setupBandItemActions()
+        actionsmap['OverviewItem'] = self._setupOverviewItemActions()
+        #actionsmap['VirtualBandItem'] = self._setupVirtualBandItemActions()
+        actionsmap['DatasetItem'] = self._setupDatasetItemActions()
+        actionsmap['CachedDatasetItem'] = actionsmap['DatasetItem']
+        actionsmap['SubDatasetItem'] = self._setupSubDatasetItemActions()
+
+        return actionsmap
 
     ### Actions enabling ######################################################
     def _getDatasetItemActions(self, item=None):
