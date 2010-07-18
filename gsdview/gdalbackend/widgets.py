@@ -485,6 +485,10 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
             self.histogramGroupBox.hide()
             self.statisticsVerticalLayout.addStretch()
 
+        # @TODO: remove.
+        # Tempoorary disable the button for custom histogram configuration
+        self.customHistogramCheckBox.setEnabled(False)
+
         # Tabs
         if band:
             self.update()
@@ -785,97 +789,104 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
     @qt4support.overrideCursor # @TODO: remove
     def computeStats(self):
         self._checkgdalobj()
+        #if None not in gdalsupport.GetCachedStatistics(self.band):
+        #    return
+        self.emit(QtCore.SIGNAL('computeStats(PyQt_PyObject)'), self.band)
 
-        logging.info('start statistics computation')
+        #~ logging.info('start statistics computation')
 
-        band = self.band
-        approx = self.approxStatsCheckBox.isChecked()
-        band.ComputeStatistics(approx)#, callback=None, callback_data=None)
+        #~ band = self.band
+        #~ approx = self.approxStatsCheckBox.isChecked()
+        #~ band.ComputeStatistics(approx)#, callback=None, callback_data=None)
 
-        # @COMPATIBILITY: workaround fo flagging statistics as computed
-        # @SEALSO: ticket #3572 on GDAL Trac
-        stats = band.GetStatistics(True, True)
-        for name, value in zip(gdalsupport.GDAL_STATS_KEYS, stats):
-            band.SetMetadataItem(name, str(value))
+        #~ # @COMPATIBILITY: workaround fo flagging statistics as computed
+        #~ # @SEALSO: ticket #3572 on GDAL Trac
+        #~ stats = band.GetStatistics(True, True)
+        #~ for name, value in zip(gdalsupport.GDAL_STATS_KEYS, stats):
+            #~ band.SetMetadataItem(name, str(value))
 
-        # @TODO: check
-        #if self.domainComboBox.currentText() == '':
-        #    self.updateMetadata()
-        logging.debug('statistics computation completed')
-        self.updateStatistics()
+        #~ # @TODO: check
+        #~ #if self.domainComboBox.currentText() == '':
+        #~ #    self.updateMetadata()
+        #~ logging.debug('statistics computation completed')
+        #~ self.updateStatistics()
 
     @qt4support.overrideCursor # @TODO: remove
     def computeHistogram(self):
         self._checkgdalobj()
+        self.emit(QtCore.SIGNAL('computeHistogram(PyQt_PyObject)'), self.band)
+        #self.emit(QtCore.SIGNAL(
+        #                'computeHistogram(PyQt_PyObject, int, int, int)'),
+        #                band, hmin, nmax, nbuckets)
 
-        band = self.band
-        approx = self.approxStatsCheckBox.isChecked()
-        if self.customHistogramCheckBox.isChecked():
-            dialog = HistogramConfigDialog(self)
+        #~ band = self.band
+        #~ approx = self.approxStatsCheckBox.isChecked()
+        #~ if self.customHistogramCheckBox.isChecked():
+            #~ dialog = HistogramConfigDialog(self)
 
-            # @COMPATIBILITY: bug in GDAL 1.6.x line
-            # @WARNING: causes a crash in GDAL < 1.6.4 (r18405)
-            # @SEEALSO: http://trac.osgeo.org/gdal/ticket/3304
-            if gdal.VersionInfo() < '1640':
-                dialog.approxCheckBox.setChecked(True)
-                dialog.approxCheckBox.setEnabled(False)
+            #~ # @COMPATIBILITY: bug in GDAL 1.6.x line
+            #~ # @WARNING: causes a crash in GDAL < 1.6.4 (r18405)
+            #~ # @SEEALSO: http://trac.osgeo.org/gdal/ticket/3304
+            #~ if gdal.VersionInfo() < '1640':
+                #~ dialog.approxCheckBox.setChecked(True)
+                #~ dialog.approxCheckBox.setEnabled(False)
 
-            from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
-            try:
-                dtype = GDALTypeCodeToNumericTypeCode(band.DataType)
-            except KeyError:
-                pass
-            else:
-                dialog.setLimits(dtype)
+            #~ from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
+            #~ try:
+                #~ dtype = GDALTypeCodeToNumericTypeCode(band.DataType)
+            #~ except KeyError:
+                #~ pass
+            #~ else:
+                #~ dialog.setLimits(dtype)
 
-            tablewidget = self.histogramTableWidget
-            if tablewidget.rowCount() > 0:
-                item = tablewidget.item(0, 0)
-                vmin = float(item.text())
-                item = tablewidget.item(tablewidget.rowCount() - 1 , 1)
-                vmax = float(item.text())
+            #~ tablewidget = self.histogramTableWidget
+            #~ if tablewidget.rowCount() > 0:
+                #~ item = tablewidget.item(0, 0)
+                #~ vmin = float(item.text())
+                #~ item = tablewidget.item(tablewidget.rowCount() - 1 , 1)
+                #~ vmax = float(item.text())
 
-                dialog.minSpinBox.setValue(vmin)
-                dialog.maxSpinBox.setValue(vmax)
-                dialog.nBucketsSpinBox.setValue(tablewidget.rowCount())
+                #~ dialog.minSpinBox.setValue(vmin)
+                #~ dialog.maxSpinBox.setValue(vmax)
+                #~ dialog.nBucketsSpinBox.setValue(tablewidget.rowCount())
 
-            done = False
-            while not done:
-                ret = dialog.exec_()
-                if ret == QtGui.QDialog.Rejected:
-                    return
-                if dialog.validate() is False:
-                    msg = self.tr('The histogram minimum have been set to a '
-                                  'value that is greater or equal of the '
-                                  'histogram maximum.\n'
-                                  'Please fix it.')
-                    QtGui.QMessageBox.warning(self, self.tr('WARNING!'), msg)
-                else:
-                    done = True
+            #~ done = False
+            #~ while not done:
+                #~ ret = dialog.exec_()
+                #~ if ret == QtGui.QDialog.Rejected:
+                    #~ return
+                #~ if dialog.validate() is False:
+                    #~ msg = self.tr('The histogram minimum have been set to a '
+                                  #~ 'value that is greater or equal of the '
+                                  #~ 'histogram maximum.\n'
+                                  #~ 'Please fix it.')
+                    #~ QtGui.QMessageBox.warning(self, self.tr('WARNING!'), msg)
+                #~ else:
+                    #~ done = True
 
-            vmin = dialog.minSpinBox.value()
-            vmax = dialog.maxSpinBox.value()
-            nbuckets = dialog.nBucketsSpinBox.value()
-            include_out_of_range = dialog.outOfRangeCheckBox.isChecked()
-            approx = dialog.approxCheckBox.isChecked()
+            #~ vmin = dialog.minSpinBox.value()
+            #~ vmax = dialog.maxSpinBox.value()
+            #~ nbuckets = dialog.nBucketsSpinBox.value()
+            #~ include_out_of_range = dialog.outOfRangeCheckBox.isChecked()
+            #~ approx = dialog.approxCheckBox.isChecked()
 
-            # @TODO: use callback for progress reporting
-            hist = qt4support.callExpensiveFunc(
-                                band.GetHistogram,
-                                vmin, vmax, nbuckets,
-                                include_out_of_range, approx)
-                                #callback=None, callback_data=None)
+            #~ # @TODO: use callback for progress reporting
+            #~ hist = qt4support.callExpensiveFunc(
+                                #~ band.GetHistogram,
+                                #~ vmin, vmax, nbuckets,
+                                #~ include_out_of_range, approx)
+                                #~ #callback=None, callback_data=None)
 
-        else:
-            # @TODO: use callback for progress reporting
-            hist = qt4support.callExpensiveFunc(band.GetDefaultHistogram)
-                                                #callback=None,
-                                                #callback_data=None)
-            vmin, vmax, nbuckets, hist = hist
+        #~ else:
+            #~ # @TODO: use callback for progress reporting
+            #~ hist = qt4support.callExpensiveFunc(band.GetDefaultHistogram)
+                                                #~ #callback=None,
+                                                #~ #callback_data=None)
+            #~ vmin, vmax, nbuckets, hist = hist
 
-        self.computeHistogramButton.setEnabled(False)
-        self.setHistogram(vmin, vmax, nbuckets, hist)
-        self.updateStatistics() # @TODO: check
+        #~ self.computeHistogramButton.setEnabled(False)
+        #~ self.setHistogram(vmin, vmax, nbuckets, hist)
+        #~ self.updateStatistics() # @TODO: check
 
 
 DatasetInfoDialogBase = qt4support.getuiform('datasetdialog', __name__)

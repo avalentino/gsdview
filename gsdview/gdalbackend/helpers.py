@@ -32,7 +32,7 @@ import shutil
 import tempfile
 
 from osgeo import gdal
-from PyQt4 import QtCore
+from PyQt4 import QtCore, QtGui
 
 from gsdview.gdalbackend import modelitems
 from gsdview.gdalbackend import gdalsupport
@@ -97,13 +97,13 @@ class GdalHelper(object):
             self._tmpdir = None
 
     def start(self, *args, **kargs):
-        pass
+        raise NotImplementedError('GdalHelper.start(*args, **kargs)')
 
     def finalize(self, returncode=0):
         self.cleanup()
 
 
-class GdalAddoHelper(GdalHelper):
+class AddoHelper(GdalHelper):
     '''Helper class for gdaladdo execution on live datasets.
 
     In GSDView an external process running the gdaladdo is used to add
@@ -138,7 +138,7 @@ class GdalAddoHelper(GdalHelper):
     '''
 
     def __init__(self, app, tool):
-        super(GdalAddoHelper, self).__init__(app, tool)
+        super(AddoHelper, self).__init__(app, tool)
         self._datasetitem = None
 
     def _ovrfiles(self, dirname):
@@ -220,19 +220,24 @@ class GdalAddoHelper(GdalHelper):
         self._datasetitem = None
 
 
-class GdalStatsHelper(GdalHelper):
+class StatsHelper(GdalHelper):
     '''Helper class for statistics pre-computation on live raster bands.'''
+
+    _PROGRESS_RANGE = (0, 0)
 
     # @TODO: test error control and user stop handling
 
     def __init__(self, app, tool):
-        super(GdalStatsHelper, self).__init__(app, tool)
+        super(StatsHelper, self).__init__(app, tool)
         self._datasetitem = None
         self._banditem = None
 
+    def setProgressRange(self, minimum, maximum):
+        self.app.progressbar.setRange(minimum, maximum)
+
     def start(self, item):
         if not isinstance(item, modelitems.BandItem):
-            raise ValueError('invaòid band item: %s' % item)
+            raise ValueError('invalid band item: %s' % item)
 
         dataset = item.parent()
 
@@ -258,7 +263,7 @@ class GdalStatsHelper(GdalHelper):
         args = [os.path.basename(vrtfilename)]
         self.tool.cwd = os.path.dirname(vrtfilename)
         self.controller.run_tool(self.tool, *args)
-        self.app.progressbar.setRange(0, 0)
+        self.setProgressRange(*self._PROGRESS_RANGE)
 
     def finalize(self, returncode=0):
         # @TODO: check if opening the dataset in update mode
@@ -289,26 +294,114 @@ class GdalStatsHelper(GdalHelper):
                                                                         bandno)
                     return
 
-                stats = gdalsupport.GetCachedStatistics(band)
-                if None in stats:
-                    self.logger.warning('unable to retrieve statistics.')
-                    return
-
-                for name, value in zip(gdalsupport.GDAL_STATS_KEYS, stats):
-                    self._banditem.SetMetadataItem(name, str(value))
+                self.copy_data(band)
 
                 # only try to open the new view if statistics have been
                 # computed successfully
-                #backend = self.app.pluginmanager.plugins['gdalbackend']
-                #backend.newImageView(self._banditem)
+                self.apply()
         finally:
             self.cleanup()
-
-            # @TODO: check
-            # @NOTE: try to open the new view even if statistics have not
-            #        been computed successfully
-            self.gdalbackend.newImageView(self._banditem)
-
             self._banditem = None
             self._datasetitem = None
-            self.app.progressbar.setRange(0, 100)
+            self.setProgressRange(0, 100)
+
+    def copy_data(self, vrtband):
+        stats = gdalsupport.GetCachedStatistics(vrtband)
+        if None in stats:
+            self.logger.warning('unable to retrieve statistics.')
+            return
+
+        for name, value in zip(gdalsupport.GDAL_STATS_KEYS, stats):
+            self._banditem.SetMetadataItem(name, str(value))
+
+    def apply(self):
+        self.gdalbackend.newImageView(self._banditem)
+
+
+class StatsDialogHelper(StatsHelper):
+    '''Helper class for statistics computation on live raster bands.'''
+
+    def __init__(self, app, tool, dialog=None):
+        super(StatsDialogHelper, self).__init__(app, tool)
+        self._dialog = dialog
+
+        self.progressdialog = QtGui.QProgressDialog(app)
+        self.progressdialog.setModal(True)
+        self.progressdialog.setLabelText(app.tr('Statistics computation.'))
+        self.progressdialog.hide()
+
+        self.progressdialog.connect(self.progressdialog,
+                                    QtCore.SIGNAL('canceled()'),
+                                    self.controller.stop_tool)
+        self.progressdialog.connect(self.app.progressbar,
+                                    QtCore.SIGNAL('valueChanged(int)'),
+                                    self.progressdialog.setValue)
+
+    def _get_dialog(self):
+        return self._dialog
+
+    def _set_dialog(self, value):
+        if self.controller.isbusy:
+            raise RuntimeError("can't set the dialog attribute while an "
+                               "external tool is running.")
+        self._dialog = value
+        #self.progressdialog.setParent(value) # @TODO: check
+
+    dialog = property(_get_dialog, _set_dialog)
+
+    ## @COMPATIBILITY: property.setter nedds Python >= 2.6
+    #@property
+    #def dialog(self):
+    #    return self._dialog
+    #
+    #@dialog.setter
+    #def dialog(self, value):
+    #    if self.controller.isbusy:
+    #        raise RuntimeError("can't set the dialog attribute while an "
+    #                           "external tool is running.")
+    #    self._dialog = value
+    #    self.progressdialog.setParent(value)
+
+    def setProgressRange(self, minimum, maximum):
+        super(StatsDialogHelper, self).setProgressRange(minimum, maximum)
+        self.progressdialog.setRange(minimum, maximum)
+
+    def _checkdialog(self):
+        if self._dialog is None:
+            raise ValueError('"dialog" attribute is None.')
+
+    def start(self, item):
+        self._checkdialog()
+        if not self.controller.isbusy:
+            #self.progressdialog.reset()
+            self.progressdialog.show()
+        super(StatsDialogHelper, self).start(item)
+
+    def finalize(self, returncode=0):
+        super(StatsDialogHelper, self).finalize(returncode)
+        self.progressdialog.hide()
+
+    def apply(self):
+        self._checkdialog()
+        self.dialog.updateStatistics()
+
+
+class HistDialogHelper(StatsDialogHelper):
+    '''Helper class for histogram computation on live raster bands.'''
+
+    _PROGRESS_RANGE = (0, 100)
+
+    def __init__(self, app, tool, dialog=None):
+        super(StatsDialogHelper, self).__init__(app, tool)
+        self.progressdialog.setLabelText(app.tr('Histogram computation.'))
+
+    def copy_data(self, vrtband):
+        hmin, hmax, nbucketsm, hist = vrtband.GetDefaultHistogram()
+        self._banditem.SetDefaultHistogram(hmin, hmax, hist)
+
+    def apply(self):
+        self._checkdialog()
+        hist = self._banditem.GetDefaultHistogram()
+        #self.dialog.updateHistogram()
+        self.dialog.setHistogram(*hist)
+

@@ -78,23 +78,49 @@ class GDALBackend(QtCore.QObject):
                      QtCore.SIGNAL('activated(const QModelIndex&)'),
                      self.onItemActivated)
 
+        self._tools = self._setupExternalTools()
+        self._helpers = self._setupHelpers(self._tools)
+
+    def _setupExternalTools(self):
+        tools = {}
+
+        app = self._app
         handler = gdalexectools.GdalOutputHandler(app.logger, app.statusBar(),
                                                   app.progressbar)
 
         # gdaladdo
-        addotool = gdalexectools.GdalAddOverviewDescriptor(
-                                                        stdout_handler=handler)
-
-        self._helpers['addo'] = helpers.GdalAddoHelper(app, addotool)
+        tool = gdalexectools.GdalAddOverviewDescriptor(stdout_handler=handler)
+        tools['addo'] = tool
 
         # gdalinfo for statistics computation
-        infotool = gdalexectools.GdalInfoDescriptor(stdout_handler=handler)
-        infotool.stats = True
-        infotool.nomd = True
-        infotool.nogcp = True
-        infotool.noct = True
+        tool = gdalexectools.GdalInfoDescriptor(stdout_handler=handler)
+        tool.stats = True
+        tool.nomd = True
+        tool.nogcp = True
+        tool.noct = True
+        tools['stats'] = tool
 
-        self._helpers['stats'] = helpers.GdalStatsHelper(app, infotool)
+        # gdalinfo for histogram computation
+        tool = gdalexectools.GdalInfoDescriptor(stdout_handler=handler)
+        tool.hist = True
+        tool.nomd = True
+        tool.nogcp = True
+        tool.noct = True
+        tools['hist'] = tool
+
+        return tools
+
+    def _setupHelpers(self, tools):
+        hmap = {}
+
+        app = self._app
+
+        hmap['addo'] = helpers.AddoHelper(app, tools['addo'])
+        hmap['stats'] = helpers.StatsHelper(app, tools['stats'])
+        hmap['statsdialog'] = helpers.StatsDialogHelper(app, tools['stats'])
+        hmap['histdialog'] = helpers.HistDialogHelper(app, tools['hist'])
+
+        return hmap
 
     def findItemFromFilename(self, filename):
         '''Serch for and return the (dataset) item corresponding to filename.
@@ -382,8 +408,7 @@ class GDALBackend(QtCore.QObject):
         # @TODO: implementation
         self._app.logger.info('method not yet implemented')
 
-    def showItemProperties(self):
-        item = self._app.currentItem()
+    def _dialogFactory(self, item):
         for itemtype in item.__class__.__mro__:
             name = itemtype.__name__
             assert name.endswith('Item')
@@ -391,8 +416,36 @@ class GDALBackend(QtCore.QObject):
             dialogclass = getattr(widgets, name, None)
             if dialogclass:
                 dialog = dialogclass(item, self._app)
-                dialog.exec_()
                 break
+        else:
+            dialog = None
+
+        # @TODO: rewrite
+        if isinstance(dialog, widgets.BandInfoDialog):
+            for helpername in ('statsdialog', 'histdialog'):
+                helper = self._helpers[helpername]
+                helper.dialog = dialog
+
+            self.connect(dialog,
+                         QtCore.SIGNAL('computeStats(PyQt_PyObject)'),
+                         self._helpers['statsdialog'].start)
+            self.connect(dialog,
+                         QtCore.SIGNAL('computeHistogram(PyQt_PyObject)'),
+                         self._helpers['histdialog'].start)
+
+            def resethelpers(result):
+                self._helpers['statsdialog'].dialod = None
+                self._helpers['histdialog'].dialod = None
+
+            self.connect(dialog, QtCore.SIGNAL('finished(int)'), resethelpers)
+
+        return dialog
+
+    def showItemProperties(self):
+        item = self._app.currentItem()
+        dialog = self._dialogFactory(item)
+        if dialog:
+            dialog.exec_()
         else:
             self._app.logger.debug('unable to show info dialog for "%s" '
                                    'item class' % (item.__class__.__name__))
