@@ -18,6 +18,15 @@ __ `GSDView project page`_
 
 .. include:: latestnews.txt
 
+:09/05/2010: GSDView Open Source Edition v. 0.6.1 released.
+
+             This new release brings some major improvement to GSDView
+             including basic support for RGB views, a new tool for image
+             stretching and a new component for mouse modes handling.
+
+             Also there is a new dialog that shows detailed info about
+             application crashes and allow the user to submit bug reports.
+
 :24/08/2009: GSDView Open Source Edition v. 0.6.0 released.
 
              With respect to the alpha version a serious bug in
