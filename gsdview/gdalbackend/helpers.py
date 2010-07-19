@@ -392,7 +392,7 @@ class HistDialogHelper(StatsDialogHelper):
     _PROGRESS_RANGE = (0, 100)
 
     def __init__(self, app, tool, dialog=None):
-        super(StatsDialogHelper, self).__init__(app, tool)
+        super(HistDialogHelper, self).__init__(app, tool)
         self.progressdialog.setLabelText(app.tr('Histogram computation.'))
 
     def copy_data(self, vrtband):
