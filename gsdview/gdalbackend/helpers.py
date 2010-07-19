@@ -330,13 +330,6 @@ class StatsDialogHelper(StatsHelper):
         self.progressdialog.setLabelText(app.tr('Statistics computation.'))
         self.progressdialog.hide()
 
-        self.progressdialog.connect(self.progressdialog,
-                                    QtCore.SIGNAL('canceled()'),
-                                    self.controller.stop_tool)
-        self.progressdialog.connect(self.app.progressbar,
-                                    QtCore.SIGNAL('valueChanged(int)'),
-                                    self.progressdialog.setValue)
-
     def _get_dialog(self):
         return self._dialog
 
@@ -373,6 +366,13 @@ class StatsDialogHelper(StatsHelper):
     def start(self, item):
         self._checkdialog()
         if not self.controller.isbusy:
+            QtCore.QObject.connect(self.progressdialog,
+                                   QtCore.SIGNAL('canceled()'),
+                                   self.controller.stop_tool)
+            QtCore.QObject.connect(self.app.progressbar,
+                                   QtCore.SIGNAL('valueChanged(int)'),
+                                   self.progressdialog.setValue)
+
             #self.progressdialog.reset()
             self.progressdialog.show()
         super(StatsDialogHelper, self).start(item)
@@ -380,6 +380,12 @@ class StatsDialogHelper(StatsHelper):
     def finalize(self, returncode=0):
         super(StatsDialogHelper, self).finalize(returncode)
         self.progressdialog.hide()
+        QtCore.QObject.disconnect(self.progressdialog,
+                                  QtCore.SIGNAL('canceled()'),
+                                  self.controller.stop_tool)
+        QtCore.QObject.disconnect(self.app.progressbar,
+                                  QtCore.SIGNAL('valueChanged(int)'),
+                                  self.progressdialog.setValue)
 
     def apply(self):
         self._checkdialog()
