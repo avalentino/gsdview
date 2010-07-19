@@ -45,7 +45,7 @@ sdist: ui docs
 bdist: sdist deb
 
 deb: ui docs
-	dpkg-buildpackage -us -uc
+	dpkg-buildpackage -us -uc -I'.svn'
 
 rpmspec:
 	python setup.py bdist_rpm --spec-only
