@@ -89,7 +89,8 @@ PKGNAME = 'gsdview'
 
 DATADIR = os.path.join('%(DATADIR)s', 'share', PKGNAME)
 DOCSDIR = os.path.join('%(DATADIR)s', 'share', 'doc', PKGNAME)
-SYSPLUGINSDIR = os.path.join('%(LIBDIR)s', 'plugins')
+LIBDIR = os.path.dirname(os.path.abspath(__file__))
+SYSPLUGINSDIR = os.path.join(LIBDIR, 'plugins')
 
 LICENSEFILE = os.path.join(DOCSDIR, 'LICENSE.txt')
 USERCONFIGDIR = os.path.expanduser(os.path.join('~', '.gsdview'))
@@ -116,7 +117,7 @@ if not os.path.exists(DOCSDIR):
             'If the error persists please file a bug report at:\\n'
             '  http://sourceforge.net/apps/trac/gsdview/wiki')
 
-del PKGNAME, os
+del PKGNAME, LIBDIR, os
 '''
 
     def _striproot(self, path):
@@ -135,7 +136,6 @@ del PKGNAME, os
         install = self.get_finalized_command('install')
 
         DATADIR = self._striproot(install.install_data)
-        LIBDIR = os.path.join(self._striproot(self.install_dir), PKGNAME)
 
         # Update the appsite.py file
         sitefile = 'appsite.py'

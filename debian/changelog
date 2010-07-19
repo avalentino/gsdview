@@ -1,3 +1,9 @@
+gsdview (0.6.2-2) unstable; urgency=low
+
+  * Fix plugins path.
+
+ -- Antonio Valentino <a_valentino@users.sf.net>  Mon, 19 Jul 2010 19:54:20 +0200
+
 gsdview (0.6.2-1) unstable; urgency=low
 
   * New upstream release
