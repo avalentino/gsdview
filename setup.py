@@ -122,8 +122,9 @@ del PKGNAME, os
     def _striproot(self, path):
         install = self.get_finalized_command('install')
 
-        if install.root and path.startswith(install.root):
-            return path[len(install.root):]
+        root = install.root.rstrip(os.sep)
+        if root and path.startswith(root):
+            return path[len(root):]
         else:
             return path
 
