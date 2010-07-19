@@ -35,8 +35,8 @@ clean:
 	$(RM) python-build-stamp-*
 	$(MAKE) -C pkg clean
 
-sdist: docs ui
-	python setup.py sdist
+sdist: ui docs
+	python setup.py sdist --formats=gztar,zip
 
 # Not available in setuptools (??)
 #	python setup.py sdist --manifest-only
@@ -44,7 +44,7 @@ sdist: docs ui
 
 bdist: sdist deb
 
-deb: docs
+deb: ui docs
 	dpkg-buildpackage -us -uc
 
 rpmspec:

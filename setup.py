@@ -210,7 +210,7 @@ kwargs['data_files'] = datafiles
 if has_setuptools:
     packages = find_packages()
     kwargs.update(dict(
-        install_requires = ['GDAL >= 1.5.2',
+        install_requires = ['GDAL >= 1.6.1',
                             'numpy >= 1.2.1',
                             #'PyQt >= 4.5'
         ],
@@ -260,7 +260,7 @@ setup(name              = PKGNAME,
       classifiers       = filter(None, classifiers.split('\n')),
       license           = info.license_type,
       platforms         = ['any'],
-      requires          = ['GDAL (>= 1.7.2)',
+      requires          = ['GDAL (>= 1.6.1)',
                            'numpy (>= 1.2.1)',
                            'PyQt4 (>= 4.5)'],
       provides          = ['%s (%s)' % (PKGNAME,
