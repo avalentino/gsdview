@@ -13,7 +13,9 @@ gsdview.gdalbackend.gdalexectools
 
    .. autosummary::
    
+      BaseGdalToolDescriptor
       GdalAddOverviewDescriptor
+      GdalInfoDescriptor
       GdalOutputHandler
       Qt4OutputHandler
    

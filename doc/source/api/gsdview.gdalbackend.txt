@@ -19,6 +19,7 @@ gsdview.gdalbackend
       itemActions
       itemContextMenu
       loadSettings
+      newImageView
       openFile
       openImageView
       openItemMatadataView

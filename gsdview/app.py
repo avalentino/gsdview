@@ -25,6 +25,8 @@ __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
 
+__all__ = ['GSDView']
+
 
 import os
 import sys
@@ -48,42 +50,14 @@ from gsdview.widgets import AboutDialog, PreferencesDialog
 from gsdview.widgets import GSDViewExceptionDialog as ExceptionDialog
 
 
-class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
+class GSDView(ItemModelMainWindow):
     # @TODO:
     #   * cache browser, cache cleanup
     #   * open internal product
-    #   * stop button
     #   * disable actions when the external tool is running
-    #   * stretching tool
     #   * /usr/share/doc/python-qt4-doc/examples/mainwindows/recentfiles.py
 
-    '''Main window class for GSDView application.
-
-    :ivar filedialog:         file dialog instance
-    :ivar aboutdialog:        about dialog instance
-    :ivar preferencedsdialog: prefernces dialog instance
-    :ivar progressbar:        progress bar instance
-    :ivar stopbutton:         stop button for external tools
-    :ivar settings_submenu:   settings sub-menu
-    :ivar settings:           application settings
-    :ivar logger:             application sandard logger
-    :ivar cachedir:           cache directory path
-    :ivar fileActions:        actions associated to file menu
-    :ivar settingsActions:    settings actions
-    :ivar helpActions:        help actions
-
-    :ivar pluginmanager:      plugin manager instance
-    :ivar backends:           backends list
-
-    :ivar controller:         external tool controller
-    :ivar monitor:            graphics scenes/views monitor
-    :ivar mousemanager:       mouse manager for graphics scenes/views
-
-    :ivar mdiarea:            (inherited from MdiMainWindow)
-    :ivar datamodel:          (inherited from ItemModelMainWindow)
-    :ivar treeview:           (inherited from ItemModelMainWindow)
-
-    '''
+    '''Main window class for GSDView application.'''
 
     def __init__(self, parent=None):
         logger = logging.getLogger('gsdview')
@@ -98,13 +72,20 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
 
         # Dialogs
         logger.debug('Setting up file dialog ...')
+
+        #: application global file dialog instance
         self.filedialog = QtGui.QFileDialog(self)
         self.filedialog.setFileMode(QtGui.QFileDialog.ExistingFile)
         self.filedialog.setViewMode(QtGui.QFileDialog.Detail)
 
         logger.debug('Setting up the about dialog ...')
+
+        #: application global about dialog instance
         self.aboutdialog = AboutDialog(self)
+
         logger.debug('Setting up the preferences dialog ...')
+
+        #: prefernces dialog instance
         self.preferencesdialog = PreferencesDialog(self)
         self.connect(self.preferencesdialog, QtCore.SIGNAL('apply()'),
                      self.applySettings)
@@ -113,12 +94,16 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         logger.debug('Setting up the stop button ...')
         qstyle = QtGui.qApp.style()
         icon = qstyle.standardIcon(QtGui.QStyle.SP_BrowserStop)
+
+        #: stop button for external tools
         self.stopbutton = QtGui.QPushButton(icon, self.tr('Stop'), self)
         self.statusBar().addPermanentWidget(self.stopbutton)
         self.stopbutton.hide()
 
         # Progressbar
         logger.debug('Setting up the progress bar ...')
+
+        #: application progress bar
         self.progressbar = QtGui.QProgressBar(self)
         self.progressbar.setTextVisible(True)
         self.statusBar().addPermanentWidget(self.progressbar)
@@ -126,16 +111,26 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
 
         # Miscellanea
         logger.debug('Miscellanea setup ...')
+
+        #: cache directory path
         self.cachedir = None
 
         # GraphicsViewMonitor and mouse manager
         logger.debug('Setting up "monitor" components ...')
+
+        #: graphics scenes/views monitor
         self.monitor = graphicsview.GraphicsViewMonitor()
+
+        #: mouse manager for graphics scenes/views
         self.mousemanager = mousemanager.MouseManager(self)
         self.mousemanager.mode = 'hand'
 
         # Plugin Manager
+
+        #: backends list
         self.backends = []
+
+        #: plugin manager instance
         self.pluginmanager = pluginmanager.PluginManager(self, SYSPLUGINSDIR)
         self.preferencesdialog.addPage(
                 pluginmanager.PluginManagerGui(self.pluginmanager, self),
@@ -154,6 +149,8 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         #                                 'gsdview', 'gsdview', self)
         cfgfile = os.path.join(USERCONFIGDIR, 'gsdview.ini')
         logger.info('Configuration file: "%s".', cfgfile)
+
+        #: application settings
         self.settings = QtCore.QSettings(cfgfile,
                                          QtCore.QSettings.IniFormat,
                                          self)
@@ -161,14 +158,27 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
         # Setup the log system and the external tools controller
         logger.debug('Complete logging setup...')
         # @TODO: logevel could be set from command line
+        #: application sandard logger
         self.logger = self.setupLogging()
 
         logger.debug('Setting up external tol controller ...')
+
+        #: external tool controller
         self.controller = self.setupController(self.logger, self.statusBar(),
                                                self.progressbar)
 
         # Actions
         logger.debug('Setting up actions ...')
+
+        #: actions associated to file menu
+        self.fileActions = None
+
+        #: settings actions
+        self.settingsActions = None
+
+        #: help actions
+        self.helpActions = None
+
         self.setupActions()
 
         # File menu end toolbar
@@ -191,6 +201,8 @@ class GSDView(ItemModelMainWindow): # MdiMainWindow #QtGui.QMainWindow):
                                         self.tr('&Settings'))
         self._addToolBarFromActions(self.settingsActions,
                                     self.tr('Settings toolbar'))
+
+        #: settings sub-menu
         self.settings_submenu = QtGui.QMenu(self.tr('&View'))
         menu.addSeparator()
         menu.addMenu(self.settings_submenu)

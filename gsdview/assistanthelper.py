@@ -30,19 +30,16 @@ import sys
 from PyQt4 import QtCore, QtGui
 
 class Assistant(object):
-    '''Helper class controllig an external QAssistant proces
-
-    :ivar proc: QProcess
-
-    '''
+    '''Helper class controllig an external QAssistant proces.'''
 
     # @TODO: fix
     APP_DOC_PATH = "qthelp://com.trolltech.examples.simpletextviewer/doc/"
 
     def __init__(self):
         super(Assistant, self).__init__(self)
-        self.proc = None
 
+        #: external process controller (QProcess)
+        self.proc = None
 
     def close(self):
         if self.proc and self.proc.state() == QtCore.QProcess.Running:

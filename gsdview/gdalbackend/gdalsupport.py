@@ -301,24 +301,26 @@ def SafeGetStatistics(band, approx_ok=False, force=True):
     an error happend during statistics computation (e.g. to many nodata
     values).
 
-    :param band:      GDAL raster band
-    :param approx_ok: if approximate statistics are sufficient, the
-                      approx_ok flag can be set to True in which case
-                      overviews, or a subset of image tiles may be used
-                      in computing the statistics (default: False)
-    :param force:     if force is False results will only be returned
-                      if it can be done quickly (ie. without scanning
-                      the data).
-                      If force is False and results cannot be returned
-                      efficiently, the function will return four None
-                      instead of actual statistics values.
-                      Dafault: True.
-    :returns:         a tuple containing (min, max, mean, stddev) if
-                      statistics can be retriewed according to the
-                      input flags.
-                      A tuple of four None if statistics are not
-                      available or can't be computer according to input
-                      flags or if some error occurs during computation.
+    :param band:
+        GDAL raster band
+    :param approx_ok:
+        if approximate statistics are sufficient, the approx_ok flag
+        can be set to True in which case overviews, or a subset of
+        image tiles may be used in computing the statistics
+        (default: False)
+    :param force:
+        if force is False results will only be returned if it can be
+        done quickly (ie. without scanning the data).
+        If force is False and results cannot be returned efficiently,
+        the function will return four None instead of actual statistics
+        values.
+        Dafault: True.
+    :returns:
+        a tuple containing (min, max, mean, stddev) if statistics can
+        be retriewed according to the input flags.
+        A tuple of four None if statistics are not available or can't
+        be computer according to input flags or if some error occurs
+        during computation.
 
     '''
 
@@ -755,16 +757,24 @@ def ovrBestIndex(gdalobj, ovrlevel=None, policy='NEAREST'):
         return ovrBestIndex(band, ovrlevel, policy)
 
 
-def ovrComputeLevels(gdalobj, ovrsize=OVRMEMSIE, estep=3, threshold = 0.1):
+def ovrComputeLevels(gdalobj, ovrsize=OVRMEMSIE, estep=3, threshold=0.1):
     '''Copute the overview levels to be generated.
 
-    GSDView relies on overfiews to provide a confortable image
+    GSDView relies on overviews to provide a confortable image
     navigation experience (scroll, pan, zoom etc).
     This function evaluated the number and overview factors to be
     pre-calculated in order to provide such a confortable experience.
 
-    :ivar estep: step for overview levels computation::
-                   estep = 3 ==> 3, 9, 27, 81, ...
+    :param ovrsize:
+        memory size that the smallest overview should not exceede
+    :param estep:
+        step for overview levels computation::
+
+            estep = 3 ==> 3, 9, 27, 81, ...
+
+    :param threshold:
+        if already exist overview levels close (with respect to
+        threshold) to requested ones then computation is skipped
 
     '''
 

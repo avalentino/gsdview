@@ -9,6 +9,8 @@ gsdview.gdalbackend.gdalsupport
 
    .. autosummary::
    
+      GetCachedStatistics
+      SafeGetStatistics
       colortable2numpy
       coordinate_mapper
       gdalFilters
@@ -21,7 +23,6 @@ gsdview.gdalbackend.gdalsupport
       ovrLevelForSize
       ovrLevels
       ovrRead
-      safeStats
       uniqueDatasetID
    
    

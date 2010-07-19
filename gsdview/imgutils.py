@@ -40,23 +40,31 @@ def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0, omax=None):
     The *fill* parameter can be used to controll the length of returned
     LUT (see below).
 
-    :param vmin:  minimum value (positive or null). Default 0
-    :type vmin:   int or float
-    :param vmax:  maximum value (positive) Default 2**nbits depending
-                  on dtype
-    :type vmax:   int or float
-    :param dtype: numpy data type of the output LUT (default uint8)
-    :type dtype:  numpy.dtype (uint8 or uint16)
-    :param fill:  the length of the returned lut is:
+    :param vmin:
+        minimum value (positive or null). Default 0
+    :type vmin:
+        int or float
+    :param vmax:
+        maximum value (positive) Default 2**nbits depending on dtype
+    :type vmax:
+        int or float
+    :param dtype:
+        numpy data type of the output LUT (default uint8)
+    :type dtype:
+        numpy.dtype (uint8 or uint16)
+    :param fill:
+        the length of the returned lut is:
 
-                    * vmax + 1 if bool(fill) == False
-                    * max(vmax + 1, 2**nbits) if fill == True
-                    * max(vmax + 1, fill) id fille is an number
+            * vmax + 1 if bool(fill) == False
+            * max(vmax + 1, 2**nbits) if fill == True
+            * max(vmax + 1, fill) id fille is an number
 
-    :type fill:   bool or int
-    :param omin:  @TBW
-    :param omax:  @TBW
-
+    :type fill:
+        bool or int
+    :param omin:
+        @TBW
+    :param omax:
+        @TBW
     :returns:     the look up tabe (LUT)
 
     '''
@@ -103,18 +111,23 @@ def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0, omax=None):
 def histogram_equalized_lut(hist, dtype='uint8', fill=False):
     '''Compute a histogram equalized LUT.
 
-    :param hist:  histogram to be equalized
-    :type hist:   ndarray
-    :param dtype: numpy data type of the output LUT (default uint8)
-    :type dtype:  numpy.dtype (uint8 or uint16)
-    :param fill:  if False (default) the returned LUT has
-                  :math:`length = len(hist)`.
-                  Otherwise the LUT length has a lenght of 2**nbits with
-                  nbits bein 8 or 16 depending on dtype and  LUT indices
-                  greater than the last histogram max value are filled
-                  with the maximum value itself.
-    :type fill:   bool
-
+    :param hist:
+        histogram to be equalized
+    :type hist:
+        ndarray
+    :param dtype:
+        numpy data type of the output LUT (default uint8)
+    :type dtype:
+        numpy.dtype (uint8 or uint16)
+    :param fill:
+        if False (default) the returned LUT has
+        :math:`length = len(hist)`.
+        Otherwise the LUT length has a lenght of 2**nbits with nbits
+        bein 8 or 16 depending on dtype and  LUT indices greater than
+        the last histogram max value are filled with the maximum value
+        itself.
+    :type fill:
+        bool
     :returns: the llok up table (LUT)
 
     '''
@@ -214,14 +227,6 @@ class BaseStretcher(object):
     .. note:: outout extrema (*min* and *max*) have to be compatible
               with the data type (*dtype*) set.
 
-    :ivar min:   the minimum value for output data
-    :type min:   scalar
-    :ivar max:   the maximum value for output data
-    :type max:   scalar
-    :ivar dtype: data type for output data
-    :type dtype: numpy.dtype
-
-
     Example::
 
         data = numpy.arange(.10, 300.)
@@ -234,8 +239,14 @@ class BaseStretcher(object):
 
     def __init__(self, vmin=0, vmax=255, dtype='uint8'):
         assert min != max
+
+        #: the minimum value for output data
         self.min = vmin
+
+        #: the maximum value for output data
         self.max = vmax
+
+        #: data type for output data
         self.dtype = dtype
 
     def __call__(self, data):

@@ -1,3 +1,11 @@
+:20/07/2010: GSDView Open Source Edition v. 0.6.2 released.
+
+             This release don't include big changes visible to the user.
+             It introduces some important internal changes such as the switch
+             to GDAL 1.6.x series and a new system for full asynchronous
+             handling of computation tasks (including statistics and histogram 
+             computation).
+
 :01/07/2010: GDAL 1.5.x series dropped.
 
              GDAL 1.6.x series introduced a lot of new interesting features

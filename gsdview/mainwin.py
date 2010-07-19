@@ -36,23 +36,24 @@ from gsdview.qtwindowlistmenu import QtWindowListMenu
 class MdiMainWindow(QtGui.QMainWindow):
     '''Base class for MDI applications.
 
-    :ivar mdiarea:       QMdiArea
-    :ivar windowactions: sub-windows actions
-    :ivar windowmenu:    sub-windows menu
-
     :signals:
 
-    - subWindowClosed()     # @TODO: should this signal be emitted by mdiarea?
+    - subWindowClosed()
 
     '''
+
+    # @TODO: should the subWindowClosed signal be emitted by mdiarea?
+
     def __init__(self, parent=None, flags=QtCore.Qt.Widget):
         QtGui.QMainWindow.__init__(self, parent, flags)
 
+        #: MDI area instance (QMdiArea)
         self.mdiarea = QtGui.QMdiArea()
         self.setCentralWidget(self.mdiarea)
         self.mdiarea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.mdiarea.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
 
+        #: sub-windows menu
         self.windowmenu = QtWindowListMenu(self.menuBar())
         self.windowmenu.attachToMdiArea(self.mdiarea)
 
@@ -67,6 +68,7 @@ class ItemSubWindow(QtGui.QMdiSubWindow):
         QtGui.QMdiSubWindow.__init__(self, parent, flags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
+        #: datamodel item associated to the MDI sub-window
         self.item = item
 
 
@@ -75,9 +77,11 @@ class ItemModelMainWindow(MdiMainWindow):
     def __init__(self, parent=None):
         super(ItemModelMainWindow, self).__init__(parent)
 
+        #: main application datamodel (QStandardItemModel)
         self.datamodel = QtGui.QStandardItemModel(self)
 
         # @TODO: custom treeview with "currentChanged" slot re-implemented
+        #: tree view for the main application data model
         self.treeview = QtGui.QTreeView()
         # @TODO self.treeview.setSelectionMode(QtGui.QTreeView.SingleSelection)
         self.treeview.setModel(self.datamodel)

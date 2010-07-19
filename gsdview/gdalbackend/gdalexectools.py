@@ -304,8 +304,9 @@ class GdalInfoDescriptor(BaseGdalToolDescriptor):
 class GdalOutputHandler(Qt4OutputHandler):
     '''Handler for the GDAL simple progress report to terminal.
 
-    This progress reporter prints simple progress report to the terminal
-    window.  The progress report generally looks something like this:
+    This progress reporter prints simple progress report to the
+    terminal window.
+    The progress report generally looks something like this:
 
       "0...10...20...30...40...50...60...70...80...90...100 - done."
 

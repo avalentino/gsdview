@@ -102,8 +102,8 @@ pygments_style = 'sphinx'
 
 # Autodoc configuration
 autoclass_content = 'both'
-autodoc_default_flags = ['members', 'undoc-members', 'inherited-members',
-                         'show-inheritance']
+autodoc_default_flags = ['members', 'undoc-members', 'show-inheritance']
+                        #,'inherited-members']
 
 # Auto summary generation
 autosummary_generate = ['reference']

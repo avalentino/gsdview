@@ -12,8 +12,8 @@ ChangeLog
 =========
 
 
-Changes from 0.6.1 to 0.6.2 (in development)
---------------------------------------------
+Changes from 0.6.1 to 0.6.2 (20/07/2010)
+----------------------------------------
 
 * System info reporting improvements
 * Fix system path setup in frozen environments
@@ -22,8 +22,8 @@ Changes from 0.6.1 to 0.6.2 (in development)
 * Enabled complex selection on all lists and tables (close :issue:`51`)
 * New button for stopping external tools (close :issue:`41`)
 * Drop GDAL 1.5.x series: now GSDView requires GDAL 1.6.1 or higher
-* Statistics and histograms computation now is fully asynchronous 
-  (close :issus:`28`).
+* Statistics and histograms computation now is fully asynchronous
+  (close :issue:`28`).
   Configuration of custom histogram parameters in the GDAL info dialogs is
   temporary disabled.
 
