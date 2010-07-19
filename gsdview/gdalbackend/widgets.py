@@ -580,8 +580,12 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.colorInterpretationValue.setText(colorint)
         self.overviewCountValue.setText(str(band.GetOverviewCount()))
 
-        hasArbitaryOvr = band.HasArbitraryOverviews()
-        self.hasArbitraryOverviewsValue.setText(str(hasArbitaryOvr))
+        # @COMPATIBILITY: HasArbitraryOverviews requires GDAL >= 1.7
+        if hasattr(gdal.Band, 'HasArbitraryOverviews'):
+            hasArbitaryOvr = band.HasArbitraryOverviews()
+            self.hasArbitraryOverviewsValue.setText(str(hasArbitaryOvr))
+        else:
+            self.hasArbitraryOverviewsValue.setText('')
 
         # @TODO: checksum
         #~ band.Checksum                   ??
@@ -593,8 +597,13 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.noDataValue.setText(str(band.GetNoDataValue()))
 
         self.dataTypeValue.setText(gdal.GetDataTypeName(band.DataType))
-        unitType = band.GetUnitType()
-        self.unitTypeValue.setText(str(unitType))
+
+        # @COMPATIBILITY: GetUnitType requires GDAL >= 1.7
+        if hasattr(gdal.Band, 'GetUnitType'):
+            unitType = band.GetUnitType()
+            self.unitTypeValue.setText(str(unitType))
+        else:
+            self.unitTypeValue.setText('')
         self.offsetValue.setText(str(band.GetOffset()))
         self.scaleValue.setText(str(band.GetScale()))
 
