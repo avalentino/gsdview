@@ -36,16 +36,29 @@ from exectools import BaseOutputHandler, BaseToolController, EX_OK, level2tag
 
 
 class Qt4Blinker(QtGui.QLabel):
-    def __init__(self):
-        QtGui.QLabel.__init__(self)
+    '''Qt4 linker.
+
+    :SLOTS:
+
+        * :meth:`pulse`
+
+    '''
+
+    def __init__(self, parent=None):
+        super(Qt4Blinker, self).__init__(parent)
         #qstyle = QtGui.qApp.style()
         #pixmap = qstyle.standardPixmap(QtGui.QStyle.SP_MediaStop)
         pixmap = QtGui.QPixmap(
             ':/trolltech/styles/commonstyle/images/standardbutton-no-32.png')
         self.setPixmap(pixmap)
 
+    @QtCore.pyqtSlot()
     def pulse(self):
-        '''A blinker pulse'''
+        '''A blinker pulse.
+
+        :C++ signature: `void pulse()`
+
+        '''
 
         sensitive = self.isEnabled()
         sensitive = not sensitive
@@ -56,12 +69,17 @@ class Qt4Blinker(QtGui.QLabel):
         pass
 
     def reset(self):
-        '''Reset the blinker'''
+        '''Reset the blinker.'''
 
         self.setEnabled(True)
 
 
 class Qt4OutputPlane(QtGui.QTextEdit):
+
+    #: SIGNAL: emits a hide request.
+    #:
+    #: :C++ signature: `void planeHideRequest()`
+    planeHideRequest = QtCore.pyqtSignal()
 
     def __init__(self, *args):
         QtGui.QTextEdit.__init__(self, *args)
@@ -76,30 +94,27 @@ class Qt4OutputPlane(QtGui.QTextEdit):
 
         # Save As
         icon = qstype.standardIcon(QtGui.QStyle.SP_DialogSaveButton)
-        self.actionSaveAs = QtGui.QAction(icon, self.tr('&Save As'), self)
-        self.actionSaveAs.setShortcut(self.tr('Ctrl+S'))
-        self.actionSaveAs.setStatusTip(self.tr('Save text to file'))
-        self.connect(self.actionSaveAs, QtCore.SIGNAL('triggered()'),
-                     self.save)
+        self.actionSaveAs = QtGui.QAction(icon, self.tr('&Save As'), self,
+                                          shortcut=self.tr('Ctrl+S'),
+                                          statusTip=self.tr('Save text to file'),
+                                          triggered=self.save)
         self.actions.addAction(self.actionSaveAs)
 
         # Clear
         icon = QtGui.QIcon(
             ':/trolltech/styles/commonstyle/images/standardbutton-clear-32.png')
-        self.actionClear = QtGui.QAction(icon, self.tr('&Clear'), self)
-        self.actionClear.setShortcut(self.tr('Shift+F5'))
-        self.actionClear.setStatusTip(self.tr('Clear the text'))
-        self.connect(self.actionClear, QtCore.SIGNAL('triggered()'),
-                     self.clear)
+        self.actionClear = QtGui.QAction(icon, self.tr('&Clear'), self,
+                                         shortcut=self.tr('Shift+F5'),
+                                         statusTip=self.tr('Clear the text'),
+                                         triggered=self.clear)
         self.actions.addAction(self.actionClear)
 
         # Close
         icon = qstype.standardIcon(QtGui.QStyle.SP_DialogCloseButton)
-        self.actionHide = QtGui.QAction(icon, self.tr('&Hide'), self)
-        self.actionHide.setShortcut(self.tr('Ctrl+W'))
-        self.actionHide.setStatusTip(self.tr('Hide the text plane'))
-        self.connect(self.actionHide, QtCore.SIGNAL('triggered()'),
-                     self.planeHideRequest)
+        self.actionHide = QtGui.QAction(icon, self.tr('&Hide'), self,
+                                        shortcut=self.tr('Ctrl+W'),
+                                        statusTip=self.tr('Hide the text plane'),
+                                        triggered=self.planeHideRequest)
         self.actions.addAction(self.actionHide)
 
     def contextMenuEvent(self, event):
@@ -132,18 +147,41 @@ class Qt4OutputPlane(QtGui.QTextEdit):
             logfile.write(text)
             logfile.close()
 
-    def planeHideRequest(self):
-        self.emit(QtCore.SIGNAL('planeHideRequest()'))
 
+class Qt4OutputHandler(QtCore.QObject, BaseOutputHandler):
+    '''Qt4 Output Handler.
 
-class Qt4OutputHandler(BaseOutputHandler):
-    '''Qt4 Output Handler.'''
+    :SIGNALS:
+
+        * :attr:`pulse`
+        * :attr:`percentageChanged`
+
+    '''
 
     _statusbar_timeout = 2000 # ms
 
+    #: SIGNAL: it is emitted to signal some kind of activity of the external
+    #: process
+    #:
+    #: :param str text:
+    #:     an optional text describing the kind activity of the external
+    #:     process
+    #:
+    #: :C++ signature: `void pulse(QString)`
+    pulse = QtCore.pyqtSignal((), (str,))
+
+    #: SIGNAL: it is emitted when the progress percentage changes
+    #:
+    #: :param float percentage:
+    #:     the new completion percentage [0, 100]
+    #:
+    #: :C++ signature: `void percentageChanged(float)`
+    percentageChanged = QtCore.pyqtSignal(int)
+
     def __init__(self, logger=None, statusbar=None, progressbar=None,
                  blinker=None):
-        super(Qt4OutputHandler, self).__init__(logger)
+        QtCore.QObject.__init__(self)
+        BaseOutputHandler.__init__(self, logger)
 
         self.statusbar = statusbar
         if self.statusbar:
@@ -151,6 +189,10 @@ class Qt4OutputHandler(BaseOutputHandler):
                 blinker = Qt4Blinker()
                 statusbar.addPermanentWidget(blinker)
                 blinker.hide()
+            self.pulse.connect(blinker.show)
+            self.pulse.connect(blinker.pulse)
+            self.pulse[str].connect(lambda text:
+                        statusbar.showMessage(text, self._statusbar_timeout))
 
             if progressbar is None:
                 progressbar = QtGui.QProgressBar(self.statusbar)
@@ -158,6 +200,8 @@ class Qt4OutputHandler(BaseOutputHandler):
                 statusbar.addPermanentWidget(progressbar) #, 1) # stretch = 1
                 progressbar.hide()
             self.progressbar = progressbar
+            self.percentageChanged.connect(progressbar.show)
+            self.percentageChanged.connect(progressbar.setValue)
 
         self.progressbar = progressbar
         self.blinker = blinker
@@ -199,30 +243,6 @@ class Qt4OutputHandler(BaseOutputHandler):
             self.blinker.reset()
             self.blinker.hide()
 
-    def _handle_pulse(self, data=None):
-        '''Handle a blinker pulse'''
-
-        # @TODO: use signals
-
-        if self.blinker:
-            if not self.blinker.isVisible():
-                self.blinker.show()
-            else:
-                self.blinker.pulse()
-
-    def _handle_percentage(self, data):
-        '''Handle percentage of a precess execution.
-
-        :param data: percentage
-
-        '''
-
-        # @TODO: use signals
-
-        if self.progressbar:
-            self.progressbar.show() # @TODO: check
-            self.progressbar.setValue(data)
-
     def handle_progress(self, data):
         '''Handle progress data.
 
@@ -234,20 +254,15 @@ class Qt4OutputHandler(BaseOutputHandler):
 
         '''
 
-        # @TODO: use signals
-
-        pulse = data.get('pulse')
+        #pulse = data.get('pulse')
         percentage = data.get('percentage')
         text = data.get('text')
 
-        if pulse:
-            self._handle_pulse(pulse)
+        self.pulse.emit()
+        if text:
+            self.pulse[str].emit(text)
         if percentage is not None:
-            self._handle_percentage(percentage)
-        if text and not pulse and percentage is None:
-            if self.statusbar:
-                self.statusbar.showMessage(text, self._statusbar_timeout)
-            self._handle_pulse()
+            self.percentageChanged.emit(int(percentage))
 
 
 class Qt4LoggingHandler(logging.Handler):
@@ -383,13 +398,29 @@ class Qt4DialogLoggingHandler(logging.Handler):
 class Qt4ToolController(QtCore.QObject, BaseToolController):
     '''Qt4 tool controller.
 
-    :signals:
+    :SIGNALS:
 
-    * finished(int exitCode)
+        * :attr:`finished`
+
+    :SLOTS:
+
+        * :meth:`stop_tool`
+        * :meth:`finalize_run`
+        * :meth:`handle_stdout`
+        * :meth:`handle_stderr`
+        * :meth:`handle_error`
 
     '''
 
     _delay_after_stop = 200    #ms
+
+    #: SIGNAL: it is emitted when the processing is finished.
+    #:
+    #: :param int exitcode:
+    #:     the external proces exit code
+    #:
+    #: :C++ signature: `void finished(int exitCode)`
+    finished = QtCore.pyqtSignal(int)
 
     def __init__(self, logger=None, parent=None):
         QtCore.QObject.__init__(self, parent)
@@ -398,22 +429,10 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         self.subprocess.setProcessChannelMode(QtCore.QProcess.MergedChannels)
 
         # connect process handlers and I/O handlers
-        QtCore.QObject.connect(
-                        self.subprocess,
-                        QtCore.SIGNAL('readyReadStandardOutput()'),
-                        self.handle_stdout)
-        QtCore.QObject.connect(
-                        self.subprocess,
-                        QtCore.SIGNAL('readyReadStandardError()'),
-                        self.handle_stderr)
-        QtCore.QObject.connect(
-                        self.subprocess,
-                        QtCore.SIGNAL('error(QProcess::ProcessError)'),
-                        self.handle_error)
-        QtCore.QObject.connect(
-                        self.subprocess,
-                        QtCore.SIGNAL('finished(int, QProcess::ExitStatus)'),
-                        self.finalize_run)
+        self.subprocess.readyReadStandardOutput.connect(self.handle_stdout)
+        self.subprocess.readyReadStandardError.connect(self.handle_stderr)
+        self.subprocess.error.connect(self.handle_error)
+        self.subprocess.finished.connect(self.finalize_run)
 
     @property
     def isbusy(self):
@@ -421,7 +440,8 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
 
         return self.subprocess.state() != self.subprocess.NotRunning
 
-    def finalize_run(self, exitCode=None, exitStatus=None, **kwargs):
+    @QtCore.pyqtSlot(int, QtCore.QProcess.ExitStatus)
+    def finalize_run(self, exitCode=None, exitStatus=None):
         '''Perform finalization actions.
 
         This method is called when the controlled process terminates
@@ -436,6 +456,8 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         If one just needs to perfor some additional finalization action
         it should be better to use a custom "finalize_run_hook" instead
         of overriging "finalize_run".
+
+        :C++ signature: `finalize_run(int, QProcess::ExitStatus)`
 
         '''
 
@@ -474,7 +496,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
             # Protect for unexpected errors in the feed and close methods of
             # the stdout_handler
             self._reset()
-            self.emit(QtCore.SIGNAL('finished(int)'), exitCode)
+            self.finished.emit(exitCode)
 
     def _reset(self):
         '''Internal reset.'''
@@ -498,20 +520,31 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         super(Qt4ToolController, self)._reset()
         self.subprocess.close()
 
-    def handle_stdout(self, *args):
-        '''Handle standard output.'''
+    @QtCore.pyqtSlot()
+    def handle_stdout(self):
+        '''Handle standard output.
+
+        :C++ signature: `void handle_stdout()`
+
+        '''
 
         byteArray = self.subprocess.readAllStandardOutput()
         if not byteArray.isEmpty():
             self._tool.stdout_handler.feed(byteArray.data())
 
-    def handle_stderr(self, *args):
-        '''Handle standard error.'''
+    @QtCore.pyqtSlot()
+    def handle_stderr(self):
+        '''Handle standard error.
+
+        :C++ signature: `void handle_stderr()`
+
+        '''
 
         byteArray = self.subprocess.readAllStandardError()
         if not byteArray.isEmpty():
             self._tool.stderr_handler.feed(byteArray.data())
 
+    @QtCore.pyqtSlot(QtCore.QProcess.ProcessError)
     def handle_error(self, error):
         '''Handle a error in process execution.
 
@@ -523,6 +556,8 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         * write error
         * read error
         * unknow error
+
+        :C++ signature: `void handle_error(QProcess::ProcessError)`
 
         '''
 
@@ -561,8 +596,9 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
             self.logger.log(level, msg)
 
         # @TODO: check
-        #self.emit(QtCore.SIGNAL('finished()'))
+        #self.finished.emit(self.exitCode())
 
+    #QtCore.pyqtSlot() # @TODO: check how to handle varargs
     def run_tool(self, tool, *args, **kwargs):
         '''Run an external tool in controlled way.
 
@@ -609,6 +645,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
                                                         self.subprocess.pid())
             self.subprocess.kill()
 
+    @QtCore.pyqtSlot(bool)
     def stop_tool(self, force=True):
         '''Stop the execution of controlled subprocess.
 
@@ -619,6 +656,8 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         polite way.  If this fails it also tryes brute killing by
         default (force=True).  This behaviour can be controlled using
         the `force` parameter.
+
+        :C++ signature: `void stop_tool(bool)`
 
         '''
 
@@ -635,4 +674,3 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
                 msg = ('Unable to stop the sub-process (PID=%d).' %
                                                         self.subprocess.pid())
                 self.logger.warning(msg)
-

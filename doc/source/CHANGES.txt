@@ -11,11 +11,10 @@
 ChangeLog
 =========
 
-
 Changes from 0.6.2 to 0.6.3 (in development)
 --------------------------------------------
 
-* @TBW
+* Now exectools.Qt4OutputHandler emits signals
 
 
 Changes from 0.6.1 to 0.6.2 (20/07/2010)

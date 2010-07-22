@@ -16,6 +16,13 @@ from exectools.qt4 import (Qt4OutputPlane, Qt4OutputHandler, Qt4ToolController,
 
 
 class Qt4Shell(QtGui.QMainWindow):
+    '''Qt4 interactive shell using tool controller.
+
+    :SLOTS:
+
+        * :meth:`execute`
+
+    '''
 
     historyfile = 'history.txt'
 
@@ -28,14 +35,13 @@ class Qt4Shell(QtGui.QMainWindow):
         self.cmdbox.addItem('')
         self.cmdbox.setCurrentIndex(self.cmdbox.count()-1)
         # @TODO: complete
-        #self.entry.connect('populate-popup', self.on_populate_popup)
+        #self.entry.populate_popup.connect(self.on_populate_popup)
 
         self.cmdbutton = QtGui.QPushButton('Run')
-        self.connect(self.cmdbutton, QtCore.SIGNAL('clicked()'), self.execute)
+        self.cmdbutton.clicked.connect(self.execute)
 
-        QtCore.QObject.connect(self.cmdbox.lineEdit(),
-                               QtCore.SIGNAL('returnPressed()'),
-                               self.cmdbutton, QtCore.SIGNAL('clicked()'))
+        lineedit = self.cmdbox.lineEdit()
+        lineedit.returnPressed.connect(self.cmdbutton.clicked[''])
 
         hLayout = QtGui.QHBoxLayout()
         hLayout.addWidget(QtGui.QLabel('cmd > '))
@@ -63,7 +69,7 @@ class Qt4Shell(QtGui.QMainWindow):
         self.setWindowTitle('Qt4 Shell')
         self.setGeometry(0, 0, 800, 600)
         #~ self.mainwin.add_accel_group(accelgroup)
-        #~ self.mainwin.connect('destroy', self.quit)
+        #~ self.mainwin.destroy.connect(self.quit)
 
         ### Setup the log system ###
         if debug:
@@ -92,9 +98,7 @@ class Qt4Shell(QtGui.QMainWindow):
         handler = Qt4OutputHandler(self.logger, self.statusBar())
         self.tool = exectools.ToolDescriptor('', stdout_handler=handler)
         self.controller = Qt4ToolController(self.logger, parent=self)
-        self.controller.connect(self.controller,
-                                QtCore.SIGNAL('finished(int)'),
-                                lambda returncode: self.reset())
+        self.controller.finished.connect(lambda returncode: self.reset())
 
         ###
         #self.shell = True
@@ -142,18 +146,21 @@ class Qt4Shell(QtGui.QMainWindow):
         # @TOD: use icons here
         self.cmdbutton.setText('Run')
         self.cmdbox.setEnabled(True)
-        self.disconnect(self.cmdbutton, QtCore.SIGNAL('clicked()'),
-                        self.controller.stop_tool)
-        self.connect(self.cmdbutton, QtCore.SIGNAL('clicked()'), self.execute)
+        try:
+            self.cmdbutton.clicked.disconnect(self.controller.stop_tool)
+        except TypeError:
+            # signal already disconnected
+            pass
+        else:
+            self.cmdbutton.clicked.connect(self.execute)
 
     def reset(self):
-        self._reset()
         self.state = 'ready'
 
-    def get_state(self):
+    def _get_state(self):
         return self._state
 
-    def set_state(self, state):
+    def _set_state(self, state):
         if(state == 'ready'):
             self._reset()
             self.statusBar().showMessage('Ready') #, 2000) # ms
@@ -161,16 +168,14 @@ class Qt4Shell(QtGui.QMainWindow):
         elif(state == 'running'):
             self.cmdbox.setEnabled(False)
             self.cmdbutton.setText('Stop')
-            self.disconnect(self.cmdbutton, QtCore.SIGNAL('clicked()'),
-                            self.execute)
-            self.connect(self.cmdbutton, QtCore.SIGNAL('clicked()'),
-                         self.controller.stop_tool)
+            self.cmdbutton.clicked.disconnect(self.execute)
+            self.cmdbutton.clicked.connect(self.controller.stop_tool)
             self.statusBar().showMessage('Running ...') #, 2000) # ms
         else:
             raise ValueError('invalid status: "%s".' % state)
         self._state = state
 
-    state = property(get_state, set_state)
+    state = property(_get_state, _set_state)
 
     def get_command(self):
         cmd = str(self.cmdbox.currentText())
@@ -184,7 +189,14 @@ class Qt4Shell(QtGui.QMainWindow):
             self.cmdbox.setCurrentIndex(self.cmdbox.count()-1)
         return cmd
 
+    @QtCore.pyqtSlot()
     def execute(self):
+        '''Execute the command line using the tool controller.
+
+        :C++ signature: `void execute()`
+
+        '''
+
         cmd = self.get_command()
         if cmd:
             self.state = 'running'
@@ -218,8 +230,8 @@ class Qt4Shell(QtGui.QMainWindow):
         #~ # Clear history
         #~ item = gtk.ImageMenuItem(gtk.STOCK_CLEAR)
         #~ item.set_name('clear_history')
-        #~ item.connect('activate', self.on_clear_history, None)
-        #~ item.connect('activate', self.on_clear_entry, None)
+        #~ item.activate.connect(self.on_clear_history)
+        #~ item.activate.connect(self.on_clear_entry)
         #~ item.show()
         #~ menu.append(item)
 

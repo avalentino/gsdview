@@ -303,12 +303,20 @@ class GtkOutputPlane(gtk.TextView):
             menu.append(item)
 
 
-class GtkOutputHandler(BaseOutputHandler):
+class GtkOutputHandler(gobject.GObject, BaseOutputHandler):
     '''GTK progress handler'''
+
+    __gsignals__ = {
+        'pulse': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
+                                                    (gobject.TYPE_STRING,),),
+        'percentage-changed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
+                                                    (gobject.TYPE_FLOAT,),),
+    }
 
     def __init__(self, logger=None, statusbar=None, progressbar=None,
                  blinker=None):
-        super(GtkOutputHandler, self).__init__(logger)
+        gobject.GObject.__init__(self)
+        BaseOutputHandler.__init__(self, logger)
 
         self.statusbar = statusbar
         if self.statusbar:
@@ -318,17 +326,31 @@ class GtkOutputHandler(BaseOutputHandler):
                 blinker = GtkBlinker()
                 statusbar.pack_end(blinker, expand=False)
                 blinker.hide()
+            self.connect('pulse', lambda obj, text: blinker.show())
+            self.connect('pulse', lambda obj, text: blinker.pulse())
+            self.connect('pulse', self._update_statusbar)
 
             if progressbar is None:
                 progressbar = gtk.ProgressBar()
                 statusbar.pack_end(progressbar)
                 progressbar.hide()
-
+            self.connect('percentage-changed',
+                                lambda obj, perc: progressbar.show())
+            self.connect('percentage-changed', lambda obj, value:
+                            progressbar.set_text(self.percentage_fmt % value))
+            self.connect('percentage-changed', lambda obj, value:
+                            progressbar.set_fraction(value / 100.))
         else:
             self.context_id = None
 
         self.progressbar = progressbar
         self.blinker = blinker
+
+    def _update_statusbar(self, obj, text=''):
+        assert self.statusbar
+        if text:
+            self.statusbar.pop(self.context_id)
+            self.statusbar.push(self.context_id, text)
 
     def feed(self, data):
         '''Feed some data to the parser.
@@ -367,55 +389,31 @@ class GtkOutputHandler(BaseOutputHandler):
         if self.blinker:
             self.blinker.hide()
 
-    def _handle_pulse(self, data):
-        '''Handle a blinker pulse'''
-
-        if self.blinker:
-            if not self.blinker.get_property('visible'):
-                self.blinker.show()
-            else:
-                self.blinker.pulse()
-
-    def _handle_percentage(self, data):
-        '''Handle percentage of a precess execution.
-
-        :param data: percentage
-
-        '''
-
-        if self.progressbar:
-            self.progressbar.show()
-            self.progressbar.set_text(self.percentage_fmt % data)
-            self.progressbar.set_fraction(data / 100.)
-
     def handle_progress(self, data):
         '''Handle progress data.
 
-        :param data: a list containing an item for each named group in
-                     the "progress" regular expression: (pulse,
-                     percentage, text) for the default implementation.
-                     Each item can be None.
+        :param data:
+            a list containing an item for each named group in the
+            "progress" regular expression: (pulse, percentage, text)
+            for the default implementation.
+            Each item can be None.
 
         '''
 
-        pulse = data.get('pulse')
+        #pulse = data.get('pulse')
         percentage = data.get('percentage')
         text = data.get('text')
 
-        if pulse:
-            self._handle_pulse(pulse)
+        if text:
+            self.emit('pulse', text)
+        else:
+            self.emit('pulse', '')
         if percentage is not None:
-            self._handle_percentage(percentage)
-        if text and not pulse and percentage is None:
-            if self.statusbar:
-                self.statusbar.pop(self.context_id)
-                self.statusbar.push(self.context_id, text)
-            self._handle_pulse(pulse)
+            self.emit('percentage-changed', percentage)
 
         # Flush events
-        # @TODO: check (might slow too mutch the app)
-        while gtk.events_pending():
-            gtk.main_iteration(False)
+        #while gtk.events_pending():
+        #    gtk.main_iteration(False)
 
 
 class GtkLoggingHandler(logging.Handler):
