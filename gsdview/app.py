@@ -281,9 +281,12 @@ class GSDView(ItemModelMainWindow):
     def excepthook(self, exctype, excvalue, tracebackobj):
         '''Global function to catch unhandled exceptions.
 
-        :param exctype:      exception class
-        :param excvalue:     exception instance
-        :param tracebackobj: traceback object
+        :param exctype:
+            exception class
+        :param excvalue:
+            exception instance
+        :param tracebackobj:
+            traceback object
 
         '''
 

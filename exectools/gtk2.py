@@ -38,6 +38,7 @@ import subprocess2
 from exectools import BaseOutputHandler, level2tag
 from exectools.std import StdToolController
 
+
 class Popen(gobject.GObject, subprocess2.Popen):
 
     _timeout = 100 # ms

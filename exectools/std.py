@@ -26,10 +26,9 @@ __date__     = '$Date$'
 
 import sys
 
-# @TODO: check
 from exectools import BaseToolController, EX_OK
-
 import subprocess2
+
 
 class StdToolController(BaseToolController):
     '''Class for controlling command line tools.

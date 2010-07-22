@@ -11,9 +11,9 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 import exectools
-from exectools.qt4 import Qt4OutputPlane, Qt4OutputHandler
-from exectools.qt4 import Qt4DialogLoggingHandler, Qt4LoggingHandler
-from exectools.qt4 import Qt4ToolController
+from exectools.qt4 import (Qt4OutputPlane, Qt4OutputHandler, Qt4ToolController,
+                           Qt4DialogLoggingHandler, Qt4LoggingHandler)
+
 
 class Qt4Shell(QtGui.QMainWindow):
 

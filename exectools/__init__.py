@@ -188,10 +188,11 @@ class BaseOutputHandler(object):
         The user, anyway, can provide a custom implementation in
         derived classes.
 
-        :param data: a list containing an item for each named group in
-                     the "progress" regular expression: (pulse,
-                     percentage, text) for the default implementation.
-                     Each item can be None.
+        :param data:
+            a list containing an item for each named group in the
+            "progress" regular expression: (pulse, percentage, text)
+            for the default implementation.
+            Each item can be None.
 
         '''
 
@@ -224,8 +225,9 @@ class BaseOutputHandler(object):
         The user, anyway, can provide a custom implementation in
         derived classes.
 
-        :param data: an entire output line (including the trailing
-                     "end of line" character.
+        :param data:
+            an entire output line (including the trailing "end of line"
+            character.
 
         '''
 
@@ -265,18 +267,24 @@ class ToolDescriptor(object):
                  stdout_handler=None, stderr_handler=None):
         '''
 
-        :param executable:     full path of the tool executable or just
-                               the tool program name if it is in the
-                               system search path
-        :param args:           default args for command (list of strings)
-        :type args:            list
-        :param cwd:            program working directory
-        :param env:            environment dictionary
-        :param envmerge:       if set to True (default) it is the
-                               :ref:`env` dictionaty is used to update
-                               the system environment
-        :param stdout_handler: `OutputHandler` for the stdout of the tool
-        :param stderr_handler: `OutputHandler` for the stderr of the tool
+        :param executable:
+            full path of the tool executable or just the tool program
+            name if it is in the system search path
+        :param args:
+            default args for command (list of strings)
+        :type args:
+            list
+        :param cwd:
+            program working directory
+        :param env:
+            environment dictionary
+        :param envmerge:
+            if set to True (default) it is the :ref:`env` dictionaty is
+            used to update the system environment
+        :param stdout_handler:
+            `OutputHandler` for the stdout of the tool
+        :param stderr_handler:
+            `OutputHandler` for the stderr of the tool
 
         '''
 

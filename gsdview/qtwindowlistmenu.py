@@ -71,12 +71,13 @@ class QtWindowListMenu(QtGui.QMenu):
     of a QtWindowListMenu.
 
     :Enum:
-      * CloseAction
-      * CloseAllAction
-      * TileAction
-      * CascadeAction
-      * NextAction
-      * PrevAction
+
+        * CloseAction
+        * CloseAllAction
+        * TileAction
+        * CascadeAction
+        * NextAction
+        * PrevAction
 
     .. seealso:: standardAction()
 
@@ -93,9 +94,9 @@ class QtWindowListMenu(QtGui.QMenu):
 
     :SLOTS:
 
-      * syncWithMdiArea()
-      * activateWindow(QAction \*act)
-      * windowDestroyed(QObject \*obj)
+        * :meth:`syncWithMdiArea`
+        * :meth:`activateWindow`
+        * :meth:`windowDestroyed`
 
     '''
 

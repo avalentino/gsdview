@@ -24,6 +24,9 @@ __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __revision__ = '$Revision$'
 __date__     = '$Date$'
 
+__all__ = ['Qt4Blinker', 'Qt4OutputPlane', 'Qt4OutputHandler',
+           'Qt4LoggingHandler', 'Qt4DialogLoggingHandler', 'Qt4ToolController']
+
 import time
 import logging
 
@@ -118,7 +121,7 @@ class Qt4OutputPlane(QtGui.QTextEdit):
     # def clear(self): # it is a standard QtGui.QTextEdit method
 
     def save(self):
-        '''Save a file'''
+        '''Save a file.'''
 
         filter_ = self.tr('Text files (*.txt)')
         filename = QtGui.QFileDialog.getSaveFileName(self, QtCore.QString(),
@@ -134,7 +137,7 @@ class Qt4OutputPlane(QtGui.QTextEdit):
 
 
 class Qt4OutputHandler(BaseOutputHandler):
-    '''Qt4 Output Handler'''
+    '''Qt4 Output Handler.'''
 
     _statusbar_timeout = 2000 # ms
 
@@ -173,7 +176,7 @@ class Qt4OutputHandler(BaseOutputHandler):
         super(Qt4OutputHandler, self).feed(data)
 
     def close(self):
-        '''Reset the instance'''
+        '''Reset the instance.'''
 
         if self.statusbar:
             self.statusbar.clearMessage()
@@ -223,10 +226,11 @@ class Qt4OutputHandler(BaseOutputHandler):
     def handle_progress(self, data):
         '''Handle progress data.
 
-        :param data: a list containing an item for each named group in
-                     the "progress" regular expression: (pulse,
-                     percentage, text) for the default implementation.
-                     Each item can be None.
+        :param data:
+            a list containing an item for each named group in the
+            "progress" regular expression: (pulse, percentage, text)
+            for the default implementation.
+            Each item can be None.
 
         '''
 
@@ -247,7 +251,7 @@ class Qt4OutputHandler(BaseOutputHandler):
 
 
 class Qt4LoggingHandler(logging.Handler):
-    '''Custom handler for logging on Qt4 textviews'''
+    '''Custom handler for logging on Qt4 textviews.'''
 
     def __init__(self, textview):
         logging.Handler.__init__(self)
@@ -285,7 +289,7 @@ class Qt4LoggingHandler(logging.Handler):
         QtGui.qApp.processEvents()
 
     def _write(self, data, format_=None):
-        '''Write data on the textview'''
+        '''Write data on the textview.'''
 
         if isinstance(format_, basestring):
             format_ = self._formats.get(format_, '')
@@ -316,7 +320,7 @@ class Qt4LoggingHandler(logging.Handler):
 
 
 class Qt4DialogLoggingHandler(logging.Handler):
-    '''Qt4 handler for the logging dialog'''
+    '''Qt4 handler for the logging dialog.'''
 
     levelsmap = {
         logging.CRITICAL: QtGui.QMessageBox.Critical,
@@ -473,7 +477,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
             self.emit(QtCore.SIGNAL('finished(int)'), exitCode)
 
     def _reset(self):
-        '''Internal reset'''
+        '''Internal reset.'''
 
         if self.subprocess.state() != self.subprocess.NotRunning:
             self._stop(force=True)
@@ -495,14 +499,14 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         self.subprocess.close()
 
     def handle_stdout(self, *args):
-        '''Handle standard output'''
+        '''Handle standard output.'''
 
         byteArray = self.subprocess.readAllStandardOutput()
         if not byteArray.isEmpty():
             self._tool.stdout_handler.feed(byteArray.data())
 
     def handle_stderr(self, *args):
-        '''Handle standard error'''
+        '''Handle standard error.'''
 
         byteArray = self.subprocess.readAllStandardError()
         if not byteArray.isEmpty():
