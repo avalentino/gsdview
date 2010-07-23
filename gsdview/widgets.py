@@ -85,8 +85,8 @@ def _choosedir(dirname, dialog=None,):
 AboutDialogBase = qt4support.getuiform('aboutdialog', __name__)
 class AboutDialog(QtGui.QDialog, AboutDialogBase):
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget): # QtCore.Qt.Dialog
-        super(AboutDialog, self).__init__(parent, flags)
+    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+        super(AboutDialog, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         # Context menu actions
@@ -137,8 +137,8 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview">http://sourcefor
 
 class FileEntryWidget(QtGui.QWidget):
     def __init__(self, contents='', mode=QtGui.QFileDialog.AnyFile,
-                dialog=None, parent=None, flags=QtCore.Qt.Widget):
-        QtGui.QWidget.__init__(self, parent, flags)
+                dialog=None, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+        QtGui.QWidget.__init__(self, parent, flags, **kwargs)
 
         self.__completer = QtGui.QCompleter(self)
         # @TODO: use QFileSystemModel instraed
@@ -208,8 +208,8 @@ class FileEntryWidget(QtGui.QWidget):
 GeneralPreferencesPageBase = qt4support.getuiform('general-page', __name__)
 class GeneralPreferencesPage(QtGui.QWidget, GeneralPreferencesPageBase):
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget):
-        super(GeneralPreferencesPage, self).__init__(parent, flags)
+    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+        super(GeneralPreferencesPage, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         # Avoid promoted widgets
@@ -323,8 +323,8 @@ class PreferencesDialog(QtGui.QDialog, PreferencesDialogBase):
     # @TODO: also look at
     # /usr/share/doc/python-qt4-doc/examples/tools/settingseditor/settingseditor.py
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget): # QtCore.Qt.Dialog
-        super(PreferencesDialog, self).__init__(parent, flags)
+    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+        super(PreferencesDialog, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         self.setWindowIcon(qt4support.geticon('preferences.svg', __name__))
@@ -403,8 +403,8 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
     # @TODO: traceback highlighting
 
     def __init__(self, exctype=None, excvalue=None, tracebackobj=None,
-                 parent=None, flags=QtCore.Qt.Widget, fill=True): # QtCore.Qt.Dialog
-        super(ExceptionDialog, self).__init__(parent, flags)
+                 parent=None, flags=QtCore.Qt.Widget, fill=True, **kwargs):
+        super(ExceptionDialog, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         closebutton = self.buttonBox.button(QtGui.QDialogButtonBox.Close)
@@ -570,11 +570,12 @@ try:
     class QsciExceptionDialog(ExceptionDialog):
 
         def __init__(self, exctype=None, excvalue=None, tracebackobj=None,
-                     parent=None, flags=QtCore.Qt.Widget): # QtCore.Qt.Dialog
+                     parent=None, flags=QtCore.Qt.Widget, **kwargs):
 
             super(QsciExceptionDialog, self).__init__(exctype, excvalue,
                                                       tracebackobj,
-                                                      parent, flags, False)
+                                                      parent, flags, False,
+                                                      **kwargs)
 
             self.groupboxVerticalLayout.removeWidget(self.tracebackTextEdit)
             self.tracebackTextEdit.setParent(None)

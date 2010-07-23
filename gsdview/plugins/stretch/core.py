@@ -33,8 +33,8 @@ from stretch.widgets import StretchDialog
 
 
 class StretchTool(QtCore.QObject):
-    def __init__(self, app):
-        super(StretchTool, self).__init__(app)
+    def __init__(self, app, **kwargs):
+        super(StretchTool, self).__init__(app, **kwargs)
         self.app = app
 
         self.dialog = StretchDialog(parent=app)
@@ -115,7 +115,7 @@ class StretchTool(QtCore.QObject):
             window = self.app.mdiarea.activeSubWindow()
         try:
             return window.item.graphicsitem
-        except AttributeError, e:
+        except AttributeError:
             return None
 
     def onSubWindowActivated(self, subwindow):

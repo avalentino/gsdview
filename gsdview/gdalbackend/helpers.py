@@ -96,8 +96,8 @@ class GdalHelper(object):
                                     '"%s"' % self._tmpdir)
             self._tmpdir = None
 
-    def start(self, *args, **kargs):
-        raise NotImplementedError('GdalHelper.start(*args, **kargs)')
+    def start(self, *args, **kwargs):
+        raise NotImplementedError('GdalHelper.start(*args, **kwargs)')
 
     def finalize(self, returncode=0):
         self.cleanup()

@@ -49,9 +49,10 @@ class WorldmapPanel(QtGui.QDockWidget):
 
     bigBoxSize = 40
 
-    def __init__(self, parent=None): #, flags=0):
+    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
         #title = self.tr('Worldmap Panel')
-        QtGui.QDockWidget.__init__(self, 'World Map Panel', parent) #, flags)
+        super(WorldmapPanel, self).__init__('World Map Panel', parent, flags,
+                                            **kwargs)
         #self.setObjectName('worldmapPanel') # @TODO: check
 
         scene = QtGui.QGraphicsScene(self)
@@ -208,8 +209,8 @@ class WorldmapPanel(QtGui.QDockWidget):
 
 
 class WorldmapController(QtCore.QObject):
-    def __init__(self, app):
-        super(WorldmapController, self).__init__(app)
+    def __init__(self, app, **kwargs):
+        super(WorldmapController, self).__init__(app, **kwargs)
         self.app = app
 
         self.panel = WorldmapPanel(app)

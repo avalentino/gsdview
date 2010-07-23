@@ -41,6 +41,7 @@ from PyQt4 import QtCore, QtGui
 
 from gsdview import qt4support
 
+
 class MouseMode(QtCore.QObject):
     '''Base class for mouse mode desctiptors.
 
@@ -114,12 +115,14 @@ class MouseMode(QtCore.QObject):
     def scrollbarEventFilter(self, obj, event):
         return False
 
+
 class PointerMode(MouseMode):
     dragmode = QtGui.QGraphicsView.NoDrag
     cursor = None
     icon = qt4support.geticon('arrow.svg', __name__)
     label = 'Pointer'
     name = 'pointer'
+
 
 class ScrollHandMode(MouseMode):
     dragmode = QtGui.QGraphicsView.ScrollHandDrag
@@ -157,6 +160,7 @@ class ScrollHandMode(MouseMode):
         else:
             return False
 
+
 class RubberBandMode(MouseMode):
     dragmode = QtGui.QGraphicsView.RubberBandDrag
     cursor = QtCore.Qt.CrossCursor
@@ -185,10 +189,11 @@ class RubberBandMode(MouseMode):
         else:
             return False
 
+
 class MouseManager(QtCore.QObject):
 
-    def __init__(self, parent=None, stdmodes=True):
-        QtCore.QObject.__init__(self, parent)
+    def __init__(self, parent=None, stdmodes=True, **kwargs):
+        QtCore.QObject.__init__(self, parent, **kwargs)
 
         self._moderegistry = []
         self.actions = QtGui.QActionGroup(self)
@@ -303,4 +308,3 @@ class MouseManager(QtCore.QObject):
         '''
 
         obj.removeEventFilter(self)
-

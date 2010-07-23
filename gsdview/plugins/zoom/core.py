@@ -34,8 +34,8 @@ from gsdview import qt4support
 
 
 class ZoomTool(QtCore.QObject):
-    def __init__(self, view=None, parent=None):
-        super(ZoomTool, self).__init__(parent)
+    def __init__(self, view=None, parent=None, **kwargs):
+        super(ZoomTool, self).__init__(parent, **kwargs)
         self._view = view
 
         self.actions = self._setupActions()
@@ -106,8 +106,8 @@ class ZoomTool(QtCore.QObject):
 
 
 class AppZoomTool(ZoomTool):
-    def __init__(self, app):
-        super(AppZoomTool, self).__init__(None, app)
+    def __init__(self, app, **kwargs):
+        super(AppZoomTool, self).__init__(None, app, **kwargs)
         self.app = app
 
     def currentview(self):

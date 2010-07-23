@@ -68,8 +68,8 @@ class GDALBackend(QtCore.QObject):
     def getUseExceptions():
         return gdal.GetConfigOption('PYHTON_USE_EXCEPTIONS', 'FALSE') == 'TRUE'
 
-    def __init__(self, app):
-        QtCore.QObject.__init__(self, app)
+    def __init__(self, app, **kwargs):
+        QtCore.QObject.__init__(self, app, **kwargs)
         self._app = app
         self._helpers = {}
         self._actionsmap = self._setupActions()
@@ -572,8 +572,9 @@ from gsdview.mainwin import ItemSubWindow
 # @TODO: move elsewhere
 class GraphicsViewSubWindow(ItemSubWindow):
 
-    def __init__(self, item, parent=None, flags=QtCore.Qt.Widget):
-        super(GraphicsViewSubWindow, self).__init__(item, parent, flags)
+    def __init__(self, item, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+        super(GraphicsViewSubWindow, self).__init__(item, parent, flags,
+                                                    **kwargs)
         title = str(item.GetDescription()).strip()
         self.setWindowTitle(title)
 

@@ -44,8 +44,8 @@ class Qt4Blinker(QtGui.QLabel):
 
     '''
 
-    def __init__(self, parent=None):
-        super(Qt4Blinker, self).__init__(parent)
+    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+        super(Qt4Blinker, self).__init__(parent, flags, **kwargs)
         #qstyle = QtGui.qApp.style()
         #pixmap = qstyle.standardPixmap(QtGui.QStyle.SP_MediaStop)
         pixmap = QtGui.QPixmap(
@@ -81,8 +81,8 @@ class Qt4OutputPlane(QtGui.QTextEdit):
     #: :C++ signature: `void planeHideRequest()`
     planeHideRequest = QtCore.pyqtSignal()
 
-    def __init__(self, *args):
-        QtGui.QTextEdit.__init__(self, *args)
+    def __init__(self, parent=None, **kwargs):
+        super(Qt4OutputPlane, self).__init__(parent, **kwargs)
         self._setupActions()
         self.banner = None
 
@@ -179,8 +179,8 @@ class Qt4OutputHandler(QtCore.QObject, BaseOutputHandler):
     percentageChanged = QtCore.pyqtSignal(int)
 
     def __init__(self, logger=None, statusbar=None, progressbar=None,
-                 blinker=None):
-        QtCore.QObject.__init__(self)
+                 blinker=None, parent=None, **kwargs):
+        QtCore.QObject.__init__(self, parent, **kwargs)
         BaseOutputHandler.__init__(self, logger)
 
         self.statusbar = statusbar
@@ -422,8 +422,8 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
     #: :C++ signature: `void finished(int exitCode)`
     finished = QtCore.pyqtSignal(int)
 
-    def __init__(self, logger=None, parent=None):
-        QtCore.QObject.__init__(self, parent)
+    def __init__(self, logger=None, parent=None, **kwargs):
+        QtCore.QObject.__init__(self, parent, **kwargs)
         BaseToolController.__init__(self, logger)
         self.subprocess = QtCore.QProcess(parent)
         self.subprocess.setProcessChannelMode(QtCore.QProcess.MergedChannels)

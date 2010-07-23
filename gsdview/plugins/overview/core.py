@@ -37,8 +37,8 @@ from gsdview.gdalbackend import gdalsupport
 class NavigationGraphicsView(QtGui.QGraphicsView):
     BOXCOLOR = QtGui.QColor(QtCore.Qt.red)
 
-    def __init__(self, parent=None):    #, flags):
-        super(NavigationGraphicsView, self).__init__(parent) #, flags)
+    def __init__(self, parent=None, **kwargs):
+        super(NavigationGraphicsView, self).__init__(parent, **kwargs)
         self._viewbox = None
         self._autoscale = True
         self.setMouseTracking(True)
@@ -124,9 +124,10 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
 class BandOverviewDock(QtGui.QDockWidget):
     OVRMAXSIZE = 10 * 1024**2 # 10MB
 
-    def __init__(self, app): #, flags=0):
+    def __init__(self, app, flags=QtCore.Qt.Widget, **kwargs):
         #title = self.tr('Dataset Browser')
-        QtGui.QDockWidget.__init__(self, 'Band Overview', app) #, flags)
+        super(BandOverviewDock, self).__init__('Band Overview', app, flags,
+                                               **kwargs)
         #self.setObjectName('datasetBroeserPanel') # @TODO: check
 
         self.app = app  # @TODO: check
@@ -223,8 +224,8 @@ class BandOverviewDock(QtGui.QDockWidget):
 
 
 class OverviewController(QtCore.QObject):
-    def __init__(self, app):
-        super(OverviewController, self).__init__(app)
+    def __init__(self, app, **kwargs):
+        super(OverviewController, self).__init__(app, **kwargs)
         self.app = app
 
         self.panel = BandOverviewDock(app)

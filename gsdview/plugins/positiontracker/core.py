@@ -31,8 +31,8 @@ from positiontracker.coordinateview import CoordinateView, GeoCoordinateView
 
 
 class TrackingTool(QtCore.QObject):
-    def __init__(self, app):
-        super(TrackingTool, self).__init__(app)
+    def __init__(self, app, **kwargs):
+        super(TrackingTool, self).__init__(app, **kwargs)
         self.app = app
 
         # image coordinates

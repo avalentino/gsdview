@@ -32,16 +32,10 @@ import pkgutil
 import logging
 from distutils.versionpredicate import VersionPredicate
 
-# @TODO: move Qt specific implementation elsewhere
-from PyQt4 import QtCore, QtGui
-
 try:
     import pkg_resources
 except ImportError:
     logging.getLogger(__name__).debug('"pkg_resources" not found.')
-
-# @TODO: check dependency - getuiform, geticon, setViewContextActions
-from gsdview import qt4support
 
 
 class PluginManager(object):
@@ -299,11 +293,25 @@ class PluginManager(object):
             settings.endGroup()
 
 
+### GUI #######################################################################
+
+# @TODO: move Qt specific implementation elsewhere
+import functools
+
+from PyQt4 import QtCore, QtGui
+
+# @TODO: check dependency - getuiform, geticon, setViewContextActions
+from gsdview import qt4support
+
+
 PluginManagerGuiBase = qt4support.getuiform('pluginmanager', __name__)
 class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
 
-    def __init__(self, pluginmanager, parent=None, flags=QtCore.Qt.Widget):
-        super(PluginManagerGui, self).__init__(parent, flags)
+    # @TODO: emit signal for ???
+
+    def __init__(self, pluginmanager, parent=None, flags=QtCore.Qt.Widget,
+                 **kwargs):
+        super(PluginManagerGui, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         # Set icons
@@ -556,8 +564,8 @@ PluginInfoFormBase = qt4support.getuiform('plugininfo', __name__)
 class PluginInfoForm(QtGui.QFrame, PluginInfoFormBase):
 
     def __init__(self, plugin=None, active=None, parent=None,
-                 flags=QtCore.Qt.Widget):
-        super(PluginInfoForm, self).__init__(parent, flags)
+                 flags=QtCore.Qt.Widget, **kwargs):
+        super(PluginInfoForm, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         if plugin is not None and active is not None:
@@ -610,8 +618,9 @@ class PluginInfoForm(QtGui.QFrame, PluginInfoFormBase):
 
 class PluginInfoDialog(QtGui.QDialog):
 
-    def __init__(self, plugin, active, parent=None, flags=QtCore.Qt.Widget):
-        QtGui.QDialog.__init__(self, parent, flags)
+    def __init__(self, plugin, active, parent=None, flags=QtCore.Qt.Widget,
+                 **kwargs):
+        super(PluginInfoDialog, self).__init__(parent, flags, **kwargs)
         self.setModal(True)
 
         bbox = QtGui.QDialogButtonBox()

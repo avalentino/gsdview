@@ -26,16 +26,12 @@ __date__     = '$Date$'
 __revision__ = '$Revision$'
 
 
-from PyQt4 import QtGui
+from PyQt4 import QtCore, QtGui
 
 
 class CoordinateView(QtGui.QWidget):
-    def __init__ (self, parent=None): #, flags=0):
-        # @TODO: fix
-        if parent:
-            QtGui.QWidget.__init__(self, parent) # ,flags)
-        else:
-            QtGui.QWidget.__init__(self)
+    def __init__ (self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+        super(CoordinateView, self).__init__(parent, flags, **kwargs)
 
         layout = QtGui.QHBoxLayout()
 
@@ -63,8 +59,9 @@ class CoordinateView(QtGui.QWidget):
         self.yedit.setText(str(scenepos.y()))
 
 class GeoCoordinateView(CoordinateView):
-    def __init__ (self, parent=None): #, flags=0):
-        CoordinateView.__init__(self, parent)
+    def __init__ (self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+        super(GeoCoordinateView, self).__init__(parent, flags, **kwargs)
+
         self.xlabel.setText('lon:')
         self.ylabel.setText('lat:')
         self.xedit.setMaxLength(12)

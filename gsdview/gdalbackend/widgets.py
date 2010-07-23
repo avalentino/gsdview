@@ -41,8 +41,8 @@ from gsdview.gdalbackend import gdalsupport
 GDALInfoWidgetBase = qt4support.getuiform('gdalinfo', __name__)
 class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget):
-        super(GDALInfoWidget, self).__init__(parent, flags)
+    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+        super(GDALInfoWidget, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         # Context menu actions
@@ -116,8 +116,8 @@ class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
 GDALPreferencesPageBase = qt4support.getuiform('gdalpage', __name__)
 class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget):
-        super(GDALPreferencesPage, self).__init__(parent, flags)
+    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+        super(GDALPreferencesPage, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         self.infoButton.setIcon(qt4support.geticon('info.svg', 'gsdview'))
@@ -323,8 +323,8 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
 
 
 class MajorObjectInfoDialog(QtGui.QDialog):
-    def __init__(self, gdalobj, parent=None, flags=QtCore.Qt.Widget):
-        super(MajorObjectInfoDialog, self).__init__(parent, flags)
+    def __init__(self, gdalobj, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+        super(MajorObjectInfoDialog, self).__init__(parent, flags, **kwargs)
         if hasattr(self, 'setupUi'):
             self.setupUi(self)
 
@@ -400,8 +400,8 @@ def _setupImageStructureInfo(widget, metadata):
 
 HistogramConfigDialogBase = qt4support.getuiform('histoconfig', __name__)
 class HistogramConfigDialog(QtGui.QDialog, HistogramConfigDialogBase):
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget):
-        super(HistogramConfigDialog, self).__init__(parent, flags)
+    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+        super(HistogramConfigDialog, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         # Make it not resizable
@@ -457,8 +457,9 @@ class HistogramConfigDialog(QtGui.QDialog, HistogramConfigDialogBase):
 BandInfoDialogBase = qt4support.getuiform('banddialog', __name__)
 class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
-    def __init__(self, band=None, parent=None, flags=QtCore.Qt.Widget):
-        super(BandInfoDialog, self).__init__(band, parent, flags)
+    def __init__(self, band=None, parent=None, flags=QtCore.Qt.Widget,
+                 **kwargs):
+        super(BandInfoDialog, self).__init__(band, parent, flags, **kwargs)
 
         self.connect(self.computeStatsButton, QtCore.SIGNAL('clicked()'),
                      self.computeStats)
@@ -901,8 +902,10 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 DatasetInfoDialogBase = qt4support.getuiform('datasetdialog', __name__)
 class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
 
-    def __init__(self, dataset=None, parent=None, flags=QtCore.Qt.Widget):
-        super(DatasetInfoDialog, self).__init__(dataset, parent, flags)
+    def __init__(self, dataset=None, parent=None, flags=QtCore.Qt.Widget,
+                 **kwargs):
+        super(DatasetInfoDialog, self).__init__(dataset, parent, flags,
+                                                **kwargs)
 
         # Set icons
         geticon = qt4support.geticon

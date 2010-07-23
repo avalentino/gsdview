@@ -38,8 +38,8 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
     # valueChanged()
     ##valueChanged(double vmin, double vmax)
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget):
-        super(StretchWidget, self).__init__(parent, flags)
+    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+        super(StretchWidget, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
         self._floatmode = False
         self.connect(self.minSpinBox, QtCore.SIGNAL('valueChanged(double)'),
@@ -234,8 +234,8 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
 StretchDialogBase = qt4support.getuiform('stretchdialog', __name__)
 class StretchDialog(QtGui.QDialog, StretchDialogBase):
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget): # QtCore.Qt.Dialog
-        super(StretchDialog, self).__init__(parent, flags)
+    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+        super(StretchDialog, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         self.stretchwidget = StretchWidget(self)

@@ -35,10 +35,11 @@ sys.path.insert(1, os.path.join(GSDVIEWROOT, 'gsdview', 'plugins'))
 
 from stretch.widgets import *
 
+
 def test_stretchingdialog(floatmode=False):
     app = QtGui.QApplication(sys.argv)
     d = StretchDialog()
-    state = d.stretchwidget.state()
+    #state = d.stretchwidget.state()
     d.stretchwidget.floatmode = floatmode
     d.show()
     app.exec_()

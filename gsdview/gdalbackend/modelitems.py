@@ -44,7 +44,7 @@ class MajorObjectItem(QtGui.QStandardItem):
     _typeoffset = 100
     backend = info.name
 
-    def __init__(self, gdalobj):
+    def __init__(self, gdalobj, **kwargs):
         if isinstance(gdalobj, MajorObjectItem):
             self._obj = gdalobj._obj
         else:
@@ -57,8 +57,8 @@ class MajorObjectItem(QtGui.QStandardItem):
         else:
             description = ''
 
-        QtGui.QStandardItem.__init__(self, QtGui.QIcon(self.iconfile),
-                                     description)
+        super(MajorObjectItem, self).__init__(QtGui.QIcon(self.iconfile),
+                                              description, **kwargs)
         self.setToolTip(description)
 
     # Give items the same iterface of GDAL objects.
@@ -95,9 +95,9 @@ class BandItem(MajorObjectItem):
     iconfile = qt4support.geticon('rasterband.svg', __name__)
     _typeoffset = MajorObjectItem._typeoffset + 10
 
-    def __init__(self, band):
+    def __init__(self, band, **kwargs):
         assert band is not None
-        super(BandItem, self).__init__(band)
+        super(BandItem, self).__init__(band, **kwargs)
         self._setup_children()
 
         #: graphics scene associated to the raster band
@@ -206,10 +206,10 @@ class DatasetItem(MajorObjectItem):
     iconfile = qt4support.geticon('dataset.svg', __name__)
     _typeoffset = MajorObjectItem._typeoffset + 100
 
-    def __init__(self, filename, mode=gdal.GA_ReadOnly):
+    def __init__(self, filename, mode=gdal.GA_ReadOnly, **kwargs):
         filename = os.path.abspath(filename)
         gdalobj = self._checkedopen(filename, mode)
-        super(DatasetItem, self).__init__(gdalobj)
+        super(DatasetItem, self).__init__(gdalobj, **kwargs)
         if os.path.basename(filename) in self.text():
             self.setText(os.path.basename(filename))
 
@@ -364,7 +364,7 @@ class CachedDatasetItem(DatasetItem):
 
     CACHEDIR = os.path.expanduser(os.path.join('~', '.gsdview', 'cache'))
 
-    def __init__(self, filename, mode=gdal.GA_Update):
+    def __init__(self, filename, mode=gdal.GA_Update, **kwargs):
         # @TODO: check
         if mode == gdal.GA_ReadOnly:
             logging.warning('GDAL open mode ignored in cached datasets.')
@@ -373,7 +373,7 @@ class CachedDatasetItem(DatasetItem):
         filename = os.path.abspath(filename)
         gdalobj = self._checkedopen(filename, gdal.GA_ReadOnly)
         # @NOTE: drop DataSetItem initializer
-        MajorObjectItem.__init__(self, gdalobj)
+        MajorObjectItem.__init__(self, gdalobj, **kwargs)
         if os.path.basename(filename) in self.text():
             self.setText(os.path.basename(filename))
 
@@ -503,9 +503,9 @@ class SubDatasetItem(CachedDatasetItem):
     iconfile = qt4support.geticon('subdataset.svg', __name__)
     _typeoffset = DatasetItem._typeoffset + 10
 
-    def __init__(self, gdalfilename, extrainfo=''):
+    def __init__(self, gdalfilename, extrainfo='', **kwargs):
         # @NOTE: never call DatasetItem.__init__
-        MajorObjectItem.__init__(self, None)
+        MajorObjectItem.__init__(self, None, **kwargs)
         self.setText(extrainfo)
         self.setToolTip(extrainfo)
 

@@ -32,9 +32,10 @@ from gsdview import qt4support
 
 
 class MetadataViewer(QtGui.QDockWidget):
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget):
+    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
         #title = self.tr('Dataset Browser')
-        QtGui.QDockWidget.__init__(self, 'Metadata Viewer', parent, flags)
+        super(MetadataViewer, self).__init__('Metadata Viewer', parent, flags,
+                                             **kwargs)
         #self.setObjectName('metadataViewerPanel') # @TODO: check
 
         self.infoTable = QtGui.QTableWidget(5, 2, self)
@@ -76,8 +77,8 @@ class MetadataViewer(QtGui.QDockWidget):
 
 
 class MetadataController(QtCore.QObject):
-    def __init__(self, app):
-        super(MetadataController, self).__init__(app)
+    def __init__(self, app, **kwargs):
+        super(MetadataController, self).__init__(app, **kwargs)
         self.app = app
 
         self.panel = MetadataViewer(app)

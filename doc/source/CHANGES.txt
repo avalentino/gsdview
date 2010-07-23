@@ -15,6 +15,8 @@ Changes from 0.6.2 to 0.6.3 (in development)
 --------------------------------------------
 
 * Now exectools.Qt4OutputHandler emits signals
+* All classes that inherit from Qt objects or widgets now can be initialized 
+  using keyword arguments for Qt properties and signals setup.
 
 
 Changes from 0.6.1 to 0.6.2 (20/07/2010)

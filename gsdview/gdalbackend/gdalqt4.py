@@ -71,8 +71,8 @@ def safeDataStats(data, nodata=None):
 # @TODO: move GraphicsView here
 
 class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
-    def __init__(self, gdalobj, parent=None, scene=None):
-        super(BaseGdalGraphicsItem, self).__init__(parent, scene)
+    def __init__(self, gdalobj, parent=None, scene=None, **kwargs):
+        super(BaseGdalGraphicsItem, self).__init__(parent, scene, **kwargs)
 
         # @COMPATIBILITY: Qt >= 4.6.0 needs this flag to be set otherwise the
         #                 exact exposedRect is not computed
@@ -265,8 +265,9 @@ class UIntGdalGraphicsItem(BaseGdalGraphicsItem):
     '''
 
 
-    def __init__(self, band, parent=None, scene=None):
-        super(UIntGdalGraphicsItem, self).__init__(band, parent, scene)
+    def __init__(self, band, parent=None, scene=None, **kwargs):
+        super(UIntGdalGraphicsItem, self).__init__(band, parent, scene,
+                                                   **kwargs)
 
         # @TODO: maybe it is batter to use a custo mexception: ItemTypeError
         if band.DataType not in (gdal.GDT_Byte, gdal.GDT_UInt16):
@@ -308,8 +309,8 @@ class UIntGdalGraphicsItem(BaseGdalGraphicsItem):
 
 
 class GdalGraphicsItem(BaseGdalGraphicsItem):
-    def __init__(self, band, parent=None, scene=None):
-        super(GdalGraphicsItem, self).__init__(band, parent, scene)
+    def __init__(self, band, parent=None, scene=None, **kwargs):
+        super(GdalGraphicsItem, self).__init__(band, parent, scene, **kwargs)
 
         if gdal.DataTypeIsComplex(band.DataType):
             # @TODO: raise ItemTypeError or NotImplementedError
@@ -348,9 +349,9 @@ class GdalGraphicsItem(BaseGdalGraphicsItem):
 
 
 class GdalComplexGraphicsItem(GdalGraphicsItem):
-    def __init__(self, band, parent=None, scene=None):
+    def __init__(self, band, parent=None, scene=None, **kwargs):
         # @NOTE: skip GdalGraphicsItem __init__
-        BaseGdalGraphicsItem.__init__(self, band, parent, scene)
+        BaseGdalGraphicsItem.__init__(self, band, parent, scene, **kwargs)
 
     def dataRange(self, data=None):
         if data:
@@ -386,10 +387,11 @@ class GdalComplexGraphicsItem(GdalGraphicsItem):
 
 
 class GdalRgbGraphicsItem(BaseGdalGraphicsItem):
-    def __init__(self, dataset, parent=None, scene=None):
+    def __init__(self, dataset, parent=None, scene=None, **kwargs):
         if not gdalsupport.isRGB(dataset):
             raise TypeError('RGB or RGBA iamge expected')
-        BaseGdalGraphicsItem.__init__(self, dataset, parent, scene)
+        super(GdalRgbGraphicsItem, self).__init__(dataset, parent, scene,
+                                                  **kwargs)
         self.stretch = None
 
     def paint(self, painter, option, widget):

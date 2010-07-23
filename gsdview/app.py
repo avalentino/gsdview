@@ -59,13 +59,13 @@ class GSDView(ItemModelMainWindow):
 
     '''Main window class for GSDView application.'''
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
         logger = logging.getLogger('gsdview')
 
         logger.debug('Main window base classes initialization ...')
         QtGui.qApp.setWindowIcon(qt4support.geticon('GSDView.png', __name__))
 
-        super(GSDView, self).__init__(parent)
+        super(GSDView, self).__init__(parent, flags, **kwargs)
         title = self.tr('GSDView Open Source Edition v. %1').arg(info.version)
         self.setWindowTitle(title)
         self.setObjectName('gsdview-mainwin')

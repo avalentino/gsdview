@@ -19,7 +19,7 @@ class MdiChild(QtGui.QTextEdit):
     sequenceNumber = 1
 
     def __init__(self):
-        QtGui.QTextEdit.__init__(self, None)
+        super(MdiChild, self).__init__(None)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.isUntitled = True
         #self.resize(600, 500) # doesn't work

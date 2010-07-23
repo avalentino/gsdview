@@ -28,7 +28,6 @@ import os
 import sys
 import platform
 import traceback
-import subprocess
 from glob import glob
 
 from gsdview import info
@@ -41,7 +40,6 @@ kwargs = {}
 
 # Using ``setuptools`` enables lots of goodies, such as building eggs.
 from distutils import log
-from distutils.util import newer
 from distutils.command.build import build as Build
 try:
     from setuptools import setup, find_packages
@@ -212,8 +210,8 @@ if has_setuptools:
     packages = find_packages()
     kwargs.update(dict(
         install_requires = ['GDAL >= 1.6.1',
-                            'numpy >= 1.2.1',
-                            #'PyQt >= 4.5'
+                            'numpy >= 1.3.0',
+                            #'PyQt >= 4.6'
         ],
         #extras_require = {},
         keywords = 'gsdview gdal',

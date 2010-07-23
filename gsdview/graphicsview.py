@@ -37,8 +37,8 @@ class GraphicsView(QtGui.QGraphicsView):
     pass
 
     # @TODO: check
-    #~ def __init__(self, *args, **kargs):
-        #~ super(GraphicsView, self).__init__(*args, **kargs)
+    #~ def __init__(self, *args, **kwargs):
+        #~ super(GraphicsView, self).__init__(*args, **kwargs)
         #~ graphicsview.setMouseTracking(True)
 
     # @TODO: move to GraphicsViewMonitor
@@ -110,8 +110,8 @@ class GraphicsViewMonitor(QtCore.QObject):
     '''
 
     # @TODO: use signal mappers
-    #~ def __init__(self, parent=None):
-        #~ super(GraphicsViewMonitor, self).__init__(parent)
+    #~ def __init__(self, parent=None, **kwargs):
+        #~ super(GraphicsViewMonitor, self).__init__(parent, **kwargs)
 
         #~ self.mappers = {}
         #~ self.mappers['scroll'] = QtCore.QSignalMapper(self)

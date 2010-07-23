@@ -107,7 +107,7 @@ class QtWindowListMenu(QtGui.QMenu):
     NextAction     = 6
     PrevAction     = 7
 
-    def __init__(self, parent):
+    def __init__(self, parent, **kwargs):
         '''Constructs a QtWindowListMenu object.
 
         The *parent* parameter is passed to the QMenu constructor.
@@ -119,7 +119,7 @@ class QtWindowListMenu(QtGui.QMenu):
 
         '''
 
-        super(QtWindowListMenu, self).__init__(parent)
+        super(QtWindowListMenu, self).__init__(parent, **kwargs)
 
         self.mdi = None
         self.setTitle(self.tr('&Windows'))

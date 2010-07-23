@@ -44,8 +44,8 @@ class MdiMainWindow(QtGui.QMainWindow):
 
     # @TODO: should the subWindowClosed signal be emitted by mdiarea?
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget):
-        QtGui.QMainWindow.__init__(self, parent, flags)
+    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+        super(MdiMainWindow, self).__init__(parent, flags, **kwargs)
 
         #: MDI area instance (QMdiArea)
         self.mdiarea = QtGui.QMdiArea()
@@ -64,8 +64,8 @@ class MdiMainWindow(QtGui.QMainWindow):
 
 class ItemSubWindow(QtGui.QMdiSubWindow):
 
-    def __init__(self, item, parent=None, flags=QtCore.Qt.Widget):
-        QtGui.QMdiSubWindow.__init__(self, parent, flags)
+    def __init__(self, item, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+        super(ItemSubWindow, self).__init__(parent, flags, **kwargs)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
         #: datamodel item associated to the MDI sub-window
@@ -74,8 +74,8 @@ class ItemSubWindow(QtGui.QMdiSubWindow):
 
 class ItemModelMainWindow(MdiMainWindow):
 
-    def __init__(self, parent=None):
-        super(ItemModelMainWindow, self).__init__(parent)
+    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+        super(ItemModelMainWindow, self).__init__(parent, flags, **kwargs)
 
         #: main application datamodel (QStandardItemModel)
         self.datamodel = QtGui.QStandardItemModel(self)
