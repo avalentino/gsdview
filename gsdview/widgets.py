@@ -353,7 +353,7 @@ class PreferencesDialog(QtGui.QDialog, PreferencesDialogBase):
         applybutton = self.buttonBox.button(QtGui.QDialogButtonBox.Apply)
         applybutton.clicked.connect(self.apply)
 
-    @QtCore.pyqtSlot(QtGui.QListWidgetItem, QtGui.QListWidgetItem)
+    #@QtCore.pyqtSlot(QtGui.QListWidgetItem, QtGui.QListWidgetItem) # @TODO: check
     def changePage(self, current, previous):
         if not current:
             current = previous

@@ -56,8 +56,8 @@ class TrackingTool(QtCore.QObject):
             self.geocoorview.hide()
         return obj.eventFilter(obj, event)
 
-    @QtCore.pyqtSlot(QtGui.QGraphicsScene, QtCore.QPointF,
-                     QtCore.Qt.MouseButtons)
+    #@QtCore.pyqtSlot(QtGui.QGraphicsScene, QtCore.QPointF, QtCore.Qt.MouseButtons) # @TODO: check
+    #@QtCore.pyqtSlot('QGraphicsScene, QPointF, Qt::MouseButtons')
     def onMouseMoved(self, scene, pos, buttons):
         if self.app.progressbar.isVisible():
             return

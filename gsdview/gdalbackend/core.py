@@ -344,7 +344,13 @@ class GDALBackend(QtCore.QObject):
         # RGB
         action = actionsgroup.findChild(QtGui.QAction, 'actionOpenRGBImageView')
         if gdalsupport.isRGB(item):
-            action.setEnabled(True)
+            # @TODO: remove this to allow multiple views on the same item
+            for subwin in self._app.mdiarea.subWindowList():
+                if subwin.item == item:
+                    action.setEnabled(False)
+                    break
+            else:
+                action.setEnabled(True)
         else:
             action.setEnabled(False)
 
@@ -357,18 +363,18 @@ class GDALBackend(QtCore.QObject):
     def _getBandItemActions(self, item=None):
         actionsgroup = self._actionsmap['BandItem']
 
-        openaction = actionsgroup.findChild(QtGui.QAction, 'actionOpenImageView')
-        openaction.setEnabled(True)
+        action = actionsgroup.findChild(QtGui.QAction, 'actionOpenImageView')
+        action.setEnabled(True)
 
         if item is not None:
             assert isinstance(item, modelitems.BandItem)
             if gdal.DataTypeIsComplex(item.DataType):
-                openaction.setEnabled(False)
+                action.setEnabled(False)
             else:
                 # @TODO: remove this to allow multiple views on the same item
                 for subwin in self._app.mdiarea.subWindowList():
                     if subwin.item == item:
-                        openaction.setEnabled(False)
+                        action.setEnabled(False)
                         break
 
         return actionsgroup

@@ -104,7 +104,7 @@ class ItemModelMainWindow(MdiMainWindow):
             return None
         return self.datamodel.itemFromIndex(modelindex)
 
-    @QtCore.pyqtSlot(QtCore.QModelIndex)
+    #@QtCore.pyqtSlot(QtCore.QModelIndex) # @TODO: check
     def setActiveWinFromIndex(self, index):
         '''Set the active sub-window from index.
 
@@ -149,7 +149,7 @@ class ItemModelMainWindow(MdiMainWindow):
         else:
             self.treeview.setCurrentIndex(index)
 
-    @QtCore.pyqtSlot(QtCore.QModelIndex, int, int)
+    #@QtCore.pyqtSlot(QtCore.QModelIndex, int, int) # @TODO: check
     def onItemsClosed(self, modelindex, start, end):
         '''Closes sub-windows associated to the closed model items.
 
