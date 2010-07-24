@@ -231,7 +231,7 @@ class GDALBackend(QtCore.QObject):
                       shortcut=self.tr('Ctrl+O'),
                       toolTip=self.tr('Open an image view'),
                       statusTip=self.tr('Open a new image view'),
-                      triggered=self.openImageView)
+                      triggered=lambda chk: self.openImageView())
 
         # @TODO: add a new action for newImageView
 
@@ -285,7 +285,7 @@ class GDALBackend(QtCore.QObject):
                       #shortcut=self.tr('Ctrl+B'),
                       toolTip=self.tr('Display the dataset as an RGB image'),
                       statusTip=self.tr('Open as RGB'),
-                      triggered=self.openRGBImageView)
+                      triggered=lambda chk: self.openRGBImageView())
 
         # @TODO: add band, add virtual band, open GCPs view
 
@@ -452,7 +452,7 @@ class GDALBackend(QtCore.QObject):
     def openRGBImageView(self, item=None):
         if item is None:
             item = self._app.currentItem()
-        assert isinstance(item, modelitems.DatasetItem)
+        assert isinstance(item, modelitems.DatasetItem), 'item = %s' % str(item)
 
         if not item.scene:
             msg = "This dataset can't be opened in RGB mode."
@@ -511,7 +511,7 @@ class GDALBackend(QtCore.QObject):
     def openImageView(self, item=None):
         if item is None:
             item = self._app.currentItem()
-        assert isinstance(item, modelitems.BandItem), str(item)
+        assert isinstance(item, modelitems.BandItem), 'item = %s' % str(item)
 
         if not item.scene:
             if not item.GetDescription():
