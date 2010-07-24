@@ -321,35 +321,42 @@ class GdalOutputHandler(Qt4OutputHandler):
         #pattern = '(?P<percentage>\d{1,3})|(?P<pulse>\.)|((?P<text> - done\.?)$)'
         pattern = '(?P<percentage>\d{1,3})|(?P<pulse>\.)|( - (?P<text>done\.?)\n)'
         self._progress_pattern = re.compile(pattern)
-        self.percentage = 0.    # @TODO: remove.  Set the progressbar maximum
+        self._percentage = 0.   # @TODO: remove.  Set the progressbar maximum
                                 #        to 1000 instead.
 
     def handle_progress(self, data):
+        '''Handle progress data.
+
+        :param data:
+            a list containing an item for each named group in the
+            "progress" regular expression: (pulse, percentage, text)
+            for the default implementation.
+            Each item can be None.
+
+        '''
+
         pulse = data.get('pulse')
         percentage = data.get('percentage')
         text = data.get('text')
 
-        if pulse:
-            if self.progressbar:
-                self.percentage = min(100, self.percentage + 2.5)
-                self._handle_percentage(self.percentage)
+        if pulse and percentage is None:
+            self._percentage = min(100, self._percentage + 2.5)
+            data['percentage'] = self._percentage
         if percentage is not None:
-            if percentage < self.percentage:
+            if percentage < self._percentage:
                 logging.debug('new percentage (%d) is lower than previous '
-                              'one (%f)' % (percentage, self.percentage))
+                              'one (%f)' % (percentage, self._percentage))
 
-            self.percentage = percentage
-            self._handle_percentage(percentage)
-        if text and not pulse and percentage is None:
-            self.percentage = 0.
-            if self.statusbar:
-                self.statusbar.showMessage(text, self._statusbar_timeout)
-        self._handle_pulse(pulse)
-        QtGui.qApp.processEvents() # might slow too mutch
+            self._percentage = percentage
+        #~ if text and not pulse and percentage is None:
+            #~ # reset percentage
+            #~ self._percentage = 0.
+
+        super(GdalOutputHandler, self).handle_progress(data)
 
     def reset(self):
         super(GdalOutputHandler, self).reset()
-        self.percentage = 0.
+        self._percentage = 0.
 
 
 if __name__ == '__main__':
