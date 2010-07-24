@@ -12,7 +12,7 @@ gsdview.gdalbackend
       DontUseExceptions
       UseExceptions
       close
-      closeItem
+      closeCurrentItem
       findItemFromFilename
       getUseExceptions
       init

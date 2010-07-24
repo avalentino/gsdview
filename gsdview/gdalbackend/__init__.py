@@ -31,7 +31,7 @@ __all__ = ['init', 'close', 'loadSettings', 'saveSettings',
            'website', 'website_label', 'getUseExceptions',
            'UseExceptions', 'DontUseExceptions',
            'openFile', 'openImageView', 'newImageView', 'openItemMatadataView',
-           'openRGBImageView', 'openSubDataset', 'closeItem',
+           'openRGBImageView', 'openSubDataset', 'closeCurrentItem',
            'findItemFromFilename', 'itemActions', 'itemContextMenu',
 ]
 

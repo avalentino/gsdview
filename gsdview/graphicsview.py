@@ -103,7 +103,7 @@ class GraphicsView(QtGui.QGraphicsView):
         #~ self.resetTransform()
 
 class GraphicsViewMonitor(QtCore.QObject):
-    '''Emit signals when a registered graphcs view changes status.
+    '''Emit signals when a registered graphics view changes status.
 
     :SIGNALS:
 
