@@ -180,7 +180,7 @@ class BandItem(MajorObjectItem):
 
         #~ self._closeChildren()    # @TODO: remove
         self._setup_children()
-        self.model().emit(QtCore.SIGNAL('itemChanged(QStandardItem*)'), self)
+        self.model().itemChanged.emit(self)
 
 
 class OverviewItem(BandItem):
@@ -482,9 +482,7 @@ class CachedDatasetItem(DatasetItem):
 
         self._vrtobj = gdalobj
 
-        # @TODO: check
-        #self.model().itemChanged(self)
-        self.model().emit(QtCore.SIGNAL('itemChanged(QStandardItem*)'), self)
+        self.model().itemChanged.emit(self)
 
 
 def datasetitem(filename):

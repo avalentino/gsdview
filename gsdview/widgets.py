@@ -154,8 +154,8 @@ class FileEntryWidget(QtGui.QWidget):
             self.lineEdit.setText(contents)
 
         icon = qt4support.geticon('open.svg', __name__)
-        self.button = QtGui.QPushButton(icon, '')
-        self.button.setToolTip(self.tr('select from file dialog'))
+        self.button = QtGui.QPushButton(icon, '',
+                                toolTip=self.tr('select from file dialog'))
 
         layout = QtGui.QHBoxLayout()
         layout.addWidget(self.lineEdit)
@@ -170,7 +170,7 @@ class FileEntryWidget(QtGui.QWidget):
         #~ if not self.dialog:
             #~ self.dialog = get_filedialog(self)
 
-        self.connect(self.button, QtCore.SIGNAL('clicked()'), self.choose)
+        self.button.clicked.connect(self.choose)
 
     def _get_mode(self):
         return self._mode
@@ -192,6 +192,7 @@ class FileEntryWidget(QtGui.QWidget):
 
     mode = property(_get_mode, _set_mode)
 
+    @QtCore.pyqtSlot()
     def choose(self):
         filename = self.lineEdit.text()
         filename = _choosefile(filename, self.dialog, self.mode)
@@ -314,11 +315,16 @@ PreferencesDialogBase = qt4support.getuiform('preferences', __name__)
 class PreferencesDialog(QtGui.QDialog, PreferencesDialogBase):
     '''Extendible preferences dialogg for GSDView.
 
-    :signals:
+    :SIGNALS:
 
-    - apply
+    * :attr:`apply`
 
     '''
+
+    #: SIGNAL: it is emitted when modifications are applied
+    #:
+    #: :C++ signature: `void apply()`
+    apply = QtCore.pyqtSignal()
 
     # @TODO: also look at
     # /usr/share/doc/python-qt4-doc/examples/tools/settingseditor/settingseditor.py
@@ -342,20 +348,12 @@ class PreferencesDialog(QtGui.QDialog, PreferencesDialogBase):
 
         assert self.listWidget.count() == self.stackedWidget.count()
 
-        self.connect(
-            self.listWidget,
-            QtCore.SIGNAL('currentItemChanged(QListWidgetItem*, QListWidgetItem*)'),
-            self.changePage)
+        self.listWidget.currentItemChanged.connect(self.changePage)
 
-        self.connect(self.buttonBox,
-                     QtCore.SIGNAL('clicked(QAbstractButton*)'),
-                     self._onButtonClicked)
+        applybutton = self.buttonBox.button(QtGui.QDialogButtonBox.Apply)
+        applybutton.clicked.connect(self.apply)
 
-    def _onButtonClicked(self, button):
-        role = self.buttonBox.buttonRole(button)
-        if role == QtGui.QDialogButtonBox.ApplyRole:
-            self.emit(QtCore.SIGNAL('apply()'))
-
+    @QtCore.pyqtSlot(QtGui.QListWidgetItem, QtGui.QListWidgetItem)
     def changePage(self, current, previous):
         if not current:
             current = previous
@@ -393,9 +391,6 @@ class PreferencesDialog(QtGui.QDialog, PreferencesDialogBase):
             page = self.stackedWidget.widget(index)
             page.save(settings)
 
-    def apply(self):
-        self.emit(QtCore.SIGNAL('apply()'))
-
 
 ExceptionDialogBase = qt4support.getuiform('exceptiondialog', __name__)
 class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
@@ -407,31 +402,32 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
         super(ExceptionDialog, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
+        title = 'Critical error: unhandled exception occurred'
+        self.setWindowTitle(self.tr(title))
+
         closebutton = self.buttonBox.button(QtGui.QDialogButtonBox.Close)
         closebutton.setDefault(True)
 
         style = QtGui.qApp.style()
 
         icon = style.standardIcon(style.SP_CommandLink)
-        sendbutton = QtGui.QPushButton(icon, self.tr('Send'))
-        sendbutton.setToolTip(self.tr('Send the bug-report via email.'))
-        sendbutton.setAutoDefault(False)
-        self.buttonBox.addButton(sendbutton, QtGui.QDialogButtonBox.ActionRole)
-        self.connect(sendbutton, QtCore.SIGNAL('clicked()'), self.sendBugReport)
+        sendbutton = QtGui.QPushButton(
+                            icon, self.tr('Send'),
+                            toolTip=self.tr('Send the bug-report via email.'),
+                            autoDefault=False,
+                            clicked=self.sendBugReport)
         self.sendbutton = sendbutton
+        self.buttonBox.addButton(sendbutton, QtGui.QDialogButtonBox.ActionRole)
 
         icon = style.standardIcon(style.SP_DialogSaveButton)
-        savebutton = QtGui.QPushButton(icon, self.tr('&Save'))
-        savebutton.setToolTip(self.tr('Save the bug-report on file.'))
-        savebutton.setAutoDefault(False)
-        self.buttonBox.addButton(savebutton, QtGui.QDialogButtonBox.ActionRole)
-        self.connect(savebutton, QtCore.SIGNAL('clicked()'), self.saveBugReport)
+        savebutton = QtGui.QPushButton(
+                            icon, self.tr('&Save'),
+                            toolTip=self.tr('Save the bug-report on file.'),
+                            autoDefault=False,
+                            clicked=self.saveBugReport)
         self.savebutton = savebutton
+        self.buttonBox.addButton(savebutton, QtGui.QDialogButtonBox.ActionRole)
 
-        title = 'Critical error: unhandled exception occurred'
-        self.setWindowTitle(self.tr(title))
-
-        style = QtGui.qApp.style()
         pixmap = style.standardPixmap(style.SP_MessageBoxCritical)
         self.iconLabel.setPixmap(pixmap)
 
@@ -439,9 +435,7 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
         self.excvalue = excvalue
         self.tracebackobj = tracebackobj
 
-        self.connect(self.textLabel,
-                     QtCore.SIGNAL('linkActivated(const QString&)'),
-                     self._linkActivated)
+        self.textLabel.linkActivated.connect(self._linkActivated)
 
         if fill:
             if not self._excInfoSet():
@@ -449,7 +443,9 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
             else:
                 self._fill()
 
+    @QtCore.pyqtSlot(str)
     def _linkActivated(self, link):
+        # @TODO: better url parsing
         if 'mailto' in str(link):
             self.sendBugReport()
         else:
@@ -514,6 +510,7 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
     def _excInfoSet(self):
         return all((self.exctype, self.excvalue, self.tracebackobj))
 
+    @QtCore.pyqtSlot()
     def sendBugReport(self):
         if not self._excInfoSet():
             exctype, excvalue, tracebackobj = sys.exc_info()
@@ -595,10 +592,8 @@ try:
 
             self.tracebackTextEdit.setReadOnly(True)
 
-            self.connect(self.tracebackGroupBox,
-                         QtCore.SIGNAL('toggled(bool)'),
-                         self.tracebackTextEdit,
-                         QtCore.SLOT('setVisible(bool)'))
+            self.tracebackGroupBox.toggled.connect(
+                                            self.tracebackTextEdit.setVisible)
 
             if not self._excInfoSet():
                 self.setExcInfo(*sys.exc_info())

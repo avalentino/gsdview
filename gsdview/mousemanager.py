@@ -162,19 +162,31 @@ class ScrollHandMode(MouseMode):
 
 
 class RubberBandMode(MouseMode):
+    '''Mouse mode for rubber band selection.
+
+    :SIGNALS:
+
+        * :attr:`rubberBandSeclection`
+
+    '''
+
     dragmode = QtGui.QGraphicsView.RubberBandDrag
     cursor = QtCore.Qt.CrossCursor
     icon = qt4support.geticon('area.svg', __name__)
     label = 'Rubber band'
     name = 'rubberband'
 
+    #: SIGNAL: it is emitted when a rectangular area is selected
+    #:
+    #: :C++ signature: `void rubberBandSeclection(const QRectF&)`
+    rubberBandSeclection = QtCore.pyqtSignal(QtCore.QRectF)
+
     def sceneEventFilter(self, obj, event):
         if event.type() == QtCore.QEvent.GraphicsSceneMouseRelease:
             p0 = event.buttonDownScenePos(QtCore.Qt.LeftButton)
             p1 = event.scenePos()
             rect = QtCore.QRectF(p0, p1).normalized()
-            self.emit(QtCore.SIGNAL('rubberBandSeclection(const QRectF&)'),
-                      rect)
+            self.rubberBandSeclection.emit(rect)
             return True
 
         #return obj.eventFilter(obj, event)   # @TODO: check
@@ -191,6 +203,11 @@ class RubberBandMode(MouseMode):
 
 
 class MouseManager(QtCore.QObject):
+
+    #: SIGNAL: it is emitted when the mouse mode is changed
+    #:
+    #: :C++ signature: `void modeChanged(const QString&)`
+    modeChanged = QtCore.pyqtSignal(str)
 
     def __init__(self, parent=None, stdmodes=True, **kwargs):
         QtCore.QObject.__init__(self, parent, **kwargs)
@@ -209,10 +226,9 @@ class MouseManager(QtCore.QObject):
             self.actions.actions()[0].setChecked(True)
 
     def _newModeAction(self, mode, parent):
-        action = QtGui.QAction(mode.icon, self.tr(mode.label), parent)
-        action.setCheckable(True)
-        self.connect(action, QtCore.SIGNAL('triggered()'),
-                     self._emitModeChanged)
+        action = QtGui.QAction(mode.icon, self.tr(mode.label), parent,
+                               checkable=True)
+        action.triggered.connect(lambda: self.modeChanged.emit(self.mode))
         return action
 
     def _getMode(self):
@@ -261,12 +277,6 @@ class MouseManager(QtCore.QObject):
             #raise ValueError('invalid mde nema: "%s"' % mode)
             return None
 
-    def _emitModeChanged(self, name=None):
-        # @TODO: check
-        if name is None:
-            name = self.mode
-        self.emit(QtCore.SIGNAL('modeChanged(PyQt_PyObject)'), name)
-
     def eventFilter(self, obj, event):
         '''Events dispatcher'''
 
@@ -289,12 +299,13 @@ class MouseManager(QtCore.QObject):
             obj.verticalScrollBar().installEventFilter(self)
         except AttributeError:
             # it is a QGraphicsScene
+            scene = obj
+        else:
             scene = obj.scene()
 
-            if scene:
-                # Avoid event filter duplication
-                scene.removeEventFilter(self)
-                scene.installEventFilter(self)
+        # Avoid event filter duplication
+        scene.removeEventFilter(self)
+        scene.installEventFilter(self)
 
     def unregister(self, obj):
         '''Unregister monitored objects.

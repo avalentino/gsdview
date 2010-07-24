@@ -32,7 +32,7 @@ import shutil
 import tempfile
 
 from osgeo import gdal
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from gsdview.gdalbackend import modelitems
 from gsdview.gdalbackend import gdalsupport
@@ -58,9 +58,6 @@ class GdalHelper(object):
         self.tool = tool
         self._tmpdir = None
         #self._datasetitem = None
-
-        QtCore.QObject.connect(self.controller, QtCore.SIGNAL('finished(int)'),
-                               self.finalize)
 
     @property
     def controller(self):
@@ -97,9 +94,12 @@ class GdalHelper(object):
             self._tmpdir = None
 
     def start(self, *args, **kwargs):
+        #self.controller.finished.connect(self.finalize)
         raise NotImplementedError('GdalHelper.start(*args, **kwargs)')
 
+    #@QtCore.pyqtSlot(int)
     def finalize(self, returncode=0):
+        self.controller.finished.disconnect(self.finalize)
         self.cleanup()
 
 
@@ -191,9 +191,13 @@ class AddoHelper(GdalHelper):
             args.extend(map(str, missingOverviewLevels))
 
             self.tool.cwd = os.path.dirname(vrtfilename)
+            self.controller.finished.connect(self.finalize)
             self.controller.run_tool(self.tool, *args)
 
+    #@QtCore.pyqtSlot(int)
     def finalize(self, returncode=0):
+        self.controller.finished.disconnect(self.finalize)
+
         # @TODO: check if opening the dataset in update mode
         #        (gdal.GA_Update) is a better solution
 
@@ -262,10 +266,13 @@ class StatsHelper(GdalHelper):
 
         args = [os.path.basename(vrtfilename)]
         self.tool.cwd = os.path.dirname(vrtfilename)
+        self.controller.finished.connect(self.finalize)
         self.controller.run_tool(self.tool, *args)
         self.setProgressRange(*self._PROGRESS_RANGE)
 
     def finalize(self, returncode=0):
+        self.controller.finished.disconnect(self.finalize)
+
         # @TODO: check if opening the dataset in update mode
         #        (gdal.GA_Update) is a better solution
 
@@ -366,26 +373,22 @@ class StatsDialogHelper(StatsHelper):
     def start(self, item):
         self._checkdialog()
         if not self.controller.isbusy:
-            QtCore.QObject.connect(self.progressdialog,
-                                   QtCore.SIGNAL('canceled()'),
-                                   self.controller.stop_tool)
-            QtCore.QObject.connect(self.app.progressbar,
-                                   QtCore.SIGNAL('valueChanged(int)'),
-                                   self.progressdialog.setValue)
+            self.progressdialog.canceled.connect(self.controller.stop_tool)
+            self.app.progressbar.valueChanged.connect(
+                                                self.progressdialog.setValue)
 
             #self.progressdialog.reset()
             self.progressdialog.show()
         super(StatsDialogHelper, self).start(item)
 
+    #@QtCore.pyqtSlot()
+    #@QtCore.pyqtSlot(int)
     def finalize(self, returncode=0):
         super(StatsDialogHelper, self).finalize(returncode)
         self.progressdialog.hide()
-        QtCore.QObject.disconnect(self.progressdialog,
-                                  QtCore.SIGNAL('canceled()'),
-                                  self.controller.stop_tool)
-        QtCore.QObject.disconnect(self.app.progressbar,
-                                  QtCore.SIGNAL('valueChanged(int)'),
-                                  self.progressdialog.setValue)
+        self.progressdialog.canceled.disconnect(self.controller.stop_tool)
+        self.app.progressbar.valueChanged.disconnect(
+                                                self.progressdialog.setValue)
 
     def apply(self):
         self._checkdialog()

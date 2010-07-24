@@ -86,9 +86,8 @@ class GSDView(ItemModelMainWindow):
         logger.debug('Setting up the preferences dialog ...')
 
         #: prefernces dialog instance
-        self.preferencesdialog = PreferencesDialog(self)
-        self.connect(self.preferencesdialog, QtCore.SIGNAL('apply()'),
-                     self.applySettings)
+        self.preferencesdialog = PreferencesDialog(self,
+                                                   apply=self.applySettings)
 
         # Stop button
         logger.debug('Setting up the stop button ...')
@@ -203,11 +202,10 @@ class GSDView(ItemModelMainWindow):
                                     self.tr('Settings toolbar'))
 
         #: settings sub-menu
-        self.settings_submenu = QtGui.QMenu(self.tr('&View'))
+        self.settings_submenu = QtGui.QMenu(self.tr('&View'),
+                                            aboutToShow=self.updateSettingsMenu)
         menu.addSeparator()
         menu.addMenu(self.settings_submenu)
-        self.connect(self.settings_submenu, QtCore.SIGNAL('aboutToShow()'),
-                     self.updateSettingsMenu)
 
         logger.debug(self.tr('Window menu setup ...'))
         self.menuBar().addMenu(self.windowmenu)
@@ -224,9 +222,7 @@ class GSDView(ItemModelMainWindow):
         #self.logger.setLevel(level)
 
         self.treeview.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.connect(self.treeview,
-                     QtCore.SIGNAL('customContextMenuRequested(const QPoint&)'),
-                     self.itemContextMenu)
+        self.treeview.customContextMenuRequested.connect(self.itemContextMenu)
 
         self.statusBar().showMessage('Ready')
 
@@ -239,6 +235,7 @@ class GSDView(ItemModelMainWindow):
                 return widget
         return None
 
+    @QtCore.pyqtSlot(QtCore.QPoint)
     def itemContextMenu(self, pos):
         modelindex = self.treeview.indexAt(pos)
         if not modelindex.isValid():
@@ -327,38 +324,34 @@ class GSDView(ItemModelMainWindow):
 
         # Open
         icon = qt4support.geticon('open.svg', __name__)
-        action = QtGui.QAction(icon, self.tr('&Open'), actionsgroup)
-        action.setObjectName('open')
-        action.setShortcut(self.tr('Ctrl+O'))
-        action.setToolTip(self.tr('Open an existing file'))
-        action.setStatusTip(self.tr('Open an existing file'))
-        self.connect(action, QtCore.SIGNAL('triggered()'), self.openFile)
-        actionsgroup.addAction(action)
+        QtGui.QAction(icon, self.tr('&Open'), actionsgroup,
+                      objectName='open',
+                      shortcut=self.tr('Ctrl+O'),
+                      toolTip=self.tr('Open an existing file'),
+                      statusTip=self.tr('Open an existing file'),
+                      triggered=self.openFile)
 
         # Close
         icon = qt4support.geticon('close.svg', __name__)
-        action = QtGui.QAction(icon, self.tr('&Close'), actionsgroup)
-        action.setObjectName('close')
-        # 'Ctrl+W' shortcu is used for closing windows
-        #action.setShortcut(self.tr('Ctrl+W'))
-        action.setToolTip(self.tr('Close the current file'))
-        action.setStatusTip(self.tr('Close the current file'))
-        self.connect(action, QtCore.SIGNAL('triggered()'), self.closeItem)
-        actionsgroup.addAction(action)
+        QtGui.QAction(icon, self.tr('&Close'), actionsgroup,
+                      objectName='close',
+                      # 'Ctrl+W' shortcu is used for closing windows
+                      #shortcut=self.tr('Ctrl+W'),
+                      toolTip=self.tr('Close the current file'),
+                      statusTip=self.tr('Close the current file'),
+                      triggered=self.closeItem)
 
         # Separator
-        QtGui.QAction(actionsgroup).setSeparator(True)
-        #action.setObjectName('separator')
+        QtGui.QAction(actionsgroup).setSeparator(True) #objectName='separator')
 
         # Exit
         icon = qt4support.geticon('quit.svg', __name__)
-        action = QtGui.QAction(icon, self.tr('&Exit'), actionsgroup)
-        action.setObjectName('exit')
-        action.setShortcut(self.tr('Ctrl+X'))
-        action.setToolTip(self.tr('Exit the program'))
-        action.setStatusTip(self.tr('Exit the program'))
-        self.connect(action, QtCore.SIGNAL('triggered()'), self.close)
-        actionsgroup.addAction(action)
+        QtGui.QAction(icon, self.tr('&Exit'), actionsgroup,
+                      objectName='exit',
+                      shortcut=self.tr('Ctrl+X'),
+                      toolTip=self.tr('Exit the program'),
+                      statusTip=self.tr('Exit the program'),
+                      triggered=self.close)
 
         return actionsgroup
 
@@ -367,13 +360,11 @@ class GSDView(ItemModelMainWindow):
 
         # Preferences
         icon = qt4support.geticon('preferences.svg', __name__)
-        action = QtGui.QAction(icon, self.tr('&Preferences'), actionsgroup)
-        action.setObjectName('preferences')
-        action.setToolTip(self.tr('Open the program preferences dialog'))
-        action.setStatusTip(self.tr('Open the program preferences dialog'))
-        self.connect(action, QtCore.SIGNAL('triggered()'),
-                     self.showPreferencesDialog)
-        actionsgroup.addAction(action)
+        QtGui.QAction(icon, self.tr('&Preferences'), actionsgroup,
+                      objectName='preferences',
+                      toolTip=self.tr('Open the program preferences dialog'),
+                      statusTip=self.tr('Open the program preferences dialog'),
+                      triggered=self.showPreferencesDialog)
 
         return actionsgroup
 
@@ -382,23 +373,19 @@ class GSDView(ItemModelMainWindow):
 
         # About
         icon = qt4support.geticon('about.svg', __name__)
-        action = QtGui.QAction(icon, self.tr('&About'), actionsgroup)
-        action.setObjectName('about')
-        action.setToolTip(self.tr('Show program information'))
-        action.setStatusTip(self.tr('Show program information'))
-        self.connect(action, QtCore.SIGNAL('triggered()'),
-                     self.aboutdialog.exec_)
-        actionsgroup.addAction(action)
+        QtGui.QAction(icon, self.tr('&About'), actionsgroup,
+                      objectName='about',
+                      toolTip=self.tr('Show program information'),
+                      statusTip=self.tr('Show program information'),
+                      triggered=lambda: self.aboutdialog.exec_())
 
         # AboutQt
         icon = QtGui.QIcon(':/trolltech/qmessagebox/images/qtlogo-64.png')
-        action = QtGui.QAction(icon, self.tr('About &Qt'), actionsgroup)
-        action.setObjectName('aboutQt')
-        action.setToolTip(self.tr('Show information about Qt'))
-        action.setStatusTip(self.tr('Show information about Qt'))
-        self.connect(action, QtCore.SIGNAL('triggered()'),
-                     lambda: QtGui.QMessageBox.aboutQt(self))
-        actionsgroup.addAction(action)
+        QtGui.QAction(icon, self.tr('About &Qt'), actionsgroup,
+                      objectName='aboutQt',
+                      toolTip=self.tr('Show information about Qt'),
+                      statusTip=self.tr('Show information about Qt'),
+                      triggered=lambda: QtGui.QMessageBox.aboutQt(self))
 
         return actionsgroup
 
@@ -466,12 +453,9 @@ class GSDView(ItemModelMainWindow):
 
     def setupController(self, logger, statusbar, progressbar):
         controller = Qt4ToolController(logger, parent=self)
-        controller.connect(controller.subprocess, QtCore.SIGNAL('started()'),
-                           self.processingStarted)
-        controller.connect(controller, QtCore.SIGNAL('finished(int)'),
-                           self.processingDone)
-        self.connect(self.stopbutton, QtCore.SIGNAL('clicked()'),
-                     controller.stop_tool)
+        controller.subprocess.started.connect(self.processingStarted)
+        controller.finished.connect(self.processingDone)
+        self.stopbutton.clicked.connect(controller.stop_tool)
 
         return controller
 
@@ -668,6 +652,7 @@ class GSDView(ItemModelMainWindow):
             #logging.debug('save %s plugin preferences' % plugin.name)
             plugin.saveSettings(settings)
 
+    @QtCore.pyqtSlot()
     def updateSettingsMenu(self):
         # @TODO: rewrite; it should not be needed to copy the menu into a
         #        new one
@@ -682,10 +667,12 @@ class GSDView(ItemModelMainWindow):
             if self.tr('toolbar') not in action.text():
                 self.settings_submenu.addAction(action)
 
+    @QtCore.pyqtSlot()
     def applySettings(self):
         self.preferencesdialog.save(self.settings)
         self.loadSettings()
 
+    @QtCore.pyqtSlot()
     def showPreferencesDialog(self):
         # @TODO: complete
         self.saveSettings()
@@ -694,6 +681,7 @@ class GSDView(ItemModelMainWindow):
             self.applySettings()
 
     ### File actions ##########################################################
+    @QtCore.pyqtSlot()
     def openFile(self):
         # @TODO: remove; this is a temporary workaround for a Qt bug in Cocoa version
         self.filedialog.selectNameFilter(self.filedialog.selectedNameFilter())
@@ -721,9 +709,10 @@ class GSDView(ItemModelMainWindow):
                 else:
                     self.logger.error('Unable to open file "%s"' % filename)
 
+    @QtCore.pyqtSlot()
     def closeItem(self):
         # @TODO: extend for multiple datasets
-        #~ self.emit(QtCore.SIGNAL('closeGdalDataset()'))
+        #~ self.closeGdalDataset.emit()
 
         item = self.currentItem()
         if item:
@@ -740,6 +729,7 @@ class GSDView(ItemModelMainWindow):
 
         self.statusBar().showMessage('Ready.')
 
+    @QtCore.pyqtSlot()
     def closeAll(self):
         root = self.datamodel.invisibleRootItem()
         while root.hasChildren():
@@ -752,6 +742,8 @@ class GSDView(ItemModelMainWindow):
                 root.removeRow(item.row())
 
     ### Auxiliary methods ####################################################
+    @QtCore.pyqtSlot()
+    @QtCore.pyqtSlot(str)
     def processingStarted(self, msg=None):
         if msg:
             self.statusBar().showMessage(msg)
@@ -759,10 +751,12 @@ class GSDView(ItemModelMainWindow):
         self.stopbutton.setEnabled(True)
         self.stopbutton.show()
 
+    @QtCore.pyqtSlot(int)
     def updateProgressBar(self, fract):
         self.progressbar.show()
         self.progressbar.setValue(int(100.*fract))
 
+    @QtCore.pyqtSlot(int)
     def processingDone(self, returncode=0):
         #self.controller.reset() # @TODO: remove
         try:

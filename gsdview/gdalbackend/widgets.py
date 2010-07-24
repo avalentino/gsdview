@@ -124,32 +124,26 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
 
         # Avoid promoted widgets
         DirectoryOnly = QtGui.QFileDialog.DirectoryOnly
-        self.gdalDataDirEntryWidget = FileEntryWidget(mode=DirectoryOnly)
+        self.gdalDataDirEntryWidget = FileEntryWidget(mode=DirectoryOnly,
+                                                      enabled=False)
         self.optionsGridLayout.addWidget(self.gdalDataDirEntryWidget, 1, 1)
-        self.gdalDataDirEntryWidget.setEnabled(False)
-        self.connect(self.gdalDataCheckBox,
-                     QtCore.SIGNAL('toggled(bool)'),
-                     self.gdalDataDirEntryWidget,
-                     QtCore.SLOT('setEnabled(bool)'))
+        self.gdalDataCheckBox.toggled.connect(
+                                    self.gdalDataDirEntryWidget.setEnabled)
 
-        self.gdalDriverPathEntryWidget = FileEntryWidget(mode=DirectoryOnly)
+        self.gdalDriverPathEntryWidget = FileEntryWidget(mode=DirectoryOnly,
+                                                         enabled=False)
         self.optionsGridLayout.addWidget(self.gdalDriverPathEntryWidget, 3, 1)
-        self.gdalDriverPathEntryWidget.setEnabled(False)
-        self.connect(self.gdalDriverPathCheckBox,
-                     QtCore.SIGNAL('toggled(bool)'),
-                     self.gdalDriverPathEntryWidget,
-                     QtCore.SLOT('setEnabled(bool)'))
+        self.gdalDriverPathCheckBox.toggled.connect(
+                                    self.gdalDriverPathEntryWidget.setEnabled)
 
-        self.ogrDriverPathEntryWidget = FileEntryWidget(mode=DirectoryOnly)
+        self.ogrDriverPathEntryWidget = FileEntryWidget(mode=DirectoryOnly,
+                                                        enabled=False)
         self.optionsGridLayout.addWidget(self.ogrDriverPathEntryWidget, 4, 1)
-        self.ogrDriverPathEntryWidget.setEnabled(False)
-        self.connect(self.ogrDriverPathCheckBox,
-                     QtCore.SIGNAL('toggled(bool)'),
-                     self.ogrDriverPathEntryWidget,
-                     QtCore.SLOT('setEnabled(bool)'))
+        self.ogrDriverPathCheckBox.toggled.connect(
+                                    self.ogrDriverPathEntryWidget.setEnabled)
 
         # info button
-        self.connect(self.infoButton, QtCore.SIGNAL('clicked()'), self.showinfo)
+        self.infoButton.clicked.connect(self.showinfo)
 
         # Context menu actions
         qt4support.setViewContextActions(self.extraOptTableWidget)
@@ -185,17 +179,16 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
         hheader = self.extraOptTableWidget.horizontalHeader()
         hheader.resizeSections(QtGui.QHeaderView.ResizeToContents)
 
+    @QtCore.pyqtSlot()
     def showinfo(self):
         dialog = QtGui.QDialog(self)
         dialog.setWindowTitle(self.tr('GDAL info'))
         layout = QtGui.QVBoxLayout()
         layout.addWidget(GDALInfoWidget())
 
-        buttonbox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Close)
-        dialog.connect(buttonbox, QtCore.SIGNAL('accepted()'),
-                       dialog, QtCore.SLOT('accept()'))
-        dialog.connect(buttonbox, QtCore.SIGNAL('rejected()'),
-                       dialog, QtCore.SLOT('reject()'))
+        buttonbox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Close,
+                                           accepted=dialog.accept,
+                                           rejected=dialog.reject)
         layout.addWidget(buttonbox)
 
         dialog.setLayout(layout)
@@ -331,9 +324,7 @@ class MajorObjectInfoDialog(QtGui.QDialog):
         self._obj = gdalobj
 
         if hasattr(self, 'domainComboBox'):
-            self.connect(self.domainComboBox,
-                         QtCore.SIGNAL('activated(const QString&)'),
-                         self.updateMetadata)
+            self.domainComboBox.activated[str].connect(self.updateMetadata)
 
         # Contect menu
         qt4support.setViewContextActions(self.metadataTableWidget)
@@ -371,6 +362,7 @@ class MajorObjectInfoDialog(QtGui.QDialog):
         self.metadataNumValue.setText(str(len(metadatalist)))
         self._setMetadata(self.metadataTableWidget, metadatalist)
 
+    @QtCore.pyqtSlot(str)
     def updateMetadata(self, domain=''):
         if self._obj is not None:
             domain = str(domain)    # it could be a QString
@@ -418,11 +410,10 @@ class HistogramConfigDialog(QtGui.QDialog, HistogramConfigDialogBase):
         color.setAlpha(50)
         self._error_palette.setColor(QtGui.QPalette.Base, color)
 
-        self.connect(self.minSpinBox, QtCore.SIGNAL('editingFinished()'),
-                     self.validate)
-        self.connect(self.maxSpinBox, QtCore.SIGNAL('editingFinished()'),
-                     self.validate)
+        self.minSpinBox.editingFinished.connect(self.validate)
+        self.maxSpinBox.editingFinished.connect(self.validate)
 
+    @QtCore.pyqtSlot()
     def validate(self):
         if self.minSpinBox.value() >= self.maxSpinBox.value():
             self.minSpinBox.lineEdit().setPalette(self._error_palette)
@@ -456,20 +447,35 @@ class HistogramConfigDialog(QtGui.QDialog, HistogramConfigDialogBase):
 
 BandInfoDialogBase = qt4support.getuiform('banddialog', __name__)
 class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
+    '''Info dialog for GDAL raster bands.
+
+    :SIGNALS:
+
+        * :attr:`computeStatsRequest`
+        * :attr:`computeHistogramRequest`
+
+    '''
+
+    #: SIGNAL: it is emitted when a time expensive computation of statistics
+    #: is required
+    #:
+    #: :C** signature: `void computeStatsRequest(PyQt_PyObject)`
+    computeStatsRequest = QtCore.pyqtSignal('PyQt_PyObject')
+
+    #: SIGNAL: it is emitted when a time expensive computation of an histogram
+    #: is required
+    #:
+    #: :C** signature: `void computeHistogramRequest(PyQt_PyObject)`
+    computeHistogramRequest = QtCore.pyqtSignal('PyQt_PyObject')
+    # @TODO: check
+    #self.emit(QtCore.SIGNAL(
+    #                'computeHistogramRequest(PyQt_PyObject, int, int, int)'),
+    #                band, hmin, nmax, nbuckets)
+
 
     def __init__(self, band=None, parent=None, flags=QtCore.Qt.Widget,
                  **kwargs):
         super(BandInfoDialog, self).__init__(band, parent, flags, **kwargs)
-
-        self.connect(self.computeStatsButton, QtCore.SIGNAL('clicked()'),
-                     self.computeStats)
-        self.connect(self.computeHistogramButton, QtCore.SIGNAL('clicked()'),
-                     self.computeHistogram)
-        self.connect(self.approxStatsCheckBox, QtCore.SIGNAL('toggled(bool)'),
-                     lambda chk: self.computeStatsButton.setEnabled(True))
-        self.connect(self.customHistogramCheckBox,
-                     QtCore.SIGNAL('toggled(bool)'),
-                     lambda chk: self.computeHistogramButton.setEnabled(True))
 
         # Set tab icons
         geticon = qt4support.geticon
@@ -492,7 +498,28 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
         # Tabs
         if band:
+            self._connect_signals()
             self.update()
+
+    def _connect_signals(self):
+        # @TODO: check
+        self.computeStatsButton.clicked.connect(self._computeStats)
+        self.approxStatsCheckBox.toggled.connect(
+                                        self.computeStatsButton.setEnabled)
+        # @TODO: check
+        self.computeHistogramButton.clicked.connect(self._computeHistogram)
+        self.customHistogramCheckBox.toggled.connect(
+                                        self.computeHistogramButton.setEnabled)
+
+    def _disconnect_signals(self):
+        # @TODO: check
+        self.computeStatsButton.clicked.disconnect(self._computeStats)
+        self.approxStatsCheckBox.toggled.disconnect(
+                                        self.computeStatsButton.setEnabled)
+        # @TODO: check
+        self.computeHistogramButton.clicked.dosconnect(self._computeHistogram)
+        self.customHistogramCheckBox.toggled.disconnect(
+                                        self.computeHistogramButton.setEnabled)
 
     @property
     def band(self):
@@ -502,8 +529,10 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self._obj = band
         if band is not None:
             # @TODO: check type
+            self._connect_signals()
             self.update()
         else:
+            self._disconnect_signals()
             self.reset()
 
     def reset(self):
@@ -796,12 +825,11 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
                 self.tabWidget.setTabEnabled(3, True)
                 self.setColorTable(colortable)
 
-    @qt4support.overrideCursor # @TODO: remove
-    def computeStats(self):
+    # @TODO: check
+    @QtCore.pyqtSlot()
+    def _computeStats(self):
         self._checkgdalobj()
-        #if None not in gdalsupport.GetCachedStatistics(self.band):
-        #    return
-        self.emit(QtCore.SIGNAL('computeStats(PyQt_PyObject)'), self.band)
+        self.computeStatsRequest.emit(self.band)
 
         #~ logging.info('start statistics computation')
 
@@ -821,13 +849,11 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         #~ logging.debug('statistics computation completed')
         #~ self.updateStatistics()
 
-    @qt4support.overrideCursor # @TODO: remove
-    def computeHistogram(self):
+    # @TODO: check
+    @QtCore.pyqtSlot()
+    def _computeHistogram(self):
         self._checkgdalobj()
-        self.emit(QtCore.SIGNAL('computeHistogram(PyQt_PyObject)'), self.band)
-        #self.emit(QtCore.SIGNAL(
-        #                'computeHistogram(PyQt_PyObject, int, int, int)'),
-        #                band, hmin, nmax, nbuckets)
+        self.computeHistogramRequest.emit(self.band)
 
         #~ band = self.band
         #~ approx = self.approxStatsCheckBox.isChecked()

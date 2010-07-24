@@ -74,9 +74,7 @@ class GDALBackend(QtCore.QObject):
         self._helpers = {}
         self._actionsmap = self._setupActions()
 
-        self.connect(self._app.treeview,
-                     QtCore.SIGNAL('activated(const QModelIndex&)'),
-                     self.onItemActivated)
+        self._app.treeview.activated.connect(self.onItemActivated)
 
         self._tools = self._setupExternalTools()
         self._helpers = self._setupHelpers(self._tools)
@@ -176,6 +174,7 @@ class GDALBackend(QtCore.QObject):
                                                 self.tr('Context menu'),
                                                 self._app.treeview)
 
+    @QtCore.pyqtSlot(QtCore.QModelIndex)
     def onItemActivated(self, index):
         defaultActionsMap = {
             modelitems.BandItem: 'actionOpenImageView',
@@ -199,27 +198,25 @@ class GDALBackend(QtCore.QObject):
 
         # open metadata view
         icon = qt4support.geticon('metadata.svg', __name__)
-        action = QtGui.QAction(icon, self.tr('Open &Metadata View'),
-                               actionsgroup)
-        action.setObjectName('actionOpenItemMetadataView')
-        action.setShortcut(self.tr('Ctrl+M'))
-        action.setToolTip(self.tr('Show metadata in a new window'))
-        action.setStatusTip(self.tr('Show metadata in a new window'))
-        self.connect(action, QtCore.SIGNAL('triggered()'),
-                     self.openItemMatadataView)
-        action.setEnabled(False)    # @TODO: remove
+        QtGui.QAction(icon, self.tr('Open &Metadata View'), actionsgroup,
+                      objectName='actionOpenItemMetadataView',
+                      shortcut=self.tr('Ctrl+M'),
+                      toolTip=self.tr('Show metadata in a new window'),
+                      statusTip=self.tr('Show metadata in a new window'),
+                      triggered=self.openItemMatadataView,
+                      enabled=False)    # @TODO: remove
 
         # show properties
         # @TODO: standard info icon from gdsview package
         icon = qt4support.geticon('info.svg', 'gsdview')
-        action = QtGui.QAction(icon, self.tr('&Show Properties'), actionsgroup)
-        action.setObjectName('actionShowItemProperties')
-        action.setShortcut(self.tr('Ctrl+S'))
-        action.setToolTip(self.tr('Show the property dialog for the cutent item'))
-        action.setStatusTip(self.tr('Show the property dialog for the cutent '
-                                    'item'))
-        self.connect(action, QtCore.SIGNAL('triggered()'),
-                     self.showItemProperties)
+        QtGui.QAction(icon, self.tr('&Show Properties'), actionsgroup,
+                      objectName='actionShowItemProperties',
+                      shortcut=self.tr('Ctrl+S'),
+                      toolTip=self.tr('Show the property dialog for the '
+                                      'cutent item'),
+                      statusTip=self.tr('Show the property dialog for the '
+                                        'cutent item'),
+                      triggered=self.showItemProperties)
 
         return actionsgroup
 
@@ -229,12 +226,12 @@ class GDALBackend(QtCore.QObject):
 
         # open image view
         icon = qt4support.geticon('open.svg', __name__)
-        action = QtGui.QAction(icon, self.tr('&Open Image View'), actionsgroup)
-        action.setObjectName('actionOpenImageView')
-        action.setShortcut(self.tr('Ctrl+O'))
-        action.setToolTip(self.tr('Open an image view'))
-        action.setStatusTip(self.tr('Open a new image view'))
-        self.connect(action, QtCore.SIGNAL('triggered()'), self.openImageView)
+        QtGui.QAction(icon, self.tr('&Open Image View'), actionsgroup,
+                      objectName='actionOpenImageView',
+                      shortcut=self.tr('Ctrl+O'),
+                      toolTip=self.tr('Open an image view'),
+                      statusTip=self.tr('Open a new image view'),
+                      triggered=self.openImageView)
 
         # @TODO: add a new action for newImageView
 
@@ -272,26 +269,23 @@ class GDALBackend(QtCore.QObject):
 
         # build overviews
         icon = qt4support.geticon('overview.svg', __name__)
-        action = QtGui.QAction(icon,
-                               self.tr('&Build overviews for all raster bands'),
-                               actionsgroup)
-        action.setObjectName('actionBuidOverviews')
-        action.setShortcut(self.tr('Ctrl+B'))
-        action.setToolTip(self.tr('Build overviews for all raster bands'))
-        action.setStatusTip(self.tr('Build overviews for all raster bands'))
-        self.connect(action, QtCore.SIGNAL('triggered()'), self.buildOverviews)
-        action.setEnabled(False)    # @TODO: remove
+        QtGui.QAction(icon, self.tr('&Build overviews for all raster bands'),
+                      actionsgroup, objectName='actionBuidOverviews',
+                      shortcut=self.tr('Ctrl+B'),
+                      toolTip=self.tr('Build overviews for all raster bands'),
+                      statusTip=self.tr('Build overviews for all raster bands'),
+                      triggered=self.buildOverviews,
+                      enabled=False)    # @TODO: remove
 
         # open RGB
         # @TODO: find an icon for RGB
         icon = qt4support.geticon('rasterband.svg', __name__)
-        action = QtGui.QAction(icon, self.tr('Open as RGB'), actionsgroup)
-        action.setObjectName('actionOpenRGBImageView')
-        #action.setShortcut(self.tr('Ctrl+B'))
-        action.setToolTip(self.tr('Display the dataset as an RGB image'))
-        action.setStatusTip(self.tr('Open as RGB'))
-        self.connect(action, QtCore.SIGNAL('triggered()'), self.openRGBImageView)
-        #action.setEnabled(False)    # @TODO: remove
+        QtGui.QAction(icon, self.tr('Open as RGB'), actionsgroup,
+                      objectName='actionOpenRGBImageView',
+                      #shortcut=self.tr('Ctrl+B'),
+                      toolTip=self.tr('Display the dataset as an RGB image'),
+                      statusTip=self.tr('Open as RGB'),
+                      triggered=self.openRGBImageView)
 
         # @TODO: add band, add virtual band, open GCPs view
 
@@ -300,12 +294,12 @@ class GDALBackend(QtCore.QObject):
 
         # close
         icon = qt4support.geticon('close.svg', 'gsdview')
-        action = QtGui.QAction(icon, self.tr('Close'), actionsgroup)
-        action.setObjectName('actionCloseItem') # @TODO: complete
-        action.setShortcut(self.tr('Ctrl+W'))
-        action.setToolTip(self.tr('Close the current item'))
-        action.setStatusTip(self.tr('Close the current item'))
-        self.connect(action, QtCore.SIGNAL('triggered()'), self.closeItem)
+        QtGui.QAction(icon, self.tr('Close'), actionsgroup,
+                      objectName='actionCloseItem',
+                      shortcut=self.tr('Ctrl+W'),
+                      toolTip=self.tr('Close the current item'),
+                      statusTip=self.tr('Close the current item'),
+                      triggered=self.closeCurrentItem)
 
         return actionsgroup
 
@@ -315,12 +309,12 @@ class GDALBackend(QtCore.QObject):
 
         # open
         icon = qt4support.geticon('open.svg', __name__)
-        action = QtGui.QAction(icon, self.tr('Open Sub Dataset'), actionsgroup)
-        action.setObjectName('actionOpenSubDatasetItem')
-        action.setShortcut(self.tr('Ctrl+O'))
-        action.setToolTip(self.tr('Open Sub Dataset'))
-        action.setStatusTip(self.tr('Open Sub Dataset'))
-        self.connect(action, QtCore.SIGNAL('triggered()'), self.openSubDataset)
+        QtGui.QAction(icon, self.tr('Open Sub Dataset'), actionsgroup,
+                      objectName='actionOpenSubDatasetItem',
+                      shortcut=self.tr('Ctrl+O'),
+                      toolTip=self.tr('Open Sub Dataset'),
+                      statusTip=self.tr('Open Sub Dataset'),
+                      triggered=self.openSubDataset)
 
         # separator
         QtGui.QAction(actionsgroup).setSeparator(True)
@@ -404,6 +398,7 @@ class GDALBackend(QtCore.QObject):
         return actionsgroup
 
     ### Major object ##########################################################
+    @QtCore.pyqtSlot()
     def openItemMatadataView(self):
         # @TODO: implementation
         self._app.logger.info('method not yet implemented')
@@ -426,21 +421,21 @@ class GDALBackend(QtCore.QObject):
                 helper = self._helpers[helpername]
                 helper.dialog = dialog
 
-            self.connect(dialog,
-                         QtCore.SIGNAL('computeStats(PyQt_PyObject)'),
-                         self._helpers['statsdialog'].start)
-            self.connect(dialog,
-                         QtCore.SIGNAL('computeHistogram(PyQt_PyObject)'),
-                         self._helpers['histdialog'].start)
+            dialog.computeStatsRequest.connect(
+                                        self._helpers['statsdialog'].start)
+            dialog.computeHistogramRequest.connect(
+                                        self._helpers['histdialog'].start)
 
-            def resethelpers(result):
-                self._helpers['statsdialog'].dialod = None
-                self._helpers['histdialog'].dialod = None
-
-            self.connect(dialog, QtCore.SIGNAL('finished(int)'), resethelpers)
+            dialog.finished.connect(self._resethelpers)
 
         return dialog
 
+    @QtCore.pyqtSlot()
+    def _resethelpers(self):
+        self._helpers['statsdialog'].dialod = None
+        self._helpers['histdialog'].dialog = None
+
+    @QtCore.pyqtSlot()
     def showItemProperties(self):
         item = self._app.currentItem()
         dialog = self._dialogFactory(item)
@@ -452,6 +447,8 @@ class GDALBackend(QtCore.QObject):
 
     ### Driver ################################################################
     ### Dataset ###############################################################
+    @QtCore.pyqtSlot()
+    @QtCore.pyqtSlot(QtGui.QStandardItem)
     def openRGBImageView(self, item=None):
         if item is None:
             item = self._app.currentItem()
@@ -468,17 +465,20 @@ class GDALBackend(QtCore.QObject):
         if len(item.scene.views()) == 0:
             self.newImageView(item)
 
+    @QtCore.pyqtSlot()
     def buildOverviews(self):
         # @TODO: implementation
         self._app.logger.info('method not yet implemented')
 
     # @TODO: add band, add virtual band, open GCPs view
 
-    def closeItem(self):
+    @QtCore.pyqtSlot()
+    def closeCurrentItem(self):
         item = self._app.currentItem()
         item.close()
 
     ### Sub-dataset ###########################################################
+    @QtCore.pyqtSlot()
     def openSubDataset(self):
         item = self._app.currentItem()
         assert isinstance(item, modelitems.SubDatasetItem)
@@ -505,11 +505,13 @@ class GDALBackend(QtCore.QObject):
             self._app.treeview.expand(child.index())
 
     ### Raster Band ###########################################################
+    @QtCore.pyqtSlot()
+    @QtCore.pyqtSlot(QtGui.QStandardItem) # @TODO: check
     @qt4support.overrideCursor
     def openImageView(self, item=None):
         if item is None:
             item = self._app.currentItem()
-        assert isinstance(item, modelitems.BandItem)
+        assert isinstance(item, modelitems.BandItem), str(item)
 
         if not item.scene:
             if not item.GetDescription():
@@ -548,8 +550,7 @@ class GDALBackend(QtCore.QObject):
         self._app.monitor.register(grephicsview)
         self._app.mousemanager.register(grephicsview)
 
-        self.connect(subwin, QtCore.SIGNAL('destroyed()'),
-                     self._app.subWindowClosed)
+        subwin.destroyed.connect(self._app.subWindowClosed)
 
         if maximized:
             subwin.showMaximized()

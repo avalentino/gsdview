@@ -645,6 +645,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
                                                         self.subprocess.pid())
             self.subprocess.kill()
 
+    @QtCore.pyqtSlot()
     @QtCore.pyqtSlot(bool)
     def stop_tool(self, force=True):
         '''Stop the execution of controlled subprocess.

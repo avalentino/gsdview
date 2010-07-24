@@ -40,6 +40,15 @@ class MainWin(QtGui.QMainWindow):
 
         self.mousemanager = MouseManager(self)
 
+        from gsdview.mousemanager import RubberBandMode
+        rubberbandmode = RubberBandMode()
+        self.mousemanager.addMode(rubberbandmode)
+        def callback(rect):
+            print 'rect', rect
+
+        rubberbandmode.rubberBandSeclection.connect(callback)
+                                    #lambda r: sys.stdout.write(str(r)+'\n'))
+
         self.scene = QtGui.QGraphicsScene(self)
         self.graphicsview = QtGui.QGraphicsView(self.scene, self)
         self.setCentralWidget(self.graphicsview)
@@ -85,37 +94,31 @@ class MainWin(QtGui.QMainWindow):
         actions = QtGui.QActionGroup(self)
 
         icon = style.standardIcon(QtGui.QStyle.SP_DialogOpenButton)
-        action = QtGui.QAction(icon, 'Open', actions)
-        self.connect(action, QtCore.SIGNAL('triggered()'), self.openfile)
+        QtGui.QAction(icon, 'Open', actions, triggered=self.openfile)
 
         icon = style.standardIcon(QtGui.QStyle.SP_DialogCloseButton)
-        action = QtGui.QAction(icon, 'Close', actions)
-        self.connect(action, QtCore.SIGNAL('triggered()'), self.scene.clear)
+        QtGui.QAction(icon, 'Close', actions,triggered=self.scene.clear)
 
         QtGui.QAction(actions).setSeparator(True)
 
         icon = style.standardIcon(QtGui.QStyle.SP_DialogCancelButton)
-        action = QtGui.QAction(icon, 'Exit', actions)
-        self.connect(action, QtCore.SIGNAL('triggered()'), self.close)
+        QtGui.QAction(icon, 'Exit', actions, triggered=self.close)
 
         return actions
 
     def _setupHelsActions(self):
-        style = self.style()
-
         actions = QtGui.QActionGroup(self)
 
         icon = QtGui.QIcon(':/trolltech/styles/commonstyle/images/fileinfo-32.png')
-        action = QtGui.QAction(icon, 'About', actions)
-        self.connect(action, QtCore.SIGNAL('triggered()'), self.about)
+        QtGui.QAction(icon, 'About', actions, triggered=self.about)
 
         icon = QtGui.QIcon(':/trolltech/qmessagebox/images/qtlogo-64.png')
-        action = QtGui.QAction(icon, 'About Qt', actions)
-        self.connect(action, QtCore.SIGNAL('triggered()'),
-                     QtGui.QApplication.aboutQt)
+        QtGui.QAction(icon, 'About Qt', actions,
+                      triggered=QtGui.QApplication.aboutQt)
 
         return actions
 
+    @QtCore.pyqtSlot()
     def openfile(self):
         self.scene.clear()
         self.graphicsview.setMatrix(QtGui.QMatrix())
@@ -125,6 +128,7 @@ class MainWin(QtGui.QMainWindow):
             item = self.scene.addPixmap(pixmap)
             self.scene.setSceneRect(item.boundingRect())
 
+    @QtCore.pyqtSlot()
     def about(self):
         title = self.tr('MouseManager Example')
         text = ['<h1>Mouse Manager</h1>'

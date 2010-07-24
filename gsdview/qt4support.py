@@ -107,6 +107,7 @@ def selectAllItems(itemview):
     itemview.selectionModel().select(selection,
                                      QtGui.QItemSelectionModel.Select)
 
+#@QtCore.pyqtSlot(QtGui.QWidget) # @TODO: check
 def copySelectedItems(itemview):
     '''Copy selected items of an QAbstractItemView to the clipboard and
     also return copied data.'''
@@ -152,22 +153,20 @@ def setViewContextActions(widget):
     #    widget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
     icon = geticon('copy.svg', __name__)
-    action = QtGui.QAction(icon, widget.tr('&Copy'), widget)
-    action.setObjectName('copy')
-    action.setShortcut(widget.tr('Ctrl+C'))
-    action.setToolTip(widget.tr('Copy selected items'))
-    widget.connect(action, QtCore.SIGNAL('triggered()'),
-                   lambda: copySelectedItems(widget))
+    action = QtGui.QAction(icon, widget.tr('&Copy'), widget,
+                           objectName='copy',
+                           shortcut=widget.tr('Ctrl+C'),
+                           toolTip=widget.tr('Copy selected items'),
+                           triggered=lambda: copySelectedItems(widget))
     widget.addAction(action)
 
     #icon = geticon('selectall.svg', __name__)
     icon = QtGui.QIcon()
-    action = QtGui.QAction(icon, widget.tr('Select &All'), widget)
-    action.setObjectName('selectall')
-    #action.setShortcut(widget.tr('Ctrl+A'))
-    action.setToolTip(widget.tr('Select all items'))
-    widget.connect(action, QtCore.SIGNAL('triggered()'),
-                   lambda: selectAllItems(widget))
+    action = QtGui.QAction(icon, widget.tr('Select &All'), widget,
+                           objectName='selectall',
+                           #shortcut=widget.tr('Ctrl+A'),
+                           toolTip=widget.tr('Select all items'),
+                           triggered=lambda: selectAllItems(widget))
     widget.addAction(action)
 
 

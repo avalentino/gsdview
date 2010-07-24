@@ -81,17 +81,6 @@ class QtWindowListMenu(QtGui.QMenu):
 
     .. seealso:: standardAction()
 
-    :Methods:
-
-      * QtWindowListMenu(QWidget \*parent = 0)
-      * attachToMdiArea(QMdiArea \*mdiArea)
-      * QMdiArea \*attachedMdiArea() const
-      * setWindowIcon(const QMdiSubWindow \*window, const QIcon &icon)
-      * QIcon windowIcon(const QMdiSubWindow \*window) const
-      * setDefaultIcon(const QIcon &icon)
-      * QIcon defaultIcon() const
-      * QAction \*standardAction(StandardAction item) const
-
     :SLOTS:
 
         * :meth:`syncWithMdiArea`
@@ -123,41 +112,38 @@ class QtWindowListMenu(QtGui.QMenu):
 
         self.mdi = None
         self.setTitle(self.tr('&Windows'))
-        self.connect(self, QtCore.SIGNAL('aboutToShow()'), self.syncWithMdiArea)
+        self.aboutToShow.connect(self.syncWithMdiArea)
 
-        self._stdGroup = QtGui.QActionGroup(self)
-        self._stdGroup.setExclusive(False)
-        self._winGroup = QtGui.QActionGroup(self)
-        self._winGroup.setExclusive(True)
-        self.connect(self._winGroup, QtCore.SIGNAL('triggered(QAction*)'),
-                     self.activateWindow)
+        self._stdGroup = QtGui.QActionGroup(self, exclusive=False)
+        self._winGroup = QtGui.QActionGroup(self, exclusive=True,
+                                            triggered=self.activateWindow)
 
         # Create the standard menu items.
         # @Note: Creation order must match the StandardAction enum values ;-)
-        act = QtGui.QAction(self.tr('Cl&ose'), self._stdGroup)
-        act.setShortcut(self.tr('Ctrl+F4'))
-        act.setStatusTip(self.tr('Close the active window'))
+        QtGui.QAction(self.tr('Cl&ose'), self._stdGroup,
+                      shortcut=self.tr('Ctrl+F4'),
+                      statusTip=self.tr('Close the active window'))
 
-        act = QtGui.QAction(self.tr('Close &All'), self._stdGroup)
-        act.setStatusTip(self.tr('Close all the windows'))
-
-        act = self._stdGroup.addAction('')
-        act.setSeparator(True)
-
-        act = QtGui.QAction(self.tr('&Tile'), self._stdGroup)
-        act.setStatusTip(self.tr('Tile the windows'))
-
-        act = QtGui.QAction(self.tr('&Cascade'), self._stdGroup)
-        act.setStatusTip(self.tr('Cascade the windows'))
+        QtGui.QAction(self.tr('Close &All'), self._stdGroup,
+                      statusTip=self.tr('Close all the windows'))
 
         act = self._stdGroup.addAction('')
         act.setSeparator(True)
 
-        act = QtGui.QAction(self.tr('Ne&xt'), self._stdGroup)
-        act.setStatusTip(self.tr('Move the focus to the next window'))
+        QtGui.QAction(self.tr('&Tile'), self._stdGroup,
+                      statusTip=self.tr('Tile the windows'))
 
-        act = QtGui.QAction(self.tr('Pre&vious'), self._stdGroup)
-        act.setStatusTip(self.tr('Move the focus to the previous window'))
+        QtGui.QAction(self.tr('&Cascade'), self._stdGroup,
+                      statusTip=self.tr('Cascade the windows'))
+
+        act = self._stdGroup.addAction('')
+        act.setSeparator(True)
+
+        QtGui.QAction(self.tr('Ne&xt'), self._stdGroup,
+                      statusTip=self.tr('Move the focus to the next window'))
+
+        QtGui.QAction(self.tr('Pre&vious'), self._stdGroup,
+                      statusTip=self.tr('Move the focus to the previous window'))
 
         act = self._stdGroup.addAction('')
         act.setSeparator(True)
@@ -191,18 +177,14 @@ class QtWindowListMenu(QtGui.QMenu):
 
         if self.mdi:
             # i.e. we have previously been attached
-            self.disconnect(acts['CloseAction'], QtCore.SIGNAL('triggered()'),
-                            self.mdi, QtCore.SLOT('closeActiveSubWindow()'))
-            self.disconnect(acts['CloseAllAction'], QtCore.SIGNAL('triggered()'),
-                            self.mdi, QtCore.SLOT('closeAllSubWindows()'))
-            self.disconnect(acts['TileAction'], QtCore.SIGNAL('triggered()'),
-                            self.mdi, QtCore.SLOT('tileSubWindows()'))
-            self.disconnect(acts['CascadeAction'], QtCore.SIGNAL('triggered()'),
-                            self.mdi, QtCore.SLOT('cascadeSubWindows()'))
-            self.disconnect(acts['NextAction'], QtCore.SIGNAL('triggered()'),
-                            self.mdi, QtCore.SLOT('activateNextSubWindow()'))
-            self.disconnect(acts['PrevAction'], QtCore.SIGNAL('triggered()'),
-                            self.mdi, QtCore.SLOT('activatePreviousSubWindow()'))
+            mdi = self.mdi
+            acts['CloseAction'].triggered.disconnect(mdi.closeActiveSubWindow)
+            acts['CloseAllAction'].triggered.disconnect(mdi.closeAllSubWindows)
+            acts['TileAction'].triggered.disconnect(mdi.tileSubWindows)
+            acts['CascadeAction'].triggered.disconnect(mdi.cascadeSubWindows)
+            acts['NextAction'].triggered.disconnect(mdi.activateNextSubWindow)
+            acts['PrevAction'].triggered.disconnect(
+                                                mdi.activatePreviousSubWindow)
 
         self.mdi = mdiArea
         if not self.mdi:
@@ -210,18 +192,12 @@ class QtWindowListMenu(QtGui.QMenu):
                             'mdiArea is 0; menu will be empty.')
             return
 
-        self.connect(acts['CloseAction'], QtCore.SIGNAL('triggered()'),
-                     self.mdi, QtCore.SLOT('closeActiveSubWindow()'))
-        self.connect(acts['CloseAllAction'], QtCore.SIGNAL('triggered()'),
-                     self.mdi, QtCore.SLOT('closeAllSubWindows()'))
-        self.connect(acts['TileAction'], QtCore.SIGNAL('triggered()'),
-                     self.mdi, QtCore.SLOT('tileSubWindows()'))
-        self.connect(acts['CascadeAction'], QtCore.SIGNAL('triggered()'),
-                     self.mdi, QtCore.SLOT('cascadeSubWindows()'))
-        self.connect(acts['NextAction'], QtCore.SIGNAL('triggered()'),
-                     self.mdi, QtCore.SLOT('activateNextSubWindow()'))
-        self.connect(acts['PrevAction'], QtCore.SIGNAL('triggered()'),
-                     self.mdi, QtCore.SLOT('activatePreviousSubWindow()'))
+        acts['CloseAction'].triggered.connect(self.mdi.closeActiveSubWindow)
+        acts['CloseAllAction'].triggered.connect(self.mdi.closeAllSubWindows)
+        acts['TileAction'].triggered.connect(self.mdi.tileSubWindows)
+        acts['CascadeAction'].triggered.connect(self.mdi.cascadeSubWindows)
+        acts['NextAction'].triggered.connect(self.mdi.activateNextSubWindow)
+        acts['PrevAction'].triggered.connect(self.mdi.activatePreviousSubWindow)
 
     def attachedMdiArea(self):
         '''Returns the QMdiArea this menu is currently attached to,
@@ -261,6 +237,7 @@ class QtWindowListMenu(QtGui.QMenu):
         self.attachToMdiArea(mdi)
         return True
 
+    @QtCore.pyqtSlot()
     def syncWithMdiArea(self):
         '''Syncronize with MDI area
 
@@ -268,6 +245,8 @@ class QtWindowListMenu(QtGui.QMenu):
         menu. It removes the previous subwindow navigation actions and
         adds new ones according to the current state of the attached
         QMdiArea.
+
+        :C++ signature: `void syncWithMdiArea()`
 
         '''
 
@@ -304,6 +283,7 @@ class QtWindowListMenu(QtGui.QMenu):
 
         self.addActions(self._winGroup.actions())
 
+    @QtCore.pyqtSlot(QtGui.QAction)
     def activateWindow(self, act):
         '''Activate the corresponding sub-window in the MDI area
 
@@ -311,16 +291,21 @@ class QtWindowListMenu(QtGui.QMenu):
         navigation actions, given in *act*. It causes the corresponding
         subwindow in the attached QMdiArea object to be activated.
 
+        :C++ signature: `void activateWindow(QAction *act)``
+
         '''
 
         if not self.mdi and not self._attachToClosestMdiAreaObject():
             return
         self.mdi.setActiveSubWindow(self._winMap.get(act))
 
+    @QtCore.pyqtSlot(QtCore.QObject)
     def windowDestroyed(self, obj):
         '''This slot is executed whenever a subwindow (*obj*) of the
         attached QMdiArea, for which an icon has been, is deleted.
         It clears that icon.
+
+        :C++ signature: `void windowDestroyed(QObject *obj)`
 
         '''
 
@@ -340,8 +325,7 @@ class QtWindowListMenu(QtGui.QMenu):
             del self._iconMap[window]
         else:
             self._iconMap[window] = icon
-            self.connect(window, QtCore.SIGNAL('destroyed(QObject *)'),
-                         self, QtCore.SLOT('windowDestroyed(QObject *)'))
+            window.destroyed.connect(self.windowDestroyed)
 
     def windowIcon(self, window):
         '''Returns the icon of the menu item corresponding to the mdi

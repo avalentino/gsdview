@@ -36,13 +36,17 @@ from gsdview.qtwindowlistmenu import QtWindowListMenu
 class MdiMainWindow(QtGui.QMainWindow):
     '''Base class for MDI applications.
 
-    :signals:
+    :SIGNALS:
 
-    - subWindowClosed()
+        * :attr:`subWindowClosed`
 
     '''
 
     # @TODO: should the subWindowClosed signal be emitted by mdiarea?
+    #: SIGNAL: it is emitted when an MDI subwindow is closed
+    #:
+    #: :C++ signature: `void subWindowClosed()`
+    subWindowClosed = QtCore.pyqtSignal()
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
         super(MdiMainWindow, self).__init__(parent, flags, **kwargs)
@@ -56,10 +60,6 @@ class MdiMainWindow(QtGui.QMainWindow):
         #: sub-windows menu
         self.windowmenu = QtWindowListMenu(self.menuBar())
         self.windowmenu.attachToMdiArea(self.mdiarea)
-
-    ### SIGNALS ###############################################################
-    def subWindowClosed(self):
-        self.emit(QtCore.SIGNAL('subWindowClosed()'))
 
 
 class ItemSubWindow(QtGui.QMdiSubWindow):
@@ -88,16 +88,9 @@ class ItemModelMainWindow(MdiMainWindow):
         self.treeview.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.treeview.header().hide()
 
-        self.connect(self.treeview,
-                     QtCore.SIGNAL('clicked(const QModelIndex&)'),
-                     self.setActiveWinFromIndex)
-        self.connect(self.mdiarea,
-                     QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
-                     self.setActiveIndexFromWin)
-        self.connect(self.datamodel,
-                     QtCore.SIGNAL('rowsAboutToBeRemoved(const QModelIndex&, '
-                                   'int, int)'),
-                     self.onItemsClosed)
+        self.treeview.clicked.connect(self.setActiveWinFromIndex)
+        self.mdiarea.subWindowActivated.connect(self.setActiveIndexFromWin)
+        self.datamodel.rowsAboutToBeRemoved.connect(self.onItemsClosed)
 
         # setup the treeview dock
         treeviewdock = QtGui.QDockWidget(self.tr('Data Browser'), self)
@@ -111,7 +104,14 @@ class ItemModelMainWindow(MdiMainWindow):
             return None
         return self.datamodel.itemFromIndex(modelindex)
 
+    @QtCore.pyqtSlot(QtCore.QModelIndex)
     def setActiveWinFromIndex(self, index):
+        '''Set the active sub-window from index.
+
+        :C++ signature: `void setActiveWinFromIndex(const QModelIndex&)`
+
+        '''
+
         # @TODO: find a better name
         item = self.datamodel.itemFromIndex(index)
         windowlist = self.mdiarea.subWindowList()
@@ -128,7 +128,14 @@ class ItemModelMainWindow(MdiMainWindow):
                 # the window has not an associated item in the datamodel
                 pass
 
+    @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
     def setActiveIndexFromWin(self, window):
+        '''Set the active sub-window.
+
+        :C++ signature: `void setActiveIndexFromWin(QMdiSubWindow*)`
+
+        '''
+
         # @TODO: find a better name
         # @TODO: check and, if the case, remove
         if not window:
@@ -142,7 +149,14 @@ class ItemModelMainWindow(MdiMainWindow):
         else:
             self.treeview.setCurrentIndex(index)
 
+    @QtCore.pyqtSlot(QtCore.QModelIndex, int, int)
     def onItemsClosed(self, modelindex, start, end):
+        '''Closes sub-windows associated to the closed model items.
+
+        :C++ signature: `void onItemsClosed(const QModelIndex&, int, int)`
+
+        '''
+
         if not modelindex.isValid():
             return
         parentitem = modelindex.model().itemFromIndex(modelindex)

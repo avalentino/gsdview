@@ -89,11 +89,18 @@ class PluginManager(object):
 
         modules = dict(self.plugins)
 
-        # @TODO: use a cleaner way to provide extra moduled for check
-        # import gsdview
-        # modules['gsdview'] = gsdview
+        # @TODO: use a cleaner way to provide extra modules for check
+        #import gsdview
+        #modules['gsdview'] = gsdview
 
-        vp = VersionPredicate(depstring)
+        try:
+            vp = VersionPredicate(depstring)
+        except ValueError, e:
+            # @TODO: remove dependency from self._app
+            self._app.logger.error('invalid version preficate "%s": %s' % (
+                                                                depstring, e))
+            return False
+
         if vp.name in modules:
             try:
                 return vp.satisfied_by(modules[vp.name].version)
@@ -332,22 +339,16 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
         # @TODO: check edit triggers
         #int(self.pathListWidget.editTriggers() & self.pathListWidget.DoubleClicked)
 
-        tablewidget = self.pluginsTableWidget
-        self.connect(self.pathListWidget,
-                     QtCore.SIGNAL('itemSelectionChanged()'),
-                     self.pathSelectionChanged)
+        self.pathListWidget.itemSelectionChanged.connect(
+                                        self.pathSelectionChanged)
 
-        self.connect(self.addButton, QtCore.SIGNAL('clicked()'),
-                     self.addPathItem)
-        self.connect(self.removeButton, QtCore.SIGNAL('clicked()'),
-                     self.removePathItem)
-        self.connect(self.upButton, QtCore.SIGNAL('clicked()'),
-                     self.movePathItemsUp)
-        self.connect(self.downButton, QtCore.SIGNAL('clicked()'),
-                     self.movePathItemsDown)
-        self.connect(self.editButton, QtCore.SIGNAL('clicked()'),
-                     self.editPathItem)
+        self.addButton.clicked.connect(self.addPathItem)
+        self.removeButton.clicked.connect(self.removeSelectedPathItem)
+        self.upButton.clicked.connect(self.moveSelectedPathItemsUp)
+        self.downButton.clicked.connect(self.moveSelectedPathItemsDown)
+        self.editButton.clicked.connect(self.editSelectedPathItem)
 
+    @QtCore.pyqtSlot()
     def pathSelectionChanged(self):
         enabled = bool(self.pathListWidget.selectedItems())
         self.editButton.setEnabled(enabled)
@@ -355,9 +356,10 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
         self.upButton.setEnabled(enabled)
         self.downButton.setEnabled(enabled)
 
+    @QtCore.pyqtSlot()
     def addPathItem(self):
-        # @TODO: don't directly use _mainwin attribute
-        filedialog = self.pluginmanager._mainwin.filedialog
+        # @TODO: don't directly use _app attribute
+        filedialog = self.pluginmanager._app.filedialog
         filedialog.setFileMode(filedialog.Directory)
         if(filedialog.exec_()):
             dirs = filedialog.selectedFiles()
@@ -367,18 +369,20 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
                 if dir_ not in existingdirs:
                     self.pathListWidget.addItem(dir_)
 
-    def removePathItem(self):
+    @QtCore.pyqtSlot()
+    def removeSelectedPathItem(self):
         model = self.pathListWidget.model()
         for item in self.pathListWidget.selectedItems():
             model.removeRow(self.pathListWidget.row(item))
 
-    def editPathItem(self):
+    @QtCore.pyqtSlot()
+    def editSelectedPathItem(self):
         items = self.pathListWidget.selectedItems()
         if items:
             item = items[0]
 
-            # @TODO: don't directly use _mainwin attribute
-            filedialog = self.pluginmanager._mainwin.filedialog
+            # @TODO: don't directly use _app attribute
+            filedialog = self.pluginmanager._app.filedialog
             filedialog.setFileMode(filedialog.Directory)
             filedialog.selectFile(item.text())
             if(filedialog.exec_()):
@@ -407,7 +411,8 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
         listwidget.insertItem(row + offset, item)
         item.setSelected(selected)
 
-    def movePathItemsUp(self):
+    @QtCore.pyqtSlot()
+    def moveSelectedPathItemsUp(self):
         selected = sorted(self.pathListWidget.selectedItems(),
                           key=self.pathListWidget.row)
 
@@ -417,7 +422,8 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
         for item in selected:
             self._movePathItem(item, -1)
 
-    def movePathItemsDown(self):
+    @QtCore.pyqtSlot()
+    def moveSelectedPathItemsDown(self):
         selected = sorted(self.pathListWidget.selectedItems(),
                           key=self.pathListWidget.row, reverse=True)
 
@@ -473,26 +479,29 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
 
             # info
             icon = qt4support.geticon('info.svg', __name__)
-            w = QtGui.QPushButton(icon, '', tablewidget)
+            w = QtGui.QPushButton(icon, '', tablewidget,
+                                  toolTip=self.tr('Show plugin info.'),
+                                  clicked=functools.partial(self.showPluginInfo,
+                                                            index))
+                                  #clicked=lambda index=index:
+                                  #                  self.showPluginInfo(index))
             tablewidget.setCellWidget(index, 2, w)
-            w.connect(w, QtCore.SIGNAL('clicked()'),
-                      lambda index=index: self.showPluginInfo(index))
-            w.setToolTip(w.tr('Show plugin info.'))
 
             # active
-            w = QtGui.QCheckBox()
+            checked = bool(plugin in self.pluginmanager.plugins)
+            w = QtGui.QCheckBox(tablewidget, checked=checked)
             tablewidget.setCellWidget(index, 3, w)
-            w.setChecked(plugin in self.pluginmanager.plugins)
+
             # TODO: remove this block when plugins unloading will be
             #       available
             if w.isChecked():
                 w.setEnabled(False)
 
             # autoload
-            w = QtGui.QCheckBox()
+            checked = bool(plugin in self.pluginmanager.autoload)
+            w = QtGui.QCheckBox(tablewidget, checked=checked,
+                                toolTip=self.tr('Load on startup'))
             tablewidget.setCellWidget(index, 4, w)
-            w.setChecked(plugin in self.pluginmanager.autoload)
-            w.setToolTip(w.tr('Load on startup'))
 
             if disabled:
                 for col in range(tablewidget.columnCount() - 1):
@@ -626,7 +635,7 @@ class PluginInfoDialog(QtGui.QDialog):
         bbox = QtGui.QDialogButtonBox()
         bbox.addButton(bbox.Close)
         b = bbox.button(bbox.Close)
-        b.connect(b, QtCore.SIGNAL('clicked()'), self.accept)
+        b.clicked.connect(self.accept)
 
         layout = QtGui.QVBoxLayout()
         layout.addWidget(PluginInfoForm(plugin, active))

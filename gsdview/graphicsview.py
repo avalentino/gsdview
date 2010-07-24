@@ -37,28 +37,34 @@ class GraphicsView(QtGui.QGraphicsView):
     pass
 
     # @TODO: check
+    #~ enter = QtCore.pyqtSignal()
+    #~ leave = QtCore.pyqtSignal()
+    #~ mousePositionUpdated = QtCore.pyqtSignal(QtCore.QPoint)
+    #~ posMarked = QtCore.pyqtSignal(QtCore.QPoint)
+    #~ newSize = QtCore.pyqtSignal(QtCore.QSize)
+    #~ scaled = QtCore.pyqtSignal()
+
     #~ def __init__(self, *args, **kwargs):
         #~ super(GraphicsView, self).__init__(*args, **kwargs)
         #~ graphicsview.setMouseTracking(True)
 
     # @TODO: move to GraphicsViewMonitor
     #~ def enterEvent(self, event):
-        #~ self.emit(QtCore.SIGNAL('enter()'))
+        #~ self.enter.emit()
         #~ return QtGui.QGraphicsView.enterEvent(self, event)
 
     # @TODO: move to GraphicsViewMonitor
     #~ def leaveEvent(self, event):
-        #~ self.emit(QtCore.SIGNAL('leave()'))
+        #~ self.leave.emit()
         #~ return QtGui.QGraphicsView.leaveEvent(self, event)
 
     # @TODO: move to GraphicsViewMonitor
     # @TODO: use GraphicsSceneMouseMove
     #~ def mouseMoveEvent(self, event):
         #~ #if self.dragMode() == QtGui.QGraphicsView.NoDrag:
-        #~ self.emit(QtCore.SIGNAL('mousePositionUpdated(QPoint)'),
-                  #~ event.pos())
+        #~ self.mousePositionUpdated.emit(event.pos())
         #~ if event.buttons() & QtCore.Qt.LeftButton:
-            #~ self.emit(QtCore.SIGNAL('posMarked(QPoint)'), event.pos())
+            #~ self.posMarked.emit(event.pos())
         #~ #event.accept()
         #~ return QtGui.QGraphicsView.mouseMoveEvent(self, event)
 
@@ -67,24 +73,24 @@ class GraphicsView(QtGui.QGraphicsView):
     #~ def mousePressEvent(self, event):
         #~ if self.dragMode() == QtGui.QGraphicsView.NoDrag:
             #~ if event.buttons() & QtCore.Qt.LeftButton:
-                #~ self.emit(QtCore.SIGNAL('posMarked(QPoint)'), event.pos())
+                #~ self.posMarked.emit(event.pos())
             #~ #event.accept()
         #~ return QtGui.QGraphicsView.mousePressEvent(self, event)
 
     # @TODO: move to GraphicsViewMonitor
     #~ def resizeEvent(self, event):
-        #~ self.emit(QtCore.SIGNAL('newSize(QSize)'), event.size())
+        #~ self.newSize.emit(event.size())
         #~ return QtGui.QGraphicsView.resizeEvent(self, event)
 
     ### Emit signals on transform modifications ###############################
     #~ def scale(self, sx, sy):
         #~ QtGui.QGraphicsView.scale(self, sx, sy)
-        #~ self.emit(QtCore.SIGNAL('scaled()'))
+        #~ self.scaled.emit()
 
     #~ def resetMatrix(self):
         #~ if not self.matrix().isIdentity():
             #~ QtGui.QGraphicsView.resetMatrix(self)
-            #~ self.emit(QtCore.SIGNAL('scaled()'))
+            #~ self.scaled.emit()
 
     # @TODO: remove
     #~ def clearScene(self):
@@ -99,54 +105,86 @@ class GraphicsView(QtGui.QGraphicsView):
 class GraphicsViewMonitor(QtCore.QObject):
     '''Emit signals when a registered graphcs view changes status.
 
-    :signals:
+    :SIGNALS:
 
-    - scrolled(QGraphicsView*): scroll on graphicsview
-    - resized(QGraphicsView*, QSize): emitted when the graphicsview
-      window is resized
-    - viewportResized(QGraphicsView*):
-    - leave(QGraphicsView*):
+        * :attr:`leave`
+        * :attr:`scrolled`
+        * :attr:`resized`
+        * :attr:`viewportResized`
+        * :attr:`mouseMoved`
 
     '''
+
+    #: SIGNAL: it is emitted when the mouse pointer enterss the scene
+    #:
+    #: :C++ signature: `void enter(QGraphicsView*)`
+    ##enter = QtCore.pyqtSignal(QtGui.QGraphicsScene)
+    #enter = QtCore.pyqtSignal('PyQt_PyObject') # @TODO: check
+
+    #: SIGNAL: it is emitted when the mouse pointer leaves the scene
+    #:
+    #: :C++ signature: `void leave(QGraphicsView*)`
+    leave = QtCore.pyqtSignal(QtGui.QGraphicsScene)
+
+    #: SIGNAL: it is emitted when a graphics view is scrolled
+    #:
+    #: :C++ signature: `voud scrolled(QGraphicsView*)`
+    scrolled = QtCore.pyqtSignal(QtGui.QGraphicsView)
+
+    #: SIGNAL: it is emitted when the graphicsview window is resized
+    #:
+    #: :C++ signature: `void resized(QGraphicsView*, QSize)`
+    resized = QtCore.pyqtSignal(QtGui.QGraphicsView, QtCore.QSize)
+
+    # @TODO: explain difference with previous
+    #: SIGNAL:
+    #:
+    #: :C++ signature: `void viewportResized(QGraphicsView*)`
+    viewportResized = QtCore.pyqtSignal(QtGui.QGraphicsView)
+
+    #: SIGNAL: it is emitted when the mouse pointer is moved on the scene
+    #:
+    #: :C++ signature: `void mouseMoved(QtGui.QGraphicsScene, QtCore.QPointF,
+    #:                                  QtCore.Qt.MuseButtons)`
+    mouseMoved = QtCore.pyqtSignal(QtGui.QGraphicsScene, QtCore.QPointF,
+                                   QtCore.Qt.MouseButtons)
+
+    #: SIGNAL:
+    #:
+    #: :C++ signature: `newPos(PyQt_PyObject, QPoint)`
+    ##newPos = QtCore.pyqtSignal(QtGui.QGraphicsView, QtCore.QPoint)
+    #newPos = QtCore.pyqtSignal('PyQt_PyObject', QtCore.QPoint) # @TODO: check
 
     # @TODO: use signal mappers
     #~ def __init__(self, parent=None, **kwargs):
         #~ super(GraphicsViewMonitor, self).__init__(parent, **kwargs)
 
         #~ self.mappers = {}
-        #~ self.mappers['scroll'] = QtCore.QSignalMapper(self)
-        #~ self.connect(self.mappers['scroll'], QtCore.SIGNAL('mapped(QWidget*)'),
-                     #~ self.scrolled)
+        #~ self.mappers['scroll'] = QtCore.QSignalMapper(self,
+                                                      #~ mapped=self.scrolled)
+        #~ #self.mappers['scroll'].mapped.connect(self.scrolled)
 
-        #~ self.mappers['scale'] = QtCore.QSignalMapper(self)
-        #~ self.connect(self.mappers['scale'], QtCore.SIGNAL('mapped(QWidget*)'),
-                     #~ self.scaled)
+        #~ self.mappers['scale'] = QtCore.QSignalMapper(self, mapped=self.scaled)
+        #~ #self.mappers['scale'].mapped.connect(self.scaled)
 
     #~ def register(self, graphicsview):
-        #~ self.connect(graphicsview.horizontalScrollBar(),
-                     #~ QtCore.SIGNAL('valueChanged(int)'),
-                     #~ self.mappers['scroll'], QtCore.SLOT('map()'))
-        #~ self.connect(graphicsview.verticalScrollBar(),
-                     #~ QtCore.SIGNAL('valueChanged(int)'),
-                     #~ self.mappers['scroll'], QtCore.SLOT('map()'))
+        #~ graphicsview.horizontalScrollBar().valueChanged.connect(
+                                                #~ self.mappers['scroll'].map)
+        #~ graphicsview.verticalScrollBar().valueChanged.connect(
+                                                #~ self.mappers['scroll'].map)
         #~ self.mappers['scroll'].setMapping(graphicsview, graphicsview)
-        #~ self.connect(graphicsview, QtCore.SIGNAL('viewportResized()'),
-                     #~ self.mappers['scale'], QtCore.SLOT('map()'))
+        #~ graphicsview.viewportResized.connect(self.mappers['scale'].map)
         #~ self.mappers['scale'].setMapping(graphicsview, graphicsview)
 
     def register(self, graphicsview):
-        self.connect(graphicsview.horizontalScrollBar(),
-                     QtCore.SIGNAL('valueChanged(int)'),
-                     lambda x: self.scrolled(graphicsview))
-        self.connect(graphicsview.verticalScrollBar(),
-                     QtCore.SIGNAL('valueChanged(int)'),
-                     lambda y: self.scrolled(graphicsview))
-        self.connect(graphicsview.horizontalScrollBar(),
-                     QtCore.SIGNAL('rangeChanged(int,int)'),
-                     lambda x: self.viewportResized(graphicsview))
-        self.connect(graphicsview.verticalScrollBar(),
-                     QtCore.SIGNAL('rangeChanged(int,int)'),
-                     lambda y: self.viewportResized(graphicsview))
+        graphicsview.horizontalScrollBar().valueChanged.connect(
+                                    lambda: self.scrolled.emit(graphicsview))
+        graphicsview.verticalScrollBar().valueChanged.connect(
+                                    lambda: self.scrolled.emit(graphicsview))
+        graphicsview.horizontalScrollBar().rangeChanged.connect(
+                            lambda: self.viewportResized.emit(graphicsview))
+        graphicsview.verticalScrollBar().rangeChanged.connect(
+                            lambda: self.viewportResized.emit(graphicsview))
         graphicsview.installEventFilter(self)
 
         # Many views can refer to the same scene so before installing a new
@@ -156,40 +194,18 @@ class GraphicsViewMonitor(QtCore.QObject):
             scene.removeEventFilter(self)
             scene.installEventFilter(self)
 
-    ### SIGNALS ###############################################################
-    def scrolled(self, graphicsview):
-        self.emit(QtCore.SIGNAL('scrolled(QGraphicsView*)'), graphicsview)
-
-    def viewportResized(self, graphicsview):
-        self.emit(QtCore.SIGNAL('viewportResized(QGraphicsView*)'),
-                  graphicsview)
-
-    def resized(self, graphcsview, size):
-        '''GraphicsViw resized'''
-
-        self.emit(QtCore.SIGNAL('resized(QGraphicsView*, QSize)'),
-                  graphcsview, size)
-
-    def mouseMoved(self, scene, pos, buttons):
-        self.emit(QtCore.SIGNAL('mouseMoved(QGraphicsScene*, QPointF, '
-                                'Qt::MouseButtons)'),
-                  scene, pos, buttons)
-
-    def leave(self, scene):
-        self.emit(QtCore.SIGNAL('leave(QGraphicsScene*)'), scene)
-
     def eventFilter(self, obj, event):
         # @TODO: use an event map (??)
         if event.type() == QtCore.QEvent.Resize:
             assert isinstance(obj, QtGui.QGraphicsView)
-            self.resized(obj, event.size())
+            self.resized.emit(obj, event.size())
         elif event.type() == QtCore.QEvent.GraphicsSceneMouseMove:
             assert isinstance(obj, QtGui.QGraphicsScene)
-            self.mouseMoved(obj, event.scenePos(), event.buttons())
+            self.mouseMoved.emit(obj, event.scenePos(), event.buttons())
         elif event.type() == QtCore.QEvent.Leave:
             # Discard events from graphicsviews
             if isinstance(obj, QtGui.QGraphicsScene):
-                self.leave(obj)
+                self.leave.emit(obj)
 
         return obj.eventFilter(obj, event)
 
@@ -222,25 +238,22 @@ class GraphicsViewMonitor(QtCore.QObject):
 
     ### Mouse events ##########################################################
     #~ def enterEvent(self, obj, event):
-        #~ self.emit(QtCore.SIGNAL('enter(PyQt_PyObject)'), obj)
+        #~ self.enter.emit(obj)
         #~ return obj.eventFilter(obj, event)
 
     #~ def leaveEvent(self, obj, event):
-        #~ self.emit(QtCore.SIGNAL('leave(PyQt_PyObject)'))
+        #~ self.leave.emit(obj)
         #~ return obj.eventFilter(obj, event)
 
     #~ def mouseMoveEvent(self, obj, event):
-        #~ self.emit(QtCore.SIGNAL('mouseMove(PyQt_PyObject, QPoint)'),
-                  #~ obj, event.pos())
+        #~ self.mouseMove.emit(obj, event.pos())
         #~ if event.buttons() & QtCore.Qt.LeftButton:
-            #~ self.emit(QtCore.SIGNAL('newPos(PyQt_PyObject, QPoint)'),
-                      #~ obj, event.pos())
+            #~ self.newPos.emit(obj, event.pos())
         #~ return obj.eventFilter(obj, event)
 
     #~ def mousePressEvent(self, obj, event):
         #~ if self.dragMode() == QtGui.QGraphicsView.NoDrag:
             #~ if event.buttons() & QtCore.Qt.LeftButton:
-                #~ self.emit(QtCore.SIGNAL('newPos(PyQt_PyObject, QPoint)'),
-                          #~ obj, event.pos())
+                #~ self.newPos.emit(obj, event.pos())
             #~ #event.accept()
         #~ return obj.eventFilter(obj, event)
