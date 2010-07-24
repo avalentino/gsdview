@@ -35,7 +35,49 @@ from gsdview.gdalbackend import gdalsupport
 
 
 class NavigationGraphicsView(QtGui.QGraphicsView):
+    '''Graphics view for dataset navigation.
+
+    The view usually displays an auto-scalled low resolution overview
+    of the scene with a red box indicating the area currently displayed
+    in the high resolution view.
+
+    :SIGNALS:
+
+        * :attr:`mousePressed`
+        * :attr:`mouseMoved`
+
+    '''
+
     BOXCOLOR = QtGui.QColor(QtCore.Qt.red)
+
+    #: SIGNAL: it is emitted when a mouse button is presses on the view
+    #:
+    #: :param point:
+    #:     the scene position
+    #: :param mousebutton:
+    #:     the ID of the pressed button
+    #: :param dragmode:
+    #:     current darg mode
+    #:
+    #: :C++ signature: `voud mousePressed(QPointF, Qt::MouseButtons,
+    #:                                    QGraphicsView::DragMode)`
+    mousePressed = QtCore.pyqtSignal(QtCore.QPointF, QtCore.Qt.MouseButtons,
+                                     QtGui.QGraphicsView.DragMode)
+
+    #: SIGNAL: it is emitted when the mouse is moved on the view
+    #:
+    #: :param point:
+    #:     the scene position
+    #: :param mousebutton:
+    #:     the ID of the pressed button
+    #: :param dragmode:
+    #:     current darg mode
+    #:
+    #: :C++ signature: `voud mouseMoved(QPointF, Qt::MouseButtons,
+    #:                                    QGraphicsView::DragMode)`
+    mouseMoved = QtCore.pyqtSignal(QtCore.QPointF, QtCore.Qt.MouseButtons,
+                                   QtGui.QGraphicsView.DragMode)
+
 
     def __init__(self, parent=None, **kwargs):
         super(NavigationGraphicsView, self).__init__(parent, **kwargs)
@@ -108,16 +150,12 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
     # @TODO: use event filters
     def mousePressEvent(self, event):
         pos = self.mapToScene(event.pos())
-        self.emit(QtCore.SIGNAL('mousePressed(QPointF, Qt::MouseButtons, '
-                                'QGraphicsView::DragMode)'),
-                  pos, event.buttons(), self.dragMode())
+        self.mousePressed.emit(pos, event.buttons(), self.dragMode())
         return QtGui.QGraphicsView.mousePressEvent(self, event)
 
     def mouseMoveEvent(self, event):
         pos = self.mapToScene(event.pos())
-        self.emit(QtCore.SIGNAL('mouseMoved(QPointF, Qt::MouseButtons, '
-                                'QGraphicsView::DragMode)'),
-                  pos, event.buttons(), self.dragMode())
+        self.mouseMoved.emit(pos, event.buttons(), self.dragMode())
         return QtGui.QGraphicsView.mouseMoveEvent(self, event)
 
 
@@ -188,6 +226,8 @@ class BandOverviewDock(QtGui.QDockWidget):
                 assert view.scene() == self.graphicsview.scene() # @TODO: check
             view.centerOn(scenepos)
 
+    @QtCore.pyqtSlot()
+    @QtCore.pyqtSlot(QtGui.QGraphicsView)
     def updateMainViewBox(self, srcview=None):
         if not self.graphicsview.scene():
             return
@@ -233,34 +273,18 @@ class OverviewController(QtCore.QObject):
         app.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.panel)
 
         # Connect signals
-        self.connect(app.mdiarea,
-                     QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
-                     self.onWindowMapped)
-        self.connect(app, QtCore.SIGNAL('subWindowClosed()'),
-                     self.onWindowClosed)
+        app.mdiarea.subWindowActivated.connect(self.onWindowMapped)
+        app.subWindowClosed.connect(self.onWindowClosed)
+        app.datamodel.itemChanged.connect(self.onItemChanged)
 
-        self.connect(app.datamodel,
-                     QtCore.SIGNAL('itemChanged(QStandardItem*)'),
-                     self.onItemChanged)
+        app.monitor.scrolled.connect(self.panel.updateMainViewBox)
+        app.monitor.viewportResized.connect(self.panel.updateMainViewBox)
+        app.monitor.resized.connect(self.panel.updateMainViewBox)
 
-        self.connect(app.monitor, QtCore.SIGNAL('scrolled(QGraphicsView*)'),
-                     self.panel.updateMainViewBox)
-        self.connect(app.monitor,
-                     QtCore.SIGNAL('viewportResized(QGraphicsView*)'),
-                     self.panel.updateMainViewBox)
-        self.connect(app.monitor,
-                     QtCore.SIGNAL('resized(QGraphicsView*, QSize)'),
-                     self.panel.updateMainViewBox)
+        self.panel.graphicsview.mousePressed.connect(self.onNewPos)
+        self.panel.graphicsview.mouseMoved.connect(self.onNewPos)
 
-        self.connect(self.panel.graphicsview,
-                     QtCore.SIGNAL('mousePressed(QPointF,Qt::MouseButtons,'
-                                   'QGraphicsView::DragMode)'),
-                     self.onNewPos)
-        self.connect(self.panel.graphicsview,
-                     QtCore.SIGNAL('mouseMoved(QPointF,Qt::MouseButtons,'
-                                   'QGraphicsView::DragMode)'),
-                     self.onNewPos)
-
+    @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
     def onWindowMapped(self, subwin):
         try:
             item = subwin.item
@@ -269,10 +293,13 @@ class OverviewController(QtCore.QObject):
         else:
             self.panel.setItem(item)
 
+    @QtCore.pyqtSlot()
     def onWindowClosed(self):
         if len(self.app.mdiarea.subWindowList()) == 0:
             self.panel.reset()
 
+    #@QtCore.pyqtSlot(QtGui.QStandardItem)
+    @QtCore.pyqtSlot('QStandardItem*')  # @TODO:check
     def onItemChanged(self, item):
         if hasattr(item, 'scene'):
             srcview = self.app.currentGraphicsView()
@@ -281,6 +308,8 @@ class OverviewController(QtCore.QObject):
                 self.panel.setItem(item)
 
     # @TODO: translate into an event handler
+    @QtCore.pyqtSlot(QtCore.QPointF, QtCore.Qt.MouseButtons,
+                     QtGui.QGraphicsView.DragMode)
     def onNewPos(self, pos, buttons, dragmode):
         if buttons & QtCore.Qt.LeftButton:
             self.panel.centerMainViewOn(pos)

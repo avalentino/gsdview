@@ -65,21 +65,21 @@ class WorldmapPanel(QtGui.QDockWidget):
 
         # Zoom in
         icon = qt4support.geticon('zoom-in.svg', 'gsdview')
-        self.actionZoomIn = QtGui.QAction(icon, self.tr('Zoom In'), self)
-        self.actionZoomIn.setStatusTip(self.tr('Zoom In'))
-        self.actionZoomIn.setShortcut(QtGui.QKeySequence(self.tr('Ctrl++')))
-        self.actionZoomIn.setEnabled(False)
-        self.connect(self.actionZoomIn, QtCore.SIGNAL('triggered()'),
-                     lambda: self._zoom(+1))
+        self.actionZoomIn = QtGui.QAction(
+                                icon, self.tr('Zoom In'), self,
+                                statusTip=self.tr('Zoom In'),
+                                shortcut=QtGui.QKeySequence(self.tr('Ctrl++')),
+                                enabled=False,
+                                triggered=lambda: self._zoom(+1))
 
         # Zoom out
         icon = qt4support.geticon('zoom-out.svg', 'gsdview')
-        self.actionZoomOut = QtGui.QAction(icon, self.tr('Zoom Out'), self)
-        self.actionZoomOut.setStatusTip(self.tr('Zoom Out'))
-        self.actionZoomOut.setShortcut(QtGui.QKeySequence(self.tr('Ctrl+-')))
-        self.actionZoomOut.setEnabled(False)
-        self.connect(self.actionZoomOut, QtCore.SIGNAL('triggered()'),
-                     lambda: self._zoom(-1))
+        self.actionZoomOut = QtGui.QAction(
+                                icon, self.tr('Zoom Out'), self,
+                                statusTip=self.tr('Zoom Out'),
+                                shortcut=QtGui.QKeySequence(self.tr('Ctrl+-')),
+                                enabled=False,
+                                triggered=lambda: self._zoom(-1))
 
         toolbar = QtGui.QToolBar(self.tr('Zoom'))
         toolbar.setOrientation(QtCore.Qt.Vertical)
@@ -216,26 +216,14 @@ class WorldmapController(QtCore.QObject):
         self.panel = WorldmapPanel(app)
         self.panel.setObjectName('worldmapPanel') # @TODO: check
 
-        self.connect(app.mdiarea,
-                     QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
-                     self.onSubWindowActivated)
-
-        self.connect(app.treeview,
-                     QtCore.SIGNAL('clicked(const QModelIndex&)'),
-                     self.onItemClicked)
-
-        self.connect(app, QtCore.SIGNAL('subWindowClosed()'),
-                     self.onModelChanged)
+        app.mdiarea.subWindowActivated.connect(self.onSubWindowActivated)
+        app.treeview.clicked.connect(self.onItemClicked)
+        app.subWindowClosed.connect(self.onModelChanged)
 
         # @WARNING: rowsInserted/rowsRemoved don't work
         # @TODO: fix
-        self.connect(app.datamodel,
-                     QtCore.SIGNAL('rowsInserted(const QModelIndex&,int,int)'),
-                     self.onModelChanged)
-
-        self.connect(app.datamodel,
-                     QtCore.SIGNAL('rowsRemoved(const QModelIndex&,int,int)'),
-                     self.onModelChanged)
+        app.datamodel.rowsInserted.connect(self.onModelChanged)
+        app.datamodel.rowsRemoved.connect(self.onModelChanged)
 
     def setItemFootprint(self, item):
         try:
@@ -245,6 +233,7 @@ class WorldmapController(QtCore.QObject):
 
         self.panel.setFootprint(footprint)
 
+    @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
     def onSubWindowActivated(self, subwindow):
         if not subwindow:
             return
@@ -257,11 +246,14 @@ class WorldmapController(QtCore.QObject):
         else:
             self.setItemFootprint(item)
 
+    @QtCore.pyqtSlot(QtCore.QModelIndex)
     def onItemClicked(self, index):
         if not self.app.mdiarea.activeSubWindow():
             item = self.app.datamodel.itemFromIndex(index)
             self.setItemFootprint(item)
 
+    @QtCore.pyqtSlot()
+    @QtCore.pyqtSlot(QtCore.QModelIndex, int, int)
     def onModelChanged(self, index=None, start=None, stop=None):
         window = self.app.mdiarea.activeSubWindow()
         if window:

@@ -43,19 +43,11 @@ class StretchTool(QtCore.QObject):
         self.action = self._setupAction()
         self.action.setEnabled(False)
 
-        self.connect(self.dialog, QtCore.SIGNAL('finished(int)'),
-                     lambda result: self.action.setChecked(False))
-        self.connect(self.app.mdiarea,
-                     QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
-                     self.onSubWindowActivated)
-        #~ self.connect(self.app.treeview,
-                     #~ QtCore.SIGNAL('clicked(const QModelIndex&)'),
-                     #~ self.onItemClicked)
-        #~ self.connect(self.app, QtCore.SIGNAL('subWindowClosed()'),
-                     #~ self.onModelChanged)
-        self.connect(self.dialog,
-                     QtCore.SIGNAL('valueChanged()'),
-                     self.onStretchChanged)
+        self.dialog.finished.connect(lambda: self.action.setChecked(False))
+        self.app.mdiarea.subWindowActivated.connect(self.onSubWindowActivated)
+        #~ self.app.treeview.clicked.connect(self.onItemClicked)
+        #~ self.app.subWindowClosed(self.onModelChanged)
+        self.dialog.valueChanged.connect(self.onStretchChanged)
 
         self.toolbar = QtGui.QToolBar(app.tr('Stretching Toolbar'))
         self.toolbar.setObjectName('stretchingToolbar')
@@ -63,14 +55,14 @@ class StretchTool(QtCore.QObject):
 
     def _setupAction(self):
         icon = qt4support.geticon('stretching.svg', __name__)
-        action = QtGui.QAction(icon, self.tr('Stretch'), self)
-        action.setStatusTip(self.tr('Stretch'))
-        action.setCheckable(True)
-        self.connect(action, QtCore.SIGNAL('triggered(bool)'),
-                     self.onButtonToggled)
+        action = QtGui.QAction(icon, self.tr('Stretch'), self,
+                               statusTip=self.tr('Stretch'),
+                               checkable=True,
+                               triggered=self.onButtonToggled)
 
         return action
 
+    @QtCore.pyqtSlot(bool)
     def onButtonToggled(self, checked=True):
         if checked:
             self.reset()
@@ -118,6 +110,7 @@ class StretchTool(QtCore.QObject):
         except AttributeError:
             return None
 
+    @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
     def onSubWindowActivated(self, subwindow):
         if not subwindow:
             self.action.setEnabled(self.dialog.isVisible())
@@ -144,15 +137,19 @@ class StretchTool(QtCore.QObject):
 
 
     # @TODO: remove
+    #~ @QtCore.pyqtSlot(QtCore.QModelIndex)
     #~ def onItemClicked(self, index):
         #~ if not self.app.mdiarea.activeSubWindow():
             #~ item = self.app.datamodel.itemFromIndex(index)
             #~ self.reset(item)
 
+    #~ @QtCore.pyqtSlot()
+    #~ @QtCore.pyqtSlot(QtCore.QModelIndex, int, int)
     #~ def onModelChanged(self, index=None, start=None, stop=None):
         #~ item = self.app.currentGraphicsItem()
         #~ self.reset(item)
 
+    @QtCore.pyqtSlot()
     def onStretchChanged(self):
         item = self.currentGraphicsItem()
         try:

@@ -39,7 +39,6 @@ _instance = None
 
 
 def init(app):
-    from PyQt4 import QtCore
     from zoom.core import AppZoomTool
 
     tool = AppZoomTool(app)
@@ -48,11 +47,9 @@ def init(app):
     app.addToolBar(tool.toolbar)
 
     tool.actions.setEnabled(False)
-    tool.connect(app.mdiarea,
-                 QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
-                 lambda w: tool.actions.setEnabled(bool(w)))
-    tool.connect(app, QtCore.SIGNAL('subWindowClosed()'),
-                 lambda: tool.actions.setEnabled(
+    app.mdiarea.subWindowActivated.connect(
+                                lambda w: tool.actions.setEnabled(bool(w)))
+    app.subWindowClosed.connect(lambda: tool.actions.setEnabled(
                                     bool(app.mdiarea.activeSubWindow())))
 
     global _instance

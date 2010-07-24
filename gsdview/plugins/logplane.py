@@ -24,7 +24,7 @@
 __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
-__version__  = (0,6,1)
+__version__  = (0,6,2)
 __requires__ = []
 
 __all__ = ['init', 'close', 'loadSettings', 'saveSettings',
@@ -55,13 +55,12 @@ def init(app):
 
     from exectools.qt4 import Qt4OutputPlane, Qt4LoggingHandler
 
-    panel = QtGui.QDockWidget('Output Log', app)
+    panel = QtGui.QDockWidget('Output Log', app, objectName='outputPanel')
     # @TODO: try to add actions to a QTextEdit widget instead of using a
     #        custom widget
     logplane = Qt4OutputPlane()
     panel.setWidget(logplane)
 
-    panel.setObjectName('outputPanel')
     app.addDockWidget(QtCore.Qt.BottomDockWidgetArea, panel)
 
     # setupLogger
@@ -71,8 +70,7 @@ def init(app):
     app.logger.addHandler(handler)
 
     # Connect signals
-    QtCore.QObject.connect(logplane, QtCore.SIGNAL('planeHideRequest()'),
-                           panel.hide)
+    logplane.planeHideRequest.connect(panel.hide)
 
 def close(app):
     saveSettings(app.settings)

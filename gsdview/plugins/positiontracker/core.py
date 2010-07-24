@@ -25,7 +25,7 @@ __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
 
-from PyQt4 import QtCore
+from PyQt4 import QtCore, QtGui
 
 from positiontracker.coordinateview import CoordinateView, GeoCoordinateView
 
@@ -38,24 +38,17 @@ class TrackingTool(QtCore.QObject):
         # image coordinates
         coorview = CoordinateView()
         coorview.hide()
-        QtCore.QObject.connect(app.monitor,
-                               QtCore.SIGNAL('leave(QGraphicsScene*)'),
-                               coorview.hide)
+        app.monitor.leave.connect(coorview.hide)
 
         # geographic coordinates
         geocoorview = GeoCoordinateView()
         geocoorview.hide()
-        QtCore.QObject.connect(app.monitor,
-                               QtCore.SIGNAL('leave(QGraphicsScene*)'),
-                               geocoorview.hide)
+        app.monitor.leave.connect(geocoorview.hide)
 
         self.coorview = coorview
         self.geocoorview = geocoorview
 
-        self.connect(self.app.monitor,
-                     QtCore.SIGNAL('mouseMoved(QGraphicsScene*, QPointF, '
-                                   'Qt::MouseButtons)'),
-                     self.onMouseMoved)
+        self.app.monitor.mouseMoved.connect(self.onMouseMoved)
 
     def eventFilter(self, obj, event):
         if event.type() == QtCore.QEvent.Show:
@@ -63,6 +56,8 @@ class TrackingTool(QtCore.QObject):
             self.geocoorview.hide()
         return obj.eventFilter(obj, event)
 
+    @QtCore.pyqtSlot(QtGui.QGraphicsScene, QtCore.QPointF,
+                     QtCore.Qt.MouseButtons)
     def onMouseMoved(self, scene, pos, buttons):
         if self.app.progressbar.isVisible():
             return

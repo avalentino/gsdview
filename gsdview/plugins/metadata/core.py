@@ -85,14 +85,9 @@ class MetadataController(QtCore.QObject):
         self.panel.setObjectName('metadataViewerPanel') # @TODO: check
 
         # Connect signals
-        self.connect(app.treeview,
-                     QtCore.SIGNAL('clicked(const QModelIndex&)'),
-                     self.onItemClicked)
-        self.connect(app.mdiarea,
-                     QtCore.SIGNAL('subWindowActivated(QMdiSubWindow*)'),
-                     self.onSubWindowChanged)
-        self.connect(app, QtCore.SIGNAL('subWindowClosed()'),
-                     self.onSubWindowChanged)
+        app.treeview.clicked.connect(self.onItemClicked)
+        app.mdiarea.subWindowActivated.connect(self.onSubWindowChanged)
+        app.subWindowClosed.connect(self.onSubWindowChanged)
 
     def setItemMetadata(self, item):
         if not item:
@@ -114,11 +109,14 @@ class MetadataController(QtCore.QObject):
             return
         self.panel.setMetadata(metadata)
 
+    @QtCore.pyqtSlot(QtCore.QModelIndex)
     def onItemClicked(self, index):
         #if not app.mdiarea.activeSubWindow():
         item = self.app.datamodel.itemFromIndex(index)
         self.setItemMetadata(item)
 
+    @QtCore.pyqtSlot()
+    @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
     def onSubWindowChanged(self, window=None):
         if not window:
             window = self.app.mdiarea.activeSubWindow()
