@@ -3,7 +3,7 @@
 GSDVIEWROOT=..
 PYINSTALLERROOT=./pyinstaller
 DISTROOT=../dist
-BUNDLEROOT=../GSDView.app
+BUNDLEROOT=Macgsdview.app
 
 .PHONY: onedir onefile clean html env
 
@@ -12,19 +12,22 @@ html:
 
 onedir: gsdview-onedir.spec html
 	$(PYINSTALLERROOT)/Build.py $<
-	#cp -rv $(DISTROOT)/gsdview/* $(BUNDLEROOT)/Contents/MacOS
-	#mv $(BUNDLEROOT)/Contents/MacOS/Resources/* $(BUNDLEROOT)/Contents/Resources
-	#$(RM) -r $(BUNDLEROOT)/Contents/MacOS/Resources
+	cp -rv $(DISTROOT)/gsdview/* $(BUNDLEROOT)/Contents/MacOS
+	mv $(BUNDLEROOT)/Contents/MacOS/Resources/* $(BUNDLEROOT)/Contents/Resources
+	$(RM) -r $(BUNDLEROOT)/Contents/MacOS/Resources
+	cp gsdview.png $(BUNDLEROOT)/Contents/Resources
 
 onefile: gsdview-onefile.spec html
 	$(PYINSTALLERROOT)/Build.py $<
-
+	cp -rv /Library/Frameworks/QtGui.framework/Resources/qt_menu.nib $(BUNDLEROOT)/Contents/Resources
+	cp gsdview.png $(BUNDLEROOT)/Contents/Resources
+	
 clean:
 	$(RM) *.pyc logdict*.log warngsdview*.txt *~
 	$(RM) -r $(GSDVIEWROOT)/dist/onefile
 	$(RM) -r $(GSDVIEWROOT)/dist/gsdview
 	$(RM) -r $(BUNDLEROOT)
-	$(RM) -r build
+	$(RM) -r build Macgsdview.app
 	#if [ -d ../dist ]; then rmdir --ignore-fail-on-non-empty ../dist; fi
 
 pyinstaller:
