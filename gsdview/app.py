@@ -160,7 +160,7 @@ class GSDView(ItemModelMainWindow):
         #: application sandard logger
         self.logger = self.setupLogging()
 
-        logger.debug('Setting up external tol controller ...')
+        logger.debug('Setting up external tool controller ...')
 
         #: external tool controller
         self.controller = self.setupController(self.logger, self.statusBar(),

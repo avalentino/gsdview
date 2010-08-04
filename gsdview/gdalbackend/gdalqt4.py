@@ -33,6 +33,8 @@ from numpy import ma
 
 from PyQt4 import QtCore, QtGui
 from osgeo import gdal
+
+# @WARNING: this line seems to cause a crash on Fedora 13
 from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
 
 from gsdview import imgutils
