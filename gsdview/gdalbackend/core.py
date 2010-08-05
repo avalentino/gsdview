@@ -338,30 +338,9 @@ class GDALBackend(QtCore.QObject):
         return actionsmap
 
     ### Actions enabling ######################################################
-    def _getDatasetItemActions(self, item=None):
-        actionsgroup = self._actionsmap['DatasetItem']
-
-        # RGB
-        action = actionsgroup.findChild(QtGui.QAction, 'actionOpenRGBImageView')
-        if gdalsupport.isRGB(item):
-            # @TODO: remove this to allow multiple views on the same item
-            for subwin in self._app.mdiarea.subWindowList():
-                if subwin.item == item:
-                    action.setEnabled(False)
-                    break
-            else:
-                action.setEnabled(True)
-        else:
-            action.setEnabled(False)
-
-        return actionsgroup
-
-    # @NOTE: this is needed for correct context menu setup
-    # @TODO: maybe it is possible to find a better way to handle the problem
-    _getCachedDatasetItemActions = _getDatasetItemActions
-
-    def _getBandItemActions(self, item=None):
-        actionsgroup = self._actionsmap['BandItem']
+    def _getBandItemActions(self, item=None, actionsgroup=None):
+        if actionsgroup is None:
+            actionsgroup = self._actionsmap['BandItem']
 
         action = actionsgroup.findChild(QtGui.QAction, 'actionOpenImageView')
         action.setEnabled(True)
@@ -382,8 +361,34 @@ class GDALBackend(QtCore.QObject):
 
         return actionsgroup
 
-    def _getSubDatasetItemActions(self, item=None):
-        actionsgroup = self._actionsmap['SubDatasetItem']
+    def _getDatasetItemActions(self, item=None, actionsgroup=None):
+        if actionsgroup is None:
+            actionsgroup = self._actionsmap['DatasetItem']
+
+        # RGB
+        action = actionsgroup.findChild(QtGui.QAction, 'actionOpenRGBImageView')
+        if gdalsupport.isRGB(item):
+            # @TODO: remove this to allow multiple views on the same item
+            for subwin in self._app.mdiarea.subWindowList():
+                if subwin.item == item:
+                    action.setEnabled(False)
+                    break
+            else:
+                action.setEnabled(True)
+        else:
+            action.setEnabled(False)
+
+        return actionsgroup
+
+    # @NOTE: this is needed for correct context menu setup
+    # @TODO: maybe it is possible to find a better way to handle the problem
+    _getCachedDatasetItemActions = _getDatasetItemActions
+
+    def _getSubDatasetItemActions(self, item=None, actionsgroup=None):
+        if actionsgroup is None:
+            actionsgroup = self._actionsmap['SubDatasetItem']
+
+        actionsgroup = self._getDatasetItemActions(item, actionsgroup)
 
         openaction = actionsgroup.findChild(QtGui.QAction,
                                             'actionOpenSubDatasetItem')
@@ -484,6 +489,7 @@ class GDALBackend(QtCore.QObject):
     @QtCore.pyqtSlot()
     def closeCurrentItem(self):
         item = self._app.currentItem()
+        self._app.treeview.collapse(item.index())
         item.close()
 
     ### Sub-dataset ###########################################################
@@ -508,10 +514,11 @@ class GDALBackend(QtCore.QObject):
         cachedir = os.path.join(cachedir, 'subdataset%02d' % index)
 
         item.open(cachedir)
+        #self._app.treeview.expand(item.index())
 
-        for row in range(item.rowCount()):
-            child = item.child(row)
-            self._app.treeview.expand(child.index())
+        #for row in range(item.rowCount()):
+        #    child = item.child(row)
+        #    self._app.treeview.expand(child.index())
 
     ### Raster Band ###########################################################
     @QtCore.pyqtSlot()

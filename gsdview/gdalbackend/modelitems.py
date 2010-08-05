@@ -519,15 +519,18 @@ class SubDatasetItem(CachedDatasetItem):
         #: coordinate mapper
         self.cmapper = None
 
+        #: graphics scene associated to the item
+        self.scene = None
+
+        #: graphics item representing the dataset
+        self.graphicsitem = None
+
         #: filename of the cached virtual dataset
         self.vrtfilename = None
-
-        # @TODO: check if it is possible that self._obj not None at this point
-        if self._obj:
-            self._setup_children()
+        self._vrtobj = None
 
     def isopen(self):
-        return self._obj is not None
+        return self._obj is not None and self._vrtobj is not None
 
     # @staticmethod
     def _normalize(self, filename):
@@ -537,23 +540,39 @@ class SubDatasetItem(CachedDatasetItem):
         return filename
 
     def open(self, cachedir=None):
+        if self.isopen():
+            return
+
         if not cachedir:
             cachedir = os.path.join(self.CACHEDIR,
                                     self._normalize(self.filename))
 
+        if self._mode == gdal.GA_ReadOnly:
+            logging.warning('GDAL open mode ignored in cached datasets.')
+            self._mode = gdal.GA_Update
+
+        # @TODO: don't use "os.path.abspath" because the filename id to be
+        #        intended includes as a gdal-filename using sub-dataset
+        #        syntax
         gdalobj = self._checkedopen(self.filename)
-        self.vrtfilename = self._vrtinit(gdalobj, cachedir)
-        del gdalobj
+        vrtfilename, vrtobj = self._vrtinit(gdalobj, cachedir)
 
-        filename = os.path.abspath(self.vrtfilename)
-        gdalobj = self._checkedopen(filename, gdal.GA_Update)
-
+        self.vrtfilename = vrtfilename
         self._obj = gdalobj
-        self._mode = gdal.GA_Update
+        self._vrtobj = vrtobj
         self._setup_children()
 
-        # TODO: improve attribute name
-        self.cmapper = gdalsupport.coordinate_mapper(self._obj)
+        self.cmapper = gdalsupport.coordinate_mapper(self._vrtobj)
+
+        # @TODO: lazy behaviour: postpone the scene/view initialization when
+        #        it is actualy needed
+        scene, graphicsitem = self._setup_scene()
+
+        #: graphics scene associated to the item
+        self.scene = scene
+
+        #: graphics item representing the dataset
+        self.graphicsitem = graphicsitem
 
     def close(self):
         # @NOTE: preserve the filename, extrainfo and mode
@@ -566,11 +585,42 @@ class SubDatasetItem(CachedDatasetItem):
         self.filename = gdalfilename
         self._mode = mode
 
+    def reopen(self):
+        if not self.isopen():
+            self.open()
+        else:
+            super(SubDatasetItem, self).reopen()
+
     def __getattr__(self, name):
         if self._obj:
-            return DatasetItem.__getattr__(self, name)
+            return super(SubDatasetItem, self).__getattr__(name)
         elif name in dir(gdal.Dataset):
             raise RuntimeError('unable to access "%s" on a non open '
                                'object' % name)
         else:
             raise AttributeError(name)
+
+    def GetMetadata(self, domain=''):
+        if not self.isopen():
+            raise RuntimeError('unable to access "%s" on a non open '
+                               'object' % 'GetMetadata')
+        return super(SubDatasetItem, self).GetMetadata(domain)
+
+    def GetMetadata_Dict(self, domain=''):
+        if not self.isopen():
+            raise RuntimeError('unable to access "%s" on a non open '
+                               'object' % 'GetMetadata_Dict')
+        return super(SubDatasetItem, self).GetMetadata_Dict(domain)
+
+    def GetMetadata_List(self, domain=''):
+        if not self.isopen():
+            raise RuntimeError('unable to access "%s" on a non open '
+                               'object' % 'GetMetadata_List')
+        return super(SubDatasetItem, self).GetMetadata_List(domain)
+
+    if hasattr(gdal.Dataset, 'GetMetadataItem'):
+        def GetMetadataItem(self, name, domain=''):
+            if not self.isopen():
+                raise RuntimeError('unable to access "%s" on a non open '
+                                   'object' % 'GetMetadataItem')
+            return super(SubDatasetItem, self).GetMetadataItem(name, domain)
