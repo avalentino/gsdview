@@ -72,9 +72,7 @@ class MajorObjectItem(QtGui.QStandardItem):
     def _closeChildren(self):
         while self.hasChildren():
             try:
-                self.child(0)._closeChildren()
-                if hasattr(self.child(0), '_obj'):
-                    self.child(0)._obj = None
+                self.child(0).close()
             except AttributeError:
                 logging.debug('unexpected child item class: "%s"' %
                                                 type(self.child(0)).__name__)
@@ -83,6 +81,9 @@ class MajorObjectItem(QtGui.QStandardItem):
             #        that hold a reference to the stditem are destroyed
             self.takeRow(0)
 
+    def close(self):
+        self._closeChildren()
+        self._obj = None
 
 class BandItem(MajorObjectItem):
     '''Raster band item.
@@ -160,12 +161,11 @@ class BandItem(MajorObjectItem):
             return None, None
 
     def close(self):
-        self._obj.FlushCache()
-        super(BandItem, self).close()
-        self.graphicsitem = None
         self.scene.clear()
+        self.graphicsitem = None
         self.scene = None
-        self._obj = None
+        #self._obj.FlushCache() # @TODO: check
+        super(BandItem, self).close()
 
     def _reopen(self, gdalobj=None):
         if not gdalobj:
@@ -290,14 +290,6 @@ class DatasetItem(MajorObjectItem):
         # @NOTE: raster bands are always inserted before subdatasets
         return self.child(index-1)
 
-    #~ def _getRasterCount(self):
-        #~ # @TODO: check
-        #~ #if self.rowCount() < self._obj.RasteCount:
-        #~ #    self._setup_children()
-        #~ return self._obj.RasteCount
-
-    #~ RasterCount = property(_getRasterCount)
-
     def GetSubDatasets(self):
         # @NOTE: raster bands are always inserted before subdatasets
         return [self.child(index) for index in range(self.RasterCount,
@@ -343,20 +335,23 @@ class DatasetItem(MajorObjectItem):
         self._setup_child_bands(self._obj)
         self._setup_child_subdatasets(self._obj)
 
-    #~ def _closeChildren(self):
-        #~ self._obj.FlushCache()
-        #~ super(DatasetItem, self)._closeChildren()
-
     def close(self):
-        self._closeChildren()
+        #self._obj.FlushCache() # @TODO: check
+        self.filename = None
+        self._mode = None
+        self.cmapper = None
+        self.graphicsitem = None
+        self.scene = None
+        super(DatasetItem, self).close()
+
         parent = self.parent()
         if not parent:
+            # only remone itself if it is a tplevel item
             parent = self.model().invisibleRootItem()
-        # @NOTE: use takeRow instead of removeRow in order to avoid the
-        #        underlying C/C++ object is deleted before all sub-windows
-        #        that hold a reference to the stditem are destroyed
-        parent.takeRow(self.row())
-        self._obj = None # @TODO: check
+            # @NOTE: use takeRow instead of removeRow in order to avoid the
+            #        underlying C/C++ object is deleted before all sub-windows
+            #        that hold a reference to the stditem are destroyed
+            parent.takeRow(self.row())
 
 
 class CachedDatasetItem(DatasetItem):
@@ -467,6 +462,12 @@ class CachedDatasetItem(DatasetItem):
         self._setup_child_bands(self._vrtobj)
         self._setup_child_subdatasets(self._obj)
 
+    def close(self):
+        super(CachedDatasetItem, self).close()
+        # @NOTE: close virtual object after closing all children
+        self._vrtobj = None
+        self.vrtfilename = None
+
     def reopen(self):
         gdalobj = gdal.Open(self.vrtfilename, gdal.GA_Update)
 
@@ -496,6 +497,7 @@ def datasetitem(filename):
     except OpenError:
         # @TODO: remove virtualfile created by CachedDatasetItem
         return DatasetItem(filename)
+
 
 class SubDatasetItem(CachedDatasetItem):
     iconfile = qt4support.geticon('subdataset.svg', __name__)
@@ -554,14 +556,15 @@ class SubDatasetItem(CachedDatasetItem):
         self.cmapper = gdalsupport.coordinate_mapper(self._obj)
 
     def close(self):
-        # @NOTE: don't call the parent "close()" method because DatasetItem
-        #        removes itself from the model when closed and this is not the
-        #        desired behaviour
-        self._closeChildren()
-        self._mode = None
-        self.cmapper = None
-        self.vrtfilename = None
-        self._obj = None
+        # @NOTE: preserve the filename, extrainfo and mode
+        gdalfilename = self.filename
+        mode = self._mode
+        #self.extrainfo = ''
+
+        super(SubDatasetItem, self).close()
+
+        self.filename = gdalfilename
+        self._mode = mode
 
     def __getattr__(self, name):
         if self._obj:
