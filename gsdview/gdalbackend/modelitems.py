@@ -341,7 +341,7 @@ class DatasetItem(MajorObjectItem):
         self._mode = None
         self.cmapper = None
         self.graphicsitem = None
-        self.scene = None
+        #self.scene = None    # @WARNINIG: causes problems in event filters
         super(DatasetItem, self).close()
 
         parent = self.parent()
