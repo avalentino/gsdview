@@ -368,7 +368,10 @@ class GDALBackend(QtCore.QObject):
 
         if item is not None:
             assert isinstance(item, modelitems.BandItem)
-            if gdal.DataTypeIsComplex(item.DataType):
+
+            # @TODO: find a better solution
+            allowcomplex = True
+            if gdal.DataTypeIsComplex(item.DataType) and not allowcomplex:
                 action.setEnabled(False)
             else:
                 # @TODO: remove this to allow multiple views on the same item

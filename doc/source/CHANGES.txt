@@ -18,6 +18,7 @@ Changes from 0.6.2 to 0.6.3 (in development)
 * All classes that inherit from Qt objects or widgets now can be initialized
   using keyword arguments for Qt properties and signals setup.
 * Switch to the new PyQt4 signal/slot API (close :issue:`25`)
+* Re-enable complex datasets displaying
 
 
 Changes from 0.6.1 to 0.6.2 (20/07/2010)

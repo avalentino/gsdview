@@ -232,6 +232,8 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
         if band and gdalsupport.hasFastStats(band):
             vmin, vmax, mean, stddev = gdalsupport.SafeGetStatistics(band, True)
             if None not in (vmin, vmax, mean, stddev):
+                if gdal.DataTypeIsComplex(band.DataType):
+                    vmin, vmax = 0, vmax * numpy.sqrt(2)
                 return vmin, vmax
 
         if data is not None and data.size <= 4*1024**2:
