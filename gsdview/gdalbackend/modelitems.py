@@ -437,26 +437,26 @@ class CachedDatasetItem(DatasetItem):
         # @TODO: handle domain.startswith('xml:') and domain == 'OVERVIEW'
         if domain in ('IMAGE_STRUCTURE', 'SUBDATASETS'):
             return self._obj.GetMetadata(domain)
-        return self._obj.GetMetadata(domain)
+        return self._vrtobj.GetMetadata(domain)
 
     def GetMetadata_Dict(self, domain=''):
         # @TODO: handle domain.startswith('xml:') and domain == 'OVERVIEW'
         if domain in ('IMAGE_STRUCTURE', 'SUBDATASETS'):
             return self._obj.GetMetadata_Dict(domain)
-        return self._obj.GetMetadata_Dict(domain)
+        return self._vrtobj.GetMetadata_Dict(domain)
 
     def GetMetadata_List(self, domain=''):
         # @TODO: handle domain.startswith('xml:') and domain == 'OVERVIEW'
         if domain in ('IMAGE_STRUCTURE', 'SUBDATASETS'):
             return self._obj.GetMetadata_List(domain)
-        return self._obj.GetMetadata_List(domain)
+        return self._vrtobj.GetMetadata_List(domain)
 
     if hasattr(gdal.Dataset, 'GetMetadataItem'):
-        def GetMetadataItem(self, domain=''):
+        def GetMetadataItem(self, name, domain=''):
             # @TODO: handle domain.startswith('xml:') and domain == 'OVERVIEW'
             if domain in ('IMAGE_STRUCTURE', 'SUBDATASETS'):
-                return self._obj.GetMetadataItem(domain)
-            return self._obj.GetMetadataItem(domain)
+                return self._obj.GetMetadataItem(name, domain)
+            return self._vrtobj.GetMetadataItem(name, domain)
 
     def _setup_children(self):
         self._setup_child_bands(self._vrtobj)
