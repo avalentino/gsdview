@@ -75,7 +75,7 @@ class StretchTool(QtCore.QObject):
     def reset(self, item=None):
         if item is None:
             item = self.currentGraphicsItem()
-        if item is None or not hasattr(item,'stretch'):
+        if item is None or not hasattr(item, 'stretch'):
             self.dialog.setEnabled(False)
             return
 
