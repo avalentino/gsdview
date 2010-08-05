@@ -182,9 +182,17 @@ class GDALBackend(QtCore.QObject):
             modelitems.SubDatasetItem: 'actionOpenSubDatasetItem',
         }
         item = self._app.datamodel.itemFromIndex(index)
+
+        actions = self._actionsmap[type(item).__name__]
+        name = defaultActionsMap.get(type(item))
+        if name:
+            action = actions.findChild(QtGui.QAction, name)
+            if action:
+                action.trigger()
+                return
+
         for itemtype in defaultActionsMap:
             if isinstance(item, itemtype):
-                actions = self._actionsmap[type(item).__name__]
                 action = actions.findChild(QtGui.QAction,
                                            defaultActionsMap[itemtype])
                 if action:
@@ -238,9 +246,6 @@ class GDALBackend(QtCore.QObject):
         # @TODO: Masked bands, Compute statistics, Compute histogram
         # @TODO: dataset --> Build overviews
 
-        # separator
-        QtGui.QAction(actionsgroup).setSeparator(True)
-
         self._setupMajorObjectItemActions(actionsgroup)
 
         return actionsgroup
@@ -262,10 +267,16 @@ class GDALBackend(QtCore.QObject):
         if actionsgroup is None:
             actionsgroup = QtGui.QActionGroup(self)
 
-        self._setupMajorObjectItemActions(actionsgroup)
+        # open RGB
+        # @TODO: find an icon for RGB
+        icon = qt4support.geticon('rasterband.svg', __name__)
+        QtGui.QAction(icon, self.tr('Open as RGB'), actionsgroup,
+                      objectName='actionOpenRGBImageView',
+                      #shortcut=self.tr('Ctrl+B'),
+                      toolTip=self.tr('Display the dataset as an RGB image'),
+                      statusTip=self.tr('Open as RGB'),
+                      triggered=lambda chk: self.openRGBImageView())
 
-        # separator
-        QtGui.QAction(actionsgroup).setSeparator(True)
 
         # build overviews
         icon = qt4support.geticon('overview.svg', __name__)
@@ -277,20 +288,7 @@ class GDALBackend(QtCore.QObject):
                       triggered=self.buildOverviews,
                       enabled=False)    # @TODO: remove
 
-        # open RGB
-        # @TODO: find an icon for RGB
-        icon = qt4support.geticon('rasterband.svg', __name__)
-        QtGui.QAction(icon, self.tr('Open as RGB'), actionsgroup,
-                      objectName='actionOpenRGBImageView',
-                      #shortcut=self.tr('Ctrl+B'),
-                      toolTip=self.tr('Display the dataset as an RGB image'),
-                      statusTip=self.tr('Open as RGB'),
-                      triggered=lambda chk: self.openRGBImageView())
-
         # @TODO: add band, add virtual band, open GCPs view
-
-        # separator
-        QtGui.QAction(actionsgroup).setSeparator(True)
 
         # close
         icon = qt4support.geticon('close.svg', 'gsdview')
@@ -300,6 +298,8 @@ class GDALBackend(QtCore.QObject):
                       toolTip=self.tr('Close the current item'),
                       statusTip=self.tr('Close the current item'),
                       triggered=self.closeCurrentItem)
+
+        self._setupMajorObjectItemActions(actionsgroup)
 
         return actionsgroup
 
@@ -315,9 +315,6 @@ class GDALBackend(QtCore.QObject):
                       toolTip=self.tr('Open Sub Dataset'),
                       statusTip=self.tr('Open Sub Dataset'),
                       triggered=self.openSubDataset)
-
-        # separator
-        QtGui.QAction(actionsgroup).setSeparator(True)
 
         self._setupDatasetItemActions(actionsgroup)
 
