@@ -97,6 +97,9 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
         super(GdalAddOverviewDescriptor, self).__init__(
                     'gdaladdo', [], cwd, env, stdout_handler, stderr_handler)
 
+        #: ensure that gdaladdo works in readonly mode
+        self.readonly = False
+
         self._resampling_method = 'average'
 
         #: use Erdas Imagine format (.aux) as overview format.
@@ -237,8 +240,11 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
         return extra_args
 
     def cmdline(self, *args, **kwargs):
+        args = list(args)
         if self._resampling_method is not None and '-r' not in args:
-            args = ['-r', self._resampling_method] + list(args)
+            args = ['-r', self._resampling_method] + args
+        if self.readonly and '-ro' not in args:
+            args.append('-ro')
 
         return super(GdalAddOverviewDescriptor, self).cmdline(*args, **kwargs)
 
