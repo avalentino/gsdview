@@ -174,7 +174,7 @@ class BandItem(MajorObjectItem):
     def close(self):
         self.scene.clear()
         self.graphicsitem = None
-        self.scene = None
+        #self.scene = None    # @WARNINIG: causes problems in event filters
         #self._obj.FlushCache() # @TODO: check
         super(BandItem, self).close()
 
