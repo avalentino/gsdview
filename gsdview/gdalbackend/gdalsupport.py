@@ -868,3 +868,14 @@ def ovrRead(dataset, x=0, y=0, w=None, h=None, ovrindex=None,
         return numpy.astype(data)
     else:
         return data
+
+
+### Misc helpers ##############################################################
+def has_complex_bands(dataset):
+    result = False
+    for band_id in range(1, dataset.RasterCount + 1):
+        band = dataset.GetRasterBand(band_id)
+        result = gdal.DataTypeIsComplex(band.DataType)
+        if result:
+            break
+    return result

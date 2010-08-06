@@ -187,6 +187,12 @@ class AddoHelper(GdalHelper):
             vrtfilename = os.path.join(self._tmpdir, vrtfilename)
             self._datasetitem = dataset
 
+            # use averaging in magphase space for complex raster bands
+            if gdalsupport.has_complex_bands(dataset):
+                self.tool.set_resampling_method('average_magphase')
+            else:
+                self.tool.set_resampling_method('average')
+
             args = [os.path.basename(vrtfilename)]
             args.extend(map(str, missingOverviewLevels))
 
