@@ -112,93 +112,93 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
         self._interleaving_method = None
         self._use_bigtiff_mode = None
 
-        def resampling_method(self):
-            '''Resampling method for overviews computation.'''
+    def resampling_method(self):
+        '''Resampling method for overviews computation.'''
 
-            return self._resampling_method
+        return self._resampling_method
 
-        def set_resampleing_method(seff, method):
-            '''Set the resampling method for overviews computation.
+    def set_resampling_method(self, method):
+        '''Set the resampling method for overviews computation.
 
-            If set to None use GDAL defaults.
-            Available resampling methods: %s.
+        If set to None use GDAL defaults.
+        Available resampling methods: %s.
 
-            ''' % ', '.join(GdalAddOverviewDescriptor.RESAMPLING_METHODS)
+        ''' % ', '.join(GdalAddOverviewDescriptor.RESAMPLING_METHODS)
 
-            if method is not None and method not in self.RESAMPLING_METHODS:
-                raise ValueError('invalid resampling method: "%s". '
-                                 'Available methods are: %s' % (method,
-                                        ', '.join(self.RESAMPLING_METHODS)))
-            self._resampling_method = method
+        if method is not None and method not in self.RESAMPLING_METHODS:
+            raise ValueError('invalid resampling method: "%s". '
+                             'Available methods are: %s' % (method,
+                                    ', '.join(self.RESAMPLING_METHODS)))
+        self._resampling_method = method
 
-        def compression_method(self):
-            '''TIFF compression method.
+    def compression_method(self):
+        '''TIFF compression method.
 
-            This attribute is only used if external overviews are
-            stored in GeoTIFF format.
+        This attribute is only used if external overviews are
+        stored in GeoTIFF format.
 
-            '''
+        '''
 
-            return self._compression_method
+        return self._compression_method
 
-        def set_compression_method(self, method):
-            '''Set the TIFF compression method.
+    def set_compression_method(self, method):
+        '''Set the TIFF compression method.
 
-            This attribute is only used if external overviews are
-            stored in GeoTIFF format.
+        This attribute is only used if external overviews are
+        stored in GeoTIFF format.
 
-            If set to None use GDAL defaults.
-            Available compression methods: %s.
+        If set to None use GDAL defaults.
+        Available compression methods: %s.
 
-            ''' % ', '.join(GdalAddOverviewDescriptor.TIFF_COMPRESSION_METHODS)
+        ''' % ', '.join(GdalAddOverviewDescriptor.TIFF_COMPRESSION_METHODS)
 
-            self._compression_method = method
+        self._compression_method = method
 
-        def interleaving_method(self):
-            '''Ovrviews interleaving method (%s).
+    def interleaving_method(self):
+        '''Ovrviews interleaving method (%s).
 
-            This attribute is only used if external overviews are
-            stored in GeoTIFF format.
+        This attribute is only used if external overviews are
+        stored in GeoTIFF format.
 
-            ''' % ' or '.join(GdalAddOverviewDescriptor.TIFF_INTERLEAVING_METHODS)
+        ''' % ' or '.join(GdalAddOverviewDescriptor.TIFF_INTERLEAVING_METHODS)
 
-            return self._interleaving_method
+        return self._interleaving_method
 
-        def set_interleaving_method(self, method):
-            '''Set the ovrview interleaving method.
+    def set_interleaving_method(self, method):
+        '''Set the ovrview interleaving method.
 
-            This attribute is only used if external overviews are
-            stored in GeoTIFF format.
+        This attribute is only used if external overviews are
+        stored in GeoTIFF format.
 
-            If set to None use GDAL defaults.
-            Possible interleaving methods are: %s.
+        If set to None use GDAL defaults.
+        Possible interleaving methods are: %s.
 
-            ''' % ' or '.join(GdalAddOverviewDescriptor.TIFF_INTERLEAVING_METHODS)
+        ''' % ' or '.join(GdalAddOverviewDescriptor.TIFF_INTERLEAVING_METHODS)
 
-            self._interleaving_method = method
+        self._interleaving_method = method
 
-        def use_bigtiff_mode(self):
-            '''Mode of using BigTIFF in overviews (%s).
+    def use_bigtiff_mode(self):
+        '''Mode of using BigTIFF in overviews (%s).
 
-            This attribute is only used if external overviews are
-            stored in GeoTIFF format.
+        This attribute is only used if external overviews are
+        stored in GeoTIFF format.
 
-            ''' % ' or '.join(GdalAddOverviewDescriptor.TIFF_USE_BIGTIFF_MODE)
+        ''' % ' or '.join(GdalAddOverviewDescriptor.TIFF_USE_BIGTIFF_MODE)
 
-            return self._use_bigtiff_mode
+        return self._use_bigtiff_mode
 
-        def set_use_bigtiff_mode(self, mode):
-            '''Set the mode of using BigTIFF in overviews.
+    def set_use_bigtiff_mode(self, mode):
+        '''Set the mode of using BigTIFF in overviews.
 
-            This attribute is only used if external overviews are
-            stored in GeoTIFF format.
+        This attribute is only used if external overviews are
+        stored in GeoTIFF format.
 
-            If set to None use GDAL defaults.
-            Possible interleaving methods are: %s.
+        If set to None use GDAL defaults.
+        Possible interleaving methods are: %s.
 
-            ''' % ' or '.join(GdalAddOverviewDescriptor.TIFF_USE_BIGTIFF_MODE)
+        ''' % ' or '.join(GdalAddOverviewDescriptor.TIFF_USE_BIGTIFF_MODE)
 
-            self._use_bigtiff_mode = mode
+        self._use_bigtiff_mode = mode
 
     def gdal_config_options(self, cmd=''):
         extra_args = super(GdalAddOverviewDescriptor, self).gdal_config_options(cmd)
