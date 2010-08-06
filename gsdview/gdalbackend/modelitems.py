@@ -427,7 +427,8 @@ class CachedDatasetItem(DatasetItem):
     # Give items the same iterface of GDAL objects.
     # NOTE: the widgets module doesn't need to import modelitems
     def __getattr__(self, name):
-        if name in ('GetDescription', 'GetDriver', 'GetSubDatasets'):
+        if name in ('GetDescription', 'GetDriver', 'GetSubDatasets',
+                    'GetFileList'):
             return getattr(self._obj, name)
         return getattr(self._vrtobj, name)
 
