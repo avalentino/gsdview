@@ -72,15 +72,16 @@ def init(app):
     # GDAL icon
     icon = qt4support.geticon('GDALLogoColor.svg', __name__)
 
+    # update the settings dialog
+    #page = widgets.GDALPreferencesPage(app.preferencesdialog)
+    page = widgets.BackendPreferencesPage(app.preferencesdialog)
+    app.preferencesdialog.addPage(page, icon, 'GDAL')
+
     # add a new page in the about dialog
     page = widgets.GDALInfoWidget(app.aboutdialog)
     tabindex = app.aboutdialog.tabWidget.addTab(page, icon, 'GDAL')
     widget = app.aboutdialog.tabWidget.widget(tabindex)
     widget.setObjectName('gdalTab')
-
-    # update the settings dialog
-    page = widgets.GDALPreferencesPage(app.preferencesdialog)
-    app.preferencesdialog.addPage(page, icon, 'GDAL')
 
     # @TODO: check
     # register the backend
@@ -155,50 +156,10 @@ del methodname, globals_, _definefunc
 def close(app):
     saveSettings(app.settings)
 
-
 def loadSettings(settings):
-    import os
-    import logging
-
-    from osgeo import gdal
-
-    settings.beginGroup('gdal')
-    try:
-        cachesize, ok = settings.value('GDAL_CACHEMAX').toULongLong()
-        if ok:
-            gdal.SetCacheMax(cachesize)
-            logging.debug('GDAL cache size det to %d' % cachesize)
-
-        value = settings.value('GDAL_DATA').toString()
-        if value:
-            value = os.path.expanduser(os.path.expandvars(str(value)))
-            gdal.SetConfigOption('GDAL_DATA', value)
-            logging.debug('GDAL_DATA directory set to "%s"' % value)
-
-        for optname in ('GDAL_SKIP', 'GDAL_DRIVER_PATH', 'OGR_DRIVER_PATH'):
-            value = settings.value(optname).toString()
-            value = os.path.expanduser(os.path.expandvars(str(value)))
-            gdal.SetConfigOption(optname, value)
-            logging.debug('%s set to "%s"' % (optname, value))
-        gdal.AllRegister()
-        logging.debug('run "gdal.AllRegister()"')
-
-        # update the about dialog
-        tabWidget = _backendobj._app.aboutdialog.tabWidget
-        for index in range(tabWidget.count()):
-            if tabWidget.tabText(index) == 'GDAL':
-                gdalinfowidget = tabWidget.widget(index)
-                gdalinfowidget.setGdalDriversTab()
-                break
-        else:
-            _backendobj._app.logger.debug('GDAL page ot found in the '
-                                          'about dialog')
-            return
-    finally:
-        settings.endGroup()
-
+    if _backendobj:
+        return _backendobj.loadSettings(settings)
 
 def saveSettings(settings):
-    # @NOTE: GDAL preferences are only modified via preferences dialog
-    pass
-
+    if _backendobj:
+        return _backendobj.saveSettings(settings)

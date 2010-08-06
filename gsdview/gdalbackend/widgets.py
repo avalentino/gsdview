@@ -315,6 +315,49 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
             settings.endGroup()
 
 
+class BackendPreferencesPage(GDALPreferencesPage):
+
+    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+        super(BackendPreferencesPage, self).__init__(parent, flags, **kwargs)
+        #self.setupUi(self)
+
+        # GDAL backend
+        msg = 'Show overview items in the tree view.'
+        tip = msg + "\nNOTE: this setting doesn't affects items already open."
+        checkbox = QtGui.QCheckBox(self.tr(msg), toolTip=self.tr(tip))
+        self.showOverviewCheckbox = checkbox
+
+        layout = QtGui.QVBoxLayout()
+        layout.addWidget(checkbox)
+        #~ layout.addSpacerItem(QtGui.QSpacerItem(0, 20))
+
+        self.groupbox = QtGui.QGroupBox(self.tr('GDAL Backend Preferences'))
+        self.groupbox.setLayout(layout)
+        self.verticalLayout.insertWidget(1, self.groupbox)
+
+    def load(self, settings):
+        settings.beginGroup('gdalbackend')
+        try:
+            # show overviews in the treeview
+            value = settings.value('visible_overview_items').toBool()
+            self.showOverviewCheckbox.setChecked(value)
+        finally:
+            settings.endGroup()
+
+        super(BackendPreferencesPage, self).load(settings)
+
+    def save(self, settings):
+        settings.beginGroup('gdalbackend')
+        try:
+            # show overviews in the treeview
+            value = self.showOverviewCheckbox.isChecked()
+            settings.setValue('visible_overview_items', QtCore.QVariant(value))
+        finally:
+            settings.endGroup()
+
+        super(BackendPreferencesPage, self).save(settings)
+
+
 class MajorObjectInfoDialog(QtGui.QDialog):
     def __init__(self, gdalobj, parent=None, flags=QtCore.Qt.Widget, **kwargs):
         super(MajorObjectInfoDialog, self).__init__(parent, flags, **kwargs)

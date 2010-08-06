@@ -39,6 +39,9 @@ from gsdview.gdalbackend import gdalqt4
 from gsdview.gdalbackend import gdalsupport
 
 
+VISIBLE_OVERVIEW_ITEMS = False
+
+
 class MajorObjectItem(QtGui.QStandardItem):
     iconfile = qt4support.geticon('metadata.svg', __name__)
     _typeoffset = 100
@@ -129,26 +132,34 @@ class BandItem(MajorObjectItem):
         return self.parent().cmapper
 
     def GetOverview(self, index):
-        if (index < 0) or (index >= self._obj.GetOverviewCount()):
-            return None
-        if self.rowCount() <= index:
-            self._setup_children()
-        return self.child(index)
+        if VISIBLE_OVERVIEW_ITEMS:
+            if (index < 0) or (index >= self._obj.GetOverviewCount()):
+                return None
+            if self.rowCount() <= index:
+                self._setup_children()
+            return self.child(index)
+        else:
+            return self._obj.GetOverview(index)
 
     def GetOverviewCount(self):
-        if self.rowCount() < self._obj.GetOverviewCount():
-            self._setup_children()
-        return self.rowCount()
+        if VISIBLE_OVERVIEW_ITEMS:
+            if self.rowCount() < self._obj.GetOverviewCount():
+                self._setup_children()
+            return self.rowCount()
+        else:
+            return self._obj.GetOverviewCount()
 
     def _setup_children(self):
-        for index in range(self.rowCount(), self._obj.GetOverviewCount()):
-            ovr = self._obj.GetOverview(index)
-            item = OverviewItem(ovr)
-            if not item.text():
-                description = '%s n. %d' % (QtGui.qApp.tr('Overview'), index)
-                item.setText(description)
-                item.setToolTip(description)
-            self.appendRow(item)
+        if VISIBLE_OVERVIEW_ITEMS:
+            for index in range(self.rowCount(), self._obj.GetOverviewCount()):
+                ovr = self._obj.GetOverview(index)
+                item = OverviewItem(ovr)
+                if not item.text():
+                    description = '%s n. %d' % (QtGui.qApp.tr('Overview'),
+                                                index)
+                    item.setText(description)
+                    item.setToolTip(description)
+                self.appendRow(item)
 
     def _setup_scene(self, parent=None):
         try:

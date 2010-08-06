@@ -472,6 +472,7 @@ class GDALBackend(QtCore.QObject):
             #msg = self.tr(msg)
             #QtGui.QMessageBox.warning(self._app, title, msg)
             return
+
         # only open a new view if there is no other on the item selected
         if len(item.scene.views()) == 0:
             self.newImageView(item)
@@ -579,6 +580,66 @@ class GDALBackend(QtCore.QObject):
 
     ### Overview ##############################################################
     ### Virtualband ###########################################################
+    def loadGDALSettings(self, settings):
+        logger = self._app.logger
+
+        settings.beginGroup('gdal')
+        try:
+            cachesize, ok = settings.value('GDAL_CACHEMAX').toULongLong()
+            if ok:
+                gdal.SetCacheMax(cachesize)
+                logger.debug('GDAL cache size det to %d' % cachesize)
+
+            value = settings.value('GDAL_DATA').toString()
+            if value:
+                value = os.path.expanduser(os.path.expandvars(str(value)))
+                gdal.SetConfigOption('GDAL_DATA', value)
+                logger.debug('GDAL_DATA directory set to "%s"' % value)
+
+            for optname in ('GDAL_SKIP', 'GDAL_DRIVER_PATH', 'OGR_DRIVER_PATH'):
+                value = settings.value(optname).toString()
+                value = os.path.expanduser(os.path.expandvars(str(value)))
+                gdal.SetConfigOption(optname, value)
+                logger.debug('%s set to "%s"' % (optname, value))
+            gdal.AllRegister()
+            logger.debug('run "gdal.AllRegister()"')
+
+            # update the about dialog
+            tabWidget = self._app.aboutdialog.tabWidget
+            for index in range(tabWidget.count()):
+                if tabWidget.tabText(index) == 'GDAL':
+                    gdalinfowidget = tabWidget.widget(index)
+                    gdalinfowidget.setGdalDriversTab()
+                    break
+            else:
+                logger.debug('GDAL page ot found in the about dialog')
+                return
+        finally:
+            settings.endGroup()
+
+    def loadSettings(self, settings):
+        self.loadGDALSettings(settings)
+
+        settings.beginGroup('gdalbackend')
+        try:
+            # show overviews in the treeview
+            value = settings.value('visible_overview_items').toBool()
+            modelitems.VISIBLE_OVERVIEW_ITEMS = value
+            # @TODO: reload all items
+        finally:
+            settings.endGroup()
+
+    def saveSettings(self, settings):
+        # @NOTE: GDAL preferences are only modified via preferences dialog
+
+        settings.beginGroup('gdalbackend')
+        try:
+            # show overviews in the treeview
+            value = modelitems.VISIBLE_OVERVIEW_ITEMS
+            settings.setValue('visible_overview_items', QtCore.QVariant(value))
+        finally:
+            settings.endGroup()
+
 
 ### MISC ######################################################################
 from gsdview.mainwin import ItemSubWindow
