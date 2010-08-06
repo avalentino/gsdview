@@ -318,20 +318,7 @@ class DatasetItem(MajorObjectItem):
             self.appendRow(item)
 
     def _setup_child_subdatasets(self, gdalobj):
-        # @COMPATIBILITY: the GetSubDatasets() dataset method is only available
-        #                 in GDAL >= 1.6.1
-        metadata = gdalobj.GetMetadata('SUBDATASETS')
-        subdatasets = [key for key in metadata if key.endswith('NAME')]
-        # HDF5 driver incorrectly starts subdataset enumeration from 0
-        # In order to handle both cases N+1 subdatasets are scanned
-        for index in range(len(subdatasets)+1):
-            try:
-                path = metadata['SUBDATASET_%d_NAME' % index]
-            except KeyError:
-                # @NOTE: this is a workaround for a bug in subdatasets
-                #        handling in HDF5 driver for GDAL < 1.6.1
-                continue
-            extrainfo = metadata['SUBDATASET_%d_DESC' % index]
+        for path, extrainfo in gdalobj.GetSubDatasets():
             # @TODO: pass full path for the sub-dataset filename (??)
             item = SubDatasetItem(path, extrainfo)
             if not item.text():
