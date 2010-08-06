@@ -32,7 +32,6 @@ import logging
 import exectools
 from exectools.qt4 import Qt4OutputHandler
 
-from PyQt4 import QtGui
 from osgeo import gdal
 
 
@@ -337,7 +336,7 @@ class GdalOutputHandler(Qt4OutputHandler):
 
         pulse = data.get('pulse')
         percentage = data.get('percentage')
-        text = data.get('text')
+        #~ text = data.get('text')
 
         if pulse and percentage is None:
             self._percentage = min(100, self._percentage + 2.5)
