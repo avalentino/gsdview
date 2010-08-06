@@ -182,6 +182,18 @@ def uniqueDatasetID(prod):
             prod_id = filename + h5path.replace('/', '_')
         else:
             prod_id = os.path.basename(prod_id)
+    elif driver_name == 'RS2':
+        metadata = prod.GetMetadata()
+        keys = (
+            'SATELLITE_IDENTIFIER',     # 'RADARSAT-2'
+            'SENSOR_IDENTIFIER',        # 'SAR'
+            'PRODUCT_TYPE',             # 'SGF'
+            'BEAM_MODE',                # 'W2'
+            'ACQUISITION_START_TIME',   # '2008-05-30T14:25:38.076608Z'
+        )
+        parts = [metadata[key].strip() for key in keys]
+        parts[-1] = parts[-1].replace(':', '_')
+        prod_id = '-'.join(parts)
     else:
         prod_id = os.path.basename(prod.GetDescription())
 
