@@ -358,6 +358,254 @@ class BackendPreferencesPage(GDALPreferencesPage):
         super(BackendPreferencesPage, self).save(settings)
 
 
+OvervieWidgetBase = qt4support.getuiform('overview', __name__)
+class OvervieWidget(QtGui.QWidget, OvervieWidgetBase):
+    '''Widget for overview management.
+
+    Display existing overview levels and allow to to sibmit overview
+    compitation requests.
+
+    :SIGNALS:
+
+        * :attr:`overviewComputationRequest`
+
+    '''
+
+    #: SIGNAL: it is emitted when a time expensive computation of statistics
+    #: is required
+    #:
+    #: :C** signature: `void computeStatsRequest()`
+    overviewComputationRequest = QtCore.pyqtSignal()
+
+    def __init__(self, band=None, parent=None, flags=QtCore.Qt.Widget,
+                 **kwargs):
+        super(OvervieWidget, self).__init__(parent, flags, **kwargs)
+        self.setupUi(self)
+
+        # @COMPATIBILITY: GDAL >= 1.7.0
+        if gdal.VersionInfo() < '1700':
+            index = self.resamplingMethodComboBox.findText('cubic')
+            self.resamplingMethodComboBox.removeItem(index)
+
+        # @COMPATIBILITY: GDAL >= 1.7.0
+        if not hasattr(gdal.Band, 'HasArbitraryOverviews'):
+            self.hasArbitraryOverviewsLabel.hide()
+            self.hasArbitraryOverviewsValue.hide()
+
+        model = QtGui.QStandardItemModel(self)
+        model.setColumnCount(3)
+        model.itemChanged.connect(self._updateStartButton)
+        self.ovrTreeView.setModel(model)
+
+        self._band = None
+
+        self.recomputeCheckBox.toggled.connect(self._updateStartButton)
+        self.startButton.clicked.connect(self.overviewComputationRequest)
+
+        if band:
+            self.setBand(band)
+
+    def reset(self):
+        self.ovrTreeView.model().clear()
+
+        self.overviewCountValue.setText('0')
+        self.hasArbitraryOverviewsValue.setText('')
+        self.fullSizeValue.setText('')
+
+        self.resamplingMethodComboBox.setCurrentIndex(2)
+        self.compressionComboBox.setCurrentIndex(0)
+        self.photointComboBox.setCurrentIndex(0)
+        self.interleavingComboBox.setCurrentIndex(0)
+        self.bigtiffComboBox.setCurrentIndex(0)
+
+        self.readonlyCheckBox.setChecked(False)
+        self.rrdCheckBox.setChecked(False)
+        self.recomputeCheckBox.setChecked(False)
+
+        self.startButton.setEnabled(False)
+        self.addLevelSpinBox.setEnabled(False)
+        self.addLevelButton.setEnabled(False)
+
+        if self._band:
+            self.addLevelButton.clicked.disconnect(self.addLevel)
+
+        self._band = None
+
+    def _addLevel(self, level, xsize, ysize, checked=QtCore.Qt.Unchecked):
+        model = self.ovrTreeView.model()
+
+        check = QtGui.QStandardItem()
+        check.setCheckable(True)
+        check.setCheckState(checked)
+
+        ovrfact = QtGui.QStandardItem()
+        ovrfact.setData(QtCore.QVariant(level), QtCore.Qt.DisplayRole)
+
+        size = QtGui.QStandardItem('%dx%d' % (ysize, xsize))
+
+        model.appendRow([check, ovrfact, size])
+
+    def setBand(self, band):
+        self.reset()
+
+        ovrcount = band.GetOverviewCount()
+
+        self.overviewCountValue.setText(str(ovrcount))
+        self.fullSizeValue.setText('%dx%d' % (band.YSize, band.XSize))
+        # @COMPATIBILITY: GDAL >= 1.7.0
+        if hasattr(gdal.Band, 'HasArbitraryOverviews'):
+            self.hasArbitraryOverviewsValue.setText(
+                                            str(band.HasArbitraryOverviews()))
+
+        view = self.ovrTreeView
+
+        # Add existing overviews
+        model = self.ovrTreeView.model()
+        levels = gdalsupport.ovrLevels(band)
+        for index in range(ovrcount):
+            ovr = band.GetOverview(index)
+            self._addLevel(levels[index], ovr.XSize, ovr.YSize,
+                           QtCore.Qt.Checked)
+            model.item(model.rowCount()-1, 0).setEnabled(False)
+
+        # Add powers of two
+        xexp = int(numpy.log2(band.XSize))
+        yexp = int(numpy.log2(band.YSize))
+        mexexp = min(xexp, yexp)
+        mexexp = max(mexexp-2, 1)
+        for exp_ in range(1, mexexp):
+            level = 2**exp_
+            if level in levels:
+                continue
+            xsize = int(band.XSize + level - 1) // level
+            ysize = int(band.YSize + level - 1) // level
+            self._addLevel(level, xsize, ysize)
+
+        view.header().resizeSections(QtGui.QHeaderView.ResizeToContents)
+        view.sortByColumn(1, QtCore.Qt.AscendingOrder)
+
+        self.addLevelSpinBox.setEnabled(True)
+        self.addLevelButton.setEnabled(True)
+
+        self.addLevelButton.clicked.connect(self.addLevel)
+
+        self._band = band
+
+        self._updateStartButton()
+
+    def _listedLevels(self):
+        model = self.ovrTreeView.model()
+        levels = []
+        for index in range(model.rowCount()):
+            item = model.item(index, 1)
+            levels.append(int(item.text()))
+
+        return levels
+
+    def _checkedLevels(self):
+        model = self.ovrTreeView.model()
+        levels = []
+        for index in range(model.rowCount()):
+            checkitem = model.item(index, 0)
+            if checkitem.checkState() == QtCore.Qt.Checked:
+                item = model.item(index, 1)
+                levels.append(int(item.text()))
+
+        return levels
+
+    def _newLevels(self):
+        model = self.ovrTreeView.model()
+        levels = []
+        for index in range(model.rowCount()):
+            checkitem = model.item(index, 0)
+            if (checkitem.checkState() == QtCore.Qt.Checked and
+                                                        checkitem.isEnabled()):
+                item = model.item(index, 1)
+                levels.append(int(item.text()))
+
+        return levels
+
+    @QtCore.pyqtSlot()
+    @QtCore.pyqtSlot(int)
+    def addLevel(self, level=None, xsize=None, ysize=None, checked=False):
+        if level is None:
+            level = self.addLevelSpinBox.value()
+
+        if level in self._listedLevels():
+            return
+
+        if xsize is None:
+            if self._band is None:
+                raise ValueError('no reference band is set: '
+                                 'xsize and ysize have to be provided.')
+            xsize = int(self._band.XSize + level - 1) // level
+
+        if ysize is None:
+            if self._band is None:
+                raise ValueError('no reference band is set: '
+                                 'xsize and ysize have to be provided.')
+            ysize = int(self._band.YSize + level - 1) // level
+
+        if checked:
+            checked = QtCore.Qt.Checked
+        else:
+            checked = QtCore.Qt.Unchecked
+
+        self._addLevel(level, xsize, ysize, checked)
+
+        view = self.ovrTreeView
+        view.header().resizeSections(QtGui.QHeaderView.ResizeToContents)
+        view.sortByColumn(1, QtCore.Qt.AscendingOrder)
+
+        self._updateStartButton()
+
+    @QtCore.pyqtSlot()
+    def _updateStartButton(self):
+        if self.recomputeCheckBox.isChecked() or self._newLevels():
+            self.startButton.setEnabled(True)
+        else:
+            self.startButton.setEnabled(False)
+
+    def optionlist(self):
+        args = []
+
+        if self.rrdCheckBox.isChecked():
+            args.extend(('--config', 'USE_RRD', 'YES'))
+        else:
+            if self.compressionComboBox.currentText() not in ('DEFAULT', 'None'):
+                args.extend(('--config', 'COMPRESS_OVERVIEW',
+                             self.compressionComboBox.currentText()))
+
+            if self.photointComboBox.currentText() not in ('DEFAULT', ''):
+                args.extend(('--config', 'PHOTOMETRIC_OVERVIEW',
+                             self.photointComboBox.currentText()))
+
+            if self.interleavingComboBox.currentText() != 'DEFAULT':
+                args.extend(('--config', 'INTERLEAVE_OVERVIEW',
+                             self.interleavingComboBox.currentText()))
+
+            if self.bigtiffComboBox.currentText() != 'DEFAULT':
+                args.extend(('--config', 'BIGTIFF_OVERVIEW',
+                             self.bigtiffComboBox.currentText()))
+
+        if self.readonlyCheckBox.isChecked():
+            args.append('-ro')
+        if self.resamplingMethodComboBox.currentText() != 'DEFAULT':
+            args.extend(('-r', self.resamplingMethodComboBox.currentText()))
+
+        args = map(str, args)
+
+        return args
+
+    def levels(self):
+        if self.recomputeCheckBox.isChecked():
+            levels = self._checkedLevels()
+        else:
+            levels = self._newLevels()
+
+        return levels
+
+
 class MajorObjectInfoDialog(QtGui.QDialog):
     def __init__(self, gdalobj, parent=None, flags=QtCore.Qt.Widget, **kwargs):
         super(MajorObjectInfoDialog, self).__init__(parent, flags, **kwargs)

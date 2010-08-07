@@ -82,15 +82,42 @@ def testdriver(target, imagestruct=True):
     else:
         raise ValueError('trget: %s' % target)
 
+def test_ovrwidget():
+    filename = os.path.join(GSDVIEWROOT, 'gsdview', 'plugins',
+                            'worldmap', 'images', 'world_4320x2160.jpg')
+    dataset = gdal.Open(filename)
+    band = dataset.GetRasterBand(1)
 
-    test_datasetdialog(dataset_)
-    #~ test_rasterbanddialog(band_)
+    if True and band.GetOverviewCount() == 0:
+        dataset.BuildOverviews('average', [2,4,8], gdal.TermProgress)
+
+    app = QtGui.QApplication(sys.argv)
+
+    w = OvervieWidget(band)
+    w.show()
+
+    def callback():
+        args = w.optionlist()
+        levels = map(str, w.levels())
+
+        parts = ['gdaladdo']
+        parts.extend(args)
+        parts.append(os.path.basename(filename))
+        parts.extend(levels)
+
+        print ' '.join(parts)
+
+    w.overviewComputationRequest.connect(callback)
+
+    sys.exit(app.exec_())
+
 
 if __name__ == '__main__':
     #~ test_gdalinfowidget()
     #~ test_gdalpreferencespage()
     #~ test_histogram_config()
-    testdriver('dataset', True)
+    #~ testdriver('dataset', True)
     #~ testdriver('dataset', False)
     #~ testdriver('band', True)
     #~ testdriver('band', False)
+    test_ovrwidget()
