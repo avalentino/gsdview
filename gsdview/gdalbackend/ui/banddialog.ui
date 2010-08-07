@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>526</width>
+    <width>528</width>
     <height>538</height>
    </rect>
   </property>
@@ -64,35 +64,6 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="overviewCountLabel">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Overview Count:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QLabel" name="overviewCountValue">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>overview count value</string>
-              </property>
-              <property name="textInteractionFlags">
-               <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-              </property>
-             </widget>
-            </item>
             <item row="1" column="0">
              <widget class="QLabel" name="bandNumberLabel">
               <property name="text">
@@ -107,20 +78,6 @@
               </property>
               <property name="text">
                <string>band number value</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="hasArbitraryOverviewsLabel">
-              <property name="text">
-               <string>Has Arbitrary Overviews:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="1">
-             <widget class="QLabel" name="hasArbitraryOverviewsValue">
-              <property name="text">
-               <string>has arbitrary overviews value</string>
               </property>
              </widget>
             </item>
@@ -165,6 +122,49 @@ color interpretation.</string>
               </property>
              </widget>
             </item>
+            <item row="3" column="1">
+             <widget class="QLabel" name="overviewCountValue">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>overview count value</string>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="overviewCountLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Overview Count:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="hasArbitraryOverviewsLabel">
+              <property name="text">
+               <string>Has Arbitrary Overviews:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLabel" name="hasArbitraryOverviewsValue">
+              <property name="text">
+               <string>has arbitrary overviews value</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
           <item>
@@ -190,7 +190,7 @@ color interpretation.</string>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <layout class="QGridLayout" name="dataGridLayout1">
+           <layout class="QGridLayout" name="dataGridLayoutLeft">
             <item row="0" column="0">
              <widget class="QLabel" name="xSizeLabel">
               <property name="sizePolicy">
@@ -249,7 +249,7 @@ color interpretation.</string>
               </property>
              </widget>
             </item>
-            <item row="3" column="0">
+            <item row="2" column="0">
              <widget class="QLabel" name="blockSizeLabel">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -262,7 +262,7 @@ color interpretation.</string>
               </property>
              </widget>
             </item>
-            <item row="3" column="1">
+            <item row="2" column="1">
              <widget class="QLabel" name="blockSizeValue">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -310,7 +310,7 @@ meaning that right and bottom edge blocks may be incomplete.
               </property>
              </widget>
             </item>
-            <item row="4" column="0">
+            <item row="3" column="0">
              <widget class="QLabel" name="noDataLabel">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -323,7 +323,7 @@ meaning that right and bottom edge blocks may be incomplete.
               </property>
              </widget>
             </item>
-            <item row="4" column="1">
+            <item row="3" column="1">
              <widget class="QLabel" name="noDataValue">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -336,7 +336,7 @@ meaning that right and bottom edge blocks may be incomplete.
 
 If there is no out of data value, an out of range value will generally be returned.
 The no data value for a band is generally a special marker value used to mark
-pixels that are not valid data. Such pixels should generally not be displayed, 
+pixels that are not valid data. Such pixels should generally not be displayed,
 nor contribute to analysis operations.</string>
               </property>
               <property name="whatsThis">
@@ -344,7 +344,7 @@ nor contribute to analysis operations.</string>
 
 If there is no out of data value, an out of range value will generally be returned.
 The no data value for a band is generally a special marker value used to mark
-pixels that are not valid data. Such pixels should generally not be displayed, 
+pixels that are not valid data. Such pixels should generally not be displayed,
 nor contribute to analysis operations.</string>
               </property>
               <property name="text">
@@ -373,7 +373,7 @@ nor contribute to analysis operations.</string>
           <item>
            <layout class="QVBoxLayout" name="dataVerticalLayout">
             <item>
-             <layout class="QGridLayout" name="dataGridLayout2">
+             <layout class="QGridLayout" name="dataGridLayoutRight">
               <item row="2" column="0">
                <widget class="QLabel" name="offsetLabel">
                 <property name="sizePolicy">
@@ -807,6 +807,9 @@ Normally only present when the number of bits is non-standard for the datatype, 
          <attribute name="horizontalHeaderStretchLastSection">
           <bool>true</bool>
          </attribute>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
          <column>
           <property name="text">
            <string>Name</string>
@@ -864,13 +867,13 @@ Normally only present when the number of bits is non-standard for the datatype, 
               <property name="toolTip">
                <string>The minimum value for this band.
 
-For file formats that don't know this intrinsically, the minimum supported 
+For file formats that don't know this intrinsically, the minimum supported
 value for the data type will generally be returned (or None).</string>
               </property>
               <property name="whatsThis">
                <string>The minimum value for this band.
 
-For file formats that don't know this intrinsically, the minimum supported 
+For file formats that don't know this intrinsically, the minimum supported
 value for the data type will generally be returned (or None).</string>
               </property>
               <property name="text">
@@ -905,13 +908,13 @@ value for the data type will generally be returned (or None).</string>
               <property name="toolTip">
                <string>The maximum value for this band.
 
-For file formats that don't know this intrinsically, the maximum supported 
+For file formats that don't know this intrinsically, the maximum supported
 value for the data type will generally be returned (or None).</string>
               </property>
               <property name="whatsThis">
                <string>The maximum value for this band.
 
-For file formats that don't know this intrinsically, the maximum supported 
+For file formats that don't know this intrinsically, the maximum supported
 value for the data type will generally be returned (or None).</string>
               </property>
               <property name="text">
@@ -946,13 +949,13 @@ value for the data type will generally be returned (or None).</string>
               <property name="toolTip">
                <string>The maximum value for this band.
 
-For file formats that don't know this intrinsically, the maximum supported 
+For file formats that don't know this intrinsically, the maximum supported
 value for the data type will generally be returned (or None).</string>
               </property>
               <property name="whatsThis">
                <string>The maximum value for this band.
 
-For file formats that don't know this intrinsically, the maximum supported 
+For file formats that don't know this intrinsically, the maximum supported
 value for the data type will generally be returned (or None).</string>
               </property>
               <property name="text">
@@ -987,13 +990,13 @@ value for the data type will generally be returned (or None).</string>
               <property name="toolTip">
                <string>The maximum value for this band.
 
-For file formats that don't know this intrinsically, the maximum supported 
+For file formats that don't know this intrinsically, the maximum supported
 value for the data type will generally be returned (or None).</string>
               </property>
               <property name="whatsThis">
                <string>The maximum value for this band.
 
-For file formats that don't know this intrinsically, the maximum supported 
+For file formats that don't know this intrinsically, the maximum supported
 value for the data type will generally be returned (or None).</string>
               </property>
               <property name="text">
@@ -1027,11 +1030,11 @@ value for the data type will generally be returned (or None).</string>
                <bool>false</bool>
               </property>
               <property name="toolTip">
-               <string>Compute approximate band statistics using 
+               <string>Compute approximate band statistics using
 overviews or a subset of image tiles.</string>
               </property>
               <property name="whatsThis">
-               <string>Compute approximate band statistics using 
+               <string>Compute approximate band statistics using
 overviews or a subset of image tiles.</string>
               </property>
               <property name="text">
@@ -1098,6 +1101,9 @@ overviews or a subset of image tiles.</string>
             <attribute name="horizontalHeaderStretchLastSection">
              <bool>true</bool>
             </attribute>
+            <attribute name="horizontalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
             <column>
              <property name="text">
               <string>Class Min</string>
@@ -1120,7 +1126,7 @@ overviews or a subset of image tiles.</string>
             <item>
              <widget class="QCheckBox" name="customHistogramCheckBox">
               <property name="toolTip">
-               <string>Pops up a dialog that allow to customize 
+               <string>Pops up a dialog that allow to customize
 the histogram computation.</string>
               </property>
               <property name="text">
@@ -1131,7 +1137,7 @@ the histogram computation.</string>
             <item>
              <widget class="QPushButton" name="computeHistogramButton">
               <property name="toolTip">
-               <string>Start histogram computation 
+               <string>Start histogram computation
 (may take a long time).</string>
               </property>
               <property name="text">
@@ -1235,6 +1241,9 @@ the histogram computation.</string>
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
          <attribute name="horizontalHeaderStretchLastSection">
           <bool>true</bool>
          </attribute>

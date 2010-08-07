@@ -55,7 +55,7 @@ def test_histogram_config():
     dialog.show()
     sys.exit(app.exec_())
 
-def main(imagestruct=True):
+def testdriver(target, imagestruct=True):
     logging.basicConfig(level=logging.DEBUG)
 
     filename = os.path.join(GSDVIEWROOT, 'gsdview', 'plugins',
@@ -63,7 +63,6 @@ def main(imagestruct=True):
 
     if imagestruct is False:
         # convert to palatted image
-        pctfilename = 'world_pct.jpeg'
         pctfilename = os.path.join(GSDVIEWROOT, 'gsdview', 'gdalbackend',
                                    'tests', 'world_pct.jpeg')
 
@@ -74,7 +73,15 @@ def main(imagestruct=True):
         filename = pctfilename
 
     dataset_ = gdal.Open(filename)
-    band_ = dataset_.GetRasterBand(1)
+
+    if target == 'dataset':
+        test_datasetdialog(dataset_)
+    elif target == 'band':
+        band_ = dataset_.GetRasterBand(1)
+        test_rasterbanddialog(band_)
+    else:
+        raise ValueError('trget: %s' % target)
+
 
     test_datasetdialog(dataset_)
     #~ test_rasterbanddialog(band_)
@@ -83,5 +90,7 @@ if __name__ == '__main__':
     #~ test_gdalinfowidget()
     #~ test_gdalpreferencespage()
     #~ test_histogram_config()
-    #~ main()
-    main(False)
+    testdriver('dataset', True)
+    #~ testdriver('dataset', False)
+    #~ testdriver('band', True)
+    #~ testdriver('band', False)
