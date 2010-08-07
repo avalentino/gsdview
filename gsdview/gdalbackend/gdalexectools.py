@@ -249,6 +249,11 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
         return super(GdalAddOverviewDescriptor, self).cmdline(*args, **kwargs)
 
 
+# @COMPATIBILITY: GDAL >= 1.7.0
+if gdal.VersionInfo() < '1700':
+    GdalAddOverviewDescriptor.RESAMPLING_METHODS.pop('cubic')
+
+
 class GdalInfoDescriptor(BaseGdalToolDescriptor):
     '''Tool descriptor for the gdalinfo utility program.'''
 
