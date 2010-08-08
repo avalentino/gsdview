@@ -19,6 +19,7 @@ gsdview.gdalbackend.widgets
 
    .. autosummary::
    
+      BackendPreferencesPage
       BandInfoDialog
       BandInfoDialogBase
       DatasetInfoDialog
@@ -31,6 +32,8 @@ gsdview.gdalbackend.widgets
       HistogramConfigDialog
       HistogramConfigDialogBase
       MajorObjectInfoDialog
+      OvervieWidget
+      OvervieWidgetBase
    
    
 

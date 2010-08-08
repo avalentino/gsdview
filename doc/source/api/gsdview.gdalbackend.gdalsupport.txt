@@ -16,6 +16,7 @@ gsdview.gdalbackend.gdalsupport
       gdalFilters
       getDriverList
       hasFastStats
+      has_complex_bands
       isRGB
       ovrBestIndex
       ovrComputeLevels
