@@ -321,11 +321,7 @@ class DatasetItem(MajorObjectItem):
         for path, extrainfo in gdalobj.GetSubDatasets():
             # @TODO: pass full path for the sub-dataset filename (??)
             item = SubDatasetItem(path, extrainfo)
-            if not item.text():
-                description = '%s n. %d' % (QtGui.qApp.tr('Sub Datset'),
-                                            index)
-                item.setText(description)
-                item.setToolTip(description)
+
             # @NOTE: raster bands are always inserted before subdatasets
             self.appendRow(item)
 

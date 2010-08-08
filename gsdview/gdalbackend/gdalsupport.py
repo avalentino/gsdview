@@ -770,7 +770,7 @@ def ovrBestIndex(gdalobj, ovrlevel=None, policy='NEAREST'):
 
 
 def ovrComputeLevels(gdalobj, ovrsize=OVRMEMSIE, estep=3, threshold=0.1):
-    '''Copute the overview levels to be generated.
+    '''Compute the overview levels to be generated.
 
     GSDView relies on overviews to provide a confortable image
     navigation experience (scroll, pan, zoom etc).

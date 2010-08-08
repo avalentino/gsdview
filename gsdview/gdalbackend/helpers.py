@@ -45,9 +45,9 @@ class GdalHelper(object):
     GDAL tools in separate processes.
     Task performed are:
 
-        * tool setup,
-        * temporay files and diractories creation,
-        * temporay files and diractories cleanup,
+        * tool setup
+        * temporay files and diractories creation
+        * temporay files and diractories cleanup
         * finalization actions
 
     '''

@@ -374,7 +374,7 @@ class OvervieWidget(QtGui.QWidget, OvervieWidgetBase):
     #: SIGNAL: it is emitted when a time expensive computation of statistics
     #: is required
     #:
-    #: :C** signature: `void computeStatsRequest()`
+    #: :C** signature: `void overviewComputationRequest()`
     overviewComputationRequest = QtCore.pyqtSignal()
 
     def __init__(self, band=None, parent=None, flags=QtCore.Qt.Widget,
@@ -404,6 +404,8 @@ class OvervieWidget(QtGui.QWidget, OvervieWidgetBase):
 
         if band:
             self.setBand(band)
+        else:
+            self.reset()
 
     def reset(self):
         self.ovrTreeView.model().clear()
@@ -460,7 +462,6 @@ class OvervieWidget(QtGui.QWidget, OvervieWidgetBase):
         view = self.ovrTreeView
 
         # Add existing overviews
-        model = self.ovrTreeView.model()
         levels = gdalsupport.ovrLevels(band)
         for index in range(ovrcount):
             ovr = band.GetOverview(index)
@@ -945,6 +946,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.meanValue.setText(str(mean))
         self.stdValue.setText(str(stddev))
 
+    @QtCore.pyqtSlot()
     @qt4support.overrideCursor
     def updateStatistics(self):
         if self.band is None:
