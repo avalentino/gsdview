@@ -23,6 +23,8 @@ Changes from 0.6.2 to 0.6.3 (in development)
 * Now overview items are no more displayed in the treeview by default.
   It is possible to get the old behavior by checking the appropriate flag
   in the preferences dialog (close :issue:`34`)
+* Now the GDAL info dialog for raster bands has a new tab for overviews
+  that also allows computation of new overviews (close :issue:`57`).
 * Improved Radarsat2 support
 
 

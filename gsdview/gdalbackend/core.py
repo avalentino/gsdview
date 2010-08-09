@@ -117,6 +117,7 @@ class GDALBackend(QtCore.QObject):
         hmap['stats'] = helpers.StatsHelper(app, tools['stats'])
         hmap['statsdialog'] = helpers.StatsDialogHelper(app, tools['stats'])
         hmap['histdialog'] = helpers.HistDialogHelper(app, tools['hist'])
+        hmap['ovrdialog'] = helpers.AddoDialogHelper(app, tools['addo'])
 
         return hmap
 
@@ -428,7 +429,7 @@ class GDALBackend(QtCore.QObject):
 
         # @TODO: rewrite
         if isinstance(dialog, widgets.BandInfoDialog):
-            for helpername in ('statsdialog', 'histdialog'):
+            for helpername in ('statsdialog', 'histdialog', 'ovrdialog'):
                 helper = self._helpers[helpername]
                 helper.dialog = dialog
 
@@ -436,6 +437,8 @@ class GDALBackend(QtCore.QObject):
                                         self._helpers['statsdialog'].start)
             dialog.histogramComputationRequest.connect(
                                         self._helpers['histdialog'].start)
+            dialog.overviewComputationRequest.connect(
+                                        self._helpers['ovrdialog'].start)
 
             dialog.finished.connect(self._resethelpers)
 
@@ -445,6 +448,7 @@ class GDALBackend(QtCore.QObject):
     def _resethelpers(self):
         self._helpers['statsdialog'].reset()
         self._helpers['histdialog'].reset()
+        self._helpers['ovrdialog'].reset()
 
     @QtCore.pyqtSlot()
     def showItemProperties(self):

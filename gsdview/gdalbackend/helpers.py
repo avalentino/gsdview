@@ -462,3 +462,38 @@ class HistDialogHelper(StatsDialogHelper):
         #self.dialog.updateHistogram()
         self.dialog.setHistogram(*hist)
 
+
+class AddoDialogHelper(AddoHelper):
+    '''Helper class for overviews computation.
+
+    .. seealso:: :class:`AddoHelper`
+
+    '''
+
+    _PROGRESS_DIALOD_MSG = 'Overviews computation.'
+
+    def __init__(self, app, tool):
+        super(AddoDialogHelper, self).__init__(app, tool)
+        self.dialog = None
+        self.setup_progress_dialog(app.tr(self._PROGRESS_DIALOD_MSG))
+
+    def target_levels(self, dataset):
+        return self.dialog.overviewWidget.levels()
+
+    def start(self, item, dialog=None):
+        if dialog:
+            self.dialog = dialog
+
+        if not self.dialog:
+            raise ValueError('"dialog" attribute not set')
+
+        super(AddoDialogHelper, self).start(item)
+
+    def reset(self):
+        super(AddoDialogHelper, self).reset()
+        self.dialog = None
+
+    def do_finalize(self):
+        print 'apply --> updateOverviewTab'
+        super(AddoDialogHelper, self).do_finalize()
+        self.dialog.updateOverviewTab()

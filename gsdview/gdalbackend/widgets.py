@@ -821,6 +821,11 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
     #                'histogramComputationRequest(PyQt_PyObject, int, int, int)'),
     #                band, hmin, nmax, nbuckets)
 
+    #: SIGNAL: it is emitted when overview computation is required
+    #:
+    #: :C** signature: `void overviewComputationRequest()`
+    overviewComputationRequest = QtCore.pyqtSignal('PyQt_PyObject')
+
     def __init__(self, band=None, parent=None, flags=QtCore.Qt.Widget,
                  **kwargs):
         super(BandInfoDialog, self).__init__(band, parent, flags, **kwargs)
@@ -838,12 +843,6 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.tabWidget.addTab(self.overviewWidget,
                               geticon('overview.svg', __name__),
                               self.tr('Overviews'))
-
-        # @TODO: remove
-        self.overviewWidget.optionsGroupBox.hide()
-        self.overviewWidget.addLevelButton.hide()
-        self.overviewWidget.addLevelSpinBox.hide()
-        self.overviewWidget.ovrTreeView.setEnabled(False)
 
         # Context menu actions
         qt4support.setViewContextActions(self.histogramTableWidget)
@@ -872,6 +871,9 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.customHistogramCheckBox.toggled.connect(
                                         self.computeHistogramButton.setEnabled)
 
+        self.overviewWidget.overviewComputationRequest.connect(
+                                                        self._computeOverviews)
+
     def _disconnect_signals(self):
         # @TODO: check
         self.computeStatsButton.clicked.disconnect(self._computeStats)
@@ -881,6 +883,9 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.computeHistogramButton.clicked.dosconnect(self._computeHistogram)
         self.customHistogramCheckBox.toggled.disconnect(
                                         self.computeHistogramButton.setEnabled)
+
+        self.overviewWidget.overviewComputationRequest.disconnect(
+                                                        self._computeOverviews)
 
     @property
     def band(self):
@@ -1293,6 +1298,11 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         #~ self.computeHistogramButton.setEnabled(False)
         #~ self.setHistogram(vmin, vmax, nbuckets, hist)
         #~ self.updateStatistics() # @TODO: check
+
+    @QtCore.pyqtSlot()
+    def _computeOverviews(self):
+        self._checkgdalobj()
+        self.overviewComputationRequest.emit(self.band)
 
 
 DatasetInfoDialogBase = qt4support.getuiform('datasetdialog', __name__)
