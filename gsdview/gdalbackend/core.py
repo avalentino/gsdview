@@ -432,9 +432,9 @@ class GDALBackend(QtCore.QObject):
                 helper = self._helpers[helpername]
                 helper.dialog = dialog
 
-            dialog.computeStatsRequest.connect(
+            dialog.statsComputationRequest.connect(
                                         self._helpers['statsdialog'].start)
-            dialog.computeHistogramRequest.connect(
+            dialog.histogramComputationRequest.connect(
                                         self._helpers['histdialog'].start)
 
             dialog.finished.connect(self._resethelpers)

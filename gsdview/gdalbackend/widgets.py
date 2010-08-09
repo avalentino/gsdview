@@ -766,27 +766,27 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
     :SIGNALS:
 
-        * :attr:`computeStatsRequest`
-        * :attr:`computeHistogramRequest`
+        * :attr:`statsComputationRequest`
+        * :attr:`histogramComputationRequest`
+        * :attr:`overviewComputationRequest`
 
     '''
 
     #: SIGNAL: it is emitted when a time expensive computation of statistics
     #: is required
     #:
-    #: :C** signature: `void computeStatsRequest(PyQt_PyObject)`
-    computeStatsRequest = QtCore.pyqtSignal('PyQt_PyObject')
+    #: :C** signature: `void statsComputationRequest(PyQt_PyObject)`
+    statsComputationRequest = QtCore.pyqtSignal('PyQt_PyObject')
 
     #: SIGNAL: it is emitted when a time expensive computation of an histogram
     #: is required
     #:
-    #: :C** signature: `void computeHistogramRequest(PyQt_PyObject)`
-    computeHistogramRequest = QtCore.pyqtSignal('PyQt_PyObject')
+    #: :C** signature: `void histogramComputationRequest(PyQt_PyObject)`
+    histogramComputationRequest = QtCore.pyqtSignal('PyQt_PyObject')
     # @TODO: check
     #self.emit(QtCore.SIGNAL(
-    #                'computeHistogramRequest(PyQt_PyObject, int, int, int)'),
+    #                'histogramComputationRequest(PyQt_PyObject, int, int, int)'),
     #                band, hmin, nmax, nbuckets)
-
 
     def __init__(self, band=None, parent=None, flags=QtCore.Qt.Widget,
                  **kwargs):
@@ -1145,7 +1145,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
     @QtCore.pyqtSlot()
     def _computeStats(self):
         self._checkgdalobj()
-        self.computeStatsRequest.emit(self.band)
+        self.statsComputationRequest.emit(self.band)
 
         #~ logging.info('start statistics computation')
 
@@ -1169,7 +1169,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
     @QtCore.pyqtSlot()
     def _computeHistogram(self):
         self._checkgdalobj()
-        self.computeHistogramRequest.emit(self.band)
+        self.histogramComputationRequest.emit(self.band)
 
         #~ band = self.band
         #~ approx = self.approxStatsCheckBox.isChecked()
