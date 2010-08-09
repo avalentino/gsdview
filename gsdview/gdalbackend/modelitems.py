@@ -150,16 +150,18 @@ class BandItem(MajorObjectItem):
             return self._obj.GetOverviewCount()
 
     def _setup_children(self):
-        if VISIBLE_OVERVIEW_ITEMS:
-            for index in range(self.rowCount(), self._obj.GetOverviewCount()):
-                ovr = self._obj.GetOverview(index)
-                item = OverviewItem(ovr)
-                if not item.text():
-                    description = '%s n. %d' % (QtGui.qApp.tr('Overview'),
-                                                index)
-                    item.setText(description)
-                    item.setToolTip(description)
-                self.appendRow(item)
+        if not VISIBLE_OVERVIEW_ITEMS:
+            return
+
+        for index in range(self.rowCount(), self._obj.GetOverviewCount()):
+            ovr = self._obj.GetOverview(index)
+            item = OverviewItem(ovr)
+            if not item.text():
+                description = '%s n. %d' % (QtGui.qApp.tr('Overview'),
+                                            index)
+                item.setText(description)
+                item.setToolTip(description)
+            self.appendRow(item)
 
     def _setup_scene(self, parent=None):
         try:

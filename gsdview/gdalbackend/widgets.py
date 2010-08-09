@@ -1242,7 +1242,6 @@ class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
 
         if not hasattr(gdal.Dataset, 'GetFileList'):
             self.tabWidget.setTabEnabled(4, False)
-            #self.tabWidget.removeTab(4)
 
         # Setup Tabs
         if dataset:
