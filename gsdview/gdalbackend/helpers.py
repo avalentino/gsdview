@@ -246,26 +246,28 @@ class AddoHelper(GdalHelper):
         else:
             band = dataset.GetRasterBand(1)
 
-        levels = []
+        oldlevels = []
         estep = 3
         threshold = 0.1
 
         if band.GetOverviewCount():
-            levels = gdalsupport.ovrLevels(band)
-            if set(levels).issuperset((2, 4)):
+            oldlevels = gdalsupport.ovrLevels(band)
+            if set(oldlevels).issuperset((2, 4)):
                 estep = 2
                 threshold = 1.1
 
         # @NOTE: use dataset for levels computation because the
         #        IMAGE_STRUCTURE metadata are not propagated from
         #        CachedDatasetItem to raster bands
-        #return gdalsupport.ovrComputeLevels(dataset, estep=estep,
-        #                                    threshold=threshold)
+        levels = gdalsupport.ovrComputeLevels(dataset, estep=estep,
+                                              threshold=threshold)
 
         # @NOTE: the GDAL band info is configured to force recomputation of
         #        all levels checked
-        levels.extend(gdalsupport.ovrComputeLevels(dataset, estep=estep,
-                                                   threshold=threshold))
+        if levels:
+            levels.extend(oldlevels)
+            levels.sort()
+
         return levels
 
     def do_start(self, item):
