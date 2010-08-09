@@ -634,6 +634,35 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
         return levels
 
 
+class SpecialOverviewWidget(OverviewWidget):
+    '''An overview widget that always performs overview recomputation.
+
+    .. seealso:: :class:`OverviewWidget`
+
+    '''
+
+    def reset(self):
+        super(SpecialOverviewWidget, self).reset()
+        self.recomputeCheckBox.setChecked(True)
+        self.recomputeCheckBox.hide()
+        self.recomputeLabel.hide()
+
+    def levels(self):
+        if self._newLevels():
+            levels = self._checkedLevels()
+        else:
+            levels = []
+
+        return levels
+
+    @QtCore.pyqtSlot()
+    def _updateStartButton(self):
+        if self._newLevels():
+            self.startButton.setEnabled(True)
+        else:
+            self.startButton.setEnabled(False)
+
+
 class MajorObjectInfoDialog(QtGui.QDialog):
     def __init__(self, gdalobj, parent=None, flags=QtCore.Qt.Widget, **kwargs):
         super(MajorObjectInfoDialog, self).__init__(parent, flags, **kwargs)
@@ -804,7 +833,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.tabWidget.setTabIcon(3, geticon('color.svg', __name__))
 
         # Overview page
-        self.overviewWidget = OverviewWidget(parent=self)
+        self.overviewWidget = SpecialOverviewWidget(parent=self)
         self.overviewWidget.addLevelButton.setIcon(geticon('add.svg', 'gsdview'))
         self.tabWidget.addTab(self.overviewWidget,
                               geticon('overview.svg', __name__),
