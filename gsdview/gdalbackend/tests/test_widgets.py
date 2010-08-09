@@ -93,7 +93,7 @@ def test_ovrwidget():
 
     app = QtGui.QApplication(sys.argv)
 
-    w = OvervieWidget(band)
+    w = OverviewWidget(band)
     w.show()
 
     def callback():
