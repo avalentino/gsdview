@@ -186,13 +186,49 @@ class BandItem(MajorObjectItem):
             gdalobj = self._obj
         else:
             self._obj = gdalobj
+
         if self.rowCount() > gdalobj.GetOverviewCount():
             logging.warning('unable to reopen raster band: '
                             'unexpected number of overviews')
             return
 
-        #~ self._closeChildren()    # @TODO: remove
-        self._setup_children()
+        if VISIBLE_OVERVIEW_ITEMS:
+            levelsmap = dict(zip(gdalsupport.ovrLevels(gdalobj),
+                                 range(gdalobj.GetOverviewCount())))
+
+            oldlevelsmap = dict(zip(gdalsupport.ovrLevels(self._obj),
+                                range(self._obj.GetOverviewCount())))
+
+            toremove = []
+            for level, index in oldlevelsmap.items():
+                if level not in levelsmap:
+                    #self.removeRow(index)
+                    toremove.append(index)
+                else:
+                    item = self.GetOverview(index)
+                    newindex = levelsmap[level]
+                    item._reopen(gdalobj.GetOverview(newindex))
+
+            for index in toremove:
+                self.takeRow(index)
+
+            for level, index in levelsmap.items():
+                if level in oldlevelsmap:
+                    continue
+
+                ovr = gdalobj.GetOverview(index)
+                item = OverviewItem(ovr)
+                if not item.text():
+                    description = '%s n. %d' % (QtGui.qApp.tr('Overview'),
+                                                index)
+                    item.setText(description)
+                    item.setToolTip(description)
+                self.appendRow(item)
+
+            # @TODO: complete
+            #self.sortChildren(0, QtCore.Qt.AscendngOrder)
+
+        self._obj = gdalobj
         self.model().itemChanged.emit(self)
 
 
