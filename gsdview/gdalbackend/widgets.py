@@ -799,6 +799,19 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.tabWidget.setTabIcon(2, geticon('statistics.svg', __name__))
         self.tabWidget.setTabIcon(3, geticon('color.svg', __name__))
 
+        # Overview page
+        self.overviewWidget = OvervieWidget(parent=self)
+        self.overviewWidget.addLevelButton.setIcon(geticon('add.svg', 'gsdview'))
+        self.tabWidget.addTab(self.overviewWidget,
+                              geticon('overview.svg', __name__),
+                              self.tr('Overviews'))
+
+        # @TODO: remove
+        self.overviewWidget.optionsGroupBox.hide()
+        self.overviewWidget.addLevelButton.hide()
+        self.overviewWidget.addLevelSpinBox.hide()
+        self.overviewWidget.ovrTreeView.setEnabled(False)
+
         # Context menu actions
         qt4support.setViewContextActions(self.histogramTableWidget)
         qt4support.setViewContextActions(self.colorTableWidget)
@@ -857,6 +870,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.resetStatistics()
         self.resetHistogram()
         self.resetColorTable()
+        self.overviewWidget.reset()
 
     def update(self):
         super(BandInfoDialog, self).update()
@@ -865,6 +879,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.updateStatistics()
         self.updateHistogram()
         self.updateColorTable()
+        self.updateOverviewTab()
 
     def resetImageStructure(self):
         _setupImageStructureInfo(self, {})
@@ -1140,6 +1155,12 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
             else:
                 self.tabWidget.setTabEnabled(3, True)
                 self.setColorTable(colortable)
+
+    def updateOverviewTab(self):
+        if self.band is not None:
+            self.overviewWidget.setBand(self.band)
+        else:
+            self.overviewWidget.reset()
 
     # @TODO: check
     @QtCore.pyqtSlot()
