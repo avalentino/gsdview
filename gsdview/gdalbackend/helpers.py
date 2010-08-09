@@ -191,7 +191,7 @@ class GdalHelper(object):
         try:
             self._disconnect_signals()
 
-            # only call do_finalization if processing finished successfully
+            # only call do_finalize if processing finished successfully
             if returncode == 0 and not self.controller.userstop:
                 self.do_finalize()
             else:

@@ -358,8 +358,8 @@ class BackendPreferencesPage(GDALPreferencesPage):
         super(BackendPreferencesPage, self).save(settings)
 
 
-OvervieWidgetBase = qt4support.getuiform('overview', __name__)
-class OvervieWidget(QtGui.QWidget, OvervieWidgetBase):
+OverviewWidgetBase = qt4support.getuiform('overview', __name__)
+class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
     '''Widget for overview management.
 
     Display existing overview levels and allow to to sibmit overview
@@ -379,7 +379,7 @@ class OvervieWidget(QtGui.QWidget, OvervieWidgetBase):
 
     def __init__(self, band=None, parent=None, flags=QtCore.Qt.Widget,
                  **kwargs):
-        super(OvervieWidget, self).__init__(parent, flags, **kwargs)
+        super(OverviewWidget, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         # @COMPATIBILITY: GDAL >= 1.7.0
@@ -473,6 +473,10 @@ class OvervieWidget(QtGui.QWidget, OvervieWidgetBase):
     def setBand(self, band):
         self.reset()
 
+        if gdal.DataTypeIsComplex(band.DataType):
+            index = self.resamplingMethodComboBox.findText('avarage_magphase')
+            self.resamplingMethodComboBox.setCurrentIndex(index)
+
         ovrcount = band.GetOverviewCount()
 
         self.overviewCountValue.setText(str(ovrcount))
@@ -496,7 +500,7 @@ class OvervieWidget(QtGui.QWidget, OvervieWidgetBase):
             xexp = int(numpy.log2(band.XSize))
             yexp = int(numpy.log2(band.YSize))
             mexexp = min(xexp, yexp)
-            mexexp = max(mexexp-2, 1)
+            mexexp = max(mexexp-4, 1)
             for exp_ in range(1, mexexp):
                 level = 2**exp_
                 if level in levels:
@@ -800,7 +804,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.tabWidget.setTabIcon(3, geticon('color.svg', __name__))
 
         # Overview page
-        self.overviewWidget = OvervieWidget(parent=self)
+        self.overviewWidget = OverviewWidget(parent=self)
         self.overviewWidget.addLevelButton.setIcon(geticon('add.svg', 'gsdview'))
         self.tabWidget.addTab(self.overviewWidget,
                               geticon('overview.svg', __name__),
