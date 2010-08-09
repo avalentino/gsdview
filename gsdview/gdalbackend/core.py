@@ -443,8 +443,9 @@ class GDALBackend(QtCore.QObject):
 
     @QtCore.pyqtSlot()
     def _resethelpers(self):
-        self._helpers['statsdialog'].dialod = None
-        self._helpers['histdialog'].dialog = None
+        self._helpers['statsdialog'].reset()
+        self._helpers['histdialog'].reset()
+        self._helpers['ovrdialog'].reset()
 
     @QtCore.pyqtSlot()
     def showItemProperties(self):

@@ -52,12 +52,25 @@ class GdalHelper(object):
 
     '''
 
+    _PROGRESS_RANGE = (0, 100)
+
     def __init__(self, app, tool):
         super(GdalHelper, self).__init__()
         self.app = app
         self.tool = tool
+        self.progressdialog = None
         self._tmpdir = None
-        #self._datasetitem = None
+
+    def setup_progress_dialog(self, title=''):
+        dialog = QtGui.QProgressDialog(self.app)
+        dialog.setModal(True)
+        if title:
+            dialog.setLabelText(title)
+        dialog.hide()
+
+        self.progressdialog = dialog
+
+        return dialog
 
     @property
     def controller(self):
@@ -70,6 +83,13 @@ class GdalHelper(object):
     @property
     def gdalbackend(self):
         return self.app.pluginmanager.plugins['gdalbackend']
+
+    @staticmethod
+    def ovrfiles(dirname):
+        files = []
+        for pattern in ('*.ovr', '*.aux'):
+            files.extend(glob.glob(os.path.join(dirname, pattern)))
+        return files
 
     def setup_tmpdir(self, dataset):
         '''Create a temporary diran copy the virtual file into it.'''
@@ -93,14 +113,92 @@ class GdalHelper(object):
                                     '"%s"' % self._tmpdir)
             self._tmpdir = None
 
-    def start(self, *args, **kwargs):
-        #self.controller.finished.connect(self.finalize)
-        raise NotImplementedError('GdalHelper.start(*args, **kwargs)')
+    def setProgressRange(self, minimum, maximum):
+        self.app.progressbar.setRange(minimum, maximum)
+        if self.progressdialog:
+            self.progressdialog.setRange(minimum, maximum)
 
+    def _reset_progress(self):
+        self.setProgressRange(0, 100)
+        if self.progressdialog:
+            self.progressdialog.hide()
+
+    def reset(self):
+        self._reset_progress()
+
+    def _connect_signals(self):
+        self.controller.finished.connect(self.finalize)
+
+        if self.progressdialog:
+            self.progressdialog.canceled.connect(self.controller.stop_tool)
+            self.app.progressbar.valueChanged.connect(
+                                                self.progressdialog.setValue)
+
+    def _disconnect_signals(self):
+        # @TODO: catch exceptions
+        self.controller.finished.disconnect(self.finalize)
+        if self.progressdialog:
+            self.app.progressbar.valueChanged.disconnect(
+                                                self.progressdialog.setValue)
+            self.progressdialog.canceled.disconnect(self.controller.stop_tool)
+
+    def do_start(self, *args, **kwargs):
+        raise NotImplementedError(self.__class__.__name__ + '.do_start')
+
+    def start(self, *args, **kwargs):
+        if self.controller.isbusy:
+            self.logger.warning('unable to perform overview computation: '
+                                'the subprocess controller is currently '
+                                'busy.')
+            return
+        else:
+            self.logger.debug('run the "%s" subprocess.' %
+                                    os.path.basename(self.tool.executable))
+
+        # @TODO: check: this instruuctin in this position don' seems to work
+        #        (the progressbar hangs)
+        #self.setProgressRange(*self._PROGRESS_RANGE)
+        #if self.progressdialog:
+        #    #self.progressdialog.reset()
+        #    self.progressdialog.show()
+
+        # @TODO: connect signals after the process succefully started (??)
+        self._connect_signals()
+
+        try:
+            startfailure = self.do_start(*args, **kwargs)
+        except Exception, e:
+            self.logger.error(str(e))
+            startfailure = True
+
+        if startfailure:
+            self._disconnect_signals()
+        else:
+            self.setProgressRange(*self._PROGRESS_RANGE)
+            if self.progressdialog:
+                #self.progressdialog.reset()
+                self.progressdialog.show()
+
+    def do_finalize(self):
+        pass
+
+    def do_finalize_on_error(self):
+        pass
+
+    #@QtCore.pyqtSlot()
     #@QtCore.pyqtSlot(int)
     def finalize(self, returncode=0):
-        self.controller.finished.disconnect(self.finalize)
-        self.cleanup()
+        try:
+            self._disconnect_signals()
+
+            # only call do_finalization if processing finished successfully
+            if returncode == 0 and not self.controller.userstop:
+                self.do_finalize()
+            else:
+                self.do_finalize_on_error()
+        finally:
+            self.cleanup()
+            self._reset_progress()
 
 
 class AddoHelper(GdalHelper):
@@ -140,44 +238,58 @@ class AddoHelper(GdalHelper):
     def __init__(self, app, tool):
         super(AddoHelper, self).__init__(app, tool)
         self._datasetitem = None
+        self._band = None
 
-    def _ovrfiles(self, dirname):
-        ovrfiles = []
-        for pattern in ('*.ovr', '*.aux'):
-            ovrfiles.extend(glob.glob(os.path.join(dirname, pattern)))
-        return ovrfiles
-
-    def start(self, item):
-        #missingOverviewLevels = gdalsupport.ovrComputeLevels(item)
-
-        if not isinstance(item, modelitems.DatasetItem):
-            dataset = item.parent()
+    def target_levels(self, dataset):
+        if self._band is not None:
+            band = self._band
         else:
-            dataset = item
-        assert isinstance(dataset, modelitems.DatasetItem)
-        assert isinstance(dataset, modelitems.CachedDatasetItem)
+            band = dataset.GetRasterBand(1)
+
+        levels = []
+        estep = 3
+        threshold = 0.1
+
+        if band.GetOverviewCount():
+            levels = gdalsupport.ovrLevels(band)
+            if set(levels).issuperset((2, 4)):
+                estep = 2
+                threshold = 1.1
 
         # @NOTE: use dataset for levels computation because the
         #        IMAGE_STRUCTURE metadata are not propagated from
         #        CachedDatasetItem to raster bands
-        missingOverviewLevels = gdalsupport.ovrComputeLevels(dataset)
+        #return gdalsupport.ovrComputeLevels(dataset, estep=estep,
+        #                                    threshold=threshold)
+
+        # @NOTE: the GDAL band info is configured to force recomputation of
+        #        all levels checked
+        levels.extend(gdalsupport.ovrComputeLevels(dataset, estep=estep,
+                                                   threshold=threshold))
+        return levels
+
+    def do_start(self, item):
+        #levels = gdalsupport.ovrComputeLevels(item)
+
+        # @NOTE: use dataset for levels computation because the
+        #        IMAGE_STRUCTURE metadata are not propagated from
+        #        CachedDatasetItem to raster bands
+        if not isinstance(item, modelitems.DatasetItem):
+            self._band = item
+            dataset = item.parent()
+        else:
+            dataset = item
+        assert isinstance(dataset, modelitems.DatasetItem), str(dataset)
+        assert isinstance(dataset, modelitems.CachedDatasetItem), str(dataset)
+
+        levels = self.target_levels(dataset)
 
         # @NOTE: overviews are computed for all bands so I do this at
         #        application level, before a specific band is choosen.
         #        Maybe ths is not the best policy and overviews should be
         #        computed only when needed instead
-        if missingOverviewLevels:
-            self.logger.debug('missingOverviewLevels: %s' %
-                                                        missingOverviewLevels)
-
-            if self.controller.isbusy:
-                self.logger.warning('unable to perform overview computation: '
-                                    'the subprocess controller is currently '
-                                    'busy.')
-                return
-            else:
-                self.logger.debug('run the "%s" subprocess.' %
-                                        os.path.basename(self.tool.executable))
+        if levels:
+            self.logger.debug('requested levels: %s' % levels)
 
             # Run an external process for overviews computation
             self.app.statusBar().showMessage('Quick look image generation ...')
@@ -194,40 +306,39 @@ class AddoHelper(GdalHelper):
                 self.tool.set_resampling_method('average')
 
             args = [os.path.basename(vrtfilename)]
-            args.extend(map(str, missingOverviewLevels))
-
+            args.extend(map(str, levels))
             self.tool.cwd = os.path.dirname(vrtfilename)
-            self.controller.finished.connect(self.finalize)
             self.controller.run_tool(self.tool, *args)
+        else:
+            return True
 
-    #@QtCore.pyqtSlot(int)
-    def finalize(self, returncode=0):
-        self.controller.finished.disconnect(self.finalize)
-
+    def do_finalize(self):
         # @TODO: check if opening the dataset in update mode
         #        (gdal.GA_Update) is a better solution
 
         dataset = self._datasetitem
-
         if not dataset:
             self.logger.debug('unable to retrieve dataset for finalization')
             return
 
-        # only reload if processing finished successfully
-        if returncode == 0 and not self.controller.userstop:
-            # move ovr files in the cache dir
-            dirname = os.path.dirname(dataset.vrtfilename)
-            ovrfiles = self._ovrfiles(self._tmpdir)
-            for ovrfile in ovrfiles:
-                shutil.move(ovrfile, dirname)
+        # move ovr files in the cache dir
+        dirname = os.path.dirname(dataset.vrtfilename)
+        ovrfiles = self.ovrfiles(self._tmpdir)
+        for ovrfile in ovrfiles:
+            dst = os.path.join(dirname, os.path.basename(ovrfile))
+            if os.path.exists(dst):
+                os.remove(dst)
+            shutil.move(ovrfile, dirname)
 
-            dataset.reopen()
-            for row in range(dataset.rowCount()):
-                item = dataset.child(row)
-                self.app.treeview.expand(item.index())
+        dataset.reopen()
+        for row in range(dataset.rowCount()):
+            item = dataset.child(row)
+            self.app.treeview.expand(item.index())
 
-        self.cleanup()
+    def reset(self):
+        super(AddoHelper, self).reset()
         self._datasetitem = None
+        self._band = None
 
 
 class StatsHelper(GdalHelper):
@@ -242,23 +353,11 @@ class StatsHelper(GdalHelper):
         self._datasetitem = None
         self._banditem = None
 
-    def setProgressRange(self, minimum, maximum):
-        self.app.progressbar.setRange(minimum, maximum)
-
-    def start(self, item):
+    def do_start(self, item):
         if not isinstance(item, modelitems.BandItem):
             raise ValueError('invalid band item: %s' % item)
 
         dataset = item.parent()
-
-        if self.controller.isbusy:
-            self.logger.warning('unable to perform overview computation: '
-                                'the subprocess controller is currently '
-                                'busy.')
-            return
-        else:
-            self.logger.debug('run the "%s" subprocess.' %
-                                    os.path.basename(self.tool.executable))
 
         # Run an external process for statistics computation
         self.app.statusBar().showMessage('Compute coarse statistics ...')
@@ -272,51 +371,38 @@ class StatsHelper(GdalHelper):
 
         args = [os.path.basename(vrtfilename)]
         self.tool.cwd = os.path.dirname(vrtfilename)
-        self.controller.finished.connect(self.finalize)
         self.controller.run_tool(self.tool, *args)
-        self.setProgressRange(*self._PROGRESS_RANGE)
 
-    def finalize(self, returncode=0):
-        self.controller.finished.disconnect(self.finalize)
-
+    def do_finalize(self):
         # @TODO: check if opening the dataset in update mode
         #        (gdal.GA_Update) is a better solution
-
         dataset = self._datasetitem
-
         if not dataset:
             self.logger.debug('unable to retrieve dataset for finalization')
             return
 
-        try:
-            # only update if processing finished successfully
-            if returncode == 0 and not self.controller.userstop:
-                # set computed statisstic values
-                bandno = self._banditem.GetBand()
-                tmpvrt = os.path.join(self._tmpdir,
-                                      os.path.basename(dataset.vrtfilename))
-                ds = gdal.Open(tmpvrt)
-                if not ds:
-                    self.logger.warning('unable to open temporary virtual '
-                                        'file for getting statistics.')
-                    return
+        # set computed statisstic values
+        bandno = self._banditem.GetBand()
+        tmpvrt = os.path.join(self._tmpdir,
+                              os.path.basename(dataset.vrtfilename))
+        ds = gdal.Open(tmpvrt)
+        if not ds:
+            self.logger.warning('unable to open temporary virtual file for '
+                                'getting statistics.')
+            return
 
-                band = ds.GetRasterBand(bandno)
-                if not band:
-                    self.logger.warning('unable to open raster band n. %d.' %
-                                                                        bandno)
-                    return
+        vrtband = ds.GetRasterBand(bandno)
+        if not vrtband:
+            self.logger.warning('unable to open raster band n. %d.' % bandno)
+            return
 
-                self.copy_data(band)
+        self.copy_data(vrtband)
+        self.apply()
 
-                # only try to open the new view if statistics have been
-                # computed successfully
-                self.apply()
-        finally:
-            self.cleanup()
-            self._banditem = None
-            self._datasetitem = None
-            self.setProgressRange(0, 100)
+    def reset(self):
+        super(StatsHelper, self).reset()
+        self._banditem = None
+        self._datasetitem = None
 
     def copy_data(self, vrtband):
         stats = gdalsupport.GetCachedStatistics(vrtband)
@@ -334,70 +420,28 @@ class StatsHelper(GdalHelper):
 class StatsDialogHelper(StatsHelper):
     '''Helper class for statistics computation on live raster bands.'''
 
-    def __init__(self, app, tool, dialog=None):
+    _PROGRESS_DIALOD_MSG = 'Statistics computation.'
+
+    def __init__(self, app, tool):
         super(StatsDialogHelper, self).__init__(app, tool)
-        self._dialog = dialog
+        self.dialog = None
+        if self._PROGRESS_DIALOD_MSG:
+            self.setup_progress_dialog(app.tr(self._PROGRESS_DIALOD_MSG))
 
-        self.progressdialog = QtGui.QProgressDialog(app)
-        self.progressdialog.setModal(True)
-        self.progressdialog.setLabelText(app.tr('Statistics computation.'))
-        self.progressdialog.hide()
+    def start(self, item, dialog=None):
+        if dialog:
+            self.dialog = dialog
 
-    def _get_dialog(self):
-        return self._dialog
+        if not self.dialog:
+            raise ValueError('"dialog" attribute not set')
 
-    def _set_dialog(self, value):
-        if self.controller.isbusy:
-            raise RuntimeError("can't set the dialog attribute while an "
-                               "external tool is running.")
-        self._dialog = value
-        #self.progressdialog.setParent(value) # @TODO: check
-
-    dialog = property(_get_dialog, _set_dialog)
-
-    ## @COMPATIBILITY: property.setter nedds Python >= 2.6
-    #@property
-    #def dialog(self):
-    #    return self._dialog
-    #
-    #@dialog.setter
-    #def dialog(self, value):
-    #    if self.controller.isbusy:
-    #        raise RuntimeError("can't set the dialog attribute while an "
-    #                           "external tool is running.")
-    #    self._dialog = value
-    #    self.progressdialog.setParent(value)
-
-    def setProgressRange(self, minimum, maximum):
-        super(StatsDialogHelper, self).setProgressRange(minimum, maximum)
-        self.progressdialog.setRange(minimum, maximum)
-
-    def _checkdialog(self):
-        if self._dialog is None:
-            raise ValueError('"dialog" attribute is None.')
-
-    def start(self, item):
-        self._checkdialog()
-        if not self.controller.isbusy:
-            self.progressdialog.canceled.connect(self.controller.stop_tool)
-            self.app.progressbar.valueChanged.connect(
-                                                self.progressdialog.setValue)
-
-            #self.progressdialog.reset()
-            self.progressdialog.show()
         super(StatsDialogHelper, self).start(item)
 
-    #@QtCore.pyqtSlot()
-    #@QtCore.pyqtSlot(int)
-    def finalize(self, returncode=0):
-        super(StatsDialogHelper, self).finalize(returncode)
-        self.progressdialog.hide()
-        self.progressdialog.canceled.disconnect(self.controller.stop_tool)
-        self.app.progressbar.valueChanged.disconnect(
-                                                self.progressdialog.setValue)
+    def reset(self):
+        super(StatsDialogHelper, self).reset()
+        self.dialog = None
 
     def apply(self):
-        self._checkdialog()
         self.dialog.updateStatistics()
 
 
@@ -405,17 +449,13 @@ class HistDialogHelper(StatsDialogHelper):
     '''Helper class for histogram computation on live raster bands.'''
 
     _PROGRESS_RANGE = (0, 100)
-
-    def __init__(self, app, tool, dialog=None):
-        super(HistDialogHelper, self).__init__(app, tool)
-        self.progressdialog.setLabelText(app.tr('Histogram computation.'))
+    _PROGRESS_DIALOD_MSG = 'Histogram computation.'
 
     def copy_data(self, vrtband):
         hmin, hmax, nbucketsm, hist = vrtband.GetDefaultHistogram()
         self._banditem.SetDefaultHistogram(hmin, hmax, hist)
 
     def apply(self):
-        self._checkdialog()
         hist = self._banditem.GetDefaultHistogram()
         #self.dialog.updateHistogram()
         self.dialog.setHistogram(*hist)
