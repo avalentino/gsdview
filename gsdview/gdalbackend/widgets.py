@@ -397,6 +397,7 @@ class OvervieWidget(QtGui.QWidget, OvervieWidgetBase):
         model.itemChanged.connect(self._updateStartButton)
         self.ovrTreeView.setModel(model)
 
+        self._readonly = False
         self._band = None
 
         self.recomputeCheckBox.toggled.connect(self._updateStartButton)
@@ -406,6 +407,17 @@ class OvervieWidget(QtGui.QWidget, OvervieWidgetBase):
             self.setBand(band)
         else:
             self.reset()
+
+    def readOnly(self):
+        return self._readonly
+
+    def setReadOnly(self, readonly=True):
+        self._readonly = readonly
+        visible = bool(not readonly)
+        self.optionsGroupBox.setVisible(visible)
+        self.addLevelButton.setVisible(visible)
+        self.addLevelSpinBox.setVisible(visible)
+        self.ovrTreeView.setEnabled(visible)
 
     def reset(self):
         self.ovrTreeView.model().clear()
@@ -433,7 +445,8 @@ class OvervieWidget(QtGui.QWidget, OvervieWidgetBase):
 
         self._band = None
 
-    def _addLevel(self, level, xsize, ysize, checked=QtCore.Qt.Unchecked):
+    def _addLevel(self, level, xsize, ysize, checked=QtCore.Qt.Unchecked,
+                  locked=False):
         model = self.ovrTreeView.model()
 
         check = QtGui.QStandardItem()
@@ -446,6 +459,16 @@ class OvervieWidget(QtGui.QWidget, OvervieWidgetBase):
         size = QtGui.QStandardItem('%dx%d' % (ysize, xsize))
 
         model.appendRow([check, ovrfact, size])
+
+        if locked:
+            #model.item(row, 0).setEnabled(False)
+            #model.item(row, 0).setEditable(False) # doesn't work
+            check.setEnabled(False)
+            font = ovrfact.font()
+            font.setBold(True)
+            check.setFont(font)
+            ovrfact.setFont(font)
+            size.setFont(font)
 
     def setBand(self, band):
         self.reset()
@@ -466,21 +489,21 @@ class OvervieWidget(QtGui.QWidget, OvervieWidgetBase):
         for index in range(ovrcount):
             ovr = band.GetOverview(index)
             self._addLevel(levels[index], ovr.XSize, ovr.YSize,
-                           QtCore.Qt.Checked)
-            model.item(model.rowCount()-1, 0).setEnabled(False)
+                           QtCore.Qt.Checked, True)
 
-        # Add powers of two
-        xexp = int(numpy.log2(band.XSize))
-        yexp = int(numpy.log2(band.YSize))
-        mexexp = min(xexp, yexp)
-        mexexp = max(mexexp-2, 1)
-        for exp_ in range(1, mexexp):
-            level = 2**exp_
-            if level in levels:
-                continue
-            xsize = int(band.XSize + level - 1) // level
-            ysize = int(band.YSize + level - 1) // level
-            self._addLevel(level, xsize, ysize)
+        if not self._readonly:
+            # Add powers of two
+            xexp = int(numpy.log2(band.XSize))
+            yexp = int(numpy.log2(band.YSize))
+            mexexp = min(xexp, yexp)
+            mexexp = max(mexexp-2, 1)
+            for exp_ in range(1, mexexp):
+                level = 2**exp_
+                if level in levels:
+                    continue
+                xsize = int(band.XSize + level - 1) // level
+                ysize = int(band.YSize + level - 1) // level
+                self._addLevel(level, xsize, ysize)
 
         view.header().resizeSections(QtGui.QHeaderView.ResizeToContents)
         view.sortByColumn(1, QtCore.Qt.AscendingOrder)
