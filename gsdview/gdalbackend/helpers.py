@@ -132,7 +132,7 @@ class AddoHelper(GdalHelper):
               In this way the pre-existing overview are preserved but
               the copy operation could be heavy weight.
 
-              Maybe some suggestion can be asked on the GDAl
+              Maybe some suggestion can be asked on the GDAL
               mailing-list.
 
     '''
