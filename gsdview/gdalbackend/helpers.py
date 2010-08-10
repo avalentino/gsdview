@@ -494,6 +494,5 @@ class AddoDialogHelper(AddoHelper):
         self.dialog = None
 
     def do_finalize(self):
-        print 'apply --> updateOverviewTab'
         super(AddoDialogHelper, self).do_finalize()
         self.dialog.updateOverviewTab()
