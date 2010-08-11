@@ -168,7 +168,8 @@ class GdalHelper(object):
         try:
             startfailure = self.do_start(*args, **kwargs)
         except Exception, e:
-            self.logger.error(str(e))
+            #self.logger.error(str(e), exc_info=True)
+            self.logger.debug(str(e), exc_info=True)
             startfailure = True
 
         if startfailure:
@@ -277,11 +278,16 @@ class AddoHelper(GdalHelper):
         #        IMAGE_STRUCTURE metadata are not propagated from
         #        CachedDatasetItem to raster bands
         if not isinstance(item, modelitems.DatasetItem):
+            # NOTE: a reguest of opening an overview is converted into a
+            #       request for opening the corresponding raster band
+            while isinstance(item, modelitems.OverviewItem):
+                item = item.parent()
+
             self._band = item
             dataset = item.parent()
         else:
             dataset = item
-        assert isinstance(dataset, modelitems.DatasetItem), str(dataset)
+
         assert isinstance(dataset, modelitems.CachedDatasetItem), str(dataset)
 
         levels = self.target_levels(dataset)
@@ -358,6 +364,11 @@ class StatsHelper(GdalHelper):
     def do_start(self, item):
         if not isinstance(item, modelitems.BandItem):
             raise ValueError('invalid band item: %s' % item)
+
+        # NOTE: a reguest of opening an overview is converted into a request
+        #       for opening the corresponding raster band
+        while isinstance(item, modelitems.OverviewItem):
+            item = item.parent()
 
         dataset = item.parent()
 

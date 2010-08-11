@@ -531,6 +531,11 @@ class GDALBackend(QtCore.QObject):
             item = self._app.currentItem()
         assert isinstance(item, modelitems.BandItem), 'item = %s' % str(item)
 
+        # NOTE: a reguest of opening an overview is converted into a request
+        #       for opening the corresponding raster band
+        while isinstance(item, modelitems.OverviewItem):
+            item = item.parent()
+
         if not item.scene:
             if not item.GetDescription():
                 msg = 'band "%s" is not visualizable' % (item.row() + 1)
