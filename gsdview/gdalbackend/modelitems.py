@@ -223,7 +223,7 @@ class BandItem(MajorObjectItem):
                                                 index)
                     item.setText(description)
                     item.setToolTip(description)
-                self.appendRow(item)
+                self.insertRow(index, item)
 
             # @TODO: complete
             #self.sortChildren(0, QtCore.Qt.AscendngOrder)
