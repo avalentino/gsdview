@@ -838,6 +838,8 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.tabWidget.setTabIcon(3, geticon('color.svg', __name__))
 
         # Overview page
+
+        #: overview widget
         self.overviewWidget = SpecialOverviewWidget(parent=self)
         self.overviewWidget.addLevelButton.setIcon(geticon('add.svg', 'gsdview'))
         self.tabWidget.addTab(self.overviewWidget,

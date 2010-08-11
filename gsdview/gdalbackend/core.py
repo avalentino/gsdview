@@ -428,7 +428,18 @@ class GDALBackend(QtCore.QObject):
             dialog = None
 
         # @TODO: rewrite
-        if isinstance(dialog, widgets.BandInfoDialog):
+        if dialog and isinstance(dialog, widgets.BandInfoDialog):
+            if isinstance(item, modelitems.OverviewItem):
+                # disable some function on overview items
+                dialog.overviewWidget.setReadOnly(True)
+
+                dialog.approxStatsCheckBox.hide()
+                dialog.computeStatsButton.hide()
+
+                dialog.customHistogramCheckBox.hide()
+                dialog.computeHistogramButton.hide()
+
+            # helpers setup
             for helpername in ('statsdialog', 'histdialog', 'ovrdialog'):
                 helper = self._helpers[helpername]
                 helper.dialog = dialog
