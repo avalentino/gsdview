@@ -54,7 +54,7 @@ class Assistant(object):
         ba = QtCore.QByteArray("SetSource ")
         ba.append(self.APP_DOC_PATH)
 
-        self.proc.write(ba + QtCore.QString(page).toLocal8Bit() + '\0')
+        self.proc.write(ba + page + '\0')
 
     def startAssistant(self):
         if not self.proc:
@@ -80,7 +80,7 @@ class Assistant(object):
             if not self.proc.waitForStarted():
                 tr = QtGui.qApp.tr
                 QtGui.QMessageBox.critical(0, tr('Simple Text Viewer'),
-                        tr('Unable to launch Qt Assistant (%1)').arg(app))
+                        tr('Unable to launch Qt Assistant (%s)') % app)
                 return False
 
         return True

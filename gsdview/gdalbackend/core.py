@@ -605,22 +605,25 @@ class GDALBackend(QtCore.QObject):
 
         settings.beginGroup('gdal')
         try:
-            cachesize, ok = settings.value('GDAL_CACHEMAX').toULongLong()
-            if ok:
+            cachesize = settings.value('GDAL_CACHEMAX')
+            if cachesize is not None:
+                cachesize = int(cachesize)
                 gdal.SetCacheMax(cachesize)
                 logger.debug('GDAL cache size det to %d' % cachesize)
 
-            value = settings.value('GDAL_DATA').toString()
+            value = settings.value('GDAL_DATA')
             if value:
-                value = os.path.expanduser(os.path.expandvars(str(value)))
+                value = os.path.expanduser(os.path.expandvars(value))
                 gdal.SetConfigOption('GDAL_DATA', value)
                 logger.debug('GDAL_DATA directory set to "%s"' % value)
 
             for optname in ('GDAL_SKIP', 'GDAL_DRIVER_PATH', 'OGR_DRIVER_PATH'):
-                value = settings.value(optname).toString()
-                value = os.path.expanduser(os.path.expandvars(str(value)))
-                gdal.SetConfigOption(optname, value)
-                logger.debug('%s set to "%s"' % (optname, value))
+                value = settings.value(optname)
+                if value is not None:
+                    value = os.path.expanduser(os.path.expandvars(value))
+                    gdal.SetConfigOption(optname, value)
+                    logger.debug('%s set to "%s"' % (optname, value))
+
             gdal.AllRegister()
             logger.debug('run "gdal.AllRegister()"')
 
@@ -643,7 +646,12 @@ class GDALBackend(QtCore.QObject):
         settings.beginGroup('gdalbackend')
         try:
             # show overviews in the treeview
-            value = settings.value('visible_overview_items').toBool()
+            value = settings.value('visible_overview_items')
+
+            # @COMPATIBILITY: presumably a bug in PyQt4 (4.7.2)
+            if isinstance(value, basestring):
+                value = True if value in ('true', 'True') else False
+
             modelitems.VISIBLE_OVERVIEW_ITEMS = value
             # @TODO: reload all items
         finally:
@@ -655,8 +663,8 @@ class GDALBackend(QtCore.QObject):
         settings.beginGroup('gdalbackend')
         try:
             # show overviews in the treeview
-            value = modelitems.VISIBLE_OVERVIEW_ITEMS
-            settings.setValue('visible_overview_items', QtCore.QVariant(value))
+            settings.setValue('visible_overview_items',
+                              modelitems.VISIBLE_OVERVIEW_ITEMS)
         finally:
             settings.endGroup()
 

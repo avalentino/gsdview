@@ -87,7 +87,7 @@ def preload(modules, app=None):
     timer = Timer()
     logger = logging.getLogger('gsdview')
     for modname in modules:
-        logger.info(app.tr('Importing %1 module ...').arg(modname))
+        logger.info(app.tr('Importing %s module ...') % modname)
         app.processEvents()
         logging.debug('%s import: %d.%06ds' % ((modname,) + timer.update()))
 

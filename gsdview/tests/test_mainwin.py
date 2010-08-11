@@ -28,7 +28,7 @@ class MdiChild(QtGui.QTextEdit):
 
     def newFile(self):
         self.isUntitled = True
-        self.curFile = self.tr('document%1.txt').arg(MdiChild.sequenceNumber)
+        self.curFile = self.tr('document%d.txt') % MdiChild.sequenceNumber
         MdiChild.sequenceNumber += 1
         self.setWindowTitle(self.curFile + '[*]')
 
@@ -36,9 +36,8 @@ class MdiChild(QtGui.QTextEdit):
         file = QtCore.QFile(fileName)
         if not file.open(QtCore.QFile.ReadOnly | QtCore.QFile.Text):
             QtGui.QMessageBox.warning(self, self.tr('MDI'),
-                        self.tr('Cannot read file %1:\n%2.')
-                        .arg(fileName)
-                        .arg(file.errorString()))
+                        self.tr('Cannot read file %s:\n%s.') % (
+                                                fileName, file.errorString()))
             return False
 
         instr = QtCore.QTextStream(file)
@@ -68,9 +67,8 @@ class MdiChild(QtGui.QTextEdit):
 
         if not file.open(QtCore.QFile.WriteOnly | QtCore.QFile.Text):
             QtGui.QMessageBox.warning(self, self.tr('MDI'),
-                    self.tr('Cannot write file %1:\n%2.')
-                    .arg(fileName)
-                    .arg(file.errorString()))
+                    self.tr('Cannot write file %s:\n%s.') % (
+                                                fileName, file.errorString()))
             return False
 
         outstr = QtCore.QTextStream(file)
@@ -100,9 +98,9 @@ class MdiChild(QtGui.QTextEdit):
     def maybeSave(self):
         if self.document().isModified():
             ret = QtGui.QMessageBox.warning(self, self.tr('MDI'),
-                    self.tr("'%1' has been modified.\n"
-                            "Do you want to save your changes?")
-                    .arg(self.userFriendlyCurrentFile()),
+                    self.tr("'%s' has been modified.\n"
+                            "Do you want to save your changes?") %
+                                            self.userFriendlyCurrentFile(),
                     QtGui.QMessageBox.Yes | QtGui.QMessageBox.Default,
                     QtGui.QMessageBox.No,
                     QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Escape)

@@ -201,11 +201,9 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
 
             # cache size
             cachesize = settings.value('GDAL_CACHEMAX')
-            if not cachesize.isNull():
-                cachesize, ok = cachesize.toULongLong()
-                if ok:
-                    self.cacheCheckBox.setChecked(True)
-                    self.cacheSpinBox.setValue(cachesize/1024**2)
+            if cachesize is not None:
+                self.cacheCheckBox.setChecked(True)
+                self.cacheSpinBox.setValue(int(cachesize)/1024**2)
             else:
                 # show the current value and disable the control
                 cachesize = gdal.GetCacheMax()
@@ -213,7 +211,7 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
                 self.cacheCheckBox.setChecked(False)
 
             # GDAL data dir
-            datadir = settings.value('GDAL_DATA').toString()
+            datadir = settings.value('GDAL_DATA')
             if datadir:
                 self.gdalDataCheckBox.setChecked(True)
                 self.gdalDataDirEntryWidget.setText(datadir)
@@ -224,7 +222,7 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
                 self.gdalDataCheckBox.setChecked(False)
 
             # GDAL_SKIP
-            gdalskip = settings.value('GDAL_SKIP').toString()
+            gdalskip = settings.value('GDAL_SKIP')
             if gdalskip:
                 self.skipCheckBox.setChecked(True)
                 self.skipLineEdit.setText(gdalskip)
@@ -235,7 +233,7 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
                 self.skipCheckBox.setChecked(False)
 
             # GDAL driver path
-            gdaldriverpath = settings.value('GDAL_DRIVER_PATH').toString()
+            gdaldriverpath = settings.value('GDAL_DRIVER_PATH')
             if gdaldriverpath:
                 self.gdalDriverPathCheckBox.setChecked(True)
                 self.gdalDriverPathEntryWidget.setText(gdaldriverpath)
@@ -246,7 +244,7 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
                 self.gdalDriverPathCheckBox.setChecked(False)
 
             # OGR driver path
-            ogrdriverpath = settings.value('OGR_DRIVER_PATH').toString()
+            ogrdriverpath = settings.value('OGR_DRIVER_PATH')
             if ogrdriverpath:
                 self.ogrDriverPathCheckBox.setChecked(True)
                 self.ogrDriverPathEntryWidget.setText(ogrdriverpath)
@@ -273,35 +271,34 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
             # cache
             if self.cacheCheckBox.isChecked():
                 value = self.cacheSpinBox.value() * 1024**2
-                settings.setValue('GDAL_CACHEMAX', QtCore.QVariant(value))
+                settings.setValue('GDAL_CACHEMAX', value)
             else:
                 settings.remove('GDAL_CACHEMAX')
 
             # GDAL data dir
             if self.gdalDataCheckBox.isChecked():
                 value = self.gdalDataDirEntryWidget.text()
-                settings.setValue('GDAL_DATA', QtCore.QVariant(value))
+                settings.setValue('GDAL_DATA', value)
             else:
                 settings.remove('GDAL_DATA')
 
             # GDAL_SKIP
             if self.skipCheckBox.isChecked():
-                value = self.skipLineEdit.text()
-                settings.setValue('GDAL_SKIP', QtCore.QVariant(value))
+                settings.setValue('GDAL_SKIP', self.skipLineEdit.text())
             else:
                 settings.remove('GDAL_SKIP')
 
             # GDAL driver path
             if self.gdalDriverPathCheckBox.isChecked():
                 value = self.gdalDriverPathEntryWidget.text()
-                settings.setValue('GDAL_DRIVER_PATH', QtCore.QVariant(value))
+                settings.setValue('GDAL_DRIVER_PATH', value)
             else:
                 settings.remove('GDAL_DRIVER_PATH')
 
             # OGR driver path
             if self.ogrDriverPathCheckBox.isChecked():
                 value = self.ogrDriverPathEntryWidget.text()
-                settings.setValue('OGR_DRIVER_PATH', QtCore.QVariant(value))
+                settings.setValue('OGR_DRIVER_PATH', value)
             else:
                 settings.remove('OGR_DRIVER_PATH')
 
@@ -339,8 +336,13 @@ class BackendPreferencesPage(GDALPreferencesPage):
         settings.beginGroup('gdalbackend')
         try:
             # show overviews in the treeview
-            value = settings.value('visible_overview_items').toBool()
-            self.showOverviewCheckbox.setChecked(value)
+            value = settings.value('visible_overview_items')
+            if value is not None:
+                # @COMPATIBILITY: presumably a bug in PyQt4 (4.7.2)
+                if isinstance(value, basestring):
+                    value = True if value in ('true', 'True') else False
+
+                self.showOverviewCheckbox.setChecked(value)
         finally:
             settings.endGroup()
 
@@ -351,7 +353,7 @@ class BackendPreferencesPage(GDALPreferencesPage):
         try:
             # show overviews in the treeview
             value = self.showOverviewCheckbox.isChecked()
-            settings.setValue('visible_overview_items', QtCore.QVariant(value))
+            settings.setValue('visible_overview_items', bool(value))
         finally:
             settings.endGroup()
 
@@ -454,7 +456,7 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
         check.setCheckState(checked)
 
         ovrfact = QtGui.QStandardItem()
-        ovrfact.setData(QtCore.QVariant(level), QtCore.Qt.DisplayRole)
+        ovrfact.setData(level, QtCore.Qt.DisplayRole)
 
         size = QtGui.QStandardItem('%dx%d' % (ysize, xsize))
 
@@ -713,7 +715,8 @@ class MajorObjectInfoDialog(QtGui.QDialog):
     @QtCore.pyqtSlot(str)
     def updateMetadata(self, domain=''):
         if self._obj is not None:
-            domain = str(domain)    # it could be a QString
+            # @COMPATIBILITY: presumably a bug in PyQt4 4.7.2
+            domain = str(domain)    # it could be a "char const *"
             metadatalist = self._obj.GetMetadata_List(domain)
 
         if metadatalist:

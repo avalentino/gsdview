@@ -30,6 +30,16 @@ __all__ = ['Qt4Blinker', 'Qt4OutputPlane', 'Qt4OutputHandler',
 import time
 import logging
 
+# Select the PyQt API 2
+import sip
+sip.setapi('QDate',       2)
+sip.setapi('QDateTime',   2)
+sip.setapi('QString',     2)
+sip.setapi('QTextStream', 2)
+sip.setapi('QTime',       2)
+sip.setapi('QUrl',        2)
+sip.setapi('QVariant',    2)
+
 from PyQt4 import QtCore, QtGui
 
 from exectools import BaseOutputHandler, BaseToolController, EX_OK, level2tag
@@ -139,8 +149,7 @@ class Qt4OutputPlane(QtGui.QTextEdit):
         '''Save a file.'''
 
         filter_ = self.tr('Text files (*.txt)')
-        filename = QtGui.QFileDialog.getSaveFileName(self, QtCore.QString(),
-                                                     QtCore.QString(), filter_)
+        filename = QtGui.QFileDialog.getSaveFileName(self, '', '', filter_)
         if filename:
             text = self._report()
             logfile = open(filename, 'w')
@@ -622,8 +631,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         cmd = ' '.join(cmd)
 
         if self._tool.env:
-            qenv = [QtCore.QString('%s=%s' % (key, val))
-                                        for key, val in self._tool.env.items()]
+            qenv = ['%s=%s' % (key, val) for key, val in self._tool.env.items()]
             self.subprocess.setEnvironment(qenv)
 
         if self._tool.cwd:

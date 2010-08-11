@@ -236,6 +236,7 @@ class OverviewItem(BandItem):
     iconfile = qt4support.geticon('overview.svg', __name__)
     _typeoffset = BandItem._typeoffset + 1
 
+
 #~ class VirtualBandItem(BandItem):
     #~ iconfile = qt4support.geticon('virtualband.svg', __name__)
     #~ _typeoffset = BandItem._typeoffset + 2

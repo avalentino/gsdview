@@ -121,7 +121,7 @@ def copySelectedItems(itemview):
             parts = []
             for col in range(itemrange.left(), itemrange.right() + 1):
                 index = model.index(row, col, parent)
-                parts.append(str(model.data(index).toString()))
+                parts.append(str(model.data(index)))
             line = '\t'.join(parts)
             lines.append(line)
 

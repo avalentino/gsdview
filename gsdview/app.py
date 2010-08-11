@@ -66,7 +66,7 @@ class GSDView(ItemModelMainWindow):
         QtGui.qApp.setWindowIcon(qt4support.geticon('GSDView.png', __name__))
 
         super(GSDView, self).__init__(parent, flags, **kwargs)
-        title = self.tr('GSDView Open Source Edition v. %1').arg(info.version)
+        title = self.tr('GSDView Open Source Edition v. %s') % info.version
         self.setWindowTitle(title)
         self.setObjectName('gsdview-mainwin')
 
@@ -267,8 +267,8 @@ class GSDView(ItemModelMainWindow):
             if event.oldState() == QtCore.Qt.WindowNoState:
                 # save window size and position
                 self.settings.beginGroup('mainwindow')
-                self.settings.setValue('position', QtCore.QVariant(self.pos()))
-                self.settings.setValue('size', QtCore.QVariant(self.size()))
+                self.settings.setValue('position', self.pos())
+                self.settings.setValue('size', self.size())
                 self.settings.endGroup()
                 event.accept()
         except AttributeError:
@@ -439,9 +439,7 @@ class GSDView(ItemModelMainWindow):
 
         # set log level
         # @WARNING: duplicate loadSettings
-        level = self.settings.value('preferences/loglevel',
-                                    QtCore.QVariant('INFO'))
-        level = level.toString()
+        level = self.settings.value('preferences/loglevel', 'INFO')
         levelno = logging.getLevelName(str(level))
         if isinstance(levelno, int):
             logger.setLevel(levelno)
@@ -467,21 +465,20 @@ class GSDView(ItemModelMainWindow):
         settings.beginGroup('mainwindow')
         try:
             position = settings.value('position')
-            if not position.isNull():
-                self.move(position.toPoint())
+            if position is not None:
+                self.move(position)
             size = settings.value('size')
-            if not size.isNull():
-                self.resize(size.toSize())
+            if size is not None:
+                self.resize(size)
             else:
                 # default size
                 self.resize(800, 600)
 
             try:
-                winstate = settings.value('winstate',
-                                QtCore.QVariant(QtCore.Qt.WindowNoState))
-                winstate, ok = winstate.toInt()
-                if winstate != QtCore.Qt.WindowNoState:
-                    winstate = qt4support.intToWinState[winstate]
+                winstate = settings.value('winstate', QtCore.Qt.WindowNoState)
+                if winstate and winstate != QtCore.Qt.WindowNoState:
+                    # @COMPATIBILITY: presumably a bug in PyQt4 4.7.2
+                    winstate = qt4support.intToWinState[winstate] # @TODO: check
                     self.setWindowState(winstate)
             except KeyError:
                 logging.debug('unable to restore the window state',
@@ -489,8 +486,8 @@ class GSDView(ItemModelMainWindow):
 
             # State of toolbars ad docks
             state = settings.value('state')
-            if not state.isNull():
-                self.restoreState(state.toByteArray())
+            if state is not None:
+                self.restoreState(state)
         finally:
             settings.endGroup()
 
@@ -502,31 +499,28 @@ class GSDView(ItemModelMainWindow):
         try:
             # state
             state = settings.value('state')
-            if not state.isNull():
+            if state is not None:
                 try:
                     # QFileDialog.restoreState is new in Qt 4.3
-                    self.filedialog.restoreState(state.toByteArray())
+                    self.filedialog.restoreState(state)
                 except AttributeError:
                     logging.debug('unable to save the file dialog state')
 
             # workdir
-            default = utils.default_workdir()
-            workdir = settings.value('workdir', QtCore.QVariant(default))
-            workdir = str(workdir.toString())
+            workdir = settings.value('workdir', utils.default_workdir())
             workdir = os.path.expanduser(os.path.expandvars(workdir))
             self.filedialog.setDirectory(workdir)
 
             # history
             #history = settings.value('history')
-            #if not history.isNull():
-            #    self.filedialog.setHistory(history.toStringList())
+            #if history:
+            #    self.filedialog.setHistory(history)
 
             # sidebar urls
             try:
                 # QFileDialog.setSidebarUrls is new in Qt 4.3
                 sidebarurls = settings.value('sidebarurls')
-                if not sidebarurls.isNull():
-                    sidebarurls = sidebarurls.toStringList()
+                if sidebarurls:
                     sidebarurls = [QtCore.QUrl(item) for item in sidebarurls]
                     self.filedialog.setSidebarUrls(sidebarurls)
             except AttributeError:
@@ -547,9 +541,8 @@ class GSDView(ItemModelMainWindow):
         settings.beginGroup('preferences')
         try:
             # log level
-            level = settings.value('loglevel', QtCore.QVariant('INFO'))
-            level = level.toString()
-            levelno = logging.getLevelName(str(level))
+            level = settings.value('loglevel', 'INFO')
+            levelno = logging.getLevelName(level)
             if isinstance(levelno, int):
                 self.logger.setLevel(levelno)
                 self.logger.debug('"%s" loglevel set' % level)
@@ -557,8 +550,7 @@ class GSDView(ItemModelMainWindow):
                 logging.debug('invalid log level: "%s"' % level)
 
             default = os.path.join(USERCONFIGDIR, 'cache')
-            cachedir = settings.value('cachedir', QtCore.QVariant(default))
-            cachedir = str(cachedir.toString())
+            cachedir = settings.value('cachedir', default)
             self.cachedir = os.path.expanduser(os.path.expandvars(cachedir))
         finally:
             settings.endGroup()
@@ -576,17 +568,12 @@ class GSDView(ItemModelMainWindow):
 
         settings.beginGroup('mainwindow')
         try:
-            # @TODO: check
-            # @NOTE: workaround for silencing Qt warning
-            winstate = int(self.windowState())
-            settings.setValue('winstate', QtCore.QVariant(winstate))
-            #settings.setValue('winstate', QtCore.QVariant(self.windowState()))
-
+            settings.setValue('winstate', self.windowState())
             if self.windowState() == QtCore.Qt.WindowNoState:
-                settings.setValue('position', QtCore.QVariant(self.pos()))
-                settings.setValue('size', QtCore.QVariant(self.size()))
+                settings.setValue('position', self.pos())
+                settings.setValue('size', self.size())
 
-            settings.setValue('state', QtCore.QVariant(self.saveState()))
+            settings.setValue('state', self.saveState())
         finally:
             settings.endGroup()
 
@@ -599,30 +586,23 @@ class GSDView(ItemModelMainWindow):
             # state
             try:
                 # QFileDialog.saveState is new in Qt 4.3
-                state = self.filedialog.saveState()
-                settings.setValue('state', QtCore.QVariant(state))
+                settings.setValue('state', self.filedialog.saveState())
             except AttributeError:
                 logging.debug('unable to save the file dialog state')
 
             # workdir
             # @NOTE: uncomment to preserve the session value
-            #workdir = self.filedialog.directory()
-            #workdir = settings.setValue('workdir', QtCore.QVariant(workdir))
+            #workdir = settings.setValue('workdir', self.filedialog.directory())
 
             # history
-            #settings.setValue('history',
-            #                  QtCore.QVariant(self.filedialog.history()))
+            #settings.setValue('history', self.filedialog.history())
 
             # sidebar urls
             try:
                 # QFileDialog.sidebarUrls is new in Qt 4.3
                 sidebarurls = self.filedialog.sidebarUrls()
                 if sidebarurls:
-                    qsidebarurls = QtCore.QStringList()
-                    for item in sidebarurls:
-                        qsidebarurls.append(QtCore.QString(item.toString()))
-                    settings.setValue('sidebarurls',
-                                      QtCore.QVariant(qsidebarurls))
+                    settings.setValue('sidebarurls', sidebarurls)
             except AttributeError:
                 logging.debug('unable to save sidebar URLs of the file dialog')
         finally:
@@ -638,11 +618,11 @@ class GSDView(ItemModelMainWindow):
 
         settings.beginGroup('preferences')
         try:
-            level = QtCore.QVariant(logging.getLevelName(self.logger.level))
-            settings.setValue('loglevel', QtCore.QVariant(level))
+            level = logging.getLevelName(self.logger.level)
+            settings.setValue('loglevel', level)
 
             # only changed via preferences
-            #settings.setValue('cachedir', QtCore.QVariant(self.cachedir))
+            #settings.setValue('cachedir', self.cachedir)
         finally:
             settings.endGroup()
 

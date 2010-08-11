@@ -271,9 +271,9 @@ class QtWindowListMenu(QtGui.QMenu):
             title = win.windowTitle().replace('[*]', modMarker)
 
             if idx < 8:
-                text = self.tr('&%1 %2').arg(idx+1).arg(title)
+                text = '&%d %s' % (idx+1, title)
             else:
-                text = self.tr('%1 %2').arg(idx+1).arg(title)
+                text = '%d %s' % (idx+1, title)
 
             icon = self._iconMap.get(win, self._defIcon)
             action = QtGui.QAction(icon, text, self._winGroup)
@@ -321,7 +321,7 @@ class QtWindowListMenu(QtGui.QMenu):
         '''
         if not window:
             return
-        if icon.isNull():
+        if icon is None:
             del self._iconMap[window]
         else:
             self._iconMap[window] = icon

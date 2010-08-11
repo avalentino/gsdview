@@ -247,7 +247,7 @@ class GeneralPreferencesPage(QtGui.QWidget, GeneralPreferencesPageBase):
         settings.beginGroup('preferences')
         try:
             # log level
-            level = settings.value('loglevel').toString()
+            level = settings.value('loglevel')
             index = self.loglevelComboBox.findText(level)
             if 0 <= index < self.loglevelComboBox.count():
                 self.loglevelComboBox.setCurrentIndex(index)
@@ -255,7 +255,7 @@ class GeneralPreferencesPage(QtGui.QWidget, GeneralPreferencesPageBase):
                 logging.debug('invalid log level: "%s"' % level)
 
             # cache directory
-            cachedir = settings.value('cachedir').toString()
+            cachedir = settings.value('cachedir')
             self.cachedirEntryWidget.setText(cachedir)
         finally:
             settings.endGroup()
@@ -264,7 +264,7 @@ class GeneralPreferencesPage(QtGui.QWidget, GeneralPreferencesPageBase):
         settings.beginGroup('filedialog')
         try:
             # workdir
-            workdir = settings.value('workdir').toString()
+            workdir = settings.value('workdir')
             self.workdirEntryWidget.setText(workdir)
         finally:
             settings.endGroup()
@@ -274,13 +274,12 @@ class GeneralPreferencesPage(QtGui.QWidget, GeneralPreferencesPageBase):
         settings.beginGroup('preferences')
         try:
             # log level
-            level = self.loglevelComboBox.currentText()
-            settings.setValue('loglevel', QtCore.QVariant(level))
+            settings.setValue('loglevel', self.loglevelComboBox.currentText())
 
             # cache directory
             cachedir = self.cachedirEntryWidget.text()
             if cachedir:
-                settings.setValue('cachedir', QtCore.QVariant(cachedir))
+                settings.setValue('cachedir', cachedir)
             else:
                 settings.remove('cachedir')
 
@@ -297,7 +296,7 @@ class GeneralPreferencesPage(QtGui.QWidget, GeneralPreferencesPageBase):
             # workdir
             workdir = self.workdirEntryWidget.text()
             if workdir:
-                workdir = settings.setValue('workdir', QtCore.QVariant(workdir))
+                workdir = settings.setValue('workdir', workdir)
             else:
                 settings.remove('workdir')
 

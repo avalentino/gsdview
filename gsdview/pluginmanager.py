@@ -253,15 +253,13 @@ class PluginManager(object):
             paths = list(self.paths)    # @NOTE: copy
             if self.syspath in paths:
                 paths.remove(self.syspath)
-            settings.setValue('pluginspaths', QtCore.QVariant(paths))
+            settings.setValue('pluginspaths', paths)
 
             autoload = set(self.autoload)
             autoload = list(autoload.intersection(self.allplugins))
-            settings.setValue('autoload_plugins',
-                              QtCore.QVariant(autoload))
+            settings.setValue('autoload_plugins', autoload)
 
-            settings.setValue('available_plugins',
-                              QtCore.QVariant(self.allplugins))
+            settings.setValue('available_plugins', self.allplugins)
         finally:
             settings.endGroup()
 
@@ -271,25 +269,22 @@ class PluginManager(object):
     def load_settings(self, settings):
         settings.beginGroup('pluginmanager')
         try:
-            if settings.contains('pluginspaths'):
-                pluginspaths = settings.value('pluginspaths')
-                self.paths = map(str, pluginspaths.toStringList())
+            paths = settings.value('pluginspaths')
+
+            if paths is not None:
+                self.paths = paths
+
             if self.syspath and not self.syspath in self.paths:
                 self.paths.append(self.syspath)
 
-            autoload_plugins = settings.value('autoload_plugins',
-                                              QtCore.QVariant([]))
-            self.autoload = map(str, autoload_plugins.toStringList())
+            self.autoload = settings.value('autoload_plugins', [])
             self.load(self.autoload)
 
             # @TODO: check
             # @NOTE: by default loads new plugins
             available_plugins = set(self.allplugins)
 
-            old_plugins = settings.value('available_plugins',
-                                         QtCore.QVariant([]))
-            old_plugins = set(map(str, old_plugins.toStringList()))
-
+            old_plugins = settings.value('available_plugins', [])
             new_plugins = available_plugins.difference(old_plugins)
 
             self.load(list(new_plugins))
