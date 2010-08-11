@@ -298,7 +298,7 @@ def GetCachedStatistics(band):
     metadata = band.GetMetadata()
     stats = [metadata.get(name) for name in GDAL_STATS_KEYS]
     if None not in stats:
-        stats = [float(item) for item in stats]
+        stats = [float(item.replace(',', '.')) for item in stats]
 
     return stats
 
