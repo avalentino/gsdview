@@ -25,7 +25,7 @@ __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore #, QtGui
 
 from positiontracker.coordinateview import CoordinateView, GeoCoordinateView
 
