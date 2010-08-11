@@ -140,12 +140,13 @@ def main():
     logging.debug('Qt4 import: %d.%06ds' % timer.update())
 
     import os, sys
-    from gsdview import info
+    from gsdview.info import name as NAME
+    from gsdview.info import version as VERSION
     from gsdview.utils import getresource
 
     app = QtGui.QApplication(sys.argv)
-    app.setApplicationName(info.name)
-    app.setApplicationVersion(info.version)
+    app.setApplicationName(NAME)
+    app.setApplicationVersion(VERSION)
 
     pngfile = getresource(os.path.join('images', 'splash.png'), __name__)
     pixmap = QtGui.QPixmap(pngfile)
