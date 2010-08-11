@@ -234,6 +234,15 @@ class AddoHelper(GdalHelper):
               Maybe some suggestion can be asked on the GDAL
               mailing-list.
 
+              An alternative solution, the one currently implemented,
+              is to force recomputation of all overview levels (exixting
+              ones and newly selected) and then replace the ol overview
+              file.
+
+              This solution is not efficient since it doesn't re-use
+              existing overviews but ensure no data loss in case the
+              operation is stopped by the user.
+
     '''
 
     def __init__(self, app, tool):
