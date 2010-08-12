@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>630</width>
-    <height>582</height>
+    <width>582</width>
+    <height>574</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,7 +26,10 @@
       <attribute name="toolTip">
        <string>Info about the raster band.</string>
       </attribute>
-      <layout class="QVBoxLayout" name="infoTabVerticalLayout_5">
+      <layout class="QVBoxLayout" name="infoTabVerticalLayout">
+       <property name="bottomMargin">
+        <number>12</number>
+       </property>
        <item>
         <widget class="QGroupBox" name="infoGroupBox">
          <property name="title">
@@ -685,8 +688,8 @@ Normally only present when the number of bits is non-standard for the datatype, 
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>20</width>
-           <height>40</height>
+           <width>0</width>
+           <height>0</height>
           </size>
          </property>
         </spacer>
