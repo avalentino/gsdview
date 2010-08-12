@@ -671,6 +671,95 @@ class SpecialOverviewWidget(OverviewWidget):
             self.startButton.setEnabled(False)
 
 
+class OverviewDialog(QtGui.QDialog):
+    '''Dialog for overview management.
+
+    Display existing overview levels and allow to to sibmit overview
+    compitation requests.
+
+    :SIGNALS:
+
+        * :attr:`overviewComputationRequest`
+
+    '''
+
+    #: SIGNAL: it is emitted when a time expensive computation of overviews
+    #: is required
+    #:
+    #: :C++ signature: `void overviewComputationRequest(PyQt_PyObject)`
+    overviewComputationRequest = QtCore.pyqtSignal('PyQt_PyObject')
+
+
+    def __init__(self, item=None, parent=None, flags=QtCore.Qt.Widget, **kargs):
+        super(OverviewDialog, self).__init__(parent, flags)
+        self.setWindowTitle(self.tr('Overview computation'))
+
+        label = QtGui.QLabel(self.tr('Dataset:'))
+
+        #: dataset label
+        self.description = QtGui.QLineEdit()
+        self.description.setReadOnly(True)
+
+        hlayout = QtGui.QHBoxLayout()
+        hlayout.addWidget(label)
+        hlayout.addWidget(self.description)
+
+        #: overview widget
+        self.overviewWidget = SpecialOverviewWidget()
+
+        buttonbox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Close)
+        buttonbox.rejected.connect(self.reject)
+
+        layout = QtGui.QVBoxLayout()
+        layout.addLayout(hlayout)
+        layout.addWidget(self.overviewWidget)
+        layout.addWidget(buttonbox)
+
+        self.setLayout(layout)
+
+        self._item = None
+        if item:
+            self.setItem(item)
+        else:
+            self.reset()
+
+    def _emitComputationRequest(self):
+        assert self._item, 'item not set'
+        self.overviewComputationRequest.emit(self._item)
+
+    def reset(self):
+        self.overviewWidget.reset()
+        self.description.setText('')
+        if self._item:
+            self.overviewWidget.overviewComputationRequest.disconnect(
+                                                self._emitComputationRequest)
+        self._item = None
+
+    def setItem(self, item):
+        if item:
+            if not hasattr(item, 'GetRasterBand'):
+                band = item
+                while not hasattr(item, 'GetRasterBand'):
+                    band = item
+                    item = item.parent()
+            else:
+                band = item.GetRasterBand(1)
+            self.overviewWidget.setItem(band)
+            self._item = item
+            self.description.setText(self._item.GetDescription())
+            self.description.setCursorPosition(0)
+            self.overviewWidget.overviewComputationRequest.connect(
+                                                self._emitComputationRequest)
+        else:
+            self.reset()
+
+    def updateOverviewInfo(self):
+        if self._item:
+            self.setItem(self._item)
+        else:
+            self.reset()
+
+
 class MajorObjectInfoDialog(QtGui.QDialog):
     def __init__(self, gdalobj, parent=None, flags=QtCore.Qt.Widget, **kwargs):
         super(MajorObjectInfoDialog, self).__init__(parent, flags, **kwargs)

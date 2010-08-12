@@ -122,6 +122,19 @@ def test_ovrwidget():
 
     sys.exit(app.exec_())
 
+def test_ovrdialog():
+    filename = os.path.join(GSDVIEWROOT, 'gsdview', 'plugins',
+                            'worldmap', 'images', 'world_4320x2160.jpg')
+    dataset = gdal.Open(filename)
+
+    app = QtGui.QApplication(sys.argv)
+
+    d = OverviewDialog()
+    d.setItem(dataset)
+    d.show()
+
+    sys.exit(app.exec_())
+
 
 if __name__ == '__main__':
     #~ test_gdalinfowidget()
@@ -131,4 +144,5 @@ if __name__ == '__main__':
     #~ testdriver('dataset', False)
     #~ testdriver('band', True)
     #~ testdriver('band', False)
-    test_ovrwidget()
+    #~ test_ovrwidget()
+    test_ovrdialog()

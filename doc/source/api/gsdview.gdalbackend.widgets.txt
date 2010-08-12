@@ -32,8 +32,10 @@ gsdview.gdalbackend.widgets
       HistogramConfigDialog
       HistogramConfigDialogBase
       MajorObjectInfoDialog
-      OvervieWidget
-      OvervieWidgetBase
+      OverviewDialog
+      OverviewWidget
+      OverviewWidgetBase
+      SpecialOverviewWidget
    
    
 

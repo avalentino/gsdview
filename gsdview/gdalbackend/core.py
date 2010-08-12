@@ -281,13 +281,12 @@ class GDALBackend(QtCore.QObject):
 
         # build overviews
         icon = qt4support.geticon('overview.svg', __name__)
-        QtGui.QAction(icon, self.tr('&Build overviews for all raster bands'),
+        QtGui.QAction(icon, self.tr('&Build overviews'),
                       actionsgroup, objectName='actionBuidOverviews',
                       shortcut=self.tr('Ctrl+B'),
                       toolTip=self.tr('Build overviews for all raster bands'),
                       statusTip=self.tr('Build overviews for all raster bands'),
-                      triggered=self.buildOverviews,
-                      enabled=False)    # @TODO: remove
+                      triggered=self.buildOverviews)
 
         # @TODO: add band, add virtual band, open GCPs view
 
@@ -390,22 +389,24 @@ class GDALBackend(QtCore.QObject):
 
         openaction = actionsgroup.findChild(QtGui.QAction,
                                             'actionOpenSubDatasetItem')
-        openaction.setEnabled(True)
-
+        closeaction = actionsgroup.findChild(QtGui.QAction, 'actionCloseItem')
         propertyaction = actionsgroup.findChild(QtGui.QAction,
                                                 'actionShowItemProperties')
-        propertyaction.setEnabled(True)
-
-        closeaction = actionsgroup.findChild(QtGui.QAction, 'actionCloseItem')
-        closeaction.setEnabled(True)
+        ovraction = actionsgroup.findChild(QtGui.QAction,
+                                           'actionBuidOverviews')
 
         if item is not None:
             assert isinstance(item, modelitems.SubDatasetItem)
             if item.isopen():
                 openaction.setEnabled(False)
+                closeaction.setEnabled(True)
+                propertyaction.setEnabled(True)
+                ovraction.setEnabled(True)
             else:
+                openaction.setEnabled(True)
                 closeaction.setEnabled(False)
                 propertyaction.setEnabled(False)
+                ovraction.setEnabled(False)
 
         return actionsgroup
 
@@ -493,9 +494,17 @@ class GDALBackend(QtCore.QObject):
             self.newImageView(item)
 
     @QtCore.pyqtSlot()
-    def buildOverviews(self):
-        # @TODO: implementation
-        self._app.logger.info('method not yet implemented')
+    def buildOverviews(self, item=None):
+        if item is None:
+            item = self._app.currentItem()
+
+        assert isinstance(item, modelitems.DatasetItem), 'item = %s' % str(item)
+
+        dialog = widgets.OverviewDialog(item, self._app)
+        helper = self._helpers['ovrdialog']
+        helper.dialog = dialog
+        dialog.overviewComputationRequest.connect(helper.start)
+        dialog.exec_()
 
     # @TODO: add band, add virtual band, open GCPs view
 
