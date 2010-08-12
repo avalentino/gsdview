@@ -634,6 +634,12 @@ class SubDatasetItem(CachedDatasetItem):
         else:
             raise AttributeError(name)
 
+    def GetRasterBand(self, index):
+        if self.isopen():
+            return super(CachedDatasetItem, self).GetRasterBand(index)
+
+        return None
+
     def GetMetadata(self, domain=''):
         if not self.isopen():
             raise RuntimeError('unable to access "%s" on a non open '
