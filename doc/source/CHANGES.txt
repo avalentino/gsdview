@@ -11,22 +11,26 @@
 ChangeLog
 =========
 
-Changes from 0.6.2 to 0.6.3 (in development)
---------------------------------------------
+Changes from 0.6.2 to 0.6.3 (13/08/2010)
+----------------------------------------
 
 * Switch to the new PyQt4 signal/slot API (close :issue:`25`)
 * Switch to PyQt4 API 2 for QString, QVariant etc (close :issue:`66`)
-* Now exectools.Qt4OutputHandler emits signals
 * All classes that inherit from Qt objects or widgets now can be initialized
   using keyword arguments for Qt properties and signals setup
+* Improved overviews handling:
+
+  - overview items are no more displayed in the treeview by default.
+    It is possible to get the old behaviour by checking the appropriate
+    flag in the preferences dialog (close :issue:`34`)
+  - enabled action for overview computation in the dataset item context menu
+  - the GDAL info dialog for raster bands has a new tab for overviews
+    that also allows computation of new overviews (close :issue:`57`)
+
 * Improved complex datasets support
 * Improved sub-datasets handling
-* Now overview items are no more displayed in the treeview by default.
-  It is possible to get the old behaviour by checking the appropriate flag
-  in the preferences dialog (close :issue:`34`)
-* Now the GDAL info dialog for raster bands has a new tab for overviews
-  that also allows computation of new overviews (close :issue:`57`).
 * Improved Radarsat2 support
+* Now exectools.Qt4OutputHandler emits signals
 
 
 Changes from 0.6.1 to 0.6.2 (20/07/2010)

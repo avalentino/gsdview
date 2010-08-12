@@ -1,3 +1,12 @@
+:13/08/2010: GSDView Open Source Edition v. 0.6.3 released.
+
+             This release has been implemented a complete switch of the
+             application to the new PyQt4_ API (new signal/slot handling,
+             QString and QVariant are gone, etc.).
+             For this reason GSDView now requires PyQt4_ v. 4.6 or newer.
+
+             Also some new feature have been added: see :doc:`CHANGES`.
+
 :20/07/2010: GSDView Open Source Edition v. 0.6.2 released.
 
              This release don't include big changes visible to the user.
@@ -13,15 +22,5 @@
              Dropping 1.5.x series allow to use this new features in the
              `development branch`_ to make GSDView even better.
 
-:09/05/2010: Binary package for `Mac OS X`_ released.
-
-             The long waited binary package for `Mac OS X`_ is now available.
-             The package provides a standalone executable of GSDView 0.6.1
-             with a couple of micro-patches backported from trunk.
-
-             While GSDView 0.6.1 is considered quite stable the package for
-             `Mac OS X`_ is brand new and it is considered beta quality,
-             so any kind of feedback is welcome.
-
-.. _`Mac OS X`: http://www.apple.com/macosx
 .. _`development branch`: http://sourceforge.net/apps/trac/gsdview/browser/trunk
+.. _PyQt4: http://www.riverbankcomputing.com

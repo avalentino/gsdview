@@ -18,6 +18,17 @@ __ `GSDView project page`_
 
 .. include:: latestnews.txt
 
+
+:09/05/2010: Binary package for `Mac OS X`_ released.
+
+             The long waited binary package for `Mac OS X`_ is now available.
+             The package provides a standalone executable of GSDView 0.6.1
+             with a couple of micro-patches backported from trunk.
+
+             While GSDView 0.6.1 is considered quite stable the package for
+             `Mac OS X`_ is brand new and it is considered beta quality,
+             so any kind of feedback is welcome.
+
 :09/05/2010: GSDView Open Source Edition v. 0.6.1 released.
 
              This new release brings some major improvement to GSDView
@@ -57,6 +68,7 @@ __ `GSDView project page`_
              This is still an alpha release with a minimal set of features.
 
 
+.. _`Mac OS X`: http://www.apple.com/macosx
 .. _`GSDView project page`: http://sourceforge.net/projects/gsdview
 .. _download: http://sourceforge.net/projects/gsdview/files
 .. _sphinx: http://sphinx.pocoo.org

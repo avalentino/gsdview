@@ -24,7 +24,7 @@
 __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
-__version__  = (0,6,3)
+__version__  = (0, 6, 3)
 
 __all__ = ['name', 'version', 'short_description', 'description',
            'author', 'author_email', 'copyright', 'license_type',
@@ -33,7 +33,7 @@ __all__ = ['name', 'version', 'short_description', 'description',
 import sys
 
 name = 'GSDView'
-version = '.'.join(map(str, __version__)) + 'a'
+version = '.'.join(map(str, __version__)) #+ 'a'
 
 short_description = 'Geo-Spatial Data Viewer Open Source Edition'
 description = '''GSDView (Geo-Spatial Data Viewer) is a lightweight
@@ -81,7 +81,7 @@ else:
     all_versions.append(('QScintilla', Qsci.QSCINTILLA_VERSION_STR,
                     'http://www.riverbankcomputing.co.uk/software/qscintilla'))
 
-if (hasattr(platform, 'linux_distribution') and 
+if (hasattr(platform, 'linux_distribution') and
                                 platform.linux_distribution() != ('', '', '')):
     all_versions.append(('GNU/Linux',
                          ' '.join(platform.linux_distribution()), ''))
