@@ -515,4 +515,4 @@ class AddoDialogHelper(AddoHelper):
 
     def do_finalize(self):
         super(AddoDialogHelper, self).do_finalize()
-        self.dialog.updateOverviewTab()
+        self.dialog.updateOverviewInfo()

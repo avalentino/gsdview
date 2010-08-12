@@ -373,13 +373,13 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
 
     '''
 
-    #: SIGNAL: it is emitted when a time expensive computation of statistics
+    #: SIGNAL: it is emitted when a time expensive computation of overviews
     #: is required
     #:
-    #: :C** signature: `void overviewComputationRequest()`
+    #: :C++ signature: `void overviewComputationRequest()`
     overviewComputationRequest = QtCore.pyqtSignal()
 
-    def __init__(self, band=None, parent=None, flags=QtCore.Qt.Widget,
+    def __init__(self, item=None, parent=None, flags=QtCore.Qt.Widget,
                  **kwargs):
         super(OverviewWidget, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
@@ -400,13 +400,13 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
         self.ovrTreeView.setModel(model)
 
         self._readonly = False
-        self._band = None
+        self._item = None
 
         self.recomputeCheckBox.toggled.connect(self._updateStartButton)
         self.startButton.clicked.connect(self.overviewComputationRequest)
 
-        if band:
-            self.setBand(band)
+        if item:
+            self.setItem(item)
         else:
             self.reset()
 
@@ -442,10 +442,10 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
         self.addLevelSpinBox.setEnabled(False)
         self.addLevelButton.setEnabled(False)
 
-        if self._band:
+        if self._item:
             self.addLevelButton.clicked.disconnect(self.addLevel)
 
-        self._band = None
+        self._item = None
 
     def _addLevel(self, level, xsize, ysize, checked=QtCore.Qt.Unchecked,
                   locked=False):
@@ -472,43 +472,49 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
             ovrfact.setFont(font)
             size.setFont(font)
 
-    def setBand(self, band):
+    def setItem(self, item):
         self.reset()
+        if item is None:
+            return
 
-        if gdal.DataTypeIsComplex(band.DataType):
-            index = self.resamplingMethodComboBox.findText('avarage_magphase')
-            self.resamplingMethodComboBox.setCurrentIndex(index)
+        assert hasattr(item, 'GetOverviewCount')
 
-        ovrcount = band.GetOverviewCount()
+        if gdal.DataTypeIsComplex(item.DataType):
+            index = self.resamplingMethodComboBox.findText('average_magphase')
+            print 'index', index
+            if index >= 0:
+                self.resamplingMethodComboBox.setCurrentIndex(index)
+
+        ovrcount = item.GetOverviewCount()
 
         self.overviewCountValue.setText(str(ovrcount))
-        self.fullSizeValue.setText('%dx%d' % (band.YSize, band.XSize))
+        self.fullSizeValue.setText('%dx%d' % (item.YSize, item.XSize))
         # @COMPATIBILITY: GDAL >= 1.7.0
         if hasattr(gdal.Band, 'HasArbitraryOverviews'):
             self.hasArbitraryOverviewsValue.setText(
-                                            str(band.HasArbitraryOverviews()))
+                                            str(item.HasArbitraryOverviews()))
 
         view = self.ovrTreeView
 
         # Add existing overviews
-        levels = gdalsupport.ovrLevels(band)
+        levels = gdalsupport.ovrLevels(item)
         for index in range(ovrcount):
-            ovr = band.GetOverview(index)
+            ovr = item.GetOverview(index)
             self._addLevel(levels[index], ovr.XSize, ovr.YSize,
                            QtCore.Qt.Checked, True)
 
         if not self._readonly:
             # Add powers of two
-            xexp = int(numpy.log2(band.XSize))
-            yexp = int(numpy.log2(band.YSize))
+            xexp = int(numpy.log2(item.XSize))
+            yexp = int(numpy.log2(item.YSize))
             mexexp = min(xexp, yexp)
             mexexp = max(mexexp-4, 1)
             for exp_ in range(1, mexexp):
                 level = 2**exp_
                 if level in levels:
                     continue
-                xsize = int(band.XSize + level - 1) // level
-                ysize = int(band.YSize + level - 1) // level
+                xsize = int(item.XSize + level - 1) // level
+                ysize = int(item.YSize + level - 1) // level
                 self._addLevel(level, xsize, ysize)
 
         view.header().resizeSections(QtGui.QHeaderView.ResizeToContents)
@@ -519,7 +525,7 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
 
         self.addLevelButton.clicked.connect(self.addLevel)
 
-        self._band = band
+        self._item = item
 
         self._updateStartButton()
 
@@ -565,16 +571,16 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
             return
 
         if xsize is None:
-            if self._band is None:
+            if self._item is None:
                 raise ValueError('no reference band is set: '
                                  'xsize and ysize have to be provided.')
-            xsize = int(self._band.XSize + level - 1) // level
+            xsize = int(self._item.XSize + level - 1) // level
 
         if ysize is None:
-            if self._band is None:
+            if self._item is None:
                 raise ValueError('no reference band is set: '
                                  'xsize and ysize have to be provided.')
-            ysize = int(self._band.YSize + level - 1) // level
+            ysize = int(self._item.YSize + level - 1) // level
 
         if checked:
             checked = QtCore.Qt.Checked
@@ -811,13 +817,13 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
     #: SIGNAL: it is emitted when a time expensive computation of statistics
     #: is required
     #:
-    #: :C** signature: `void statsComputationRequest(PyQt_PyObject)`
+    #: :C++ signature: `void statsComputationRequest(PyQt_PyObject)`
     statsComputationRequest = QtCore.pyqtSignal('PyQt_PyObject')
 
     #: SIGNAL: it is emitted when a time expensive computation of an histogram
     #: is required
     #:
-    #: :C** signature: `void histogramComputationRequest(PyQt_PyObject)`
+    #: :C++ signature: `void histogramComputationRequest(PyQt_PyObject)`
     histogramComputationRequest = QtCore.pyqtSignal('PyQt_PyObject')
     # @TODO: check
     #self.emit(QtCore.SIGNAL(
@@ -826,7 +832,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
     #: SIGNAL: it is emitted when overview computation is required
     #:
-    #: :C** signature: `void overviewComputationRequest()`
+    #: :C++ signature: `void overviewComputationRequest()`
     overviewComputationRequest = QtCore.pyqtSignal('PyQt_PyObject')
 
     def __init__(self, band=None, parent=None, flags=QtCore.Qt.Widget,
@@ -922,7 +928,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.updateStatistics()
         self.updateHistogram()
         self.updateColorTable()
-        self.updateOverviewTab()
+        self.updateOverviewInfo()
 
     def resetImageStructure(self):
         _setupImageStructureInfo(self, {})
@@ -1199,9 +1205,9 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
                 self.tabWidget.setTabEnabled(3, True)
                 self.setColorTable(colortable)
 
-    def updateOverviewTab(self):
+    def updateOverviewInfo(self):
         if self.band is not None:
-            self.overviewWidget.setBand(self.band)
+            self.overviewWidget.setItem(self.band)
         else:
             self.overviewWidget.reset()
 

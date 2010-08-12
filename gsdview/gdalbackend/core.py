@@ -415,7 +415,7 @@ class GDALBackend(QtCore.QObject):
         # @TODO: implementation
         self._app.logger.info('method not yet implemented')
 
-    def _dialogFactory(self, item):
+    def _infoDialogFactory(self, item):
         for itemtype in item.__class__.__mro__:
             name = itemtype.__name__
             assert name.endswith('Item')
@@ -464,7 +464,7 @@ class GDALBackend(QtCore.QObject):
     @QtCore.pyqtSlot()
     def showItemProperties(self):
         item = self._app.currentItem()
-        dialog = self._dialogFactory(item)
+        dialog = self._infoDialogFactory(item)
         if dialog:
             dialog.exec_()
         else:
