@@ -272,7 +272,7 @@ JERS_
 ASTER_
     Sample ASTER products can be found at Acres_
 Landsat_
-    * landsat.org provides free 
+    * landsat.org provides free
       `sample products <http://landsat.usgs.gov/products_sample_products.php>`_
       and free `orto-rectified <http://www.landsat.org/ortho>`_ data
     * Sample Landsat5 and Landsat7 products can be found at Acres_
@@ -288,15 +288,15 @@ Free UAVSAR_ data on ASF_ site
 LAADS_ Web
     MODIS level 1 and atmosphere data products.
 RapidEye_
-    RapidEye_  demo products. Standard Image Products (Level 1B or a Level 3A) 
+    RapidEye_  demo products. Standard Image Products (Level 1B or a Level 3A)
     of Griffith, New South Wales, Australia.
 WorldView
-    WorldView-1_ and WorldView-2_ products are available on the 
+    WorldView-1_ and WorldView-2_ products are available on the
     `DigitalGlobe demo products page`_.
 QuickBird
     QuickBird products are available on the `DigitalGlobe demo products page`_.
 Spot
-    Spot Spot3D and SpotMap products are available on the 
+    Spot Spot3D and SpotMap products are available on the
     `SpotImage demo products page`_.
 Formosat-2
     Formosat-2 products are available on the `SpotImage demo products page`_.
@@ -338,7 +338,7 @@ GSHHS_
     The shorelines are constructed entirely from hierarchically arranged closed
     polygons.
 NaturalEarth_
-    Public domain map dataset available at 1:10m, 1:50m, and 1:110 million 
+    Public domain map dataset available at 1:10m, 1:50m, and 1:110 million
     scales.
 
 .. _GSHHS: http://www.ngdc.noaa.gov/mgg/shorelines/gshhs.html
