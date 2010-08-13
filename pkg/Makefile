@@ -12,16 +12,20 @@ html:
 
 onedir: gsdview-onedir.spec html
 	$(PYINSTALLERROOT)/Build.py $<
-	cp -rv $(DISTROOT)/gsdview/* $(BUNDLEROOT)/Contents/MacOS
-	mv $(BUNDLEROOT)/Contents/MacOS/Resources/* $(BUNDLEROOT)/Contents/Resources
-	$(RM) -r $(BUNDLEROOT)/Contents/MacOS/Resources
-	cp gsdview.png $(BUNDLEROOT)/Contents/Resources
+	if [ -d $(BUNDLEROOT) ]; then \
+		cp -rv $(DISTROOT)/gsdview/* $(BUNDLEROOT)/Contents/MacOS; \
+		mv $(BUNDLEROOT)/Contents/MacOS/Resources/* $(BUNDLEROOT)/Contents/Resources; \
+		$(RM) -r $(BUNDLEROOT)/Contents/MacOS/Resources; \
+		cp gsdview.png $(BUNDLEROOT)/Contents/Resources; \
+	fi
 
 onefile: gsdview-onefile.spec html
 	$(PYINSTALLERROOT)/Build.py $<
-	cp -rv /Library/Frameworks/QtGui.framework/Resources/qt_menu.nib $(BUNDLEROOT)/Contents/Resources
-	cp gsdview.png $(BUNDLEROOT)/Contents/Resources
-	
+	if [ -d $(BUNDLEROOT) ]; then \
+		cp -rv /Library/Frameworks/QtGui.framework/Resources/qt_menu.nib $(BUNDLEROOT)/Contents/Resources; \
+		cp gsdview.png $(BUNDLEROOT)/Contents/Resources; \
+	fi
+
 clean:
 	$(RM) *.pyc logdict*.log warngsdview*.txt *~
 	$(RM) -r $(GSDVIEWROOT)/dist/onefile

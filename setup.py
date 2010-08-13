@@ -211,6 +211,7 @@ if has_setuptools:
     kwargs.update(dict(
         install_requires = ['GDAL >= 1.6.1',
                             'numpy >= 1.3.0',
+                            #'sip (>= 4.7.5)',
                             #'PyQt >= 4.6'
         ],
         #extras_require = {},
