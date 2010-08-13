@@ -25,7 +25,7 @@
 __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
-__version__  = (0,6,2)
+__version__  = (0, 6, 3)
 __requires__ = []
 
 __all__ = ['name', 'version', 'short_description', 'description',

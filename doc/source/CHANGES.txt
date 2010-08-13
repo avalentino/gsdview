@@ -1,5 +1,5 @@
 ..  :Source: doc/source/CHANGES.txt
-    :Version: 0.6.3
+    :Version: 0.6.4
     :Author: Antonio Valentino
     :Contact: a_valentino@users.sf.net
     :URL: http://gsdview.sourceforge.net
@@ -10,6 +10,12 @@
 
 ChangeLog
 =========
+
+Changes from 0.6.3 to 0.6.4 (in development)
+--------------------------------------------
+
+* @TBW
+
 
 Changes from 0.6.2 to 0.6.3 (13/08/2010)
 ----------------------------------------
