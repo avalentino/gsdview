@@ -72,3 +72,5 @@ distclean: clean
 	$(RM) $(PYUIFILES)
 	$(RM) gsdview/ui/__init__.py gsdview/gdalbackend/ui/__init__.py \
           gsdview/plugins/stretch/ui/__init__.py
+	$(RM) -r pkg/pyinstaller
+
