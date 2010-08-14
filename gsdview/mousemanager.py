@@ -227,6 +227,7 @@ class MouseManager(QtCore.QObject):
 
     def _newModeAction(self, mode, parent):
         action = QtGui.QAction(mode.icon, self.tr(mode.label), parent,
+                               statusTip=self.tr(mode.label),
                                checkable=True)
         action.triggered.connect(lambda: self.modeChanged.emit(self.mode))
         return action

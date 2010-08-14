@@ -57,8 +57,10 @@ def actionGroupToToolbar(actionGroup, label, name=None):
         parts[0] = parts[0].lower()
         name = ''.join(parts)
     toolbar = QtGui.QToolBar(label)
-    toolbar.setObjectName(name)
     toolbar.addActions(actionGroup.actions())
+    if name:
+        toolbar.setObjectName(name)
+
     return toolbar
 
 ### Application cursor helpers ###############################################
