@@ -73,6 +73,9 @@ def safeDataStats(data, nodata=None):
 # @TODO: move GraphicsView here
 
 class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
+
+    _typeoffset = 1
+
     def __init__(self, gdalobj, parent=None, scene=None, **kwargs):
         super(BaseGdalGraphicsItem, self).__init__(parent, scene, **kwargs)
 
@@ -103,6 +106,9 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
         # @TODO: use lazy gaphicsitem inirialization
         # @TODO: initilize stretching explicitly
         self._stretch_initialized = False
+
+    def type(self):
+        return QtGui.QStandardItem.UserType + self._typeoffset
 
     def boundingRect(self):
         return self._boundingRect
@@ -268,6 +274,7 @@ class UIntGdalGraphicsItem(BaseGdalGraphicsItem):
 
     '''
 
+    _typeoffset = BaseGdalGraphicsItem._typeoffset + 1
 
     def __init__(self, band, parent=None, scene=None, **kwargs):
         super(UIntGdalGraphicsItem, self).__init__(band, parent, scene,
@@ -313,6 +320,9 @@ class UIntGdalGraphicsItem(BaseGdalGraphicsItem):
 
 
 class GdalGraphicsItem(BaseGdalGraphicsItem):
+
+    _typeoffset = BaseGdalGraphicsItem._typeoffset + 2
+
     def __init__(self, band, parent=None, scene=None, **kwargs):
         super(GdalGraphicsItem, self).__init__(band, parent, scene, **kwargs)
 
@@ -353,6 +363,9 @@ class GdalGraphicsItem(BaseGdalGraphicsItem):
 
 
 class GdalComplexGraphicsItem(GdalGraphicsItem):
+
+    _typeoffset = GdalGraphicsItem._typeoffset + 1
+
     def __init__(self, band, parent=None, scene=None, **kwargs):
         # @NOTE: skip GdalGraphicsItem __init__
         BaseGdalGraphicsItem.__init__(self, band, parent, scene, **kwargs)
@@ -391,6 +404,9 @@ class GdalComplexGraphicsItem(GdalGraphicsItem):
 
 
 class GdalRgbGraphicsItem(BaseGdalGraphicsItem):
+
+    _typeoffset = BaseGdalGraphicsItem._typeoffset + 3
+
     def __init__(self, dataset, parent=None, scene=None, **kwargs):
         if not gdalsupport.isRGB(dataset):
             raise TypeError('RGB or RGBA iamge expected')
