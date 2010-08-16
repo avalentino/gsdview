@@ -44,7 +44,7 @@ VISIBLE_OVERVIEW_ITEMS = False
 
 class MajorObjectItem(QtGui.QStandardItem):
     iconfile = qt4support.geticon('metadata.svg', __name__)
-    _typeoffset = 100
+    _type = QtGui.QStandardItem.UserType + 100
     backend = info.name
 
     def __init__(self, gdalobj, **kwargs):
@@ -70,7 +70,7 @@ class MajorObjectItem(QtGui.QStandardItem):
         return getattr(self._obj, name)
 
     def type(self):
-        return QtGui.QStandardItem.UserType + self._typeoffset
+        return self._type
 
     def _closeChildren(self):
         while self.hasChildren():
@@ -97,7 +97,7 @@ class BandItem(MajorObjectItem):
     '''
 
     iconfile = qt4support.geticon('rasterband.svg', __name__)
-    _typeoffset = MajorObjectItem._typeoffset + 10
+    _type = MajorObjectItem._type + 10
 
     def __init__(self, band, **kwargs):
         assert band is not None
@@ -234,12 +234,12 @@ class BandItem(MajorObjectItem):
 
 class OverviewItem(BandItem):
     iconfile = qt4support.geticon('overview.svg', __name__)
-    _typeoffset = BandItem._typeoffset + 1
+    _type = BandItem._type + 1
 
 
 #~ class VirtualBandItem(BandItem):
     #~ iconfile = qt4support.geticon('virtualband.svg', __name__)
-    #~ _typeoffset = BandItem._typeoffset + 2
+    #~ _type = BandItem._type + 2
     # @TODO: remove
     #~ actions = BandItem.actions + ('Delete',)
     #~ #defaultaction = 'Open'
@@ -254,7 +254,7 @@ class DatasetItem(MajorObjectItem):
     '''
 
     iconfile = qt4support.geticon('dataset.svg', __name__)
-    _typeoffset = MajorObjectItem._typeoffset + 100
+    _type = MajorObjectItem._type + 100
 
     def __init__(self, filename, mode=gdal.GA_ReadOnly, **kwargs):
         filename = os.path.abspath(filename)
@@ -388,7 +388,7 @@ class DatasetItem(MajorObjectItem):
 
 
 class CachedDatasetItem(DatasetItem):
-    _typeoffset = DatasetItem._typeoffset + 1
+    _type = DatasetItem._type + 1
 
     CACHEDIR = os.path.expanduser(os.path.join('~', '.gsdview', 'cache'))
 
@@ -535,7 +535,7 @@ def datasetitem(filename):
 
 class SubDatasetItem(CachedDatasetItem):
     iconfile = qt4support.geticon('subdataset.svg', __name__)
-    _typeoffset = DatasetItem._typeoffset + 10
+    _type = DatasetItem._type + 10
 
     def __init__(self, gdalfilename, extrainfo='', **kwargs):
         # @NOTE: never call DatasetItem.__init__
