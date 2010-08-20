@@ -276,8 +276,7 @@ class QtWindowListMenu(QtGui.QMenu):
                 text = '%d %s' % (idx+1, title)
 
             icon = self._iconMap.get(win, self._defIcon)
-            action = QtGui.QAction(icon, text, self._winGroup)
-            action.setCheckable(True)
+            action = QtGui.QAction(icon, text, self._winGroup, checkable=True)
             action.setChecked(win == self.mdi.activeSubWindow())
             self._winMap[action] = win
 
