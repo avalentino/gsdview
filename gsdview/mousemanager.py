@@ -220,13 +220,21 @@ class MouseManager(QtCore.QObject):
             self.registerStandardModes()
 
     def registerStandardModes(self):
-        for mode in (PointerMode(), ScrollHandMode()): #, RubberBandMode()):
+        for mode in (PointerMode, ScrollHandMode): #, RubberBandMode):
             self.addMode(mode)
         if len(self._moderegistry) and not self.actions.checkedAction():
             self.actions.actions()[0].setChecked(True)
 
     def _newModeAction(self, mode, parent):
-        action = QtGui.QAction(mode.icon, self.tr(mode.label), parent,
+        if isinstance(mode.icon, basestring):
+            icon = QtGui.QIcon(mode.icon)
+        elif isinstance(mode.icon, QtGui.QStyle.StandardPixmap):
+            style = QtGui.QApplication.style()
+            icon = style.standardIcon(mode.icon)
+        else:
+            icon = mode.icon
+
+        action = QtGui.QAction(icon, self.tr(mode.label), parent,
                                statusTip=self.tr(mode.label),
                                checkable=True)
         action.triggered.connect(lambda: self.modeChanged.emit(self.mode))
@@ -258,6 +266,9 @@ class MouseManager(QtCore.QObject):
         return tuple(m.name for m in self._moderegistry)
 
     def addMode(self, mode):
+        if isinstance(mode, type):
+            mode = mode(self)
+
         action = self._newModeAction(mode, self.actions)
         self.actions.addAction(action)
         self._moderegistry.append(mode)
