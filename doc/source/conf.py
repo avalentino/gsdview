@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # GSDView Open Edition documentation build configuration file, created by
-# sphinx-quickstart on Fri Jun  4 19:10:57 2010.
+# sphinx-quickstart on Sun Aug 22 17:15:20 2010.
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #
@@ -16,7 +16,7 @@ import sys, os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.append(os.path.abspath('.'))
+#sys.path.insert(0, os.path.abspath('.'))
 GSDVIEWROOT = os.path.abspath(os.path.join(os.pardir, os.pardir))
 sys.path.insert(0, GSDVIEWROOT)
 sys.path.insert(1, os.path.join(GSDVIEWROOT, 'gsdview', 'plugins'))
@@ -31,11 +31,19 @@ needs_sphinx = '1.0'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
+    #'sphinx.ext.doctest',
+    #'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
+    #'sphinx.ext.coverage',
     'sphinx.ext.pngmath',
+    #'sphinx.ext.jsmath',
+    #'sphinx.ext.graphviz',
+    #'sphinx.ext.inheritance_diagram',
+    #'sphinx.ext.refcounting',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',    # sphinx >= 1.0
     'sphinx.ext.extlinks',    # sphinx >= 1.0
+    #'sphinx.ext.oldcmarkup', # compatibility
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -165,7 +173,10 @@ html_static_path = ['_static']
 #html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-html_sidebars = {'index': 'sfpagesidebar.html'}
+html_sidebars = {
+    'index': ['localtoc.html', 'relations.html', 'sourcelink.html',
+              'sfpagesidebar.html', 'searchbox.html', 'ohlohsidebar.html'],
+}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
@@ -195,8 +206,8 @@ html_use_index = False
 # base URL from which the finished HTML is served.
 #html_use_opensearch = ''
 
-# If nonempty, this is the file name suffix for HTML files (e.g. ".xhtml").
-#html_file_suffix = ''
+# This is the file name suffix for HTML files (e.g. ".xhtml").
+#html_file_suffix = None
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'GSDViewdoc'
@@ -286,3 +297,10 @@ epub_copyright = u'2008-2010, Antonio Valentino'
 
 # The depth of the table of contents in toc.ncx.
 #epub_tocdepth = 3
+
+# Allow duplicate toc entries.
+#epub_tocdup = True
+
+
+# Example configuration for intersphinx: refer to the Python standard library.
+#intersphinx_mapping = {'http://docs.python.org/': None}

@@ -17,15 +17,23 @@ GSDView Open Edition
 GSDView Pro Edition
 ~~~~~~~~~~~~~~~~~~~
 
-* `GSDView Pro Edition Home Page <http://www.consorzio-innova.com/static/gsdview/index.html>`_
+* `GSDView Pro Edition`_ Home Page
+* European Wireless 2009 `paper <ftp://lenst.det.unifi.it/pub/LenLar/proceedings/2009/wv09/WVITAE09/PDF/AUTHOR/WV091401.PDF>`_
 * `EOMAG <http://www.eomag.eu/articles/726/qualitative-analysis-of-the-first-real-cosmo-skymed-sar-data>`_
 * SWB on ESA technology forum
   (`PDF <http://www.technology-forum.com/fileadmin/technologies/1274093701_SWB.pdf>`_)
+* `Europeran Technology Transfer Market
+  <http://www.technology-market.eu/tee/Profiles/10_NL_1D1D_3IB1.html>`_
+
+.. _`GSDView Pro Edition`: <http://www.consorzio-innova.com/static/gsdview/index.html>
 
 
 Citations
 ~~~~~~~~~
 
+* The `GSDView page on ohloh.net`_ provides some interesting
+  `code analysis <http://www.ohloh.net/p/gsdview/analyses/latest>`_
+  and project coasts estimtion.
 * `Global Change Master Directory <http://gcmd.nasa.gov/records/GSDView.html>`_ - NASA
 * `CEOS Land Surface Imaging Constellation Portal
   <http://idn.ceos.org/portals/Metadata.do?Portal=lsi_services&KeywordPath=Parameters|OCEANS&EntryId=GSDView&MetadataView=Brief&MetadataType=1&lbnode=mdlb2>`_
@@ -33,11 +41,9 @@ Citations
 * `Softpedia <http://mac.softpedia.com/get/Math-Scientific/GSDView.shtml>`_
 * `WareSeeker.com <http://mac.wareseeker.com/Games/absolute-farkle-3.5.zip/c73c3092a>`_
 * `softbb.org <http://softbb.org/MAC/Math-Scientific/20091205/585268.aspx>`_
-* GSDView `code analysis <http://www.ohloh.net/p/gsdview/analyses/latest>`_ on
-  `ohloh.net <http://www.ohloh.net>`_
 * http://www.soft4000.com/mac/download-gsdview-061-pre2-060-free/
 
-.. `European Wireless 2009 <ftp://lenst.det.unifi.it/pub/LenLar/proceedings/2009/wv09/WVITAE09/PDF/AUTHOR/WV091401.PDF>`_
+.. _`GSDView page on ohloh.net`: <http://www.ohloh.net/p/gsdview>
 
 
 Open source resources

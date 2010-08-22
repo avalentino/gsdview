@@ -1,5 +1,5 @@
-GSDView API Reference
-=====================
+API Reference
+=============
 
 
 Main Application

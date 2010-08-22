@@ -13,8 +13,8 @@ gsdview.gdalbackend.gdalsupport
       SafeGetStatistics
       colortable2numpy
       coordinate_mapper
+      driverList
       gdalFilters
-      getDriverList
       hasFastStats
       has_complex_bands
       isRGB
