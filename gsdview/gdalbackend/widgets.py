@@ -27,11 +27,13 @@ __revision__ = '$Revision$'
 
 import os
 import logging
+import ConfigParser
 
 import numpy
 from osgeo import gdal
 from PyQt4 import QtCore, QtGui
 
+from gsdview import utils
 from gsdview import qt4support
 from gsdview.widgets import get_filedialog, FileEntryWidget
 
@@ -393,8 +395,12 @@ class MetadataWidget(QtGui.QWidget, MetadataWidgetBase):
         # contect menu
         qt4support.setViewContextActions(self.tableWidget)
 
-        self.enableDomains(False)
+        # buttons
+        printAction = self.findChild(QtGui.QAction, 'printAction')
+        self.printButton.clicked.connect(printAction.triggered)
 
+        saveAction = self.findChild(QtGui.QAction, 'saveAsAction')
+        self.exportButton.clicked.connect(saveAction.triggered)
 
     def domainsEnabled(self):
         return self.domainLabel.isVisible()
@@ -875,11 +881,18 @@ class MajorObjectInfoDialog(QtGui.QDialog):
         self._obj = gdalobj
 
         self.metadataWidget = MetadataWidget(self)
-        self.metadataWidget.enableButtons(False)
 
         layout = self.tabWidget.widget(1).layout()
         layout.addWidget(self.metadataWidget)
         self.metadataWidget.domainChanged.connect(self.updateMetadata)
+
+        action = self.metadataWidget.findChild(QtGui.QAction, 'saveAsAction')
+        action.triggered.disconnect()
+        action.triggered.connect(self.saveMetadata)
+
+        action = self.metadataWidget.findChild(QtGui.QAction, 'printAction')
+        action.triggered.disconnect()
+        action.triggered.connect(self.printMetadata)
 
         # Init tabs
         self.updateMetadata()
@@ -914,6 +927,68 @@ class MajorObjectInfoDialog(QtGui.QDialog):
             self.updateMetadata()
         else:
             self.reset()
+
+    def _metadataToCfg(self, cfg=None):
+        if cfg is None:
+            # @TODO: use ordered dict if available
+            cfg = ConfigParser.ConfigParser()
+
+        combobox = self.metadataWidget.domainComboBox
+        domains = [combobox.itemText(i) for i in range(combobox.count())]
+
+        for domain in domains:
+            # @NOTE: preserve order
+            metadatalist = self._obj.GetMetadata_List(str(domain))
+            if metadatalist:
+                if domain:
+                    section = '_'.join([domain, 'DOMAIN'])
+                else:
+                    section = 'DEFAULT_DOMAIN'
+                cfg.add_section(section)
+                metadata = [line.split('=', 1) for line in metadatalist]
+                for name, value in metadata:
+                    cfg.set(section, name, value)
+        return cfg
+
+    # @TODO: move to metadata widget
+    @QtCore.pyqtSlot()
+    def saveMetadata(self):
+        if not self._obj:
+            QtGui.QMessageBox.information(self.tr('Information'),
+                                          self.tr('Nothing to save.'))
+            return
+
+        filters = [
+            'INI file firmat (*.ini)'
+            'Text file (*.txt)',
+            'HTML file (*.html)',
+            'All files (*)',
+        ]
+
+        # @TODO: use common dialaog
+        target = os.path.join(utils.default_workdir(), 'metadata.ini')
+        filename, filter_ = QtGui.QFileDialog.getSaveFileNameAndFilter(
+                                            self,
+                                            self.tr('Save'),
+                                            target,
+                                            ';;'.join(filters))
+        if filename:
+            cfg = self._metadataToCfg()
+            ext = os.path.splitext(filename)[-1]
+            if ext.lower() == '.html':
+                doc = qt4support.cfgToTextDocument(cfg)
+                data = doc.toHtml()
+                with open(filename, 'w') as fd:
+                    fd.write(data)
+            else:
+                with open(filename, 'w') as fd:
+                    cfg.write(fd)
+
+    @QtCore.pyqtSlot()
+    def printMetadata(self):
+        cfg = self._metadataToCfg()
+        doc = qt4support.cfgToTextDocument(cfg)
+        qt4support.printObject(doc)
 
 
 def _setupImageStructureInfo(widget, metadata):
