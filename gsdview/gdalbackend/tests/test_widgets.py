@@ -83,13 +83,15 @@ def testdriver(target, imagestruct=True):
             subprocess.call(('rgb2pct.py',  filename, pctfilename))
         filename = pctfilename
 
-    dataset_ = gdal.Open(filename)
+    dataset = gdal.Open(filename)
+    for index in range(1, 6):
+        dataset.SetMetadataItem('KEY%d' % index, 'VALUE%d' % index)
 
     if target == 'dataset':
-        test_datasetdialog(dataset_)
+        test_datasetdialog(dataset)
     elif target == 'band':
-        band_ = dataset_.GetRasterBand(1)
-        test_rasterbanddialog(band_)
+        band = dataset.GetRasterBand(1)
+        test_rasterbanddialog(band)
     else:
         raise ValueError('trget: %s' % target)
 
@@ -140,9 +142,9 @@ if __name__ == '__main__':
     #~ test_gdalinfowidget()
     #~ test_gdalpreferencespage()
     #~ test_histogram_config()
-    #~ testdriver('dataset', True)
+    testdriver('dataset', True)
     #~ testdriver('dataset', False)
     #~ testdriver('band', True)
     #~ testdriver('band', False)
     #~ test_ovrwidget()
-    test_ovrdialog()
+    #~ test_ovrdialog()

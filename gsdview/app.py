@@ -260,7 +260,8 @@ class GSDView(ItemModelMainWindow):
         self.closeAll()
         self.pluginmanager.reset()
         self.logger.info('Closing application')
-        event.accept()
+        #event.accept()
+        super(GSDView, self).closeEvent(event)
 
     def changeEvent(self, event):
         try:
