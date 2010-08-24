@@ -360,6 +360,112 @@ class BackendPreferencesPage(GDALPreferencesPage):
         super(BackendPreferencesPage, self).save(settings)
 
 
+MetadataWidgetBase = qt4support.getuiform('metadata', __name__)
+class MetadataWidget(QtGui.QWidget, MetadataWidgetBase):
+    '''Widget for matadata display.
+
+    :SIGNALS:
+
+        * :attr:`domainChanged`
+
+    '''
+
+    #: SIGNAL: it is emitted when metadata domain changes
+    #:
+    #: :C++ signature: `void domainChanged(str)`
+    domainChanged = QtCore.pyqtSignal(str)
+
+    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+        super(MetadataWidget, self).__init__(parent, flags, **kwargs)
+        self.setupUi(self)
+
+        # signals
+        self.domainComboBox.currentIndexChanged[str].connect(
+                                                            self.domainChanged)
+
+        # icons
+        icon = QtGui.QIcon(
+                ':/trolltech/dialogs/qprintpreviewdialog/images/print-24.png')
+        self.printButton.setIcon(icon)
+        icon = self.style().standardIcon(QtGui.QStyle.SP_DialogSaveButton)
+        self.exportButton.setIcon(icon)
+
+        # contect menu
+        qt4support.setViewContextActions(self.tableWidget)
+
+        self.enableDomains(False)
+
+
+    def domainsEnabled(self):
+        return self.domainLabel.isVisible()
+
+    def enableDomains(self, enabled=True):
+        self.domainLabel.setVisible(enabled)
+        self.domainComboBox.setVisible(enabled)
+
+        layout = self.metadataHorizontalLayout
+        if enabled:
+            spacer = layout.itemAt(layout.count()-1)
+            if isinstance(spacer, QtGui.QSpacerItem):
+                layout.removeItem(spacer)
+                assert layout.count() > 2
+                layout.insertItem(2, spacer)
+        else:
+            spacer = layout.itemAt(2)
+            if isinstance(spacer, QtGui.QSpacerItem):
+                layout.removeItem(spacer)
+                layout.addItem(spacer)
+
+    def buttonsEnabled(self):
+        return self.exportButton.isVisible()
+
+    def enableButtons(self, enabed=True):
+        self.exportButton.setVisible(enabed)
+        self.printButton.setVisible(enabed)
+        margins = self.verticalLayout.contentsMargins()
+        if enabed:
+            margins.setBottom(9)
+        else:
+            margins.setBottom(0)
+        self.verticalLayout.setContentsMargins(margins)
+
+    def domain(self):
+        return self.domainComboBox.currentText()
+
+    def setDomain(self, domain):
+        index = self.domainComboBox.findText(domain)
+        if index == -1:
+            return False
+        else:
+            self.domainComboBox.setCurrentIndex(index)
+            return True
+
+    def setMetadata(self, metadatalist):
+        tablewidget = self.tableWidget
+
+        qt4support.clearTable(tablewidget)
+        if not metadatalist:
+            self.metadataNumValue.setText(0)
+            return
+
+        self.metadataNumValue.setText(str(len(metadatalist)))
+        tablewidget.setRowCount(len(metadatalist))
+        sortingenabled = tablewidget.isSortingEnabled()
+        tablewidget.setSortingEnabled(False)
+
+        for row, data in enumerate(metadatalist):
+            name, value = data.split('=', 1)
+            tablewidget.setItem(row, 0, QtGui.QTableWidgetItem(name))
+            tablewidget.setItem(row, 1, QtGui.QTableWidgetItem(value))
+
+        # Fix table header behaviour
+        tablewidget.setSortingEnabled(sortingenabled)
+
+    def resetMetadata(self):
+        self.metadataNumValue.setText('0')
+        qt4support.clearTable(self.tableWidget)
+
+
 OverviewWidgetBase = qt4support.getuiform('overview', __name__)
 class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
     '''Widget for overview management.
@@ -768,11 +874,12 @@ class MajorObjectInfoDialog(QtGui.QDialog):
 
         self._obj = gdalobj
 
-        if hasattr(self, 'domainComboBox'):
-            self.domainComboBox.activated[str].connect(self.updateMetadata)
+        self.metadataWidget = MetadataWidget(self)
+        self.metadataWidget.enableButtons(False)
 
-        # Contect menu
-        qt4support.setViewContextActions(self.metadataTableWidget)
+        layout = self.tabWidget.widget(1).layout()
+        layout.addWidget(self.metadataWidget)
+        self.metadataWidget.domainChanged.connect(self.updateMetadata)
 
         # Init tabs
         self.updateMetadata()
@@ -781,31 +888,11 @@ class MajorObjectInfoDialog(QtGui.QDialog):
         if not self._obj:
             raise ValueError('no GDAL object attached (self._obj is None).')
 
-    @staticmethod
-    def _setMetadata(tablewidget, metadatalist):
-        qt4support.clearTable(tablewidget)
-        if not metadatalist:
-            return
-
-        tablewidget.setRowCount(len(metadatalist))
-        sortingenabled = tablewidget.isSortingEnabled()
-        tablewidget.setSortingEnabled(False)
-
-        for row, data in enumerate(metadatalist):
-            name, value = data.split('=', 1)
-            tablewidget.setItem(row, 0, QtGui.QTableWidgetItem(name))
-            tablewidget.setItem(row, 1, QtGui.QTableWidgetItem(value))
-
-        # Fix table header behaviour
-        tablewidget.setSortingEnabled(sortingenabled)
-
-    def resetMetadata(self, domain=''):
-        self.metadataNumValue.setText('0')
-        qt4support.clearTable(self.metadataTableWidget)
+    def resetMetadata(self):
+        self.metadataWidget.resetMetadata()
 
     def setMetadata(self, metadatalist):
-        self.metadataNumValue.setText(str(len(metadatalist)))
-        self._setMetadata(self.metadataTableWidget, metadatalist)
+        self.metadataWidget.setMetadata(metadatalist)
 
     @QtCore.pyqtSlot(str)
     def updateMetadata(self, domain=''):
@@ -1422,9 +1509,14 @@ class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
         self.tabWidget.setTabIcon(4, geticon('multiple-documents.svg',
                                   __name__))
 
+        self.driverMetadataWidget = MetadataWidget(self)
+        self.driverMetadataWidget.enableDomains(False)
+        self.driverMetadataWidget.enableButtons(False)
+        layout = self.driverMetadataGroupBox.layout()
+        layout.addWidget(self.driverMetadataWidget)
+
         # Context menu actions
         qt4support.setViewContextActions(self.gcpsTableWidget)
-        qt4support.setViewContextActions(self.driverMetadataTableWidget)
         qt4support.setViewContextActions(self.fileListWidget)
 
         if not hasattr(gdal.Dataset, 'GetFileList'):
@@ -1528,8 +1620,7 @@ class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
         self.driverLongNameValue.setText('')
         self.driverDescriptionValue.setText('')
         self.driverHelpTopicValue.setText('')
-        self.driverMetadataNumValue.setText('0')
-        qt4support.clearTable(self.driverMetadataTableWidget)
+        self.driverMetadataWidget.resetMetadata()
 
     def setDriverTab(self, driver):
         self.resetDriverTab()
@@ -1551,8 +1642,7 @@ p, li { white-space: pre-wrap; }
 
         metadatalist = driver.GetMetadata_List()
         if metadatalist:
-            self.driverMetadataNumValue.setText(str(len(metadatalist)))
-            self._setMetadata(self.driverMetadataTableWidget, metadatalist)
+            self.driverMetadataWidget.setMetadata(metadatalist)
 
     def updateDriverTab(self):
         if self.dataset is None:
