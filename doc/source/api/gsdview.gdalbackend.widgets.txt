@@ -32,6 +32,8 @@ gsdview.gdalbackend.widgets
       HistogramConfigDialog
       HistogramConfigDialogBase
       MajorObjectInfoDialog
+      MetadataWidget
+      MetadataWidgetBase
       OverviewDialog
       OverviewWidget
       OverviewWidgetBase

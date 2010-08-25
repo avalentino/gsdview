@@ -9,23 +9,38 @@ gsdview.qt4support
 
    .. autosummary::
    
+      StringIO
       actionGroupToMenu
       actionGroupToToolbar
       callExpensiveFunc
+      cfgToTextDocument
       clearTable
       copySelectedItems
+      coreprint
+      exportTable
       geticon
       geticonfile
       getuifile
       getuiform
+      modelToCsv
+      modelToIni
+      modelToTextDocument
       numpy2qimage
       overrideCursor
+      printObject
+      printPreview
       selectAllItems
       setViewContextActions
    
    
 
    
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ConfigParser
    
    
 

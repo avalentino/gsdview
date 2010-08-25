@@ -1,0 +1,22 @@
+gsdview.errors
+==============
+
+.. automodule:: gsdview.errors
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      OpenError
+   
+   

@@ -1,0 +1,16 @@
+stretch.info
+============
+
+.. automodule:: stretch.info
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
