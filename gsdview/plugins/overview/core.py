@@ -59,7 +59,7 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
     #: :param dragmode:
     #:     current darg mode
     #:
-    #: :C++ signature: `voud mousePressed(QPointF, Qt::MouseButtons,
+    #: :C++ signature: `void mousePressed(QPointF, Qt::MouseButtons,
     #:                                    QGraphicsView::DragMode)`
     mousePressed = QtCore.pyqtSignal(QtCore.QPointF, QtCore.Qt.MouseButtons,
                                      QtGui.QGraphicsView.DragMode)
@@ -73,7 +73,7 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
     #: :param dragmode:
     #:     current darg mode
     #:
-    #: :C++ signature: `voud mouseMoved(QPointF, Qt::MouseButtons,
+    #: :C++ signature: `void mouseMoved(QPointF, Qt::MouseButtons,
     #:                                    QGraphicsView::DragMode)`
     mouseMoved = QtCore.pyqtSignal(QtCore.QPointF, QtCore.Qt.MouseButtons,
                                    QtGui.QGraphicsView.DragMode)

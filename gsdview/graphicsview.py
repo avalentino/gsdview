@@ -115,11 +115,11 @@ class GraphicsViewMonitor(QtCore.QObject):
 
     '''
 
-    #: SIGNAL: it is emitted when the mouse pointer enterss the scene
-    #:
-    #: :C++ signature: `void enter(QGraphicsView*)`
-    ##enter = QtCore.pyqtSignal(QtGui.QGraphicsScene)
-    #enter = QtCore.pyqtSignal('PyQt_PyObject') # @TODO: check
+    ##: SIGNAL: it is emitted when the mouse pointer enterss the scene
+    ##:
+    ##: :C++ signature: `void enter(QGraphicsView*)`
+    ###enter = QtCore.pyqtSignal(QtGui.QGraphicsScene)
+    ##enter = QtCore.pyqtSignal('PyQt_PyObject') # @TODO: check
 
     #: SIGNAL: it is emitted when the mouse pointer leaves the scene
     #:
@@ -128,7 +128,7 @@ class GraphicsViewMonitor(QtCore.QObject):
 
     #: SIGNAL: it is emitted when a graphics view is scrolled
     #:
-    #: :C++ signature: `voud scrolled(QGraphicsView*)`
+    #: :C++ signature: `void scrolled(QGraphicsView*)`
     scrolled = QtCore.pyqtSignal(QtGui.QGraphicsView)
 
     #: SIGNAL: it is emitted when the graphicsview window is resized
@@ -149,11 +149,11 @@ class GraphicsViewMonitor(QtCore.QObject):
     mouseMoved = QtCore.pyqtSignal(QtGui.QGraphicsScene, QtCore.QPointF,
                                    QtCore.Qt.MouseButtons)
 
-    #: SIGNAL:
-    #:
-    #: :C++ signature: `newPos(PyQt_PyObject, QPoint)`
-    ##newPos = QtCore.pyqtSignal(QtGui.QGraphicsView, QtCore.QPoint)
-    #newPos = QtCore.pyqtSignal('PyQt_PyObject', QtCore.QPoint) # @TODO: check
+    ##: SIGNAL:
+    ##:
+    ##: :C++ signature: `newPos(PyQt_PyObject, QPoint)`
+    ###newPos = QtCore.pyqtSignal(QtGui.QGraphicsView, QtCore.QPoint)
+    ##newPos = QtCore.pyqtSignal('PyQt_PyObject', QtCore.QPoint) # @TODO: check
 
     # @TODO: use signal mappers
     #~ def __init__(self, parent=None, **kwargs):
