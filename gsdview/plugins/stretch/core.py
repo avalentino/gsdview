@@ -49,7 +49,7 @@ class StretchTool(QtCore.QObject):
         #~ self.app.subWindowClosed(self.onModelChanged)
         self.dialog.valueChanged.connect(self.onStretchChanged)
 
-        self.toolbar = QtGui.QToolBar(app.tr('Stretching Toolbar'))
+        self.toolbar = QtGui.QToolBar(self.tr('Stretching Toolbar'))
         self.toolbar.setObjectName('stretchingToolbar')
         self.toolbar.addAction(self.action)
 
