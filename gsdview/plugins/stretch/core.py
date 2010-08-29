@@ -56,6 +56,7 @@ class StretchTool(QtCore.QObject):
     def _setupAction(self):
         icon = qt4support.geticon('stretching.svg', __name__)
         action = QtGui.QAction(icon, self.tr('Stretch'), self,
+                               objectName='stretchAction',
                                statusTip=self.tr('Stretch'),
                                checkable=True,
                                triggered=self.onButtonToggled)

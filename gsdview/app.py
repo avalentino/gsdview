@@ -326,7 +326,7 @@ class GSDView(ItemModelMainWindow):
         # Open
         icon = qt4support.geticon('open.svg', __name__)
         QtGui.QAction(icon, self.tr('&Open'), actionsgroup,
-                      objectName='open',
+                      objectName='openAction',
                       shortcut=self.tr('Ctrl+O'),
                       toolTip=self.tr('Open an existing file'),
                       statusTip=self.tr('Open an existing file'),
@@ -335,7 +335,7 @@ class GSDView(ItemModelMainWindow):
         # Close
         icon = qt4support.geticon('close.svg', __name__)
         QtGui.QAction(icon, self.tr('&Close'), actionsgroup,
-                      objectName='close',
+                      objectName='closeAction',
                       # 'Ctrl+W' shortcu is used for closing windows
                       #shortcut=self.tr('Ctrl+W'),
                       toolTip=self.tr('Close the current file'),
@@ -348,7 +348,7 @@ class GSDView(ItemModelMainWindow):
         # Exit
         icon = qt4support.geticon('quit.svg', __name__)
         QtGui.QAction(icon, self.tr('&Exit'), actionsgroup,
-                      objectName='exit',
+                      objectName='exitAction',
                       shortcut=self.tr('Ctrl+X'),
                       toolTip=self.tr('Exit the program'),
                       statusTip=self.tr('Exit the program'),
@@ -362,7 +362,7 @@ class GSDView(ItemModelMainWindow):
         # Preferences
         icon = qt4support.geticon('preferences.svg', __name__)
         QtGui.QAction(icon, self.tr('&Preferences'), actionsgroup,
-                      objectName='preferences',
+                      objectName='preferencesAction',
                       toolTip=self.tr('Open the program preferences dialog'),
                       statusTip=self.tr('Open the program preferences dialog'),
                       triggered=self.showPreferencesDialog)
@@ -375,7 +375,7 @@ class GSDView(ItemModelMainWindow):
         # About
         icon = qt4support.geticon('about.svg', __name__)
         QtGui.QAction(icon, self.tr('&About'), actionsgroup,
-                      objectName='about',
+                      objectName='aboutAction',
                       toolTip=self.tr('Show program information'),
                       statusTip=self.tr('Show program information'),
                       triggered=lambda: self.aboutdialog.exec_())
@@ -383,7 +383,7 @@ class GSDView(ItemModelMainWindow):
         # AboutQt
         icon = QtGui.QIcon(':/trolltech/qmessagebox/images/qtlogo-64.png')
         QtGui.QAction(icon, self.tr('About &Qt'), actionsgroup,
-                      objectName='aboutQt',
+                      objectName='aboutQtAction',
                       toolTip=self.tr('Show information about Qt'),
                       statusTip=self.tr('Show information about Qt'),
                       triggered=lambda: QtGui.QMessageBox.aboutQt(self))

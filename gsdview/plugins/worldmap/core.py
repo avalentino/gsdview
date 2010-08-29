@@ -91,6 +91,7 @@ class WorldmapPanel(QtGui.QDockWidget):
         # Zoom in
         icon = qt4support.geticon('zoom-in.svg', 'gsdview')
         QtGui.QAction(icon, self.tr('Zoom In'), actions,
+                      objectName='zoomOutAction',
                       statusTip=self.tr('Zoom In'),
                       shortcut=QtGui.QKeySequence(self.tr('Ctrl++')),
                       enabled=False,
@@ -99,6 +100,7 @@ class WorldmapPanel(QtGui.QDockWidget):
         # Zoom out
         icon = qt4support.geticon('zoom-out.svg', 'gsdview')
         QtGui.QAction(icon, self.tr('Zoom Out'), actions,
+                      objectName='zoomOutAction',
                       statusTip=self.tr('Zoom Out'),
                       shortcut=QtGui.QKeySequence(self.tr('Ctrl+-')),
                       enabled=False,
