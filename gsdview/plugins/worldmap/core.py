@@ -81,7 +81,6 @@ class WorldmapPanel(QtGui.QDockWidget):
         self.bigbox = None
         self.box = None
         self.fitItem = self.worldmapitem
-        self._fitInView()
 
         self.graphicsview.installEventFilter(self)
 
@@ -109,7 +108,7 @@ class WorldmapPanel(QtGui.QDockWidget):
         return actions
 
     def eventFilter(self, obj, event):
-        if event.type() == QtCore.QEvent.Resize:
+        if event.type() in (QtCore.QEvent.Resize, QtCore.QEvent.Show):
             self._fitInView()
         return obj.eventFilter(obj, event)
 
