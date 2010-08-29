@@ -39,10 +39,6 @@ class ZoomTool(QtCore.QObject):
         self._view = view
 
         self.actions = self._setupActions()
-        self.menu = qt4support.actionGroupToMenu(
-                                    self.actions, self.tr('&Zoom'), parent)
-        self.toolbar = qt4support.actionGroupToToolbar(self.actions,
-                                                       self.tr('Zoom toolbar'))
 
     def _setupActions(self):
         actions = QtGui.QActionGroup(self)

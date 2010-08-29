@@ -63,28 +63,12 @@ class WorldmapPanel(QtGui.QDockWidget):
         self.worldmapitem = None
         self.setWorldmapItem()
 
-        # Zoom in
-        icon = qt4support.geticon('zoom-in.svg', 'gsdview')
-        self.actionZoomIn = QtGui.QAction(
-                                icon, self.tr('Zoom In'), self,
-                                statusTip=self.tr('Zoom In'),
-                                shortcut=QtGui.QKeySequence(self.tr('Ctrl++')),
-                                enabled=False,
-                                triggered=lambda: self._zoom(+1))
+        self.actions = self._setupActions()
+        self.actionZoomIn, self.actionZoomOut = self.actions.actions()
 
-        # Zoom out
-        icon = qt4support.geticon('zoom-out.svg', 'gsdview')
-        self.actionZoomOut = QtGui.QAction(
-                                icon, self.tr('Zoom Out'), self,
-                                statusTip=self.tr('Zoom Out'),
-                                shortcut=QtGui.QKeySequence(self.tr('Ctrl+-')),
-                                enabled=False,
-                                triggered=lambda: self._zoom(-1))
-
-        toolbar = QtGui.QToolBar(self.tr('Zoom'))
+        toolbar = qt4support.actionGroupToToolbar(self.actions,
+                                                  self.tr('Zoom toolbar'))
         toolbar.setOrientation(QtCore.Qt.Vertical)
-        toolbar.addAction(self.actionZoomIn)
-        toolbar.addAction(self.actionZoomOut)
 
         mainlayout = QtGui.QHBoxLayout()
         mainlayout.addWidget(self.graphicsview)
@@ -100,6 +84,27 @@ class WorldmapPanel(QtGui.QDockWidget):
         self._fitInView()
 
         self.graphicsview.installEventFilter(self)
+
+    def _setupActions(self):
+        actions = QtGui.QActionGroup(self)
+
+        # Zoom in
+        icon = qt4support.geticon('zoom-in.svg', 'gsdview')
+        QtGui.QAction(icon, self.tr('Zoom In'), actions,
+                      statusTip=self.tr('Zoom In'),
+                      shortcut=QtGui.QKeySequence(self.tr('Ctrl++')),
+                      enabled=False,
+                      triggered=lambda: self._zoom(+1))
+
+        # Zoom out
+        icon = qt4support.geticon('zoom-out.svg', 'gsdview')
+        QtGui.QAction(icon, self.tr('Zoom Out'), actions,
+                      statusTip=self.tr('Zoom Out'),
+                      shortcut=QtGui.QKeySequence(self.tr('Ctrl+-')),
+                      enabled=False,
+                      triggered=lambda: self._zoom(-1))
+
+        return actions
 
     def eventFilter(self, obj, event):
         if event.type() == QtCore.QEvent.Resize:

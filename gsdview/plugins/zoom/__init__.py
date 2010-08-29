@@ -39,13 +39,16 @@ _instance = None
 
 
 def init(app):
+    from gsdview import qt4support
     from zoom.core import AppZoomTool
 
     tool = AppZoomTool(app)
 
     app.imagemenu.addSeparator()
     app.imagemenu.addActions(tool.actions.actions())
-    app.addToolBar(tool.toolbar)
+    toolbar = qt4support.actionGroupToToolbar(tool.actions,
+                                              app.tr('Zoom toolbar'))
+    app.addToolBar(toolbar)
 
     tool.actions.setEnabled(False)
     app.mdiarea.subWindowActivated.connect(
