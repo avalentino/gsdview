@@ -25,7 +25,8 @@ __author__   = '$Author$'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
 
-__all__ = ['getresource']
+__all__ = ['which', 'isexecutable', 'isscript', 'scriptcmd', 'default_workdir',
+           'getresource', 'format_platform_info', 'foramt_bugreport']
 
 import os
 import sys
@@ -43,11 +44,15 @@ except ImportError:
 from gsdview import info
 from gsdview import appsite
 
+
 def default_workdir():
+    '''Return the defaut workinhg directory.'''
+
     if sys.platform[:3] == 'win':
         return 'C:\\'
     else:
         return os.path.expanduser('~')
+
 
 def _getresource(resource, package):
     try:
@@ -157,7 +162,7 @@ else:
 
 
 def which(cmd, env=None):
-    '''Return the full path of the program (cnd) or None.
+    '''Return the full path of the program (*cmd*) or None.
 
     >>> which('ls')
     '/bin/ls'
@@ -171,3 +176,54 @@ def which(cmd, env=None):
         exe = os.path.join(dir_, cmd)
         if isexecutable(exe):
             return exe
+
+
+def isscript(filename):
+    '''Check if a file is a script.'''
+
+    try:
+        return open(filename, 'rb').read(2) == '#!'
+    except IOError:
+        return False
+
+
+def scriptcmd(scriptname):
+    '''Return the list of args for starting the script via subprocess.
+
+    On unix platforms the shebang string is used so almost all
+    scripting languages are recognized.
+
+    On windows platforms this function only works with batch files and
+    python scripts.
+
+    .. note:: if the *scriptname* is not recognized to be a script
+              it is assumed it is a binary executable so the only
+              argument in the returned list will be *scriptname*
+              itself.
+
+    :param scriptname:
+        the filename of the script
+    :returns:
+        a list of strings containing the command line arguments for
+        startting the program via subprocess
+
+    '''
+
+    cmd = [scriptname]
+    if sys.platform.startswith('win'):
+        ext = os.path.splitext(scriptname)[-1]
+        ext = ext.lower()
+        if ext == '.bat':
+            comspec = os.environ.get('COMSPEC', 'cmd.exe')
+            cmd = [comspec, '/c', scriptname]
+        elif ext in ('.py', '.pyc', '.pyo', '.pyw'):
+            # @WARNONG: this doesn't work in case of frozen executables
+            #cmd = [sys.executable, '-u', scriptname] # no buffering
+            cmd = [sys.executable, scriptname]
+    else:
+        with file(scriptname, 'rb') as fd:
+            shebang = fd.readline().rstrip()
+            if shebang.startswith('#!'):
+                cmd = shebang[2:].split() + scriptname
+
+    return cmd

@@ -34,7 +34,7 @@ from cStringIO import StringIO
 from ConfigParser import ConfigParser
 
 
-from PyQt4 import QtCore, QtGui, uic
+from PyQt4 import QtCore, QtGui, QtSvg, uic
 
 from gsdview import utils
 
@@ -703,3 +703,98 @@ def cfgToTextDocument(cfg, doc=None):
         cursor.endEditBlock()
 
     return doc
+
+
+def imgexport(obj, parent=None):
+    filters = [
+        obj.tr('All files (*)'),
+        obj.tr('PDF file (*.pdf)'),
+        obj.tr('PostScript file (*.ps)'),
+        #obj.tr('Simple Vector Graphics file (*.svg)'),
+    ]
+    filters.extend('%s file (*.%s)' % (str(fmt).upper(), str(fmt))
+                        for fmt in QtGui.QImageWriter.supportedImageFormats())
+
+    formats = set(str(fmt).lower() for fmt in
+                                    QtGui.QImageWriter.supportedImageFormats())
+
+    # @TODO: check
+    if parent is None:
+        try:
+            parent = obj.window()
+        except AttributeError:
+            parent = None
+
+    target = os.path.join(utils.default_workdir(), 'image.jpeg')
+
+    filename, filter_ = QtGui.QFileDialog.getSaveFileNameAndFilter(
+                                    parent,
+                                    obj.tr('Save picture'),
+                                    target,
+                                    ';;'.join(filters))
+    ext = 'unknown'
+    while filename and (ext not in formats):
+        ext = os.path.splitext(filename)[1]
+        if ext:
+            ext = ext[1:].lower()
+            if ext in formats:
+                break
+            else:
+                QtGui.QMessageBox.information(
+                            parent,
+                            obj.tr('Unknown file format'),
+                            obj.tr('Unknown file format "%s".\n'
+                                   'Please retry.') % ext)
+
+                filename, filter_ = QtGui.QFileDialog.getSaveFileNameAndFilter(
+                                            parent,
+                                            obj.tr('Save draw'),
+                                            filename,
+                                            ';;'.join(filters),
+                                            filter_)
+        else:
+            ext = 'unknown'
+
+    if filename:
+        if hasattr(obj, 'viewport'):
+            srcsize = obj.viewport().rect().size()
+        elif hasattr(obj, 'sceneRect'):
+            # QGraphicsViews alsa has a viewport method so they should be
+            # trapped y the previous check
+            srcsize = obj.sceneRect().toRect().size()
+        else:
+            srcsize = QtGui.QSize(800, 600)
+
+        if ext not in ('pdf', 'ps'):
+            device = QtGui.QPixmap(srcsize)
+            try:
+                # QGraphicsView, QGraphicsScene
+                color = obj.backgroundBrush().color()
+            except AttributeError:
+                color = QtCore.Qt.white
+            device.fill(color)
+        elif ext == 'svg':
+            device = QtSvg.QSvgGenerator()
+            device.setFileName(filename)
+            device.setSize(srcsize)
+        else:
+            device = QtGui.QPrinter(QtGui.QPrinter.HighResolution)
+            device.setOutputFileName(filename)
+            if ext == 'pdf':
+                device.setOutputFormat(QtGui.QPrinter.PdfFormat)
+            else:
+                # ext == 'ps'
+                device.setOutputFormat(QtGui.QPrinter.PostScriptFormat)
+
+        painter = QtGui.QPainter()
+        if painter.begin(device):
+            #painter.setRenderHint(QtGui.QPainter.Antialiasing)
+            obj.render(painter)
+            painter.end()
+            if hasattr(device , 'save'):
+                device.save(filename)
+        else:
+            QtGui.QMessageBox.warning(
+                        parent,
+                        obj.tr('Warning'),
+                        obj.tr('Unable initialize painting device.'))

@@ -22,6 +22,7 @@ gsdview.qt4support
       geticonfile
       getuifile
       getuiform
+      imgexport
       modelToCsv
       modelToIni
       modelToTextDocument
