@@ -54,9 +54,11 @@ _LEVEL2TAG = {
     logging.NOTSET: '',
 }
 
+
 def level2tag(level):
     # @TODO: intermediate levels
     return _LEVEL2TAG.get(level, '')
+
 
 class BaseOutputHandler(object):
     '''Base class for output handlers'''

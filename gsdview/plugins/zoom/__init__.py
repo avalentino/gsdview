@@ -42,6 +42,7 @@ def init(app):
     from zoom.core import AppZoomTool
 
     tool = AppZoomTool(app)
+
     app.imagemenu.addSeparator()
     app.imagemenu.addActions(tool.actions.actions())
     app.addToolBar(tool.toolbar)
