@@ -117,12 +117,13 @@ class MetadataController(QtCore.QObject):
 
     @QtCore.pyqtSlot()
     @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
-    def onSubWindowChanged(self, window=None):
-        if not window:
-            window = self.app.mdiarea.activeSubWindow()
-        if window:
+    def onSubWindowChanged(self, subwin=None):
+        if not subwin:
+            subwin = self.app.mdiarea.activeSubWindow()
+
+        if subwin:
             try:
-                item = window.item
+                item = subwin.item
             except AttributeError:
                 item = None
         else:

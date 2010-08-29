@@ -221,7 +221,7 @@ class WorldmapController(QtCore.QObject):
         self.panel = WorldmapPanel(app)
         self.panel.setObjectName('worldmapPanel') # @TODO: check
 
-        app.mdiarea.subWindowActivated.connect(self.onSubWindowActivated)
+        app.mdiarea.subWindowActivated.connect(self.onSubWindowChanged)
         app.treeview.clicked.connect(self.onItemClicked)
         app.subWindowClosed.connect(self.onModelChanged)
 
@@ -238,13 +238,14 @@ class WorldmapController(QtCore.QObject):
 
         self.panel.setFootprint(footprint)
 
+    @QtCore.pyqtSlot()
     @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
-    def onSubWindowActivated(self, subwindow):
-        if not subwindow:
+    def onSubWindowChanged(self, subwin=None):
+        if not subwin:
             return
 
         try:
-            item = subwindow.item
+            item = subwin.item
         except AttributeError:
             # the window has not an associated item in the datamodel
             pass
@@ -260,9 +261,9 @@ class WorldmapController(QtCore.QObject):
     @QtCore.pyqtSlot()
     @QtCore.pyqtSlot(QtCore.QModelIndex, int, int)
     def onModelChanged(self, index=None, start=None, stop=None):
-        window = self.app.mdiarea.activeSubWindow()
-        if window:
-            self.onSubWindowActivated(window)
+        subwin = self.app.mdiarea.activeSubWindow()
+        if subwin:
+            self.onSubWindowChanged(subwin)
         else:
             item = self.app.currentItem()
             self.setItemFootprint(item)

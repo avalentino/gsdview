@@ -273,7 +273,7 @@ class OverviewController(QtCore.QObject):
         app.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.panel)
 
         # Connect signals
-        app.mdiarea.subWindowActivated.connect(self.onWindowMapped)
+        app.mdiarea.subWindowActivated.connect(self.onSubWindowChanged)
         app.subWindowClosed.connect(self.onWindowClosed)
         app.datamodel.itemChanged.connect(self.onItemChanged)
 
@@ -284,8 +284,9 @@ class OverviewController(QtCore.QObject):
         self.panel.graphicsview.mousePressed.connect(self.onNewPos)
         self.panel.graphicsview.mouseMoved.connect(self.onNewPos)
 
+    @QtCore.pyqtSlot()
     @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
-    def onWindowMapped(self, subwin):
+    def onSubWindowChanged(self, subwin=None):
         try:
             item = subwin.item
         except AttributeError:

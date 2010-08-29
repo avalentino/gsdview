@@ -44,7 +44,7 @@ class StretchTool(QtCore.QObject):
         self.action.setEnabled(False)
 
         self.dialog.finished.connect(lambda: self.action.setChecked(False))
-        self.app.mdiarea.subWindowActivated.connect(self.onSubWindowActivated)
+        self.app.mdiarea.subWindowActivated.connect(self.onSubWindowChanged)
         #~ self.app.treeview.clicked.connect(self.onItemClicked)
         #~ self.app.subWindowClosed(self.onModelChanged)
         self.dialog.valueChanged.connect(self.onStretchChanged)
@@ -110,14 +110,15 @@ class StretchTool(QtCore.QObject):
         except AttributeError:
             return None
 
+    @QtCore.pyqtSlot()
     @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
-    def onSubWindowActivated(self, subwindow):
-        if not subwindow:
+    def onSubWindowChanged(self, subwin=None):
+        if not subwin:
             self.action.setEnabled(self.dialog.isVisible())
             self.dialog.setEnabled(False)
             return
 
-        item = self.currentGraphicsItem(subwindow)
+        item = self.currentGraphicsItem(subwin)
         try:
             stretchable = item.stretch is not None
         except AttributeError:
