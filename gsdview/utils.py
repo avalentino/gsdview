@@ -108,8 +108,14 @@ def format_platform_info():
     if libc_ver.strip():
         platform_info.append(libc_ver)
 
-    #~ mac_ver(): ('', ('', '', ''), '')
-    #~ win32_ver(): ('', '', '', '')
+    if platform.dist() != ('', '', ''):
+        all_versions.append(('GNU/Linux', ' '.join(platform.dist()), ''))
+    elif platform.mac_ver() != ('', ('', '', ''), ''):
+        all_versions.append(('Mac OS X', platform.mac_ver()[0],
+                             'http://www.apple.com/macosx'))
+    elif platform.win32_ver() != ('', '', '', ''):
+        all_versions.append(('Windows', platform.win32_ver()[0],
+                             'http://www.microsoft.com/windows'))
 
     platform_info.append('python_compiler: %s\n' % platform.python_compiler())
     platform_info.append('python_implementation: %s\n' %
