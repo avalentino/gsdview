@@ -15,6 +15,7 @@ Changes from 0.6.3 to 0.6.4 (in development)
 --------------------------------------------
 
 * Metadata export and printing (:issue:`67` and :issue:`68`)
+* Snapshot tool (:issue:`48`)
 
 
 Changes from 0.6.2 to 0.6.3 (13/08/2010)
