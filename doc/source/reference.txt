@@ -20,6 +20,7 @@ Main Application
    gsdview.mdi
    gsdview.mousemanager
    gsdview.pluginmanager
+   gsdview.qt4draw
    gsdview.qt4support
    gsdview.qtwindowlistmenu
    gsdview.utils

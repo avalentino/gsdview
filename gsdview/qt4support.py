@@ -708,15 +708,16 @@ def cfgToTextDocument(cfg, doc=None):
 def imgexport(obj, parent=None):
     filters = [
         obj.tr('All files (*)'),
+        obj.tr('Simple Vector Graphics file (*.svg)'),
         obj.tr('PDF file (*.pdf)'),
         obj.tr('PostScript file (*.ps)'),
-        #obj.tr('Simple Vector Graphics file (*.svg)'),
     ]
     filters.extend('%s file (*.%s)' % (str(fmt).upper(), str(fmt))
                         for fmt in QtGui.QImageWriter.supportedImageFormats())
 
     formats = set(str(fmt).lower() for fmt in
                                     QtGui.QImageWriter.supportedImageFormats())
+    formats.update(('svg', 'pdf', 'ps'))
 
     # @TODO: check
     if parent is None:
@@ -760,24 +761,12 @@ def imgexport(obj, parent=None):
             srcsize = obj.viewport().rect().size()
         elif hasattr(obj, 'sceneRect'):
             # QGraphicsViews alsa has a viewport method so they should be
-            # trapped y the previous check
+            # trapped by the previous check
             srcsize = obj.sceneRect().toRect().size()
         else:
             srcsize = QtGui.QSize(800, 600)
 
-        if ext not in ('pdf', 'ps'):
-            device = QtGui.QPixmap(srcsize)
-            try:
-                # QGraphicsView, QGraphicsScene
-                color = obj.backgroundBrush().color()
-            except AttributeError:
-                color = QtCore.Qt.white
-            device.fill(color)
-        elif ext == 'svg':
-            device = QtSvg.QSvgGenerator()
-            device.setFileName(filename)
-            device.setSize(srcsize)
-        else:
+        if ext in ('pdf', 'ps'):
             device = QtGui.QPrinter(QtGui.QPrinter.HighResolution)
             device.setOutputFileName(filename)
             if ext == 'pdf':
@@ -785,6 +774,17 @@ def imgexport(obj, parent=None):
             else:
                 # ext == 'ps'
                 device.setOutputFormat(QtGui.QPrinter.PostScriptFormat)
+        elif ext == 'svg':
+            device = QtSvg.QSvgGenerator()
+            device.setFileName(filename)
+            device.setSize(srcsize)
+            #device.setViewBox(obj.sceneRect().toRect())
+            #device.setTitle(obj.tr('Graphics Draw'))
+            #device.setDescription(obj.tr('Qt SVG drawing.'))
+        else:
+            device = QtGui.QPixmap(srcsize)
+            # @TODO: check
+            device.fill(QtCore.Qt.white)
 
         painter = QtGui.QPainter()
         if painter.begin(device):
