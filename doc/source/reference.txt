@@ -34,6 +34,7 @@ Main Application
    gsdview.gdalbackend.helpers
    gsdview.gdalbackend.info
    gsdview.gdalbackend.modelitems
+   gsdview.gdalbackend.ogrqt4
    gsdview.gdalbackend.widgets
 
    exectools

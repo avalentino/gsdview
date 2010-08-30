@@ -1,0 +1,25 @@
+gsdview.gdalbackend.ogrqt4
+==========================
+
+.. automodule:: gsdview.gdalbackend.ogrqt4
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      geometryToGraphicsItem
+      layerToGraphicsItem
+      singleGeometryToGraphicsItem
+      transformGeometry
+   
+   
+
+   
+   
+   
+
+   
+   
+   

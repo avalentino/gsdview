@@ -201,10 +201,30 @@ def uniqueDatasetID(prod):
     return prod_id
 
 
-def driverList():
-    '''Return the list of available GDAL drivers'''
+def driverList(drivertype='raster'):
+    '''Return the list of available GDAL/OGR drivers'''
 
-    return [gdal.GetDriver(index) for index in range(gdal.GetDriverCount())]
+    if not drivertype:
+        types = ['gdal']
+    elif isinstance(drivertype, basestring):
+        types = [drivertype]
+    else:
+        types = drivertype
+        if not set(('raster', 'vector')).issuperset(types):
+            raise ValueError('invalid type list: "%s"' % types)
+
+    drivers = []
+    if 'raster' in types:
+        drivers.extend(gdal.GetDriver(index)
+                                    for index in range(gdal.GetDriverCount()))
+
+    if 'vector' in types:
+        # @TODO: check
+        from osgeo import ogr
+        drivers.extend(ogr.GetDriver(index)
+                                    for index in range(ogr.GetDriverCount()))
+
+    return drivers
 
 
 def gdalFilters(mode='r'):
@@ -234,6 +254,60 @@ def gdalFilters(mode='r'):
                 filters.append('%s (*.%s)' % (name, ext))
         except KeyError:
             pass
+
+    return filters
+
+
+def ogrFilters():   #mode='r'):
+    '''Returns the list of OGR file filters as expected by Qt'''
+
+    # @TODO: move to an OGR specific module (??)
+    filters = [
+        'All files (*)',
+        'ESRI Shapefiles (*.shp)',
+        'KML (*.kml, *.kmz)',
+        'Virtual Format (*.vrt)',
+        'Arc/Info Binary Coverage (*.???)',
+        'Arc/Info E00 (ASCII) Coverage (*.E00)',
+        'Atlas BNA (*.bna)',
+        'AutoCAD DXF (*.dfx)'
+        'Comma Separated Value (*.csv)',
+        'DODS/OPeNDAP (*.???)',
+        'ESRI Personal GeoDatabase (*.???)',
+        'ESRI ArcSDE (*.???)',
+        'FMEObjects Gateway (*.NTF)',
+        'GeoJSON (*.???)',
+        'GeoConcept text export (*.gxt, *.txt)',
+        'GeoRSS: Geographically Encoded Objects for RSS feeds (*,xml)',
+        'GML - Geography Markup Language (*.gml)',
+        'GMT ASCII Vectors (*.gmt)',
+        'GPSBabel (*.???)',
+        'GPX - GPS Exchange Format (*.gpx)',
+        'GRASS (*.???)',
+        'GTM - GPS TrackMaker (*.gtm)',
+        'IDB (*.???)',
+        'INTERLIS (*.???)',
+        'INGRES (*.???)',
+        'MapInfo TAB and MIF/MID (*.MIF, *.MID)',
+        'Microstation DGN (*.???)',
+        'MySQL (*.???)',
+        'NAS - ALKIS (*.???)',
+        'Oracle Spatial (*.???)',
+        'ODBC RDBMS (*.???)',
+        'OGDI Vectors (*.???)',
+        'OpenAir Special Use Airspace Format (*.???)',
+        'PDS - Planetary Data Systems TABLE (*.???)',
+        'PostgreSQL SQL Dump (*.sql)',
+        'PostgreSQL (*.???)',
+        'IHO S-57 (ENC) (*.000)',
+        'SDTS (*.???)',
+        'SQLite RDBMS (*.???)',
+        "SUA - Tim Newport-Peace's Special Use Airspace Format (*.SUA)",
+        'UK .NTF (*.NTF)',
+        'U.S. Census TIGER/Line (*.RT?)',
+        'VFK - Czech cadastral exchange data format (*.???)',
+        'X-Plane/Flightgear aeronautical data (*.dat)',
+    ]
 
     return filters
 
