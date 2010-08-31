@@ -50,7 +50,10 @@ def init(app):
                                               app.tr('Zoom toolbar'))
     app.addToolBar(toolbar)
 
+    # @TODO: move to tool (??)
     tool.actions.setEnabled(False)
+
+    # @TODO: move to tool (??)
     app.mdiarea.subWindowActivated.connect(
                                 lambda w: tool.actions.setEnabled(bool(w)))
     app.subWindowClosed.connect(lambda: tool.actions.setEnabled(

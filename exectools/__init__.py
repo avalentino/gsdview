@@ -268,7 +268,6 @@ class ToolDescriptor(object):
     def __init__(self, executable, args=None, cwd=None, env=None,
                  stdout_handler=None, stderr_handler=None):
         '''
-
         :param executable:
             full path of the tool executable or just the tool program
             name if it is in the system search path
@@ -281,12 +280,14 @@ class ToolDescriptor(object):
         :param env:
             environment dictionary
         :param envmerge:
-            if set to True (default) it is the :ref:`env` dictionaty is
+            if set to True (default) it is the :attr:`env` dictionaty is
             used to update the system environment
         :param stdout_handler:
-            `OutputHandler` for the stdout of the tool
+            *OutputHandler* for the stdout of the tool
         :param stderr_handler:
-            `OutputHandler` for the stderr of the tool
+            *OutputHandler* for the stderr of the tool
+
+        .. seealso:: :class:`BaseOutputHandler`
 
         '''
 

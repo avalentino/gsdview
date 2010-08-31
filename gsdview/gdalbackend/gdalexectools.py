@@ -70,6 +70,7 @@ class BaseGdalToolDescriptor(exectools.ToolDescriptor):
 class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
     '''Tool descriptor for the gdaladdo utility program.'''
 
+    #: resampling methods
     RESAMPLING_METHODS = (
         'nearest',
         'average',
@@ -80,6 +81,7 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
         'mode',
     )
 
+    #: TIFF compression methods
     TIFF_COMPRESSION_METHODS = (
         'JPEG',
         'LZW',
@@ -87,12 +89,31 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
         'DEFLATE',
     )
 
+    #: TIFF interleaving methods
     TIFF_INTERLEAVING_METHODS = ('PIXEL', 'BAND')
 
+    #: Allowed options for BigTIFF flag
     TIFF_USE_BIGTIFF_MODE = ('IF_NEEDED', 'IF_SAFER', 'YES', 'NO')
 
     def __init__(self, cwd=None, env=None,
                  stdout_handler=None, stderr_handler=None):
+
+        '''
+        :param cwd:
+            program working directory
+        :param env:
+            environment dictionary
+        :param envmerge:
+            if set to True (default) it is the :attr:`env` dictionaty is
+            used to update the system environment
+        :param stdout_handler:
+            *OutputHandler* for the stdout of the tool
+        :param stderr_handler:
+            *OutputHandler* for the stderr of the tool
+
+        .. seealso:: :class:`exectools.BaseOutputHandler`
+
+        '''
 
         super(GdalAddOverviewDescriptor, self).__init__(
                     'gdaladdo', [], cwd, env, stdout_handler, stderr_handler)
@@ -259,6 +280,22 @@ class GdalInfoDescriptor(BaseGdalToolDescriptor):
 
     def __init__(self, cwd=None, env=None,
                  stdout_handler=None, stderr_handler=None):
+        '''
+        :param cwd:
+            program working directory
+        :param env:
+            environment dictionary
+        :param envmerge:
+            if set to True (default) it is the :attr:`env` dictionaty is
+            used to update the system environment
+        :param stdout_handler:
+            *OutputHandler* for the stdout of the tool
+        :param stderr_handler:
+            *OutputHandler* for the stderr of the tool
+
+        .. seealso:: :class:`exectools.BaseOutputHandler`
+
+        '''
 
         super(GdalInfoDescriptor, self).__init__('gdalinfo', [], cwd, env,
                                                  stdout_handler, stderr_handler)
@@ -321,6 +358,9 @@ class GdalOutputHandler(Qt4OutputHandler):
       "0...10...20...30...40...50...60...70...80...90...100 - done."
 
     Every 2.5% of progress another number or period is emitted.
+
+    .. seealso:: :class:`exectools.BaseOutputHandler`,
+                 :class:`exectools.qt4.Qt4OutputHandler`
 
     '''
 
