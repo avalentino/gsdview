@@ -287,6 +287,9 @@ class OverviewController(QtCore.QObject):
     @QtCore.pyqtSlot()
     @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
     def onSubWindowChanged(self, subwin=None):
+        if subwin is None:
+            subwin = self.app.mdiarea.activeSubWindow()
+
         try:
             item = subwin.item
         except AttributeError:

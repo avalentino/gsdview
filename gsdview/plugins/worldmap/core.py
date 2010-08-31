@@ -242,7 +242,10 @@ class WorldmapController(QtCore.QObject):
     @QtCore.pyqtSlot()
     @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
     def onSubWindowChanged(self, subwin=None):
-        if not subwin:
+        if subwin is None:
+            subwin = self.app.mdiarea.activeSubWindow()
+
+        if subwin is None:
             return
 
         try:

@@ -121,11 +121,10 @@ class MetadataController(QtCore.QObject):
         if not subwin:
             subwin = self.app.mdiarea.activeSubWindow()
 
-        if subwin:
-            try:
-                item = subwin.item
-            except AttributeError:
-                item = None
+        try:
+            item = subwin.item
+        except AttributeError:
+            item = None
         else:
             item = self.app.currentItem()
 
