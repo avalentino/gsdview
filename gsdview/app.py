@@ -190,6 +190,11 @@ class GSDView(ItemModelMainWindow):
         self._addToolBarFromActions(self.mousemanager.actions,
                                     self.tr('Mouse toolbar'))
 
+        # Tools menu
+        self.toolsmenu = QtGui.QMenu(self.tr('&Tools'), self)
+        self.menuBar().addMenu(self.toolsmenu)
+        self.toolsmenu.hide()
+
         # Setup plugins
         logger.debug(self.tr('Setup plugins ...'))
         self.setupPlugins()

@@ -1,0 +1,25 @@
+gsdtoolsui
+==========
+
+.. automodule:: gsdtoolsui
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      close
+      init
+      loadSettings
+      saveSettings
+   
+   
+
+   
+   
+   
+
+   
+   
+   
