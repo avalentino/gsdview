@@ -15,6 +15,8 @@ Changes from 0.6.3 to 0.6.4 (in development)
 --------------------------------------------
 
 * Metadata export and printing (:issue:`67` and :issue:`68`)
+* New gsdtools package providing extra utilities for geo-spatial data handling.
+  The gsdview.gsdtools module has been renamed into gsdview.imgutils.
 
 
 Changes from 0.6.2 to 0.6.3 (13/08/2010)
