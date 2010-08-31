@@ -104,6 +104,12 @@ class ItemModelMainWindow(MdiMainWindow):
             return None
         return self.datamodel.itemFromIndex(modelindex)
 
+    def currentToplevelItem(self):
+        item = self.currentItem()
+        while item.parent():
+            item = item.parent()
+        return item
+
     #@QtCore.pyqtSlot(QtCore.QModelIndex) # @TODO: check
     def setActiveWinFromIndex(self, index):
         '''Set the active sub-window from index.
