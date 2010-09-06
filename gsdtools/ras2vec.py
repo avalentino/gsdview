@@ -258,7 +258,7 @@ def export_raster(src, dst, boxlayer=None, gcplayer=None, srsout=None,
                   mark_corners=True):
     if isinstance(src, basestring):
         filename = src
-        src = gdal.Open(src)
+        src = gdal.Open(filename)
         if src is None:
             raise RuntimeError('unable to open source dataset: "%s"' % filename)
 
@@ -314,7 +314,27 @@ def compact_index(srclist, dst):
     boxlayer = create_box_layer(dst, boxlayername)
 
     for src in srclist:
-        export_raster(src, dst, boxlayer, False, mark_corners=False)
+        logging.info('adding "%s"' % src)
+
+        if isinstance(src, basestring):
+            filename = src
+            src = gdal.Open(filename)
+            if src is None:
+                logging.error('unable to open source dataset: "%s"' % filename)
+                continue
+
+        try:
+            export_raster(src, dst, boxlayer, False, mark_corners=False)
+        except ValueError, e:
+            if 'no geographic info' in e.message:
+                logging.error(str(e))
+            else:
+                raise
+
+        subdatasets = [subds for subds, descr in src.GetSubDatasets()]
+        if subdatasets:
+            compact_index(subdatasets, dst)
+
 
 def raster_index(srclist, dst, gcplayer=False, mark_corners=False):
     if isinstance(dst, basestring):
@@ -323,7 +343,26 @@ def raster_index(srclist, dst, gcplayer=False, mark_corners=False):
     # Bounding box
     for src in srclist:
         logging.info('adding "%s"' % src)
-        export_raster(src, dst, None, gcplayer, mark_corners=mark_corners)
+
+        if isinstance(src, basestring):
+            filename = src
+            src = gdal.Open(filename)
+            if src is None:
+                logging.error('unable to open source dataset: "%s"' % filename)
+                continue
+
+        try:
+            export_raster(src, dst, None, gcplayer, mark_corners=mark_corners)
+        except ValueError, e:
+            if 'no geographic info' in e.message:
+                logging.error(str(e))
+            else:
+                raise
+
+        subdatasets = [subds for subds, descr in src.GetSubDatasets()]
+        if subdatasets:
+            raster_index(subdatasets, dst, gcplayer, mark_corners)
+
 
 def raster_tree_index(src, dst, boxlayer=None, gcplayer=None,
                       mark_corners=False):
@@ -351,7 +390,8 @@ def raster_tree_index(src, dst, boxlayer=None, gcplayer=None,
 def handlecmd(argv=None):
     import optparse
 
-    argv = ogr.GeneralCmdLineProcessor(argv)
+    # @NOTE: ogr.GeneralCmdLineProcessor is not available in GDAL 1.6.x
+    argv = gdal.GeneralCmdLineProcessor(argv)
 
     parser = optparse.OptionParser(
                         usage='%prog [options] OUTPUT INPUT [INPUT [...]]',
