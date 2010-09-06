@@ -57,6 +57,7 @@ class VectorGraphicsApp(QtGui.QMainWindow):
         self.model.layoutChanged.connect(self.onLayoutChanged)
         self.model.rowsInserted.connect(self.onLayoutChanged)
         self.model.rowsRemoved.connect(self.onLayoutChanged)
+        self.model.itemChanged.connect(self.onItemChanged)
 
         self.treeview = QtGui.QTreeView()
         self.treeview.setModel(self.model)
@@ -383,19 +384,6 @@ class VectorGraphicsApp(QtGui.QMainWindow):
 
                 self.model.appendRow(item)
 
-                #~ # style settings
-                #~ color = QtCore.Qt.red
-
-                #~ pen = qlayer.pen()
-                #~ pen.setColor(color)
-                #~ #pen.setWidth(1)
-                #~ qlayer.setPen(pen)
-
-                #~ brush = qlayer.brush()
-                #~ brush.setColor(color)
-                #~ brush.setStyle(QtCore.Qt.SolidPattern)
-                #~ qlayer.setBrush(brush)
-
         self.treeview.resizeColumnToContents(0)
 
     @QtCore.pyqtSlot(QtCore.QModelIndex)
@@ -407,6 +395,11 @@ class VectorGraphicsApp(QtGui.QMainWindow):
         checked = bool(item.checkState() == QtCore.Qt.Checked)
         qlayer = item.data() # index.data(QtCore.Qt-UserRole+1)
         qlayer.setVisible(checked)
+
+    #@QtCore.pyqtSlot(QtGui.QStandardItem)
+    @QtCore.pyqtSlot('QStandardItem*')
+    def onItemChanged(self, item):
+        self.onItemClicked(item.index())
 
     @QtCore.pyqtSlot()
     def onItemActivated(self):
@@ -483,8 +476,8 @@ class VectorGraphicsApp(QtGui.QMainWindow):
         selectionmodel = self.treeview.selectionModel()
         selectedrows = selectionmodel.selectedRows()
 
-        firatitem = self.model.itemFromIndex(selectedrows[0])
-        if firatitem and firatitem.row() == 0:
+        firstitem = self.model.itemFromIndex(selectedrows[0])
+        if firstitem and firstitem.row() == 0:
             return
 
         rows = self._takeSelectedRows(selectedrows)
@@ -568,9 +561,8 @@ class VectorGraphicsApp(QtGui.QMainWindow):
                     activerows = [item.row() for item in items
                                     if item.checkState() == QtCore.Qt.Checked]
 
-                    if action.objectName() in 'showLayerAction':
+                    if action.objectName() == 'showLayerAction':
                         action.setEnabled(len(activerows) != nselected)
-
                     elif action.objectName() == 'hideLayerAction':
                         action.setEnabled(len(activerows) != 0)
             else:
