@@ -36,6 +36,7 @@ from osgeo import gdal
 
 
 class BaseGdalToolDescriptor(exectools.ToolDescriptor):
+    '''Base class for GDAL tool descriprors.'''
 
     def gdal_config_options(self, cmd=''):
         extra_args = []
@@ -97,8 +98,8 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
 
     def __init__(self, cwd=None, env=None,
                  stdout_handler=None, stderr_handler=None):
+        '''Initialization:
 
-        '''
         :param cwd:
             program working directory
         :param env:

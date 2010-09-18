@@ -37,6 +37,7 @@ Main Application
    gsdview.gdalbackend.ogrqt4
    gsdview.gdalbackend.widgets
 
+
 Libraries
 ---------
 
