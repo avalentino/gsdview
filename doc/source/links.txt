@@ -24,6 +24,8 @@ GSDView Pro Edition
   (`PDF <http://www.technology-forum.com/fileadmin/technologies/1274093701_SWB.pdf>`_)
 * `Europeran Technology Transfer Market
   <http://www.technology-market.eu/tee/Profiles/10_NL_1D1D_3IB1.html>`_
+* `Enterprise Europe Network
+  <http://www.enterprise-europe-scotland.com/sct/services/enquire.asp?id=10%20NL%201D1D%203IB1&EnquiryType=BBS>`_
 
 .. _`GSDView Pro Edition`: <http://www.consorzio-innova.com/static/gsdview/index.html>
 
