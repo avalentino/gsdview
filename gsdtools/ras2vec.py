@@ -11,13 +11,12 @@ Note: currently only the KML format is supported for output.
 This program aims to be an improved and more flexible version of the
 gdaltindex utility.
 
-Seealso: http://www.gdal.org/gdaltindex.html
+.. seealso: http://www.gdal.org/gdaltindex.html
 
 '''
 
 # @TODO:
 #
-#   * sub-datasets
 #   * support more output formats
 #   * confogurable spatial reference system
 #   * configurable database field for path storage (see gdaltindex)
@@ -37,6 +36,10 @@ import logging
 
 from osgeo import gdal, ogr, osr
 
+if hasattr(os, 'EX_USAGE'):
+    EX_USAGE = os.EX_USAGE
+else:
+    EX_USAGE  = 64
 
 DEFAULT_OGRDRIVER = 'KML'
 
@@ -311,7 +314,10 @@ def compact_index(srclist, dst):
 
     # Bounding box
     boxlayername = 'index'
-    boxlayer = create_box_layer(dst, boxlayername)
+
+    boxlayer = dst.GetLayerByName(boxlayername)
+    if boxlayer is None:
+        boxlayer = create_box_layer(dst, boxlayername)
 
     for src in srclist:
         logging.info('adding "%s"' % src)
@@ -326,7 +332,7 @@ def compact_index(srclist, dst):
         try:
             export_raster(src, dst, boxlayer, False, mark_corners=False)
         except ValueError, e:
-            if 'no geographic info' in e.message:
+            if 'no geographic info' in str(e):
                 logging.error(str(e))
             else:
                 raise
@@ -445,6 +451,9 @@ def main(*argv):
 
         options, args = handlecmd(argv)
         outfile = args.pop(0)
+        if os.path.exists(outfile):
+            logging.error('the output file ("%s") already exists.' % outfile)
+            sys.exit(EX_USAGE)
         dst = create_datasource(outfile) #, options.format)
 
         if len(args) > 1:
