@@ -23,6 +23,7 @@ import os
 import sys
 import logging
 
+
 # Select the PyQt API 2
 import sip
 sip.setapi('QDate',       2)
@@ -43,6 +44,7 @@ GSDVIEWROOT = abspath(os.path.join(dirname(__file__),
 sys.path.insert(0, GSDVIEWROOT)
 
 from gsdview.mousemanager import MouseManager
+from gsdview.layermanager import LayerManager
 from gsdview.gdalbackend import ogrqt4
 
 
@@ -53,11 +55,6 @@ class VectorGraphicsApp(QtGui.QMainWindow):
 
         self.model = QtGui.QStandardItemModel(self)
         self.model.setColumnCount(2)
-        # @TODO: check
-        self.model.layoutChanged.connect(self.onLayoutChanged)
-        self.model.rowsInserted.connect(self.onLayoutChanged)
-        self.model.rowsRemoved.connect(self.onLayoutChanged)
-        self.model.itemChanged.connect(self.onItemChanged)
 
         self.treeview = QtGui.QTreeView()
         self.treeview.setModel(self.model)
@@ -66,8 +63,6 @@ class VectorGraphicsApp(QtGui.QMainWindow):
         self.treeview.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.treeview.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.treeview.header().setStretchLastSection(True)
-        self.treeview.clicked.connect(self.onItemClicked)
-        self.treeview.activated.connect(self.onItemActivated)
 
         self.treedock = QtGui.QDockWidget(self.tr('Layers View'), self)
         self.treedock.setWidget(self.treeview)
@@ -80,6 +75,8 @@ class VectorGraphicsApp(QtGui.QMainWindow):
         self.mousemanager = MouseManager(self)
         self.mousemanager.register(self.graphicsview)
         self.mousemanager.mode = 'hand'
+
+        self.layermanager = LayerManager(self.treeview, self)
 
         # File Actions
         self.fileactions = self._setupFileActions()
@@ -114,22 +111,15 @@ class VectorGraphicsApp(QtGui.QMainWindow):
         self.addToolBar(toolbar)
 
         # Layer Actions
-        self.layeractions = self._setupLayerActions()
-        self.treeview.addActions(self.layeractions.actions())
-        self.model.rowsInserted.connect(self._updateLayerActions)
-        self.model.rowsRemoved.connect(self._updateLayerActions)
-        self.treeview.selectionModel().selectionChanged.connect(
-                                                    self._updateLayerActions)
+        layeractions = self.layermanager.actions
 
         menu = QtGui.QMenu('Layer', self)
-        menu.addActions(self.layeractions.actions())
+        menu.addActions(layeractions.actions())
         self.menuBar().addMenu(menu)
 
         toolbar = QtGui.QToolBar('Layer toolbar')
-        toolbar.addActions(self.layeractions.actions())
+        toolbar.addActions(layeractions.actions())
         self.addToolBar(toolbar)
-
-        self._updateLayerActions()
 
         # Help action
         self.helpactions = self._setupHelpActions()
@@ -209,72 +199,6 @@ class VectorGraphicsApp(QtGui.QMainWindow):
                       triggered=lambda: self.graphicsview.fitInView(
                                                 self.graphicsview.sceneRect(),
                                                 QtCore.Qt.KeepAspectRatio))
-
-        return actions
-
-    def _setupLayerActions(self):
-        style = self.style()
-
-        actions = QtGui.QActionGroup(self)
-
-        icon = QtGui.QIcon(':/trolltech/styles/commonstyle/images/up-128.png')
-        QtGui.QAction(icon, self.tr('Move to top'), actions,
-                      objectName='moveToTopAction',
-                      statusTip=self.tr('Move to top'),
-                      shortcut=self.tr('Ctrl+PgUp'),
-                      triggered=self.onMoveToTop)
-
-        icon = style.standardIcon(QtGui.QStyle.SP_ArrowUp)
-        QtGui.QAction(icon, self.tr('Move up'), actions,
-                      objectName='moveUpAction',
-                      statusTip=self.tr('Move up'),
-                      shortcut=self.tr('Ctrl+Up'),
-                      triggered=self.onMoveUp)
-
-        icon = style.standardIcon(QtGui.QStyle.SP_ArrowDown)
-        QtGui.QAction(icon, self.tr('Move down'), actions,
-                      objectName='moveDownAction',
-                      statusTip=self.tr('Move down'),
-                      shortcut=self.tr('Ctrl+Down'),
-                      triggered=self.onMoveDown)
-
-        icon = QtGui.QIcon(':/trolltech/styles/commonstyle/images/down-128.png')
-        QtGui.QAction(icon, self.tr('Move to bottom'), actions,
-                      objectName='moveToBottomAction',
-                      statusTip=self.tr('Move to bottom'),
-                      shortcut=self.tr('Ctrl+PgDown'),
-                      triggered=self.onMoveToBottom)
-
-        #':/trolltech/styles/commonstyle/images/standardbutton-closetab-16.png'
-        icon = QtGui.QIcon(
-            ':/trolltech/styles/commonstyle/images/standardbutton-cancel-128.png')
-        QtGui.QAction(icon, self.tr('Remove'), actions,
-                      objectName='removeLayerAction',
-                      statusTip=self.tr('Remove'),
-                      shortcut=self.tr('Del'),
-                      triggered=self.onRemoveLayer)
-
-        icon = QtGui.QIcon(
-            ':/trolltech/styles/commonstyle/images/standardbutton-yes-128.png')
-        QtGui.QAction(icon, self.tr('Show'), actions,
-                      objectName='showLayerAction',
-                      statusTip=self.tr('Show the layer'),
-                      triggered=self.checkSelectedItems)
-
-        icon = QtGui.QIcon(
-            ':/trolltech/styles/commonstyle/images/standardbutton-no-128.png')
-        QtGui.QAction(icon, self.tr('Hide'), actions,
-                      objectName='hideLayerAction',
-                      statusTip=self.tr('Hide the layer'),
-                      triggered=self.uncheckSelectedItems)
-
-        icon = QtGui.QIcon(
-                ':/trolltech/styles/commonstyle/images/viewdetailed-128.png')
-        QtGui.QAction(icon, self.tr('Select all'), actions,
-                      objectName='selectAllAction',
-                      statusTip=self.tr('Select all'),
-                      shortcut=self.tr('Ctrl-A'),
-                      triggered=self.treeview.selectAll)
 
         return actions
 
@@ -385,199 +309,6 @@ class VectorGraphicsApp(QtGui.QMainWindow):
                 self.model.appendRow(item)
 
         self.treeview.resizeColumnToContents(0)
-
-    @QtCore.pyqtSlot(QtCore.QModelIndex)
-    def onItemClicked(self, index):
-        if not index.column() == 0:
-            return
-
-        item = self.model.itemFromIndex(index)
-        checked = bool(item.checkState() == QtCore.Qt.Checked)
-        qlayer = item.data() # index.data(QtCore.Qt-UserRole+1)
-        qlayer.setVisible(checked)
-
-    #@QtCore.pyqtSlot(QtGui.QStandardItem)
-    @QtCore.pyqtSlot('QStandardItem*')
-    def onItemChanged(self, item):
-        self.onItemClicked(item.index())
-
-    @QtCore.pyqtSlot()
-    def onItemActivated(self):
-        selectionmodel = self.treeview.selectionModel()
-        for index in selectionmodel.selectedRows():
-            item = self.model.itemFromIndex(index)
-
-            if item.checkState() == QtCore.Qt.Checked:
-                item.setCheckState(QtCore.Qt.Unchecked)
-            elif item.checkState() == QtCore.Qt.Unchecked:
-                item.setCheckState(QtCore.Qt.Checked)
-            else:
-                continue
-
-            self.onItemClicked(index)
-
-    @QtCore.pyqtSlot()
-    def checkSelectedItems(self, check=True):
-        selectionmodel = self.treeview.selectionModel()
-
-        if check:
-            state = QtCore.Qt.Checked
-        else:
-            state = QtCore.Qt.Unchecked
-
-        update = False
-        for index in selectionmodel.selectedRows():
-            item = self.model.itemFromIndex(index)
-
-            if item.checkState() != state:
-                item.setCheckState(state)
-                self.onItemClicked(index)
-                update = True
-        if update:
-            self._updateLayerActions()
-
-    @QtCore.pyqtSlot()
-    def uncheckSelectedItems(self):
-        self.checkSelectedItems(False)
-
-    # @TODO: beginMoveRows, endMoveRows
-    def _takeSelectedRows(self, selectedrows=None):
-        if selectedrows is None:
-            selectedrows = self.treeview.selectionModel().selectedRows()
-
-        rows = []
-        for index in reversed(selectedrows):
-            row = index.row()
-            items = self.model.takeRow(row)
-            rows.insert(0, (row, items))
-
-        return rows
-
-    # @TODO: beginMoveRows, endMoveRows
-    @QtCore.pyqtSlot()
-    def onMoveToTop(self):
-        selectionmodel = self.treeview.selectionModel()
-        selectedrows = selectionmodel.selectedRows()
-
-        if len(selectedrows) == self.model.rowCount():
-            return
-
-        rows = self._takeSelectedRows(selectedrows)
-        rows.reverse()
-        for row, items in rows:
-            self.model.insertRow(0, items)
-        selection = QtGui.QItemSelection(self.model.index(0, 0),
-                                         self.model.index(len(rows) - 1, 0))
-        selectionmodel.select(selection, QtGui.QItemSelectionModel.Select)
-
-    # @TODO: beginMoveRows, endMoveRows
-    @QtCore.pyqtSlot()
-    def onMoveUp(self):
-        selectionmodel = self.treeview.selectionModel()
-        selectedrows = selectionmodel.selectedRows()
-
-        firstitem = self.model.itemFromIndex(selectedrows[0])
-        if firstitem and firstitem.row() == 0:
-            return
-
-        rows = self._takeSelectedRows(selectedrows)
-        for row, items in rows:
-            row = max(row-1, 0)
-            self.model.insertRow(row, items)
-
-            selection = QtGui.QItemSelection(self.model.index(row, 0),
-                                             self.model.index(row, 0))
-            selectionmodel.select(selection, QtGui.QItemSelectionModel.Select)
-
-    # @TODO: beginMoveRows, endMoveRows
-    @QtCore.pyqtSlot()
-    def onMoveDown(self):
-        selectionmodel = self.treeview.selectionModel()
-        selectedrows = selectionmodel.selectedRows()
-
-        lastitem = self.model.itemFromIndex(selectedrows[-1])
-        if lastitem and lastitem.row() == self.model.rowCount() - 1:
-            return
-
-        rows = self._takeSelectedRows(selectedrows)
-        for row, items in rows:
-            row = min(row+1, self.model.rowCount())
-            self.model.insertRow(row, items)
-            selection = QtGui.QItemSelection(self.model.index(row, 0),
-                                             self.model.index(row, 0))
-            selectionmodel.select(selection, QtGui.QItemSelectionModel.Select)
-
-    # @TODO: beginMoveRows, endMoveRows
-    @QtCore.pyqtSlot()
-    def onMoveToBottom(self):
-        selectionmodel = self.treeview.selectionModel()
-        selectedrows = selectionmodel.selectedRows()
-
-        if len(selectedrows) == self.model.rowCount():
-            return
-
-        rows = self._takeSelectedRows(selectedrows)
-        for row, items in rows:
-            self.model.appendRow(items)
-
-        start = self.model.rowCount() - len(rows)
-        stop = self.model.rowCount() - 1
-        selection = QtGui.QItemSelection(self.model.index(start, 0),
-                                         self.model.index(stop, 0))
-        selectionmodel.select(selection, QtGui.QItemSelectionModel.Select)
-
-    @QtCore.pyqtSlot()
-    def onRemoveLayer(self):
-        selectionmodel = self.treeview.selectionModel()
-        selection = selectionmodel.selection()
-        while selection:
-            selectionrange = selection[0]
-            for row in range(selectionrange.top(), selectionrange.bottom()+1):
-                item = self.model.item(row)
-                self.scene.removeItem(item.data())
-            self.model.removeRows(selectionrange.top(), selectionrange.height())
-            selection = selectionmodel.selection()
-
-    @QtCore.pyqtSlot()
-    def _updateLayerActions(self):
-        selectionmodel = self.treeview.selectionModel()
-        enabled = selectionmodel.hasSelection()
-        for action in self.layeractions.actions():
-            if action.objectName() == 'selectAllAction':
-                selectedrows = selectionmodel.selectedRows()
-                nselected = len(selectedrows)
-                nlayers = self.model.rowCount()
-                allselected = bool(nselected == nlayers)
-                action.setEnabled(nlayers and not allselected)
-
-            elif action.objectName() in ('showLayerAction', 'hideLayerAction'):
-                selectedrows = selectionmodel.selectedRows()
-                nselected = len(selectedrows)
-                if nselected == 0:
-                    action.setEnabled(False)
-                else:
-                    items = [self.model.itemFromIndex(index)
-                                                    for index in selectedrows]
-                    activerows = [item.row() for item in items
-                                    if item.checkState() == QtCore.Qt.Checked]
-
-                    if action.objectName() == 'showLayerAction':
-                        action.setEnabled(len(activerows) != nselected)
-                    elif action.objectName() == 'hideLayerAction':
-                        action.setEnabled(len(activerows) != 0)
-            else:
-                action.setEnabled(enabled)
-
-    @QtCore.pyqtSlot()
-    def onLayoutChanged(self, offset=0):
-        nrows = self.model.rowCount()
-        for row in range(nrows):
-            qitem = self.model.item(row).data()
-            if qitem:
-                qitem.setZValue(nrows + offset - row - 1)
-            else:
-                logging.warning('no graphics item associated to layer n. %d: '
-                                '%s' % (row, self.model.item(row, 1)))
 
     def _autocolor(self):
         COLORS = (
