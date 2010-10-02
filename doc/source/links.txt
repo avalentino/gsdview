@@ -27,6 +27,7 @@ GSDView Pro Edition
 * `Enterprise Europe Network
   <http://www.enterprise-europe-scotland.com/sct/services/enquire.asp?id=10%20NL%201D1D%203IB1&EnquiryType=BBS>`_
 * `ESOF 2010 <http://www.b2match.com/esof2010/show.php?ref=203>`_
+* `Wallonie Europe <http://www.wallonieeurope.be/blx/services/pdfprofile.asp?id=10%20NL%201D1D%203IB1&EnquiryType=BBS>`_
 
 .. _`GSDView Pro Edition`: <http://www.consorzio-innova.com/static/gsdview/index.html>
 
