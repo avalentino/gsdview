@@ -72,7 +72,7 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
     '''Tool descriptor for the gdaladdo utility program.'''
 
     #: resampling methods
-    RESAMPLING_METHODS = (
+    RESAMPLING_METHODS = [
         'nearest',
         'average',
         'gauss',
@@ -80,7 +80,7 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
         'average_mp',
         'average_magphase',
         'mode',
-    )
+    ]
 
     #: TIFF compression methods
     TIFF_COMPRESSION_METHODS = (
@@ -273,7 +273,7 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
 
 # @COMPATIBILITY: GDAL >= 1.7.0
 if gdal.VersionInfo() < '1700':
-    GdalAddOverviewDescriptor.RESAMPLING_METHODS.pop('cubic')
+    GdalAddOverviewDescriptor.RESAMPLING_METHODS.remove('cubic')
 
 
 class GdalInfoDescriptor(BaseGdalToolDescriptor):
