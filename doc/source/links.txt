@@ -46,6 +46,7 @@ Citations
 * `WareSeeker.com <http://mac.wareseeker.com/Games/absolute-farkle-3.5.zip/c73c3092a>`_
 * `softbb.org <http://softbb.org/MAC/Math-Scientific/20091205/585268.aspx>`_
 * http://www.soft4000.com/mac/download-gsdview-061-pre2-060-free/
+* `Master Branch <http://www.masterbranch.com/gsdview-project/25764>`_
 
 .. _`GSDView page on ohloh.net`: <http://www.ohloh.net/p/gsdview>
 
