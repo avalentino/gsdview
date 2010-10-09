@@ -49,7 +49,7 @@ class WorldmapPanel(QtGui.QDockWidget):
 
     bigBoxSize = 40
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         #title = self.tr('Worldmap Panel')
         super(WorldmapPanel, self).__init__('World Map Panel', parent, flags,
                                             **kwargs)

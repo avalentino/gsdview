@@ -45,7 +45,7 @@ from gsdview.mousemanager import MouseManager
 
 class MainWin(QtGui.QMainWindow):
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0)):
         super(MainWin, self).__init__(parent, flags)
 
         self.mousemanager = MouseManager(self)

@@ -43,7 +43,7 @@ from gsdview.gdalbackend import gdalsupport
 GDALInfoWidgetBase = qt4support.getuiform('gdalinfo', __name__)
 class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(GDALInfoWidget, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
@@ -118,7 +118,7 @@ class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
 GDALPreferencesPageBase = qt4support.getuiform('gdalpage', __name__)
 class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(GDALPreferencesPage, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
@@ -316,7 +316,7 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
 
 class BackendPreferencesPage(GDALPreferencesPage):
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(BackendPreferencesPage, self).__init__(parent, flags, **kwargs)
         #self.setupUi(self)
 
@@ -377,7 +377,7 @@ class MetadataWidget(QtGui.QWidget, MetadataWidgetBase):
     #: :C++ signature: `void domainChanged(str)`
     domainChanged = QtCore.pyqtSignal(str)
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(MetadataWidget, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
@@ -491,7 +491,7 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
     #: :C++ signature: `void overviewComputationRequest()`
     overviewComputationRequest = QtCore.pyqtSignal()
 
-    def __init__(self, item=None, parent=None, flags=QtCore.Qt.Widget,
+    def __init__(self, item=None, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kwargs):
         super(OverviewWidget, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
@@ -802,7 +802,8 @@ class OverviewDialog(QtGui.QDialog):
     overviewComputationRequest = QtCore.pyqtSignal('PyQt_PyObject')
 
 
-    def __init__(self, item=None, parent=None, flags=QtCore.Qt.Widget, **kargs):
+    def __init__(self, item=None, parent=None, flags=QtCore.Qt.WindowFlags(0),
+                 **kargs):
         super(OverviewDialog, self).__init__(parent, flags)
         self.setWindowTitle(self.tr('Overview computation'))
 
@@ -873,7 +874,8 @@ class OverviewDialog(QtGui.QDialog):
 
 
 class MajorObjectInfoDialog(QtGui.QDialog):
-    def __init__(self, gdalobj, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, gdalobj, parent=None, flags=QtCore.Qt.WindowFlags(0),
+                 **kwargs):
         super(MajorObjectInfoDialog, self).__init__(parent, flags, **kwargs)
         if hasattr(self, 'setupUi'):
             self.setupUi(self)
@@ -1000,7 +1002,7 @@ def _setupImageStructureInfo(widget, metadata):
 
 HistogramConfigDialogBase = qt4support.getuiform('histoconfig', __name__)
 class HistogramConfigDialog(QtGui.QDialog, HistogramConfigDialogBase):
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(HistogramConfigDialog, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
@@ -1086,7 +1088,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
     #: :C++ signature: `void overviewComputationRequest()`
     overviewComputationRequest = QtCore.pyqtSignal('PyQt_PyObject')
 
-    def __init__(self, band=None, parent=None, flags=QtCore.Qt.Widget,
+    def __init__(self, band=None, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kwargs):
         super(BandInfoDialog, self).__init__(band, parent, flags, **kwargs)
 
@@ -1570,8 +1572,8 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 DatasetInfoDialogBase = qt4support.getuiform('datasetdialog', __name__)
 class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
 
-    def __init__(self, dataset=None, parent=None, flags=QtCore.Qt.Widget,
-                 **kwargs):
+    def __init__(self, dataset=None, parent=None,
+                 flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(DatasetInfoDialog, self).__init__(dataset, parent, flags,
                                                 **kwargs)
 
@@ -1803,6 +1805,7 @@ p, li { white-space: pre-wrap; }
 
 #~ class SubDatasetInfoDialog(DatasetInfoDialog):
 
-    #~ def __init__(self, subdataset, parent=None, flags=QtCore.Qt.Widget):
+    #~ def __init__(self, subdataset, parent=None,
+                 #~ flags=QtCore.Qt.WindowFlags(0)):
         #~ assert dataset, 'a valid GDAL dataset expected'
         #~ DatasetInfoDialog.__init__(self, subdataset, parent, flags)

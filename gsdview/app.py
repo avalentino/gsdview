@@ -59,7 +59,7 @@ class GSDView(ItemModelMainWindow):
 
     '''Main window class for GSDView application.'''
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         logger = logging.getLogger('gsdview')
 
         logger.debug('Main window base classes initialization ...')

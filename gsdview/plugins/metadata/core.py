@@ -32,7 +32,7 @@ from gsdview import qt4support
 
 
 class MetadataViewer(QtGui.QDockWidget):
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         #title = self.tr('Dataset Browser')
         super(MetadataViewer, self).__init__('Metadata Viewer', parent, flags,
                                              **kwargs)

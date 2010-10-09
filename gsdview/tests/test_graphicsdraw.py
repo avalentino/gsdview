@@ -47,7 +47,7 @@ from gsdview.mousemanager import MouseManager, RubberBandMode
 
 ### Main application ##########################################################
 class GraphicsDrawApp(QtGui.QMainWindow):
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0)):
         QtGui.QMainWindow.__init__(self, parent, flags)
         self.statusBar().show()
 

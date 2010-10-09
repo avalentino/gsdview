@@ -49,7 +49,7 @@ from gsdview.gdalbackend import ogrqt4
 
 
 class VectorGraphicsApp(QtGui.QMainWindow):
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0)):
         QtGui.QMainWindow.__init__(self, parent, flags)
         self.statusBar().show()
 

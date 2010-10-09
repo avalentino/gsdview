@@ -162,7 +162,7 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
 class BandOverviewDock(QtGui.QDockWidget):
     OVRMAXSIZE = 10 * 1024**2 # 10MB
 
-    def __init__(self, app, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, app, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         #title = self.tr('Dataset Browser')
         super(BandOverviewDock, self).__init__('Band Overview', app, flags,
                                                **kwargs)

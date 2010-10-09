@@ -48,7 +48,7 @@ class MdiMainWindow(QtGui.QMainWindow):
     #: :C++ signature: `void subWindowClosed()`
     subWindowClosed = QtCore.pyqtSignal()
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(MdiMainWindow, self).__init__(parent, flags, **kwargs)
 
         #: MDI area instance (QMdiArea)
@@ -64,7 +64,8 @@ class MdiMainWindow(QtGui.QMainWindow):
 
 class ItemSubWindow(QtGui.QMdiSubWindow):
 
-    def __init__(self, item, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, item, parent=None, flags=QtCore.Qt.WindowFlags(0),
+                 **kwargs):
         super(ItemSubWindow, self).__init__(parent, flags, **kwargs)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
@@ -74,7 +75,7 @@ class ItemSubWindow(QtGui.QMdiSubWindow):
 
 class ItemModelMainWindow(MdiMainWindow):
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(ItemModelMainWindow, self).__init__(parent, flags, **kwargs)
 
         #: main application datamodel (QStandardItemModel)

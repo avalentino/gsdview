@@ -311,8 +311,8 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
 
     # @TODO: emit signal for ???
 
-    def __init__(self, pluginmanager, parent=None, flags=QtCore.Qt.Widget,
-                 **kwargs):
+    def __init__(self, pluginmanager, parent=None,
+                 flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(PluginManagerGui, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
@@ -568,7 +568,7 @@ PluginInfoFormBase = qt4support.getuiform('plugininfo', __name__)
 class PluginInfoForm(QtGui.QFrame, PluginInfoFormBase):
 
     def __init__(self, plugin=None, active=None, parent=None,
-                 flags=QtCore.Qt.Widget, **kwargs):
+                 flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(PluginInfoForm, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
@@ -622,8 +622,8 @@ class PluginInfoForm(QtGui.QFrame, PluginInfoFormBase):
 
 class PluginInfoDialog(QtGui.QDialog):
 
-    def __init__(self, plugin, active, parent=None, flags=QtCore.Qt.Widget,
-                 **kwargs):
+    def __init__(self, plugin, active, parent=None,
+                 flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(PluginInfoDialog, self).__init__(parent, flags, **kwargs)
         self.setModal(True)
 
