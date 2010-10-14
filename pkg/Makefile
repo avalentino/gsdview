@@ -16,14 +16,14 @@ onedir: gsdview-onedir.spec html
 		cp -rv $(DISTROOT)/gsdview/* $(BUNDLEROOT)/Contents/MacOS; \
 		mv $(BUNDLEROOT)/Contents/MacOS/Resources/* $(BUNDLEROOT)/Contents/Resources; \
 		$(RM) -r $(BUNDLEROOT)/Contents/MacOS/Resources; \
-		cp gsdview.png $(BUNDLEROOT)/Contents/Resources; \
+		cp GSDView.icns $(BUNDLEROOT)/Contents/Resources; \
 	fi
 
 onefile: gsdview-onefile.spec html
 	$(PYINSTALLERROOT)/Build.py $<
 	if [ -d $(BUNDLEROOT) ]; then \
 		cp -rv /Library/Frameworks/QtGui.framework/Resources/qt_menu.nib $(BUNDLEROOT)/Contents/Resources; \
-		cp gsdview.png $(BUNDLEROOT)/Contents/Resources; \
+		cp GSDView.icns $(BUNDLEROOT)/Contents/Resources; \
 	fi
 
 clean:
@@ -39,7 +39,7 @@ pyinstaller:
 
 env: pyinstaller
 	svn up pyinstaller
-	#cd pyinstaller && sh make-linux.sh python
+	#cd pyinstaller/source && python waf configure build install
 	if ! [ -f pyinstaller/Build.py.orig ]; then \
 		cd pyinstaller;\
 		patch -b -N -p0 < ../patches/osx-python-image.patch;\
