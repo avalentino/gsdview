@@ -22,10 +22,10 @@ doc/GSDView.pdf:
 
 man: debian/gsdview.1
 
-debian/gsdview.1: doc/gsdview.1
-	cd debian && ln -fs ../doc/gsdview.1
+debian/gsdview.1: doc/build/man/gsdview.1
+	cp -f $< $@
 
-doc/gsdview.1:
+doc/build/man/gsdview.1:
 	$(MAKE) -C doc man
 
 sdist: ui docs
@@ -74,7 +74,7 @@ clean:
 	find . -name '*.bak' -delete
 	find . -name '*~' -delete
 	$(RM) -r debian/gsdview debian/python-module-stampdir
-	$(RM) debian/gsdview.* debian/gsdview*.1 debian/files debian/pycompat \
+	$(RM) debian/gsdview.* debian/gsdview.1 debian/files debian/pycompat \
           debian/python-module-stampdir
 	$(RM) python-build-stamp-*
 	$(MAKE) -C pkg clean
