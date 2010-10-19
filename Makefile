@@ -32,8 +32,8 @@ sdist: ui docs
 	python setup.py sdist --formats=gztar,zip
 
 # Not available in setuptools (??)
-#	@python setup.py sdist --manifest-only
-#	@python setup.py sdist --force-manifest
+#	python setup.py sdist --manifest-only
+#	python setup.py sdist --force-manifest
 
 bdist: deb rpm
 
