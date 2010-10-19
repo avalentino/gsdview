@@ -34,7 +34,8 @@ help:
 	@echo "  doctest    to run all doctests embedded in the documentation (if enabled)"
 
 clean:
-	-rm -rf $(BUILDDIR) html
+	-rm -rf $(BUILDDIR) html GSDView.pdf
+	-rm -f *~ *.bak
 
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) html
