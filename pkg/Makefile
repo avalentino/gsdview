@@ -39,7 +39,7 @@ pyinstaller:
 
 env: pyinstaller
 	svn up pyinstaller
-	#cd pyinstaller/source && python waf configure build install
+	cd pyinstaller/source && python waf configure build install
 	if ! [ -f pyinstaller/Build.py.orig ]; then \
 		cd pyinstaller;\
 		patch -b -N -p0 < ../patches/osx-python-image.patch;\
