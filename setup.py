@@ -73,7 +73,10 @@ class ExtendedBuild(Build):
             log.warn("Couldn't build documentation:\n%s" %
                      traceback.format_exception(*sys.exc_info()))
 
-cmdclass['build'] = ExtendedBuild
+# @NOTE: temporary disabled because could break debian packaging.
+#        The man page and docs are included in the source package generated
+#        via makefile.
+#cmdclass['build'] = ExtendedBuild
 
 
 # Fix the install_lib command in order to generate an updated appsite.py file
