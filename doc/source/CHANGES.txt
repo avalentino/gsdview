@@ -11,8 +11,8 @@
 ChangeLog
 =========
 
-Changes from 0.6.3 to 0.6.4 (in development)
---------------------------------------------
+Changes from 0.6.3 to 0.6.4 (14/11/2010)
+----------------------------------------
 
 * Restored full compatibility wirh GDAL 1.6.x series
 * Metadata export and printing (:issue:`67` and :issue:`68`)
