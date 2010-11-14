@@ -85,7 +85,7 @@ def _choosedir(dirname, dialog=None,):
 AboutDialogBase = qt4support.getuiform('aboutdialog', __name__)
 class AboutDialog(QtGui.QDialog, AboutDialogBase):
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(AboutDialog, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
@@ -137,7 +137,8 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview">http://sourcefor
 
 class FileEntryWidget(QtGui.QWidget):
     def __init__(self, contents='', mode=QtGui.QFileDialog.AnyFile,
-                dialog=None, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+                 dialog=None, parent=None, flags=QtCore.Qt.WindowFlags(0),
+                 **kwargs):
         QtGui.QWidget.__init__(self, parent, flags, **kwargs)
 
         self.__completer = QtGui.QCompleter(self)
@@ -209,7 +210,7 @@ class FileEntryWidget(QtGui.QWidget):
 GeneralPreferencesPageBase = qt4support.getuiform('general-page', __name__)
 class GeneralPreferencesPage(QtGui.QWidget, GeneralPreferencesPageBase):
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(GeneralPreferencesPage, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
@@ -328,7 +329,7 @@ class PreferencesDialog(QtGui.QDialog, PreferencesDialogBase):
     # @TODO: also look at
     # /usr/share/doc/python-qt4-doc/examples/tools/settingseditor/settingseditor.py
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(PreferencesDialog, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
@@ -397,7 +398,8 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
     # @TODO: traceback highlighting
 
     def __init__(self, exctype=None, excvalue=None, tracebackobj=None,
-                 parent=None, flags=QtCore.Qt.Widget, fill=True, **kwargs):
+                 parent=None, flags=QtCore.Qt.WindowFlags(0), fill=True,
+                 **kwargs):
         super(ExceptionDialog, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
@@ -566,7 +568,7 @@ try:
     class QsciExceptionDialog(ExceptionDialog):
 
         def __init__(self, exctype=None, excvalue=None, tracebackobj=None,
-                     parent=None, flags=QtCore.Qt.Widget, **kwargs):
+                     parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
 
             super(QsciExceptionDialog, self).__init__(exctype, excvalue,
                                                       tracebackobj,

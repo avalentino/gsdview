@@ -32,7 +32,7 @@ from gsdview import qt4support
 
 
 class MetadataViewer(QtGui.QDockWidget):
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         #title = self.tr('Dataset Browser')
         super(MetadataViewer, self).__init__('Metadata Viewer', parent, flags,
                                              **kwargs)
@@ -117,14 +117,14 @@ class MetadataController(QtCore.QObject):
 
     @QtCore.pyqtSlot()
     @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
-    def onSubWindowChanged(self, window=None):
-        if not window:
-            window = self.app.mdiarea.activeSubWindow()
-        if window:
-            try:
-                item = window.item
-            except AttributeError:
-                item = None
+    def onSubWindowChanged(self, subwin=None):
+        if not subwin:
+            subwin = self.app.mdiarea.activeSubWindow()
+
+        try:
+            item = subwin.item
+        except AttributeError:
+            item = None
         else:
             item = self.app.currentItem()
 

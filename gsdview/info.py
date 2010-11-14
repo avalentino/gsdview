@@ -81,14 +81,12 @@ else:
     all_versions.append(('QScintilla', Qsci.QSCINTILLA_VERSION_STR,
                     'http://www.riverbankcomputing.co.uk/software/qscintilla'))
 
-if (hasattr(platform, 'linux_distribution') and
-                                platform.linux_distribution() != ('', '', '')):
-    all_versions.append(('GNU/Linux',
-                         ' '.join(platform.linux_distribution()), ''))
-elif hasattr(platform, 'mac_ver') and platform.mac_ver() != ('', '', ''):
+if platform.dist() != ('', '', ''):
+    all_versions.append(('GNU/Linux', ' '.join(platform.dist()), ''))
+elif platform.mac_ver() != ('', ('', '', ''), ''):
     all_versions.append(('Mac OS X', platform.mac_ver()[0],
                          'http://www.apple.com/macosx'))
-elif hasattr(platform, 'win32_ver') and  platform.win32_ver() != ('', '', ''):
+elif platform.win32_ver() != ('', '', '', ''):
     all_versions.append(('Windows', platform.win32_ver()[0],
                          'http://www.microsoft.com/windows'))
 

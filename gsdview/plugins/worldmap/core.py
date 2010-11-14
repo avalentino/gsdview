@@ -49,7 +49,7 @@ class WorldmapPanel(QtGui.QDockWidget):
 
     bigBoxSize = 40
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         #title = self.tr('Worldmap Panel')
         super(WorldmapPanel, self).__init__('World Map Panel', parent, flags,
                                             **kwargs)
@@ -63,28 +63,12 @@ class WorldmapPanel(QtGui.QDockWidget):
         self.worldmapitem = None
         self.setWorldmapItem()
 
-        # Zoom in
-        icon = qt4support.geticon('zoom-in.svg', 'gsdview')
-        self.actionZoomIn = QtGui.QAction(
-                                icon, self.tr('Zoom In'), self,
-                                statusTip=self.tr('Zoom In'),
-                                shortcut=QtGui.QKeySequence(self.tr('Ctrl++')),
-                                enabled=False,
-                                triggered=lambda: self._zoom(+1))
+        self.actions = self._setupActions()
+        self.actionZoomIn, self.actionZoomOut = self.actions.actions()
 
-        # Zoom out
-        icon = qt4support.geticon('zoom-out.svg', 'gsdview')
-        self.actionZoomOut = QtGui.QAction(
-                                icon, self.tr('Zoom Out'), self,
-                                statusTip=self.tr('Zoom Out'),
-                                shortcut=QtGui.QKeySequence(self.tr('Ctrl+-')),
-                                enabled=False,
-                                triggered=lambda: self._zoom(-1))
-
-        toolbar = QtGui.QToolBar(self.tr('Zoom'))
+        toolbar = qt4support.actionGroupToToolbar(self.actions,
+                                                  self.tr('Zoom toolbar'))
         toolbar.setOrientation(QtCore.Qt.Vertical)
-        toolbar.addAction(self.actionZoomIn)
-        toolbar.addAction(self.actionZoomOut)
 
         mainlayout = QtGui.QHBoxLayout()
         mainlayout.addWidget(self.graphicsview)
@@ -97,12 +81,34 @@ class WorldmapPanel(QtGui.QDockWidget):
         self.bigbox = None
         self.box = None
         self.fitItem = self.worldmapitem
-        self._fitInView()
 
         self.graphicsview.installEventFilter(self)
 
+    def _setupActions(self):
+        actions = QtGui.QActionGroup(self)
+
+        # Zoom in
+        icon = qt4support.geticon('zoom-in.svg', 'gsdview')
+        QtGui.QAction(icon, self.tr('Zoom In'), actions,
+                      objectName='zoomOutAction',
+                      statusTip=self.tr('Zoom In'),
+                      shortcut=QtGui.QKeySequence(self.tr('Ctrl++')),
+                      enabled=False,
+                      triggered=lambda: self._zoom(+1))
+
+        # Zoom out
+        icon = qt4support.geticon('zoom-out.svg', 'gsdview')
+        QtGui.QAction(icon, self.tr('Zoom Out'), actions,
+                      objectName='zoomOutAction',
+                      statusTip=self.tr('Zoom Out'),
+                      shortcut=QtGui.QKeySequence(self.tr('Ctrl+-')),
+                      enabled=False,
+                      triggered=lambda: self._zoom(-1))
+
+        return actions
+
     def eventFilter(self, obj, event):
-        if event.type() == QtCore.QEvent.Resize:
+        if event.type() in (QtCore.QEvent.Resize, QtCore.QEvent.Show):
             self._fitInView()
         return obj.eventFilter(obj, event)
 
@@ -216,7 +222,7 @@ class WorldmapController(QtCore.QObject):
         self.panel = WorldmapPanel(app)
         self.panel.setObjectName('worldmapPanel') # @TODO: check
 
-        app.mdiarea.subWindowActivated.connect(self.onSubWindowActivated)
+        app.mdiarea.subWindowActivated.connect(self.onSubWindowChanged)
         app.treeview.clicked.connect(self.onItemClicked)
         app.subWindowClosed.connect(self.onModelChanged)
 
@@ -233,13 +239,17 @@ class WorldmapController(QtCore.QObject):
 
         self.panel.setFootprint(footprint)
 
+    @QtCore.pyqtSlot()
     @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
-    def onSubWindowActivated(self, subwindow):
-        if not subwindow:
+    def onSubWindowChanged(self, subwin=None):
+        if subwin is None:
+            subwin = self.app.mdiarea.activeSubWindow()
+
+        if subwin is None:
             return
 
         try:
-            item = subwindow.item
+            item = subwin.item
         except AttributeError:
             # the window has not an associated item in the datamodel
             pass
@@ -255,9 +265,9 @@ class WorldmapController(QtCore.QObject):
     @QtCore.pyqtSlot()
     @QtCore.pyqtSlot(QtCore.QModelIndex, int, int)
     def onModelChanged(self, index=None, start=None, stop=None):
-        window = self.app.mdiarea.activeSubWindow()
-        if window:
-            self.onSubWindowActivated(window)
+        subwin = self.app.mdiarea.activeSubWindow()
+        if subwin:
+            self.onSubWindowChanged(subwin)
         else:
             item = self.app.currentItem()
             self.setItemFootprint(item)

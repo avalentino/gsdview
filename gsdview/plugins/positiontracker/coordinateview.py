@@ -30,7 +30,7 @@ from PyQt4 import QtCore, QtGui
 
 
 class CoordinateView(QtGui.QWidget):
-    def __init__ (self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__ (self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(CoordinateView, self).__init__(parent, flags, **kwargs)
 
         layout = QtGui.QHBoxLayout()
@@ -59,7 +59,7 @@ class CoordinateView(QtGui.QWidget):
         self.yedit.setText(str(scenepos.y()))
 
 class GeoCoordinateView(CoordinateView):
-    def __init__ (self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__ (self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(GeoCoordinateView, self).__init__(parent, flags, **kwargs)
 
         self.xlabel.setText('lon:')

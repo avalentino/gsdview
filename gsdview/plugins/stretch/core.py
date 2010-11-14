@@ -44,18 +44,19 @@ class StretchTool(QtCore.QObject):
         self.action.setEnabled(False)
 
         self.dialog.finished.connect(lambda: self.action.setChecked(False))
-        self.app.mdiarea.subWindowActivated.connect(self.onSubWindowActivated)
+        self.app.mdiarea.subWindowActivated.connect(self.onSubWindowChanged)
         #~ self.app.treeview.clicked.connect(self.onItemClicked)
         #~ self.app.subWindowClosed(self.onModelChanged)
         self.dialog.valueChanged.connect(self.onStretchChanged)
 
-        self.toolbar = QtGui.QToolBar(app.tr('Stretching Toolbar'))
+        self.toolbar = QtGui.QToolBar(self.tr('Stretching Toolbar'))
         self.toolbar.setObjectName('stretchingToolbar')
         self.toolbar.addAction(self.action)
 
     def _setupAction(self):
         icon = qt4support.geticon('stretching.svg', __name__)
         action = QtGui.QAction(icon, self.tr('Stretch'), self,
+                               objectName='stretchAction',
                                statusTip=self.tr('Stretch'),
                                checkable=True,
                                triggered=self.onButtonToggled)
@@ -110,14 +111,18 @@ class StretchTool(QtCore.QObject):
         except AttributeError:
             return None
 
+    @QtCore.pyqtSlot()
     @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
-    def onSubWindowActivated(self, subwindow):
-        if not subwindow:
+    def onSubWindowChanged(self, subwin=None):
+        if subwin is None:
+            subwin = self.app.mdiarea.activeSubWindow()
+
+        if subwin is None:
             self.action.setEnabled(self.dialog.isVisible())
             self.dialog.setEnabled(False)
             return
 
-        item = self.currentGraphicsItem(subwindow)
+        item = self.currentGraphicsItem(subwin)
         try:
             stretchable = item.stretch is not None
         except AttributeError:

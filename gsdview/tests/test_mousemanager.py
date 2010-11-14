@@ -45,8 +45,8 @@ from gsdview.mousemanager import MouseManager
 
 class MainWin(QtGui.QMainWindow):
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget):
-        QtGui.QMainWindow.__init__(self, parent, flags)
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0)):
+        super(MainWin, self).__init__(parent, flags)
 
         self.mousemanager = MouseManager(self)
 
@@ -77,7 +77,7 @@ class MainWin(QtGui.QMainWindow):
         self.addToolBar(toolbar)
 
         # Mouse Actions
-        menu = QtGui.QMenu('Mouse')
+        menu = QtGui.QMenu('Mouse', self)
         menu.addActions(self.mousemanager.actions.actions())
         self.menuBar().addMenu(menu)
 
@@ -86,7 +86,7 @@ class MainWin(QtGui.QMainWindow):
         self.addToolBar(toolbar)
 
         # Help action
-        self.helpactions = self._setupHelsActions()
+        self.helpactions = self._setupHelpActions()
 
         menu = QtGui.QMenu('Help', self)
         menu.addActions(self.helpactions.actions())
@@ -107,7 +107,7 @@ class MainWin(QtGui.QMainWindow):
         QtGui.QAction(icon, 'Open', actions, triggered=self.openfile)
 
         icon = style.standardIcon(QtGui.QStyle.SP_DialogCloseButton)
-        QtGui.QAction(icon, 'Close', actions,triggered=self.scene.clear)
+        QtGui.QAction(icon, 'Close', actions, triggered=self.scene.clear)
 
         QtGui.QAction(actions).setSeparator(True)
 
@@ -116,7 +116,7 @@ class MainWin(QtGui.QMainWindow):
 
         return actions
 
-    def _setupHelsActions(self):
+    def _setupHelpActions(self):
         actions = QtGui.QActionGroup(self)
 
         icon = QtGui.QIcon(':/trolltech/styles/commonstyle/images/fileinfo-32.png')

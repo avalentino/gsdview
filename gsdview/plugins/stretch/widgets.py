@@ -43,10 +43,10 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
 
     #: SIGNAL: it is emitted when the stretch value changes
     #:
-    #: :C++ signature: `void valueChanged()
+    #: :C++ signature: `void valueChanged()`
     valueChanged = QtCore.pyqtSignal()
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(StretchWidget, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
         self._floatmode = False
@@ -249,10 +249,10 @@ class StretchDialog(QtGui.QDialog, StretchDialogBase):
 
     #: SIGNAL: it is emitted when the stretch value changes
     #:
-    #: :C++ signature: `void valueChanged()
+    #: :C++ signature: `void valueChanged()`
     valueChanged = QtCore.pyqtSignal()
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(StretchDialog, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 

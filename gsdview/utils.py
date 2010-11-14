@@ -25,7 +25,8 @@ __author__   = '$Author$'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
 
-__all__ = ['getresource']
+__all__ = ['which', 'isexecutable', 'default_workdir', 'getresource',
+           'format_platform_info', 'foramt_bugreport']
 
 import os
 import sys
@@ -43,11 +44,16 @@ except ImportError:
 from gsdview import info
 from gsdview import appsite
 
+
 def default_workdir():
+    '''Return the defaut workinhg directory.'''
+
     if sys.platform[:3] == 'win':
         return 'C:\\'
+        #return QtGui.QDesktopServices.storageLocation(QtGui.QDesktopServices.DocumentsLocation)
     else:
         return os.path.expanduser('~')
+
 
 def _getresource(resource, package):
     try:
@@ -103,8 +109,14 @@ def format_platform_info():
     if libc_ver.strip():
         platform_info.append(libc_ver)
 
-    #~ mac_ver(): ('', ('', '', ''), '')
-    #~ win32_ver(): ('', '', '', '')
+    if platform.dist() != ('', '', ''):
+        all_versions.append(('GNU/Linux', ' '.join(platform.dist()), ''))
+    elif platform.mac_ver() != ('', ('', '', ''), ''):
+        all_versions.append(('Mac OS X', platform.mac_ver()[0],
+                             'http://www.apple.com/macosx'))
+    elif platform.win32_ver() != ('', '', '', ''):
+        all_versions.append(('Windows', platform.win32_ver()[0],
+                             'http://www.microsoft.com/windows'))
 
     platform_info.append('python_compiler: %s\n' % platform.python_compiler())
     platform_info.append('python_implementation: %s\n' %
@@ -157,7 +169,7 @@ else:
 
 
 def which(cmd, env=None):
-    '''Return the full path of the program (cnd) or None.
+    '''Return the full path of the program (*cmd*) or None.
 
     >>> which('ls')
     '/bin/ls'

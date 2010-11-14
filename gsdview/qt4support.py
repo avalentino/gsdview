@@ -80,7 +80,7 @@ def callExpensiveFunc(func, *args, **kwargs):
         QtGui.QApplication.restoreOverrideCursor()
 
 
-### Table model/view hepers ##################################################
+### Table model/view helpers ##################################################
 def clearTable(tablewidget):
     '''Remove contents from a table widget preserving labels. '''
 
@@ -106,6 +106,7 @@ def selectAllItems(itemview):
     selection = QtGui.QItemSelection(topleft, bottomright)
     itemview.selectionModel().select(selection,
                                      QtGui.QItemSelectionModel.Select)
+
 
 #@QtCore.pyqtSlot(QtGui.QWidget) # @TODO: check
 def copySelectedItems(itemview):
@@ -154,16 +155,16 @@ def setViewContextActions(widget):
 
     icon = geticon('copy.svg', __name__)
     action = QtGui.QAction(icon, widget.tr('&Copy'), widget,
-                           objectName='copy',
+                           objectName='copyAction',
                            shortcut=widget.tr('Ctrl+C'),
                            toolTip=widget.tr('Copy selected items'),
                            triggered=lambda: copySelectedItems(widget))
     widget.addAction(action)
 
-    #icon = geticon('selectall.svg', __name__)
-    icon = QtGui.QIcon()
+    #':/trolltech/dialogs/qprintpreviewdialog/images/view-page-multi-32.png'
+    icon = QtGui.QIcon(':/trolltech/styles/commonstyle/images/viewlist-128.png')
     action = QtGui.QAction(icon, widget.tr('Select &All'), widget,
-                           objectName='selectall',
+                           objectName='selectAllAction',
                            #shortcut=widget.tr('Ctrl+A'),
                            toolTip=widget.tr('Select all items'),
                            triggered=lambda: selectAllItems(widget))
@@ -180,6 +181,7 @@ def setViewContextActions(widget):
 import numpy
 GRAY_COLORTABLE = [QtGui.QColor(i, i, i).rgb() for i in range(256)]
 
+
 def _aligned(data, nbyes=4):
     h, w = data.shape
 
@@ -192,6 +194,7 @@ def _aligned(data, nbyes=4):
     else:
         image = numpy.require(data, data.dtype, 'CO') # 'CAO'
     return image
+
 
 def numpy2qimage(data):
     '''Convert a numpy array into a QImage.

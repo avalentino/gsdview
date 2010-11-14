@@ -59,7 +59,7 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
     #: :param dragmode:
     #:     current darg mode
     #:
-    #: :C++ signature: `voud mousePressed(QPointF, Qt::MouseButtons,
+    #: :C++ signature: `void mousePressed(QPointF, Qt::MouseButtons,
     #:                                    QGraphicsView::DragMode)`
     mousePressed = QtCore.pyqtSignal(QtCore.QPointF, QtCore.Qt.MouseButtons,
                                      QtGui.QGraphicsView.DragMode)
@@ -73,7 +73,7 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
     #: :param dragmode:
     #:     current darg mode
     #:
-    #: :C++ signature: `voud mouseMoved(QPointF, Qt::MouseButtons,
+    #: :C++ signature: `void mouseMoved(QPointF, Qt::MouseButtons,
     #:                                    QGraphicsView::DragMode)`
     mouseMoved = QtCore.pyqtSignal(QtCore.QPointF, QtCore.Qt.MouseButtons,
                                    QtGui.QGraphicsView.DragMode)
@@ -162,7 +162,7 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
 class BandOverviewDock(QtGui.QDockWidget):
     OVRMAXSIZE = 10 * 1024**2 # 10MB
 
-    def __init__(self, app, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, app, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         #title = self.tr('Dataset Browser')
         super(BandOverviewDock, self).__init__('Band Overview', app, flags,
                                                **kwargs)
@@ -273,7 +273,7 @@ class OverviewController(QtCore.QObject):
         app.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.panel)
 
         # Connect signals
-        app.mdiarea.subWindowActivated.connect(self.onWindowMapped)
+        app.mdiarea.subWindowActivated.connect(self.onSubWindowChanged)
         app.subWindowClosed.connect(self.onWindowClosed)
         app.datamodel.itemChanged.connect(self.onItemChanged)
 
@@ -284,8 +284,12 @@ class OverviewController(QtCore.QObject):
         self.panel.graphicsview.mousePressed.connect(self.onNewPos)
         self.panel.graphicsview.mouseMoved.connect(self.onNewPos)
 
+    @QtCore.pyqtSlot()
     @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
-    def onWindowMapped(self, subwin):
+    def onSubWindowChanged(self, subwin=None):
+        if subwin is None:
+            subwin = self.app.mdiarea.activeSubWindow()
+
         try:
             item = subwin.item
         except AttributeError:

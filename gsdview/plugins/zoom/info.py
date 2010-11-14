@@ -19,13 +19,12 @@
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
 
 
-'''Zoom plugin.'''
-
+'''Package info.'''
 
 __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__     = '$Date$'
 __revision__ = '$Revision$'
-__version__  = (0, 6, 3)
+__version__  = (0, 6, 4)
 __requires__ = []
 
 __all__ = ['name', 'version', 'short_description', 'description',

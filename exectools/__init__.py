@@ -23,7 +23,7 @@
 __author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
 __revision__ = '$Revision$'
 __date__     = '$Date$'
-__version__  = (0,6,0)
+__version__  = (0, 6, 4)
 
 version = '.'.join(map(str, __version__))
 
