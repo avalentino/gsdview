@@ -121,6 +121,12 @@ def cmdline_ui():
 
 
 def main():
+    # @IMPORTANT: force numeric locale to 'C' in order to avoid problems
+    #             with GDAL and PPROJ4
+    # @SEEALSO: http://trac.osgeo.org/gdal/wiki/FAQMiscellaneous#DoesGDALworkindifferentinternationalnumericlocales
+    import os
+    os.environ['LC_NUMERIC'] = 'C'
+
     options, args = cmdline_ui()
     logging.basicConfig(#level=logging.DEBUG,
                         level=logging.INFO,
@@ -139,7 +145,7 @@ def main():
     from PyQt4 import QtGui
     logging.debug('Qt4 import: %d.%06ds' % timer.update())
 
-    import os, sys
+    import sys
     from gsdview.info import name as NAME
     from gsdview.info import version as VERSION
     from gsdview.utils import getresource

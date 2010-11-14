@@ -297,8 +297,14 @@ def GetCachedStatistics(band):
 
     metadata = band.GetMetadata()
     stats = [metadata.get(name) for name in GDAL_STATS_KEYS]
+
+    # @TODO: remove.
+    #        It is no more needed if the numeric locale is correctly set.
+    #if None not in stats:
+    #    stats = [float(item.replace(',', '.')) for item in stats]
+
     if None not in stats:
-        stats = [float(item.replace(',', '.')) for item in stats]
+        stats = [float(item) for item in stats]
 
     return stats
 
