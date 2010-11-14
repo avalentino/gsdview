@@ -70,7 +70,7 @@ class BaseGdalToolDescriptor(exectools.ToolDescriptor):
 class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
     '''Tool descriptor for the gdaladdo utility program.'''
 
-    RESAMPLING_METHODS = (
+    RESAMPLING_METHODS = [
         'nearest',
         'average',
         'gauss',
@@ -78,7 +78,7 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
         'average_mp',
         'average_magphase',
         'mode',
-    )
+    ]
 
     TIFF_COMPRESSION_METHODS = (
         'JPEG',
@@ -251,7 +251,7 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
 
 # @COMPATIBILITY: GDAL >= 1.7.0
 if gdal.VersionInfo() < '1700':
-    GdalAddOverviewDescriptor.RESAMPLING_METHODS.pop('cubic')
+    GdalAddOverviewDescriptor.RESAMPLING_METHODS.remove('cubic')
 
 
 class GdalInfoDescriptor(BaseGdalToolDescriptor):
