@@ -7,7 +7,6 @@
     :Date: $Date$
     :Copyright (C): 2008-2010 Antonio Valentino
 
-.. _news-archive:
 
 News archive
 ============

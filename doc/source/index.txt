@@ -14,12 +14,13 @@
     :Date: $Date$
     :Copyright (C): 2008-2010 Antonio Valentino
 
+
 News
 ====
 
 .. include:: latestnews.txt
 
-The complete :ref:`news-archive` is also available.
+The complete :doc:`newsarchive` is also available.
 
 .. include:: ../../README.txt
 
@@ -29,10 +30,11 @@ Documents
 .. toctree::
    :maxdepth: 1
 
+   features
    CHANGES
-   News archive <newsarchive>
-   Links <links>
+   links
    reference
+   News archive <newsarchive>
 
 
 .. comment

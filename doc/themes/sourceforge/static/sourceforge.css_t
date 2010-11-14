@@ -16,3 +16,15 @@ div.admonition-todo {
     background-color: {{ theme_todobgcolor }};
     border: 1px solid {{ theme_todobordercolor }};
 }
+
+/* -- misc styles ----------------------------------------------------------- */
+dl.class dt, dl.function dt {
+    border-bottom: 1px solid #CCCCCC;
+}
+
+/*
+tt.descclassname {
+    font-style: bold;
+    font-size: 1.2em;
+}
+*/

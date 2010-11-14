@@ -1,5 +1,5 @@
-GSDView API Reference
-=====================
+API Reference
+=============
 
 
 Main Application
@@ -12,11 +12,12 @@ Main Application
    gsdview.app
    gsdview.appsite
    gsdview.assistanthelper
+   gsdview.errors
    gsdview.graphicsview
    gsdview.imgutils
    gsdview.info
    gsdview.launch
-   gsdview.mainwin
+   gsdview.mdi
    gsdview.mousemanager
    gsdview.pluginmanager
    gsdview.qt4support
@@ -29,9 +30,17 @@ Main Application
    gsdview.gdalbackend.gdalexectools
    gsdview.gdalbackend.gdalqt4
    gsdview.gdalbackend.gdalsupport
+   gsdview.gdalbackend.helpers
    gsdview.gdalbackend.info
    gsdview.gdalbackend.modelitems
    gsdview.gdalbackend.widgets
+
+
+Libraries
+---------
+
+.. autosummary::
+   :toctree: api/
 
    exectools
    exectools.std
@@ -39,8 +48,8 @@ Main Application
    exectools.gtk2
 
 ..
-   gsdview.exectools.recipe_440544
-   gsdview.exectools.subprocess2
+   exectools.recipe_440544
+   exectools.subprocess2
 
 
 Plugins
@@ -50,19 +59,29 @@ Plugins
    :toctree: api/
 
    logplane
-   overview
-   overview.info
-   overview.core
-   positiontracker
-   positiontracker.info
-   positiontracker.coordinateview
+
    metadata
    metadata.info
    metadata.core
+
+   overview
+   overview.info
+   overview.core
+
+   positiontracker
+   positiontracker.info
+   positiontracker.core
+   positiontracker.coordinateview
+
+   stretch
+   stretch.info
+   stretch.core
+   stretch.widgets
+
    worldmap
    worldmap.info
    worldmap.core
+
    zoom
    zoom.info
    zoom.core
-
