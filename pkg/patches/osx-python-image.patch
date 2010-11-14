@@ -1,7 +1,7 @@
 Index: Build.py
 ===================================================================
---- Build.py	(revision 975)
-+++ Build.py	(working copy)
+--- Build.py	(revisione 1035)
++++ Build.py	(copia locale)
 @@ -474,6 +474,15 @@
          Python executable to the libpython, so bindepend doesn't include
          it in its output.

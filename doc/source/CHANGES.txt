@@ -11,14 +11,26 @@
 ChangeLog
 =========
 
-Changes from 0.6.3 to 0.6.4 (in development)
+Changes from 0.6.4 to 0.6.5 (in development)
 --------------------------------------------
 
-* Metadata export and printing (:issue:`67` and :issue:`68`)
 * New gsdtools package providing extra utilities for geo-spatial data handling.
   The gsdview.gsdtools module has been renamed into gsdview.imgutils.
 * New functions for KML export and dataset area display on "Goofle Earth"
   and "Google Maps" (close :issue:`50`)
+
+
+Changes from 0.6.3 to 0.6.4 (14/11/2010)
+----------------------------------------
+
+* Restored full compatibility wirh GDAL 1.6.x series
+* Metadata export and printing (:issue:`67` and :issue:`68`)
+* mainwin.py module renamed into mdi.py
+* Set numeric locale to "C" at application startup in order to prevent
+  issues with GDAL statistics serialization in virtual files
+* Improved management of Qt4 items type
+* Strongly improved GDAL dataset dialog
+* Updat to the new debian package format and new packaging standards
 
 
 Changes from 0.6.2 to 0.6.3 (13/08/2010)

@@ -18,6 +18,21 @@ __ `GSDView project page`_
 .. include:: latestnews.txt
 
 
+:20/07/2010: GSDView Open Source Edition v. 0.6.2 released.
+
+             This release don't include big changes visible to the user.
+             It introduces some important internal changes such as the switch
+             to GDAL 1.6.x series and a new system for full asynchronous
+             handling of computation tasks (including statistics and histogram
+             computation).
+
+:01/07/2010: GDAL 1.5.x series dropped.
+
+             GDAL 1.6.x series introduced a lot of new interesting features
+             and a better progress handling.
+             Dropping 1.5.x series allow to use this new features in the
+             `development branch`_ to make GSDView even better.
+
 :09/05/2010: Binary package for `Mac OS X`_ released.
 
              The long waited binary package for `Mac OS X`_ is now available.
@@ -67,6 +82,7 @@ __ `GSDView project page`_
              This is still an alpha release with a minimal set of features.
 
 
+.. _`development branch`: http://sourceforge.net/apps/trac/gsdview/browser/trunk
 .. _`Mac OS X`: http://www.apple.com/macosx
 .. _`GSDView project page`: http://sourceforge.net/projects/gsdview
 .. _download: http://sourceforge.net/projects/gsdview/files

@@ -1,3 +1,19 @@
+:14/11/2010: GSDView Open Source Edition v. 0.6.4 released.
+
+             This is an hot-fix release that restores the complete
+             compatibility with GDAL 1.6.x series.
+
+             Also some new feature have been added: see :doc:`CHANGES`.
+
+:13/11/2010: Ubuntu packages now available via Launchpad.
+
+             Source packages and pre-build binary packages for Ubuntu 10.10
+             are now available via PPA (Personal Package Archive) on Launchpad_.
+
+             The archive and instructions for usage are at the following URL:
+
+             https://launchpad.net/~a.valentino/+archive/eotools
+
 :13/08/2010: GSDView Open Source Edition v. 0.6.3 released.
 
              This release has been implemented a complete switch of the
@@ -7,20 +23,5 @@
 
              Also some new feature have been added: see :doc:`CHANGES`.
 
-:20/07/2010: GSDView Open Source Edition v. 0.6.2 released.
-
-             This release don't include big changes visible to the user.
-             It introduces some important internal changes such as the switch
-             to GDAL 1.6.x series and a new system for full asynchronous
-             handling of computation tasks (including statistics and histogram
-             computation).
-
-:01/07/2010: GDAL 1.5.x series dropped.
-
-             GDAL 1.6.x series introduced a lot of new interesting features
-             and a better progress handling.
-             Dropping 1.5.x series allow to use this new features in the
-             `development branch`_ to make GSDView even better.
-
-.. _`development branch`: http://sourceforge.net/apps/trac/gsdview/browser/trunk
 .. _PyQt4: http://www.riverbankcomputing.com
+.. _Launchpad: http://www.launchpad.net
