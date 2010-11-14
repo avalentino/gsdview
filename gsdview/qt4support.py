@@ -355,6 +355,31 @@ def setViewContextActions(widget):
                            triggered=lambda: selectAllItems(widget))
     widget.addAction(action)
 
+    icon = widget.style().standardIcon(QtGui.QStyle.SP_DialogSaveButton)
+    action = QtGui.QAction(icon, widget.tr('&Save As'), widget,
+                           objectName='saveAsAction',
+                           shortcut=widget.tr('Ctrl+S'),
+                           statusTip=widget.tr('Save as'),
+                           triggered=lambda: exportTable(widget.model()))
+    widget.addAction(action)
+
+    icon = QtGui.QIcon(
+                ':/trolltech/dialogs/qprintpreviewdialog/images/print-32.png')
+    action = QtGui.QAction(icon, widget.tr('&Print'), widget,
+                           objectName='printAction',
+                           shortcut=widget.tr('Ctrl+P'),
+                           statusTip=widget.tr('Print'),
+                           triggered=lambda: printObject(widget))
+    widget.addAction(action)
+
+    #~ icon = QtGui.QIcon(
+                #~ ':/trolltech/styles/commonstyle/images/filecontents-128.png')
+    #~ action = QtGui.QAction(icon, widget.tr('Print Preview'), widget,
+                           #~ objectName='printPreviewAction',
+                           #~ statusTip=widget.tr('Print Preview'))#,
+                           #~ #triggered=tablePrintPreview) # @TODO: tablePrintPreview
+    #~ widget.addAction(action)
+
 
 ### Printing helpers ##########################################################
 def coreprint(obj, printer):
