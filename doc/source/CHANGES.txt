@@ -30,7 +30,7 @@ Changes from 0.6.3 to 0.6.4 (14/11/2010)
   issues with GDAL statistics serialization in virtual files
 * Improved management of Qt4 items type
 * Strongly improved GDAL dataset dialog
-* Updat to the new debian package format and new packaging standards
+* Update to the new debian package format and new packaging standards
 
 
 Changes from 0.6.2 to 0.6.3 (13/08/2010)
