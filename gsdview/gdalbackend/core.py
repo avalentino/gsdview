@@ -679,7 +679,7 @@ class GDALBackend(QtCore.QObject):
 
 
 ### MISC ######################################################################
-from gsdview.mainwin import ItemSubWindow
+from gsdview.mdi import ItemSubWindow
 
 # @TODO: move elsewhere
 class GraphicsViewSubWindow(ItemSubWindow):

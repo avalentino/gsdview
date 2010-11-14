@@ -1,0 +1,23 @@
+stretch.core
+============
+
+.. automodule:: stretch.core
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      StretchDialog
+      StretchTool
+   
+   
+
+   
+   
+   

@@ -1,0 +1,25 @@
+stretch.widgets
+===============
+
+.. automodule:: stretch.widgets
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      StretchDialog
+      StretchDialogBase
+      StretchWidget
+      StretchWidgetBase
+   
+   
+
+   
+   
+   

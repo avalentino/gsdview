@@ -15,6 +15,7 @@ Changes from 0.6.3 to 0.6.4 (in development)
 --------------------------------------------
 
 * Restored full compatibility wirh GDAL 1.6.x series
+* mainwin.py module renamed into mdi.py
 
 
 Changes from 0.6.2 to 0.6.3 (13/08/2010)

@@ -57,9 +57,12 @@ def actionGroupToToolbar(actionGroup, label, name=None):
         parts[0] = parts[0].lower()
         name = ''.join(parts)
     toolbar = QtGui.QToolBar(label)
-    toolbar.setObjectName(name)
     toolbar.addActions(actionGroup.actions())
+    if name:
+        toolbar.setObjectName(name)
+
     return toolbar
+
 
 ### Application cursor helpers ###############################################
 def overrideCursor(func):
@@ -96,12 +99,13 @@ def selectAllItems(itemview):
 
     model = itemview.model()
     topleft = model.index(0, 0)
+
     try:
-        # Should work for tables: 'columnCount' is private in lists
-        bottomright = model.index(model.rowCount()-1, model.columnCount()-1)
+        bottomright = model.index(model.rowCount() - 1, model.columnCount() - 1)
     except (TypeError, AttributeError):
-        # Assume it is a list
-        bottomright = model.index(model.rowCount()-1)
+        # columnCount is a private method in QAbstractListModel
+        # assume it is a list
+        bottomright = model.index(model.rowCount() - 1)
 
     selection = QtGui.QItemSelection(topleft, bottomright)
     itemview.selectionModel().select(selection,

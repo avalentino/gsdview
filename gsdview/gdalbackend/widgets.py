@@ -1410,8 +1410,8 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 DatasetInfoDialogBase = qt4support.getuiform('datasetdialog', __name__)
 class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
 
-    def __init__(self, dataset=None, parent=None, flags=QtCore.Qt.Widget,
-                 **kwargs):
+    def __init__(self, dataset=None, parent=None,
+                 flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(DatasetInfoDialog, self).__init__(dataset, parent, flags,
                                                 **kwargs)
 

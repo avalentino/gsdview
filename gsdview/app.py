@@ -44,7 +44,7 @@ from gsdview import graphicsview
 from gsdview import mousemanager
 from gsdview import pluginmanager
 
-from gsdview.mainwin import ItemModelMainWindow
+from gsdview.mdi import ItemModelMainWindow
 from gsdview.appsite import USERCONFIGDIR, SYSPLUGINSDIR
 from gsdview.widgets import AboutDialog, PreferencesDialog
 from gsdview.widgets import GSDViewExceptionDialog as ExceptionDialog

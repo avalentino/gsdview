@@ -1,0 +1,25 @@
+stretch
+=======
+
+.. automodule:: stretch
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      close
+      init
+      loadSettings
+      saveSettings
+   
+   
+
+   
+   
+   
+
+   
+   
+   

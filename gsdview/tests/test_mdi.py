@@ -21,7 +21,7 @@ GSDVIEWROOT = abspath(os.path.join(dirname(__file__), os.pardir, os.pardir))
 sys.path.insert(0, GSDVIEWROOT)
 
 
-from gsdview.mainwin import *
+from gsdview.mdi import *
 from gsdview.qt4support import geticon
 
 

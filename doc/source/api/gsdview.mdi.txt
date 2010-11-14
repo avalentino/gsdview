@@ -1,7 +1,7 @@
-gsdview.mainwin
-===============
+gsdview.mdi
+===========
 
-.. automodule:: gsdview.mainwin
+.. automodule:: gsdview.mdi
 
    
    
