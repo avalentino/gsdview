@@ -16,3 +16,6 @@ install/gsdview::
 	find $(DEB_DESTDIR) -name 'jquery.js*' -delete
 	dh_link /usr/share/javascript/jquery/jquery.js \
         usr/share/doc/gsdview/html/_static/jquery.js
+
+# @TODO: get-orig-source
+
