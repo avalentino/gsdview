@@ -27,9 +27,14 @@ __revision__ = '$Revision$'
 
 
 import os
+import csv
 import logging
+#from io import StringIO    # @TODO: check
+from cStringIO import StringIO
+from ConfigParser import ConfigParser
 
-from PyQt4 import QtCore, QtGui, uic
+
+from PyQt4 import QtCore, QtGui, QtSvg, uic
 
 from gsdview import utils
 
@@ -151,6 +156,182 @@ def copySelectedItems(itemview):
     return data
 
 
+def modelToIni(model, section=None, cfg=None):
+    assert model.columnCount() == 2
+
+    if cfg is None:
+        cfg = ConfigParser()
+
+    for row in range(model.rowCount()):
+        name = model.index(row, 0).data()
+        value = model.index(row, 1).data()
+        cfg.set(section, name, value)
+
+    return cfg
+
+
+def modelToCsv(model, dialect='excel'):
+    fp = StringIO()
+    writer = csv.writer(fp, dialect)
+
+    try:
+        ncols = model.columnCount()
+    except TypeError:
+        # columnCount is a private method in QAbstractListModel
+        ncols = 1
+
+    for row in range(model.rowCount()):
+        line = []
+        for col in range(ncols):
+            line.append(model.index(row, col).data())
+        writer.writerow(line)
+
+    return fp.getvalue()
+
+
+def modelToTextDocument(model, doc=None):
+    if doc is None:
+        doc = QtGui.QTextDocument()
+
+    cursor = QtGui.QTextCursor(doc)
+    cursor.movePosition(QtGui.QTextCursor.End)
+    cursor.beginEditBlock()
+
+    format = QtGui.QTextTableFormat()
+    format.setCellPadding(5)
+    format.setCellSpacing(0)
+    format.setBorderStyle(QtGui.QTextFrameFormat.BorderStyle_Solid)
+    format.setHeaderRowCount(1)
+
+    nrows = model.rowCount()
+    try:
+        ncols = model.columnCount()
+    except TypeError:
+        # columnCount is a private method in QAbstractListModel
+        ncols = 1
+    table = cursor.insertTable(nrows, ncols, format)
+
+    #textformat = QtGui.QTextFormat()
+
+    for row in range(nrows):
+        for col in range(ncols):
+            text = model.index(row, col).data()
+            if text is None:
+                text = ''
+            else:
+                text = str(text)
+
+            cell = table.cellAt(row, col)
+            cellCursor = cell.firstCursorPosition()
+            cellCursor.insertText(text)#, textformat)
+
+    # headers style
+    headerformat = QtGui.QTextCharFormat()
+    headerformat.setFontWeight(QtGui.QFont.Bold)
+    brush = headerformat.background()
+    brush.setColor(QtCore.Qt.lightGray)
+    brush.setStyle(QtCore.Qt.SolidPattern)
+    headerformat.setBackground(brush)
+
+    # horizontal header
+    headers = [model.headerData(col, QtCore.Qt.Horizontal)
+                                                    for col in range(ncols)]
+    if any(headers):
+        table.insertRows(0, 1)
+        for col, text in enumerate(headers):
+            if text is None:
+                text = ''
+            else:
+                text = str(text)
+
+            cell = table.cellAt(0, col)
+            cell.setFormat(headerformat)
+            cellCursor = cell.firstCursorPosition()
+            cellCursor.insertText(text)
+
+    # vertical header
+    headers = [model.headerData(row, QtCore.Qt.Vertical)
+                                                    for row in range(nrows)]
+
+    if any(headers):
+        table.insertColumns(0, 1)
+        for row, text in enumerate(headers):
+            if text is None:
+                text = ''
+            else:
+                text = str(text)
+
+            cell = table.cellAt(row + 1, 0)
+            cell.setFormat(headerformat)
+            cellCursor = cell.firstCursorPosition()
+            cellCursor.insertText(text, headerformat)
+
+    cursor.endEditBlock()
+
+    return doc
+
+
+def exportTable(model, parent=None):
+    filters = [
+        'CSV file (*.csv)',
+        'CSV TAB-delimited file (*.csv)',
+        'HTML file (*.html)',
+        'All files (*)',
+    ]
+
+    try:
+        ncols = model.columnCount()
+    except TypeError:
+        # columnCount is a private method in QAbstractListModel
+        ncols = 1
+
+    if ncols == 1:
+        filters.insert(0, 'Text file (*.txt)')
+        target = os.path.join(utils.default_workdir(), 'data.txt')
+    if ncols == 2:
+        filters.insert(0, 'INI file format (*.ini)')
+        target = os.path.join(utils.default_workdir(), 'data.ini')
+    else:
+        target = os.path.join(utils.default_workdir(), 'data.csv')
+
+    # @TODO: check
+    if parent is None:
+        try:
+            parent = model.window()
+        except AttributeError:
+            parent = None
+
+    filename, filter_ = QtGui.QFileDialog.getSaveFileNameAndFilter(
+                                            parent,
+                                            model.tr('Save'),
+                                            target,
+                                            ';;'.join(filters))
+    if filename:
+        ext = os.path.splitext(filename)[-1]
+        ext = ext.lower()
+        if ext == '.csv' or ext == '.txt':
+            if 'TAB' in filter_:
+                dialect = 'excel-tab'
+            else:
+                dialect = 'excel'
+
+            data = modelToCsv(model, dialect)
+        elif ext == '.ini':
+            cfg = modelToIni(model)
+            fp = StringIO()
+            cfg.write(fp)
+            data = fp.getvalue()
+        elif ext == '.html':
+            doc = modelToTextDocument(model)
+            data = doc.toHtml()
+        else:
+            # default
+            data = modelToCsv(model, 'excel-tab')
+
+        with open(filename, 'w') as fd:
+            fd.write(data)
+
+
 def setViewContextActions(widget):
     assert (widget.contextMenuPolicy() == QtCore.Qt.ActionsContextMenu), \
         'menu policy is not "QtCore.Qt.ActionsContextMenu"'
@@ -173,6 +354,82 @@ def setViewContextActions(widget):
                            toolTip=widget.tr('Select all items'),
                            triggered=lambda: selectAllItems(widget))
     widget.addAction(action)
+
+
+### Printing helpers ##########################################################
+def coreprint(obj, printer):
+    painter = QtGui.QPainter(printer)
+    painter.setRenderHint(QtGui.QPainter.Antialiasing)
+    obj.render(painter)
+    painter.end()
+
+
+def printObject(obj, printer=None, parent=None):
+    if printer is None:
+        printer = QtGui.QPrinter(QtGui.QPrinter.PrinterResolution)
+        #printer.setOutputFile(os.path.join(utils.default_workdir(). 'filename.pdf'))
+
+    # @TODO: check
+    if parent is None:
+        try:
+            parent = obj.window()
+        except AttributeError:
+            parent = None
+
+    #dialog = QtGui.QPrintDialog(printer)
+    #try:
+    #    window = obj.window()
+    #except AttributeError:
+    #    window = = None
+    #preview = QtGui.QPrintPreviewWidget(printer, window)
+    #preview.paintRequested.connect(coreprint)
+    #dialog.setOptionTabs([preview])
+    #ret = d.exec_()
+
+    ret = QtGui.QPrintDialog(printer, parent).exec_()
+    if ret == QtGui.QDialog.Accepted:
+        if isinstance(obj, (QtGui.QTextDocument, QtGui.QTextEdit)):
+            obj.print_(printer)
+        elif hasattr(obj, 'model'):
+            model = obj.model()
+            doc = modelToTextDocument(model)
+            doc.print_(printer)
+        elif isinstance(obj, QtCore.QAbstractItemModel):
+            doc = modelToTextDocument(obj)
+            doc.print_(printer)
+        else:
+            coreprint(obj, printer)
+
+
+def printPreview(obj, printer=None, parent=None):
+    if printer is None:
+        printer = QtGui.QPrinter(QtGui.QPrinter.PrinterResolution)
+
+    # @TODO: check
+    if parent is None:
+        try:
+            parent = obj.window()
+        except AttributeError:
+            parent = None
+
+    dialog = QtGui.QPrintPreviewDialog(printer, parent)
+    dialog.paintRequested.connect(coreprint)
+    ret = dialog.exec_()
+
+    # @WARNING: duplicate code
+    ret = QtGui.QPrintDialog(printer, parent).exec_()
+    if ret == QtGui.QDialog.Accepted:
+        if isinstance(obj, (QtGui.QTextDocument, QtGui.QTextEdit)):
+            obj.print_(printer)
+        elif hasattr(object, 'model'):
+            model = obj.model()
+            doc = modelToTextDocument(model)
+            obj.print_(printer)
+        elif isinstance(obj, QtCore.QAbstractItemModel):
+            doc = modelToTextDocument(obj)
+            doc.print_(printer)
+        else:
+            coreprint(obj, printer)
 
 
 ### QImage helpers ###########################################################
@@ -335,3 +592,184 @@ def geticon(name, package=None):
     iconfile = utils.getresource(os.path.join('images', name), package)
 
     return QtGui.QIcon(iconfile)
+
+
+### Misc helpers ##############################################################
+def cfgToTextDocument(cfg, doc=None):
+    if doc is None:
+        doc = QtGui.QTextDocument()
+
+    cursor = QtGui.QTextCursor(doc)
+    cursor.movePosition(QtGui.QTextCursor.End)
+
+    # table style
+    tableformat = QtGui.QTextTableFormat()
+    tableformat.setTopMargin(10)
+    tableformat.setBottomMargin(10)
+    tableformat.setCellPadding(5)
+    tableformat.setCellSpacing(0)
+    tableformat.setBorderStyle(QtGui.QTextFrameFormat.BorderStyle_Solid)
+    tableformat.setHeaderRowCount(1)
+
+    # headers style
+    titleblockformat = QtGui.QTextBlockFormat()
+    titleblockformat.setTopMargin(20)
+    titleblockformat.setBottomMargin(10)
+
+    titleformat = QtGui.QTextCharFormat()
+    titleformat.setFontWeight(QtGui.QFont.Bold)
+    #titleformat.setPointSze(12)
+
+    # headers style
+    headerformat = QtGui.QTextCharFormat()
+    headerformat.setFontWeight(QtGui.QFont.Bold)
+    brush = headerformat.background()
+    brush.setColor(QtCore.Qt.lightGray)
+    brush.setStyle(QtCore.Qt.SolidPattern)
+    headerformat.setBackground(brush)
+
+    for section in cfg.sections():
+        print 'section: "%s"' % section
+        items = sorted(cfg.items(section))
+        if not items:
+            continue
+
+        cursor.beginEditBlock()
+        cursor.movePosition(QtGui.QTextCursor.End)
+
+        # title
+        cursor.insertBlock(titleblockformat)
+        cursor.insertText(section, titleformat)
+
+        nrows = len(items)
+        ncols = 2
+        table = cursor.insertTable(nrows, ncols, tableformat)
+
+        #textformat = QtGui.QTextFormat()
+
+        for index, (key, value) in enumerate(items):
+            cell = table.cellAt(index, 0)
+            cellCursor = cell.firstCursorPosition()
+            cellCursor.insertText(key)
+
+            cell = table.cellAt(index, 1)
+            cellCursor = cell.firstCursorPosition()
+            cellCursor.insertText(value)
+
+        # horizontal header
+        headers = [doc.tr('Key'), doc.tr('Value')]
+        table.insertRows(0, 1)
+        for col, text in enumerate(headers):
+            cell = table.cellAt(0, col)
+            cell.setFormat(headerformat)
+            cellCursor = cell.firstCursorPosition()
+            cellCursor.insertText(text)
+
+        # vertical header
+        table.insertColumns(0, 1)
+        for row in range(1, nrows + 1):
+            text = str(row)
+
+            cell = table.cellAt(row, 0)
+            cell.setFormat(headerformat)
+            cellCursor = cell.firstCursorPosition()
+            cellCursor.insertText(text, headerformat)
+
+        cursor.endEditBlock()
+
+    return doc
+
+
+def imgexport(obj, parent=None):
+    filters = [
+        obj.tr('All files (*)'),
+        obj.tr('Simple Vector Graphics file (*.svg)'),
+        obj.tr('PDF file (*.pdf)'),
+        obj.tr('PostScript file (*.ps)'),
+    ]
+    filters.extend('%s file (*.%s)' % (str(fmt).upper(), str(fmt))
+                        for fmt in QtGui.QImageWriter.supportedImageFormats())
+
+    formats = set(str(fmt).lower() for fmt in
+                                    QtGui.QImageWriter.supportedImageFormats())
+    formats.update(('svg', 'pdf', 'ps'))
+
+    # @TODO: check
+    if parent is None:
+        try:
+            parent = obj.window()
+        except AttributeError:
+            parent = None
+
+    target = os.path.join(utils.default_workdir(), 'image.jpeg')
+
+    filename, filter_ = QtGui.QFileDialog.getSaveFileNameAndFilter(
+                                    parent,
+                                    obj.tr('Save picture'),
+                                    target,
+                                    ';;'.join(filters))
+    ext = 'unknown'
+    while filename and (ext not in formats):
+        ext = os.path.splitext(filename)[1]
+        if ext:
+            ext = ext[1:].lower()
+            if ext in formats:
+                break
+            else:
+                QtGui.QMessageBox.information(
+                            parent,
+                            obj.tr('Unknown file format'),
+                            obj.tr('Unknown file format "%s".\n'
+                                   'Please retry.') % ext)
+
+                filename, filter_ = QtGui.QFileDialog.getSaveFileNameAndFilter(
+                                            parent,
+                                            obj.tr('Save draw'),
+                                            filename,
+                                            ';;'.join(filters),
+                                            filter_)
+        else:
+            ext = 'unknown'
+
+    if filename:
+        if hasattr(obj, 'viewport'):
+            srcsize = obj.viewport().rect().size()
+        elif hasattr(obj, 'sceneRect'):
+            # QGraphicsViews alsa has a viewport method so they should be
+            # trapped by the previous check
+            srcsize = obj.sceneRect().toRect().size()
+        else:
+            srcsize = QtGui.QSize(800, 600)
+
+        if ext in ('pdf', 'ps'):
+            device = QtGui.QPrinter(QtGui.QPrinter.HighResolution)
+            device.setOutputFileName(filename)
+            if ext == 'pdf':
+                device.setOutputFormat(QtGui.QPrinter.PdfFormat)
+            else:
+                # ext == 'ps'
+                device.setOutputFormat(QtGui.QPrinter.PostScriptFormat)
+        elif ext == 'svg':
+            device = QtSvg.QSvgGenerator()
+            device.setFileName(filename)
+            device.setSize(srcsize)
+            #device.setViewBox(obj.sceneRect().toRect())
+            #device.setTitle(obj.tr('Graphics Draw'))
+            #device.setDescription(obj.tr('Qt SVG drawing.'))
+        else:
+            device = QtGui.QPixmap(srcsize)
+            # @TODO: check
+            device.fill(QtCore.Qt.white)
+
+        painter = QtGui.QPainter()
+        if painter.begin(device):
+            #painter.setRenderHint(QtGui.QPainter.Antialiasing)
+            obj.render(painter)
+            painter.end()
+            if hasattr(device , 'save'):
+                device.save(filename)
+        else:
+            QtGui.QMessageBox.warning(
+                        parent,
+                        obj.tr('Warning'),
+                        obj.tr('Unable initialize painting device.'))

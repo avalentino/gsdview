@@ -201,20 +201,40 @@ def uniqueDatasetID(prod):
     return prod_id
 
 
-def getDriverList():
-    '''Return the list of available GDAL drivers'''
+def driverList(drivertype='raster'):
+    '''Return the list of available GDAL/OGR drivers'''
 
-    return [gdal.GetDriver(index) for index in range(gdal.GetDriverCount())]
+    if not drivertype:
+        types = ['gdal']
+    elif isinstance(drivertype, basestring):
+        types = [drivertype]
+    else:
+        types = drivertype
+        if not set(('raster', 'vector')).issuperset(types):
+            raise ValueError('invalid type list: "%s"' % types)
+
+    drivers = []
+    if 'raster' in types:
+        drivers.extend(gdal.GetDriver(index)
+                                    for index in range(gdal.GetDriverCount()))
+
+    if 'vector' in types:
+        # @TODO: check
+        from osgeo import ogr
+        drivers.extend(ogr.GetDriver(index)
+                                    for index in range(ogr.GetDriverCount()))
+
+    return drivers
 
 
-def gdalFilters():
-    '''Returns the list of GDAL lile filters as expected by Qt'''
+def gdalFilters(mode='r'):
+    '''Returns the list of GDAL file filters as expected by Qt.'''
 
     # @TODO: move to gdalqt4
     filters = []
     filters.append('All files (*)')
 
-    for driver in getDriverList():
+    for driver in driverList():
         metadata = driver.GetMetadata()
         name = metadata['DMD_LONGNAME']
         try:
@@ -222,9 +242,19 @@ def gdalFilters():
             if ext:
                 if name.endswith(' (.%s)' % ext):
                     name = name[0: -len(ext)-4]
+
+                if 'w' in mode:
+                    CREATECOPY = metadata.get(gdal.DCAP_CREATECOPY)
+                    CREATE = metadata.get(gdal.DCAP_CREATE)
+                    canwrite = bool((CREATECOPY == 'YES') or
+                                    (CREATE == 'YES'))
+                    if not canwrite:
+                        continue
+
                 filters.append('%s (*.%s)' % (name, ext))
         except KeyError:
             pass
+
     return filters
 
 
