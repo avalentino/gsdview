@@ -1,0 +1,21 @@
+--- support/rthooks/pyi_rth_qt4plugins.py.orig	2010-10-09 19:38:01.992411096 +0200
++++ support/rthooks/pyi_rth_qt4plugins.py	2010-10-09 19:35:48.608577743 +0200
+@@ -7,7 +7,17 @@
+     d = os.path.join(os.environ["_MEIPASS2"], d)
+ else:
+     d = os.path.join(os.path.dirname(sys.argv[0]), d)
+-    
++
++# Select the PyQt API 2
++import sip
++sip.setapi('QDate',       2)
++sip.setapi('QDateTime',   2)
++sip.setapi('QString',     2)
++sip.setapi('QTextStream', 2)
++sip.setapi('QTime',       2)
++sip.setapi('QUrl',        2)
++sip.setapi('QVariant',    2)
++
+ # We cannot use QT_PLUGIN_PATH here, because it would not work when
+ # PyQt4 is compiled with a different CRT from Python (eg: it happens
+ # with Riverbank's GPL package).

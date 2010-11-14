@@ -1,8 +1,8 @@
-Index: pyinstaller/Build.py
+Index: Build.py
 ===================================================================
---- pyinstaller/Build.py	(revision 818)
-+++ pyinstaller/Build.py	(working copy)
-@@ -383,6 +383,15 @@
+--- Build.py	(revisione 1035)
++++ Build.py	(copia locale)
+@@ -474,6 +474,15 @@
          Python executable to the libpython, so bindepend doesn't include
          it in its output.
          """
