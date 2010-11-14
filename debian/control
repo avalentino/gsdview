@@ -1,18 +1,19 @@
 Source: gsdview
 Section: science
-Priority: extra
+Priority: optional
 Maintainer: Antonio Valentino <a_valentino@users.sf.net>
 XS-Python-Version: >= 2.5
-Build-Depends: cdbs (>= 0.4.49), debhelper (>= 7), python-central (>= 0.6.0),
-               python (>= 2.5), python-sphinx, texlive-base-bin,
-               python-docutils (>= 0.6)
-Standards-Version: 3.8.4
-Homepage: http://sourceforge.net/projects/gsdview
+Build-Depends: cdbs (>= 0.4.49), debhelper (>= 7.0.50~),
+               python-central (>= 0.6.0), python (>= 2.5),
+               python-sphinx, python-docutils (>= 0.6), texlive-base-bin,
+               python-sip, python-qt4, python-gdal (>= 1.6.1)
+Standards-Version: 3.9.1
+Homepage: http://gsdview.sourceforge.net
 
 Package: gsdview
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, python-qt4, python-gdal (>= 1.6.1),
-         gdal-bin, libjs-jquery
+Depends: ${misc:Depends}, ${python:Depends}, python-sip, python-qt4,
+         python-gdal (>= 1.6.1), gdal-bin, libjs-jquery
 XB-Python-Version: ${python:Versions}
 Recommends: libproj0
 Description: Geo-Spatial Data Viewer
