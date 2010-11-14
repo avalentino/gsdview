@@ -19,6 +19,8 @@ Changes from 0.6.3 to 0.6.4 (in development)
 * Set numeric locale to "C" at application startup in order to prevent
   issues with GDAL statistics serialization in virtual files
 * Improved management of Qt4 items type
+* Strongly improved GDAL dataset dialog
+* Metadata export and printing (:issue:`67` and :issue:`68`)
 
 
 Changes from 0.6.2 to 0.6.3 (13/08/2010)
