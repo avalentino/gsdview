@@ -42,7 +42,6 @@ env: pyinstaller
 	cd pyinstaller/source && python waf configure build install
 	if ! [ -f pyinstaller/Build.py.orig ]; then \
 		cd pyinstaller;\
-		patch -b -N -p0 < ../patches/osx-python-image.patch;\
 		patch -b -N -p0 < ../patches/qt4-api2.patch;\
 	fi
 	cd pyinstaller && python Configure.py
