@@ -1,5 +1,24 @@
 #!/usr/bin/env python
 
+### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+
+### This file is part of GSDView.
+
+### GSDView is free software; you can redistribute it and/or modify
+### it under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 2 of the License, or
+### (at your option) any later version.
+
+### GSDView is distributed in the hope that it will be useful,
+### but WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+### GNU General Public License for more details.
+
+### You should have received a copy of the GNU General Public License
+### along with GSDView; if not, write to the Free Software
+### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
+
+
 '''Generate a vector file containing the bounding box of raster data.
 
 Take in input one or more raster datasets and generate a vector file
