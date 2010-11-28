@@ -24,6 +24,7 @@ man: debian/gsdview.1
 
 debian/gsdview.1: doc/build/man/gsdview.1
 	cp -f $< $@
+	#gzip -c $@ > $@.gz
 
 doc/build/man/gsdview.1:
 	$(MAKE) -C doc man
@@ -70,7 +71,7 @@ clean:
 	$(MAKE) -C doc clean
 	$(RM) -r MANIFEST gsdview.egg-info
 	$(RM) -r dist build
-	find . -name '*.py[c,o]' -delete
+	find . -name '*.py[co]' -delete
 	find . -name '*.bak' -delete
 	find . -name '*~' -delete
 	$(RM) -r debian/gsdview debian/python-module-stampdir
