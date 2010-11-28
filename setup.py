@@ -163,8 +163,12 @@ cmdclass['install_lib'] = InstallLib
 
 
 class InstallData (install_data):
-    '''Handle .man pages'''
-    
+    '''Handle compressed man pages.
+
+    .. seealse:: http://bugs.python.org/issue644744
+
+    '''
+
     def copy_file (self, filename, dirname):
         (out, _) = install_data.copy_file(self, filename, dirname)
         # match for man pages
