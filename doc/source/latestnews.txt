@@ -1,9 +1,9 @@
 :28/11/2010: GSDView Open v. 0.6.4 run on Fedora_ 14.
 
              In Fedora_ 14 it has been fixed a bug in GDAL packaging
-	     that caused a GSDView crash on startup.
-	     The (recently updated) RPM package now runs nicely on
-	     Fedora_ too.
+             that caused a GSDView crash on startup.
+             The (recently updated) RPM package now runs nicely on
+             Fedora_ too.
 
 :14/11/2010: GSDView Open Source Edition v. 0.6.4 released.
 

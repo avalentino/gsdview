@@ -132,4 +132,3 @@ if sys.platform == 'darwin' and BUILD_BUNDLE:
     app = BUNDLE(coll,
                  name=os.path.join(GSDVIEWROOT, 'dist', info.name + '.app'),
                  version=info.version)
-
