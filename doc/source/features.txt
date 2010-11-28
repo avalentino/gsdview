@@ -25,6 +25,7 @@ zoom in/out                                         X
 fast scroll/pan                                     X
 mouse modes handling                                X
 printing                                            --
+print/export metadata                              NEW
 RGB display                                         X
 arbitrary large raster data display                 X
 vector data display                                 --
@@ -119,7 +120,7 @@ Distribution                                     Status
 ================================================ =======
 Windows installer                                   --
 Debian packages                                     X
-RPM packages                                     [#pkg]_
+RPM packages                                        X
 standalone binary for GNU/Linux                  [#pkg]_
 standalone binary for Mac OS X                   [#mac]_
 python egg                                       [#pkg]_
@@ -130,8 +131,8 @@ source code availability                            X
 .. rubric:: Footnotes
 
 .. [#pkg] the package is delivered on request.
-.. [#mac] due to the recent update to the new PyQT API the binary package
-          for Mac OS X is temporary not available.
+.. [#mac] the package for Mac OS X is delivered on request but it is
+          still low quality.
 
 
 Legend
