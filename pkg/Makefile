@@ -3,7 +3,8 @@
 GSDVIEWROOT=..
 PYINSTALLERROOT=./pyinstaller
 DISTROOT=../dist
-BUNDLEROOT=Macgsdview.app
+ONEDIRBUNDLE=$(DISTROOT)/GSDView.app
+ONEFILEBUNDLE=$(DISTROOT)/onefile/GSDView.app
 
 .PHONY: onedir onefile clean html env
 
@@ -12,26 +13,25 @@ html:
 
 onedir: gsdview-onedir.spec html
 	$(PYINSTALLERROOT)/Build.py $<
-	if [ -d $(BUNDLEROOT) ]; then \
-		cp -rv $(DISTROOT)/gsdview/* $(BUNDLEROOT)/Contents/MacOS; \
-		mv $(BUNDLEROOT)/Contents/MacOS/Resources/* $(BUNDLEROOT)/Contents/Resources; \
-		$(RM) -r $(BUNDLEROOT)/Contents/MacOS/Resources; \
-		cp GSDView.icns $(BUNDLEROOT)/Contents/Resources; \
+	if [ -d $(ONEDIRBUNDLE) ]; then \
+		mv $(ONEDIRBUNDLE)/Contents/MacOS/Resources/* $(ONEDIRBUNDLE)/Contents/Resources; \
+		$(RM) -r $(ONEDIRBUNDLE)/Contents/MacOS/Resources; \
+		cp GSDView.icns $(ONEDIRBUNDLE)/Contents/Resources; \
 	fi
 
 onefile: gsdview-onefile.spec html
 	$(PYINSTALLERROOT)/Build.py $<
-	if [ -d $(BUNDLEROOT) ]; then \
-		cp -rv /Library/Frameworks/QtGui.framework/Resources/qt_menu.nib $(BUNDLEROOT)/Contents/Resources; \
-		cp GSDView.icns $(BUNDLEROOT)/Contents/Resources; \
+	if [ -d $(ONEFILEBUNDLE) ]; then \
+		cp -rv /Library/Frameworks/QtGui.framework/Resources/qt_menu.nib $(ONEFILEBUNDLE)/Contents/Resources; \
+		cp GSDView.icns $(ONEFILEBUNDLE)/Contents/Resources; \
 	fi
 
 clean:
 	$(RM) *.pyc logdict*.log warngsdview*.txt *~
+	$(RM) -r build
+	$(RM) -r $(ONEDIRBUNDLE) $(ONEFILEBUNDLE)
 	$(RM) -r $(GSDVIEWROOT)/dist/onefile
 	$(RM) -r $(GSDVIEWROOT)/dist/gsdview
-	$(RM) -r $(BUNDLEROOT)
-	$(RM) -r build Macgsdview.app
 	#if [ -d ../dist ]; then rmdir --ignore-fail-on-non-empty ../dist; fi
 
 pyinstaller:

@@ -96,7 +96,7 @@ exe = EXE(pyz,
           debug=False,
           strip=False,
           upx=True,
-          console=1,  # @TODO: check
+          console=0,  # @TODO: check
           icon=os.path.join(GSDVIEWROOT, 'doc', 'source', '_static',
                             'logo.ico'),
 )
@@ -106,5 +106,5 @@ if sys.platform == 'darwin' and BUILD_BUNDLE:
     sys.path.insert(0, os.path.abspath(os.pardir))
     from gsdview import info
     app = BUNDLE(exe,
-                 appname=os.path.join(GSDVIEWROOT, 'dist', 'onefile', info.name),
+                 name=os.path.join(GSDVIEWROOT, 'dist', 'onefile', info.name + '.app'),
                  version=info.version)
