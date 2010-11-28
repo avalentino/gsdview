@@ -21,15 +21,6 @@
 
              https://launchpad.net/~a.valentino/+archive/eotools
 
-:13/08/2010: GSDView Open Source Edition v. 0.6.3 released.
 
-             This release has been implemented a complete switch of the
-             application to the new PyQt4_ API (new signal/slot handling,
-             QString and QVariant are gone, etc.).
-             For this reason GSDView now requires PyQt4_ v. 4.6 or newer.
-
-             Also some new feature have been added: see :doc:`CHANGES`.
-
-.. _Fedora: http://fedoraproject.org
-.. _PyQt4: http://www.riverbankcomputing.com
 .. _Launchpad: http://www.launchpad.net
+.. _Fedora: http://fedoraproject.org
