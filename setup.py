@@ -41,7 +41,6 @@ kwargs = {}
 # Using ``setuptools`` enables lots of goodies, such as building eggs.
 from distutils import log
 from distutils.command.build import build as Build
-from distutils.command.install_data import install_data
 try:
     from setuptools import setup, find_packages
     from setuptools.command.install_lib import install_lib
@@ -161,22 +160,6 @@ del PKGNAME, LIBDIR, os
 
 cmdclass['install_lib'] = InstallLib
 
-
-class InstallData (install_data):
-    '''Handle compressed man pages.
-
-    .. seealse:: http://bugs.python.org/issue644744
-
-    '''
-
-    def copy_file (self, filename, dirname):
-        (out, _) = install_data.copy_file(self, filename, dirname)
-        # match for man pages
-        if re.search(r'/man/man\d/.+\.\d$', out):
-            return (out+".gz", _)
-        return (out, _)
-
-cmdclass['install_data'] = InstallData
 
 classifiers = '''\
 Development Status :: 4 - Beta

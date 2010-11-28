@@ -2,6 +2,7 @@ include MANIFEST*
 include LICENSE.txt
 #include AUTHORS
 include Makefile
+include run.py
 include gsdview.desktop
 #recursive-include images *.svg
 prune images
