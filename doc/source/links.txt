@@ -366,12 +366,18 @@ GTOPO30_
     USGS global low resolution (about 1 kilometer/half a mile horizontal)
 NOAA_
     Global low resolution land DEM (about 1 kilometer/half a mile horizontal).
+GETASSE_ 3.0 DEM
+    The Getasse 3.0 Digital Elevation Model for use with Amorgos consists
+    of 288 files of 12 MB each. If you prefer to receive a copy of the DEM
+    on DVD-ROM please contact Eohelp.
+
 
 .. _SRTM: http://www2.jpl.nasa.gov/srtm
 .. _SRTM4: http://srtm.csi.cgiar.org
 .. _SRTM3: http://dds.cr.usgs.gov/srtm/version2_1/SRTM3
 .. _GTOPO30: http://www1.gsi.go.jp/geowww/globalmap-gsi/gtopo30/gtopo30.html
 .. _NOAA: http://www.ngdc.noaa.gov/mgg/topo/globe.html
+.. _GETASSE: http://earth.esa.int/services/amorgos/download/getasse
 
 
 Other
