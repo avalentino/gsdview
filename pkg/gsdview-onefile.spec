@@ -94,7 +94,7 @@ exe = EXE(pyz,
 
           name=os.path.join(GSDVIEWROOT, 'dist', 'onefile', 'gsdview'),
           debug=False,
-          strip=False,
+          strip=True,
           upx=True,
           console=0,  # @TODO: check
           icon=os.path.join(GSDVIEWROOT, 'doc', 'source', '_static',
