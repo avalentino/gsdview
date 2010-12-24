@@ -5,5 +5,5 @@ Comment=Geo-Spatial Data Viewer
 Exec=gsdview
 Icon=GSDView
 Terminal=false
-Categories=Education;Science;Astronomy;Qt;
+Categories=Education;Science;Geoscience;Qt;
 
