@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of exectools.
 
@@ -225,7 +225,7 @@ class VectorGraphicsApp(QtGui.QMainWindow):
         title = self.tr('MouseManager Example')
         text = ['<h1>Mouse Manager</h1>'
                 '<p>Example program for the OGR proxy components.</p>',
-                '<p>Copyright (C): 2009-2010 '
+                '<p>Copyright (C): 2009-2011 '
                 '<a href="mailto:a_valentino@users.sf.net">'
                     'Antonio Valentino'
                 '<a>.</p>']
