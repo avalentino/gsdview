@@ -630,7 +630,9 @@ class GDALBackend(QtCore.QObject):
                 value = settings.value(optname)
                 if value is not None:
                     value = os.path.expanduser(os.path.expandvars(value))
-                    gdal.SetConfigOption(optname, value)
+                    # @NOTE: type of arg 2  SetConfigOption must be str,
+                    #        not an unicode
+                    gdal.SetConfigOption(optname, str(value))
                     logger.debug('%s set to "%s"' % (optname, value))
 
             gdal.AllRegister()
