@@ -30,6 +30,7 @@ GSDView Pro Edition
 * `Wallonie Europe <http://www.wallonieeurope.be/blx/services/pdfprofile.asp?id=10%20NL%201D1D%203IB1&EnquiryType=BBS>`_
 * `Swiss Support for European Business and Innovation
   <http://www.enterprise-europe-network.ch/marketplace/index.php?file=bbs-show.php&bbsref=10%20NL%201D1D%203IB1>`_
+* `Technology-market <http://www.technology-market.eu/pcci/Profiles/10_NL_1D1D_3IB1.html>`_
 
 .. _`GSDView Pro Edition`: <http://www.consorzio-innova.com/static/gsdview/index.html>
 
