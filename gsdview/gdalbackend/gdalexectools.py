@@ -50,7 +50,7 @@ class BaseGdalToolDescriptor(exectools.ToolDescriptor):
             if not key in cmd:
                 value = gdal.GetConfigOption(key, None)
                 if value:
-                    extra_args.extend(('--config', key, value))
+                    extra_args.extend(('--config', key, '"%s"' % value))
 
         return extra_args
 
