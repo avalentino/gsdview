@@ -558,6 +558,8 @@ def colortable2numpy(colortable):
 
 ### Coordinate conversion helpers ############################################
 # @TODO: remove
+# @NOTE: bugs #3160 and #3709 have been fixed upstream with commits r22289
+#        and r22290 (1.8 branch). The fix should be included in GDAL v1.8.1.
 def _fixedGCPs(gcps):
     '''Fix Envisat GCPs
 
@@ -567,7 +569,7 @@ def _fixedGCPs(gcps):
 
     '''
 
-    lines = [gcp.GCPLine for gcp in gcps]
+    lines = numpy.asarray([gcp.GCPLine for gcp in gcps])
 
     # @TODO: this is a weak check; improve it
     if numpy.alltrue(lines != numpy.sort(lines)):
