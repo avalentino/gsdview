@@ -48,7 +48,7 @@ else:
     GDALADDO = os.path.join(GDALROOT, 'bin', 'gdaladdo')
 
 a = Analysis([os.path.join(HOMEPATH,'support', '_mountzlib.py'),
-              os.path.join(HOMEPATH,'support', 'useUnicode.py'),
+              os.path.join(CONFIGDIR,'support', 'useUnicode.py'),
               os.path.join(GSDVIEWROOT, 'scripts', 'gsdview'),
              ],
              pathex=[GSDVIEWROOT],
@@ -96,7 +96,7 @@ exe = EXE(pyz,
           debug=False,
           strip=True,
           upx=True,
-          console=0,  # @TODO: check
+          console=False,  # @TODO: check
           icon=os.path.join(GSDVIEWROOT, 'doc', 'source', '_static',
                             'logo.ico'),
 )

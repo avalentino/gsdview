@@ -44,5 +44,4 @@ env: pyinstaller
 		cd pyinstaller;\
 		patch -b -N -p0 < ../patches/qt4-api2.patch;\
 	fi
-	cd pyinstaller && python Configure.py
 
