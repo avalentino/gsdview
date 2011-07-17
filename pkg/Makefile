@@ -16,14 +16,14 @@ onedir: gsdview-onedir.spec html
 	if [ -d $(ONEDIRBUNDLE) ]; then \
 		mv $(ONEDIRBUNDLE)/Contents/MacOS/Resources/* $(ONEDIRBUNDLE)/Contents/Resources; \
 		$(RM) -r $(ONEDIRBUNDLE)/Contents/MacOS/Resources; \
-		cp GSDView.icns $(ONEDIRBUNDLE)/Contents/Resources; \
+		cp GSDView.icns $(ONEDIRBUNDLE)/Contents/Resources/App.icns; \
 	fi
 
 onefile: gsdview-onefile.spec html
 	python $(PYINSTALLERROOT)/pyinstaller.py $<
 	if [ -d $(ONEFILEBUNDLE) ]; then \
 		cp -rv /Library/Frameworks/QtGui.framework/Resources/qt_menu.nib $(ONEFILEBUNDLE)/Contents/Resources; \
-		cp GSDView.icns $(ONEFILEBUNDLE)/Contents/Resources; \
+		cp GSDView.icns $(ONEFILEBUNDLE)/Contents/Resources/App.icns; \
 	fi
 
 clean:
