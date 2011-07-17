@@ -377,7 +377,6 @@ GETASSE_ 3.0 DEM
     of 288 files of 12 MB each. If you prefer to receive a copy of the DEM
     on DVD-ROM please contact Eohelp.
 
-
 .. _SRTM: http://www2.jpl.nasa.gov/srtm
 .. _SRTM4: http://srtm.csi.cgiar.org
 .. _SRTM3: http://dds.cr.usgs.gov/srtm/version2_1/SRTM3
