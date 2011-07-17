@@ -96,6 +96,12 @@ def cmdline_ui():
     from optparse import OptionParser
 
     from gsdview import info
+    
+    # filter out arguments that cause errors in Mac bundles
+    import sys
+    print 'sys.argv', sys.argv
+    args = [arg for arg in sys.argv[1:] if not arg.startswith('-psn_')]
+    print 'args', args
 
     parser = OptionParser(prog='gsdview',
                     #usage='%prog [options] [FILENAME [FILENAME [...]]]',
@@ -115,7 +121,7 @@ def cmdline_ui():
                       #~ 'A "%s" separated list can be used to specify multile '
                       #~ 'paths. ' % os.pathsep)
 
-    options, args = parser.parse_args()
+    options, args = parser.parse_args(args)
 
     return options, args
 

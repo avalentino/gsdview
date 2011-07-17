@@ -43,8 +43,10 @@ pyinstaller:
 env: pyinstaller
 	svn up pyinstaller
 	#cd pyinstaller/source && python waf configure build install
-	if ! [ -f pyinstaller/Build.py.orig ]; then \
+	if ! [ -f pyinstaller/gsdview_patches_applied ]; then \
 		cd pyinstaller;\
 		patch -b -N -p0 < ../patches/qt4-api2.patch;\
+		patch -b -N -p0 < ../patches/mac.patch;\
+		touch gsdview_patches_applied;\
 	fi
 
