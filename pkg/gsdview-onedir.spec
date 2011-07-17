@@ -77,7 +77,7 @@ exe = EXE(pyz,
           exclude_binaries=1,
           name=os.path.join('build', 'pyi.'+sys.platform, 'gsdview', 'gsdview'),
           debug=False,
-          strip=True,
+          strip=None,
           upx=True,
           console=True,
           icon=os.path.join(GSDVIEWROOT, 'doc', 'source', '_static',
@@ -119,7 +119,7 @@ coll = COLLECT(exe,
                # Workaround fo pyinstaller bug #157 (http://www.pyinstaller.org/ticket/157)
                EXTRA_QT_RESOURCES,
 
-               strip=False,
+               strip=None,
                upx=True,
                name=os.path.join(GSDVIEWROOT, 'dist', 'gsdview'),
 )

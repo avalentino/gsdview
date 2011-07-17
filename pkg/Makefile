@@ -12,7 +12,7 @@ html:
 	cd .. && $(MAKE) html
 
 onedir: gsdview-onedir.spec html
-	$(PYINSTALLERROOT)/Build.py $<
+	python $(PYINSTALLERROOT)/pyinstaller.py $<
 	if [ -d $(ONEDIRBUNDLE) ]; then \
 		mv $(ONEDIRBUNDLE)/Contents/MacOS/Resources/* $(ONEDIRBUNDLE)/Contents/Resources; \
 		$(RM) -r $(ONEDIRBUNDLE)/Contents/MacOS/Resources; \
@@ -20,7 +20,7 @@ onedir: gsdview-onedir.spec html
 	fi
 
 onefile: gsdview-onefile.spec html
-	$(PYINSTALLERROOT)/Build.py $<
+	python $(PYINSTALLERROOT)/pyinstaller.py $<
 	if [ -d $(ONEFILEBUNDLE) ]; then \
 		cp -rv /Library/Frameworks/QtGui.framework/Resources/qt_menu.nib $(ONEFILEBUNDLE)/Contents/Resources; \
 		cp GSDView.icns $(ONEFILEBUNDLE)/Contents/Resources; \
