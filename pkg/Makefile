@@ -6,7 +6,7 @@ DISTROOT=../dist
 ONEDIRBUNDLE=$(DISTROOT)/GSDView.app
 ONEFILEBUNDLE=$(DISTROOT)/onefile/GSDView.app
 
-.PHONY: onedir onefile clean html env
+.PHONY: onedir onefile clean distclean html env
 
 html:
 	cd .. && $(MAKE) html
@@ -33,6 +33,9 @@ clean:
 	$(RM) -r $(GSDVIEWROOT)/dist/onefile
 	$(RM) -r $(GSDVIEWROOT)/dist/gsdview
 	#if [ -d ../dist ]; then rmdir --ignore-fail-on-non-empty ../dist; fi
+
+distclean: clean
+	$(RM) -r pyinstaller
 
 pyinstaller:
 	svn co http://svn.pyinstaller.org/trunk pyinstaller
