@@ -232,3 +232,14 @@ def scriptcmd(scriptname):
                 cmd = shebang[2:].split() + scriptname
 
     return cmd
+
+
+### Geographic tools ##########################################################
+# @TODO: support vectors
+def geonormalize(x, range_=360.):
+    halfrange = range_ / 2.
+    if -halfrange <= x <= halfrange:
+        x = x % range_
+    if x > halfrange:
+        x -= range_
+    return x

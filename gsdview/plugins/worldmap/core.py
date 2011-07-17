@@ -30,18 +30,8 @@ import numpy
 
 from PyQt4 import QtCore, QtGui
 
+from gsdview import utils
 from gsdview import qt4support
-
-
-# @TODO: make it available a an utility function
-# @TODO: support vectors
-def _geonormalize(x, range=360.):
-    halfrange = range/2.
-    if -halfrange <= x <= halfrange:
-        x = x % range
-    if x > halfrange:
-        x -= range
-    return x
 
 
 class WorldmapPanel(QtGui.QDockWidget):
@@ -185,7 +175,7 @@ class WorldmapPanel(QtGui.QDockWidget):
         mlon = lon.mean()
         mlat = lat.mean()
 
-        delta = mlon - _geonormalize(mlon)
+        delta = mlon - utils.geonormalize(mlon)
         if delta:
             lon -= delta
             mlon -= delta
