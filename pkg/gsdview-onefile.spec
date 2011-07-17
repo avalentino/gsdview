@@ -33,11 +33,13 @@ if sys.platform == 'darwin':
     EXTRA_QT_RESOURCES = Tree('/Library/Frameworks/QtGui.framework/Resources/qt_menu.nib', os.path.join('Resources', 'qt_menu.nib'))
     #EXTRA_QT_RESOURCES = Tree(os.path.join(QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.LibrariesPath),
     #                          'QtGui.framework/Resources/qt_menu.nib'), os.path.join('Resources', 'qt_menu.nib'))
+    ICONFILE = os.path.join(GSDVIEWROOT, 'pkg', 'GSDView.icns')
 elif sys.platform[:3] == 'win':
     GDALROOT = r'c:\gdal170'
     GDAL_DATA = os.path.join(GDALROOT, 'data')
     GDALINFO = os.path.join(GDALROOT, 'bin', 'gdalinfo.exe')
     GDALADDO = os.path.join(GDALROOT, 'bin', 'gdaladdo.exe')
+    ICONFILE = os.path.join(GSDVIEWROOT, 'doc', 'source', '_static', 'logo.ico')
 else:
     # Standard unix
     #GDALROOT = '/usr'
@@ -46,6 +48,7 @@ else:
     GDAL_DATA = check_output(['gdal-config', '--datadir']).strip()
     GDALINFO = os.path.join(GDALROOT, 'bin', 'gdalinfo')
     GDALADDO = os.path.join(GDALROOT, 'bin', 'gdaladdo')
+    ICONFILE = os.path.join(GSDVIEWROOT, 'doc', 'source', '_static', 'logo.ico')
 
 a = Analysis([os.path.join(HOMEPATH,'support', '_mountzlib.py'),
               os.path.join(CONFIGDIR,'support', 'useUnicode.py'),
@@ -97,8 +100,7 @@ exe = EXE(pyz,
           strip=None,
           upx=True,
           console=False,  # @TODO: check
-          icon=os.path.join(GSDVIEWROOT, 'doc', 'source', '_static',
-                            'logo.ico'),
+          icon=ICONFILE,
 )
 
 BUILD_BUNDLE = True
