@@ -99,9 +99,7 @@ def cmdline_ui():
     
     # filter out arguments that cause errors in Mac bundles
     import sys
-    print 'sys.argv', sys.argv
     args = [arg for arg in sys.argv[1:] if not arg.startswith('-psn_')]
-    print 'args', args
 
     parser = OptionParser(prog='gsdview',
                     #usage='%prog [options] [FILENAME [FILENAME [...]]]',
