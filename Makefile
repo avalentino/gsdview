@@ -5,6 +5,11 @@
 ### :Revision: $Revision$
 ### :Date: $Date$
 
+BUILDDIR    = build
+DOCBUILDDIR = $(BUILDDIR)/sphinx
+#SIGNKEYID = antonio.valentino@tiscai.it
+DEBUILD_OPTIONS = -us -uc
+
 .PHONY: default docs html pdf man clean distclean sdist bdist deb rpmspec rpm ui
 
 default: html
@@ -18,16 +23,15 @@ pdf: doc/GSDView.pdf
 
 doc/GSDView.pdf:
 	$(MAKE) -C doc latexpdf
-	cp doc/build/latex/GSDView.pdf doc
+	cp $(DOCBUILDDIR)/latex/GSDView.pdf doc
 
 man: debian/gsdview.1
 
-debian/gsdview.1: doc/build/man/gsdview.1
-	cp -f $< $@
+debian/gsdview.1: doc/source/manpage.txt
+	$(MAKE) -C doc man
+	cp -f $(DOCBUILDDIR)/man/gsdview.1 $@
 	#gzip -c $@ > $@.gz
 
-doc/build/man/gsdview.1:
-	$(MAKE) -C doc man
 
 sdist: ui docs
 	python setup.py sdist --formats=gztar,zip
@@ -39,13 +43,13 @@ sdist: ui docs
 bdist: deb rpm
 
 deb: ui docs sdist
-	mkdir -p build/deb
+	mkdir -p $(BUILDDIR)/deb
 	cp dist/gsdview-?.?.*.tar.gz build/deb
-	tar -C build/deb -xvzf build/deb/gsdview-?.?.*.tar.gz
-	rename s/.tar.gz/.orig.tar.gz/ build/deb/gsdview-?.?.*.tar.gz
-	rename s/gsdview-/gsdview_/ build/deb/gsdview-?.?.*.orig.tar.gz
-	cd build/deb/gsdview-?.?.* && debuild -us -uc
-	mv build/deb/gsdview_?.?.* dist
+	tar -C $(BUILDDIR)/deb -xvzf $(BUILDDIR)/deb/gsdview-?.?.*.tar.gz
+	rename s/.tar.gz/.orig.tar.gz/ $(BUILDDIR)/deb/gsdview-?.?.*.tar.gz
+	rename s/gsdview-/gsdview_/ $(BUILDDIR)/deb/gsdview-?.?.*.orig.tar.gz
+	cd $(BUILDDIR)/deb/gsdview-?.?.* && debuild $(DEBUILD_OPTIONS)
+	mv $(BUILDDIR)/deb/gsdview_?.?.* dist
 
 rpmspec:
 	python setup.py bdist_rpm --spec-only
@@ -69,20 +73,20 @@ ui: $(PYUIFILES)
 
 clean:
 	$(MAKE) -C doc clean
-	$(RM) -r MANIFEST gsdview.egg-info
-	$(RM) -r dist build
-	find . -name '*.py[co]' -delete
-	find . -name '*.bak' -delete
-	find . -name '*~' -delete
-	$(RM) -r debian/gsdview debian/python-module-stampdir
-	$(RM) debian/gsdview.* debian/gsdview.1 debian/files debian/pycompat \
-          debian/python-module-stampdir
-	$(RM) python-build-stamp-*
 	$(MAKE) -C pkg clean
+	$(RM) MANIFEST
+	$(RM) -r build gsdview.egg-info
+	-find . -name '*.py[co]' -delete
+	-find . -name '*.bak' -delete
+	-find . -name '*~' -delete
+	$(RM) -r debian/gsdview debian/python-module-stampdir
+	#$(RM) debian/gsdview.* debian/files debian/pycompat
+	$(RM) python-build-stamp-*
 
 distclean: clean
-	$(RM) doc/gsdview.1
+	$(MAKE) -C doc distclean
+	$(MAKE) -C pkg distclean
+	$(RM) -r dist
 	$(RM) $(PYUIFILES)
 	$(RM) gsdview/ui/__init__.py gsdview/gdalbackend/ui/__init__.py \
           gsdview/plugins/stretch/ui/__init__.py
-	$(RM) -r pkg/pyinstaller

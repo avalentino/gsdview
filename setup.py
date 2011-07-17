@@ -68,7 +68,8 @@ class ExtendedBuild(Build):
         Build.run(self)
         try:
             self.run_command('build_sphinx')
-            self.run_command('build_man')
+            if 'build_man' in cmdclass:
+                self.run_command('build_man')
         except:
             log.warn("Couldn't build documentation:\n%s" %
                      traceback.format_exception(*sys.exc_info()))
@@ -77,6 +78,25 @@ class ExtendedBuild(Build):
 #        The man page and docs are included in the source package generated
 #        via makefile.
 #cmdclass['build'] = ExtendedBuild
+
+if has_setuptools:
+    from setuptools.command.bdist_egg import bdist_egg
+
+    class ExtendedBdistEgg(bdist_egg):
+        def run(self):
+            try:
+                self.run_command('build_sphinx')
+                if 'build_man' in cmdclass:
+                    self.run_command('build_man')
+            except:
+                log.warn("Couldn't build documentation:\n%s" %
+                         traceback.format_exception(*sys.exc_info()))
+            bdist_egg.run(self)
+
+    # @NOTE: temporary disabled because could break debian packaging.
+    #        The man page and docs are included in the source package generated
+    #        via makefile.
+    cmdclass['bdist_egg'] = ExtendedBdistEgg
 
 
 # Fix the install_lib command in order to generate an updated appsite.py file
