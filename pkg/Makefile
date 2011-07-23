@@ -46,7 +46,6 @@ env: pyinstaller
 	if ! [ -f pyinstaller/gsdview_patches_applied ]; then \
 		cd pyinstaller;\
 		patch -b -N -p0 < ../patches/qt4-api2.patch;\
-		patch -b -N -p0 < ../patches/mac.patch;\
 		touch gsdview_patches_applied;\
 	fi
 
