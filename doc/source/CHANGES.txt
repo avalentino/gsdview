@@ -18,6 +18,11 @@ Changes from 0.6.4 to 0.6.5 (in development)
   The gsdview.gsdtools module has been renamed into gsdview.imgutils.
 * New functions for KML export and dataset area display on "Goofle Earth"
   and "Google Maps" (close :issue:`50`)
+* Fixed workaround for incorrect GCP handling of ENVISAT stripline products
+* Fixed global exception handler
+* Fixed calls to external GDAL utilities by adding quotes to config options
+* Fixed an unicode related issue in calls to gdal.SetConfigOption
+* Improved pyinstaller_ packaging (upgreded to 1.5.1)
 
 
 Changes from 0.6.3 to 0.6.4 (14/11/2010)
