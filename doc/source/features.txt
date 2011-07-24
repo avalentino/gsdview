@@ -1,5 +1,5 @@
 ..  :Source: doc/source/features.txt
-    :Version: 0.6.4
+    :Version: 0.6.5
     :Author: Antonio Valentino
     :Contact: a_valentino@users.sf.net
     :URL: http://gsdview.sourceforge.net
@@ -67,17 +67,17 @@ selection tool                                      --
 rotation tool                                       --
 draw tools                                          --
 snapshot generation                                 --
-export raster data footprints to KML                --
-meta-data dump                                      --
-meta-data print                                     --
-export GCPs in vector format                        --
+export raster data footprints to KML               NEW
+meta-data dump                                      X
+meta-data print                                     X
+export GCPs in vector format                       NEW
 ================================================ =======
 
 ================================================ =======
 Processing                                       Status
 ================================================ =======
 run processing tasks in external processes          X
-processing tasks can be stopped by the user        NEW
+processing tasks can be stopped by the user         X
 support for standard GDAL tools                     --
 band arithmetic                                     --
 kernel filtering                                    --
@@ -122,7 +122,7 @@ Windows installer                                   --
 Debian packages                                     X
 RPM packages                                        X
 standalone binary for GNU/Linux                  [#pkg]_
-standalone binary for Mac OS X                   [#mac]_
+standalone binary for Mac OS X                      X
 python egg                                       [#pkg]_
 source code availability                            X
 ================================================ =======
@@ -131,8 +131,6 @@ source code availability                            X
 .. rubric:: Footnotes
 
 .. [#pkg] the package is delivered on request.
-.. [#mac] the package for Mac OS X is delivered on request but it is
-          still low quality.
 
 
 Legend

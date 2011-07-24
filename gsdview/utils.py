@@ -236,10 +236,17 @@ def scriptcmd(scriptname):
 
 ### Geographic tools ##########################################################
 # @TODO: support vectors
-def geonormalize(x, range_=360.):
-    halfrange = range_ / 2.
+def geonormalize(x, angle_range=360.):
+    '''Normalize angles to fit expected range
+
+    Example: (-180, 180) --> (0, 360)
+
+    '''
+
+    halfrange = angle_range / 2.
     if -halfrange <= x <= halfrange:
-        x = x % range_
+        x = x % angle_range
     if x > halfrange:
-        x -= range_
+        x -= angle_range
+
     return x

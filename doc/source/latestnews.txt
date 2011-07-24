@@ -1,3 +1,10 @@
+:24/07/2011: A new tentative package for Mac OS X
+
+             A new tentative package for Mac OS X. It includes a beta
+             version of GDSView 0.6.5.
+
+             Feedback is very welcome.
+
 :28/11/2010: GSDView Open v. 0.6.4 run on Fedora_ 14.
 
              In Fedora_ 14 it has been fixed a bug in GDAL packaging
@@ -12,15 +19,5 @@
 
              Also some new feature have been added: see :doc:`CHANGES`.
 
-:13/11/2010: Ubuntu packages now available via Launchpad.
 
-             Source packages and pre-build binary packages for Ubuntu 10.10
-             are now available via PPA (Personal Package Archive) on Launchpad_.
-
-             The archive and instructions for usage are at the following URL:
-
-             https://launchpad.net/~a.valentino/+archive/eotools
-
-
-.. _Launchpad: http://www.launchpad.net
 .. _Fedora: http://fedoraproject.org

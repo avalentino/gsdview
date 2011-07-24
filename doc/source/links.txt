@@ -317,9 +317,9 @@ Formosat-2
 Kompsat-2
     Kompsat-2 products are available on the `SpotImage demo products page`_.
 misc
-    http://www.ga.gov.au/earth-observation/accessing-satellite-imagery/samples.html
-    http://asterweb.jpl.nasa.gov/TerraLook_download.asp
-    ftp://tl:tl@asterweb.jpl.nasa.gov/Collections
+    * http://www.ga.gov.au/earth-observation/accessing-satellite-imagery/samples.html
+    * http://asterweb.jpl.nasa.gov/TerraLook_download.asp
+    * ftp://tl:tl@asterweb.jpl.nasa.gov/Collections
 
 .. _ERS: http://earth.esa.int/ers
 .. _ENVISAT: http://envisat.esa.int
