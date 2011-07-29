@@ -21,8 +21,8 @@
 
 '''Browser component for geo-datasets metadata.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 
@@ -82,7 +82,7 @@ class MetadataController(QtCore.QObject):
         self.app = app
 
         self.panel = MetadataViewer(app)
-        self.panel.setObjectName('metadataViewerPanel') # @TODO: check
+        self.panel.setObjectName('metadataViewerPanel')  # @TODO: check
 
         # Connect signals
         app.treeview.clicked.connect(self.onItemClicked)

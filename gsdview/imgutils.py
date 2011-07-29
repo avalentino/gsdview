@@ -21,8 +21,8 @@
 
 '''Tools for geo-spatial images handling and visualization.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 
@@ -30,7 +30,8 @@ import numpy
 
 
 ### LUT utils ################################################################
-def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0, omax=None):
+def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0,
+               omax=None):
     '''Compute a linear LUT.
 
     The returned LUT maps the imput domain (vmin, vmax) onto the output
@@ -73,7 +74,7 @@ def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0, omax=None):
     if dtype not in (numpy.uint8, numpy.uint16):
         raise ValueError('invalid dtype "%s" (uint8 or uint16 expected)' %
                                                                         dtype)
-    nmax = 2**(8*dtype.itemsize)
+    nmax = 2 ** (8 * dtype.itemsize)
 
     if omax is None:
         omax = nmax - 1
@@ -92,7 +93,7 @@ def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0, omax=None):
     elif fill:
         nout = max(nout, fill)
 
-    if nout > 2**32:
+    if nout > 2 ** 32:
         raise ValueError('requested LUT is too large: %d.' % nout)
 
     lut = numpy.arange(nout)
@@ -136,7 +137,7 @@ def histogram_equalized_lut(hist, dtype='uint8', fill=False):
     if dtype not in (numpy.uint8, numpy.uint16):
         raise ValueError('invalid dtype "%s" (uint8 or uint16 expected)' %
                                                                         dtype)
-    nmax = 2**(8*dtype.itemsize)
+    nmax = 2 ** (8 * dtype.itemsize)
 
     hist = numpy.ravel(hist)
 
@@ -158,10 +159,10 @@ def histogram_equalized_lut(hist, dtype='uint8', fill=False):
     if total == 0:
         return numpy.zeros(nout)
 
-    lut = nmax / total * (lut + hist/2.)
-    lut.clip(0, nout-1)
+    lut = nmax / total * (lut + hist / 2.)
+    lut.clip(0, nout - 1)
     lut.resize(nout)
-    lut[nbins:] = lut[nbins-1]
+    lut[nbins:] = lut[nbins - 1]
 
     return lut.asarray(dtype)
 
@@ -173,11 +174,11 @@ def log_lut(dtype='uint8'):
     if dtype not in (numpy.uint8, numpy.uint16):
         raise ValueError('invalid dtype "%s" (uint8 or uint16 expected)' %
                                                                         dtype)
-    nmax = 2**(8*dtype.itemsize)
-    vmax = nmax-1
+    nmax = 2 ** (8 * dtype.itemsize)
+    vmax = nmax - 1
 
     lut = numpy.arange(nmax, 'float64')
-    lut = numpy.round(vmax * numpy.log(lut+1) / numpy.log(nmax))
+    lut = numpy.round(vmax * numpy.log(lut + 1) / numpy.log(nmax))
     lut.clip(0, vmax)
 
     return lut.astype(dtype)
@@ -190,8 +191,8 @@ def root(dtype='uint8'):
     if dtype not in (numpy.uint8, numpy.uint16):
         raise ValueError('invalid dtype "%s" (uint8 or uint16 expected)' %
                                                                         dtype)
-    nmax = 2**(8*dtype.itemsize)
-    vmax = nmax-1
+    nmax = 2 ** (8 * dtype.itemsize)
+    vmax = nmax - 1
 
     lut = numpy.arange(nmax, 'float64')
     lut = vmax * numpy.root(lut / vmax)
@@ -207,11 +208,11 @@ def square(dtype='uint8'):
     if dtype not in (numpy.uint8, numpy.uint16):
         raise ValueError('invalid dtype "%s" (uint8 or uint16 expected)' %
                                                                         dtype)
-    nmax = 8**dtype.itemsize
-    vmax = nmax-1
+    nmax = 8 ** dtype.itemsize
+    vmax = nmax - 1
 
     lut = numpy.arange(nmax, 'float64')
-    lut = vmax * (lut / vmax)**2
+    lut = vmax * (lut / vmax) ** 2
     lut.clip(0, vmax)
 
     return lut.astype(dtype)
@@ -285,7 +286,8 @@ class LinearStretcher(BaseStretcher):
             data = self.scale * data
         return super(LinearStretcher, self).__call__(data)
 
-    # @TODO: if the API is compatible use range = property(get_range, set_range)
+    # @TODO: if the API is compatible use
+    #           range = property(get_range, set_range)
     @property
     def range(self):
         imin = self.min / self.scale + self.offset
@@ -335,7 +337,7 @@ class LUTStretcher(BaseStretcher):
         if self.offset:
             data = data - self.offset
         if data.dtype != self.dtype:
-            data = data.clip(0, len(self.lut)-1, out=data)
+            data = data.clip(0, len(self.lut) - 1, out=data)
             data = data.astype('uint32')
         return self.lut[data]
 

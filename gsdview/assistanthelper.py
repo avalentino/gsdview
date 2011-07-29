@@ -21,13 +21,14 @@
 
 '''Qt Assistant helper.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date: 2009-09-04 20:24:24 +0200 (ven, 04 set 2009) $'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date: 2009-09-04 20:24:24 +0200 (ven, 04 set 2009) $'
 __revision__ = '$Revision: 531 $'
 
 import sys
 
 from PyQt4 import QtCore, QtGui
+
 
 class Assistant(object):
     '''Helper class controllig an external QAssistant proces.'''
@@ -61,7 +62,8 @@ class Assistant(object):
             self.proc = QtCore.QProcess()
 
         if self.proc.state() != QtCore.QProcess.Running:
-            app = QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.BinariesPath)
+            app = QtCore.QLibraryInfo.location(
+                                            QtCore.QLibraryInfo.BinariesPath)
             app += QtCore.QDir.separator()
             if sys.platform == 'darwin':
                 app += QtCore.QLatin1String(

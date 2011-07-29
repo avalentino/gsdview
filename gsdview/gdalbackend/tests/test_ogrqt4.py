@@ -60,7 +60,8 @@ class VectorGraphicsApp(QtGui.QMainWindow):
         self.treeview.setModel(self.model)
         self.treeview.setHeaderHidden(True)
         self.treeview.setIndentation(0)
-        self.treeview.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.treeview.setSelectionMode(
+            QtGui.QAbstractItemView.ExtendedSelection)
         self.treeview.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.treeview.header().setStretchLastSection(True)
 
@@ -180,7 +181,8 @@ class VectorGraphicsApp(QtGui.QMainWindow):
                       objectName='zoomOutAction',
                       statusTip=self.tr('Zoom Out'),
                       shortcut=self.tr('Ctrl+-'),
-                      triggered=lambda: self.graphicsview.scale(1/1.2, 1/1.2))
+                      triggered=lambda: self.graphicsview.scale(1 / 1.2,
+                                                                1 / 1.2))
 
         icon = QtGui.QIcon(
             ':/trolltech/dialogs/qprintpreviewdialog/images/page-setup-24.png')
@@ -249,12 +251,12 @@ class VectorGraphicsApp(QtGui.QMainWindow):
         filenames, filter_ = QtGui.QFileDialog.getOpenFileNamesAndFilter(
                                         self,
                                         self.tr('Open Vector'),
-                                        QtCore.QDir.home().absolutePath(), #os.path.expanduser('~')
+                                        QtCore.QDir.home().absolutePath(),
                                         ';;'.join(ogrFilters),
                                         ogrFilters[1])
 
         for filename in filenames:
-            filename = str(filename) # unicode --> str
+            filename = str(filename)    # unicode --> str
             # @TODO: check if it is already open
             self.openvector(filename)
 
@@ -354,7 +356,8 @@ class VectorGraphicsApp(QtGui.QMainWindow):
 
 def main(*argv):
     # @NOTE: basic config doesn't work since sip use it before this line
-    #logging.basicConfig(level=logging.DEBUG, format='%(levelname): %(message)s')
+    #logging.basicConfig(level=logging.DEBUG,
+    #                    format='%(levelname): %(message)s')
     logging.getLogger().setLevel(logging.DEBUG)
 
     if not argv:

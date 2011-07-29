@@ -23,8 +23,8 @@
 
 # @TODO: move this to widgets sub-package or qt4freesolutions subpackage
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 
@@ -167,7 +167,7 @@ class ItemModelMainWindow(MdiMainWindow):
         if not modelindex.isValid():
             return
         parentitem = modelindex.model().itemFromIndex(modelindex)
-        for row in range(start, end+1):
+        for row in range(start, end + 1):
             item = parentitem.child(row)
             for subwin in self.mdiarea.subWindowList():
                 if subwin.item == item:

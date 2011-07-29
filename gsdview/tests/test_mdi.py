@@ -205,8 +205,8 @@ class TestMdiMainWindow(MdiMainWindow):
     @QtCore.pyqtSlot()
     def about(self):
         QtGui.QMessageBox.about(self, self.tr('About MDI'),
-            self.tr('The <b>MDI</b> example demonstrates how to write multiple '
-                    'document interface applications using Qt.'))
+            self.tr('The <b>MDI</b> example demonstrates how to write '
+                    'multiple document interface applications using Qt.'))
 
     @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
     def updateActions(self, window=None):
@@ -240,7 +240,8 @@ class TestMdiMainWindow(MdiMainWindow):
         icon = style.standardIcon(style.SP_DialogOpenButton)
         self.openAct = QtGui.QAction(icon, self.tr('&Open...'), self,
                                      shortcut=self.tr('Ctrl+O'),
-                                     statusTip=self.tr('Open an existing file'),
+                                     statusTip=self.tr('Open an existing '
+                                                       'file'),
                                      triggered=self.open)
 
         icon = style.standardIcon(style.SP_DialogSaveButton)
@@ -252,7 +253,7 @@ class TestMdiMainWindow(MdiMainWindow):
 
         self.saveAsAct = QtGui.QAction(self.tr('Save &As...'), self,
                                        statusTip=self.tr('Save the document '
-                                                          'under a new name'),
+                                                         'under a new name'),
                                        triggered=self.saveAs)
 
         self.exitAct = QtGui.QAction(self.tr('E&xit'), self,
@@ -279,19 +280,22 @@ class TestMdiMainWindow(MdiMainWindow):
         icon = geticon('paste.svg', 'gsdview')
         self.pasteAct = QtGui.QAction(icon, self.tr('&Paste'), self,
                                       shortcut=self.tr("Ctrl+V"),
-                                      statusTip=self.tr("Paste the clipboard's "
-                                                        "contents into the "
-                                                        "current selection"),
+                                      statusTip=self.tr("Paste the "
+                                                        "clipboard's contents "
+                                                        "into the current "
+                                                        "selection"),
                                       triggered=self.paste)
 
         self.aboutAct = QtGui.QAction(self.tr('&About'), self,
-                                      statusTip=self.tr("Show the application's "
-                                                        "About box"),
+                                      statusTip=self.tr("Show the "
+                                                        "application's About "
+                                                        "box"),
                                       triggered=self.about)
 
         self.aboutQtAct = QtGui.QAction(self.tr('About &Qt'), self,
                                         statusTip=self.tr("Show the Qt "
-                                                          "library's About box"),
+                                                          "library's About "
+                                                          "box"),
                                         triggered=QtGui.qApp.aboutQt)
 
     def createMenus(self):
@@ -332,6 +336,7 @@ class TestMdiMainWindow(MdiMainWindow):
             if window.widget().currentFile() == canonicalFilePath:
                 return window
         return None
+
 
 def test_mdimainwin():
     import sys

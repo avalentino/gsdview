@@ -21,8 +21,8 @@
 
 '''Custom QtGui.QGraphicsView component.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 
@@ -101,6 +101,7 @@ class GraphicsView(QtGui.QGraphicsView):
         #~ scene.setSceneRect(0, 0, 1, 1)
         #~ self.setSceneRect(scene.sceneRect())
         #~ self.resetTransform()
+
 
 class GraphicsViewMonitor(QtCore.QObject):
     '''Emit signals when a registered graphics view changes status.

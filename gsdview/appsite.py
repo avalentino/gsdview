@@ -29,7 +29,8 @@
 
 '''
 
-__all__ = ['DATADIR', 'DOCSDIR', 'LICENSEFILE', 'SYSPLUGINSDIR', 'USERCONFIGDIR']
+__all__ = ['DATADIR', 'DOCSDIR', 'LICENSEFILE', 'SYSPLUGINSDIR',
+           'USERCONFIGDIR']
 
 
 import os

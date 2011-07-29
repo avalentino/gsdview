@@ -21,8 +21,8 @@
 
 '''Core modue for image stretch control.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date: 2010/02/14 22:02:21 $'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date: 2010/02/14 22:02:21 $'
 __revision__ = '$Revision: 36b7b35ff3b6 $'
 
 from PyQt4 import QtCore, QtGui
@@ -96,7 +96,7 @@ class StretchTool(QtCore.QObject):
         if maximum is not None:
             self.dialog.stretchwidget.setMaximum(maximum)
         else:
-            self.dialog.stretchwidget.setMaximum(max(imax, 2*imax))
+            self.dialog.stretchwidget.setMaximum(max(imax, 2 * imax))
 
         self.dialog.stretchwidget.setLow(imin)
         self.dialog.stretchwidget.setHigh(imax)
@@ -139,7 +139,6 @@ class StretchTool(QtCore.QObject):
                 self.dialog.setEnabled(False)
             else:
                 self.action.setEnabled(False)
-
 
     # @TODO: remove
     #~ @QtCore.pyqtSlot(QtCore.QModelIndex)

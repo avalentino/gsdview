@@ -83,7 +83,7 @@ class TestLinearStretcher(unittest.TestCase):
         stretch = LinearStretcher(scale=0.5, offset=10)
         data = numpy.arange(512) + 10
         output = stretch(data)
-        refout = numpy.clip((data - 10) / 2 , 0, 255)
+        refout = numpy.clip((data - 10) / 2, 0, 255)
         self.assert_(numpy.all(output == refout))
 
     def test_set_imput_range1(self):
@@ -103,7 +103,7 @@ class TestLinearStretcher(unittest.TestCase):
         stretch = LinearStretcher()
         stretch.set_range(10, 521)
 
-        scale = 255./511 # (omax - omin) / (imax - imin)
+        scale = 255. / 511  # (omax - omin) / (imax - imin)
         self.assertEqual(stretch.scale, scale)
         self.assertEqual(stretch.offset, 10)
 
@@ -114,6 +114,7 @@ class TestLinearStretcher(unittest.TestCase):
         self.assert_(numpy.all(output == refout))
 
         self.assertEqual(output.max(), 255)
+
 
 class TestLUTStretcher(unittest.TestCase):
     def test_clipping(self):
@@ -134,7 +135,7 @@ class TestLUTStretcher(unittest.TestCase):
         self.assertTrue(numpy.all(outdata[20:] == 20))
 
     def test_negative_offset(self):
-        stretch = LUTStretcher(vmax = 20)
+        stretch = LUTStretcher(vmax=20)
         stretch.set_range(-10, 10)
         outdata = stretch(numpy.arange(-20, 20))
         self.assertTrue(numpy.all(outdata[:10] == 0))

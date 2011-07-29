@@ -21,14 +21,14 @@
 
 '''Log plane.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
-__version__  = (0, 6, 5)
+__version__ = (0, 6, 5)
 __requires__ = []
 
 __all__ = ['init', 'close', 'loadSettings', 'saveSettings',
-           'name','version', 'short_description','description',
+           'name', 'version', 'short_description', 'description',
            'author', 'author_email', 'copyright', 'license_type',
            'website', 'website_label',
 ]
@@ -72,14 +72,17 @@ def init(app):
     # Connect signals
     logplane.planeHideRequest.connect(panel.hide)
 
+
 def close(app):
     saveSettings(app.settings)
     #app.logger.remove(_global_aux.pop('handler'))
     #panel = app.findChild(QtGui.QDockWidget, 'outputPanel')
     #app.removeDockWidget(panel)
 
+
 def loadSettings(settings):
     pass
+
 
 def saveSettings(settings):
     pass

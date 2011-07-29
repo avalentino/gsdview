@@ -21,8 +21,8 @@
 
 '''World map component for GSDView.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 
@@ -115,9 +115,9 @@ class WorldmapPanel(QtGui.QDockWidget):
         worldmapitem = scene.addPixmap(worldmap)
         worldmapitem.setTransformationMode(QtCore.Qt.SmoothTransformation)
         # @NOTE: reverse the y axis
-        worldmapitem.scale(360./worldmap.width(), -180./worldmap.height())
-        worldmapitem.setOffset(-worldmap.width()/2.+0.5,
-                               -worldmap.height()/2.+0.5)
+        worldmapitem.scale(360. / worldmap.width(), -180. / worldmap.height())
+        worldmapitem.setOffset(-worldmap.width() / 2. + 0.5,
+                               -worldmap.height() / 2. + 0.5)
         #~ transform = QtGui.QTransform(360./worldmap.width(),
                                      #~ 0,
                                      #~ 0,
@@ -184,10 +184,14 @@ class WorldmapPanel(QtGui.QDockWidget):
         self.box = self.plot(polygon)
 
         points = QtGui.QPolygonF([
-            QtCore.QPointF(mlon - self.bigBoxSize/2, mlat - self.bigBoxSize/2),
-            QtCore.QPointF(mlon + self.bigBoxSize/2, mlat - self.bigBoxSize/2),
-            QtCore.QPointF(mlon + self.bigBoxSize/2, mlat + self.bigBoxSize/2),
-            QtCore.QPointF(mlon - self.bigBoxSize/2, mlat + self.bigBoxSize/2),
+            QtCore.QPointF(mlon - self.bigBoxSize / 2,
+                           mlat - self.bigBoxSize / 2),
+            QtCore.QPointF(mlon + self.bigBoxSize / 2,
+                           mlat - self.bigBoxSize / 2),
+            QtCore.QPointF(mlon + self.bigBoxSize / 2,
+                           mlat + self.bigBoxSize / 2),
+            QtCore.QPointF(mlon - self.bigBoxSize / 2,
+                           mlat + self.bigBoxSize / 2),
         ])
         self.bigbox = self.plot(points)
 
@@ -210,7 +214,7 @@ class WorldmapController(QtCore.QObject):
         self.app = app
 
         self.panel = WorldmapPanel(app)
-        self.panel.setObjectName('worldmapPanel') # @TODO: check
+        self.panel.setObjectName('worldmapPanel')   # @TODO: check
 
         app.mdiarea.subWindowActivated.connect(self.onSubWindowChanged)
         app.treeview.clicked.connect(self.onItemClicked)
@@ -272,7 +276,8 @@ if __name__ == '__main__':
     mainwin = QtGui.QMainWindow()
     mainwin.setCentralWidget(QtGui.QTextEdit())
 
-    dataset = gdal.Open('/home/antonio/projects/gsdview/data/ENVISAT/ASA_APM_1PNIPA20031105_172352_000000182021_00227_08798_0001.N1')
+    dataset = gdal.Open(os.path.expanduser('~/projects/gsdview/data/ENVISAT/'
+        'ASA_APM_1PNIPA20031105_172352_000000182021_00227_08798_0001.N1'))
     panel = WorldmapPanel()
     panel.setDataset(dataset)
 

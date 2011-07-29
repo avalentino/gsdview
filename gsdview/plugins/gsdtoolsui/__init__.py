@@ -21,12 +21,12 @@
 
 '''GSDTools plugin for GSDView.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 __all__ = ['init', 'close', 'loadSettings', 'saveSettings',
-           'name','version', 'short_description','description',
+           'name', 'version', 'short_description', 'description',
            'author', 'author_email', 'copyright', 'license_type',
            'website', 'website_label',
 ]
@@ -53,10 +53,9 @@ def init(app):
 
     # @TODO: move to tool (??)
     #~ app.mdiarea.subWindowActivated.connect(
-                            #~ lambda w: controller.actions.setEnabled(bool(w)))
+        #~ lambda w: controller.actions.setEnabled(bool(w)))
     #~ app.subWindowClosed.connect(lambda: controller.actions.setEnabled(
-                                    #~ bool(app.mdiarea.activeSubWindow())))
-
+        #~ bool(app.mdiarea.activeSubWindow())))
 
     global _instance
     _instance = controller
@@ -68,11 +67,12 @@ def close(app):
     global _instance
     _instance = None
 
+
 def loadSettings(settings):
     if _instance:
         _instance.loadSettings(settings)
 
+
 def saveSettings(settings):
     if _instance:
         _instance.saveSettings(settings)
-

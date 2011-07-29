@@ -32,8 +32,8 @@ making the system expandible, and also methods to register objects
 '''
 
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 
@@ -139,12 +139,12 @@ class ScrollHandMode(MouseMode):
 
             # Conversion from degrees to zoom factor:
             # a factor of 1.1 every 15 degrees
-            k = 1.1/15.
+            k = 1.1 / 15.
 
             if delta >= 0:
                 factor = k * delta
             else:
-                factor = -1/(k * delta)
+                factor = -1 / (k * delta)
 
             obj.scale(factor, factor)
             event.accept()
@@ -220,7 +220,7 @@ class MouseManager(QtCore.QObject):
             self.registerStandardModes()
 
     def registerStandardModes(self):
-        for mode in (PointerMode, ScrollHandMode): #, RubberBandMode):
+        for mode in (PointerMode, ScrollHandMode):  # , RubberBandMode):
             self.addMode(mode)
         if len(self._moderegistry) and not self.actions.checkedAction():
             self.actions.actions()[0].setChecked(True)

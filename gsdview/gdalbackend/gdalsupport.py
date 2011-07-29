@@ -21,8 +21,8 @@
 
 '''Support tools and classes for the GDAL library.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 
@@ -166,7 +166,7 @@ def uniqueDatasetID(prod):
             prod_id = os.path.basename(prod.GetDescription())
     elif driver_name == 'ESAT':
         metadata = prod.GetMetadata()
-        prod_id = os.path.splitext(metadata ['MPH_PRODUCT'])[0]
+        prod_id = os.path.splitext(metadata['MPH_PRODUCT'])[0]
     #~ elif driver_name = 'GTiff':
         #~ # ERS BTIF
         #~ pass
@@ -241,7 +241,7 @@ def gdalFilters(mode='r'):
             ext = metadata['DMD_EXTENSION']
             if ext:
                 if name.endswith(' (.%s)' % ext):
-                    name = name[0: -len(ext)-4]
+                    name = name[0: -len(ext) - 4]
 
                 if 'w' in mode:
                     CREATECOPY = metadata.get(gdal.DCAP_CREATECOPY)
@@ -258,7 +258,7 @@ def gdalFilters(mode='r'):
     return filters
 
 
-def ogrFilters():   #mode='r'):
+def ogrFilters():   # mode='r'):
     '''Returns the list of OGR file filters as expected by Qt'''
 
     # @TODO: move to an OGR specific module (??)
@@ -338,7 +338,8 @@ def isRGB(dataset, strict=False):
         return False
 
     # @TODO: allow different color orders (??)
-    bands = [dataset.GetRasterBand(b) for b in range(1, dataset.RasterCount+1)]
+    bands = [dataset.GetRasterBand(b)
+                                for b in range(1, dataset.RasterCount + 1)]
     for band, colorint in zip(bands, (gdal.GCI_RedBand,
                                       gdal.GCI_GreenBand,
                                       gdal.GCI_BlueBand,
@@ -367,6 +368,7 @@ SAFE_GDAL_STATS = (('1640' <= gdal.VersionInfo() < '1700') or
 GDAL_STATS_KEYS = ('STATISTICS_MINIMUM', 'STATISTICS_MAXIMUM',
                    'STATISTICS_MEAN', 'STATISTICS_STDDEV')
 
+
 def GetCachedStatistics(band):
     '''Retrieve cached statistics from a raster band.
 
@@ -391,6 +393,7 @@ def GetCachedStatistics(band):
         stats = [float(item) for item in stats]
 
     return stats
+
 
 def SafeGetStatistics(band, approx_ok=False, force=True):
     '''Safe replacement of gdal.Band.GetSrtatistics.
@@ -453,6 +456,7 @@ def SafeGetStatistics(band, approx_ok=False, force=True):
             stats = (None, None, None, None)
 
     return stats
+
 
 def hasFastStats(band, approx_ok=True):
     '''Return true if band statistics can be retrieved quickly.
@@ -553,7 +557,7 @@ def colortable2numpy(colortable):
     colorint = colortable.GetPaletteInterpretation()
     nchannels = colorinterpretations[colorint]['nchannels']
 
-    return colors[...,:nchannels]
+    return colors[..., 0:nchannels]
 
 
 ### Coordinate conversion helpers ############################################
@@ -577,7 +581,7 @@ def _fixedGCPs(gcps):
         #           has at least 2 lines
         # @WARNING: here we are assuming a particular order of GCPs
         upstepslocation = numpy.where(lines[1:] > lines[0:-1])[0] + 1
-        upsteps = lines[upstepslocation] - lines[upstepslocation-1]
+        upsteps = lines[upstepslocation] - lines[upstepslocation - 1]
 
         # @WARNING: here we are assuming that the distance between geolocation
         #           grid linse is constant
@@ -668,7 +672,7 @@ class CoordinateMapper(object):
             for index, (x, y) in enumerate(xy.transpose()):
                 xy[:, index] = self._srTransform.TransformPoint(x, y)[:2]
         # @TODO: check single point
-        return xy[0], xy[1] #, 0    # @TODO: h
+        return xy[0], xy[1]  # , 0    # @TODO: h
 
     def geoToImgPoints(self, lon, lat, h=0):
         '''Coordinate conversion: (lon,lat) --> (pixel,line).'''
@@ -687,11 +691,11 @@ class CoordinateMapper(object):
         '''
 
         # @TODO: check single point
-        px , py = numpy.meshgrid(pixel, line)
+        px, py = numpy.meshgrid(pixel, line)
         lon, lat = self.imgToGeoPoints(px, py)
-        lon.shape = lat.shape = (len(pixel), len(line)) # @TODO: check
+        lon.shape = lat.shape = (len(pixel), len(line))  # @TODO: check
 
-        return lon, lat #, 0    # @TODO: h
+        return lon, lat  # , 0    # @TODO: h
 
     def geoToImgGrid(self, lon, lat):
         '''Coordinate conversion: (lon,lat) --> (pixel,line) on regular grids.
@@ -704,7 +708,7 @@ class CoordinateMapper(object):
         # @TODO: check single point
         px, py = numpy.meshgrid(lon, lat)
         pixel, line = self.geoToImgPoints(px, py)
-        pixel.shape = line.shape = (len(lon), len(lat)) # @TODO: check
+        pixel.shape = line.shape = (len(lon), len(lat))  # @TODO: check
 
         return line, pixel
 
@@ -725,7 +729,8 @@ def coordinate_mapper(dataset):
 
 
 ### Overviews handling helpers ###############################################
-OVRMEMSIE = 400*1024    # 400kbytes
+OVRMEMSIE = 400 * 1024  # 400 kbytes
+
 
 class MissingOvrError(Exception):
     def __init__(self, ovrlevel):
@@ -777,7 +782,7 @@ def ovrLevelForSize(gdalobj, ovrsize=OVRMEMSIE):
         # assume gdalobj is a dataset to be represented as an RGB32
         dataset = gdalobj
         band = dataset.GetRasterBand(1)
-        return ovrLevelForSize(band, ovrsize/4)
+        return ovrLevelForSize(band, ovrsize / 4)
 
 
 def ovrLevels(gdalobj, raw=False):
@@ -829,7 +834,7 @@ def ovrBestIndex(gdalobj, ovrlevel=None, policy='NEAREST'):
         # gdalobj is a raster band
         band = gdalobj
         if ovrlevel is None:
-            ovrlevel = ovrLevelForSize(band) # 400K
+            ovrlevel = ovrLevelForSize(band)  # 400K
         levels = numpy.asarray(ovrLevels(band))
         if len(levels) == 0:
             raise MissingOvrError(ovrlevel)
@@ -893,8 +898,8 @@ def ovrComputeLevels(gdalobj, ovrsize=OVRMEMSIE, estep=3, threshold=0.1):
     else:
         startexponent = 1
 
-    maxesponent = numpy.ceil(maxfactor**(1./estep))
-    exponents = numpy.arange(startexponent, maxesponent+1)
+    maxesponent = numpy.ceil(maxfactor ** (1. / estep))
+    exponents = numpy.arange(startexponent, maxesponent + 1)
     missinglevels = estep ** exponents
     missinglevels = missinglevels.astype(numpy.int)
 
@@ -912,7 +917,7 @@ def ovrComputeLevels(gdalobj, ovrsize=OVRMEMSIE, estep=3, threshold=0.1):
             pass
         else:
             bestlevel = levels[index]
-            if bestlevel and abs(bestlevel - level)/float(level) < threshold:
+            if bestlevel and abs(bestlevel - level) / float(level) < threshold:
                 continue
         missinglevels.append(level)
 

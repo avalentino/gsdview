@@ -21,8 +21,8 @@
 
 '''Widgets and dialogs for GSDView.'''
 
-__author__   = '$Author: a_valentino $'
-__date__     = '$Date: 2010/02/14 12:21:23 $'
+__author__ = '$Author: a_valentino $'
+__date__ = '$Date: 2010/02/14 12:21:23 $'
 __revision__ = '$Revision: 003973572867 $'
 
 import logging
@@ -32,6 +32,8 @@ from PyQt4 import QtCore, QtGui
 from gsdview import qt4support
 
 StretchWidgetBase = qt4support.getuiform('doubleslider', __name__)
+
+
 class StretchWidget(QtGui.QWidget, StretchWidgetBase):
     '''Stretch widget.
 
@@ -127,8 +129,8 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
     def _onLowSliderChanged(self, value):
         if self.floatmode:
             value = self._value(value)
-            N = 10.**self.lowSpinBox.decimals()
-            if abs(value - self.lowSpinBox.value()) < 1./N:
+            N = 10. ** self.lowSpinBox.decimals()
+            if abs(value - self.lowSpinBox.value()) < 1. / N:
                 return
         self.setLow(value)
 
@@ -136,8 +138,8 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
     def _onHighSliderChanged(self, value):
         if self.floatmode:
             value = self._value(value)
-            N = 10.**self.highSpinBox.decimals()
-            if abs(value - self.highSpinBox.value()) < 1./N:
+            N = 10. ** self.highSpinBox.decimals()
+            if abs(value - self.highSpinBox.value()) < 1. / N:
                 return
         self.setHigh(value)
 
@@ -238,6 +240,8 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
 
 
 StretchDialogBase = qt4support.getuiform('stretchdialog', __name__)
+
+
 class StretchDialog(QtGui.QDialog, StretchDialogBase):
     '''Stretch dialog.
 

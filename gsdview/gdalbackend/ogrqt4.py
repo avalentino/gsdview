@@ -21,8 +21,8 @@
 
 '''Helper tools and custom components for binding OGR and PyQt4.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 
@@ -91,12 +91,13 @@ def transformGeometry(geom, transform):
 
     '''
 
-    geom = geom.Clone() # @TODO: check
+    geom = geom.Clone()  # @TODO: check
     err = geom.Transform(transform)
     if err:
         raise ValueError('geomery coordinate transformation failed')
 
     return geom
+
 
 def singleGeometryToGraphicsItem(geom, transform=None):
     '''Convert a single OGR geometry into a Qt4 graphics item.
@@ -200,6 +201,7 @@ def singleGeometryToGraphicsItem(geom, transform=None):
 
     return qitem
 
+
 def geometryToGraphicsItem(geom, transform=None):
     '''Convert an OGR geometry into a Qt4 graphics item.
 
@@ -252,6 +254,7 @@ DATAKEY = {
     'datasource': 3,
     'FID': 4,
 }
+
 
 def layerToGraphicsItem(layer, srs=None, transform=None):
     '''Convert an OGR layer into a Qt4 graphics item.
@@ -336,7 +339,8 @@ def layerToGraphicsItem(layer, srs=None, transform=None):
                         'for layer "%s"' % (nfeatures, layer.GetFeatureCount(),
                                             layer.GetName()))
 
-    qlayer.setToolTip('Layer "%s": %d features.' % (layer.GetName(), nfeatures))
+    qlayer.setToolTip('Layer "%s": %d features.' % (layer.GetName(),
+                                                    nfeatures))
 
     return qlayer
 

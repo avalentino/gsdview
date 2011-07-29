@@ -27,7 +27,7 @@ from PyQt4 import QtGui
 
 # Fix sys path
 from os.path import abspath, dirname
-parts = [dirname(__file__)] + [os.pardir]*4
+parts = [dirname(__file__)] + [os.pardir] * 4
 GSDVIEWROOT = abspath(os.path.join(*parts))
 del parts
 sys.path.insert(0, GSDVIEWROOT)

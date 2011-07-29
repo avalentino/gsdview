@@ -37,17 +37,17 @@ class TestLinearLUT(unittest.TestCase):
     def test_all_defaults(self):
         lut = linear_lut()
         self.assertEqual(lut.dtype, numpy.uint8)
-        self.assert_(numpy.all(lut == numpy.arange(2**8, dtype='uint8')))
+        self.assertTrue(numpy.all(lut == numpy.arange(2 ** 8, dtype='uint8')))
 
     def test_dtype_uint8(self):
         lut = linear_lut(dtype='uint8')
         self.assertEqual(lut.dtype, numpy.uint8)
-        self.assert_(numpy.all(lut == numpy.arange(2**8, dtype='uint8')))
+        self.assertTrue(numpy.all(lut == numpy.arange(2 ** 8, dtype='uint8')))
 
     def test_dtype_uint16(self):
         lut = linear_lut(dtype='uint16')
         self.assertEqual(lut.dtype, numpy.uint16)
-        self.assert_(numpy.all(lut == numpy.arange(2**16, dtype='uint16')))
+        self.assertTrue(numpy.all(lut == numpy.arange(2 ** 16, dtype='uint16')))
 
     def test_dtype_invalid(self):
         self.assertRaises(TypeError, linear_lut, dtype=0)
@@ -90,35 +90,35 @@ class TestLinearLUT(unittest.TestCase):
         expected_lut[:10] = 0
         expected_lut[10:] = numpy.linspace(0, 255, 256)
         self.assertEqual(len(lut), len(expected_lut))
-        self.assert_(numpy.all(lut == expected_lut))
+        self.assertTrue(numpy.all(lut == expected_lut))
 
     def test_scale(self):
         lut = linear_lut(0, 511)
         expected_lut = numpy.arange(256)
         expected_lut = numpy.repeat(expected_lut, 2)
         self.assertEqual(len(lut), len(expected_lut))
-        self.assert_(numpy.all(lut == expected_lut))
+        self.assertTrue(numpy.all(lut == expected_lut))
 
     def test_omax(self):
         lut = linear_lut(0, 399, omax=199)
         expected_lut = numpy.arange(200)
         expected_lut = numpy.repeat(expected_lut, 2)
         self.assertEqual(len(lut), len(expected_lut))
-        self.assert_(numpy.all(lut == expected_lut))
+        self.assertTrue(numpy.all(lut == expected_lut))
 
     def test_omin(self):
         lut = linear_lut(0, 399, omin=10, omax=209)
         expected_lut = numpy.arange(200)
         expected_lut = numpy.repeat(expected_lut, 2) + 10
         self.assertEqual(len(lut), len(expected_lut))
-        self.assert_(numpy.all(lut == expected_lut))
+        self.assertTrue(numpy.all(lut == expected_lut))
 
     def test_vmin_omin(self):
         lut = linear_lut(10, 209, omin=10, omax=209)
         expected_lut = numpy.arange(210)
         expected_lut[:10] = 10
         self.assertEqual(len(lut), len(expected_lut))
-        self.assert_(numpy.all(lut == expected_lut))
+        self.assertTrue(numpy.all(lut == expected_lut))
 
 #~ class TestHistogramEqualizedLUT(unittest.TestCase):
     #~ def test_(self):

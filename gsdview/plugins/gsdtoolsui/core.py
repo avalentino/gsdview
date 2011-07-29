@@ -21,8 +21,8 @@
 
 '''UI front-end for GSDTools.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 
@@ -184,9 +184,8 @@ class GSDToolsController(QtCore.QObject):
         if not success:
             logging.warning('unable to open "%s" in GoogleEarth.' % dst)
             # @TODO: check
-            QtGui.QMessageBox.warning(self.app, self.tr('Warnong'),
+            QtGui.QMessageBox.warning(self.app, self.tr('Warning'),
                         self.tr('Unable to open "%s" in GoogleEarth.') % dst)
-
 
     @QtCore.pyqtSlot()
     def openInGoogleMaps(self):
@@ -210,7 +209,7 @@ class GSDToolsController(QtCore.QObject):
                                                                 item.filename)
             return
 
-        pixel, line = item.RasterXSize/2., item.RasterYSize/2.
+        pixel, line = item.RasterXSize / 2., item.RasterYSize / 2.
         lon, lat = cmapper.imgToGeoPoints(pixel, line)
 
         url = QtCore.QUrl('http://maps.google.com/maps')
@@ -222,8 +221,8 @@ class GSDToolsController(QtCore.QObject):
         if not success:
             logging.warning('unable to open URL: "%s"' % str(url))
             # @TODO: check
-            QtGui.QMessageBox.warning(self.app, self.tr('Warnong'),
-                            self.tr('Unable to open URL: "%s"')  % str(url))
+            QtGui.QMessageBox.warning(self.app, self.tr('Warning'),
+                            self.tr('Unable to open URL: "%s"') % str(url))
 
     @QtCore.pyqtSlot()
     @QtCore.pyqtSlot(QtGui.QMdiSubWindow)

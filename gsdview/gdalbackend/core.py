@@ -21,8 +21,8 @@
 
 '''Core GDAL backend functions and classes.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 __all__ = ['GDALBackend']
@@ -278,14 +278,14 @@ class GDALBackend(QtCore.QObject):
                       statusTip=self.tr('Open as RGB'),
                       triggered=lambda chk: self.openRGBImageView())
 
-
         # build overviews
         icon = qt4support.geticon('overview.svg', __name__)
         QtGui.QAction(icon, self.tr('&Build overviews'),
                       actionsgroup, objectName='actionBuidOverviews',
                       shortcut=self.tr('Ctrl+B'),
                       toolTip=self.tr('Build overviews for all raster bands'),
-                      statusTip=self.tr('Build overviews for all raster bands'),
+                      statusTip=self.tr(
+                        'Build overviews for all raster bands'),
                       triggered=self.buildOverviews)
 
         # @TODO: add band, add virtual band, open GCPs view
@@ -363,7 +363,8 @@ class GDALBackend(QtCore.QObject):
             actionsgroup = self._actionsmap['DatasetItem']
 
         # RGB
-        action = actionsgroup.findChild(QtGui.QAction, 'actionOpenRGBImageView')
+        action = actionsgroup.findChild(QtGui.QAction,
+                                        'actionOpenRGBImageView')
         if gdalsupport.isRGB(item):
             # @TODO: remove this to allow multiple views on the same item
             for subwin in self._app.mdiarea.subWindowList():
@@ -479,7 +480,8 @@ class GDALBackend(QtCore.QObject):
     def openRGBImageView(self, item=None):
         if item is None:
             item = self._app.currentItem()
-        assert isinstance(item, modelitems.DatasetItem), 'item = %s' % str(item)
+        assert isinstance(item, modelitems.DatasetItem), ('item = %s' %
+                                                                    str(item))
 
         if not item.scene:
             msg = "This dataset can't be opened in RGB mode."
@@ -498,7 +500,8 @@ class GDALBackend(QtCore.QObject):
         if item is None:
             item = self._app.currentItem()
 
-        assert isinstance(item, modelitems.DatasetItem), 'item = %s' % str(item)
+        assert isinstance(item, modelitems.DatasetItem), ('item = %s' %
+                                                                    str(item))
 
         dialog = widgets.OverviewDialog(item, self._app)
         helper = self._helpers['ovrdialog']
@@ -544,7 +547,7 @@ class GDALBackend(QtCore.QObject):
 
     ### Raster Band ###########################################################
     @QtCore.pyqtSlot()
-    @QtCore.pyqtSlot(QtGui.QStandardItem) # @TODO: check
+    @QtCore.pyqtSlot(QtGui.QStandardItem)  # @TODO: check
     @qt4support.overrideCursor
     def openImageView(self, item=None):
         if item is None:
@@ -626,7 +629,8 @@ class GDALBackend(QtCore.QObject):
                 gdal.SetConfigOption('GDAL_DATA', value)
                 logger.debug('GDAL_DATA directory set to "%s"' % value)
 
-            for optname in ('GDAL_SKIP', 'GDAL_DRIVER_PATH', 'OGR_DRIVER_PATH'):
+            for optname in ('GDAL_SKIP', 'GDAL_DRIVER_PATH',
+                            'OGR_DRIVER_PATH'):
                 value = settings.value(optname)
                 if value is not None:
                     value = os.path.expanduser(os.path.expandvars(value))
@@ -682,6 +686,7 @@ class GDALBackend(QtCore.QObject):
 
 ### MISC ######################################################################
 from gsdview.mdi import ItemSubWindow
+
 
 # @TODO: move elsewhere
 class GraphicsViewSubWindow(ItemSubWindow):

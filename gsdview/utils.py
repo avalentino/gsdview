@@ -21,8 +21,8 @@
 
 '''Utility functions and classes for GSDView.'''
 
-__author__   = '$Author$'
-__date__     = '$Date$'
+__author__ = '$Author$'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 __all__ = ['which', 'isexecutable', 'isscript', 'scriptcmd', 'default_workdir',
@@ -50,7 +50,8 @@ def default_workdir():
 
     if sys.platform[:3] == 'win':
         return 'C:\\'
-        #return QtGui.QDesktopServices.storageLocation(QtGui.QDesktopServices.DocumentsLocation)
+        #return QtGui.QDesktopServices.storageLocation(
+        #                           QtGui.QDesktopServices.DocumentsLocation)
     else:
         return os.path.expanduser('~')
 
@@ -62,7 +63,8 @@ def _getresource(resource, package):
         # pkg_resources not available
         if '.' in package:
             fromlist = package.split('.')[:-1]
-            # @WARNING: (pychecker) Function (__import__) doesn't support **kwArgs
+            # @WARNING: (pychecker) Function (__import__) doesn't
+            #           support **kwArgs
             m = __import__(package, fromlist=fromlist)
         else:
             m = __import__(package)
@@ -128,7 +130,7 @@ def foramt_bugreport(exctype=None, excvalue=None, tracebackobj=None):
         exctype, excvalue, tracebackobj = sys.exc_info()
 
     separator = '-' * 80 + '\n'
-    timestamp = email.utils.formatdate(localtime=True)+'\n'
+    timestamp = email.utils.formatdate(localtime=True) + '\n'
 
     msg = [timestamp, separator]
     msg.extend(traceback.format_exception_only(exctype, excvalue))
@@ -144,6 +146,7 @@ def foramt_bugreport(exctype=None, excvalue=None, tracebackobj=None):
 
 
 if sys.platform[:3] == 'win':
+
     def isexecutable(cmd):
         '''Check if "cmd" actually is an executable program.'''
 
@@ -155,6 +158,7 @@ if sys.platform[:3] == 'win':
                 return True
         return False
 else:
+
     def isexecutable(cmd):
         '''Check if "cmd" actually is an executable program.'''
 
@@ -222,7 +226,7 @@ def scriptcmd(scriptname):
             comspec = os.environ.get('COMSPEC', 'cmd.exe')
             cmd = [comspec, '/c', scriptname]
         elif ext in ('.py', '.pyc', '.pyo', '.pyw'):
-            # @WARNONG: this doesn't work in case of frozen executables
+            # @WARNING: this doesn't work in case of frozen executables
             #cmd = [sys.executable, '-u', scriptname] # no buffering
             cmd = [sys.executable, scriptname]
     else:

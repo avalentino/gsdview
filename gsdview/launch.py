@@ -96,7 +96,7 @@ def cmdline_ui():
     from optparse import OptionParser
 
     from gsdview import info
-    
+
     # filter out arguments that cause errors in Mac bundles
     import sys
     args = [arg for arg in sys.argv[1:] if not arg.startswith('-psn_')]
@@ -132,8 +132,8 @@ def main():
     os.environ['LC_NUMERIC'] = 'C'
 
     options, args = cmdline_ui()
-    logging.basicConfig(#level=logging.DEBUG,
-                        level=logging.INFO,
+    # logging.basicConfig(level=logging.DEBUG,
+    logging.basicConfig(level=logging.INFO,
                         format='%(levelname)s: %(message)s')
     logger = logging.getLogger('gsdview')
     logger.setLevel(logging.DEBUG)
@@ -192,11 +192,13 @@ def main():
     sys.excepthook = mainwin.excepthook     # @TODO: check
 
     logger.info('Enter main event loop')
-    mainwin.raise_() # this will raise the window on Mac OS X
+    mainwin.raise_()  # this will raise the window on Mac OS X
     sys.exit(app.exec_())
 
 if __name__ == '__main__':
-    import os, sys
+    import os
+    import sys
+
     GSDVIEWROOT = os.path.dirname(os.path.abspath(__file__))
     EXTRAPATH, PKGNAME = GSDVIEWROOT.rsplit(os.path.sep, 1)
     if PKGNAME != 'gsdview':

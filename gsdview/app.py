@@ -21,8 +21,8 @@
 
 '''GUI front-end for the Geospatial Data Abstracton Library (GDAL).'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 __all__ = ['GSDView']
@@ -208,7 +208,7 @@ class GSDView(ItemModelMainWindow):
 
         #: settings sub-menu
         self.settings_submenu = QtGui.QMenu(self.tr('&View'),
-                                            aboutToShow=self.updateSettingsMenu)
+            aboutToShow=self.updateSettingsMenu)
         menu.addSeparator()
         menu.addMenu(self.settings_submenu)
 
@@ -222,7 +222,7 @@ class GSDView(ItemModelMainWindow):
 
         # @NOTE: the window state setup must happen after the plugins loading
         logger.info('Load settings ...')
-        self.loadSettings() # @TODO: pass settings
+        self.loadSettings()  # @TODO: pass settings
         # @TODO: force the log level set from command line
         #self.logger.setLevel(level)
 
@@ -348,7 +348,8 @@ class GSDView(ItemModelMainWindow):
                       triggered=self.closeItem)
 
         # Separator
-        QtGui.QAction(actionsgroup).setSeparator(True) #objectName='separator')
+        QtGui.QAction(actionsgroup).setSeparator(True)
+        # objectName='separator')
 
         # Exit
         icon = qt4support.geticon('quit.svg', __name__)
@@ -399,7 +400,8 @@ class GSDView(ItemModelMainWindow):
         self.fileActions = self._setupFileActions()
         self.settingsActions = self._setupSettingsActions()
         self.helpActions = self._setupHelpActions()
-        # @TODO: tree view actions: expand/collapse all, expand/collapse subtree
+        # @TODO: tree view actions: expand/collapse all, expand/collapse
+        #        subtree
         # @TODO: stop action
 
     def _addMenuFromActions(self, actions, name):
@@ -484,7 +486,8 @@ class GSDView(ItemModelMainWindow):
                 winstate = settings.value('winstate', QtCore.Qt.WindowNoState)
                 if winstate and winstate != QtCore.Qt.WindowNoState:
                     # @COMPATIBILITY: presumably a bug in PyQt4 4.7.2
-                    winstate = qt4support.intToWinState[winstate] # @TODO: check
+                    # @TODO: check
+                    winstate = qt4support.intToWinState[winstate]
                     self.setWindowState(winstate)
             except KeyError:
                 logging.debug('unable to restore the window state',
@@ -598,7 +601,8 @@ class GSDView(ItemModelMainWindow):
 
             # workdir
             # @NOTE: uncomment to preserve the session value
-            #workdir = settings.setValue('workdir', self.filedialog.directory())
+            #workdir = settings.setValue('workdir',
+            #                            self.filedialog.directory())
 
             # history
             #settings.setValue('history', self.filedialog.history())
@@ -669,7 +673,8 @@ class GSDView(ItemModelMainWindow):
     ### File actions ##########################################################
     @QtCore.pyqtSlot()
     def openFile(self):
-        # @TODO: remove; this is a temporary workaround for a Qt bug in Cocoa version
+        # @TODO: remove; this is a temporary workaround for a Qt bug in
+        #        Cocoa version
         self.filedialog.selectNameFilter(self.filedialog.selectedNameFilter())
 
         # @TODO: allow multiple file selection
@@ -686,7 +691,8 @@ class GSDView(ItemModelMainWindow):
                             self.logger.debug('File "%s" opened with backend '
                                               '"%s"' % (filename, backendname))
                         else:
-                            self.logger.info('file %s" already open' % filename)
+                            self.logger.info('file %s" already open' %
+                                                                    filename)
                         break
                     except errors.OpenError:
                         #self.logger.exception('exception caught')
@@ -740,7 +746,7 @@ class GSDView(ItemModelMainWindow):
     @QtCore.pyqtSlot(int)
     def updateProgressBar(self, fract):
         self.progressbar.show()
-        self.progressbar.setValue(int(100.*fract))
+        self.progressbar.setValue(int(100. * fract))
 
     @QtCore.pyqtSlot(int)
     def processingDone(self, returncode=0):

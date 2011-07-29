@@ -50,6 +50,7 @@ def test_aboutdialog():
     d.show()
     app.exec_()
 
+
 def test_fileentrywidget():
     app = QtGui.QApplication(sys.argv)
     d = QtGui.QDialog()
@@ -58,6 +59,7 @@ def test_fileentrywidget():
     d.setLayout(layout)
     d.show()
     app.exec_()
+
 
 def test_generalpreferencespage():
     app = QtGui.QApplication(sys.argv)
@@ -68,19 +70,21 @@ def test_generalpreferencespage():
     d.show()
     app.exec_()
 
+
 def test_preferencesdialog():
     app = QtGui.QApplication(sys.argv)
     d = PreferencesDialog()
     d.show()
     app.exec_()
 
+
 def test_exceptiondialog():
     def f(depth, verbose=False):
         if verbose:
-            print 1/depth
+            print 1 / depth
         else:
-            1/depth
-        return f(depth-1, verbose)
+            1 / depth
+        return f(depth - 1, verbose)
     try:
         f(4)
     except Exception:

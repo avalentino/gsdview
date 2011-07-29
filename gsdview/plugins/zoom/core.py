@@ -21,8 +21,8 @@
 
 '''Zoom tool.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 
@@ -93,7 +93,7 @@ class ZoomTool(QtCore.QObject):
 
     @QtCore.pyqtSlot()
     def zoomOut(self):
-        factor = 1./1.2 # @TODO: make this configurable
+        factor = 1. / 1.2   # @TODO: make this configurable
         view = self.currentview()
         if view:
             view.scale(factor, factor)

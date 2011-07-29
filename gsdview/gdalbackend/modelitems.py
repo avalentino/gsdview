@@ -21,8 +21,8 @@
 
 '''GDAL items for PyQt4 QStandardItemModel.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 import os
@@ -88,10 +88,13 @@ class MajorObjectItem(QtGui.QStandardItem):
         self._closeChildren()
         self._obj = None
 
+
 class BandItem(MajorObjectItem):
     '''Raster band item.
 
-    This class implements both the QStandardItem and the gdal.Band interface.
+    This class implements both the QStandardItem and the
+    gdal.Band interface.
+
     It also as attatched a graphics scene containing a GdalGraphicsItem
 
     '''
@@ -118,6 +121,7 @@ class BandItem(MajorObjectItem):
 
     # @COMPATIBILITY: GetBand requires GDAL >= 1.7
     if not hasattr(gdal.Band, 'GetBand'):
+
         def GetBand(self):
             return self.row() + 1
 
@@ -170,7 +174,7 @@ class BandItem(MajorObjectItem):
             graphicsitem = gdalqt4.graphicsItemFactory(self)
             scene.addItem(graphicsitem)
             return scene, graphicsitem
-        except NotImplementedError:  #(NoImplementedError, TypeError):
+        except NotImplementedError:  # (NoImplementedError, TypeError):
             return None, None
 
     def close(self):
@@ -338,7 +342,7 @@ class DatasetItem(MajorObjectItem):
         if (index < 1) or (index > self._obj.RasterCount):
             return None
         # @NOTE: raster bands are always inserted before subdatasets
-        return self.child(index-1)
+        return self.child(index - 1)
 
     def GetSubDatasets(self):
         # @NOTE: raster bands are always inserted before subdatasets
@@ -348,10 +352,10 @@ class DatasetItem(MajorObjectItem):
     def _setup_child_bands(self, gdalobj):
         # @NOTE: raster bands are always inserted before subdatasets
         for index in range(self.rowCount(), gdalobj.RasterCount):
-            item = BandItem(gdalobj.GetRasterBand(index+1))
+            item = BandItem(gdalobj.GetRasterBand(index + 1))
             if not item.text():
                 description = '%s n. %d' % (QtGui.qApp.tr('Raster Band'),
-                                            index+1)
+                                            index + 1)
                 item.setText(description)
                 item.setToolTip(description)
             self.appendRow(item)
@@ -486,6 +490,7 @@ class CachedDatasetItem(DatasetItem):
         return self._vrtobj.GetMetadata_List(domain)
 
     if hasattr(gdal.Dataset, 'GetMetadataItem'):
+
         def GetMetadataItem(self, name, domain=''):
             # @TODO: handle domain.startswith('xml:') and domain == 'OVERVIEW'
             if domain in ('IMAGE_STRUCTURE', 'SUBDATASETS'):
@@ -511,7 +516,7 @@ class CachedDatasetItem(DatasetItem):
             return
 
         # @WARNING: an error here would require node removal
-        for index in range(1, self.RasterCount+1):
+        for index in range(1, self.RasterCount + 1):
             item = self.GetRasterBand(index)
             item._reopen(gdalobj.GetRasterBand(index))
 
@@ -659,6 +664,7 @@ class SubDatasetItem(CachedDatasetItem):
         return super(SubDatasetItem, self).GetMetadata_List(domain)
 
     if hasattr(gdal.Dataset, 'GetMetadataItem'):
+
         def GetMetadataItem(self, name, domain=''):
             if not self.isopen():
                 raise RuntimeError('unable to access "%s" on a non open '

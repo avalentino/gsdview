@@ -21,11 +21,11 @@
 
 '''Core modue for position tracker plugin.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
-from PyQt4 import QtCore #, QtGui
+from PyQt4 import QtCore
 
 from positiontracker.coordinateview import CoordinateView, GeoCoordinateView
 
@@ -56,7 +56,8 @@ class TrackingTool(QtCore.QObject):
             self.geocoorview.hide()
         return obj.eventFilter(obj, event)
 
-    #@QtCore.pyqtSlot(QtGui.QGraphicsScene, QtCore.QPointF, QtCore.Qt.MouseButtons) # @TODO: check
+    #@QtCore.pyqtSlot(QtGui.QGraphicsScene, QtCore.QPointF,
+    #                 QtCore.Qt.MouseButtons)  # @TODO: check
     #@QtCore.pyqtSlot('QGraphicsScene, QPointF, Qt::MouseButtons')
     def onMouseMoved(self, scene, pos, buttons):
         if self.app.progressbar.isVisible():

@@ -21,8 +21,8 @@
 
 '''Overview pannel for GDAL raster bands.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 
@@ -77,7 +77,6 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
     #:                                    QGraphicsView::DragMode)`
     mouseMoved = QtCore.pyqtSignal(QtCore.QPointF, QtCore.Qt.MouseButtons,
                                    QtGui.QGraphicsView.DragMode)
-
 
     def __init__(self, parent=None, **kwargs):
         super(NavigationGraphicsView, self).__init__(parent, **kwargs)
@@ -160,7 +159,7 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
 
 
 class BandOverviewDock(QtGui.QDockWidget):
-    OVRMAXSIZE = 10 * 1024**2 # 10MB
+    OVRMAXSIZE = 10 * 1024 ** 2  # 10MB
 
     def __init__(self, app, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         #title = self.tr('Dataset Browser')
@@ -223,7 +222,8 @@ class BandOverviewDock(QtGui.QDockWidget):
         view = self.app.currentGraphicsView()
         if view:
             if self.graphicsview.scene():
-                assert view.scene() == self.graphicsview.scene() # @TODO: check
+                # @TODO: check
+                assert view.scene() == self.graphicsview.scene()
             view.centerOn(scenepos)
 
     @QtCore.pyqtSlot()
@@ -240,7 +240,7 @@ class BandOverviewDock(QtGui.QDockWidget):
             return
 
         if srcview:
-            assert srcview.scene() == self.graphicsview.scene() # @TODO: check
+            assert srcview.scene() == self.graphicsview.scene()  # @TODO: check
             hbar = srcview.horizontalScrollBar()
             vbar = srcview.verticalScrollBar()
 
@@ -269,7 +269,7 @@ class OverviewController(QtCore.QObject):
         self.app = app
 
         self.panel = BandOverviewDock(app)
-        self.panel.setObjectName('bandOverviewPanel') # @TODO: check
+        self.panel.setObjectName('bandOverviewPanel')   # @TODO: check
         app.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.panel)
 
         # Connect signals

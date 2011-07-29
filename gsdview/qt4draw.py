@@ -21,14 +21,14 @@
 
 '''Drawing components for PyQt4.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 
 from PyQt4 import QtCore, QtGui
 
-from gsdview.mousemanager import MouseMode #, RubberBandMode
+from gsdview.mousemanager import MouseMode  # , RubberBandMode
 
 
 ### Graphics Items ############################################################
@@ -68,15 +68,16 @@ def _highlightSelectedGraphicsItem(item, painter, option, boundingrect=None):
 
     fgcolor = option.palette.windowText().color()
     # ensure good contrast against fgcolor
-    bgcolor = QtGui.QColor(0 if fgcolor.red()   > 127 else 255,
+    bgcolor = QtGui.QColor(0 if fgcolor.red() > 127 else 255,
                            0 if fgcolor.green() > 127 else 255,
-                           0 if fgcolor.blue()  > 127 else 255)
+                           0 if fgcolor.blue() > 127 else 255)
 
     painter.setPen(QtGui.QPen(bgcolor, penWidth, QtCore.Qt.SolidLine))
     painter.setBrush(QtCore.Qt.NoBrush)
     painter.drawRect(boundingrect.adjusted(pad, pad, -pad, -pad))
 
-    painter.setPen(QtGui.QPen(option.palette.windowText(), 0, QtCore.Qt.DashLine))
+    painter.setPen(QtGui.QPen(option.palette.windowText(), 0,
+                              QtCore.Qt.DashLine))
     painter.setBrush(QtCore.Qt.NoBrush)
     painter.drawRect(boundingrect.adjusted(pad, pad, -pad, -pad))
 
@@ -157,13 +158,15 @@ class GraphicsPointItem(QtGui.QAbstractGraphicsShapeItem):
         painter.setPen(self.pen())
         painter.setBrush(self.brush())
 
-        radius = min(self._radius/levelOfDetail, self._radius*self._maxfact)
+        radius = min(self._radius / levelOfDetail,
+                     self._radius * self._maxfact)
         painter.drawEllipse(QtCore.QPointF(0, 0), radius, radius)
 
         if option.state & QtGui.QStyle.State_Selected:
             penwidth = self.pen().widthF()
             diameter = 2. * radius
-            rect = QtCore.QRectF(-radius - penwidth / 2, -radius - penwidth / 2,
+            rect = QtCore.QRectF(-radius - penwidth / 2,
+                                 -radius - penwidth / 2,
                                  diameter + penwidth, diameter + penwidth)
 
             _highlightSelectedGraphicsItem(self, painter, option, rect)

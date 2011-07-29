@@ -21,8 +21,8 @@
 
 '''Helper tools and custom components for binding GDAL and PyQt4.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 
@@ -53,11 +53,13 @@ def gdalcolorentry2qcolor(colrentry, interpretation=gdal.GPI_RGB):
     elif interpretation == gdal.GPI_CMYK:
         qcolor.setCmyk(colrentry.c1, colrentry.c2, colrentry.c3, colrentry.c4)
     elif interpretation == gdal.GPI_HLS:
-        qcolor.setHsv(colrentry.c1, colrentry.c2, colrentry.c3) #, colrentry.c4)
+        qcolor.setHsv(colrentry.c1, colrentry.c2, colrentry.c3)
+                                                        #, colrentry.c4)
     else:
         raise ValueError('invalid color intepretatin: "%s"' % interpretation)
 
     return qcolor
+
 
 def safeDataStats(data, nodata=None):
     if nodata is not None:
@@ -70,10 +72,11 @@ def safeDataStats(data, nodata=None):
 
     return stats
 
+
 # @TODO: move GraphicsView here
 
-class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
 
+class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
     Type = QtGui.QStandardItem.UserType + 1
 
     def __init__(self, gdalobj, parent=None, scene=None, **kwargs):
@@ -207,7 +210,7 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
         if band and gdalsupport.hasFastStats(band):
             stats = gdalsupport.SafeGetStatistics(band, True, True)
 
-        if None in stats and data is not None and data.size <= 4*1024**2:
+        if None in stats and data is not None and data.size <= 4 * 1024 ** 2:
             stats = safeDataStats(data, band.GetNoDataValue())
 
         if None in stats:
@@ -236,13 +239,14 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
     @staticmethod
     def _dataRange(band, data=None):
         if band and gdalsupport.hasFastStats(band):
-            vmin, vmax, mean, stddev = gdalsupport.SafeGetStatistics(band, True)
+            vmin, vmax, mean, stddev = gdalsupport.SafeGetStatistics(band,
+                                                                     True)
             if None not in (vmin, vmax, mean, stddev):
                 if gdal.DataTypeIsComplex(band.DataType):
                     vmin, vmax = 0, vmax * numpy.sqrt(2)
                 return vmin, vmax
 
-        if data is not None and data.size <= 4*1024**2:
+        if data is not None and data.size <= 4 * 1024 ** 2:
             vmin, vmax, mean, stddev = safeDataStats(band)
             if None not in (vmin, vmax, mean, stddev):
                 return data.min(), data.max()
@@ -250,12 +254,12 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
         if band:
             tmap = {
                 gdal.GDT_Byte:      (0, 255),
-                gdal.GDT_UInt16:    (0, 2**16-1),
-                gdal.GDT_UInt32:    (0, 2**32-1),
-                gdal.GDT_Int16:     (-2**15, 2**15-1),
-                gdal.GDT_Int32:     (-2**31, 2**31-1),
-                gdal.GDT_CInt16:    (0, 2**15 * numpy.sqrt(2)),
-                gdal.GDT_CInt32:    (0, 2**31 * numpy.sqrt(2)),
+                gdal.GDT_UInt16:    (0, 2 ** 16 - 1),
+                gdal.GDT_UInt32:    (0, 2 ** 32 - 1),
+                gdal.GDT_Int16:     (-2 ** 15, 2 ** 15 - 1),
+                gdal.GDT_Int32:     (-2 ** 31, 2 ** 31 - 1),
+                gdal.GDT_CInt16:    (0, 2 ** 15 * numpy.sqrt(2)),
+                gdal.GDT_CInt32:    (0, 2 ** 31 * numpy.sqrt(2)),
                 gdal.GDT_CFloat32:  (0, None),
                 gdal.GDT_CFloat64:  (0, None),
             }
@@ -286,7 +290,7 @@ class UIntGdalGraphicsItem(BaseGdalGraphicsItem):
             raise ValueError('invalid data type: "%s"' % typename)
 
         dtype = numpy.dtype(GDALTypeCodeToNumericTypeCode(band.DataType))
-        self.stretch = imgutils.LUTStretcher(fill=2**(8*dtype.itemsize))
+        self.stretch = imgutils.LUTStretcher(fill=2 ** (8 * dtype.itemsize))
         self._stretch_initialized = False
 
     def dataRange(self, data=None):
@@ -348,7 +352,8 @@ class GdalGraphicsItem(BaseGdalGraphicsItem):
         #threshold = 1600*1600
         #if w * h > threshold:
         #    newoption = QtGui.QStyleOptionGraphicsItem(option)
-        #    newoption.levelOfDetail = option.levelOfDetail * threshold / (w * h)
+        #    newoption.levelOfDetail = (option.levelOfDetail *
+        #                                               threshold / (w * h))
         #    return self.paint(painter, newoption, widget)
 
         data = ovrband.ReadAsArray(x, y, w, h)
@@ -387,7 +392,8 @@ class GdalComplexGraphicsItem(GdalGraphicsItem):
         #threshold = 1600*1600
         #if w * h > threshold:
         #    newoption = QtGui.QStyleOptionGraphicsItem(option)
-        #    newoption.levelOfDetail = option.levelOfDetail * threshold / (w * h)
+        #    newoption.levelOfDetail = (option.levelOfDetail *
+        #                                               threshold / (w * h))
         #    return self.paint(painter, newoption, widget)
 
         data = ovrband.ReadAsArray(x, y, w, h)

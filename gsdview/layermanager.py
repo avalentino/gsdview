@@ -21,8 +21,8 @@
 
 '''Components for layers management.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 
@@ -64,15 +64,16 @@ class BaseLayerManager(QtCore.QObject):
                       statusTip=self.tr('Move down'),
                       shortcut=self.tr('Ctrl+Down'))
 
-        icon = QtGui.QIcon(':/trolltech/styles/commonstyle/images/down-128.png')
+        icon = QtGui.QIcon(
+            ':/trolltech/styles/commonstyle/images/down-128.png')
         QtGui.QAction(icon, self.tr('Move to bottom'), actions,
                       objectName='moveToBottomAction',
                       statusTip=self.tr('Move to bottom'),
                       shortcut=self.tr('Ctrl+PgDown'))
 
-        #~ #':/trolltech/styles/commonstyle/images/standardbutton-closetab-16.png'
-        icon = QtGui.QIcon(
-            ':/trolltech/styles/commonstyle/images/standardbutton-cancel-128.png')
+        #~ #'standardbutton-closetab-16.png'
+        icon = QtGui.QIcon(':/trolltech/styles/commonstyle/images/'
+                           'standardbutton-cancel-128.png')
         QtGui.QAction(icon, self.tr('Remove'), actions,
                       objectName='removeLayerAction',
                       statusTip=self.tr('Remove'),
@@ -104,7 +105,7 @@ class BaseLayerManager(QtCore.QObject):
         sortedselection = sorted(selection,
                                  key=QtGui.QItemSelectionRange.parent)
 
-        selectionmap = {} # collections.OrderedDict()
+        selectionmap = {}  # collections.OrderedDict()
         for key, group in itertools.groupby(sortedselection,
                                             QtGui.QItemSelectionRange.parent):
             ranges = []
@@ -125,7 +126,8 @@ class BaseLayerManager(QtCore.QObject):
                                         #max(lastitem.right(), item.right()),
                                         model.columnCount() - 1,
                                         lastitem.parent())
-                    ranges[-1] = QtGui.QItemSelectionRange(topleft, bottomright)
+                    ranges[-1] = QtGui.QItemSelectionRange(topleft,
+                                                           bottomright)
                 else:
                     ranges.append(item)
             selectionmap[key] = ranges
@@ -158,7 +160,8 @@ class BaseLayerManager(QtCore.QObject):
         parent = self._parentitem(selectionrange)
 
         rows = []
-        for row in range(selectionrange.bottom(), selectionrange.top() - 1, -1):
+        for row in range(selectionrange.bottom(),
+                         selectionrange.top() - 1, -1):
             # @TODO: check
             if not self.isLayer(parent.child(row)):
                 #continue
@@ -319,7 +322,7 @@ class BaseLayerManager(QtCore.QObject):
                                                                 type(index))
 
         checked = bool(item.checkState() == QtCore.Qt.Checked)
-        qlayer = item.data() # index.data(QtCore.Qt.UserRole + 1)
+        qlayer = item.data()  # index.data(QtCore.Qt.UserRole + 1)
         qlayer.setVisible(checked)
 
     def checkSelectedItems(self, selectionmodel, checked=True):

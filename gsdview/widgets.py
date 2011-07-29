@@ -21,8 +21,8 @@
 
 '''Widgets and dialogs for GSDView.'''
 
-__author__   = '$Author$'
-__date__     = '$Date$'
+__author__ = '$Author$'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 import os
@@ -83,6 +83,8 @@ def _choosedir(dirname, dialog=None,):
 
 
 AboutDialogBase = qt4support.getuiform('aboutdialog', __name__)
+
+
 class AboutDialog(QtGui.QDialog, AboutDialogBase):
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
@@ -97,7 +99,8 @@ class AboutDialog(QtGui.QDialog, AboutDialogBase):
         self.setLogo(logofile)
 
         # Set contents
-        self.titleLabel.setText('%s v. %s' % (self.tr(info.name), info.version))
+        self.titleLabel.setText('%s v. %s' % (self.tr(info.name),
+                                              info.version))
 
         description = '''<p>%s</p>
 <p>Home Page: <a href="%s">%s</a>
@@ -105,14 +108,14 @@ class AboutDialog(QtGui.QDialog, AboutDialogBase):
 Project Page: <a href="http://sourceforge.net/projects/gsdview">http://sourceforge.net/projects/gsdview</a></p>
 <par>
 <p><span style="font-size:9pt; font-style:italic;">%s</span></p>
-''' % (self.tr(info.description), info.website, info.website_label, info.copyright)
+''' % (self.tr(info.description), info.website, info.website_label,
+       info.copyright)
         self.aboutTextBrowser.setText(description)
 
         self.setVersions()
 
     def setLogo(self, logofile):
         self.gsdviewLogoLabel.setPixmap(QtGui.QPixmap(logofile))
-
 
     def setVersions(self):
         self.platformValue.setText(platform.platform())
@@ -128,7 +131,7 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview">http://sourcefor
     def addSoftwareVersion(self, sw, version, link=''):
         tablewidget = self.versionsTableWidget
         index = tablewidget.rowCount()
-        tablewidget.setRowCount(index+1)
+        tablewidget.setRowCount(index + 1)
 
         tablewidget.setItem(index, 0, QtGui.QTableWidgetItem(sw))
         tablewidget.setItem(index, 1, QtGui.QTableWidgetItem(version))
@@ -208,6 +211,8 @@ class FileEntryWidget(QtGui.QWidget):
 
 
 GeneralPreferencesPageBase = qt4support.getuiform('general-page', __name__)
+
+
 class GeneralPreferencesPage(QtGui.QWidget, GeneralPreferencesPageBase):
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
@@ -230,7 +235,7 @@ class GeneralPreferencesPage(QtGui.QWidget, GeneralPreferencesPageBase):
         self.loglevelComboBox.setFocus()
 
         # Log level
-        logger = logging.getLogger() # @TODO: fix
+        logger = logging.getLogger()  # @TODO: fix
         level = logging.getLevelName(logger.level)
         self.setLoglevel(level)
 
@@ -312,6 +317,8 @@ class GeneralPreferencesPage(QtGui.QWidget, GeneralPreferencesPageBase):
 
 
 PreferencesDialogBase = qt4support.getuiform('preferences', __name__)
+
+
 class PreferencesDialog(QtGui.QDialog, PreferencesDialogBase):
     '''Extendible preferences dialogg for GSDView.
 
@@ -327,7 +334,7 @@ class PreferencesDialog(QtGui.QDialog, PreferencesDialogBase):
     apply = QtCore.pyqtSignal()
 
     # @TODO: also look at
-    # /usr/share/doc/python-qt4-doc/examples/tools/settingseditor/settingseditor.py
+    # .../python-qt4-doc/examples/tools/settingseditor/settingseditor.py
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(PreferencesDialog, self).__init__(parent, flags, **kwargs)
@@ -353,7 +360,8 @@ class PreferencesDialog(QtGui.QDialog, PreferencesDialogBase):
         applybutton = self.buttonBox.button(QtGui.QDialogButtonBox.Apply)
         applybutton.clicked.connect(self.apply)
 
-    #@QtCore.pyqtSlot(QtGui.QListWidgetItem, QtGui.QListWidgetItem) # @TODO: check
+    # @TODO: check
+    #@QtCore.pyqtSlot(QtGui.QListWidgetItem, QtGui.QListWidgetItem)
     def changePage(self, current, previous):
         if not current:
             current = previous
@@ -393,6 +401,8 @@ class PreferencesDialog(QtGui.QDialog, PreferencesDialogBase):
 
 
 ExceptionDialogBase = qt4support.getuiform('exceptiondialog', __name__)
+
+
 class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
 
     # @TODO: traceback highlighting
@@ -469,7 +479,7 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
         if not isinstance(tb, basestring):
             self.tracebackobj = tb
             tb = ''.join(traceback.format_tb(tb))
-        else: # @TODO: check
+        else:  # @TODO: check
             self.resetExcInfo()
         self._setTracebackText(tb)
 
@@ -483,7 +493,8 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
 
     def _fill(self):
         if self._excInfoSet():
-            lines = traceback.format_exception_only(self.exctype, self.excvalue)
+            lines = traceback.format_exception_only(self.exctype,
+                                                    self.excvalue)
             msg = '\n'.join(lines)
             self.setErrorMsg(msg)
             self.setTraceback(self.tracebackobj)
@@ -528,7 +539,8 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
             subject = 'Bug report - %s' % error
         body = '[Please instest your comments and additinal info here.]'
         body += '\n\n' + '-' * 80 + '\n'
-        body += ''.join(utils.foramt_bugreport(exctype, excvalue, tracebackobj))
+        body += ''.join(utils.foramt_bugreport(exctype, excvalue,
+                                               tracebackobj))
 
         url = QtCore.QUrl('mailto:%s <%s>' % (info.author, info.author_email))
         url.addQueryItem('subject', subject)

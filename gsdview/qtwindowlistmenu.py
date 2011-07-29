@@ -25,11 +25,12 @@ Python port of the Window Wenu component from Qt Solutions.
 
 '''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date: 2009-09-04 20:24:24 +0200 (ven, 04 set 2009) $'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date: 2009-09-04 20:24:24 +0200 (ven, 04 set 2009) $'
 __revision__ = '$Revision: 531 $'
 
 from PyQt4 import QtCore, QtGui
+
 
 class QtWindowListMenu(QtGui.QMenu):
     '''The QtWindowListMenu class is a menu that provides navigation
@@ -89,12 +90,12 @@ class QtWindowListMenu(QtGui.QMenu):
 
     '''
 
-    CloseAction    = 0
+    CloseAction = 0
     CloseAllAction = 1
-    TileAction     = 3
-    CascadeAction  = 4
-    NextAction     = 6
-    PrevAction     = 7
+    TileAction = 3
+    CascadeAction = 4
+    NextAction = 6
+    PrevAction = 7
 
     def __init__(self, parent, **kwargs):
         '''Constructs a QtWindowListMenu object.
@@ -143,7 +144,8 @@ class QtWindowListMenu(QtGui.QMenu):
                       statusTip=self.tr('Move the focus to the next window'))
 
         QtGui.QAction(self.tr('Pre&vious'), self._stdGroup,
-                      statusTip=self.tr('Move the focus to the previous window'))
+                      statusTip=self.tr(
+                                    'Move the focus to the previous window'))
 
         act = self._stdGroup.addAction('')
         act.setSeparator(True)
@@ -197,7 +199,8 @@ class QtWindowListMenu(QtGui.QMenu):
         acts['TileAction'].triggered.connect(self.mdi.tileSubWindows)
         acts['CascadeAction'].triggered.connect(self.mdi.cascadeSubWindows)
         acts['NextAction'].triggered.connect(self.mdi.activateNextSubWindow)
-        acts['PrevAction'].triggered.connect(self.mdi.activatePreviousSubWindow)
+        acts['PrevAction'].triggered.connect(
+            self.mdi.activatePreviousSubWindow)
 
     def attachedMdiArea(self):
         '''Returns the QMdiArea this menu is currently attached to,
@@ -264,16 +267,16 @@ class QtWindowListMenu(QtGui.QMenu):
         idx = 1
         for idx, win in enumerate(self.mdi.subWindowList()):
             if win.isWindowModified():
-                modMarker =  "*"
+                modMarker = "*"
             else:
                 modMarker = ""
 
             title = win.windowTitle().replace('[*]', modMarker)
 
             if idx < 8:
-                text = '&%d %s' % (idx+1, title)
+                text = '&%d %s' % (idx + 1, title)
             else:
-                text = '%d %s' % (idx+1, title)
+                text = '%d %s' % (idx + 1, title)
 
             icon = self._iconMap.get(win, self._defIcon)
             action = QtGui.QAction(icon, text, self._winGroup, checkable=True)

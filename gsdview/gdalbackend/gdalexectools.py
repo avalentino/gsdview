@@ -21,8 +21,8 @@
 
 '''Custom exectools components for GDAL.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 
@@ -226,7 +226,8 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
         self._use_bigtiff_mode = mode
 
     def gdal_config_options(self, cmd=''):
-        extra_args = super(GdalAddOverviewDescriptor, self).gdal_config_options(cmd)
+        extra_args = super(GdalAddOverviewDescriptor,
+                           self).gdal_config_options(cmd)
 
         if self.use_rrd is not None and 'USE_RRD' not in cmd:
             if self.use_rrd:
@@ -299,7 +300,8 @@ class GdalInfoDescriptor(BaseGdalToolDescriptor):
         '''
 
         super(GdalInfoDescriptor, self).__init__('gdalinfo', [], cwd, env,
-                                                 stdout_handler, stderr_handler)
+                                                 stdout_handler,
+                                                 stderr_handler)
 
         #: force computation of the actual min/max values for each band in the
         #: dataset.
@@ -369,8 +371,10 @@ class GdalOutputHandler(Qt4OutputHandler):
                  blinker=None, **kwargs):
         super(GdalOutputHandler, self).__init__(logger, statusbar, progressbar,
                                                 blinker, **kwargs)
-        #pattern = '(?P<percentage>\d{1,3})|(?P<pulse>\.)|((?P<text> - done\.?)$)'
-        pattern = '(?P<percentage>\d{1,3})|(?P<pulse>\.)|( - (?P<text>done\.?)\n)'
+        #pattern = ('(?P<percentage>\d{1,3})|(?P<pulse>\.)|'
+        #           '((?P<text> - done\.?)$)')
+        pattern = ('(?P<percentage>\d{1,3})|(?P<pulse>\.)|'
+                   '( - (?P<text>done\.?)\n)')
         self._progress_pattern = re.compile(pattern)
         self._percentage = 0.   # @TODO: remove.  Set the progressbar maximum
                                 #        to 1000 instead.
@@ -411,6 +415,7 @@ class GdalOutputHandler(Qt4OutputHandler):
 
 
 if __name__ == '__main__':
+
     def test_GdalOutputHandler_re():
         s = '0...10...20...30...40...50...60...70...80...90...100 - done.\n'
 
@@ -425,15 +430,21 @@ if __name__ == '__main__':
 
         class C(GdalOutputHandler):
             def __init__(self):
-                exectools.BaseOutputHandler.__init__(self, exectools.OFStream())
+                exectools.BaseOutputHandler.__init__(self,
+                                                     exectools.OFStream())
+
             def feed(self, data):
                 return exectools.BaseOutputHandler.feed(self, data)
+
             def close(self):
                 return exectools.BaseOutputHandler.close(self)
+
             def reset(self):
                 return exectools.BaseOutputHandler.reset(self)
+
             def handle_progress(self, data):
                 return exectools.BaseOutputHandler.handle_progress(self, data)
+
         h = C()
         h.feed(s)
         h.close()

@@ -53,6 +53,7 @@ class MainWin(QtGui.QMainWindow):
         from gsdview.mousemanager import RubberBandMode
         rubberbandmode = RubberBandMode()
         self.mousemanager.addMode(rubberbandmode)
+
         def callback(rect):
             print 'rect', rect
 
@@ -119,7 +120,8 @@ class MainWin(QtGui.QMainWindow):
     def _setupHelpActions(self):
         actions = QtGui.QActionGroup(self)
 
-        icon = QtGui.QIcon(':/trolltech/styles/commonstyle/images/fileinfo-32.png')
+        icon = QtGui.QIcon(
+            ':/trolltech/styles/commonstyle/images/fileinfo-32.png')
         QtGui.QAction(icon, 'About', actions, triggered=self.about)
 
         icon = QtGui.QIcon(':/trolltech/qmessagebox/images/qtlogo-64.png')

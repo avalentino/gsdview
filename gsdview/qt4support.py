@@ -21,8 +21,8 @@
 
 '''Utility functions and classes for Qt4 applicaions.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 
@@ -106,7 +106,8 @@ def selectAllItems(itemview):
     topleft = model.index(0, 0)
 
     try:
-        bottomright = model.index(model.rowCount() - 1, model.columnCount() - 1)
+        bottomright = model.index(model.rowCount() - 1,
+                                  model.columnCount() - 1)
     except (TypeError, AttributeError):
         # columnCount is a private method in QAbstractListModel
         # assume it is a list
@@ -223,7 +224,7 @@ def modelToTextDocument(model, doc=None):
 
             cell = table.cellAt(row, col)
             cellCursor = cell.firstCursorPosition()
-            cellCursor.insertText(text)#, textformat)
+            cellCursor.insertText(text)  # , textformat)
 
     # headers style
     headerformat = QtGui.QTextCharFormat()
@@ -347,7 +348,8 @@ def setViewContextActions(widget):
     widget.addAction(action)
 
     #':/trolltech/dialogs/qprintpreviewdialog/images/view-page-multi-32.png'
-    icon = QtGui.QIcon(':/trolltech/styles/commonstyle/images/viewlist-128.png')
+    icon = QtGui.QIcon(
+        ':/trolltech/styles/commonstyle/images/viewlist-128.png')
     action = QtGui.QAction(icon, widget.tr('Select &All'), widget,
                            objectName='selectAllAction',
                            #shortcut=widget.tr('Ctrl+A'),
@@ -373,11 +375,12 @@ def setViewContextActions(widget):
     widget.addAction(action)
 
     #~ icon = QtGui.QIcon(
-                #~ ':/trolltech/styles/commonstyle/images/filecontents-128.png')
+        #~ ':/trolltech/styles/commonstyle/images/filecontents-128.png')
     #~ action = QtGui.QAction(icon, widget.tr('Print Preview'), widget,
                            #~ objectName='printPreviewAction',
                            #~ statusTip=widget.tr('Print Preview'))#,
-                           #~ #triggered=tablePrintPreview) # @TODO: tablePrintPreview
+                           #~ #triggered=tablePrintPreview)
+                           #~ # @TODO: tablePrintPreview
     #~ widget.addAction(action)
 
 
@@ -392,7 +395,8 @@ def coreprint(obj, printer):
 def printObject(obj, printer=None, parent=None):
     if printer is None:
         printer = QtGui.QPrinter(QtGui.QPrinter.PrinterResolution)
-        #printer.setOutputFile(os.path.join(utils.default_workdir(). 'filename.pdf'))
+        #printer.setOutputFile(os.path.join(utils.default_workdir().
+        #                                   'filename.pdf'))
 
     # @TODO: check
     if parent is None:
@@ -476,9 +480,9 @@ def _aligned(data, nbyes=4):
     if shape != data.shape:
         # build aligned matrix
         image = numpy.zeros(shape, data.dtype)
-        image[:,:w] = data[:,:w]
+        image[:, 0:w] = data[:, 0:w]
     else:
-        image = numpy.require(data, data.dtype, 'CO') # 'CAO'
+        image = numpy.require(data, data.dtype, 'CO')  # 'CAO'
     return image
 
 
@@ -500,14 +504,14 @@ def numpy2qimage(data):
 
         elif data.ndim == 3 and data.shape[2] == 3:
             h, w = data.shape[:2]
-            image = numpy.zeros((h,w,4), data.dtype)
-            image[:,:,2::-1] = data
-            image[...,-1] = 255
+            image = numpy.zeros((h, w, 4), data.dtype)
+            image[:, :, 2::-1] = data
+            image[..., -1] = 255
             format_ = QtGui.QImage.Format_RGB32
 
         elif data.ndim == 3 and data.shape[2] == 4:
             h, w = data.shape[:2]
-            image = numpy.require(data, numpy.uint8, 'CO') # 'CAO'
+            image = numpy.require(data, numpy.uint8, 'CO')  # 'CAO'
             format_ = QtGui.QImage.Format_ARGB32
 
         else:
@@ -523,7 +527,7 @@ def numpy2qimage(data):
 
     elif data.dtype == numpy.uint32 and data.ndim == 2:
         h, w = data.shape
-        image = numpy.require(data, data.dtype, 'CO') # 'CAO'
+        image = numpy.require(data, data.dtype, 'CO')  # 'CAO'
         #format_ = QtGui.QImage.Format_ARGB32
         format_ = QtGui.QImage.Format_RGB32
 
@@ -791,7 +795,7 @@ def imgexport(obj, parent=None):
             #painter.setRenderHint(QtGui.QPainter.Antialiasing)
             obj.render(painter)
             painter.end()
-            if hasattr(device , 'save'):
+            if hasattr(device, 'save'):
                 device.save(filename)
         else:
             QtGui.QMessageBox.warning(

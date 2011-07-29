@@ -21,10 +21,10 @@
 
 '''Package info.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
-__version__  = (0, 6, 5)
+__version__ = (0, 6, 5)
 
 __all__ = ['name', 'version', 'short_description', 'description',
            'author', 'author_email', 'copyright', 'license_type',
@@ -64,7 +64,7 @@ import numpy
 
 all_versions = [
     ('GSDView', version, website),
-    ('Python', '.'.join(map(str,sys.version_info[:3])), 'www.python.org'),
+    ('Python', '.'.join(map(str, sys.version_info[:3])), 'www.python.org'),
     ('sip', sip.SIP_VERSION_STR,
                     'http://www.riverbankcomputing.co.uk/software/sip'),
     ('PyQt4', QtCore.PYQT_VERSION_STR,
@@ -89,6 +89,7 @@ elif platform.mac_ver() != ('', ('', '', ''), ''):
 elif platform.win32_ver() != ('', '', '', ''):
     all_versions.append(('Windows', platform.win32_ver()[0],
                          'http://www.microsoft.com/windows'))
+
 
 def all_versions_str():
     return '\n'.join('%s v. %s (%s)' % (sw, version_, link)

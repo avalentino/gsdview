@@ -21,12 +21,12 @@
 
 '''Zoom tool.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 __all__ = ['init', 'close', 'loadSettings', 'saveSettings',
-           'name','version', 'short_description','description',
+           'name', 'version', 'short_description', 'description',
            'author', 'author_email', 'copyright', 'license_type',
            'website', 'website_label',
 ]
@@ -62,13 +62,16 @@ def init(app):
     global _instance
     _instance = tool
 
+
 def close(app):
     saveSettings(app.settings)
     global _instance
     _instance = None
 
+
 def loadSettings(settings):
     pass
+
 
 def saveSettings(settings):
     pass

@@ -21,8 +21,8 @@
 
 '''Plugin manager.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date: 2009-05-31 10:28:43 +0200 (dom, 31 mag 2009) $'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date: 2009-05-31 10:28:43 +0200 (dom, 31 mag 2009) $'
 __revision__ = '$Revision: 430 $'
 
 
@@ -105,7 +105,7 @@ class PluginManager(object):
             try:
                 return vp.satisfied_by(modules[vp.name].version)
             except ValueError, e:
-                logging.warning(str(e)) #, exc_info=True)
+                logging.warning(str(e))  # , exc_info=True)
                 return False
         else:
             return False
@@ -133,7 +133,7 @@ class PluginManager(object):
             module.init(self._app)
             self.plugins[name] = module
             logger.info('"%s" plugin loaded.' % name)
-        except Exception, e:   #AttributeError:
+        except Exception, e:   # AttributeError:
             logger.warning('error loading "%s" plugin: %s' %
                                                         (name, e))
 
@@ -307,6 +307,8 @@ from gsdview import qt4support
 
 
 PluginManagerGuiBase = qt4support.getuiform('pluginmanager', __name__)
+
+
 class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
 
     # @TODO: emit signal for ???
@@ -332,7 +334,8 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
         qt4support.setViewContextActions(self.pluginsTableWidget)
 
         # @TODO: check edit triggers
-        #int(self.pathListWidget.editTriggers() & self.pathListWidget.DoubleClicked)
+        #int(self.pathListWidget.editTriggers() &
+        #                                   self.pathListWidget.DoubleClicked)
 
         self.pathListWidget.itemSelectionChanged.connect(
                                         self.pathSelectionChanged)
@@ -422,7 +425,8 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
         selected = sorted(self.pathListWidget.selectedItems(),
                           key=self.pathListWidget.row, reverse=True)
 
-        if self.pathListWidget.row(selected[0]) == self.pathListWidget.count()-1:
+        if (self.pathListWidget.row(selected[0]) ==
+                                            self.pathListWidget.count() - 1):
             return
 
         for item in selected:
@@ -476,10 +480,10 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
             icon = qt4support.geticon('info.svg', __name__)
             w = QtGui.QPushButton(icon, '', tablewidget,
                                   toolTip=self.tr('Show plugin info.'),
-                                  clicked=functools.partial(self.showPluginInfo,
-                                                            index))
+                                  clicked=functools.partial(
+                                                self.showPluginInfo, index))
                                   #clicked=lambda index=index:
-                                  #                  self.showPluginInfo(index))
+                                  #              self.showPluginInfo(index))
             tablewidget.setCellWidget(index, 2, w)
 
             # active
@@ -565,6 +569,8 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
 
 
 PluginInfoFormBase = qt4support.getuiform('plugininfo', __name__)
+
+
 class PluginInfoForm(QtGui.QFrame, PluginInfoFormBase):
 
     def __init__(self, plugin=None, active=None, parent=None,
@@ -602,7 +608,6 @@ class PluginInfoForm(QtGui.QFrame, PluginInfoFormBase):
 
         self.fullPathValue.setText(fullpath)
         self.loadedCheckBox.setChecked(active)
-
 
     def clear(self):
         self.nameValue.setText('')

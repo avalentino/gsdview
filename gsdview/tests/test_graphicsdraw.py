@@ -176,7 +176,8 @@ class GraphicsDrawApp(QtGui.QMainWindow):
                       objectName='zoomOutAction',
                       statusTip=self.tr('Zoom Out'),
                       shortcut=self.tr('Ctrl+-'),
-                      triggered=lambda: self.graphicsview.scale(1/1.2, 1/1.2))
+                      triggered=lambda: self.graphicsview.scale(1 / 1.2,
+                                                                1 / 1.2))
 
         icon = QtGui.QIcon(
             ':/trolltech/dialogs/qprintpreviewdialog/images/page-setup-24.png')
@@ -242,7 +243,6 @@ class GraphicsDrawApp(QtGui.QMainWindow):
         if ret == QtGui.QMessageBox.Ok:
             self.reset()
 
-
     @QtCore.pyqtSlot()
     def onOpen(self):
         filters = [
@@ -255,7 +255,7 @@ class GraphicsDrawApp(QtGui.QMainWindow):
                                         self,
                                         self.tr('Load picture'),
                                         QtCore.QDir.home().absolutePath(),
-                                        ';;'.join(filters)) #, filters[1])
+                                        ';;'.join(filters))  # , filters[1])
         if filename:
             if '.svg' in filename:
                 item = QtSvg.QGraphicsSvgItem(filename)
@@ -279,7 +279,8 @@ class GraphicsDrawApp(QtGui.QMainWindow):
 
 def main(*argv):
     # @NOTE: basic config doesn't work since sip use it before this line
-    #logging.basicConfig(level=logging.DEBUG, format='%(levelname): %(message)s')
+    #logging.basicConfig(level=logging.DEBUG,
+    #                    format='%(levelname): %(message)s')
     logging.getLogger().setLevel(logging.DEBUG)
 
     if not argv:
