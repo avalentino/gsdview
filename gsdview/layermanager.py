@@ -43,7 +43,7 @@ class BaseLayerManager(QtCore.QObject):
         self.actions = self._setupActions()
 
     def _setupActions(self):
-        style = QtGui.qApp.style()
+        style = QtGui.QApplication.style()
 
         actions = QtGui.QActionGroup(self)
 

@@ -88,8 +88,7 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
         try:
             self.setFlag(QtGui.QGraphicsItem.ItemUsesExtendedStyleOptions)
         except AttributeError:
-            ItemUsesExtendedStyleOptions = 0x200
-            self.setFlag(ItemUsesExtendedStyleOptions)
+            self.setFlag(QtGui.QGraphicsItem.GraphicsItemFlag(0x200))
 
         self.gdalobj = gdalobj
         try:

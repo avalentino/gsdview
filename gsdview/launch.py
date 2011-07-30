@@ -52,7 +52,7 @@ class SplashLogHandler(logging.Handler):
 
     def emit(self, record):
         try:
-            msg = self.format(record)
+            msg = str(self.format(record))
             self._splash.showMessage(self._splash.tr(msg))
             self.flush()
         except (KeyboardInterrupt, SystemExit):

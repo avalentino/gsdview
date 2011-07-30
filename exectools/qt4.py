@@ -63,7 +63,7 @@ class Qt4Blinker(QtGui.QLabel):
 
     def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
         super(Qt4Blinker, self).__init__(parent, flags, **kwargs)
-        #qstyle = QtGui.qApp.style()
+        #qstyle = QtGui.QApplication.style()
         #pixmap = qstyle.standardPixmap(QtGui.QStyle.SP_MediaStop)
         pixmap = QtGui.QPixmap(
             ':/trolltech/styles/commonstyle/images/standardbutton-no-32.png')
@@ -104,7 +104,7 @@ class Qt4OutputPlane(QtGui.QTextEdit):
         self.banner = None
 
     def _setupActions(self):
-        qstype = QtGui.qApp.style()
+        qstype = QtGui.QApplication.style()
 
         # Setup actions
         self.actions = QtGui.QActionGroup(self)

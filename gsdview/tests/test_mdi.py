@@ -218,7 +218,7 @@ class TestMdiMainWindow(MdiMainWindow):
         return child
 
     def createActions(self):
-        style = QtGui.qApp.style()
+        style = QtGui.QApplication.style()
 
         icon = style.standardIcon(style.SP_FileIcon)
         self.newAct = QtGui.QAction(icon, self.tr('&New'), self,

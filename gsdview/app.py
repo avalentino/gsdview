@@ -64,7 +64,8 @@ class GSDView(ItemModelMainWindow):
         logger = logging.getLogger('gsdview')
 
         logger.debug('Main window base classes initialization ...')
-        QtGui.qApp.setWindowIcon(qt4support.geticon('GSDView.png', __name__))
+        QtGui.QApplication.setWindowIcon(
+                                qt4support.geticon('GSDView.png', __name__))
 
         super(GSDView, self).__init__(parent, flags, **kwargs)
         title = self.tr('GSDView Open Source Edition v. %s') % info.version
@@ -92,7 +93,7 @@ class GSDView(ItemModelMainWindow):
 
         # Stop button
         logger.debug('Setting up the stop button ...')
-        qstyle = QtGui.qApp.style()
+        qstyle = QtGui.QApplication.style()
         icon = qstyle.standardIcon(QtGui.QStyle.SP_BrowserStop)
 
         #: stop button for external tools

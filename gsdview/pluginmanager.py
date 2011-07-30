@@ -40,7 +40,6 @@ __revision__ = '$Revision: 430 $'
 
 
 class PluginManager(object):
-
     def __init__(self, app, syspath=None):
         super(PluginManager, self).__init__()
         self.paths = []
@@ -135,8 +134,7 @@ class PluginManager(object):
             self.plugins[name] = module
             logger.info('"%s" plugin loaded.' % name)
         except Exception, e:   # AttributeError:
-            logger.warning('error loading "%s" plugin: %s' %
-                                                        (name, e))
+            logger.warning('error loading "%s" plugin: %s' % (name, e))
 
     # @WARNING: (pychecker) Parameter (type_) not used
     def load(self, names, paths=None, info_only=False, type_='plugins'):

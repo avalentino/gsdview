@@ -421,7 +421,7 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
         closebutton = self.buttonBox.button(QtGui.QDialogButtonBox.Close)
         closebutton.setDefault(True)
 
-        style = QtGui.qApp.style()
+        style = QtGui.QApplication.style()
 
         icon = style.standardIcon(style.SP_CommandLink)
         sendbutton = QtGui.QPushButton(
