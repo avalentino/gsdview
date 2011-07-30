@@ -45,12 +45,16 @@ def init(app):
 
     controller = GSDToolsController(app)
 
-    app.toolsmenu.show()
     app.toolsmenu.addSeparator()
     app.toolsmenu.addActions(controller.actions.actions())
     toolbar = qt4support.actionGroupToToolbar(controller.actions,
                                               app.tr('GSDTools toolbar'))
     app.addToolBar(toolbar)
+
+    # @COMPATIBILITY: pyside 1.0.1
+    #                 without the call to toolbar.parent() the tolbar is not
+    #                 actually added
+    assert toolbar.parent()
 
     # @TODO: move to tool (??)
     #~ app.mdiarea.subWindowActivated.connect(

@@ -60,6 +60,7 @@ def actionGroupToToolbar(actionGroup, label, name=None):
         parts = str(label).title().split()
         parts[0] = parts[0].lower()
         name = ''.join(parts)
+
     toolbar = QtGui.QToolBar(label)
     toolbar.addActions(actionGroup.actions())
     if name:
