@@ -31,6 +31,13 @@ __all__ = ['name', 'version', 'short_description', 'description',
            'website', 'website_label', 'all_versions', 'all_versions_str']
 
 import sys
+import platform
+
+import numpy as np
+
+import sip
+from PyQt4 import QtCore
+
 
 name = 'GSDView'
 version = '.'.join(map(str, __version__)) + 'beta'
@@ -56,12 +63,6 @@ website_label = website
 download_url = 'http://sourceforge.net/projects/gsdview/files'
 
 
-# @TODO: check (too many imports)
-import platform
-import sip
-from PyQt4 import QtCore
-import numpy
-
 all_versions = [
     ('GSDView', version, website),
     ('Python', '.'.join(map(str, sys.version_info[:3])), 'www.python.org'),
@@ -70,7 +71,7 @@ all_versions = [
     ('PyQt4', QtCore.PYQT_VERSION_STR,
                     'http://www.riverbankcomputing.co.uk/software/pyqt'),
     ('Qt', QtCore.qVersion(), 'http://qt.nokia.com'),
-    ('numpy', numpy.version.version, 'http://www.scipy.org'),
+    ('numpy', np.version.version, 'http://www.scipy.org'),
 ]
 
 try:

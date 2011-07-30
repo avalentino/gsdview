@@ -26,7 +26,7 @@ __date__ = '$Date$'
 __revision__ = '$Revision$'
 
 
-import numpy
+import numpy as np
 
 
 ### LUT utils ################################################################
@@ -52,7 +52,7 @@ def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0,
     :param dtype:
         numpy data type of the output LUT (default uint8)
     :type dtype:
-        numpy.dtype (uint8 or uint16)
+        np.dtype (uint8 or uint16)
     :param fill:
         the length of the returned lut is:
 
@@ -70,8 +70,8 @@ def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0,
 
     '''
 
-    dtype = numpy.dtype(dtype)
-    if dtype not in (numpy.uint8, numpy.uint16):
+    dtype = np.dtype(dtype)
+    if dtype not in (np.uint8, np.uint16):
         raise ValueError('invalid dtype "%s" (uint8 or uint16 expected)' %
                                                                         dtype)
     nmax = 2 ** (8 * dtype.itemsize)
@@ -96,13 +96,13 @@ def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0,
     if nout > 2 ** 32:
         raise ValueError('requested LUT is too large: %d.' % nout)
 
-    lut = numpy.arange(nout)
+    lut = np.arange(nout)
     if vmin:
         lut = lut - float(vmin)
 
     scale = float(omax - omin) / (vmax - vmin)
     if scale != 1.0:
-        lut = numpy.round(scale * lut)
+        lut = np.round(scale * lut)
     if omin:
         lut += omin
 
@@ -119,7 +119,7 @@ def histogram_equalized_lut(hist, dtype='uint8', fill=False):
     :param dtype:
         numpy data type of the output LUT (default uint8)
     :type dtype:
-        numpy.dtype (uint8 or uint16)
+        np.dtype (uint8 or uint16)
     :param fill:
         if False (default) the returned LUT has
         :math:`length = len(hist)`.
@@ -133,13 +133,13 @@ def histogram_equalized_lut(hist, dtype='uint8', fill=False):
 
     '''
 
-    dtype = numpy.dtype(dtype)
-    if dtype not in (numpy.uint8, numpy.uint16):
+    dtype = np.dtype(dtype)
+    if dtype not in (np.uint8, np.uint16):
         raise ValueError('invalid dtype "%s" (uint8 or uint16 expected)' %
                                                                         dtype)
     nmax = 2 ** (8 * dtype.itemsize)
 
-    hist = numpy.ravel(hist)
+    hist = np.ravel(hist)
 
     nbins = len(hist)
     if nbins == 0:
@@ -153,11 +153,11 @@ def histogram_equalized_lut(hist, dtype='uint8', fill=False):
     else:
         nout = nmax
 
-    lut = numpy.cumsum(hist) - hist[0]
+    lut = np.cumsum(hist) - hist[0]
 
     total = float(lut[-1])
     if total == 0:
-        return numpy.zeros(nout)
+        return np.zeros(nout)
 
     lut = nmax / total * (lut + hist / 2.)
     lut.clip(0, nout - 1)
@@ -170,15 +170,15 @@ def histogram_equalized_lut(hist, dtype='uint8', fill=False):
 def log_lut(dtype='uint8'):
     # @TODO: complete
 
-    dtype = numpy.dtype(dtype)
-    if dtype not in (numpy.uint8, numpy.uint16):
+    dtype = np.dtype(dtype)
+    if dtype not in (np.uint8, np.uint16):
         raise ValueError('invalid dtype "%s" (uint8 or uint16 expected)' %
                                                                         dtype)
     nmax = 2 ** (8 * dtype.itemsize)
     vmax = nmax - 1
 
-    lut = numpy.arange(nmax, 'float64')
-    lut = numpy.round(vmax * numpy.log(lut + 1) / numpy.log(nmax))
+    lut = np.arange(nmax, 'float64')
+    lut = np.round(vmax * np.log(lut + 1) / np.log(nmax))
     lut.clip(0, vmax)
 
     return lut.astype(dtype)
@@ -187,15 +187,15 @@ def log_lut(dtype='uint8'):
 def root(dtype='uint8'):
     # @TODO: complete
 
-    dtype = numpy.dtype(dtype)
-    if dtype not in (numpy.uint8, numpy.uint16):
+    dtype = np.dtype(dtype)
+    if dtype not in (np.uint8, np.uint16):
         raise ValueError('invalid dtype "%s" (uint8 or uint16 expected)' %
                                                                         dtype)
     nmax = 2 ** (8 * dtype.itemsize)
     vmax = nmax - 1
 
-    lut = numpy.arange(nmax, 'float64')
-    lut = vmax * numpy.root(lut / vmax)
+    lut = np.arange(nmax, 'float64')
+    lut = vmax * np.root(lut / vmax)
     lut.clip(0, vmax)
 
     return lut.astype(dtype)
@@ -204,14 +204,14 @@ def root(dtype='uint8'):
 def square(dtype='uint8'):
     # @TODO: complete
 
-    dtype = numpy.dtype(dtype)
-    if dtype not in (numpy.uint8, numpy.uint16):
+    dtype = np.dtype(dtype)
+    if dtype not in (np.uint8, np.uint16):
         raise ValueError('invalid dtype "%s" (uint8 or uint16 expected)' %
                                                                         dtype)
     nmax = 8 ** dtype.itemsize
     vmax = nmax - 1
 
-    lut = numpy.arange(nmax, 'float64')
+    lut = np.arange(nmax, 'float64')
     lut = vmax * (lut / vmax) ** 2
     lut.clip(0, vmax)
 
@@ -230,7 +230,7 @@ class BaseStretcher(object):
 
     Example::
 
-        data = numpy.arange(.10, 300.)
+        data = np.arange(.10, 300.)
         stretch = BaseStretch(0, 255, 'uint8')
         data = stretch(data)
 
@@ -251,10 +251,10 @@ class BaseStretcher(object):
         self.dtype = dtype
 
     def __call__(self, data):
-        data = numpy.asarray(data)
+        data = np.asarray(data)
         if self.min is not None and self.max is not None:
             data = data.clip(self.min, self.max, out=data)
-        if self.dtype is not None and data.dtype != numpy.dtype(self.dtype):
+        if self.dtype is not None and data.dtype != np.dtype(self.dtype):
             data = data.astype(self.dtype)
         return data
 
@@ -279,7 +279,7 @@ class LinearStretcher(BaseStretcher):
         self.offset = offset
 
     def __call__(self, data):
-        data = numpy.asarray(data)
+        data = np.asarray(data)
         if self.offset:
             data = data - self.offset
         if self.scale != 1.0:
@@ -325,7 +325,7 @@ class LUTStretcher(BaseStretcher):
     stretchtype = 'lut'
 
     def __init__(self, offset=0, vmin=0, vmax=255, dtype='uint8', fill=True):
-        if numpy.dtype(dtype) not in (numpy.uint8, numpy.uint16):
+        if np.dtype(dtype) not in (np.uint8, np.uint16):
             raise ValueError('only "uint8" and "uint16" are allowed.')
         super(LUTStretcher, self).__init__(vmin, vmax, dtype)
         self.fill = fill
@@ -333,7 +333,7 @@ class LUTStretcher(BaseStretcher):
         self.lut = linear_lut(offset, vmax, 'uint8', fill, vmin, vmax)
 
     def __call__(self, data):
-        data = numpy.asarray(data)
+        data = np.asarray(data)
         if self.offset:
             data = data - self.offset
         if data.dtype != self.dtype:
@@ -343,7 +343,7 @@ class LUTStretcher(BaseStretcher):
 
     @property
     def range(self):
-        indices = numpy.where(self.lut != self.lut[-1])[0]
+        indices = np.where(self.lut != self.lut[-1])[0]
         imax = self.offset + len(indices)
         return self.offset, imax
 
@@ -386,17 +386,17 @@ class LogarithmicStretcher(BaseStretcher):
 
     stretchtype = 'logarithmic'
     _logfunctions = {
-        None: numpy.log,
-        'e': numpy.log,
-        numpy.e: numpy.log,
-        2: numpy.log2,
-        10: numpy.log10,
+        None: np.log,
+        'e': np.log,
+        np.e: np.log,
+        2: np.log2,
+        10: np.log10,
     }
     _bases = {
-        'e': numpy.e,
-        numpy.log: numpy.e,
-        numpy.log2: 2,
-        numpy.log10: 10,
+        'e': np.e,
+        np.log: np.e,
+        np.log2: 2,
+        np.log10: 10,
     }
 
     def __init__(self, scale=10, offset=0, base=10,
@@ -408,7 +408,7 @@ class LogarithmicStretcher(BaseStretcher):
         self.base = base
 
     def __call__(self, data):
-        data = numpy.asarray(data)
+        data = np.asarray(data)
         if self.offset:
             data = data - self.offset
 

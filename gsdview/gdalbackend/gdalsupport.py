@@ -29,7 +29,7 @@ __revision__ = '$Revision$'
 import os
 import logging
 
-import numpy
+import numpy as np
 
 from osgeo import gdal
 from osgeo import osr
@@ -550,7 +550,7 @@ colorinterpretations = {
 
 def colortable2numpy(colortable):
     ncolors = colortable.GetCount()
-    colors = numpy.zeros((ncolors, 4), numpy.uint8)
+    colors = np.zeros((ncolors, 4), np.uint8)
     for row in range(ncolors):
         colors[row] = colortable.GetColorEntry(row)
 
@@ -573,14 +573,14 @@ def _fixedGCPs(gcps):
 
     '''
 
-    lines = numpy.asarray([gcp.GCPLine for gcp in gcps])
+    lines = np.asarray([gcp.GCPLine for gcp in gcps])
 
     # @TODO: this is a weak check; improve it
-    if numpy.alltrue(lines != numpy.sort(lines)):
+    if np.alltrue(lines != np.sort(lines)):
         # @WARNING: here we are assuming that the geolocation grid
         #           has at least 2 lines
         # @WARNING: here we are assuming a particular order of GCPs
-        upstepslocation = numpy.where(lines[1:] > lines[0:-1])[0] + 1
+        upstepslocation = np.where(lines[1:] > lines[0:-1])[0] + 1
         upsteps = lines[upstepslocation] - lines[upstepslocation - 1]
 
         # @WARNING: here we are assuming that the distance between geolocation
@@ -589,7 +589,7 @@ def _fixedGCPs(gcps):
                                                 (upsteps.max(), upsteps.min()))
         linespacing = int(upsteps[0])
 
-        downstepslocation = numpy.where(lines[1:] < lines[0:-1])[0] + 1
+        downstepslocation = np.where(lines[1:] < lines[0:-1])[0] + 1
         for index in downstepslocation:
             jumpsize = int(lines[index - 1] - lines[index]) + linespacing
             lines[index:] += jumpsize
@@ -648,20 +648,20 @@ class CoordinateMapper(object):
         logging.debug('geotransform = %s' % str(self._geotransform))
 
         # Direct transform
-        M = numpy.array(((m11, m12), (m21, m22)))
-        C = numpy.array(([xoffset], [yoffset]))
+        M = np.array(((m11, m12), (m21, m22)))
+        C = np.array(([xoffset], [yoffset]))
         self._direct_transform = (M, C)
 
         # Invrse transform
-        M = numpy.linalg.inv(M)
-        C = -numpy.dot(M, C)
+        M = np.linalg.inv(M)
+        C = -np.dot(M, C)
         self._inverse_transform = (M, C)
 
     def _transform(self, x, y, M, C):
-        x, y = map(numpy.ravel, (x, y))
+        x, y = map(np.ravel, (x, y))
 
-        Pin = numpy.array((x, y))
-        return numpy.dot(M, Pin) + C
+        Pin = np.array((x, y))
+        return np.dot(M, Pin) + C
 
     def imgToGeoPoints(self, pixel, line):
         '''Coordinate conversion: (pixel,line) --> (lon,lat).'''
@@ -691,7 +691,7 @@ class CoordinateMapper(object):
         '''
 
         # @TODO: check single point
-        px, py = numpy.meshgrid(pixel, line)
+        px, py = np.meshgrid(pixel, line)
         lon, lat = self.imgToGeoPoints(px, py)
         lon.shape = lat.shape = (len(pixel), len(line))  # @TODO: check
 
@@ -706,7 +706,7 @@ class CoordinateMapper(object):
         '''
 
         # @TODO: check single point
-        px, py = numpy.meshgrid(lon, lat)
+        px, py = np.meshgrid(lon, lat)
         pixel, line = self.geoToImgPoints(px, py)
         pixel.shape = line.shape = (len(lon), len(lat))  # @TODO: check
 
@@ -774,7 +774,7 @@ def ovrLevelForSize(gdalobj, ovrsize=OVRMEMSIE):
         #bytePerPixel = gdal.GetDataTypeSize(band.DataType) / 8
         bytesperpixel = 1   # the quicklook image is always converted to byte
         datasize = band.XSize * band.YSize * bytesperpixel
-        ovrlevel = numpy.sqrt(datasize / float(ovrsize))
+        ovrlevel = np.sqrt(datasize / float(ovrsize))
         ovrlevel = max(round(ovrlevel), 1)
 
         return ovrLevelAdjust(ovrlevel, band.XSize)
@@ -835,7 +835,7 @@ def ovrBestIndex(gdalobj, ovrlevel=None, policy='NEAREST'):
         band = gdalobj
         if ovrlevel is None:
             ovrlevel = ovrLevelForSize(band)  # 400K
-        levels = numpy.asarray(ovrLevels(band))
+        levels = np.asarray(ovrLevels(band))
         if len(levels) == 0:
             raise MissingOvrError(ovrlevel)
 
@@ -844,13 +844,13 @@ def ovrBestIndex(gdalobj, ovrlevel=None, policy='NEAREST'):
             distances = abs(distances)
             mindist = distances.min()
         elif policy.upper() == 'GREATER':
-            indices = numpy.where(distances >= 0)[0]
-            if numpy.size(indices) == 0:
+            indices = np.where(distances >= 0)[0]
+            if np.size(indices) == 0:
                 raise MissingOvrError(ovrlevel)
             mindist = distances[indices].min()
         elif policy.upper() == 'SMALLER':
-            indices = numpy.where(distances <= 0)[0]
-            if numpy.size(indices) == 0:
+            indices = np.where(distances <= 0)[0]
+            if np.size(indices) == 0:
                 raise MissingOvrError(ovrlevel)
             mindist = distances[indices].max()
         else:
@@ -898,10 +898,10 @@ def ovrComputeLevels(gdalobj, ovrsize=OVRMEMSIE, estep=3, threshold=0.1):
     else:
         startexponent = 1
 
-    maxesponent = numpy.ceil(maxfactor ** (1. / estep))
-    exponents = numpy.arange(startexponent, maxesponent + 1)
+    maxesponent = np.ceil(maxfactor ** (1. / estep))
+    exponents = np.arange(startexponent, maxesponent + 1)
     missinglevels = estep ** exponents
-    missinglevels = missinglevels.astype(numpy.int)
+    missinglevels = missinglevels.astype(np.int)
 
     # Remove exixtng levels to avoid re-computation
     levels = ovrLevels(gdalobj)
@@ -964,7 +964,7 @@ def ovrRead(dataset, x=0, y=0, w=None, h=None, ovrindex=None,
     assert bstart > 0
     assert bstart - 1 + bcount <= dataset.RasterCount
 
-    #data = numpy.zeros((h, w, dataset.RasterCount), numpy.ubyte)
+    #data = np.zeros((h, w, dataset.RasterCount), np.ubyte)
     channels = []
     for bandindex in range(bstart, bstart + bcount):
         band = dataset.GetRasterBand(bandindex)
@@ -972,9 +972,9 @@ def ovrRead(dataset, x=0, y=0, w=None, h=None, ovrindex=None,
             band = band.GetOverview(ovrindex)
         channels.append(band.ReadAsArray(x, y, w, h))
 
-    data = numpy.dstack(channels)
+    data = np.dstack(channels)
     if dtype and dtype != data.dtype:
-        return numpy.astype(data)
+        return np.astype(data)
     else:
         return data
 

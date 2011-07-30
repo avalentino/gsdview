@@ -28,7 +28,7 @@ __revision__ = '$Revision$'
 
 import logging
 
-import numpy
+import numpy as np
 from numpy import ma
 
 from PyQt4 import QtCore, QtGui
@@ -157,7 +157,7 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
         v1 = QtCore.QLineF(0, 0, 1, 0)
         v2 = QtCore.QLineF(0, 0, 0, 1)
         # LOD is the transformed area of a 1x1 rectangle.
-        return numpy.sqrt(worldTransform.map(v1).length() *
+        return np.sqrt(worldTransform.map(v1).length() *
                                             worldTransform.map(v2).length())
 
     @staticmethod
@@ -243,7 +243,7 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
                                                                      True)
             if None not in (vmin, vmax, mean, stddev):
                 if gdal.DataTypeIsComplex(band.DataType):
-                    vmin, vmax = 0, vmax * numpy.sqrt(2)
+                    vmin, vmax = 0, vmax * np.sqrt(2)
                 return vmin, vmax
 
         if data is not None and data.size <= 4 * 1024 ** 2:
@@ -258,8 +258,8 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
                 gdal.GDT_UInt32:    (0, 2 ** 32 - 1),
                 gdal.GDT_Int16:     (-2 ** 15, 2 ** 15 - 1),
                 gdal.GDT_Int32:     (-2 ** 31, 2 ** 31 - 1),
-                gdal.GDT_CInt16:    (0, 2 ** 15 * numpy.sqrt(2)),
-                gdal.GDT_CInt32:    (0, 2 ** 31 * numpy.sqrt(2)),
+                gdal.GDT_CInt16:    (0, 2 ** 15 * np.sqrt(2)),
+                gdal.GDT_CInt32:    (0, 2 ** 31 * np.sqrt(2)),
                 gdal.GDT_CFloat32:  (0, None),
                 gdal.GDT_CFloat64:  (0, None),
             }
@@ -289,7 +289,7 @@ class UIntGdalGraphicsItem(BaseGdalGraphicsItem):
             typename = gdal.GetDataTypeName(band.DataType)
             raise ValueError('invalid data type: "%s"' % typename)
 
-        dtype = numpy.dtype(GDALTypeCodeToNumericTypeCode(band.DataType))
+        dtype = np.dtype(GDALTypeCodeToNumericTypeCode(band.DataType))
         self.stretch = imgutils.LUTStretcher(fill=2 ** (8 * dtype.itemsize))
         self._stretch_initialized = False
 
@@ -377,7 +377,7 @@ class GdalComplexGraphicsItem(GdalGraphicsItem):
 
     def dataRange(self, data=None):
         if data:
-            data = numpy.abs(data)
+            data = np.abs(data)
         return self._dataRange(self.gdalobj, data)
 
     def paint(self, painter, option, widget):
@@ -398,7 +398,7 @@ class GdalComplexGraphicsItem(GdalGraphicsItem):
 
         data = ovrband.ReadAsArray(x, y, w, h)
 
-        data = numpy.abs(data)
+        data = np.abs(data)
         if not self._stretch_initialized:
             self.setDefaultStretch(data)
 

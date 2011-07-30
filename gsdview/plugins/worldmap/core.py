@@ -26,7 +26,7 @@ __date__ = '$Date$'
 __revision__ = '$Revision$'
 
 
-import numpy
+import numpy as np
 
 from PyQt4 import QtCore, QtGui
 
@@ -169,8 +169,8 @@ class WorldmapPanel(QtGui.QDockWidget):
         if not polygon:
             return
 
-        lon = numpy.asarray([p.x() for p in polygon])
-        lat = numpy.asarray([p.y() for p in polygon])
+        lon = np.asarray([p.x() for p in polygon])
+        lat = np.asarray([p.y() for p in polygon])
 
         mlon = lon.mean()
         mlat = lat.mean()
@@ -268,6 +268,7 @@ class WorldmapController(QtCore.QObject):
 
 
 if __name__ == '__main__':
+    import os
     import sys
 
     from osgeo import gdal

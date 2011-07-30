@@ -468,7 +468,7 @@ def printPreview(obj, printer=None, parent=None):
 #    # return toQImage(data.transpose())
 #    return _toQImage(data)
 
-import numpy
+import numpy as np
 GRAY_COLORTABLE = [QtGui.QColor(i, i, i).rgb() for i in range(256)]
 
 
@@ -476,13 +476,13 @@ def _aligned(data, nbyes=4):
     h, w = data.shape
 
     fact = nbyes / data.itemsize
-    shape = (h, numpy.ceil(w / float(fact)) * nbyes)
+    shape = (h, np.ceil(w / float(fact)) * nbyes)
     if shape != data.shape:
         # build aligned matrix
-        image = numpy.zeros(shape, data.dtype)
+        image = np.zeros(shape, data.dtype)
         image[:, 0:w] = data[:, 0:w]
     else:
-        image = numpy.require(data, data.dtype, 'CO')  # 'CAO'
+        image = np.require(data, data.dtype, 'CO')  # 'CAO'
     return image
 
 
@@ -495,7 +495,7 @@ def numpy2qimage(data):
 
     colortable = None
 
-    if data.dtype in (numpy.uint8, numpy.ubyte, numpy.byte):
+    if data.dtype in (np.uint8, np.ubyte, np.byte):
         if data.ndim == 2:
             h, w = data.shape
             image = _aligned(data)
@@ -504,36 +504,36 @@ def numpy2qimage(data):
 
         elif data.ndim == 3 and data.shape[2] == 3:
             h, w = data.shape[:2]
-            image = numpy.zeros((h, w, 4), data.dtype)
+            image = np.zeros((h, w, 4), data.dtype)
             image[:, :, 2::-1] = data
             image[..., -1] = 255
             format_ = QtGui.QImage.Format_RGB32
 
         elif data.ndim == 3 and data.shape[2] == 4:
             h, w = data.shape[:2]
-            image = numpy.require(data, numpy.uint8, 'CO')  # 'CAO'
+            image = np.require(data, np.uint8, 'CO')  # 'CAO'
             format_ = QtGui.QImage.Format_ARGB32
 
         else:
             raise ValueError('unable to convert data: shape=%s, '
                              'dtype="%s"' % (data.shape,
-                                             numpy.dtype(data.dtype)))
+                                             np.dtype(data.dtype)))
 
-    elif data.dtype == numpy.uint16 and data.ndim == 2:
+    elif data.dtype == np.uint16 and data.ndim == 2:
         # @TODO: check
         h, w = data.shape
         image = _aligned(data)
         format_ = QtGui.QImage.Format_RGB16
 
-    elif data.dtype == numpy.uint32 and data.ndim == 2:
+    elif data.dtype == np.uint32 and data.ndim == 2:
         h, w = data.shape
-        image = numpy.require(data, data.dtype, 'CO')  # 'CAO'
+        image = np.require(data, data.dtype, 'CO')  # 'CAO'
         #format_ = QtGui.QImage.Format_ARGB32
         format_ = QtGui.QImage.Format_RGB32
 
     else:
         raise ValueError('unable to convert data: shape=%s, dtype="%s"' % (
-                                        data.shape, numpy.dtype(data.dtype)))
+                                        data.shape, np.dtype(data.dtype)))
 
     result = QtGui.QImage(image.data, w, h, format_)
     result.ndarray = image

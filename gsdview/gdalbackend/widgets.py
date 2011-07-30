@@ -29,7 +29,7 @@ import os
 import logging
 import ConfigParser
 
-import numpy
+import numpy as np
 from osgeo import gdal
 from PyQt4 import QtCore, QtGui
 
@@ -634,8 +634,8 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
 
         if not self._readonly:
             # Add powers of two
-            xexp = int(numpy.log2(item.XSize))
-            yexp = int(numpy.log2(item.YSize))
+            xexp = int(np.log2(item.XSize))
+            yexp = int(np.log2(item.YSize))
             mexexp = min(xexp, yexp)
             mexexp = max(mexexp - 4, 1)
             for exp_ in range(1, mexexp):
@@ -1058,17 +1058,17 @@ class HistogramConfigDialog(QtGui.QDialog, HistogramConfigDialogBase):
     def setLimits(self, dtype):
         vmin = -2 ** 15 - 0.5
         vmax = 2 ** 16 - 0.5
-        if dtype in (numpy.uint8, numpy.uint16, numpy.uint32, numpy.uint64):
+        if dtype in (np.uint8, np.uint16, np.uint32, np.uint64):
             # Unsigned
             vmin = -0.5
-            if dtype == numpy.uint8:
+            if dtype == np.uint8:
                 vmax = 255.5
             else:
                 vmax = 2 ** 16 - 0.5
-        elif dtype == numpy.int8:
+        elif dtype == np.int8:
             vmin = -128.5
             vmax = 127.5
-        elif dtype == numpy.int16:
+        elif dtype == np.int16:
             vmax = 2 ** 15 + 0.5
 
         self.minSpinBox.setMinimum(vmin)
