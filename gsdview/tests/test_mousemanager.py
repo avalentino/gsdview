@@ -22,23 +22,12 @@
 import os
 import sys
 
-# Select the PyQt API 2
-import sip
-sip.setapi('QDate',       2)
-sip.setapi('QDateTime',   2)
-sip.setapi('QString',     2)
-sip.setapi('QTextStream', 2)
-sip.setapi('QTime',       2)
-sip.setapi('QUrl',        2)
-sip.setapi('QVariant',    2)
-
-from PyQt4 import QtCore, QtGui
-
 # Fix sys path
 from os.path import abspath, dirname
 GSDVIEWROOT = abspath(os.path.join(dirname(__file__), os.pardir, os.pardir))
 sys.path.insert(0, GSDVIEWROOT)
 
+from gsdview.qt import QtCore, QtGui
 
 from gsdview.mousemanager import MouseManager
 

@@ -23,22 +23,12 @@ import os
 import sys
 import logging
 
-# Select the PyQt API 2
-import sip
-sip.setapi('QDate',       2)
-sip.setapi('QDateTime',   2)
-sip.setapi('QString',     2)
-sip.setapi('QTextStream', 2)
-sip.setapi('QTime',       2)
-sip.setapi('QUrl',        2)
-sip.setapi('QVariant',    2)
-
-from PyQt4 import QtCore, QtGui, QtSvg
-
 # Fix sys path
 from os.path import abspath, dirname
 GSDVIEWROOT = abspath(os.path.join(dirname(__file__), os.pardir, os.pardir))
 sys.path.insert(0, GSDVIEWROOT)
+
+from gsdview.qt import QtCore, QtGui, QtSvg
 
 from gsdview import qt4support
 from gsdview import qt4draw
@@ -219,9 +209,9 @@ class GraphicsDrawApp(QtGui.QMainWindow):
 
     @QtCore.pyqtSlot()
     def about(self):
-        title = self.tr('PyQt4 Graphics Draw Example')
+        title = self.tr('Qt4 Graphics Draw Example')
         text = ['<h1>Graphics Draw</h1>'
-                '<p>Example program for the basic PyQt4 graphics drawing.</p>',
+                '<p>Example program for the basic Qt4 graphics drawing.</p>',
                 '<p>Copyright (C): 2010-2011 '
                 '<a href="mailto:a_valentino@users.sf.net">'
                     'Antonio Valentino<a>.</p>']

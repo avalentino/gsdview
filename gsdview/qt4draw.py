@@ -19,12 +19,12 @@
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
 
 
-'''Drawing components for PyQt4.'''
+'''Drawing components for Qt4.'''
 
 
-from PyQt4 import QtCore, QtGui
+from qt import QtCore, QtGui
 
-from gsdview.mousemanager import MouseMode  # , RubberBandMode
+from mousemanager import MouseMode  # , RubberBandMode
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'

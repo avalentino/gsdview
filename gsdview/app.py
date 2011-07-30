@@ -26,22 +26,22 @@ import os
 import sys
 import logging
 
-from PyQt4 import QtCore, QtGui
+from qt import QtCore, QtGui
 
 from exectools.qt4 import Qt4ToolController, Qt4DialogLoggingHandler
 
-from gsdview import info
-from gsdview import utils
-from gsdview import errors
-from gsdview import qt4support
-from gsdview import graphicsview
-from gsdview import mousemanager
-from gsdview import pluginmanager
+import info
+import utils
+import errors
+import qt4support
+import graphicsview
+import mousemanager
+import pluginmanager
 
-from gsdview.mdi import ItemModelMainWindow
-from gsdview.appsite import USERCONFIGDIR, SYSPLUGINSDIR
-from gsdview.widgets import AboutDialog, PreferencesDialog
-from gsdview.widgets import GSDViewExceptionDialog as ExceptionDialog
+from mdi import ItemModelMainWindow
+from appsite import USERCONFIGDIR, SYSPLUGINSDIR
+from widgets import AboutDialog, PreferencesDialog
+from widgets import GSDViewExceptionDialog as ExceptionDialog
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'

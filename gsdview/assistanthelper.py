@@ -24,7 +24,7 @@
 
 import sys
 
-from PyQt4 import QtCore, QtGui
+from qt import QtCore, QtGui
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'

@@ -19,7 +19,7 @@
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
 
 
-'''Helper tools and custom components for binding GDAL and PyQt4.'''
+'''Helper tools and custom components for binding GDAL and Qt4.'''
 
 
 import logging
@@ -27,16 +27,14 @@ import logging
 import numpy as np
 from numpy import ma
 
-from PyQt4 import QtCore, QtGui
 from osgeo import gdal
-
-# @WARNING: this line seems to cause a crash on Fedora 13
 from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
 
-from gsdview import imgutils
-from gsdview.qt4support import numpy2qimage
+from ..qt import QtCore, QtGui
 
-from gsdview.gdalbackend import gdalsupport
+from .. import imgutils
+from ..qt4support import numpy2qimage
+from ..gdalbackend import gdalsupport
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'

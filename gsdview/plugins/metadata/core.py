@@ -22,7 +22,7 @@
 '''Browser component for geo-datasets metadata.'''
 
 
-from PyQt4 import QtCore, QtGui
+from gsdview.qt import QtCore, QtGui
 
 from gsdview import qt4support
 

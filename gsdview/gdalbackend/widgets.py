@@ -21,9 +21,6 @@
 
 '''Widgets and dialogs for GSDView.'''
 
-__author__ = '$Author$'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
 
 import os
 import logging
@@ -31,13 +28,19 @@ import ConfigParser
 
 import numpy as np
 from osgeo import gdal
-from PyQt4 import QtCore, QtGui
 
-from gsdview import utils
-from gsdview import qt4support
-from gsdview.widgets import get_filedialog, FileEntryWidget
+from ..qt import QtCore, QtGui
+
+from .. import utils
+from .. import qt4support
+from ..widgets import get_filedialog, FileEntryWidget
 
 from gsdview.gdalbackend import gdalsupport
+
+
+__author__ = '$Author$'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 
 GDALInfoWidgetBase = qt4support.getuiform('gdalinfo', __name__)

@@ -19,21 +19,21 @@
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
 
 
-'''GDAL items for PyQt4 QStandardItemModel.'''
+'''GDAL items for Qt4 QStandardItemModel.'''
 
 
 import os
 import logging
 
 from osgeo import gdal
-from PyQt4 import QtCore, QtGui
 
-from gsdview import qt4support
-from gsdview.errors import OpenError
+from ..qt import QtCore, QtGui
 
-from gsdview.gdalbackend import info
-from gsdview.gdalbackend import gdalqt4
-from gsdview.gdalbackend import gdalsupport
+from .. import qt4support
+from ..errors import OpenError
+from ..gdalbackend import info
+from ..gdalbackend import gdalqt4
+from ..gdalbackend import gdalsupport
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'

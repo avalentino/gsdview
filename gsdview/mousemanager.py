@@ -32,9 +32,9 @@ making the system expandible, and also methods to register objects
 '''
 
 
-from PyQt4 import QtCore, QtGui
+from qt import QtCore, QtGui
 
-from gsdview import qt4support
+import qt4support
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'

@@ -19,7 +19,7 @@
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
 
 
-'''Helper tools and custom components for binding OGR and PyQt4.'''
+'''Helper tools and custom components for binding OGR and Qt4.'''
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__ = '$Date$'
@@ -28,10 +28,11 @@ __revision__ = '$Revision$'
 
 import logging
 
-from PyQt4 import QtCore, QtGui
 from osgeo import ogr, osr
 
-from gsdview import qt4draw
+from ..qt import QtCore, QtGui
+
+from .. import qt4draw
 
 
 ### Graphics Items ############################################################

@@ -29,11 +29,11 @@ import logging
 import platform
 import traceback
 
-from PyQt4 import QtCore, QtGui
+from qt import QtCore, QtGui
 
-from gsdview import info
-from gsdview import utils
-from gsdview import qt4support
+import info
+import utils
+import qt4support
 
 
 __author__ = '$Author$'
@@ -577,6 +577,10 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
                 fd.close()
 
 try:
+    import qt
+    if qt.qt_api != 'pyqt':
+        raise ImportError
+
     from PyQt4 import Qsci
 
     class QsciExceptionDialog(ExceptionDialog):

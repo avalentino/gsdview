@@ -22,7 +22,7 @@
 '''Core modue for position tracker plugin.'''
 
 
-from PyQt4 import QtCore
+from gsdview.qt import QtCore
 
 from positiontracker.coordinateview import CoordinateView, GeoCoordinateView
 

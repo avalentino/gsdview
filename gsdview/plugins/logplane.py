@@ -51,7 +51,7 @@ website_label = website
 def init(app):
     import logging
 
-    from PyQt4 import QtCore, QtGui
+    from gsdview.qt import QtCore, QtGui
 
     from exectools.qt4 import Qt4OutputPlane, Qt4LoggingHandler
 

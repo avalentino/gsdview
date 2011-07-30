@@ -27,8 +27,8 @@ import platform
 
 import numpy as np
 
-import sip
-from PyQt4 import QtCore
+import qt
+from qt import QtCore
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
@@ -67,21 +67,27 @@ download_url = 'http://sourceforge.net/projects/gsdview/files'
 all_versions = [
     ('GSDView', version, website),
     ('Python', '.'.join(map(str, sys.version_info[:3])), 'www.python.org'),
-    ('sip', sip.SIP_VERSION_STR,
-                    'http://www.riverbankcomputing.co.uk/software/sip'),
-    ('PyQt4', QtCore.PYQT_VERSION_STR,
-                    'http://www.riverbankcomputing.co.uk/software/pyqt'),
     ('Qt', QtCore.qVersion(), 'http://qt.nokia.com'),
     ('numpy', np.version.version, 'http://www.scipy.org'),
 ]
 
-try:
-    from PyQt4 import Qsci
-except ImportError:
-    pass
-else:
-    all_versions.append(('QScintilla', Qsci.QSCINTILLA_VERSION_STR,
-                    'http://www.riverbankcomputing.co.uk/software/qscintilla'))
+if qt.qt_api == 'pyqt':
+    import sip
+    all_versions.append(('sip', sip.SIP_VERSION_STR,
+                         'http://www.riverbankcomputing.co.uk/software/sip'))
+    all_versions.append(('PyQt4', QtCore.__version__,
+                         'http://www.riverbankcomputing.co.uk/software/pyqt'))
+    try:
+        from PyQt4 import Qsci
+    except ImportError:
+        pass
+    else:
+        all_versions.append(('QScintilla', Qsci.QSCINTILLA_VERSION_STR,
+                'http://www.riverbankcomputing.co.uk/software/qscintilla'))
+
+elif qt.qt_api == 'pyside':
+    all_versions.append(
+        ('PySide', QtCore.__version__, 'http://www.pyside.org'))
 
 if platform.dist() != ('', '', ''):
     all_versions.append(('GNU/Linux', ' '.join(platform.dist()), ''))

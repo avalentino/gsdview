@@ -301,10 +301,10 @@ class PluginManager(object):
 # @TODO: move Qt specific implementation elsewhere
 import functools
 
-from PyQt4 import QtCore, QtGui
+from qt import QtCore, QtGui
 
 # @TODO: check dependency - getuiform, geticon, setViewContextActions
-from gsdview import qt4support
+import qt4support
 
 
 PluginManagerGuiBase = qt4support.getuiform('pluginmanager', __name__)

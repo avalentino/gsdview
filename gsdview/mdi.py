@@ -24,9 +24,9 @@
 # @TODO: move this to widgets sub-package or qt4freesolutions subpackage
 
 
-from PyQt4 import QtCore, QtGui
+from qt import QtCore, QtGui
 
-from gsdview.qtwindowlistmenu import QtWindowListMenu
+from qtwindowlistmenu import QtWindowListMenu
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'

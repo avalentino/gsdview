@@ -29,9 +29,9 @@ import logging
 from cStringIO import StringIO
 from ConfigParser import ConfigParser
 
-from PyQt4 import QtCore, QtGui, QtSvg, uic
+from qt import QtCore, QtGui, QtSvg
 
-from gsdview import utils
+import utils
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
@@ -559,12 +559,18 @@ def getuifile(name, package=None):
 def getuiform(name, package=None):
     '''Return the ui form class.
 
-    If it is available a pre-build python module the form class is
+    If it is available a pre-built python module the form class is
     imported from it (assuming that the module contains a single UI
     class having a name that starts with `Ui_`).
 
     If no pre-build python module is available than the form call is
-    loaded directly from the ui file usning the PyQt4.uic helper module.
+    loaded directly from the ui file using the PyQt4.uic helper module.
+
+    .. note:: in the pyside packege is used to provide bindings for Qt4
+              then the uic module is not available and only pre-built
+              modules are searched.
+              When pyside is used an :exception:`ImportError` is raised
+              if pre-built forms are not available.
 
     .. note:: like :autolink:`gsdview.qt4support.getuifile` this
               function assumes that pre-build form modules and Qt UI
@@ -586,12 +592,18 @@ def getuiform(name, package=None):
         FormClass = getattr(module, formname)
         logging.debug('load "%s" form base class from pre-compiled python '
                       'module' % formname)
-        return FormClass
     except ImportError:
+        import qt
+        if qt.qt_api != 'pyqt':
+            raise
+
+        from PyQt4 import uic
+
         uifile = getuifile(name + '.ui', package)
         FormClass, QtBaseClass = uic.loadUiType(uifile)
         logging.debug('load "%s" form class from ui file' % FormClass.__name__)
-        return FormClass
+
+    return FormClass
 
 
 def geticonfile(name, package=None):

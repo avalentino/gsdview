@@ -25,15 +25,16 @@
 import os
 
 from osgeo import gdal
-from PyQt4 import QtCore, QtGui
 
-from gsdview import qt4support
+from ..qt import QtCore, QtGui
 
-from gsdview.gdalbackend import widgets
-from gsdview.gdalbackend import helpers
-from gsdview.gdalbackend import modelitems
-from gsdview.gdalbackend import gdalsupport
-from gsdview.gdalbackend import gdalexectools
+from .. import qt4support
+
+from ..gdalbackend import widgets
+from ..gdalbackend import helpers
+from ..gdalbackend import modelitems
+from ..gdalbackend import gdalsupport
+from ..gdalbackend import gdalexectools
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'

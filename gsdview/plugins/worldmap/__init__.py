@@ -40,7 +40,7 @@ _instance = None
 
 
 def init(app):
-    from PyQt4 import QtCore
+    from gsdview.qt import QtCore
     from worldmap.core import WorldmapController
 
     controller = WorldmapController(app)

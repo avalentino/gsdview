@@ -23,7 +23,7 @@ import os
 import sys
 import logging
 
-from PyQt4 import QtGui
+from gsdview.qt import QtGui
 
 # Fix sys path
 from os.path import abspath, dirname

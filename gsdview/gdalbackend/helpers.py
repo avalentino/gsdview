@@ -28,10 +28,11 @@ import shutil
 import tempfile
 
 from osgeo import gdal
-from PyQt4 import QtGui
 
-from gsdview.gdalbackend import modelitems
-from gsdview.gdalbackend import gdalsupport
+from ..qt import QtGui
+
+from ..gdalbackend import modelitems
+from ..gdalbackend import gdalsupport
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
