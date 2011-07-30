@@ -285,7 +285,7 @@ class TestMdiMainWindow(MdiMainWindow):
                                         statusTip=self.tr("Show the Qt "
                                                           "library's About "
                                                           "box"),
-                                        triggered=QtGui.qApp.aboutQt)
+                                        triggered=QtGui.QApplication.aboutQt)
 
     def createMenus(self):
         self.fileMenu = self.menuBar().addMenu(self.tr('&File'))

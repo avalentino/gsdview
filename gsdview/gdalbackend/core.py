@@ -243,7 +243,7 @@ class GDALBackend(QtCore.QObject):
                       shortcut=self.tr('Ctrl+O'),
                       toolTip=self.tr('Open an image view'),
                       statusTip=self.tr('Open a new image view'),
-                      triggered=lambda chk: self.openImageView())
+                      triggered=self.openImageView)
 
         # @TODO: add a new action for newImageView
 
@@ -279,7 +279,7 @@ class GDALBackend(QtCore.QObject):
                       #shortcut=self.tr('Ctrl+B'),
                       toolTip=self.tr('Display the dataset as an RGB image'),
                       statusTip=self.tr('Open as RGB'),
-                      triggered=lambda chk: self.openRGBImageView())
+                      triggered=self.openRGBImageView)
 
         # build overviews
         icon = qt4support.geticon('overview.svg', __name__)
@@ -355,9 +355,19 @@ class GDALBackend(QtCore.QObject):
             else:
                 # @TODO: remove this to allow multiple views on the same item
                 for subwin in self._app.mdiarea.subWindowList():
-                    if subwin.item == item:
-                        action.setEnabled(False)
-                        break
+                    #if subwin.item == item:
+                    #    action.setEnabled(False)
+                    #    break
+
+                    # @COMPATIBILITY: pyside 1.0.1
+                    try:
+                        if subwin.item == item:
+                            action.setEnabled(False)
+                            break
+                    except NotImplementedError:
+                        if id(subwin.item) == id(item):
+                            action.setEnabled(False)
+                            break
 
         return actionsgroup
 
@@ -371,9 +381,20 @@ class GDALBackend(QtCore.QObject):
         if gdalsupport.isRGB(item):
             # @TODO: remove this to allow multiple views on the same item
             for subwin in self._app.mdiarea.subWindowList():
-                if subwin.item == item:
-                    action.setEnabled(False)
-                    break
+                #if subwin.item == item:
+                #    action.setEnabled(False)
+                #    break
+
+                # @COMPATIBILITY: pyside 1.0.1
+                try:
+                    if subwin.item == item:
+                        action.setEnabled(False)
+                        break
+                except NotImplementedError:
+                    if id(subwin.item) == id(item):
+                        action.setEnabled(False)
+                        break
+
             else:
                 action.setEnabled(True)
         else:
@@ -693,7 +714,6 @@ from gsdview.mdi import ItemSubWindow
 
 # @TODO: move elsewhere
 class GraphicsViewSubWindow(ItemSubWindow):
-
     def __init__(self, item, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kwargs):
         super(GraphicsViewSubWindow, self).__init__(item, parent, flags,

@@ -82,7 +82,7 @@ class Assistant(object):
             self.proc.start(app, args)
 
             if not self.proc.waitForStarted():
-                tr = QtGui.qApp.tr
+                tr = QtGui.QApplication.tr
                 QtGui.QMessageBox.critical(0, tr('Simple Text Viewer'),
                         tr('Unable to launch Qt Assistant (%s)') % app)
                 return False

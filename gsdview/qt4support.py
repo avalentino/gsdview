@@ -139,7 +139,7 @@ def copySelectedItems(itemview):
     data = '\n'.join(lines)
 
     if data:
-        clipboard = QtGui.qApp.clipboard()
+        clipboard = QtGui.QApplication.clipboard()
         clipboard.setText(data, QtGui.QClipboard.Clipboard)
         clipboard.setText(data, QtGui.QClipboard.Selection)
 
@@ -150,7 +150,7 @@ def copySelectedItems(itemview):
     #mimedata = QtCore.QMimeData()
     #mimedata.setData('text/csv', data)
 
-    #clipboard = QtGui.qApp.clipboard()
+    #clipboard = QtGui.QApplication.clipboard()
     #clipboard.setMimeData(mimedata, QtGui.QClipboard.Clipboard)
     #clipboard.setMimeData(mimedata, QtGui.QClipboard.Selection)
 

@@ -162,7 +162,7 @@ class BandItem(MajorObjectItem):
             ovr = self._obj.GetOverview(index)
             item = OverviewItem(ovr)
             if not item.text():
-                description = '%s n. %d' % (QtGui.qApp.tr('Overview'),
+                description = '%s n. %d' % (QtGui.QApplication.tr('Overview'),
                                             index)
                 item.setText(description)
                 item.setToolTip(description)
@@ -224,8 +224,8 @@ class BandItem(MajorObjectItem):
                 ovr = gdalobj.GetOverview(index)
                 item = OverviewItem(ovr)
                 if not item.text():
-                    description = '%s n. %d' % (QtGui.qApp.tr('Overview'),
-                                                index)
+                    description = '%s n. %d' % (
+                        QtGui.QApplication.tr('Overview'), index)
                     item.setText(description)
                     item.setToolTip(description)
                 self.insertRow(index, item)
@@ -355,8 +355,8 @@ class DatasetItem(MajorObjectItem):
         for index in range(self.rowCount(), gdalobj.RasterCount):
             item = BandItem(gdalobj.GetRasterBand(index + 1))
             if not item.text():
-                description = '%s n. %d' % (QtGui.qApp.tr('Raster Band'),
-                                            index + 1)
+                description = '%s n. %d' % (
+                    QtGui.QApplication.tr('Raster Band'), index + 1)
                 item.setText(description)
                 item.setToolTip(description)
             self.appendRow(item)

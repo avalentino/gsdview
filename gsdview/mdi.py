@@ -64,7 +64,6 @@ class MdiMainWindow(QtGui.QMainWindow):
 
 
 class ItemSubWindow(QtGui.QMdiSubWindow):
-
     def __init__(self, item, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kwargs):
         super(ItemSubWindow, self).__init__(parent, flags, **kwargs)
@@ -75,7 +74,6 @@ class ItemSubWindow(QtGui.QMdiSubWindow):
 
 
 class ItemModelMainWindow(MdiMainWindow):
-
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(ItemModelMainWindow, self).__init__(parent, flags, **kwargs)
 
@@ -135,6 +133,10 @@ class ItemModelMainWindow(MdiMainWindow):
             except AttributeError:
                 # the window has not an associated item in the datamodel
                 pass
+            # @COMPATIBILITY: pyside 1.0.1
+            except NotImplementedError:
+                if id(window.item) == id(item):
+                    self.mdiarea.setActiveSubWindow(window)
 
     @QtCore.Slot(QtGui.QMdiSubWindow)
     def setActiveIndexFromWin(self, window):
@@ -171,12 +173,33 @@ class ItemModelMainWindow(MdiMainWindow):
         for row in range(start, end + 1):
             item = parentitem.child(row)
             for subwin in self.mdiarea.subWindowList():
-                if subwin.item == item:
-                    subwin.close()
-                    # just une window per run (??)
-                    break
+                #if subwin.item == item:
+                #    subwin.close()
+                #    # just une window per run (??)
+                #    break
+
+                # @COMPATIBILITY: pyside 1.0.1
+                try:
+                    if subwin.item == item:
+                        subwin.close()
+                        break
+                except NotImplementedError:
+                    if id(subwin.item) == id(item):
+                        subwin.close()
+                        break
+
         for subwin in self.mdiarea.subWindowList():
-            if subwin.item == parentitem:
-                subwin.close()
-                # just une window per run (??)
-                break
+            #if subwin.item == parentitem:
+            #    subwin.close()
+            #    # just une window per run (??)
+            #    break
+
+            # @COMPATIBILITY: pyside 1.0.1
+            try:
+                if subwin.item == parentitem:
+                    subwin.close()
+                    break
+            except NotImplementedError:
+                if id(subwin.item) == id(parentitem):
+                    subwin.close()
+                    break

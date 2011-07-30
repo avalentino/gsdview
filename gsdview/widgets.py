@@ -43,7 +43,7 @@ __revision__ = '$Revision$'
 
 def get_mainwin():
     #mainwin = QtGui.qApp.findChild(QtGui.QMainWindow,  'gsdview-mainwin')
-    for mainwin in QtGui.qApp.topLevelWidgets():
+    for mainwin in QtGui.QApplication.topLevelWidgets():
         if mainwin.objectName() == 'gsdview-mainwin':
             break
     else:
@@ -534,7 +534,7 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
             tracebackobj = self.tracebackobj
 
         error = traceback.format_exception_only(exctype, excvalue)[-1].strip()
-        appname = QtGui.qApp.applicationName()
+        appname = QtGui.QApplication.applicationName()
         if appname:
             subject = '[%s] Bug report - %s' % (appname, error)
         else:
