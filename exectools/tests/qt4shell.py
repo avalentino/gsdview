@@ -19,13 +19,26 @@
 ### along with this module; if not, write to the Free Software
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
 
-'''Simple interactive shell implementation using exectools and PyQt4.'''
+'''Simple interactive shell implementation using exectools and Qt4.'''
 
 
 import time
 import logging
 
-from PyQt4 import QtCore, QtGui
+try:
+    from qt import QtCore, QtGui
+except ImportError:
+    # Select the PyQt API 2
+    import sip
+    sip.setapi('QDate',       2)
+    sip.setapi('QDateTime',   2)
+    sip.setapi('QString',     2)
+    sip.setapi('QTextStream', 2)
+    sip.setapi('QTime',       2)
+    sip.setapi('QUrl',        2)
+    sip.setapi('QVariant',    2)
+
+    from PyQt4 import QtCore, QtGui
 
 import exectools
 from exectools.qt4 import (Qt4OutputPlane, Qt4OutputHandler, Qt4ToolController,

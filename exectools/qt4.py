@@ -24,17 +24,20 @@
 import time
 import logging
 
-# Select the PyQt API 2
-import sip
-sip.setapi('QDate',       2)
-sip.setapi('QDateTime',   2)
-sip.setapi('QString',     2)
-sip.setapi('QTextStream', 2)
-sip.setapi('QTime',       2)
-sip.setapi('QUrl',        2)
-sip.setapi('QVariant',    2)
+try:
+    from qt import QtCore, QtGui
+except ImportError:
+    # Select the PyQt API 2
+    import sip
+    sip.setapi('QDate',       2)
+    sip.setapi('QDateTime',   2)
+    sip.setapi('QString',     2)
+    sip.setapi('QTextStream', 2)
+    sip.setapi('QTime',       2)
+    sip.setapi('QUrl',        2)
+    sip.setapi('QVariant',    2)
 
-from PyQt4 import QtCore, QtGui
+    from PyQt4 import QtCore, QtGui
 
 from exectools import BaseOutputHandler, BaseToolController, EX_OK, level2tag
 
