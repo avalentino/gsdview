@@ -820,8 +820,9 @@ class OverviewDialog(QtGui.QDialog):
     #: SIGNAL: it is emitted when a time expensive computation of overviews
     #: is required
     #:
-    #: :C++ signature: `void overviewComputationRequest(PyQt_PyObject)`
-    overviewComputationRequest = QtCore.Signal('PyQt_PyObject')
+    #: :C++ signature: `void overviewComputationRequest(QtGui.QStandardItem)`
+    overviewComputationRequest = QtCore.Signal(QtGui.QStandardItem)  # @TODO: check backward compatibility
+    #overviewComputationRequest = QtCore.Signal(object)
 
     def __init__(self, item=None, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kargs):
@@ -1097,23 +1098,24 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
     #: SIGNAL: it is emitted when a time expensive computation of statistics
     #: is required
     #:
-    #: :C++ signature: `void statsComputationRequest(PyQt_PyObject)`
-    statsComputationRequest = QtCore.Signal('PyQt_PyObject')
+    #: :C++ signature: `void statsComputationRequest(QtGui.QStandardItem)`
+    statsComputationRequest = QtCore.Signal(QtGui.QStandardItem)  # @TODO: check backward compatibility
 
     #: SIGNAL: it is emitted when a time expensive computation of an histogram
     #: is required
     #:
-    #: :C++ signature: `void histogramComputationRequest(PyQt_PyObject)`
-    histogramComputationRequest = QtCore.Signal('PyQt_PyObject')
+    #: :C++ signature: `void histogramComputationRequest(QtGui.QStandardItem)`
+    histogramComputationRequest = QtCore.Signal(QtGui.QStandardItem)  # @TODO: check backward compatibility
+
     # @TODO: check
     #self.emit(QtCore.SIGNAL(
-    #   'histogramComputationRequest(PyQt_PyObject, int, int, int)'),
+    #   'histogramComputationRequest(QtGui.QStandardItem, int, int, int)'),
     #   band, hmin, nmax, nbuckets)
 
     #: SIGNAL: it is emitted when overview computation is required
     #:
     #: :C++ signature: `void overviewComputationRequest()`
-    overviewComputationRequest = QtCore.Signal('PyQt_PyObject')
+    overviewComputationRequest = QtCore.Signal(QtGui.QStandardItem)
 
     def __init__(self, band=None, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kwargs):

@@ -121,7 +121,7 @@ class GraphicsViewMonitor(QtCore.QObject):
     ##:
     ##: :C++ signature: `void enter(QGraphicsView*)`
     ###enter = QtCore.Signal(QtGui.QGraphicsScene)
-    ##enter = QtCore.Signal('PyQt_PyObject') # @TODO: check
+    ##enter = QtCore.Signal(QtCore.QObject) # @TODO: check
 
     #: SIGNAL: it is emitted when the mouse pointer leaves the scene
     #:
@@ -149,13 +149,13 @@ class GraphicsViewMonitor(QtCore.QObject):
     #: :C++ signature: `void mouseMoved(QtGui.QGraphicsScene, QtCore.QPointF,
     #:                                  QtCore.Qt.MuseButtons)`
     mouseMoved = QtCore.Signal(QtGui.QGraphicsScene, QtCore.QPointF,
-                                   QtCore.Qt.MouseButtons)
+                               QtCore.Qt.MouseButtons)
 
     ##: SIGNAL:
     ##:
-    ##: :C++ signature: `newPos(PyQt_PyObject, QPoint)`
+    ##: :C++ signature: `newPos(QtCore.QObject, QPoint)`
     ###newPos = QtCore.Signal(QtGui.QGraphicsView, QtCore.QPoint)
-    ##newPos = QtCore.Signal('PyQt_PyObject', QtCore.QPoint) # @TODO: check
+    ##newPos = QtCore.Signal(QtCore.QObject, QtCore.QPoint) # @TODO: check
 
     # @TODO: use signal mappers
     #~ def __init__(self, parent=None, **kwargs):
