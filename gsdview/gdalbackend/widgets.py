@@ -197,7 +197,7 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
         hheader = self.extraOptTableWidget.horizontalHeader()
         hheader.resizeSections(QtGui.QHeaderView.ResizeToContents)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def showinfo(self):
         dialog = QtGui.QDialog(self)
         dialog.setWindowTitle(self.tr('GDAL info'))
@@ -393,7 +393,7 @@ class MetadataWidget(QtGui.QWidget, MetadataWidgetBase):
     #: SIGNAL: it is emitted when metadata domain changes
     #:
     #: :C++ signature: `void domainChanged(str)`
-    domainChanged = QtCore.pyqtSignal(str)
+    domainChanged = QtCore.Signal(str)
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(MetadataWidget, self).__init__(parent, flags, **kwargs)
@@ -509,7 +509,7 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
     #: is required
     #:
     #: :C++ signature: `void overviewComputationRequest()`
-    overviewComputationRequest = QtCore.pyqtSignal()
+    overviewComputationRequest = QtCore.Signal()
 
     def __init__(self, item=None, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kwargs):
@@ -694,8 +694,8 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
 
         return levels
 
-    @QtCore.pyqtSlot()
-    @QtCore.pyqtSlot(int)
+    @QtCore.Slot()
+    @QtCore.Slot(int)
     def addLevel(self, level=None, xsize=None, ysize=None, checked=False):
         if level is None:
             level = self.addLevelSpinBox.value()
@@ -728,7 +728,7 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
 
         self._updateStartButton()
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def _updateStartButton(self):
         if self.recomputeCheckBox.isChecked() or self._newLevels():
             self.startButton.setEnabled(True)
@@ -797,7 +797,7 @@ class SpecialOverviewWidget(OverviewWidget):
 
         return levels
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def _updateStartButton(self):
         if self._newLevels():
             self.startButton.setEnabled(True)
@@ -821,7 +821,7 @@ class OverviewDialog(QtGui.QDialog):
     #: is required
     #:
     #: :C++ signature: `void overviewComputationRequest(PyQt_PyObject)`
-    overviewComputationRequest = QtCore.pyqtSignal('PyQt_PyObject')
+    overviewComputationRequest = QtCore.Signal('PyQt_PyObject')
 
     def __init__(self, item=None, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kargs):
@@ -930,7 +930,7 @@ class MajorObjectInfoDialog(QtGui.QDialog):
     def setMetadata(self, metadatalist):
         self.metadataWidget.setMetadata(metadatalist)
 
-    @QtCore.pyqtSlot(str)
+    @QtCore.Slot(str)
     def updateMetadata(self, domain=''):
         if self._obj is not None:
             # @COMPATIBILITY: presumably a bug in PyQt4 4.7.2
@@ -974,7 +974,7 @@ class MajorObjectInfoDialog(QtGui.QDialog):
         return cfg
 
     # @TODO: move to metadata widget
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def saveMetadata(self):
         if not self._obj:
             QtGui.QMessageBox.information(self.tr('Information'),
@@ -1007,7 +1007,7 @@ class MajorObjectInfoDialog(QtGui.QDialog):
                 with open(filename, 'w') as fd:
                     cfg.write(fd)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def printMetadata(self):
         cfg = self._metadataToCfg()
         doc = qt4support.cfgToTextDocument(cfg)
@@ -1046,7 +1046,7 @@ class HistogramConfigDialog(QtGui.QDialog, HistogramConfigDialogBase):
         self.minSpinBox.editingFinished.connect(self.validate)
         self.maxSpinBox.editingFinished.connect(self.validate)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def validate(self):
         if self.minSpinBox.value() >= self.maxSpinBox.value():
             self.minSpinBox.lineEdit().setPalette(self._error_palette)
@@ -1098,13 +1098,13 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
     #: is required
     #:
     #: :C++ signature: `void statsComputationRequest(PyQt_PyObject)`
-    statsComputationRequest = QtCore.pyqtSignal('PyQt_PyObject')
+    statsComputationRequest = QtCore.Signal('PyQt_PyObject')
 
     #: SIGNAL: it is emitted when a time expensive computation of an histogram
     #: is required
     #:
     #: :C++ signature: `void histogramComputationRequest(PyQt_PyObject)`
-    histogramComputationRequest = QtCore.pyqtSignal('PyQt_PyObject')
+    histogramComputationRequest = QtCore.Signal('PyQt_PyObject')
     # @TODO: check
     #self.emit(QtCore.SIGNAL(
     #   'histogramComputationRequest(PyQt_PyObject, int, int, int)'),
@@ -1113,7 +1113,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
     #: SIGNAL: it is emitted when overview computation is required
     #:
     #: :C++ signature: `void overviewComputationRequest()`
-    overviewComputationRequest = QtCore.pyqtSignal('PyQt_PyObject')
+    overviewComputationRequest = QtCore.Signal('PyQt_PyObject')
 
     def __init__(self, band=None, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kwargs):
@@ -1314,7 +1314,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.meanValue.setText(str(mean))
         self.stdValue.setText(str(stddev))
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     @qt4support.overrideCursor
     def updateStatistics(self):
         if self.band is None:
@@ -1493,7 +1493,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
             self.overviewWidget.reset()
 
     # @TODO: check
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def _computeStats(self):
         self._checkgdalobj()
         self.statsComputationRequest.emit(self.band)
@@ -1517,7 +1517,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         #~ self.updateStatistics()
 
     # @TODO: check
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def _computeHistogram(self):
         self._checkgdalobj()
         self.histogramComputationRequest.emit(self.band)
@@ -1591,7 +1591,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         #~ self.setHistogram(vmin, vmax, nbuckets, hist)
         #~ self.updateStatistics() # @TODO: check
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def _computeOverviews(self):
         self._checkgdalobj()
         self.overviewComputationRequest.emit(self.band)

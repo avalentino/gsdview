@@ -347,7 +347,7 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
         self.downButton.clicked.connect(self.moveSelectedPathItemsDown)
         self.editButton.clicked.connect(self.editSelectedPathItem)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def pathSelectionChanged(self):
         enabled = bool(self.pathListWidget.selectedItems())
         self.editButton.setEnabled(enabled)
@@ -355,7 +355,7 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
         self.upButton.setEnabled(enabled)
         self.downButton.setEnabled(enabled)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def addPathItem(self):
         # @TODO: don't directly use _app attribute
         filedialog = self.pluginmanager._app.filedialog
@@ -368,13 +368,13 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
                 if dir_ not in existingdirs:
                     self.pathListWidget.addItem(dir_)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def removeSelectedPathItem(self):
         model = self.pathListWidget.model()
         for item in self.pathListWidget.selectedItems():
             model.removeRow(self.pathListWidget.row(item))
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def editSelectedPathItem(self):
         items = self.pathListWidget.selectedItems()
         if items:
@@ -410,7 +410,7 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
         listwidget.insertItem(row + offset, item)
         item.setSelected(selected)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def moveSelectedPathItemsUp(self):
         selected = sorted(self.pathListWidget.selectedItems(),
                           key=self.pathListWidget.row)
@@ -421,7 +421,7 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
         for item in selected:
             self._movePathItem(item, -1)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def moveSelectedPathItemsDown(self):
         selected = sorted(self.pathListWidget.selectedItems(),
                           key=self.pathListWidget.row, reverse=True)

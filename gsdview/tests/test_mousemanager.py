@@ -119,7 +119,7 @@ class MainWin(QtGui.QMainWindow):
 
         return actions
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def openfile(self):
         self.scene.clear()
         self.graphicsview.setMatrix(QtGui.QMatrix())
@@ -129,7 +129,7 @@ class MainWin(QtGui.QMainWindow):
             item = self.scene.addPixmap(pixmap)
             self.scene.setSceneRect(item.boundingRect())
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def about(self):
         title = self.tr('MouseManager Example')
         text = ['<h1>Mouse Manager</h1>'

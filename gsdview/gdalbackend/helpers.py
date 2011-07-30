@@ -188,8 +188,8 @@ class GdalHelper(object):
     def do_finalize_on_error(self):
         pass
 
-    #@QtCore.pyqtSlot()
-    #@QtCore.pyqtSlot(int)
+    #@QtCore.Slot()
+    #@QtCore.Slot(int)
     def finalize(self, returncode=0):
         try:
             self._disconnect_signals()

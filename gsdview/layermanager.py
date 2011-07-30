@@ -304,9 +304,9 @@ class BaseLayerManager(QtCore.QObject):
             else:
                 action.setEnabled(enabled)
 
-    @QtCore.pyqtSlot(QtCore.QModelIndex)
-    #@QtCore.pyqtSlot(QtGui.QStandardItem)
-    @QtCore.pyqtSlot('QStandardItem*')  # @TODO: fix
+    @QtCore.Slot(QtCore.QModelIndex)
+    #@QtCore.Slot(QtGui.QStandardItem)
+    @QtCore.Slot('QStandardItem*')  # @TODO: fix
     def updateVisibility(self, index):
         if isinstance(index, QtCore.QModelIndex):
             if index.column() != 0:
@@ -441,59 +441,59 @@ class LayerManager(BaseLayerManager):
         else:
             return super(LayerManager, self).eventFilter(obj, event)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def moveSelectionToTop(self, selectionmodel=None):
         if selectionmodel is None:
             selectionmodel = self.selectionmodel
         super(LayerManager, self).moveSelectionToTop(selectionmodel)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def moveSelectionUp(self, selectionmodel=None):
         if selectionmodel is None:
             selectionmodel = self.selectionmodel
         super(LayerManager, self).moveSelectionUp(selectionmodel)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def moveSelectionDown(self, selectionmodel=None):
         if selectionmodel is None:
             selectionmodel = self.selectionmodel
         super(LayerManager, self).moveSelectionDown(selectionmodel)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def moveSelectionToBottom(self, selectionmodel=None):
         if selectionmodel is None:
             selectionmodel = self.selectionmodel
         super(LayerManager, self).moveSelectionToBottom(selectionmodel)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def removeSelectedLayers(self, selectionmodel=None):
         if selectionmodel is None:
             selectionmodel = self.selectionmodel
         super(LayerManager, self).removeSelectedLayers(selectionmodel)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def checkSelectedItems(self, selectionmodel=None, checked=True):
         if selectionmodel is None:
             selectionmodel = self.selectionmodel
         super(LayerManager, self).checkSelectedItems(selectionmodel, checked)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def uncheckSelectedItems(self, selectionmodel=None):
         self.checkSelectedItems(selectionmodel, False)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def toggleSelectedItems(self, selectionmodel=None):
         if selectionmodel is None:
             selectionmodel = self.selectionmodel
         super(LayerManager, self).toggleSelectedItems(selectionmodel)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def _updateActions(self, selectionmodel=None):
         if selectionmodel is None:
             selectionmodel = self.selectionmodel
         super(LayerManager, self)._updateActions(selectionmodel)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def updateStackOrder(self, rootitem=None):
         if rootitem is None:
             rootitem = self.model.invisibleRootItem()

@@ -241,7 +241,7 @@ class GSDView(ItemModelMainWindow):
                 return widget
         return None
 
-    @QtCore.pyqtSlot(QtCore.QPoint)
+    @QtCore.Slot(QtCore.QPoint)
     def itemContextMenu(self, pos):
         modelindex = self.treeview.indexAt(pos)
         if not modelindex.isValid():
@@ -643,7 +643,7 @@ class GSDView(ItemModelMainWindow):
             #logging.debug('save %s plugin preferences' % plugin.name)
             plugin.saveSettings(settings)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def updateSettingsMenu(self):
         # @TODO: rewrite; it should not be needed to copy the menu into a
         #        new one
@@ -658,12 +658,12 @@ class GSDView(ItemModelMainWindow):
             if self.tr('toolbar') not in action.text():
                 self.settings_submenu.addAction(action)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def applySettings(self):
         self.preferencesdialog.save(self.settings)
         self.loadSettings()
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def showPreferencesDialog(self):
         # @TODO: complete
         self.saveSettings()
@@ -672,7 +672,7 @@ class GSDView(ItemModelMainWindow):
             self.applySettings()
 
     ### File actions ##########################################################
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def openFile(self):
         # @TODO: remove; this is a temporary workaround for a Qt bug in
         #        Cocoa version
@@ -702,7 +702,7 @@ class GSDView(ItemModelMainWindow):
                 else:
                     self.logger.error('Unable to open file "%s"' % filename)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def closeItem(self):
         # @TODO: extend for multiple datasets
         #~ self.closeGdalDataset.emit()
@@ -722,7 +722,7 @@ class GSDView(ItemModelMainWindow):
 
         self.statusBar().showMessage('Ready.')
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def closeAll(self):
         root = self.datamodel.invisibleRootItem()
         while root.hasChildren():
@@ -735,8 +735,8 @@ class GSDView(ItemModelMainWindow):
                 root.removeRow(item.row())
 
     ### Auxiliary methods ####################################################
-    @QtCore.pyqtSlot()
-    @QtCore.pyqtSlot(str)
+    @QtCore.Slot()
+    @QtCore.Slot(str)
     def processingStarted(self, msg=None):
         if msg:
             self.statusBar().showMessage(msg)
@@ -744,12 +744,12 @@ class GSDView(ItemModelMainWindow):
         self.stopbutton.setEnabled(True)
         self.stopbutton.show()
 
-    @QtCore.pyqtSlot(int)
+    @QtCore.Slot(int)
     def updateProgressBar(self, fract):
         self.progressbar.show()
         self.progressbar.setValue(int(100. * fract))
 
-    @QtCore.pyqtSlot(int)
+    @QtCore.Slot(int)
     def processingDone(self, returncode=0):
         #self.controller.reset() # @TODO: remove
         try:

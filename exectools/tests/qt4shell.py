@@ -39,6 +39,9 @@ except ImportError:
     sip.setapi('QVariant',    2)
 
     from PyQt4 import QtCore, QtGui
+    QtCore.Signal = QtCore.pyqtSignal
+    QtCore.Slot = QtCore.pyqtSlot
+
 
 import exectools
 from exectools.qt4 import (Qt4OutputPlane, Qt4OutputHandler, Qt4ToolController,
@@ -224,7 +227,7 @@ class Qt4Shell(QtGui.QMainWindow):
             self.cmdbox.setCurrentIndex(self.cmdbox.count() - 1)
         return cmd
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def execute(self):
         '''Execute the command line using the tool controller.
 

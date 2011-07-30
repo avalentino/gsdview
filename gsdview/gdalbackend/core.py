@@ -178,7 +178,7 @@ class GDALBackend(QtCore.QObject):
                                                 self.tr('Context menu'),
                                                 self._app.treeview)
 
-    @QtCore.pyqtSlot(QtCore.QModelIndex)
+    @QtCore.Slot(QtCore.QModelIndex)
     def onItemActivated(self, index):
         defaultActionsMap = {
             modelitems.BandItem: 'actionOpenImageView',
@@ -415,7 +415,7 @@ class GDALBackend(QtCore.QObject):
         return actionsgroup
 
     ### Major object ##########################################################
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def openItemMatadataView(self):
         # @TODO: implementation
         self._app.logger.info('method not yet implemented')
@@ -460,13 +460,13 @@ class GDALBackend(QtCore.QObject):
 
         return dialog
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def _resethelpers(self):
         self._helpers['statsdialog'].reset()
         self._helpers['histdialog'].reset()
         self._helpers['ovrdialog'].reset()
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def showItemProperties(self):
         item = self._app.currentItem()
         dialog = self._infoDialogFactory(item)
@@ -478,8 +478,8 @@ class GDALBackend(QtCore.QObject):
 
     ### Driver ################################################################
     ### Dataset ###############################################################
-    @QtCore.pyqtSlot()
-    @QtCore.pyqtSlot(QtGui.QStandardItem)
+    @QtCore.Slot()
+    @QtCore.Slot(QtGui.QStandardItem)
     def openRGBImageView(self, item=None):
         if item is None:
             item = self._app.currentItem()
@@ -498,7 +498,7 @@ class GDALBackend(QtCore.QObject):
         if len(item.scene.views()) == 0:
             self.newImageView(item)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def buildOverviews(self, item=None):
         if item is None:
             item = self._app.currentItem()
@@ -514,14 +514,14 @@ class GDALBackend(QtCore.QObject):
 
     # @TODO: add band, add virtual band, open GCPs view
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def closeCurrentItem(self):
         item = self._app.currentItem()
         self._app.treeview.collapse(item.index())
         item.close()
 
     ### Sub-dataset ###########################################################
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def openSubDataset(self):
         item = self._app.currentItem()
         assert isinstance(item, modelitems.SubDatasetItem)
@@ -549,8 +549,8 @@ class GDALBackend(QtCore.QObject):
         #    self._app.treeview.expand(child.index())
 
     ### Raster Band ###########################################################
-    @QtCore.pyqtSlot()
-    @QtCore.pyqtSlot(QtGui.QStandardItem)  # @TODO: check
+    @QtCore.Slot()
+    @QtCore.Slot(QtGui.QStandardItem)  # @TODO: check
     @qt4support.overrideCursor
     def openImageView(self, item=None):
         if item is None:

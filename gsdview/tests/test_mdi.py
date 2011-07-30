@@ -90,7 +90,7 @@ class MdiChild(QtGui.QTextEdit):
         else:
             event.ignore()
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def documentWasModified(self):
         self.setWindowModified(self.document().isModified())
 
@@ -147,13 +147,13 @@ class TestMdiMainWindow(MdiMainWindow):
             return subwindow.widget()
         return None
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def newFile(self):
         child = self.createMdiChild()
         child.newFile()
         child.show()
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def open(self):
         fileName = QtGui.QFileDialog.getOpenFileName(self)
         if not fileName.isEmpty():
@@ -169,35 +169,35 @@ class TestMdiMainWindow(MdiMainWindow):
             else:
                 child.close()
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def save(self):
         if self.activeMdiChild().save():
             self.statusBar().showMessage(self.tr('File saved'), 2000)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def saveAs(self):
         if self.activeMdiChild().saveAs():
             self.statusBar().showMessage(self.tr('File saved'), 2000)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def cut(self):
         self.activeMdiChild().cut()
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def copy(self):
         self.activeMdiChild().copy()
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def paste(self):
         self.activeMdiChild().paste()
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def about(self):
         QtGui.QMessageBox.about(self, self.tr('About MDI'),
             self.tr('The <b>MDI</b> example demonstrates how to write '
                     'multiple document interface applications using Qt.'))
 
-    @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
+    @QtCore.Slot(QtGui.QMdiSubWindow)
     def updateActions(self, window=None):
         hasMdiChild = (window is not None)
         self.saveAct.setEnabled(hasMdiChild)

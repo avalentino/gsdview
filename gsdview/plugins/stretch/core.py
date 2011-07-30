@@ -65,7 +65,7 @@ class StretchTool(QtCore.QObject):
 
         return action
 
-    @QtCore.pyqtSlot(bool)
+    @QtCore.Slot(bool)
     def onButtonToggled(self, checked=True):
         if checked:
             self.reset()
@@ -113,8 +113,8 @@ class StretchTool(QtCore.QObject):
         except AttributeError:
             return None
 
-    @QtCore.pyqtSlot()
-    @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
+    @QtCore.Slot()
+    @QtCore.Slot(QtGui.QMdiSubWindow)
     def onSubWindowChanged(self, subwin=None):
         if subwin is None:
             subwin = self.app.mdiarea.activeSubWindow()
@@ -143,19 +143,19 @@ class StretchTool(QtCore.QObject):
                 self.action.setEnabled(False)
 
     # @TODO: remove
-    #~ @QtCore.pyqtSlot(QtCore.QModelIndex)
+    #~ @QtCore.Slot(QtCore.QModelIndex)
     #~ def onItemClicked(self, index):
         #~ if not self.app.mdiarea.activeSubWindow():
             #~ item = self.app.datamodel.itemFromIndex(index)
             #~ self.reset(item)
 
-    #~ @QtCore.pyqtSlot()
-    #~ @QtCore.pyqtSlot(QtCore.QModelIndex, int, int)
+    #~ @QtCore.Slot()
+    #~ @QtCore.Slot(QtCore.QModelIndex, int, int)
     #~ def onModelChanged(self, index=None, start=None, stop=None):
         #~ item = self.app.currentGraphicsItem()
         #~ self.reset(item)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def onStretchChanged(self):
         item = self.currentGraphicsItem()
         try:

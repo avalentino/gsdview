@@ -198,7 +198,7 @@ class FileEntryWidget(QtGui.QWidget):
 
     mode = property(_get_mode, _set_mode)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def choose(self):
         filename = self.lineEdit.text()
         filename = _choosefile(filename, self.dialog, self.mode)
@@ -333,7 +333,7 @@ class PreferencesDialog(QtGui.QDialog, PreferencesDialogBase):
     #: SIGNAL: it is emitted when modifications are applied
     #:
     #: :C++ signature: `void apply()`
-    apply = QtCore.pyqtSignal()
+    apply = QtCore.Signal()
 
     # @TODO: also look at
     # .../python-qt4-doc/examples/tools/settingseditor/settingseditor.py
@@ -363,7 +363,7 @@ class PreferencesDialog(QtGui.QDialog, PreferencesDialogBase):
         applybutton.clicked.connect(self.apply)
 
     # @TODO: check
-    #@QtCore.pyqtSlot(QtGui.QListWidgetItem, QtGui.QListWidgetItem)
+    #@QtCore.Slot(QtGui.QListWidgetItem, QtGui.QListWidgetItem)
     def changePage(self, current, previous):
         if not current:
             current = previous
@@ -456,7 +456,7 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
             else:
                 self._fill()
 
-    @QtCore.pyqtSlot(str)
+    @QtCore.Slot(str)
     def _linkActivated(self, link):
         # @TODO: better url parsing
         if 'mailto' in str(link):
@@ -524,7 +524,7 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
     def _excInfoSet(self):
         return all((self.exctype, self.excvalue, self.tracebackobj))
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def sendBugReport(self):
         if not self._excInfoSet():
             exctype, excvalue, tracebackobj = sys.exc_info()

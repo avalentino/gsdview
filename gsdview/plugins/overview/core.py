@@ -62,8 +62,8 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
     #:
     #: :C++ signature: `void mousePressed(QPointF, Qt::MouseButtons,
     #:                                    QGraphicsView::DragMode)`
-    mousePressed = QtCore.pyqtSignal(QtCore.QPointF, QtCore.Qt.MouseButtons,
-                                     QtGui.QGraphicsView.DragMode)
+    mousePressed = QtCore.Signal(QtCore.QPointF, QtCore.Qt.MouseButtons,
+                                 QtGui.QGraphicsView.DragMode)
 
     #: SIGNAL: it is emitted when the mouse is moved on the view
     #:
@@ -76,8 +76,8 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
     #:
     #: :C++ signature: `void mouseMoved(QPointF, Qt::MouseButtons,
     #:                                    QGraphicsView::DragMode)`
-    mouseMoved = QtCore.pyqtSignal(QtCore.QPointF, QtCore.Qt.MouseButtons,
-                                   QtGui.QGraphicsView.DragMode)
+    mouseMoved = QtCore.Signal(QtCore.QPointF, QtCore.Qt.MouseButtons,
+                               QtGui.QGraphicsView.DragMode)
 
     def __init__(self, parent=None, **kwargs):
         super(NavigationGraphicsView, self).__init__(parent, **kwargs)
@@ -227,8 +227,8 @@ class BandOverviewDock(QtGui.QDockWidget):
                 assert view.scene() == self.graphicsview.scene()
             view.centerOn(scenepos)
 
-    @QtCore.pyqtSlot()
-    @QtCore.pyqtSlot(QtGui.QGraphicsView)
+    @QtCore.Slot()
+    @QtCore.Slot(QtGui.QGraphicsView)
     def updateMainViewBox(self, srcview=None):
         if not self.graphicsview.scene():
             return
@@ -285,8 +285,8 @@ class OverviewController(QtCore.QObject):
         self.panel.graphicsview.mousePressed.connect(self.onNewPos)
         self.panel.graphicsview.mouseMoved.connect(self.onNewPos)
 
-    @QtCore.pyqtSlot()
-    @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
+    @QtCore.Slot()
+    @QtCore.Slot(QtGui.QMdiSubWindow)
     def onSubWindowChanged(self, subwin=None):
         if subwin is None:
             subwin = self.app.mdiarea.activeSubWindow()
@@ -298,13 +298,13 @@ class OverviewController(QtCore.QObject):
         else:
             self.panel.setItem(item)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def onWindowClosed(self):
         if len(self.app.mdiarea.subWindowList()) == 0:
             self.panel.reset()
 
-    #@QtCore.pyqtSlot(QtGui.QStandardItem)
-    @QtCore.pyqtSlot('QStandardItem*')  # @TODO:check
+    #@QtCore.Slot(QtGui.QStandardItem)
+    @QtCore.Slot('QStandardItem*')  # @TODO:check
     def onItemChanged(self, item):
         if hasattr(item, 'scene'):
             srcview = self.app.currentGraphicsView()
@@ -313,8 +313,8 @@ class OverviewController(QtCore.QObject):
                 self.panel.setItem(item)
 
     # @TODO: translate into an event handler
-    @QtCore.pyqtSlot(QtCore.QPointF, QtCore.Qt.MouseButtons,
-                     QtGui.QGraphicsView.DragMode)
+    @QtCore.Slot(QtCore.QPointF, QtCore.Qt.MouseButtons,
+                 QtGui.QGraphicsView.DragMode)
     def onNewPos(self, pos, buttons, dragmode):
         if buttons & QtCore.Qt.LeftButton:
             self.panel.centerMainViewOn(pos)

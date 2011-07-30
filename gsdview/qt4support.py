@@ -117,7 +117,7 @@ def selectAllItems(itemview):
                                      QtGui.QItemSelectionModel.Select)
 
 
-#@QtCore.pyqtSlot(QtGui.QWidget) # @TODO: check
+#@QtCore.Slot(QtGui.QWidget) # @TODO: check
 def copySelectedItems(itemview):
     '''Copy selected items of an QAbstractItemView to the clipboard and
     also return copied data.'''

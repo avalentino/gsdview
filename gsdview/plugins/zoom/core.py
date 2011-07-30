@@ -85,27 +85,27 @@ class ZoomTool(QtCore.QObject):
     def currentview(self):
         return self._view
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def zoomIn(self):
         factor = 1.2    # @TODO: make this configurable
         view = self.currentview()
         if view:
             view.scale(factor, factor)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def zoomOut(self):
         factor = 1. / 1.2   # @TODO: make this configurable
         view = self.currentview()
         if view:
             view.scale(factor, factor)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def zoomFit(self):
         view = self.currentview()
         if view:
             view.fitInView(view.sceneRect(), QtCore.Qt.KeepAspectRatio)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def zoom100(self):
         view = self.currentview()
         if view:

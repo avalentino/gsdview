@@ -207,7 +207,7 @@ class GraphicsDrawApp(QtGui.QMainWindow):
 
         return actions
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def about(self):
         title = self.tr('Qt4 Graphics Draw Example')
         text = ['<h1>Graphics Draw</h1>'
@@ -218,13 +218,13 @@ class GraphicsDrawApp(QtGui.QMainWindow):
         text = self.tr('\n'.join(text))
         QtGui.QMessageBox.about(self, title, text)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def reset(self):
         self.scene.clear()
         self.scene.setSceneRect(0, 0, 800, 600)
         self.graphicsview.setTransform(QtGui.QTransform())
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def onReset(self):
         ret = QtGui.QMessageBox.question(self,
                 self.tr('Reset'),
@@ -233,7 +233,7 @@ class GraphicsDrawApp(QtGui.QMainWindow):
         if ret == QtGui.QMessageBox.Ok:
             self.reset()
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def onOpen(self):
         filters = [
             self.tr('All files (*)'),
@@ -258,11 +258,11 @@ class GraphicsDrawApp(QtGui.QMainWindow):
 
             self.scene.addItem(item)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def onSave(self):
         qt4support.imgexport(self.scene, self)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def onPrint(self):
         qt4support.printObject(self.scene, parent=self)
 

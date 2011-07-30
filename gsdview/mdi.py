@@ -47,7 +47,7 @@ class MdiMainWindow(QtGui.QMainWindow):
     #: SIGNAL: it is emitted when an MDI subwindow is closed
     #:
     #: :C++ signature: `void subWindowClosed()`
-    subWindowClosed = QtCore.pyqtSignal()
+    subWindowClosed = QtCore.Signal()
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(MdiMainWindow, self).__init__(parent, flags, **kwargs)
@@ -112,7 +112,7 @@ class ItemModelMainWindow(MdiMainWindow):
             item = item.parent()
         return item
 
-    #@QtCore.pyqtSlot(QtCore.QModelIndex) # @TODO: check
+    #@QtCore.Slot(QtCore.QModelIndex) # @TODO: check
     def setActiveWinFromIndex(self, index):
         '''Set the active sub-window from index.
 
@@ -136,7 +136,7 @@ class ItemModelMainWindow(MdiMainWindow):
                 # the window has not an associated item in the datamodel
                 pass
 
-    @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
+    @QtCore.Slot(QtGui.QMdiSubWindow)
     def setActiveIndexFromWin(self, window):
         '''Set the active sub-window.
 
@@ -157,7 +157,7 @@ class ItemModelMainWindow(MdiMainWindow):
         else:
             self.treeview.setCurrentIndex(index)
 
-    #@QtCore.pyqtSlot(QtCore.QModelIndex, int, int) # @TODO: check
+    #@QtCore.Slot(QtCore.QModelIndex, int, int) # @TODO: check
     def onItemsClosed(self, modelindex, start, end):
         '''Closes sub-windows associated to the closed model items.
 

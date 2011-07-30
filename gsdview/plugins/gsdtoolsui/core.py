@@ -124,7 +124,7 @@ class GSDToolsController(QtCore.QObject):
 
         return item
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def exportKML(self):
         item = self._currentDatasetItem()
 
@@ -159,7 +159,7 @@ class GSDToolsController(QtCore.QObject):
                 # @TODO: QtGui.QMessageBox.error(...)
                 logging.error('unable to export "%s" to "%s".' % (src, dst))
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def openInGoogleEarth(self):
         item = self._currentDatasetItem()
 
@@ -188,7 +188,7 @@ class GSDToolsController(QtCore.QObject):
             QtGui.QMessageBox.warning(self.app, self.tr('Warning'),
                         self.tr('Unable to open "%s" in GoogleEarth.') % dst)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def openInGoogleMaps(self):
         '''Open google-maps centering the map on scene centre.
 
@@ -225,21 +225,21 @@ class GSDToolsController(QtCore.QObject):
             QtGui.QMessageBox.warning(self.app, self.tr('Warning'),
                             self.tr('Unable to open URL: "%s"') % str(url))
 
-    @QtCore.pyqtSlot()
-    @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
+    @QtCore.Slot()
+    @QtCore.Slot(QtGui.QMdiSubWindow)
     def onSubWindowChanged(self, subwin=None):
         item = self._currentDatasetItem()
         enabled = bool(item is not None and hasattr(item, 'cmapper'))
         self.actions.setEnabled(enabled)
 
-    #~ @QtCore.pyqtSlot(QtCore.QModelIndex)
+    #~ @QtCore.Slot(QtCore.QModelIndex)
     #~ def onItemClicked(self, index):
         #~ if not self.app.mdiarea.activeSubWindow():
             #~ item = self.app.datamodel.itemFromIndex(index)
             #~ self.setItemFootprint(item)
 
-    #~ @QtCore.pyqtSlot()
-    #~ @QtCore.pyqtSlot(QtCore.QModelIndex, int, int)
+    #~ @QtCore.Slot()
+    #~ @QtCore.Slot(QtCore.QModelIndex, int, int)
     #~ def onModelChanged(self, index=None, start=None, stop=None):
         #~ subwin = self.app.mdiarea.activeSubWindow()
         #~ if subwin:

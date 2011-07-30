@@ -242,7 +242,7 @@ class QtWindowListMenu(QtGui.QMenu):
         self.attachToMdiArea(mdi)
         return True
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def syncWithMdiArea(self):
         '''Syncronize with MDI area
 
@@ -287,7 +287,7 @@ class QtWindowListMenu(QtGui.QMenu):
 
         self.addActions(self._winGroup.actions())
 
-    @QtCore.pyqtSlot(QtGui.QAction)
+    @QtCore.Slot(QtGui.QAction)
     def activateWindow(self, act):
         '''Activate the corresponding sub-window in the MDI area
 
@@ -303,7 +303,7 @@ class QtWindowListMenu(QtGui.QMenu):
             return
         self.mdi.setActiveSubWindow(self._winMap.get(act))
 
-    @QtCore.pyqtSlot(QtCore.QObject)
+    @QtCore.Slot(QtCore.QObject)
     def windowDestroyed(self, obj):
         '''This slot is executed whenever a subwindow (*obj*) of the
         attached QMdiArea, for which an icon has been, is deleted.

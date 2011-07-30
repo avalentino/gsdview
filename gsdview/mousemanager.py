@@ -179,7 +179,7 @@ class RubberBandMode(MouseMode):
     #: SIGNAL: it is emitted when a rectangular area is selected
     #:
     #: :C++ signature: `void rubberBandSeclection(const QRectF&)`
-    rubberBandSeclection = QtCore.pyqtSignal(QtCore.QRectF)
+    rubberBandSeclection = QtCore.Signal(QtCore.QRectF)
 
     def sceneEventFilter(self, obj, event):
         if event.type() == QtCore.QEvent.GraphicsSceneMouseRelease:
@@ -207,7 +207,7 @@ class MouseManager(QtCore.QObject):
     #: SIGNAL: it is emitted when the mouse mode is changed
     #:
     #: :C++ signature: `void modeChanged(const QString&)`
-    modeChanged = QtCore.pyqtSignal(str)
+    modeChanged = QtCore.Signal(str)
 
     def __init__(self, parent=None, stdmodes=True, **kwargs):
         QtCore.QObject.__init__(self, parent, **kwargs)

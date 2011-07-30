@@ -38,6 +38,8 @@ except ImportError:
     sip.setapi('QVariant',    2)
 
     from PyQt4 import QtCore, QtGui
+    QtCore.Signal = QtCore.pyqtSignal
+    QtCore.Slot = QtCore.pyqtSlot
 
 from exectools import BaseOutputHandler, BaseToolController, EX_OK, level2tag
 
@@ -67,7 +69,7 @@ class Qt4Blinker(QtGui.QLabel):
             ':/trolltech/styles/commonstyle/images/standardbutton-no-32.png')
         self.setPixmap(pixmap)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def pulse(self):
         '''A blinker pulse.
 
@@ -94,7 +96,7 @@ class Qt4OutputPlane(QtGui.QTextEdit):
     #: SIGNAL: emits a hide request.
     #:
     #: :C++ signature: `void planeHideRequest()`
-    planeHideRequest = QtCore.pyqtSignal()
+    planeHideRequest = QtCore.Signal()
 
     def __init__(self, parent=None, **kwargs):
         super(Qt4OutputPlane, self).__init__(parent, **kwargs)
@@ -184,7 +186,7 @@ class Qt4OutputHandler(QtCore.QObject, BaseOutputHandler):
     #:     process
     #:
     #: :C++ signature: `void pulse(QString)`
-    pulse = QtCore.pyqtSignal((), (str,))
+    pulse = QtCore.Signal((), (str,))
 
     #: SIGNAL: it is emitted when the progress percentage changes
     #:
@@ -192,7 +194,7 @@ class Qt4OutputHandler(QtCore.QObject, BaseOutputHandler):
     #:     the new completion percentage [0, 100]
     #:
     #: :C++ signature: `void percentageChanged(float)`
-    percentageChanged = QtCore.pyqtSignal(int)
+    percentageChanged = QtCore.Signal(int)
 
     def __init__(self, logger=None, statusbar=None, progressbar=None,
                  blinker=None, parent=None, **kwargs):
@@ -436,7 +438,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
     #:     the external proces exit code
     #:
     #: :C++ signature: `void finished(int exitCode)`
-    finished = QtCore.pyqtSignal(int)
+    finished = QtCore.Signal(int)
 
     def __init__(self, logger=None, parent=None, **kwargs):
         QtCore.QObject.__init__(self, parent, **kwargs)
@@ -456,7 +458,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
 
         return self.subprocess.state() != self.subprocess.NotRunning
 
-    @QtCore.pyqtSlot(int, QtCore.QProcess.ExitStatus)
+    @QtCore.Slot(int, QtCore.QProcess.ExitStatus)
     def finalize_run(self, exitCode=None, exitStatus=None):
         '''Perform finalization actions.
 
@@ -536,7 +538,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         super(Qt4ToolController, self)._reset()
         self.subprocess.close()
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def handle_stdout(self):
         '''Handle standard output.
 
@@ -548,7 +550,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         if not byteArray.isEmpty():
             self._tool.stdout_handler.feed(byteArray.data())
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def handle_stderr(self):
         '''Handle standard error.
 
@@ -560,7 +562,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         if not byteArray.isEmpty():
             self._tool.stderr_handler.feed(byteArray.data())
 
-    @QtCore.pyqtSlot(QtCore.QProcess.ProcessError)
+    @QtCore.Slot(QtCore.QProcess.ProcessError)
     def handle_error(self, error):
         '''Handle a error in process execution.
 
@@ -615,7 +617,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         # @TODO: check
         #self.finished.emit(self.exitCode())
 
-    #QtCore.pyqtSlot() # @TODO: check how to handle varargs
+    #QtCore.Slot() # @TODO: check how to handle varargs
     def run_tool(self, tool, *args, **kwargs):
         '''Run an external tool in controlled way.
 
@@ -662,8 +664,8 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
                                                         self.subprocess.pid())
             self.subprocess.kill()
 
-    @QtCore.pyqtSlot()
-    @QtCore.pyqtSlot(bool)
+    @QtCore.Slot()
+    @QtCore.Slot(bool)
     def stop_tool(self, force=True):
         '''Stop the execution of controlled subprocess.
 

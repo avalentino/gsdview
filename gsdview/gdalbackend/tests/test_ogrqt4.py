@@ -212,7 +212,7 @@ class VectorGraphicsApp(QtGui.QMainWindow):
 
         return actions
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def about(self):
         title = self.tr('MouseManager Example')
         text = ['<h1>Mouse Manager</h1>'
@@ -224,14 +224,14 @@ class VectorGraphicsApp(QtGui.QMainWindow):
         text = self.tr('\n'.join(text))
         QtGui.QMessageBox.about(self, title, text)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def reset(self):
         self.scene.clear()
         self.graphicsview.resetTransform()
         self.graphicsview.scale(1., -1.)
         self.model.clear()
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def onOpenVector(self):
         ogrFilters = [
             'All files (*)',

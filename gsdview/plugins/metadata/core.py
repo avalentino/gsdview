@@ -110,14 +110,14 @@ class MetadataController(QtCore.QObject):
             return
         self.panel.setMetadata(metadata)
 
-    @QtCore.pyqtSlot(QtCore.QModelIndex)
+    @QtCore.Slot(QtCore.QModelIndex)
     def onItemClicked(self, index):
         #if not app.mdiarea.activeSubWindow():
         item = self.app.datamodel.itemFromIndex(index)
         self.setItemMetadata(item)
 
-    @QtCore.pyqtSlot()
-    @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
+    @QtCore.Slot()
+    @QtCore.Slot(QtGui.QMdiSubWindow)
     def onSubWindowChanged(self, subwin=None):
         if not subwin:
             subwin = self.app.mdiarea.activeSubWindow()

@@ -234,8 +234,8 @@ class WorldmapController(QtCore.QObject):
 
         self.panel.setFootprint(footprint)
 
-    @QtCore.pyqtSlot()
-    @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
+    @QtCore.Slot()
+    @QtCore.Slot(QtGui.QMdiSubWindow)
     def onSubWindowChanged(self, subwin=None):
         if subwin is None:
             subwin = self.app.mdiarea.activeSubWindow()
@@ -251,14 +251,14 @@ class WorldmapController(QtCore.QObject):
         else:
             self.setItemFootprint(item)
 
-    @QtCore.pyqtSlot(QtCore.QModelIndex)
+    @QtCore.Slot(QtCore.QModelIndex)
     def onItemClicked(self, index):
         if not self.app.mdiarea.activeSubWindow():
             item = self.app.datamodel.itemFromIndex(index)
             self.setItemFootprint(item)
 
-    @QtCore.pyqtSlot()
-    @QtCore.pyqtSlot(QtCore.QModelIndex, int, int)
+    @QtCore.Slot()
+    @QtCore.Slot(QtCore.QModelIndex, int, int)
     def onModelChanged(self, index=None, start=None, stop=None):
         subwin = self.app.mdiarea.activeSubWindow()
         if subwin:

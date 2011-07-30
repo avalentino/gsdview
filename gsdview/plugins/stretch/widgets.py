@@ -49,7 +49,7 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
     #: SIGNAL: it is emitted when the stretch value changes
     #:
     #: :C++ signature: `void valueChanged()`
-    valueChanged = QtCore.pyqtSignal()
+    valueChanged = QtCore.Signal()
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(StretchWidget, self).__init__(parent, flags, **kwargs)
@@ -113,7 +113,7 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
     def low(self):
         return self.lowSpinBox.value()
 
-    @QtCore.pyqtSlot(float)
+    @QtCore.Slot(float)
     def setLow(self, value):
         self._setValue(value, self.lowSpinBox, self.lowSlider)
         if self.lowSpinBox.value() > self.highSpinBox.value():
@@ -122,13 +122,13 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
     def high(self):
         return self.highSpinBox.value()
 
-    @QtCore.pyqtSlot(float)
+    @QtCore.Slot(float)
     def setHigh(self, value):
         self._setValue(value, self.highSpinBox, self.highSlider)
         if self.lowSpinBox.value() > self.highSpinBox.value():
             self.lowSpinBox.setValue(self.highSpinBox.value())
 
-    @QtCore.pyqtSlot(int)
+    @QtCore.Slot(int)
     def _onLowSliderChanged(self, value):
         if self.floatmode:
             value = self._value(value)
@@ -137,7 +137,7 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
                 return
         self.setLow(value)
 
-    @QtCore.pyqtSlot(int)
+    @QtCore.Slot(int)
     def _onHighSliderChanged(self, value):
         if self.floatmode:
             value = self._value(value)
@@ -161,7 +161,7 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
     def setMinimum(self, value):
         self.minSpinBox.setValue(value)
 
-    @QtCore.pyqtSlot(float)
+    @QtCore.Slot(float)
     def _onMinimumChanged(self, value):
         if self.minSpinBox.value() > self.maxSpinBox.value():
             self.maxSpinBox.setValue(self.minSpinBox.value())
@@ -189,7 +189,7 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
     def setMaximum(self, value):
         self.maxSpinBox.setValue(value)
 
-    @QtCore.pyqtSlot(float)
+    @QtCore.Slot(float)
     def _onMaximumChanged(self, value):
         if self.minSpinBox.value() > self.maxSpinBox.value():
             self.minSpinBox.setValue(self.maxSpinBox.value())
@@ -257,7 +257,7 @@ class StretchDialog(QtGui.QDialog, StretchDialogBase):
     #: SIGNAL: it is emitted when the stretch value changes
     #:
     #: :C++ signature: `void valueChanged()`
-    valueChanged = QtCore.pyqtSignal()
+    valueChanged = QtCore.Signal()
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(StretchDialog, self).__init__(parent, flags, **kwargs)
@@ -283,8 +283,8 @@ class StretchDialog(QtGui.QDialog, StretchDialogBase):
     def advanced(self):
         return self.stretchwidget.lowSpinBox.isVisible()
 
-    @QtCore.pyqtSlot()
-    @QtCore.pyqtSlot(bool)
+    @QtCore.Slot()
+    @QtCore.Slot(bool)
     def setAdvanced(self, advmode=True):
         self.stretchwidget.lowSpinBox.setVisible(advmode)
         self.stretchwidget.lowSlider.setVisible(advmode)
@@ -300,7 +300,7 @@ class StretchDialog(QtGui.QDialog, StretchDialogBase):
     def saveState(self):
         self.state = self.stretchwidget.state()
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def reset(self, d=None):
         if d is None:
             d = self.state
