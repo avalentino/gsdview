@@ -20,12 +20,6 @@
 
 '''Tools for running external processes.'''
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__revision__ = '$Revision$'
-__date__ = '$Date$'
-__version__ = (0, 6, 5)
-
-version = '.'.join(map(str, __version__))
 
 import re
 import os
@@ -33,8 +27,16 @@ import sys
 import logging
 from cStringIO import StringIO
 
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__revision__ = '$Revision$'
+__date__ = '$Date$'
+__version__ = (0, 6, 5)
+
 __all__ = ['EX_OK', 'PROGRESS', 'TAGS', 'level2tag',
            'BaseOutputHandler', 'BaseToolController', 'ToolDescriptor']
+
+version = '.'.join(map(str, __version__))
 
 if sys.platform[:3] == 'win':
     EX_OK = 0

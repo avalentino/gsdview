@@ -21,12 +21,13 @@
 
 '''Tools for geo-spatial images handling and visualization.'''
 
+
+import numpy as np
+
+
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__ = '$Date$'
 __revision__ = '$Revision$'
-
-
-import numpy as np
 
 
 ### LUT utils ################################################################

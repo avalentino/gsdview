@@ -1,9 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__author__ = 'Antonio Valentino <antonio.valentino@tiscali.it>'
-__date__ = '$Date: 2006/03/11 23:18:40 $'
-__version__ = '$Revision: 1.15 $'
+### Copyright (C) 2006-2011 Antonio Valentino <a_valentino@users.sf.net>
+
+### This file is part of exectools.
+
+### This module is free software; you can redistribute it and/or modify
+### it under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 2 of the License, or
+### (at your option) any later version.
+
+### This module is distributed in the hope that it will be useful,
+### but WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+### GNU General Public License for more details.
+
+### You should have received a copy of the GNU General Public License
+### along with this module; if not, write to the Free Software
+### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
+
+'''Simple interactive shell implementation using exectools and PyQt4.'''
+
 
 import time
 import logging
@@ -13,6 +30,11 @@ from PyQt4 import QtCore, QtGui
 import exectools
 from exectools.qt4 import (Qt4OutputPlane, Qt4OutputHandler, Qt4ToolController,
                            Qt4DialogLoggingHandler, Qt4LoggingHandler)
+
+
+__author__ = 'Antonio Valentino <antonio.valentino@tiscali.it>'
+__date__ = '$Date: 2006/03/11 23:18:40 $'
+__version__ = '$Revision: 1.15 $'
 
 
 class Qt4Shell(QtGui.QMainWindow):

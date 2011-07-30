@@ -21,15 +21,16 @@
 
 '''Components for layers management.'''
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
 
 import logging
 import itertools
 
 from PyQt4 import QtCore, QtGui
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 
 SelectCurrentRows = (QtGui.QItemSelectionModel.SelectCurrent |

@@ -21,12 +21,13 @@
 
 '''Custom QtGui.QGraphicsView component.'''
 
+
+from PyQt4 import QtCore, QtGui
+
+
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__ = '$Date$'
 __revision__ = '$Revision$'
-
-
-from PyQt4 import QtCore, QtGui
 
 
 # @TODO: move to gdalqt4.py

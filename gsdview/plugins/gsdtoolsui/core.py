@@ -21,10 +21,6 @@
 
 '''UI front-end for GSDTools.'''
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
 
 import os
 import sys
@@ -38,6 +34,11 @@ from gsdview import qt4support
 from gsdtools import ras2vec
 
 from gsdtoolsui import info
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 
 class GSDToolsController(QtCore.QObject):

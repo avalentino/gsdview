@@ -20,9 +20,6 @@
 
 '''Tools for running external processes in a GTK GUI.'''
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__revision__ = '$Revision$'
-__date__ = '$Date$'
 
 import os
 import sys
@@ -37,6 +34,11 @@ import subprocess2
 
 from exectools import BaseOutputHandler, level2tag
 from exectools.std import StdToolController
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__revision__ = '$Revision$'
+__date__ = '$Date$'
 
 
 class Popen(gobject.GObject, subprocess2.Popen):

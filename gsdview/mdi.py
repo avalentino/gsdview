@@ -23,14 +23,15 @@
 
 # @TODO: move this to widgets sub-package or qt4freesolutions subpackage
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
 
 from PyQt4 import QtCore, QtGui
 
 from gsdview.qtwindowlistmenu import QtWindowListMenu
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 
 class MdiMainWindow(QtGui.QMainWindow):

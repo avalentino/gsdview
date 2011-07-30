@@ -43,17 +43,17 @@ gdaltindex utility.
 #   * filling (with transparency)
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-__version__ = '1.0'
-
-
 import os
 import sys
 import logging
 
 from osgeo import gdal, ogr, osr
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
+__version__ = '1.0'
 
 if hasattr(os, 'EX_USAGE'):
     EX_USAGE = os.EX_USAGE

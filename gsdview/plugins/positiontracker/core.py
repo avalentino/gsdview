@@ -21,13 +21,15 @@
 
 '''Core modue for position tracker plugin.'''
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
 
 from PyQt4 import QtCore
 
 from positiontracker.coordinateview import CoordinateView, GeoCoordinateView
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 
 class TrackingTool(QtCore.QObject):

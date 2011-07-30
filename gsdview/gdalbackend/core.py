@@ -21,11 +21,6 @@
 
 '''Core GDAL backend functions and classes.'''
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
-__all__ = ['GDALBackend']
 
 import os
 
@@ -39,6 +34,13 @@ from gsdview.gdalbackend import helpers
 from gsdview.gdalbackend import modelitems
 from gsdview.gdalbackend import gdalsupport
 from gsdview.gdalbackend import gdalexectools
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
+
+__all__ = ['GDALBackend']
 
 
 class GDALBackend(QtCore.QObject):

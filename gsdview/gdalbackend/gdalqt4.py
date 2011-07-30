@@ -21,10 +21,6 @@
 
 '''Helper tools and custom components for binding GDAL and PyQt4.'''
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
 
 import logging
 
@@ -41,6 +37,11 @@ from gsdview import imgutils
 from gsdview.qt4support import numpy2qimage
 
 from gsdview.gdalbackend import gdalsupport
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 
 def gdalcolorentry2qcolor(colrentry, interpretation=gdal.GPI_RGB):

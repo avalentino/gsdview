@@ -20,12 +20,6 @@
 
 '''Tools for running external processes in a QT4 GUI.'''
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__revision__ = '$Revision$'
-__date__ = '$Date$'
-
-__all__ = ['Qt4Blinker', 'Qt4OutputPlane', 'Qt4OutputHandler',
-           'Qt4LoggingHandler', 'Qt4DialogLoggingHandler', 'Qt4ToolController']
 
 import time
 import logging
@@ -43,6 +37,14 @@ sip.setapi('QVariant',    2)
 from PyQt4 import QtCore, QtGui
 
 from exectools import BaseOutputHandler, BaseToolController, EX_OK, level2tag
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__revision__ = '$Revision$'
+__date__ = '$Date$'
+
+__all__ = ['Qt4Blinker', 'Qt4OutputPlane', 'Qt4OutputHandler',
+           'Qt4LoggingHandler', 'Qt4DialogLoggingHandler', 'Qt4ToolController']
 
 
 class Qt4Blinker(QtGui.QLabel):

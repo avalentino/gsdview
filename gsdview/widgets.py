@@ -21,9 +21,6 @@
 
 '''Widgets and dialogs for GSDView.'''
 
-__author__ = '$Author$'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
 
 import os
 import sys
@@ -37,6 +34,11 @@ from PyQt4 import QtCore, QtGui
 from gsdview import info
 from gsdview import utils
 from gsdview import qt4support
+
+
+__author__ = '$Author$'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 
 def get_mainwin():

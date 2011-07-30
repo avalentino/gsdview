@@ -21,6 +21,11 @@
 
 '''Image stretch control for GSDView.'''
 
+
+from stretch.info import *
+from stretch.info import __version__, __requires__
+
+
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__ = '$Date: 2010/02/14 22:02:21 $'
 __revision__ = '$Revision: 36b7b35ff3b6 $'
@@ -30,10 +35,6 @@ __all__ = ['init', 'close', 'loadSettings', 'saveSettings',
            'author', 'author_email', 'copyright', 'license_type',
            'website', 'website_label',
 ]
-
-from stretch.info import *
-from stretch.info import __version__, __requires__
-
 
 _instance = None
 

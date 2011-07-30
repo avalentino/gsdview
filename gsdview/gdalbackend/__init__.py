@@ -21,6 +21,14 @@
 
 '''GDAL backend for GSDView.'''
 
+
+# @TODO: should use absolute imports (from gsdview.gdalbackend import
+#        something)
+from info import *
+from info import __version__, __requires__
+from core import GDALBackend
+
+
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__ = '$Date$'
 __revision__ = '$Revision$'
@@ -34,12 +42,6 @@ __all__ = ['init', 'close', 'loadSettings', 'saveSettings',
            'openRGBImageView', 'openSubDataset', 'closeCurrentItem',
            'findItemFromFilename', 'itemActions', 'itemContextMenu',
 ]
-
-# @TODO: should use absolute imports (from gsdview.gdalbackend import
-#        something)
-from info import *
-from info import __version__, __requires__
-from core import GDALBackend
 
 UseExceptions = GDALBackend.UseExceptions
 DontUseExceptions = GDALBackend.DontUseExceptions

@@ -21,14 +21,15 @@
 
 '''Browser component for geo-datasets metadata.'''
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
 
 from PyQt4 import QtCore, QtGui
 
 from gsdview import qt4support
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 
 class MetadataViewer(QtGui.QDockWidget):

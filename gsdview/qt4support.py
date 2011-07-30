@@ -21,10 +21,6 @@
 
 '''Utility functions and classes for Qt4 applicaions.'''
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
 
 import os
 import csv
@@ -33,11 +29,14 @@ import logging
 from cStringIO import StringIO
 from ConfigParser import ConfigParser
 
-
 from PyQt4 import QtCore, QtGui, QtSvg, uic
 
 from gsdview import utils
 
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 intToWinState = {
     int(QtCore.Qt.WindowNoState):       QtCore.Qt.WindowNoState,

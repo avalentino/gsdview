@@ -21,9 +21,6 @@
 
 '''GDAL items for PyQt4 QStandardItemModel.'''
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
 
 import os
 import logging
@@ -38,6 +35,10 @@ from gsdview.gdalbackend import info
 from gsdview.gdalbackend import gdalqt4
 from gsdview.gdalbackend import gdalsupport
 
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 VISIBLE_OVERVIEW_ITEMS = False
 

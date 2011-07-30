@@ -21,16 +21,16 @@
 
 '''Zoom tool.'''
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
-
 import logging
 
 from PyQt4 import QtCore, QtGui
 
 from gsdview import qt4support
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 
 class ZoomTool(QtCore.QObject):

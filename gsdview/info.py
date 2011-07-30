@@ -21,14 +21,6 @@
 
 '''Package info.'''
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-__version__ = (0, 6, 5)
-
-__all__ = ['name', 'version', 'short_description', 'description',
-           'author', 'author_email', 'copyright', 'license_type',
-           'website', 'website_label', 'all_versions', 'all_versions_str']
 
 import sys
 import platform
@@ -38,6 +30,15 @@ import numpy as np
 import sip
 from PyQt4 import QtCore
 
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
+__version__ = (0, 6, 5)
+
+__all__ = ['name', 'version', 'short_description', 'description',
+           'author', 'author_email', 'copyright', 'license_type',
+           'website', 'website_label', 'all_versions', 'all_versions_str']
 
 name = 'GSDView'
 version = '.'.join(map(str, __version__)) + 'beta'

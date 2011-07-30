@@ -21,12 +21,6 @@
 
 '''GUI front-end for the Geospatial Data Abstracton Library (GDAL).'''
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
-__all__ = ['GSDView']
-
 
 import os
 import sys
@@ -48,6 +42,13 @@ from gsdview.mdi import ItemModelMainWindow
 from gsdview.appsite import USERCONFIGDIR, SYSPLUGINSDIR
 from gsdview.widgets import AboutDialog, PreferencesDialog
 from gsdview.widgets import GSDViewExceptionDialog as ExceptionDialog
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
+
+__all__ = ['GSDView']
 
 
 class GSDView(ItemModelMainWindow):

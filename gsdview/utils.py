@@ -21,12 +21,6 @@
 
 '''Utility functions and classes for GSDView.'''
 
-__author__ = '$Author$'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
-__all__ = ['which', 'isexecutable', 'isscript', 'scriptcmd', 'default_workdir',
-           'getresource', 'format_platform_info', 'foramt_bugreport']
 
 import os
 import sys
@@ -43,6 +37,14 @@ except ImportError:
 
 from gsdview import info
 from gsdview import appsite
+
+
+__author__ = '$Author$'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
+
+__all__ = ['which', 'isexecutable', 'isscript', 'scriptcmd', 'default_workdir',
+           'getresource', 'format_platform_info', 'foramt_bugreport']
 
 
 def default_workdir():

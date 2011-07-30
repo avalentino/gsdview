@@ -20,14 +20,15 @@
 
 '''Tools for running external processes using the subprocess module.'''
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__revision__ = '$Revision: $'
-__date__ = '$Date: $'
-
 import sys
 
 from exectools import BaseToolController, EX_OK
 import subprocess2
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__revision__ = '$Revision: $'
+__date__ = '$Date: $'
 
 
 class StdToolController(BaseToolController):

@@ -29,12 +29,14 @@
 
 '''
 
-__all__ = ['DATADIR', 'DOCSDIR', 'LICENSEFILE', 'SYSPLUGINSDIR',
-           'USERCONFIGDIR']
-
 
 import os
 import sys
+
+
+__all__ = ['DATADIR', 'DOCSDIR', 'LICENSEFILE', 'SYSPLUGINSDIR',
+           'USERCONFIGDIR']
+
 
 if not hasattr(sys, 'frozen'):
     # Source schema

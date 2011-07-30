@@ -21,6 +21,11 @@
 
 '''Metadata viewer component for geo-datasets.'''
 
+
+from metadata.info import *
+from metadata.info import __version__, __requires__
+
+
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__ = '$Date$'
 __revision__ = '$Revision$'
@@ -30,10 +35,6 @@ __all__ = ['init', 'close', 'loadSettings', 'saveSettings',
            'author', 'author_email', 'copyright', 'license_type',
            'website', 'website_label',
 ]
-
-from metadata.info import *
-from metadata.info import __version__, __requires__
-
 
 _instance = None
 

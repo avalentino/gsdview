@@ -21,10 +21,6 @@
 
 '''Overview pannel for GDAL raster bands.'''
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
 
 import logging
 
@@ -32,6 +28,11 @@ from PyQt4 import QtCore, QtGui
 
 from gsdview.qt4support import overrideCursor
 from gsdview.gdalbackend import gdalsupport
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 
 class NavigationGraphicsView(QtGui.QGraphicsView):

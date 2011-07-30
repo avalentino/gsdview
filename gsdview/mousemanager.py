@@ -32,14 +32,14 @@ making the system expandible, and also methods to register objects
 '''
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
-
 from PyQt4 import QtCore, QtGui
 
 from gsdview import qt4support
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 
 class MouseMode(QtCore.QObject):

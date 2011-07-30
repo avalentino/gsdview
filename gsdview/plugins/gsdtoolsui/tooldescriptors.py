@@ -21,10 +21,6 @@
 
 '''Exectools tool descriptors for gsdtools .'''
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
 
 import os
 
@@ -33,6 +29,11 @@ from gsdtools.stats import HistogramRequest
 
 from gsdview import utils
 from gsdview.gdalbackend.gdalexectools import BaseGdalToolDescriptor
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 
 def _gsdtoolcmd(name):

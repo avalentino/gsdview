@@ -21,10 +21,6 @@
 
 '''Core GDAL backend functions and classes.'''
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
 
 import os
 import glob
@@ -36,6 +32,11 @@ from PyQt4 import QtGui
 
 from gsdview.gdalbackend import modelitems
 from gsdview.gdalbackend import gdalsupport
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 
 class GdalHelper(object):

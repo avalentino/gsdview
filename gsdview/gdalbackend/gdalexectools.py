@@ -21,10 +21,6 @@
 
 '''Custom exectools components for GDAL.'''
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
 
 import re
 import logging
@@ -33,6 +29,11 @@ import exectools
 from exectools.qt4 import Qt4OutputHandler
 
 from osgeo import gdal
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 
 class BaseGdalToolDescriptor(exectools.ToolDescriptor):

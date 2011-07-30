@@ -21,10 +21,6 @@
 
 '''World map component for GSDView.'''
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
 
 import numpy as np
 
@@ -32,6 +28,11 @@ from PyQt4 import QtCore, QtGui
 
 from gsdview import utils
 from gsdview import qt4support
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 
 class WorldmapPanel(QtGui.QDockWidget):

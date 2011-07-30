@@ -28,10 +28,6 @@ sub-process and allow asynchronous I/O both on Windows and Posix platforms.
 # @TODO: use ctypes instead of pywin32
 # @TODO: update to the new subprocess API (signal, kill, terminate)
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__revision__ = '$Revision$'
-__date__ = '$Date$'
-
 
 import os
 import time
@@ -56,6 +52,11 @@ except ImportError:
     # @COMPATIBILITY with python 2.4
     from subprocess import PIPE, STDOUT, call
     __all__ = ["Popen", "PIPE", "STDOUT", "call", "list2cmdline"]
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__revision__ = '$Revision$'
+__date__ = '$Date$'
 
 
 class Popen(recipe_440544.Popen):

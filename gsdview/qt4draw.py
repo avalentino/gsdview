@@ -21,14 +21,15 @@
 
 '''Drawing components for PyQt4.'''
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
 
 from PyQt4 import QtCore, QtGui
 
 from gsdview.mousemanager import MouseMode  # , RubberBandMode
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 
 ### Graphics Items ############################################################
