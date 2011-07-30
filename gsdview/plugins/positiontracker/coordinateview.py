@@ -22,7 +22,7 @@
 '''Position tool.'''
 
 
-from gsdview.qt import QtCore, QtGui
+from qt import QtCore, QtGui
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'

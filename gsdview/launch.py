@@ -67,7 +67,7 @@ class SplashLogHandler(logging.Handler):
 MODULES = ['os', 're', 'sys', 'itertools',
           'numpy',
           'osgeo.gdal', 'osgeo.osr',
-          'gsdview.qt.QtCore', 'gsdview.qt.QtGui',
+          'qt.QtCore', 'qt.QtGui',
           'exectools', 'exectools.qt4',
           'gsdview.info', 'gsdview.utils', 'gsdview.apptools',
           'gsdview.imgutils', 'gsdview.qt4support', 'gsdview.widgets',

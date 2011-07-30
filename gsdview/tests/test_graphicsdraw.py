@@ -28,7 +28,7 @@ from os.path import abspath, dirname
 GSDVIEWROOT = abspath(os.path.join(dirname(__file__), os.pardir, os.pardir))
 sys.path.insert(0, GSDVIEWROOT)
 
-from gsdview.qt import QtCore, QtGui, QtSvg
+from qt import QtCore, QtGui, QtSvg
 
 from gsdview import qt4support
 from gsdview import qt4draw

@@ -30,7 +30,7 @@ import logging
 
 from osgeo import ogr, osr
 
-from ..qt import QtCore, QtGui
+from qt import QtCore, QtGui
 
 from .. import qt4draw
 

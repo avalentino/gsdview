@@ -29,7 +29,7 @@ import ConfigParser
 import numpy as np
 from osgeo import gdal
 
-from ..qt import QtCore, QtGui
+from qt import QtCore, QtGui
 
 from .. import utils
 from .. import qt4support

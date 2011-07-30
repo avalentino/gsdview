@@ -30,7 +30,7 @@ from numpy import ma
 from osgeo import gdal
 from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
 
-from ..qt import QtCore, QtGui
+from qt import QtCore, QtGui
 
 from .. import imgutils
 from ..qt4support import numpy2qimage

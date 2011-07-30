@@ -31,7 +31,7 @@ GSDVIEWROOT = abspath(os.path.join(dirname(__file__),
                                    os.pardir, os.pardir, os.pardir))
 sys.path.insert(0, GSDVIEWROOT)
 
-from gsdview.qt import QtCore, QtGui
+from qt import QtCore, QtGui
 
 from gsdview.mousemanager import MouseManager
 from gsdview.layermanager import LayerManager

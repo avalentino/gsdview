@@ -12,7 +12,7 @@ GSDVIEWROOT = abspath(os.path.join(dirname(__file__),
                                    os.pardir, os.pardir, os.pardir))
 sys.path.insert(0, GSDVIEWROOT)
 
-from gsdview.qt import QtGui
+from qt import QtGui
 
 from gsdview.gdalbackend.widgets import *
 

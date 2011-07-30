@@ -27,7 +27,7 @@ import logging
 
 from osgeo import gdal
 
-from ..qt import QtCore, QtGui
+from qt import QtCore, QtGui
 
 from .. import qt4support
 from ..errors import OpenError

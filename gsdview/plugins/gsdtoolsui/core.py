@@ -27,7 +27,7 @@ import sys
 import logging
 import tempfile
 
-from gsdview.qt import QtCore, QtGui
+from qt import QtCore, QtGui
 
 from gsdview import utils
 from gsdview import qt4support

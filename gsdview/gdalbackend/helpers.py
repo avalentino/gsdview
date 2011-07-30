@@ -29,7 +29,7 @@ import tempfile
 
 from osgeo import gdal
 
-from ..qt import QtGui
+from qt import QtGui
 
 from ..gdalbackend import modelitems
 from ..gdalbackend import gdalsupport

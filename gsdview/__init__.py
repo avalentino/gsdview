@@ -22,7 +22,8 @@
 '''GUI front-end for the Geospatial Data Abstracton Library (GDAL).'''
 
 
-from gsdview.qt import qt_api
+from qt import qt_api
+
 from gsdview.info import *
 from gsdview.launch import main
 

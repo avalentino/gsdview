@@ -24,7 +24,7 @@
 
 import logging
 
-from gsdview.qt import QtCore, QtGui
+from qt import QtCore, QtGui
 
 from gsdview.qt4support import overrideCursor
 from gsdview.gdalbackend import gdalsupport

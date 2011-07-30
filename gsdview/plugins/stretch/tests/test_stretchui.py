@@ -23,8 +23,6 @@ import os
 import sys
 import logging
 
-from gsdview.qt import QtGui
-
 # Fix sys path
 from os.path import abspath, dirname
 parts = [dirname(__file__)] + [os.pardir] * 4
@@ -32,6 +30,8 @@ GSDVIEWROOT = abspath(os.path.join(*parts))
 del parts
 sys.path.insert(0, GSDVIEWROOT)
 sys.path.insert(1, os.path.join(GSDVIEWROOT, 'gsdview', 'plugins'))
+
+from qt import QtGui
 
 from stretch.widgets import *
 

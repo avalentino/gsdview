@@ -22,7 +22,7 @@
 '''Core modue for position tracker plugin.'''
 
 
-from gsdview.qt import QtCore
+from qt import QtCore
 
 from positiontracker.coordinateview import CoordinateView, GeoCoordinateView
 
