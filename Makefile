@@ -12,7 +12,7 @@ DEBUILD_OPTIONS = -us -uc
 
 .PHONY: default docs html pdf man clean distclean sdist bdist deb rpmspec rpm ui
 
-default: html
+default: ui
 
 docs: html pdf man
 
@@ -58,6 +58,12 @@ rpm: sdist
 	python setup.py bdist_rpm
 
 
+ifeq ($(QT_API),pyside)
+PYUIC=pyside-uic
+else
+PYUIC=pyuic4
+endif
+
 UIFILES = $(wildcard gsdview/ui/*.ui)\
           $(wildcard gsdview/gdalbackend/ui/*.ui)\
           $(wildcard gsdview/plugins/stretch/ui/*.ui)
@@ -69,7 +75,7 @@ ui: $(PYUIFILES)
 	touch gsdview/plugins/stretch/ui/__init__.py
 
 %.py: %.ui
-	pyuic4 -x $< -o $@
+	$(PYUIC) -x $< -o $@
 
 clean:
 	$(MAKE) -C doc clean
