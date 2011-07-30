@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__author__  = 'Antonio Valentino <antonio.valentino@tiscali.it>'
-__date__    = '$Date: 2006/03/11 23:18:40 $'
+__author__ = 'Antonio Valentino <antonio.valentino@tiscali.it>'
+__date__ = '$Date: 2006/03/11 23:18:40 $'
 __version__ = '$Revision: 1.15 $'
 
 import time
@@ -11,8 +11,9 @@ import logging
 import gtk
 
 import exectools
-from exectools.gtk2 import (GtkOutputPlane, GtkOutputHandler, GtkToolController,
-                            GtkDialogLoggingHandler, GtkLoggingHandler)
+from exectools.gtk2 import (GtkOutputPlane, GtkOutputHandler,
+                            GtkToolController, GtkDialogLoggingHandler,
+                            GtkLoggingHandler)
 
 
 class GtkShell(object):

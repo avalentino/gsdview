@@ -20,10 +20,10 @@
 
 '''Tools for running external processes.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
 __revision__ = '$Revision$'
-__date__     = '$Date$'
-__version__  = (0, 6, 5)
+__date__ = '$Date$'
+__version__ = (0, 6, 5)
 
 version = '.'.join(map(str, __version__))
 
@@ -66,7 +66,7 @@ class BaseOutputHandler(object):
     def __init__(self, logger=None):
         super(BaseOutputHandler, self).__init__()
         self._buffer = StringIO()
-        self._wpos  = self._buffer.tell()
+        self._wpos = self._buffer.tell()
 
         if logger is None or isinstance(logger, basestring):
             self.logger = logging.getLogger(logger)
@@ -151,7 +151,7 @@ class BaseOutputHandler(object):
             result = None
 
         if result:
-            self._buffer.seek(pos+match.end())
+            self._buffer.seek(pos + match.end())
         else:
             self._buffer.seek(pos)
             return None
@@ -167,7 +167,7 @@ class BaseOutputHandler(object):
         pos = self._buffer.tell()
         data = self._buffer.readline()
         if data and (data[-1] == '\n'):
-            return data[:-1] # remove '\n'
+            return data[:-1]  # remove '\n'
         self._buffer.seek(pos)
         return None
 
@@ -476,7 +476,6 @@ class BaseToolController(object):
                 self._tool.stdout_handler.reset()
             if self._tool.stderr_handler:
                 self._tool.stderr_handler.reset()
-
 
     def reset(self):
         '''Reset the tool controller instance'''

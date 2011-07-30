@@ -20,9 +20,9 @@
 
 '''Tools for running external processes in a QT4 GUI.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
 __revision__ = '$Revision$'
-__date__     = '$Date$'
+__date__ = '$Date$'
 
 __all__ = ['Qt4Blinker', 'Qt4OutputPlane', 'Qt4OutputHandler',
            'Qt4LoggingHandler', 'Qt4DialogLoggingHandler', 'Qt4ToolController']
@@ -106,13 +106,14 @@ class Qt4OutputPlane(QtGui.QTextEdit):
         icon = qstype.standardIcon(QtGui.QStyle.SP_DialogSaveButton)
         self.actionSaveAs = QtGui.QAction(icon, self.tr('&Save As'), self,
                                           shortcut=self.tr('Ctrl+S'),
-                                          statusTip=self.tr('Save text to file'),
+                                          statusTip=self.tr(
+                                                        'Save text to file'),
                                           triggered=self.save)
         self.actions.addAction(self.actionSaveAs)
 
         # Clear
-        icon = QtGui.QIcon(
-            ':/trolltech/styles/commonstyle/images/standardbutton-clear-32.png')
+        icon = QtGui.QIcon(':/trolltech/styles/commonstyle/images/'
+                           'standardbutton-clear-32.png')
         self.actionClear = QtGui.QAction(icon, self.tr('&Clear'), self,
                                          shortcut=self.tr('Shift+F5'),
                                          statusTip=self.tr('Clear the text'),
@@ -123,7 +124,8 @@ class Qt4OutputPlane(QtGui.QTextEdit):
         icon = qstype.standardIcon(QtGui.QStyle.SP_DialogCloseButton)
         self.actionHide = QtGui.QAction(icon, self.tr('&Hide'), self,
                                         shortcut=self.tr('Ctrl+W'),
-                                        statusTip=self.tr('Hide the text plane'),
+                                        statusTip=self.tr(
+                                                        'Hide the text plane'),
                                         triggered=self.planeHideRequest)
         self.actions.addAction(self.actionHide)
 
@@ -167,7 +169,7 @@ class Qt4OutputHandler(QtCore.QObject, BaseOutputHandler):
 
     '''
 
-    _statusbar_timeout = 2000 # ms
+    _statusbar_timeout = 2000  # ms
 
     #: SIGNAL: it is emitted to signal some kind of activity of the external
     #: process
@@ -206,7 +208,7 @@ class Qt4OutputHandler(QtCore.QObject, BaseOutputHandler):
             if progressbar is None:
                 progressbar = QtGui.QProgressBar(self.statusbar)
                 progressbar.setTextVisible(True)
-                statusbar.addPermanentWidget(progressbar) #, 1) # stretch = 1
+                statusbar.addPermanentWidget(progressbar)  # , 1) # stretch=1
                 progressbar.hide()
             self.progressbar = progressbar
             self.percentageChanged.connect(progressbar.show)
@@ -393,7 +395,7 @@ class Qt4DialogLoggingHandler(logging.Handler):
                 msg.append('<p>%s</p>' % self.format(record).capitalize())
 
             msg = '\n'.join(msg)
-            msg = msg.encode('UTF-8', 'replace') # @TODO: check
+            msg = msg.encode('UTF-8', 'replace')  # @TODO: check
 
             self.dialog.setText(msg)
             self.dialog.exec_()
@@ -421,7 +423,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
 
     '''
 
-    _delay_after_stop = 200    #ms
+    _delay_after_stop = 200    # ms
 
     #: SIGNAL: it is emitted when the processing is finished.
     #:
@@ -580,7 +582,8 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
             self._reset()
         elif error == QtCore.QProcess.Crashed:
             if not self._userstop and self.subprocess.exitCode() == EX_OK:
-                msg = 'The process crashed some time after starting successfully.'
+                msg = ('The process crashed some time after starting '
+                       'successfully.')
                 level = logging.ERROR
         elif error == QtCore.QProcess.Timedout:
             msg = ('The last waitFor...() function timed out. The state of '
@@ -588,8 +591,8 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
                    'waitFor...() again.')
             level = logging.DEBUG
         elif error == QtCore.QProcess.WriteError:
-            msg = ('An error occurred when attempting to write to the process. '
-                   'For example, the process may not be running, or it may '
+            msg = ('An error occurred when attempting to write to the process.'
+                   ' For example, the process may not be running, or it may '
                    'have closed its input channel.')
             #level = logging.ERROR # @TODO: check
         elif error == QtCore.QProcess.ReadError:
@@ -631,7 +634,8 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         cmd = ' '.join(cmd)
 
         if self._tool.env:
-            qenv = ['%s=%s' % (key, val) for key, val in self._tool.env.items()]
+            qenv = ['%s=%s' % (key, val)
+                                    for key, val in self._tool.env.items()]
             self.subprocess.setEnvironment(qenv)
 
         if self._tool.cwd:

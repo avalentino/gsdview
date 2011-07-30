@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__author__  = 'Antonio Valentino <antonio.valentino@tiscali.it>'
-__date__    = '$Date: 2006/03/11 23:18:40 $'
+__author__ = 'Antonio Valentino <antonio.valentino@tiscali.it>'
+__date__ = '$Date: 2006/03/11 23:18:40 $'
 __version__ = '$Revision: 1.15 $'
 
 import time
@@ -33,7 +33,7 @@ class Qt4Shell(QtGui.QMainWindow):
         self.cmdbox = QtGui.QComboBox()
         self.cmdbox.setEditable(True)
         self.cmdbox.addItem('')
-        self.cmdbox.setCurrentIndex(self.cmdbox.count()-1)
+        self.cmdbox.setCurrentIndex(self.cmdbox.count() - 1)
         # @TODO: complete
         #self.entry.populate_popup.connect(self.on_populate_popup)
 
@@ -113,7 +113,7 @@ class Qt4Shell(QtGui.QMainWindow):
         finally:
             self.logger.debug('qt4shell session stopped at %s.' %
                                                                 time.asctime())
-        event.accept() # @TODO: check
+        event.accept()  # @TODO: check
 
     def load_history(self):
         self.cmdbox.clear()
@@ -126,7 +126,7 @@ class Qt4Shell(QtGui.QMainWindow):
             self.logger.debug('unable to read the history file "%s": %s.' %
                                                         (self.historyfile, e))
         self.cmdbox.addItem('')
-        self.cmdbox.setCurrentIndex(self.cmdbox.count()-1)
+        self.cmdbox.setCurrentIndex(self.cmdbox.count() - 1)
 
     def save_history(self):
         try:
@@ -163,14 +163,14 @@ class Qt4Shell(QtGui.QMainWindow):
     def _set_state(self, state):
         if(state == 'ready'):
             self._reset()
-            self.statusBar().showMessage('Ready') #, 2000) # ms
+            self.statusBar().showMessage('Ready')  # , 2000) # ms
             self.cmdbox.setFocus()
         elif(state == 'running'):
             self.cmdbox.setEnabled(False)
             self.cmdbutton.setText('Stop')
             self.cmdbutton.clicked.disconnect(self.execute)
             self.cmdbutton.clicked.connect(self.controller.stop_tool)
-            self.statusBar().showMessage('Running ...') #, 2000) # ms
+            self.statusBar().showMessage('Running ...')  # , 2000) # ms
         else:
             raise ValueError('invalid status: "%s".' % state)
         self._state = state
@@ -181,12 +181,12 @@ class Qt4Shell(QtGui.QMainWindow):
         cmd = str(self.cmdbox.currentText())
         if cmd:
             count = self.cmdbox.count()
-            if self.cmdbox.currentIndex() != count-1:
-                self.cmdbox.insertItem(count-1, cmd)
+            if self.cmdbox.currentIndex() != count - 1:
+                self.cmdbox.insertItem(count - 1, cmd)
             else:
-                self.cmdbox.removeItem(count-2)
+                self.cmdbox.removeItem(count - 2)
                 self.cmdbox.addItem('')
-            self.cmdbox.setCurrentIndex(self.cmdbox.count()-1)
+            self.cmdbox.setCurrentIndex(self.cmdbox.count() - 1)
         return cmd
 
     @QtCore.pyqtSlot()

@@ -22,10 +22,10 @@
 
 '''Compute statistics and histograms of geo-spatial data.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
-__version__  = '1.0'
+__version__ = '1.0'
 
 import sys
 import logging
@@ -54,6 +54,7 @@ GDAL_STATS_KEYS = ('STATISTICS_MINIMUM', 'STATISTICS_MAXIMUM',
 # .. _`GDAL Trac`: http://trac.osgeo.org/gdal
 HAS_GETSTATS_FORCE_BUG = (('1640' <= gdal.VersionInfo() < '1700') or
                           (gdal.VersionInfo() > '1720'))
+
 
 def SafeGetStatistics(band, approxok, force):
     '''Retriewe statistics form a GDAL raster band in a safe way.
@@ -101,6 +102,7 @@ def SafeGetStatistics(band, approxok, force):
 
     return stats
 
+
 def GetStatisticsFromMetadata(band):
     metadata = band.GetMetadata()
     stats = [metadata.get(key) for key in GDAL_STATS_KEYS]
@@ -123,6 +125,7 @@ SOURCE_TEMPLATE = '''\
   <DstRect xOff="0" yOff="0" xSize="%(xsize)d" ySize="%(ysize)d"/>
 </SimpleSource>'''
 
+
 def copy_dataset_subwin(dataset, srcwin, bands=None, vrtfile=''):
     xoffset, yoffset, xsize, ysize = srcwin
 
@@ -138,7 +141,7 @@ def copy_dataset_subwin(dataset, srcwin, bands=None, vrtfile=''):
         raise RuntimeError(msg)
 
     if bands is None:
-        bands = range(1, dataset.RasterCount+1)
+        bands = range(1, dataset.RasterCount + 1)
 
     for bandno in bands:
         srcband = dataset.GetRasterBand(bandno)
@@ -210,7 +213,7 @@ def computestats(dataset, bands=None, computestats=True, histreq=None,
     histograms = {}
 
     if bands is None:
-        bands = range(1, dataset.RasterCount+1)
+        bands = range(1, dataset.RasterCount + 1)
 
     for bandno in bands:
         band = dataset.GetRasterBand(bandno)
@@ -340,6 +343,7 @@ def handlecmd(argv=None):
 
     return options, args
 
+
 def main(*argv):
     logging.basicConfig(format='%(levelname)s: %(message)s',
                         level=logging.INFO)
@@ -391,7 +395,7 @@ def main(*argv):
                                                      ds.RasterCount))
             bands = [options.band]
         else:
-            bands = range(1, ds.RasterCount+1)
+            bands = range(1, ds.RasterCount + 1)
 
         if options.srcwin:
             ds = copy_dataset_subwin(ds, options.srcwin)
@@ -403,7 +407,7 @@ def main(*argv):
         ds = None
 
     except Exception as e:
-        logging.error(str(e)) #, exc_info=True)
+        logging.error(str(e))   # , exc_info=True)
         sys.exit(1)
 
 

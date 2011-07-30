@@ -20,9 +20,9 @@
 
 '''Tools for running external processes in a GTK GUI.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
 __revision__ = '$Revision$'
-__date__     = '$Date$'
+__date__ = '$Date$'
 
 import os
 import sys
@@ -41,7 +41,7 @@ from exectools.std import StdToolController
 
 class Popen(gobject.GObject, subprocess2.Popen):
 
-    _timeout = 100 # ms
+    _timeout = 100  # ms
 
     __gsignals__ = {
         'stdout-ready': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (),),
@@ -123,7 +123,8 @@ class Popen(gobject.GObject, subprocess2.Popen):
     else:   # POSIX
 
         def _setup_io_watch(self):
-            cond = gobject.IO_IN|gobject.IO_PRI|gobject.IO_ERR|gobject.IO_HUP
+            cond = (gobject.IO_IN | gobject.IO_PRI | gobject.IO_ERR |
+                    gobject.IO_HUP)
             if self.stdout:
                 id_ = gobject.io_add_watch(self.stdout, cond,
                                            self._io_callback)
@@ -141,9 +142,9 @@ class Popen(gobject.GObject, subprocess2.Popen):
                     self.emit('stderr-ready')
                 return True
 
-            if condition  == gobject.IO_ERR:
+            if condition == gobject.IO_ERR:
                 self.emit('io-error')
-            if condition  == gobject.IO_HUP:
+            if condition == gobject.IO_HUP:
                 self.emit('connection-broken')
             return False
 
@@ -151,7 +152,8 @@ class Popen(gobject.GObject, subprocess2.Popen):
 class GtkBlinker(gtk.Image):
     def __init__(self):
         gtk.Image.__init__(self)
-        self.set_from_stock(gtk.STOCK_MEDIA_RECORD, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        self.set_from_stock(gtk.STOCK_MEDIA_RECORD,
+                            gtk.ICON_SIZE_SMALL_TOOLBAR)
 
     def pulse(self):
         '''A blinker pulse'''
@@ -204,11 +206,11 @@ class GtkOutputPlane(gtk.TextView):
 
     def _setup_filedialog(self):
         dialog = gtk.FileChooserDialog(
-                        title   = 'Save Output Log',
-                        #parent  = self.textview.get_toplevel(),
-                        action  = gtk.FILE_CHOOSER_ACTION_SAVE,
-                        buttons = (gtk.STOCK_OK,     gtk.RESPONSE_OK,
-                                   gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL))
+                        title='Save Output Log',
+                        #parent=self.textview.get_toplevel(),
+                        action=gtk.FILE_CHOOSER_ACTION_SAVE,
+                        buttons=(gtk.STOCK_OK, gtk.RESPONSE_OK,
+                                 gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL))
 
         patterns = [('*.txt', 'Text files'), ('*', 'All Files')]
         for pattern, name in patterns:
@@ -254,12 +256,12 @@ class GtkOutputPlane(gtk.TextView):
                 msg = ('File "%s" already exists.\n\n'
                        'Are you sure you want overwrite it?' % filename)
                 msgdialog = gtk.MessageDialog(
-                                    parent  = dialog,
-                                    flags   = gtk.DIALOG_MODAL |
-                                              gtk.DIALOG_DESTROY_WITH_PARENT,
-                                    type    = gtk.MESSAGE_QUESTION ,
-                                    buttons = gtk.BUTTONS_YES_NO,
-                                    message_format = msg)
+                                    parent=dialog,
+                                    flags=gtk.DIALOG_MODAL |
+                                             gtk.DIALOG_DESTROY_WITH_PARENT,
+                                    type=gtk.MESSAGE_QUESTION,
+                                    buttons=gtk.BUTTONS_YES_NO,
+                                    message_format=msg)
                 msgdialog.set_default_response(gtk.RESPONSE_NO)
                 response = msgdialog.run()
                 msgdialog.destroy()
@@ -461,6 +463,7 @@ class GtkLoggingHandler(logging.Handler):
         except:
             self.handleError(record)
 
+
 class GtkDialogLoggingHandler(logging.Handler):
     '''GTK handler for logging message dialog'''
 
@@ -609,12 +612,12 @@ class GtkToolController(gobject.GObject, StdToolController):
 
         try:
             self.subprocess = Popen(cmd,
-                                    stdin  = subprocess2.PIPE,
-                                    stdout = subprocess2.PIPE,
-                                    stderr = subprocess2.STDOUT,
-                                    close_fds = closefds,
-                                    shell = self._tool.shell,
-                                    startupinfo = startupinfo)
+                                    stdin=subprocess2.PIPE,
+                                    stdout=subprocess2.PIPE,
+                                    stderr=subprocess2.STDOUT,
+                                    close_fds=closefds,
+                                    shell=self._tool.shell,
+                                    startupinfo=startupinfo)
             self.subprocess.stdin.close()
             self.connect_output_handlers()
         except OSError:

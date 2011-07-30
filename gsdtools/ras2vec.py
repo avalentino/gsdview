@@ -43,10 +43,10 @@ gdaltindex utility.
 #   * filling (with transparency)
 
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
-__version__  = '1.0'
+__version__ = '1.0'
 
 
 import os
@@ -58,7 +58,7 @@ from osgeo import gdal, ogr, osr
 if hasattr(os, 'EX_USAGE'):
     EX_USAGE = os.EX_USAGE
 else:
-    EX_USAGE  = 64
+    EX_USAGE = 64
 
 DEFAULT_OGRDRIVER = 'KML'
 
@@ -76,6 +76,7 @@ def makesrs(srs):
         srs.SetFromUserInput(spec)
 
     return srs
+
 
 def create_box_layer(ds, name='', srs=None, gtype=ogr.wkbUnknown, opt=None):
     srs = makesrs(srs)
@@ -95,6 +96,7 @@ def create_box_layer(ds, name='', srs=None, gtype=ogr.wkbUnknown, opt=None):
     #~ layer.CreateField(field)
 
     return layer
+
 
 def create_GCP_layer(ds, name='', srs=None, gtype=ogr.wkbPoint25D, opt=None):
     srs = makesrs(srs)
@@ -136,6 +138,7 @@ def create_GCP_layer(ds, name='', srs=None, gtype=ogr.wkbPoint25D, opt=None):
 
     return layer
 
+
 def geographic_info(ds, srsout=None):
     # Read geotransform matrix and source reference system
     srs = osr.SpatialReference()
@@ -146,7 +149,8 @@ def geographic_info(ds, srsout=None):
     else:
         gcps = []
         if not ds.GetProjection():
-            raise ValueError('no geographic info in "%s"' % ds.GetDescription())
+            raise ValueError('no geographic info in "%s"' %
+                                                        ds.GetDescription())
         srs.ImportFromWkt(ds.GetProjection())
         geomatrix = ds.GetGeoTransform()
 
@@ -161,10 +165,11 @@ def geographic_info(ds, srsout=None):
 
     # dataset corners setup
     corners = []
-    for id_, (pixel, line) in enumerate(((0,                0),
-                                         (0,                ds.RasterYSize-1),
-                                         (ds.RasterXSize-1, ds.RasterYSize-1),
-                                         (ds.RasterXSize-1, 0))):
+    for id_, (pixel, line) in enumerate((
+                                (0,                  0),
+                                (0,                  ds.RasterYSize - 1),
+                                (ds.RasterXSize - 1, ds.RasterYSize - 1),
+                                (ds.RasterXSize - 1, 0))):
 
         X = geomatrix[0] + geomatrix[1] * pixel + geomatrix[2] * line
         Y = geomatrix[3] + geomatrix[4] * pixel + geomatrix[5] * line
@@ -176,7 +181,7 @@ def geographic_info(ds, srsout=None):
 
         (x, y, z) = transformer.TransformPoint(X, Y, Z)
 
-        gcp = gdal.GCP(x, y, z, pixel, line, '', str(id_+1))
+        gcp = gdal.GCP(x, y, z, pixel, line, '', str(id_ + 1))
         corners.append(gcp)
 
     # convert GCPs to the targer srs
@@ -187,6 +192,7 @@ def geographic_info(ds, srsout=None):
         outgcps.append(gcp)
 
     return corners, outgcps
+
 
 def export_bounding_box(layer, corners, description='', mark_corners=True):
     # ring
@@ -207,7 +213,7 @@ def export_bounding_box(layer, corners, description='', mark_corners=True):
     feature = ogr.Feature(layer.GetLayerDefn())
     feature.SetField('Name', featurename)
     feature.SetField('Description', description)
-    feature.SetStyleString('BRUSH(fc:#FF000064);PEN(c:#FF0000)') # red filled
+    feature.SetStyleString('BRUSH(fc:#FF000064);PEN(c:#FF0000)')  # red filled
     feature.SetGeometry(poly)
 
     if layer.CreateFeature(feature) != 0:
@@ -224,13 +230,14 @@ def export_bounding_box(layer, corners, description='', mark_corners=True):
             feature.SetField('Name', '(%.1f, %.1f)' % (line, pixel))
             feature.SetField('Description',
                              'row = %.1f\ncol = %.1f' % (line, pixel))
-            feature.SetStyleString('SYMBOL(c:#FF0000)') # red
+            feature.SetStyleString('SYMBOL(c:#FF0000)')     # red
 
             feature.SetGeometry(point)
 
             if layer.CreateFeature(feature) != 0:
                 raise RuntimeError('failed to create a new feature.')
             feature.Destroy()
+
 
 def export_gcps(layer, gcps):
     for id_, gcp in enumerate(gcps):
@@ -259,6 +266,7 @@ def export_gcps(layer, gcps):
             raise RuntimeError('failed to create a new feature.')
         feature.Destroy()
 
+
 def create_datasource(filename, drivername=None):
     if not drivername:
         drivername = DEFAULT_OGRDRIVER
@@ -276,13 +284,15 @@ def create_datasource(filename, drivername=None):
 
     return ds
 
+
 def export_raster(src, dst, boxlayer=None, gcplayer=None, srsout=None,
                   mark_corners=True):
     if isinstance(src, basestring):
         filename = src
         src = gdal.Open(filename)
         if src is None:
-            raise RuntimeError('unable to open source dataset: "%s"' % filename)
+            raise RuntimeError('unable to open source dataset: "%s"' %
+                                                                    filename)
 
     if isinstance(dst, basestring):
         dst = create_datasource(dst)
@@ -326,6 +336,7 @@ def export_raster(src, dst, boxlayer=None, gcplayer=None, srsout=None,
         export_gcps(gcplayer, gcps)
 
     return boxlayer, gcplayer
+
 
 def compact_index(srclist, dst):
     if isinstance(dst, basestring):
@@ -411,6 +422,7 @@ def raster_tree_index(src, dst, boxlayer=None, gcplayer=None,
 
     gdal.PopErrorHandler()
 
+
 ### Command line tool #########################################################
 def handlecmd(argv=None):
     import optparse
@@ -460,6 +472,7 @@ def handlecmd(argv=None):
 
     return options, args
 
+
 def main(*argv):
     logging.basicConfig(format='%(levelname)s: %(message)s',
                         level=logging.INFO)
@@ -473,7 +486,7 @@ def main(*argv):
         if os.path.exists(outfile):
             logging.error('the output file ("%s") already exists.' % outfile)
             sys.exit(EX_USAGE)
-        dst = create_datasource(outfile) #, options.format)
+        dst = create_datasource(outfile)    # , options.format)
 
         if len(args) > 1:
             if options.abspath:
