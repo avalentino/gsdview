@@ -384,7 +384,7 @@ class DatasetItem(MajorObjectItem):
 
         parent = self.parent()
         if not parent:
-            # only remone itself if it is a tplevel item
+            # only remone itself if it is a toplevel item
             parent = self.model().invisibleRootItem()
             # @NOTE: use takeRow instead of removeRow in order to avoid the
             #        underlying C/C++ object is deleted before all sub-windows
