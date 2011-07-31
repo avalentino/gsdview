@@ -192,7 +192,10 @@ def main():
     sys.excepthook = mainwin.excepthook     # @TODO: check
 
     logger.info('Enter main event loop')
-    mainwin.raise_()  # this will raise the window on Mac OS X
+
+    # @COMPATIBILITY: this will raise the window on Mac OS X
+    mainwin.raise_()
+
     sys.exit(app.exec_())
 
 if __name__ == '__main__':
