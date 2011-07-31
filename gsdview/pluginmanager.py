@@ -148,6 +148,11 @@ class PluginManager(object):
             if self.syspath:
                 paths.append(self.syspath)
 
+        if names is None:
+            names = []
+        elif isinstance(names, basestring):
+            names = [names]
+
         # @TODO: make the module independent from gsdview
         logger = logging.getLogger('gsdview')
         delayed = {}
@@ -158,9 +163,6 @@ class PluginManager(object):
                 distributions = dict((egg.key, egg) for egg in distributions)
             except NameError:
                 distributions = {}
-
-            if isinstance(names, basestring):
-                names = [names]
 
             for name in names:
                 if name in self.plugins:
@@ -277,6 +279,9 @@ class PluginManager(object):
                 self.paths.append(self.syspath)
 
             self.autoload = settings.value('autoload_plugins', [])
+            if self.autoload is None:
+                self.autoload = []
+
             self.load(self.autoload)
 
             # @TODO: check
