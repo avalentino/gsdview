@@ -218,7 +218,7 @@ class Qt4OutputHandler(QtCore.QObject, BaseOutputHandler):
                 statusbar.addPermanentWidget(progressbar)  # , 1) # stretch=1
                 progressbar.hide()
             self.progressbar = progressbar
-            self.percentageChanged[None].connect(progressbar.show)
+            self.percentageChanged[()].connect(progressbar.show)
             self.percentageChanged.connect(progressbar.setValue)
 
         self.progressbar = progressbar
