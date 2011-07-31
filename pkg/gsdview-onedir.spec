@@ -58,10 +58,12 @@ a = Analysis([os.path.join(HOMEPATH,'support', '_mountzlib.py'),
               os.path.join(CONFIGDIR,'support', 'useUnicode.py'),
               os.path.join(GSDVIEWROOT, 'scripts', 'gsdview'),
              ],
-             pathex=[GSDVIEWROOT],
+             pathex=['.', GSDVIEWROOT],
              hookspath=['.'],
              excludes=['matplotlib', 'scipy', #'multiprocessing',
-                       'Pyrex', '_tkinter', 'nose'])
+                       'Pyrex', '_tkinter', 'nose',
+                       'PySide', 'PySide.QtCore', 'PySide.QtGui',
+                       'PySide.QtSvg'])
 
 project_files = []
 if DEVELOPMENT_MODE:

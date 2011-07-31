@@ -54,10 +54,13 @@ a = Analysis([os.path.join(HOMEPATH,'support', '_mountzlib.py'),
               os.path.join(CONFIGDIR,'support', 'useUnicode.py'),
               os.path.join(GSDVIEWROOT, 'scripts', 'gsdview'),
              ],
-             pathex=[GSDVIEWROOT],
+             pathex=['.', GSDVIEWROOT],
              hookspath=['.'],
              excludes=['matplotlib', 'scipy', #'multiprocessing',
-                       'Pyrex', '_tkinter', 'nose'])
+                       'Pyrex', '_tkinter', 'nose',
+                       'PySide', 'PySide.QtCore', 'PySide.QtGui',
+                       'PySide.QtSvg'])
+
 pyz = PYZ(a.pure)
 exe = EXE(pyz,
           a.scripts,
@@ -103,6 +106,7 @@ exe = EXE(pyz,
           icon=ICONFILE,
 )
 
+# Bundle sipport for onedir mode still incomplete
 BUILD_BUNDLE = True
 if sys.platform == 'darwin' and BUILD_BUNDLE:
     sys.path.insert(0, os.path.abspath(os.pardir))
