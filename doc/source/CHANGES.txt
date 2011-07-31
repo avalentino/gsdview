@@ -22,9 +22,12 @@ Changes from 0.6.4 to 0.6.5 (in development)
 * Fixed global exception handler
 * Fixed calls to external GDAL utilities by adding quotes to config options
 * Fixed an unicode related issue in calls to gdal.SetConfigOption
-* Improved pyinstaller_ packaging (upgreded to 1.5.1)
+* Improved PyInstaller_ packaging (upgreded to 1.5.1)
+* Fix plugin loading when no plugin have to be loaded
+* Support for PySide_ (see :issue:`69`)
 
-.. _pyinstaller: http://www.pyinstaller.org
+.. _PyInstaller: http://www.pyinstaller.org
+.. _PySide: http://www.pyside.org
 
 
 Changes from 0.6.3 to 0.6.4 (14/11/2010)
@@ -108,7 +111,7 @@ Changes from 0.6.0 to 0.6.1 (09/05/2010)
   If pre-compiled python forms are not available the GUI is set up using
   Qt UI files directly.
 * Now use docutils for generating the manpage (:issue:`33`)
-* Packaging using pyinstaller_ (:issue:`8`)
+* Packaging using PyInstaller_ (:issue:`8`)
 * Other bug fix (:issue:`21`, :issue:`31`, :issue:`36`)
 
 
@@ -126,8 +129,7 @@ Changes from 0.5.9 to 0.6.0 (24/08/2009)
 * Improved debian packaging (close :issue:`3`)
 * API reference added to documentation
 * Resources handling re-factoring (close :issue:`6`)
-* Initial support for `pyinstaller <http://www.pyinstaller.org>`_
-  packaging (:issue:`8`)
+* Initial support for PyInstaller_ packaging (:issue:`8`)
 * Improved project layout: exectools in now an independent python package,
   no more a sub-package of gsdview (close :issue:`10`)
 * `setuptools <http://pypi.python.org/pypi/setuptools>`_ support
