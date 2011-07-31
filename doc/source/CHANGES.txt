@@ -16,7 +16,7 @@ Changes from 0.6.4 to 0.6.5 (in development)
 
 * New gsdtools package providing extra utilities for geo-spatial data handling.
   The gsdview.gsdtools module has been renamed into gsdview.imgutils.
-* New functions for KML export and dataset area display on "Goofle Earth"
+* New functions for KML export and dataset area display on "Google Earth"
   and "Google Maps" (see :issue:`50`)
 * Fixed workaround for incorrect GCP handling of ENVISAT stripline products
 * Fixed global exception handler
@@ -24,7 +24,7 @@ Changes from 0.6.4 to 0.6.5 (in development)
 * Fixed an unicode related issue in calls to gdal.SetConfigOption
 * Improved PyInstaller_ packaging (upgreded to 1.5.1)
 * Fix plugin loading when no plugin have to be loaded
-* Support for PySide_ (see :issue:`69`)
+* Support for PySide_ (closes :issue:`69`, see also :issue:`70`)
 
 .. _PyInstaller: http://www.pyinstaller.org
 .. _PySide: http://www.pyside.org

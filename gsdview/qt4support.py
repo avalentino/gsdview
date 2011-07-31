@@ -570,7 +570,7 @@ def getuiform(name, package=None):
     .. note:: in the pyside packege is used to provide bindings for Qt4
               then the uic module is not available and only pre-built
               modules are searched.
-              When pyside is used an :exception:`ImportError` is raised
+              When pyside is used an :exc:`ImportError` is raised
               if pre-built forms are not available.
 
     .. note:: like :autolink:`gsdview.qt4support.getuifile` this
