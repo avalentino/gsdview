@@ -186,7 +186,7 @@ class Qt4OutputHandler(QtCore.QObject, BaseOutputHandler):
     #:     process
     #:
     #: :C++ signature: `void pulse(QString)`
-    pulse = QtCore.Signal((), (str,))
+    pulse = QtCore.Signal([], [str])
 
     #: SIGNAL: it is emitted when the progress percentage changes
     #:
@@ -194,7 +194,7 @@ class Qt4OutputHandler(QtCore.QObject, BaseOutputHandler):
     #:     the new completion percentage [0, 100]
     #:
     #: :C++ signature: `void percentageChanged(float)`
-    percentageChanged = QtCore.Signal(int)
+    percentageChanged = QtCore.Signal([int], [])
 
     def __init__(self, logger=None, statusbar=None, progressbar=None,
                  blinker=None, parent=None, **kwargs):
@@ -218,7 +218,7 @@ class Qt4OutputHandler(QtCore.QObject, BaseOutputHandler):
                 statusbar.addPermanentWidget(progressbar)  # , 1) # stretch=1
                 progressbar.hide()
             self.progressbar = progressbar
-            self.percentageChanged.connect(progressbar.show)
+            self.percentageChanged[None].connect(progressbar.show)
             self.percentageChanged.connect(progressbar.setValue)
 
         self.progressbar = progressbar
