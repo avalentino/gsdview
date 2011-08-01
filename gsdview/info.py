@@ -98,6 +98,8 @@ elif platform.win32_ver() != ('', '', '', ''):
     all_versions.append(('Windows', platform.win32_ver()[0],
                          'http://www.microsoft.com/windows'))
 
+all_versions.append(('Machine', platform.machine(), ''))
+
 
 def all_versions_str():
     return '\n'.join('%s v. %s (%s)' % (sw, version_, link)
