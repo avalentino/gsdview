@@ -61,7 +61,7 @@ class Qt4Blinker(QtGui.QLabel):
 
     '''
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(Qt4Blinker, self).__init__(parent, flags, **kwargs)
         #qstyle = QtGui.QApplication.style()
         #pixmap = qstyle.standardPixmap(QtGui.QStyle.SP_MediaStop)
