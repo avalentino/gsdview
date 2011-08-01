@@ -22,8 +22,8 @@
 '''Position tracker.'''
 
 
-from positiontracker.info import *
-from positiontracker.info import __version__, __requires__
+from .info import *
+from .info import __version__, __requires__
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
@@ -40,7 +40,7 @@ _instance = None
 
 
 def init(app):
-    from positiontracker.core import TrackingTool
+    from .core import TrackingTool
 
     tool = TrackingTool(app)
 

@@ -30,18 +30,18 @@ from qt import QtCore, QtGui
 
 from exectools.qt4 import Qt4ToolController, Qt4DialogLoggingHandler
 
-import info
-import utils
-import errors
-import qt4support
-import graphicsview
-import mousemanager
-import pluginmanager
+from . import info
+from . import utils
+from . import errors
+from . import qt4support
+from . import graphicsview
+from . import mousemanager
+from . import pluginmanager
 
-from mdi import ItemModelMainWindow
-from appsite import USERCONFIGDIR, SYSPLUGINSDIR
-from widgets import AboutDialog, PreferencesDialog
-from widgets import GSDViewExceptionDialog as ExceptionDialog
+from .mdi import ItemModelMainWindow
+from .appsite import USERCONFIGDIR, SYSPLUGINSDIR
+from .widgets import AboutDialog, PreferencesDialog
+from .widgets import GSDViewExceptionDialog as ExceptionDialog
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'

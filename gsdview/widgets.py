@@ -31,9 +31,9 @@ import traceback
 
 from qt import QtCore, QtGui
 
-import info
-import utils
-import qt4support
+from . import info
+from . import utils
+from . import qt4support
 
 
 __author__ = '$Author$'

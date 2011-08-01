@@ -34,7 +34,7 @@ making the system expandible, and also methods to register objects
 
 from qt import QtCore, QtGui
 
-import qt4support
+from . import qt4support
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'

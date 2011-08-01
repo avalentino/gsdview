@@ -24,9 +24,9 @@
 
 from qt import qt_api
 
-from gsdview.info import *
-from gsdview.launch import main
+from .info import *
+from .launch import main
 
-import info
+from . import info
 
 __all__ = list(info.__all__) + ['qt_api', 'main']

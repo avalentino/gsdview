@@ -35,7 +35,7 @@ from .. import utils
 from .. import qt4support
 from ..widgets import get_filedialog, FileEntryWidget
 
-from gsdview.gdalbackend import gdalsupport
+from . import gdalsupport
 
 
 __author__ = '$Author$'

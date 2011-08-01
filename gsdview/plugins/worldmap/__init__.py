@@ -22,8 +22,8 @@
 '''World map component for GSDView.'''
 
 
-from worldmap.info import *
-from worldmap.info import __version__, __requires__
+from .info import *
+from .info import __version__, __requires__
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
@@ -42,7 +42,7 @@ _instance = None
 def init(app):
     from qt import QtCore
 
-    from worldmap.core import WorldmapController
+    from .core import WorldmapController
 
     controller = WorldmapController(app)
     app.addDockWidget(QtCore.Qt.BottomDockWidgetArea, controller.panel)

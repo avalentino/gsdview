@@ -22,8 +22,8 @@
 '''Overview pannel for GDAL raster bands.'''
 
 
-from overview.info import *
-from overview.info import __version__, __requires__
+from .info import *
+from .info import __version__, __requires__
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
@@ -40,7 +40,7 @@ _instance = None
 
 
 def init(app):
-    from overview.core import OverviewController
+    from .core import OverviewController
 
     global _instance
     _instance = OverviewController(app)

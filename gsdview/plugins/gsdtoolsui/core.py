@@ -33,7 +33,7 @@ from gsdview import utils
 from gsdview import qt4support
 from gsdtools import ras2vec
 
-from gsdtoolsui import info
+from . import info
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'

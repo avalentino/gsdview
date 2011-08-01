@@ -24,7 +24,7 @@
 
 from qt import QtCore, QtGui
 
-from mousemanager import MouseMode  # , RubberBandMode
+from .mousemanager import MouseMode  # , RubberBandMode
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'

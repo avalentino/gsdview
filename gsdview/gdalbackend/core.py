@@ -30,11 +30,11 @@ from qt import QtCore, QtGui
 
 from .. import qt4support
 
-from ..gdalbackend import widgets
-from ..gdalbackend import helpers
-from ..gdalbackend import modelitems
-from ..gdalbackend import gdalsupport
-from ..gdalbackend import gdalexectools
+from . import widgets
+from . import helpers
+from . import modelitems
+from . import gdalsupport
+from . import gdalexectools
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
@@ -709,7 +709,7 @@ class GDALBackend(QtCore.QObject):
 
 
 ### MISC ######################################################################
-from gsdview.mdi import ItemSubWindow
+from ..mdi import ItemSubWindow
 
 
 # @TODO: move elsewhere

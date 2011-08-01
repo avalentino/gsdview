@@ -22,8 +22,8 @@
 '''Image stretch control for GSDView.'''
 
 
-from stretch.info import *
-from stretch.info import __version__, __requires__
+from .info import *
+from .info import __version__, __requires__
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
@@ -40,7 +40,7 @@ _instance = None
 
 
 def init(app):
-    from stretch.core import StretchTool
+    from .core import StretchTool
 
     tool = StretchTool(app)
 

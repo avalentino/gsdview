@@ -31,7 +31,7 @@ from ConfigParser import ConfigParser
 
 from qt import QtCore, QtGui, QtSvg
 
-import utils
+from . import utils
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'

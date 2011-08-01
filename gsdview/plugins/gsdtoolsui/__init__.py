@@ -22,8 +22,8 @@
 '''GSDTools plugin for GSDView.'''
 
 
-from gsdtoolsui.info import *
-from gsdtoolsui.info import __version__, __requires__
+from .info import *
+from .info import __version__, __requires__
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
@@ -41,7 +41,7 @@ _instance = None
 
 def init(app):
     from gsdview import qt4support
-    from gsdtoolsui.core import GSDToolsController
+    from .core import GSDToolsController
 
     controller = GSDToolsController(app)
 

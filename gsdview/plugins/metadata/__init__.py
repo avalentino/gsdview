@@ -22,8 +22,8 @@
 '''Metadata viewer component for geo-datasets.'''
 
 
-from metadata.info import *
-from metadata.info import __version__, __requires__
+from .info import *
+from .info import __version__, __requires__
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
@@ -42,7 +42,7 @@ _instance = None
 def init(app):
     from qt import QtCore
 
-    from metadata.core import MetadataController
+    from .core import MetadataController
 
     controller = MetadataController(app)
     app.addDockWidget(QtCore.Qt.BottomDockWidgetArea, controller.panel)

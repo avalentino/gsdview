@@ -35,8 +35,8 @@ except ImportError:
     import logging
     logging.getLogger('gsdview').debug('"pkg_resources" not found.')
 
-from gsdview import info
-from gsdview import appsite
+from . import info
+from . import appsite
 
 
 __author__ = '$Author$'

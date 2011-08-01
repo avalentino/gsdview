@@ -26,7 +26,7 @@ from qt import QtCore, QtGui
 
 from gsdview import qt4support
 
-from stretch.widgets import StretchDialog
+from .widgets import StretchDialog
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'

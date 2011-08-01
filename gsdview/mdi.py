@@ -26,7 +26,7 @@
 
 from qt import QtCore, QtGui
 
-from qtwindowlistmenu import QtWindowListMenu
+from .qtwindowlistmenu import QtWindowListMenu
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'

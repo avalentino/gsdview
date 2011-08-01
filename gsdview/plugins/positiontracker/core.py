@@ -24,7 +24,7 @@
 
 from qt import QtCore
 
-from positiontracker.coordinateview import CoordinateView, GeoCoordinateView
+from .coordinateview import CoordinateView, GeoCoordinateView
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'

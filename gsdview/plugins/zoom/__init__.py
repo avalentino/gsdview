@@ -22,8 +22,8 @@
 '''Zoom tool.'''
 
 
-from zoom.info import *
-from zoom.info import __version__, __requires__
+from .info import *
+from .info import __version__, __requires__
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
@@ -41,7 +41,7 @@ _instance = None
 
 def init(app):
     from gsdview import qt4support
-    from zoom.core import AppZoomTool
+    from .core import AppZoomTool
 
     tool = AppZoomTool(app)
 
