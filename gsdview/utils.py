@@ -109,13 +109,11 @@ def format_platform_info():
         platform_info.append(libc_ver)
 
     if platform.dist() != ('', '', ''):
-        all_versions.append(('GNU/Linux', ' '.join(platform.dist()), ''))
+        platform_info.append('GNU/Linux: %s' % ' '.join(platform.dist()))
     elif platform.mac_ver() != ('', ('', '', ''), ''):
-        all_versions.append(('Mac OS X', platform.mac_ver()[0],
-                             'http://www.apple.com/macosx'))
+        platform_info.append('Mac OS X: %s' % platform.mac_ver()[0])
     elif platform.win32_ver() != ('', '', '', ''):
-        all_versions.append(('Windows', platform.win32_ver()[0],
-                             'http://www.microsoft.com/windows'))
+        platform_info.append('Windows: %s' % platform.win32_ver()[0])
 
     platform_info.append('python_compiler: %s\n' % platform.python_compiler())
     platform_info.append('python_implementation: %s\n' %
@@ -129,7 +127,7 @@ def foramt_bugreport(exctype=None, excvalue=None, tracebackobj=None):
         exctype, excvalue, tracebackobj = sys.exc_info()
 
     separator = '-' * 80 + '\n'
-    timestamp = email.utils.formatdate(localtime=True)+'\n'
+    timestamp = email.utils.formatdate(localtime=True) + '\n'
 
     msg = [timestamp, separator]
     msg.extend(traceback.format_exception_only(exctype, excvalue))
@@ -145,6 +143,7 @@ def foramt_bugreport(exctype=None, excvalue=None, tracebackobj=None):
 
 
 if sys.platform[:3] == 'win':
+
     def isexecutable(cmd):
         '''Check if "cmd" actually is an executable program.'''
 
@@ -156,6 +155,7 @@ if sys.platform[:3] == 'win':
                 return True
         return False
 else:
+
     def isexecutable(cmd):
         '''Check if "cmd" actually is an executable program.'''
 
@@ -223,7 +223,7 @@ def scriptcmd(scriptname):
             comspec = os.environ.get('COMSPEC', 'cmd.exe')
             cmd = [comspec, '/c', scriptname]
         elif ext in ('.py', '.pyc', '.pyo', '.pyw'):
-            # @WARNONG: this doesn't work in case of frozen executables
+            # @WARNING: this doesn't work in case of frozen executables
             #cmd = [sys.executable, '-u', scriptname] # no buffering
             cmd = [sys.executable, scriptname]
     else:
