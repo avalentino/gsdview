@@ -476,19 +476,40 @@ class CachedDatasetItem(DatasetItem):
         # @TODO: handle domain.startswith('xml:') and domain == 'OVERVIEW'
         if domain in ('IMAGE_STRUCTURE', 'SUBDATASETS'):
             return self._obj.GetMetadata(domain)
-        return self._vrtobj.GetMetadata(domain)
+
+        md = self._vrtobj.GetMetadata(domain)
+        if domain and not md:
+            # @NOTE: look into the original GDAL obj for metadata
+            #        associated to non standard domains
+            md = self._obj.GetMetadata(domain)
+
+        return md
 
     def GetMetadata_Dict(self, domain=''):
         # @TODO: handle domain.startswith('xml:') and domain == 'OVERVIEW'
         if domain in ('IMAGE_STRUCTURE', 'SUBDATASETS'):
             return self._obj.GetMetadata_Dict(domain)
-        return self._vrtobj.GetMetadata_Dict(domain)
+
+        md = self._vrtobj.GetMetadata_Dict(domain)
+        if domain and not md:
+            # @NOTE: look into the original GDAL obj for metadata
+            #        associated to non standard domains
+            md = self._obj.GetMetadata_Dict(domain)
+
+        return md
 
     def GetMetadata_List(self, domain=''):
         # @TODO: handle domain.startswith('xml:') and domain == 'OVERVIEW'
         if domain in ('IMAGE_STRUCTURE', 'SUBDATASETS'):
             return self._obj.GetMetadata_List(domain)
-        return self._vrtobj.GetMetadata_List(domain)
+
+        md = self._vrtobj.GetMetadata_List(domain)
+        if domain and not md:
+            # @NOTE: look into the original GDAL obj for metadata
+            #        associated to non standard domains
+            md = self._obj.GetMetadata_List(domain)
+
+        return md
 
     if hasattr(gdal.Dataset, 'GetMetadataItem'):
 
@@ -496,7 +517,14 @@ class CachedDatasetItem(DatasetItem):
             # @TODO: handle domain.startswith('xml:') and domain == 'OVERVIEW'
             if domain in ('IMAGE_STRUCTURE', 'SUBDATASETS'):
                 return self._obj.GetMetadataItem(name, domain)
-            return self._vrtobj.GetMetadataItem(name, domain)
+
+            value = self._vrtobj.GetMetadataItem(name, domain)
+            if domain and value is None:
+                # @NOTE: look into the original GDAL obj for metadata
+                #        associated to non standard domains
+                value = self._obj.GetMetadataItem(name, domain)
+
+            return value
 
     def _setup_children(self):
         self._setup_child_bands(self._vrtobj)

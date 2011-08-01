@@ -47,7 +47,6 @@ GDALInfoWidgetBase = qt4support.getuiform('gdalinfo', __name__)
 
 
 class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
-
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(GDALInfoWidget, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
@@ -133,7 +132,6 @@ GDALPreferencesPageBase = qt4support.getuiform('gdalpage', __name__)
 
 
 class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
-
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(GDALPreferencesPage, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
@@ -331,7 +329,6 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
 
 
 class BackendPreferencesPage(GDALPreferencesPage):
-
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(BackendPreferencesPage, self).__init__(parent, flags, **kwargs)
         #self.setupUi(self)
@@ -378,6 +375,23 @@ class BackendPreferencesPage(GDALPreferencesPage):
         super(BackendPreferencesPage, self).save(settings)
 
 
+class KeyPressEater(QtCore.QObject):
+    def __init__(self, keys=None, parent=None):
+        super(KeyPressEater, self).__init__(parent)
+        if keys is not None:
+            self.keys = keys
+        else:
+            self.keys = [QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return]
+
+    def eventFilter(self, obj, event):
+        if event.type() == QtCore.QEvent.KeyPress:
+            if event.key() in self.keys:
+                return True
+
+        # standard event processing
+        return super(KeyPressEater, self).eventFilter(obj, event)
+
+
 MetadataWidgetBase = qt4support.getuiform('metadata', __name__)
 
 
@@ -419,6 +433,10 @@ class MetadataWidget(QtGui.QWidget, MetadataWidgetBase):
 
         saveAction = self.findChild(QtGui.QAction, 'saveAsAction')
         self.exportButton.clicked.connect(saveAction.triggered)
+
+        # @TODO:check
+        self._keyeater = KeyPressEater(parent=self)
+        self.installEventFilter(self._keyeater)
 
     def domainsEnabled(self):
         return self.domainLabel.isVisible()
@@ -613,7 +631,6 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
 
         if gdal.DataTypeIsComplex(item.DataType):
             index = self.resamplingMethodComboBox.findText('average_magphase')
-            print 'index', index
             if index >= 0:
                 self.resamplingMethodComboBox.setCurrentIndex(index)
 
@@ -937,8 +954,6 @@ class MajorObjectInfoDialog(QtGui.QDialog):
             # @COMPATIBILITY: presumably a bug in PyQt4 4.7.2
             domain = str(domain)    # it could be a "char const *"
             metadatalist = self._obj.GetMetadata_List(domain)
-            print 'domain: "%s"' % domain
-            print 'len(metadatalist)', None if metadatalist is None else len(metadatalist)
 
             if metadatalist:
                 self.setMetadata(metadatalist)
