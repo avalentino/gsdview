@@ -937,11 +937,13 @@ class MajorObjectInfoDialog(QtGui.QDialog):
             # @COMPATIBILITY: presumably a bug in PyQt4 4.7.2
             domain = str(domain)    # it could be a "char const *"
             metadatalist = self._obj.GetMetadata_List(domain)
+            print 'domain: "%s"' % domain
+            print 'len(metadatalist)', None if metadatalist is None else len(metadatalist)
 
-        if metadatalist:
-            self.setMetadata(metadatalist)
-        else:
-            self.resetMetadata()
+            if metadatalist:
+                self.setMetadata(metadatalist)
+            else:
+                self.resetMetadata()
 
     def reset(self):
         self.resetMetadata()
@@ -1267,7 +1269,13 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
         # Info
         self.descriptionValue.setText(band.GetDescription().strip())
-        bandno = band.GetBand()
+
+        # @COMPATIBILITY: GetBand requires GDAL >= 1.7
+        try:
+            bandno = band.GetBand()
+        except AttributeError:
+            bandno = self.tr('Unknown')
+
         self.bandNumberValue.setText(str(bandno))
         self.colorInterpretationValue.setText(colorint)
         self.overviewCountValue.setText(str(band.GetOverviewCount()))
@@ -1603,7 +1611,6 @@ DatasetInfoDialogBase = qt4support.getuiform('datasetdialog', __name__)
 
 
 class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
-
     def __init__(self, dataset=None, parent=None,
                  flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(DatasetInfoDialog, self).__init__(dataset, parent, flags,

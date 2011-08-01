@@ -85,6 +85,9 @@ def testdriver(target, imagestruct=True):
         test_datasetdialog(dataset)
     elif target == 'band':
         band = dataset.GetRasterBand(1)
+        for index in range(11, 16):
+            band.SetMetadataItem('KEY%d' % index, 'VALUE%d' % index)
+
         test_rasterbanddialog(band)
     else:
         raise ValueError('trget: %s' % target)

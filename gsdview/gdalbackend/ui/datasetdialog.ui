@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>468</width>
+    <width>472</width>
     <height>531</height>
    </rect>
   </property>
@@ -16,12 +16,6 @@
   <layout class="QVBoxLayout" name="mainVerticalLayout">
    <item>
     <widget class="QTabWidget" name="tabWidget">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="contextMenuPolicy">
       <enum>Qt::ActionsContextMenu</enum>
      </property>
@@ -742,9 +736,6 @@ OpenGIS WKT format.</string>
             <attribute name="horizontalHeaderStretchLastSection">
              <bool>true</bool>
             </attribute>
-            <attribute name="horizontalHeaderStretchLastSection">
-             <bool>true</bool>
-            </attribute>
             <column>
              <property name="text">
               <string>Pixel</string>
@@ -997,8 +988,8 @@ p, li { white-space: pre-wrap; }
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>257</x>
+     <y>521</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -1013,8 +1004,8 @@ p, li { white-space: pre-wrap; }
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>325</x>
+     <y>521</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
