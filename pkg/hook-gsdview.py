@@ -4,4 +4,4 @@
                  #~ 'shelve',          # needed by enthought
                  #~ 'cgi',             # needed by enthought
                  #~ ]
-hiddenimports = ['gsdview.gdalbackend',]
+hiddenimports = ['gsdview.gdalbackend', 'gsdtools.ras2vec', 'gsdtools.stats']

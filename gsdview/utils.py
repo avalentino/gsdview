@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -21,12 +21,6 @@
 
 '''Utility functions and classes for GSDView.'''
 
-__author__   = '$Author$'
-__date__     = '$Date$'
-__revision__ = '$Revision$'
-
-__all__ = ['which', 'isexecutable', 'isscript', 'scriptcmd', 'default_workdir',
-           'getresource', 'format_platform_info', 'foramt_bugreport']
 
 import os
 import sys
@@ -45,11 +39,21 @@ from gsdview import info
 from gsdview import appsite
 
 
+__author__ = '$Author$'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
+
+__all__ = ['which', 'isexecutable', 'isscript', 'scriptcmd', 'default_workdir',
+           'getresource', 'format_platform_info', 'foramt_bugreport']
+
+
 def default_workdir():
     '''Return the defaut workinhg directory.'''
 
     if sys.platform[:3] == 'win':
         return 'C:\\'
+        #return QtGui.QDesktopServices.storageLocation(
+        #                           QtGui.QDesktopServices.DocumentsLocation)
     else:
         return os.path.expanduser('~')
 
@@ -61,7 +65,8 @@ def _getresource(resource, package):
         # pkg_resources not available
         if '.' in package:
             fromlist = package.split('.')[:-1]
-            # @WARNING: (pychecker) Function (__import__) doesn't support **kwArgs
+            # @WARNING: (pychecker) Function (__import__) doesn't
+            #           support **kwArgs
             m = __import__(package, fromlist=fromlist)
         else:
             m = __import__(package)
@@ -233,3 +238,21 @@ def scriptcmd(scriptname):
                 cmd = shebang[2:].split() + scriptname
 
     return cmd
+
+
+### Geographic tools ##########################################################
+# @TODO: support vectors
+def geonormalize(x, angle_range=360.):
+    '''Normalize angles to fit expected range
+
+    Example: (-180, 180) --> (0, 360)
+
+    '''
+
+    halfrange = angle_range / 2.
+    if -halfrange <= x <= halfrange:
+        x = x % angle_range
+    if x > halfrange:
+        x -= angle_range
+
+    return x

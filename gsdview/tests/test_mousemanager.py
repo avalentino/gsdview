@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of exectools.
 
@@ -22,30 +22,19 @@
 import os
 import sys
 
-# Select the PyQt API 2
-import sip
-sip.setapi('QDate',       2)
-sip.setapi('QDateTime',   2)
-sip.setapi('QString',     2)
-sip.setapi('QTextStream', 2)
-sip.setapi('QTime',       2)
-sip.setapi('QUrl',        2)
-sip.setapi('QVariant',    2)
-
-from PyQt4 import QtCore, QtGui
-
 # Fix sys path
 from os.path import abspath, dirname
 GSDVIEWROOT = abspath(os.path.join(dirname(__file__), os.pardir, os.pardir))
 sys.path.insert(0, GSDVIEWROOT)
 
+from qt import QtCore, QtGui
 
 from gsdview.mousemanager import MouseManager
 
 
 class MainWin(QtGui.QMainWindow):
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0)):
         super(MainWin, self).__init__(parent, flags)
 
         self.mousemanager = MouseManager(self)
@@ -53,6 +42,7 @@ class MainWin(QtGui.QMainWindow):
         from gsdview.mousemanager import RubberBandMode
         rubberbandmode = RubberBandMode()
         self.mousemanager.addMode(rubberbandmode)
+
         def callback(rect):
             print 'rect', rect
 
@@ -119,7 +109,8 @@ class MainWin(QtGui.QMainWindow):
     def _setupHelpActions(self):
         actions = QtGui.QActionGroup(self)
 
-        icon = QtGui.QIcon(':/trolltech/styles/commonstyle/images/fileinfo-32.png')
+        icon = QtGui.QIcon(
+            ':/trolltech/styles/commonstyle/images/fileinfo-32.png')
         QtGui.QAction(icon, 'About', actions, triggered=self.about)
 
         icon = QtGui.QIcon(':/trolltech/qmessagebox/images/qtlogo-64.png')
@@ -128,7 +119,7 @@ class MainWin(QtGui.QMainWindow):
 
         return actions
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def openfile(self):
         self.scene.clear()
         self.graphicsview.setMatrix(QtGui.QMatrix())
@@ -138,12 +129,12 @@ class MainWin(QtGui.QMainWindow):
             item = self.scene.addPixmap(pixmap)
             self.scene.setSceneRect(item.boundingRect())
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def about(self):
         title = self.tr('MouseManager Example')
         text = ['<h1>Mouse Manager</h1>'
                 '<p>Example program for the Mouse manager component.</p>',
-                '<p>Copyright (C): 2009-2010 '
+                '<p>Copyright (C): 2009-2011 '
                 '<a href="mailto:a_valentino@users.sf.net">'
                     'Antonio Valentino'
                 '<a>.</p>']

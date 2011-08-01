@@ -12,6 +12,7 @@ gsdview.utils
       default_workdir
       foramt_bugreport
       format_platform_info
+      geonormalize
       getresource
       isexecutable
       isscript

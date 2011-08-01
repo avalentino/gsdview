@@ -13,6 +13,7 @@ for signame in ('SIGINT', 'SIGQUIT', 'SIGTERM'):
     if hasattr(signal, signame):
         sigmap[getattr(signal, signame)] = signame
 
+
 def handler(signum, frame):
     print
     print '%s (%d) signal trapped' % (sigmap[signum], signum)
@@ -80,7 +81,7 @@ while duration < 0 or elapsed < duration:
             print '\r%s %6.2f%%' % (pulses[index % len(pulses)], percentage),
         else:
             print '\r%s' % pulses[index % len(pulses)],
-    else: #'elapsed'
+    else:  # 'elapsed'
         print '\r%.2f' % elapsed,
     if verbose:
         print

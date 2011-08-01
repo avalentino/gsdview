@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -21,12 +21,13 @@
 
 '''Custom QtGui.QGraphicsView component.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+
+from qt import QtCore, QtGui
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
-
-
-from PyQt4 import QtCore, QtGui
 
 
 # @TODO: move to gdalqt4.py
@@ -37,12 +38,12 @@ class GraphicsView(QtGui.QGraphicsView):
     pass
 
     # @TODO: check
-    #~ enter = QtCore.pyqtSignal()
-    #~ leave = QtCore.pyqtSignal()
-    #~ mousePositionUpdated = QtCore.pyqtSignal(QtCore.QPoint)
-    #~ posMarked = QtCore.pyqtSignal(QtCore.QPoint)
-    #~ newSize = QtCore.pyqtSignal(QtCore.QSize)
-    #~ scaled = QtCore.pyqtSignal()
+    #~ enter = QtCore.Signal()
+    #~ leave = QtCore.Signal()
+    #~ mousePositionUpdated = QtCore.Signal(QtCore.QPoint)
+    #~ posMarked = QtCore.Signal(QtCore.QPoint)
+    #~ newSize = QtCore.Signal(QtCore.QSize)
+    #~ scaled = QtCore.Signal()
 
     #~ def __init__(self, *args, **kwargs):
         #~ super(GraphicsView, self).__init__(*args, **kwargs)
@@ -102,6 +103,7 @@ class GraphicsView(QtGui.QGraphicsView):
         #~ self.setSceneRect(scene.sceneRect())
         #~ self.resetTransform()
 
+
 class GraphicsViewMonitor(QtCore.QObject):
     '''Emit signals when a registered graphics view changes status.
 
@@ -118,42 +120,42 @@ class GraphicsViewMonitor(QtCore.QObject):
     ##: SIGNAL: it is emitted when the mouse pointer enterss the scene
     ##:
     ##: :C++ signature: `void enter(QGraphicsView*)`
-    ###enter = QtCore.pyqtSignal(QtGui.QGraphicsScene)
-    ##enter = QtCore.pyqtSignal('PyQt_PyObject') # @TODO: check
+    ###enter = QtCore.Signal(QtGui.QGraphicsScene)
+    ##enter = QtCore.Signal(QtCore.QObject) # @TODO: check
 
     #: SIGNAL: it is emitted when the mouse pointer leaves the scene
     #:
     #: :C++ signature: `void leave(QGraphicsView*)`
-    leave = QtCore.pyqtSignal(QtGui.QGraphicsScene)
+    leave = QtCore.Signal(QtGui.QGraphicsScene)
 
     #: SIGNAL: it is emitted when a graphics view is scrolled
     #:
     #: :C++ signature: `void scrolled(QGraphicsView*)`
-    scrolled = QtCore.pyqtSignal(QtGui.QGraphicsView)
+    scrolled = QtCore.Signal(QtGui.QGraphicsView)
 
     #: SIGNAL: it is emitted when the graphicsview window is resized
     #:
     #: :C++ signature: `void resized(QGraphicsView*, QSize)`
-    resized = QtCore.pyqtSignal(QtGui.QGraphicsView, QtCore.QSize)
+    resized = QtCore.Signal(QtGui.QGraphicsView, QtCore.QSize)
 
     # @TODO: explain difference with previous
     #: SIGNAL:
     #:
     #: :C++ signature: `void viewportResized(QGraphicsView*)`
-    viewportResized = QtCore.pyqtSignal(QtGui.QGraphicsView)
+    viewportResized = QtCore.Signal(QtGui.QGraphicsView)
 
     #: SIGNAL: it is emitted when the mouse pointer is moved on the scene
     #:
     #: :C++ signature: `void mouseMoved(QtGui.QGraphicsScene, QtCore.QPointF,
     #:                                  QtCore.Qt.MuseButtons)`
-    mouseMoved = QtCore.pyqtSignal(QtGui.QGraphicsScene, QtCore.QPointF,
-                                   QtCore.Qt.MouseButtons)
+    mouseMoved = QtCore.Signal(QtGui.QGraphicsScene, QtCore.QPointF,
+                               QtCore.Qt.MouseButtons)
 
     ##: SIGNAL:
     ##:
-    ##: :C++ signature: `newPos(PyQt_PyObject, QPoint)`
-    ###newPos = QtCore.pyqtSignal(QtGui.QGraphicsView, QtCore.QPoint)
-    ##newPos = QtCore.pyqtSignal('PyQt_PyObject', QtCore.QPoint) # @TODO: check
+    ##: :C++ signature: `newPos(QtCore.QObject, QPoint)`
+    ###newPos = QtCore.Signal(QtGui.QGraphicsView, QtCore.QPoint)
+    ##newPos = QtCore.Signal(QtCore.QObject, QtCore.QPoint) # @TODO: check
 
     # @TODO: use signal mappers
     #~ def __init__(self, parent=None, **kwargs):

@@ -23,6 +23,9 @@ GSDView is modular and has a simple plug-in architecture.
 Options
 -------
 
+These programs follow the usual &gnu; command line syntax, with long options
+starting with two dashes (`-`).  A summary of options is included below.
+
 --version               Show this program's version number and exit.
 --help, -h              Show this help message and exit.
 

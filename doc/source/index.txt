@@ -6,13 +6,13 @@
     ---------------------------------------------------------------
 
 ..  :Source: doc/source/index.txt
-    :Version: 0.6.4
+    :Version: 0.6.5
     :Author: Antonio Valentino
     :Contact: a_valentino@users.sf.net
     :URL: http://gsdview.sourceforge.net
     :Revision: $Revision$
     :Date: $Date$
-    :Copyright (C): 2008-2010 Antonio Valentino
+    :Copyright (C): 2008-2011 Antonio Valentino
 
 
 News
@@ -23,6 +23,7 @@ News
 The complete :doc:`newsarchive` is also available.
 
 .. include:: ../../README.txt
+
 
 Documents
 =========

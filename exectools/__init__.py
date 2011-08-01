@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2006-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2006-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of exectools.
 
@@ -20,12 +20,6 @@
 
 '''Tools for running external processes.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__revision__ = '$Revision$'
-__date__     = '$Date$'
-__version__  = (0, 6, 3)
-
-version = '.'.join(map(str, __version__))
 
 import re
 import os
@@ -33,8 +27,16 @@ import sys
 import logging
 from cStringIO import StringIO
 
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__revision__ = '$Revision$'
+__date__ = '$Date$'
+__version__ = (0, 6, 5)
+
 __all__ = ['EX_OK', 'PROGRESS', 'TAGS', 'level2tag',
            'BaseOutputHandler', 'BaseToolController', 'ToolDescriptor']
+
+version = '.'.join(map(str, __version__))
 
 if sys.platform[:3] == 'win':
     EX_OK = 0
@@ -66,7 +68,7 @@ class BaseOutputHandler(object):
     def __init__(self, logger=None):
         super(BaseOutputHandler, self).__init__()
         self._buffer = StringIO()
-        self._wpos  = self._buffer.tell()
+        self._wpos = self._buffer.tell()
 
         if logger is None or isinstance(logger, basestring):
             self.logger = logging.getLogger(logger)
@@ -151,7 +153,7 @@ class BaseOutputHandler(object):
             result = None
 
         if result:
-            self._buffer.seek(pos+match.end())
+            self._buffer.seek(pos + match.end())
         else:
             self._buffer.seek(pos)
             return None
@@ -167,7 +169,7 @@ class BaseOutputHandler(object):
         pos = self._buffer.tell()
         data = self._buffer.readline()
         if data and (data[-1] == '\n'):
-            return data[:-1] # remove '\n'
+            return data[:-1]  # remove '\n'
         self._buffer.seek(pos)
         return None
 
@@ -268,7 +270,6 @@ class ToolDescriptor(object):
     def __init__(self, executable, args=None, cwd=None, env=None,
                  stdout_handler=None, stderr_handler=None):
         '''
-
         :param executable:
             full path of the tool executable or just the tool program
             name if it is in the system search path
@@ -281,12 +282,14 @@ class ToolDescriptor(object):
         :param env:
             environment dictionary
         :param envmerge:
-            if set to True (default) it is the :ref:`env` dictionaty is
+            if set to True (default) it is the :attr:`env` dictionaty is
             used to update the system environment
         :param stdout_handler:
-            `OutputHandler` for the stdout of the tool
+            *OutputHandler* for the stdout of the tool
         :param stderr_handler:
-            `OutputHandler` for the stderr of the tool
+            *OutputHandler* for the stderr of the tool
+
+        .. seealso:: :class:`BaseOutputHandler`
 
         '''
 
@@ -475,7 +478,6 @@ class BaseToolController(object):
                 self._tool.stdout_handler.reset()
             if self._tool.stderr_handler:
                 self._tool.stderr_handler.reset()
-
 
     def reset(self):
         '''Reset the tool controller instance'''

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -21,17 +21,18 @@
 
 '''Overview pannel for GDAL raster bands.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
-__revision__ = '$Revision$'
-
 
 import logging
 
-from PyQt4 import QtCore, QtGui
+from qt import QtCore, QtGui
 
 from gsdview.qt4support import overrideCursor
 from gsdview.gdalbackend import gdalsupport
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 
 class NavigationGraphicsView(QtGui.QGraphicsView):
@@ -61,8 +62,8 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
     #:
     #: :C++ signature: `void mousePressed(QPointF, Qt::MouseButtons,
     #:                                    QGraphicsView::DragMode)`
-    mousePressed = QtCore.pyqtSignal(QtCore.QPointF, QtCore.Qt.MouseButtons,
-                                     QtGui.QGraphicsView.DragMode)
+    mousePressed = QtCore.Signal(QtCore.QPointF, QtCore.Qt.MouseButtons,
+                                 QtGui.QGraphicsView.DragMode)
 
     #: SIGNAL: it is emitted when the mouse is moved on the view
     #:
@@ -75,9 +76,8 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
     #:
     #: :C++ signature: `void mouseMoved(QPointF, Qt::MouseButtons,
     #:                                    QGraphicsView::DragMode)`
-    mouseMoved = QtCore.pyqtSignal(QtCore.QPointF, QtCore.Qt.MouseButtons,
-                                   QtGui.QGraphicsView.DragMode)
-
+    mouseMoved = QtCore.Signal(QtCore.QPointF, QtCore.Qt.MouseButtons,
+                               QtGui.QGraphicsView.DragMode)
 
     def __init__(self, parent=None, **kwargs):
         super(NavigationGraphicsView, self).__init__(parent, **kwargs)
@@ -160,9 +160,9 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
 
 
 class BandOverviewDock(QtGui.QDockWidget):
-    OVRMAXSIZE = 10 * 1024**2 # 10MB
+    OVRMAXSIZE = 10 * 1024 ** 2  # 10MB
 
-    def __init__(self, app, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, app, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         #title = self.tr('Dataset Browser')
         super(BandOverviewDock, self).__init__('Band Overview', app, flags,
                                                **kwargs)
@@ -223,11 +223,12 @@ class BandOverviewDock(QtGui.QDockWidget):
         view = self.app.currentGraphicsView()
         if view:
             if self.graphicsview.scene():
-                assert view.scene() == self.graphicsview.scene() # @TODO: check
+                # @TODO: check
+                assert view.scene() == self.graphicsview.scene()
             view.centerOn(scenepos)
 
-    @QtCore.pyqtSlot()
-    @QtCore.pyqtSlot(QtGui.QGraphicsView)
+    @QtCore.Slot()
+    @QtCore.Slot(QtGui.QGraphicsView)
     def updateMainViewBox(self, srcview=None):
         if not self.graphicsview.scene():
             return
@@ -240,7 +241,7 @@ class BandOverviewDock(QtGui.QDockWidget):
             return
 
         if srcview:
-            assert srcview.scene() == self.graphicsview.scene() # @TODO: check
+            assert srcview.scene() == self.graphicsview.scene()  # @TODO: check
             hbar = srcview.horizontalScrollBar()
             vbar = srcview.verticalScrollBar()
 
@@ -269,7 +270,7 @@ class OverviewController(QtCore.QObject):
         self.app = app
 
         self.panel = BandOverviewDock(app)
-        self.panel.setObjectName('bandOverviewPanel') # @TODO: check
+        self.panel.setObjectName('bandOverviewPanel')   # @TODO: check
         app.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.panel)
 
         # Connect signals
@@ -284,9 +285,12 @@ class OverviewController(QtCore.QObject):
         self.panel.graphicsview.mousePressed.connect(self.onNewPos)
         self.panel.graphicsview.mouseMoved.connect(self.onNewPos)
 
-    @QtCore.pyqtSlot()
-    @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
+    @QtCore.Slot()
+    @QtCore.Slot(QtGui.QMdiSubWindow)
     def onSubWindowChanged(self, subwin=None):
+        if subwin is None:
+            subwin = self.app.mdiarea.activeSubWindow()
+
         try:
             item = subwin.item
         except AttributeError:
@@ -294,13 +298,13 @@ class OverviewController(QtCore.QObject):
         else:
             self.panel.setItem(item)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def onWindowClosed(self):
         if len(self.app.mdiarea.subWindowList()) == 0:
             self.panel.reset()
 
-    #@QtCore.pyqtSlot(QtGui.QStandardItem)
-    @QtCore.pyqtSlot('QStandardItem*')  # @TODO:check
+    #@QtCore.Slot(QtGui.QStandardItem)
+    @QtCore.Slot('QStandardItem*')  # @TODO:check
     def onItemChanged(self, item):
         if hasattr(item, 'scene'):
             srcview = self.app.currentGraphicsView()
@@ -309,8 +313,8 @@ class OverviewController(QtCore.QObject):
                 self.panel.setItem(item)
 
     # @TODO: translate into an event handler
-    @QtCore.pyqtSlot(QtCore.QPointF, QtCore.Qt.MouseButtons,
-                     QtGui.QGraphicsView.DragMode)
+    @QtCore.Slot(QtCore.QPointF, QtCore.Qt.MouseButtons,
+                 QtGui.QGraphicsView.DragMode)
     def onNewPos(self, pos, buttons, dragmode):
         if buttons & QtCore.Qt.LeftButton:
             self.panel.centerMainViewOn(pos)

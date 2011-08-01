@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -21,10 +21,6 @@
 
 '''Utility functions and classes for Qt4 applicaions.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
-__revision__ = '$Revision$'
-
 
 import os
 import csv
@@ -33,11 +29,14 @@ import logging
 from cStringIO import StringIO
 from ConfigParser import ConfigParser
 
+from qt import QtCore, QtGui, QtSvg
 
-from PyQt4 import QtCore, QtGui, QtSvg, uic
+import utils
 
-from gsdview import utils
 
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 intToWinState = {
     int(QtCore.Qt.WindowNoState):       QtCore.Qt.WindowNoState,
@@ -61,6 +60,7 @@ def actionGroupToToolbar(actionGroup, label, name=None):
         parts = str(label).title().split()
         parts[0] = parts[0].lower()
         name = ''.join(parts)
+
     toolbar = QtGui.QToolBar(label)
     toolbar.addActions(actionGroup.actions())
     if name:
@@ -106,7 +106,8 @@ def selectAllItems(itemview):
     topleft = model.index(0, 0)
 
     try:
-        bottomright = model.index(model.rowCount() - 1, model.columnCount() - 1)
+        bottomright = model.index(model.rowCount() - 1,
+                                  model.columnCount() - 1)
     except (TypeError, AttributeError):
         # columnCount is a private method in QAbstractListModel
         # assume it is a list
@@ -117,7 +118,7 @@ def selectAllItems(itemview):
                                      QtGui.QItemSelectionModel.Select)
 
 
-#@QtCore.pyqtSlot(QtGui.QWidget) # @TODO: check
+#@QtCore.Slot(QtGui.QWidget) # @TODO: check
 def copySelectedItems(itemview):
     '''Copy selected items of an QAbstractItemView to the clipboard and
     also return copied data.'''
@@ -138,7 +139,7 @@ def copySelectedItems(itemview):
     data = '\n'.join(lines)
 
     if data:
-        clipboard = QtGui.qApp.clipboard()
+        clipboard = QtGui.QApplication.clipboard()
         clipboard.setText(data, QtGui.QClipboard.Clipboard)
         clipboard.setText(data, QtGui.QClipboard.Selection)
 
@@ -149,7 +150,7 @@ def copySelectedItems(itemview):
     #mimedata = QtCore.QMimeData()
     #mimedata.setData('text/csv', data)
 
-    #clipboard = QtGui.qApp.clipboard()
+    #clipboard = QtGui.QApplication.clipboard()
     #clipboard.setMimeData(mimedata, QtGui.QClipboard.Clipboard)
     #clipboard.setMimeData(mimedata, QtGui.QClipboard.Selection)
 
@@ -223,7 +224,7 @@ def modelToTextDocument(model, doc=None):
 
             cell = table.cellAt(row, col)
             cellCursor = cell.firstCursorPosition()
-            cellCursor.insertText(text)#, textformat)
+            cellCursor.insertText(text)  # , textformat)
 
     # headers style
     headerformat = QtGui.QTextCharFormat()
@@ -347,7 +348,8 @@ def setViewContextActions(widget):
     widget.addAction(action)
 
     #':/trolltech/dialogs/qprintpreviewdialog/images/view-page-multi-32.png'
-    icon = QtGui.QIcon(':/trolltech/styles/commonstyle/images/viewlist-128.png')
+    icon = QtGui.QIcon(
+        ':/trolltech/styles/commonstyle/images/viewlist-128.png')
     action = QtGui.QAction(icon, widget.tr('Select &All'), widget,
                            objectName='selectAllAction',
                            #shortcut=widget.tr('Ctrl+A'),
@@ -373,11 +375,12 @@ def setViewContextActions(widget):
     widget.addAction(action)
 
     #~ icon = QtGui.QIcon(
-                #~ ':/trolltech/styles/commonstyle/images/filecontents-128.png')
+        #~ ':/trolltech/styles/commonstyle/images/filecontents-128.png')
     #~ action = QtGui.QAction(icon, widget.tr('Print Preview'), widget,
                            #~ objectName='printPreviewAction',
                            #~ statusTip=widget.tr('Print Preview'))#,
-                           #~ #triggered=tablePrintPreview) # @TODO: tablePrintPreview
+                           #~ #triggered=tablePrintPreview)
+                           #~ # @TODO: tablePrintPreview
     #~ widget.addAction(action)
 
 
@@ -392,7 +395,8 @@ def coreprint(obj, printer):
 def printObject(obj, printer=None, parent=None):
     if printer is None:
         printer = QtGui.QPrinter(QtGui.QPrinter.PrinterResolution)
-        #printer.setOutputFile(os.path.join(utils.default_workdir(). 'filename.pdf'))
+        #printer.setOutputFile(os.path.join(utils.default_workdir().
+        #                                   'filename.pdf'))
 
     # @TODO: check
     if parent is None:
@@ -464,7 +468,7 @@ def printPreview(obj, printer=None, parent=None):
 #    # return toQImage(data.transpose())
 #    return _toQImage(data)
 
-import numpy
+import numpy as np
 GRAY_COLORTABLE = [QtGui.QColor(i, i, i).rgb() for i in range(256)]
 
 
@@ -472,13 +476,13 @@ def _aligned(data, nbyes=4):
     h, w = data.shape
 
     fact = nbyes / data.itemsize
-    shape = (h, numpy.ceil(w / float(fact)) * nbyes)
+    shape = (h, np.ceil(w / float(fact)) * nbyes)
     if shape != data.shape:
         # build aligned matrix
-        image = numpy.zeros(shape, data.dtype)
-        image[:,:w] = data[:,:w]
+        image = np.zeros(shape, data.dtype)
+        image[:, 0:w] = data[:, 0:w]
     else:
-        image = numpy.require(data, data.dtype, 'CO') # 'CAO'
+        image = np.require(data, data.dtype, 'CO')  # 'CAO'
     return image
 
 
@@ -491,7 +495,7 @@ def numpy2qimage(data):
 
     colortable = None
 
-    if data.dtype in (numpy.uint8, numpy.ubyte, numpy.byte):
+    if data.dtype in (np.uint8, np.ubyte, np.byte):
         if data.ndim == 2:
             h, w = data.shape
             image = _aligned(data)
@@ -500,36 +504,36 @@ def numpy2qimage(data):
 
         elif data.ndim == 3 and data.shape[2] == 3:
             h, w = data.shape[:2]
-            image = numpy.zeros((h,w,4), data.dtype)
-            image[:,:,2::-1] = data
-            image[...,-1] = 255
+            image = np.zeros((h, w, 4), data.dtype)
+            image[:, :, 2::-1] = data
+            image[..., -1] = 255
             format_ = QtGui.QImage.Format_RGB32
 
         elif data.ndim == 3 and data.shape[2] == 4:
             h, w = data.shape[:2]
-            image = numpy.require(data, numpy.uint8, 'CO') # 'CAO'
+            image = np.require(data, np.uint8, 'CO')  # 'CAO'
             format_ = QtGui.QImage.Format_ARGB32
 
         else:
             raise ValueError('unable to convert data: shape=%s, '
                              'dtype="%s"' % (data.shape,
-                                             numpy.dtype(data.dtype)))
+                                             np.dtype(data.dtype)))
 
-    elif data.dtype == numpy.uint16 and data.ndim == 2:
+    elif data.dtype == np.uint16 and data.ndim == 2:
         # @TODO: check
         h, w = data.shape
         image = _aligned(data)
         format_ = QtGui.QImage.Format_RGB16
 
-    elif data.dtype == numpy.uint32 and data.ndim == 2:
+    elif data.dtype == np.uint32 and data.ndim == 2:
         h, w = data.shape
-        image = numpy.require(data, data.dtype, 'CO') # 'CAO'
+        image = np.require(data, data.dtype, 'CO')  # 'CAO'
         #format_ = QtGui.QImage.Format_ARGB32
         format_ = QtGui.QImage.Format_RGB32
 
     else:
         raise ValueError('unable to convert data: shape=%s, dtype="%s"' % (
-                                        data.shape, numpy.dtype(data.dtype)))
+                                        data.shape, np.dtype(data.dtype)))
 
     result = QtGui.QImage(image.data, w, h, format_)
     result.ndarray = image
@@ -556,12 +560,18 @@ def getuifile(name, package=None):
 def getuiform(name, package=None):
     '''Return the ui form class.
 
-    If it is available a pre-build python module the form class is
+    If it is available a pre-built python module the form class is
     imported from it (assuming that the module contains a single UI
     class having a name that starts with `Ui_`).
 
     If no pre-build python module is available than the form call is
-    loaded directly from the ui file usning the PyQt4.uic helper module.
+    loaded directly from the ui file using the PyQt4.uic helper module.
+
+    .. note:: in the pyside packege is used to provide bindings for Qt4
+              then the uic module is not available and only pre-built
+              modules are searched.
+              When pyside is used an :exc:`ImportError` is raised
+              if pre-built forms are not available.
 
     .. note:: like :autolink:`gsdview.qt4support.getuifile` this
               function assumes that pre-build form modules and Qt UI
@@ -583,12 +593,18 @@ def getuiform(name, package=None):
         FormClass = getattr(module, formname)
         logging.debug('load "%s" form base class from pre-compiled python '
                       'module' % formname)
-        return FormClass
     except ImportError:
+        import qt
+        if qt.qt_api != 'pyqt':
+            raise
+
+        from PyQt4 import uic
+
         uifile = getuifile(name + '.ui', package)
         FormClass, QtBaseClass = uic.loadUiType(uifile)
         logging.debug('load "%s" form class from ui file' % FormClass.__name__)
-        return FormClass
+
+    return FormClass
 
 
 def geticonfile(name, package=None):
@@ -708,15 +724,16 @@ def cfgToTextDocument(cfg, doc=None):
 def imgexport(obj, parent=None):
     filters = [
         obj.tr('All files (*)'),
+        obj.tr('Simple Vector Graphics file (*.svg)'),
         obj.tr('PDF file (*.pdf)'),
         obj.tr('PostScript file (*.ps)'),
-        #obj.tr('Simple Vector Graphics file (*.svg)'),
     ]
     filters.extend('%s file (*.%s)' % (str(fmt).upper(), str(fmt))
                         for fmt in QtGui.QImageWriter.supportedImageFormats())
 
     formats = set(str(fmt).lower() for fmt in
                                     QtGui.QImageWriter.supportedImageFormats())
+    formats.update(('svg', 'pdf', 'ps'))
 
     # @TODO: check
     if parent is None:
@@ -760,24 +777,12 @@ def imgexport(obj, parent=None):
             srcsize = obj.viewport().rect().size()
         elif hasattr(obj, 'sceneRect'):
             # QGraphicsViews alsa has a viewport method so they should be
-            # trapped y the previous check
+            # trapped by the previous check
             srcsize = obj.sceneRect().toRect().size()
         else:
             srcsize = QtGui.QSize(800, 600)
 
-        if ext not in ('pdf', 'ps'):
-            device = QtGui.QPixmap(srcsize)
-            try:
-                # QGraphicsView, QGraphicsScene
-                color = obj.backgroundBrush().color()
-            except AttributeError:
-                color = QtCore.Qt.white
-            device.fill(color)
-        elif ext == 'svg':
-            device = QtSvg.QSvgGenerator()
-            device.setFileName(filename)
-            device.setSize(srcsize)
-        else:
+        if ext in ('pdf', 'ps'):
             device = QtGui.QPrinter(QtGui.QPrinter.HighResolution)
             device.setOutputFileName(filename)
             if ext == 'pdf':
@@ -785,13 +790,24 @@ def imgexport(obj, parent=None):
             else:
                 # ext == 'ps'
                 device.setOutputFormat(QtGui.QPrinter.PostScriptFormat)
+        elif ext == 'svg':
+            device = QtSvg.QSvgGenerator()
+            device.setFileName(filename)
+            device.setSize(srcsize)
+            #device.setViewBox(obj.sceneRect().toRect())
+            #device.setTitle(obj.tr('Graphics Draw'))
+            #device.setDescription(obj.tr('Qt SVG drawing.'))
+        else:
+            device = QtGui.QPixmap(srcsize)
+            # @TODO: check
+            device.fill(QtCore.Qt.white)
 
         painter = QtGui.QPainter()
         if painter.begin(device):
             #painter.setRenderHint(QtGui.QPainter.Antialiasing)
             obj.render(painter)
             painter.end()
-            if hasattr(device , 'save'):
+            if hasattr(device, 'save'):
                 device.save(filename)
         else:
             QtGui.QMessageBox.warning(

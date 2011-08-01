@@ -33,11 +33,13 @@ if sys.platform == 'darwin':
     EXTRA_QT_RESOURCES = Tree('/Library/Frameworks/QtGui.framework/Resources/qt_menu.nib', os.path.join('Resources', 'qt_menu.nib'))
     #EXTRA_QT_RESOURCES = Tree(os.path.join(QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.LibrariesPath),
     #                          'QtGui.framework/Resources/qt_menu.nib'), os.path.join('Resources', 'qt_menu.nib'))
+    ICONFILE = os.path.join(GSDVIEWROOT, 'pkg', 'GSDView.icns')
 elif sys.platform[:3] == 'win':
     GDALROOT = r'c:\gdal170'
     GDAL_DATA = os.path.join(GDALROOT, 'data')
     GDALINFO = os.path.join(GDALROOT, 'bin', 'gdalinfo.exe')
     GDALADDO = os.path.join(GDALROOT, 'bin', 'gdaladdo.exe')
+    ICONFILE = os.path.join(GSDVIEWROOT, 'doc', 'source', '_static', 'logo.ico')
 else:
     # Standard unix
     #GDALROOT = '/usr'
@@ -46,15 +48,19 @@ else:
     GDAL_DATA = check_output(['gdal-config', '--datadir']).strip()
     GDALINFO = os.path.join(GDALROOT, 'bin', 'gdalinfo')
     GDALADDO = os.path.join(GDALROOT, 'bin', 'gdaladdo')
+    ICONFILE = os.path.join(GSDVIEWROOT, 'doc', 'source', '_static', 'logo.ico')
 
 a = Analysis([os.path.join(HOMEPATH,'support', '_mountzlib.py'),
-              os.path.join(HOMEPATH,'support', 'useUnicode.py'),
+              os.path.join(CONFIGDIR,'support', 'useUnicode.py'),
               os.path.join(GSDVIEWROOT, 'scripts', 'gsdview'),
              ],
-             pathex=[GSDVIEWROOT],
+             pathex=['.', GSDVIEWROOT],
              hookspath=['.'],
              excludes=['matplotlib', 'scipy', #'multiprocessing',
-                       'Pyrex', '_tkinter', 'nose'])
+                       'Pyrex', '_tkinter', 'nose',
+                       'PySide', 'PySide.QtCore', 'PySide.QtGui',
+                       'PySide.QtSvg'])
+
 pyz = PYZ(a.pure)
 exe = EXE(pyz,
           a.scripts,
@@ -94,17 +100,17 @@ exe = EXE(pyz,
 
           name=os.path.join(GSDVIEWROOT, 'dist', 'onefile', 'gsdview'),
           debug=False,
-          strip=False,
+          strip=None,
           upx=True,
-          console=1,  # @TODO: check
-          icon=os.path.join(GSDVIEWROOT, 'doc', 'source', '_static',
-                            'logo.ico'),
+          console=False,  # @TODO: check
+          icon=ICONFILE,
 )
 
+# Bundle sipport for onedir mode still incomplete
 BUILD_BUNDLE = True
 if sys.platform == 'darwin' and BUILD_BUNDLE:
     sys.path.insert(0, os.path.abspath(os.pardir))
     from gsdview import info
-    app = BUNDLE(exe, 
-                 appname=os.path.join(GSDVIEWROOT, 'dist', 'onefile', info.name), 
+    app = BUNDLE(exe,
+                 name=os.path.join(GSDVIEWROOT, 'dist', 'onefile', info.name + '.app'),
                  version=info.version)

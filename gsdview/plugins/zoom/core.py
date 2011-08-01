@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -21,16 +21,17 @@
 
 '''Zoom tool.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
-__revision__ = '$Revision$'
-
 
 import logging
 
-from PyQt4 import QtCore, QtGui
+from qt import QtCore, QtGui
 
 from gsdview import qt4support
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 
 class ZoomTool(QtCore.QObject):
@@ -73,32 +74,38 @@ class ZoomTool(QtCore.QObject):
                       statusTip=self.tr('Original size'),
                       triggered=self.zoom100)
 
+        # Manual Zoom
+        #icon = QtGui.QIcon() #qt4support.geticon('zoom-100.svg', 'gsdview')
+        #QtGui.QWidgetAction(icon, self.tr('Zoom 100%'), actions,
+        #              statusTip=self.tr('Original size'),
+        #              triggered=self.zoom100)
+
         return actions
 
     def currentview(self):
         return self._view
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def zoomIn(self):
         factor = 1.2    # @TODO: make this configurable
         view = self.currentview()
         if view:
             view.scale(factor, factor)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def zoomOut(self):
-        factor = 1./1.2 # @TODO: make this configurable
+        factor = 1. / 1.2   # @TODO: make this configurable
         view = self.currentview()
         if view:
             view.scale(factor, factor)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def zoomFit(self):
         view = self.currentview()
         if view:
             view.fitInView(view.sceneRect(), QtCore.Qt.KeepAspectRatio)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def zoom100(self):
         view = self.currentview()
         if view:

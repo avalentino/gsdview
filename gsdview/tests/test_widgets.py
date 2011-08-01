@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -23,23 +23,12 @@ import os
 import sys
 import logging
 
-# Select the PyQt API 2
-import sip
-sip.setapi('QDate',       2)
-sip.setapi('QDateTime',   2)
-sip.setapi('QString',     2)
-sip.setapi('QTextStream', 2)
-sip.setapi('QTime',       2)
-sip.setapi('QUrl',        2)
-sip.setapi('QVariant',    2)
-
-from PyQt4 import QtGui
-
 # Fix sys path
 from os.path import abspath, dirname
 GSDVIEWROOT = abspath(os.path.join(dirname(__file__), os.pardir, os.pardir))
 sys.path.insert(0, GSDVIEWROOT)
 
+from qt import QtGui
 
 from gsdview.widgets import *
 
@@ -50,6 +39,7 @@ def test_aboutdialog():
     d.show()
     app.exec_()
 
+
 def test_fileentrywidget():
     app = QtGui.QApplication(sys.argv)
     d = QtGui.QDialog()
@@ -58,6 +48,7 @@ def test_fileentrywidget():
     d.setLayout(layout)
     d.show()
     app.exec_()
+
 
 def test_generalpreferencespage():
     app = QtGui.QApplication(sys.argv)
@@ -68,19 +59,21 @@ def test_generalpreferencespage():
     d.show()
     app.exec_()
 
+
 def test_preferencesdialog():
     app = QtGui.QApplication(sys.argv)
     d = PreferencesDialog()
     d.show()
     app.exec_()
 
+
 def test_exceptiondialog():
     def f(depth, verbose=False):
         if verbose:
-            print 1/depth
+            print 1 / depth
         else:
-            1/depth
-        return f(depth-1, verbose)
+            1 / depth
+        return f(depth - 1, verbose)
     try:
         f(4)
     except Exception:

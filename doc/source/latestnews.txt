@@ -1,26 +1,26 @@
-:13/08/2010: GSDView Open Source Edition v. 0.6.3 released.
+:31/07/2011: GSDView now also works with PySide_
 
-             This release has been implemented a complete switch of the
-             application to the new PyQt4_ API (new signal/slot handling,
-             QString and QVariant are gone, etc.).
-             For this reason GSDView now requires PyQt4_ v. 4.6 or newer.
+             Full support to PySide_ has been implemented.
+             Now GSDView can optionally use PySide_ as Qt4_ bindings instead
+             PyQt4_ and SIP_.
 
-             Also some new feature have been added: see :doc:`CHANGES`.
+:24/07/2011: A new tentative package for Mac OS X
 
-:20/07/2010: GSDView Open Source Edition v. 0.6.2 released.
+             A new tentative package for Mac OS X. It includes a beta
+             version of GDSView 0.6.5.
 
-             This release don't include big changes visible to the user.
-             It introduces some important internal changes such as the switch
-             to GDAL 1.6.x series and a new system for full asynchronous
-             handling of computation tasks (including statistics and histogram
-             computation).
+             Feedback is very welcome.
 
-:01/07/2010: GDAL 1.5.x series dropped.
+:28/11/2010: GSDView Open v. 0.6.4 run on Fedora_ 14.
 
-             GDAL 1.6.x series introduced a lot of new interesting features
-             and a better progress handling.
-             Dropping 1.5.x series allow to use this new features in the
-             `development branch`_ to make GSDView even better.
+             In Fedora_ 14 it has been fixed a bug in GDAL packaging
+             that caused a GSDView crash on startup.
+             The (recently updated) RPM package now runs nicely on
+             Fedora_ too.
 
-.. _`development branch`: http://sourceforge.net/apps/trac/gsdview/browser/trunk
-.. _PyQt4: http://www.riverbankcomputing.com
+.. _PySide: http://www.pyside.org
+.. _SIP: http://www.riverbankcomputing.co.uk/software/sip
+.. _PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt
+.. _Qt4: http://qt.nokia.com/products
+.. _Fedora: http://fedoraproject.org
+

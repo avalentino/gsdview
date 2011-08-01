@@ -23,11 +23,13 @@ if mswindows:
 else:
     SETBINARY = ''
 
+
 # In a debug build, stuff like "[6580 refs]" is printed to stderr at
 # shutdown time.  That frustrates tests trying to check stderr produced
 # from a spawned Python process.
 def remove_stderr_debug_decorations(stderr):
     return re.sub(r"\[\d+ refs\]\r?\n?$", "", stderr)
+
 
 class ProcessTestCase(unittest.TestCase):
     def setUp(self):
@@ -48,7 +50,7 @@ class ProcessTestCase(unittest.TestCase):
             return tempfile.mkstemp()
         else:
             fname = tempfile.mktemp()
-            return os.open(fname, os.O_RDWR|os.O_CREAT), fname
+            return os.open(fname, os.O_RDWR | os.O_CREAT), fname
 
     #
     # Generic tests
@@ -270,9 +272,12 @@ class ProcessTestCase(unittest.TestCase):
         self.assertEqual(p.stdout.read(), "orange")
 
     def test_communicate_stdin(self):
-        p = subprocess.Popen([sys.executable, "-c",
-                              'import sys; sys.exit(sys.stdin.read() == "pear")'],
-                             stdin=subprocess.PIPE)
+        cmd = [
+            sys.executable,
+            "-c",
+            'import sys; sys.exit(sys.stdin.read() == "pear")',
+        ]
+        p = subprocess.Popen(cmd, stdin=subprocess.PIPE)
         p.communicate("pear")
         self.assertEqual(p.returncode, 1)
 
@@ -334,7 +339,7 @@ class ProcessTestCase(unittest.TestCase):
                          stdin=subprocess.PIPE,
                          stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE)
-        string_to_write = "abc"*pipe_buf
+        string_to_write = "abc" * pipe_buf
         (stdout, stderr) = p.communicate(string_to_write)
         self.assertEqual(stdout, string_to_write)
 
@@ -401,13 +406,14 @@ class ProcessTestCase(unittest.TestCase):
                              "line1\nline2\nline3\nline4\nline5\nline6")
         else:
             # Interpreter without universal newline support
-            self.assertEqual(stdout, "line1\nline2\rline3\r\nline4\r\nline5\nline6")
+            self.assertEqual(stdout,
+                             "line1\nline2\rline3\r\nline4\r\nline5\nline6")
 
     def test_no_leaking(self):
         # Make sure we leak no resources
-        if not hasattr(test_support, "is_resource_enabled") \
-               or test_support.is_resource_enabled("subprocess") and not mswindows:
-            max_handles = 1026 # too much for most UNIX systems
+        if (not hasattr(test_support, "is_resource_enabled") or
+            test_support.is_resource_enabled("subprocess") and not mswindows):
+            max_handles = 1026  # too much for most UNIX systems
         else:
             max_handles = 65
         for i in range(max_handles):
@@ -418,7 +424,6 @@ class ProcessTestCase(unittest.TestCase):
                     stderr=subprocess.PIPE)
             data = p.communicate("lime")[0]
             self.assertEqual(data, "lime")
-
 
     def test_list2cmdline(self):
         self.assertEqual(subprocess.list2cmdline(['a b c', 'd', 'e']),
@@ -436,7 +441,6 @@ class ProcessTestCase(unittest.TestCase):
         self.assertEqual(subprocess.list2cmdline(['ab', '']),
                          'ab ""')
 
-
     def test_poll(self):
         p = subprocess.Popen([sys.executable,
                           "-c", "import time; time.sleep(1)"])
@@ -452,14 +456,12 @@ class ProcessTestCase(unittest.TestCase):
         # Subsequent invocations should just return the returncode
         self.assertEqual(p.poll(), 0)
 
-
     def test_wait(self):
         p = subprocess.Popen([sys.executable,
                           "-c", "import time; time.sleep(2)"])
         self.assertEqual(p.wait(), 0)
         # Subsequent invocations should just return the returncode
         self.assertEqual(p.wait(), 0)
-
 
     def test_invalid_bufsize(self):
         # an invalid type of the bufsize argument should raise
@@ -475,6 +477,7 @@ class ProcessTestCase(unittest.TestCase):
     # POSIX tests
     #
     if not mswindows:
+
         def test_exceptions(self):
             # catched & re-raised exceptions
             try:
@@ -485,6 +488,7 @@ class ProcessTestCase(unittest.TestCase):
                 # somewhere.
                 self.assertNotEqual(e.child_traceback.find("os.chdir"), -1)
             else:
+                p.wait()
                 self.fail("Expected OSError")
 
         def _suppress_core_files(self):
@@ -494,7 +498,7 @@ class ProcessTestCase(unittest.TestCase):
             try:
                 import resource
                 old_limit = resource.getrlimit(resource.RLIMIT_CORE)
-                resource.setrlimit(resource.RLIMIT_CORE, (0,0))
+                resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
                 return old_limit
             except (ImportError, ValueError, resource.error):
                 return None
@@ -583,11 +587,11 @@ class ProcessTestCase(unittest.TestCase):
             os.remove(fname)
             self.assertEqual(rc, 47)
 
-
     #
     # Windows tests
     #
     if mswindows:
+
         def test_startupinfo(self):
             # startupinfo argument
             # We uses hardcoded constants, because we do not want to

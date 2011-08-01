@@ -1,11 +1,11 @@
 ..  :Source: doc/source/newsarchive.txt
-    :Version: 0.6.4
+    :Version: 0.6.5
     :Author: Antonio Valentino
     :Contact: a_valentino@users.sf.net
     :URL: http://gsdview.sourceforge.net
     :Revision: $Revision$
     :Date: $Date$
-    :Copyright (C): 2008-2010 Antonio Valentino
+    :Copyright (C): 2008-2011 Antonio Valentino
 
 
 News archive
@@ -17,6 +17,45 @@ __ `GSDView project page`_
 
 .. include:: latestnews.txt
 
+:14/11/2010: GSDView Open Source Edition v. 0.6.4 released.
+
+             This is an hot-fix release that restores the complete
+             compatibility with GDAL 1.6.x series.
+
+             Also some new feature have been added: see :doc:`CHANGES`.
+
+:13/11/2010: Ubuntu packages now available via Launchpad.
+
+             Source packages and pre-build binary packages for Ubuntu 10.10
+             are now available via PPA (Personal Package Archive) on Launchpad_.
+
+             The archive and instructions for usage are at the following URL:
+
+             https://launchpad.net/~a.valentino/+archive/eotools
+
+:13/08/2010: GSDView Open Source Edition v. 0.6.3 released.
+
+             This release has been implemented a complete switch of the
+             application to the new PyQt4_ API (new signal/slot handling,
+             QString and QVariant are gone, etc.).
+             For this reason GSDView now requires PyQt4_ v. 4.6 or newer.
+
+             Also some new feature have been added: see :doc:`CHANGES`.
+
+:20/07/2010: GSDView Open Source Edition v. 0.6.2 released.
+
+             This release don't include big changes visible to the user.
+             It introduces some important internal changes such as the switch
+             to GDAL 1.6.x series and a new system for full asynchronous
+             handling of computation tasks (including statistics and histogram
+             computation).
+
+:01/07/2010: GDAL 1.5.x series dropped.
+
+             GDAL 1.6.x series introduced a lot of new interesting features
+             and a better progress handling.
+             Dropping 1.5.x series allow to use this new features in the
+             `development branch`_ to make GSDView even better.
 
 :09/05/2010: Binary package for `Mac OS X`_ released.
 
@@ -67,6 +106,8 @@ __ `GSDView project page`_
              This is still an alpha release with a minimal set of features.
 
 
+.. _Launchpad: http://www.launchpad.net
+.. _`development branch`: http://sourceforge.net/apps/trac/gsdview/browser/trunk
 .. _`Mac OS X`: http://www.apple.com/macosx
 .. _`GSDView project page`: http://sourceforge.net/projects/gsdview
 .. _download: http://sourceforge.net/projects/gsdview/files

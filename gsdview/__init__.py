@@ -1,14 +1,32 @@
 # -*- coding: utf-8 -*-
 
-# Select the PyQt API 2
-import sip
-sip.setapi('QDate',       2)
-sip.setapi('QDateTime',   2)
-sip.setapi('QString',     2)
-sip.setapi('QTextStream', 2)
-sip.setapi('QTime',       2)
-sip.setapi('QUrl',        2)
-sip.setapi('QVariant',    2)
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
+
+### This file is part of GSDView.
+
+### GSDView is free software; you can redistribute it and/or modify
+### it under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 2 of the License, or
+### (at your option) any later version.
+
+### GSDView is distributed in the hope that it will be useful,
+### but WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+### GNU General Public License for more details.
+
+### You should have received a copy of the GNU General Public License
+### along with GSDView; if not, write to the Free Software
+### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
+
+
+'''GUI front-end for the Geospatial Data Abstracton Library (GDAL).'''
+
+
+from qt import qt_api
 
 from gsdview.info import *
 from gsdview.launch import main
+
+import info
+
+__all__ = list(info.__all__) + ['qt_api', 'main']

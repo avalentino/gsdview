@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -21,13 +21,16 @@
 
 '''Qt Assistant helper.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date: 2009-09-04 20:24:24 +0200 (ven, 04 set 2009) $'
-__revision__ = '$Revision: 531 $'
 
 import sys
 
-from PyQt4 import QtCore, QtGui
+from qt import QtCore, QtGui
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date: 2009-09-04 20:24:24 +0200 (ven, 04 set 2009) $'
+__revision__ = '$Revision: 531 $'
+
 
 class Assistant(object):
     '''Helper class controllig an external QAssistant proces.'''
@@ -61,7 +64,8 @@ class Assistant(object):
             self.proc = QtCore.QProcess()
 
         if self.proc.state() != QtCore.QProcess.Running:
-            app = QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.BinariesPath)
+            app = QtCore.QLibraryInfo.location(
+                                            QtCore.QLibraryInfo.BinariesPath)
             app += QtCore.QDir.separator()
             if sys.platform == 'darwin':
                 app += QtCore.QLatin1String(
@@ -78,7 +82,7 @@ class Assistant(object):
             self.proc.start(app, args)
 
             if not self.proc.waitForStarted():
-                tr = QtGui.qApp.tr
+                tr = QtGui.QApplication.tr
                 QtGui.QMessageBox.critical(0, tr('Simple Text Viewer'),
                         tr('Unable to launch Qt Assistant (%s)') % app)
                 return False

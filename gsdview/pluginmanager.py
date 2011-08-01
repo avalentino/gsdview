@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -21,10 +21,6 @@
 
 '''Plugin manager.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date: 2009-05-31 10:28:43 +0200 (dom, 31 mag 2009) $'
-__revision__ = '$Revision: 430 $'
-
 
 import os
 import sys
@@ -38,8 +34,12 @@ except ImportError:
     logging.getLogger(__name__).debug('"pkg_resources" not found.')
 
 
-class PluginManager(object):
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date: 2009-05-31 10:28:43 +0200 (dom, 31 mag 2009) $'
+__revision__ = '$Revision: 430 $'
 
+
+class PluginManager(object):
     def __init__(self, app, syspath=None):
         super(PluginManager, self).__init__()
         self.paths = []
@@ -105,7 +105,7 @@ class PluginManager(object):
             try:
                 return vp.satisfied_by(modules[vp.name].version)
             except ValueError, e:
-                logging.warning(str(e)) #, exc_info=True)
+                logging.warning(str(e))  # , exc_info=True)
                 return False
         else:
             return False
@@ -133,9 +133,8 @@ class PluginManager(object):
             module.init(self._app)
             self.plugins[name] = module
             logger.info('"%s" plugin loaded.' % name)
-        except Exception, e:   #AttributeError:
-            logger.warning('error loading "%s" plugin: %s' %
-                                                        (name, e))
+        except Exception, e:   # AttributeError:
+            logger.warning('error loading "%s" plugin: %s' % (name, e))
 
     # @WARNING: (pychecker) Parameter (type_) not used
     def load(self, names, paths=None, info_only=False, type_='plugins'):
@@ -149,6 +148,11 @@ class PluginManager(object):
             if self.syspath:
                 paths.append(self.syspath)
 
+        if names is None:
+            names = []
+        elif isinstance(names, basestring):
+            names = [names]
+
         # @TODO: make the module independent from gsdview
         logger = logging.getLogger('gsdview')
         delayed = {}
@@ -159,9 +163,6 @@ class PluginManager(object):
                 distributions = dict((egg.key, egg) for egg in distributions)
             except NameError:
                 distributions = {}
-
-            if isinstance(names, basestring):
-                names = [names]
 
             for name in names:
                 if name in self.plugins:
@@ -278,6 +279,9 @@ class PluginManager(object):
                 self.paths.append(self.syspath)
 
             self.autoload = settings.value('autoload_plugins', [])
+            if self.autoload is None:
+                self.autoload = []
+
             self.load(self.autoload)
 
             # @TODO: check
@@ -300,19 +304,21 @@ class PluginManager(object):
 # @TODO: move Qt specific implementation elsewhere
 import functools
 
-from PyQt4 import QtCore, QtGui
+from qt import QtCore, QtGui
 
 # @TODO: check dependency - getuiform, geticon, setViewContextActions
-from gsdview import qt4support
+import qt4support
 
 
 PluginManagerGuiBase = qt4support.getuiform('pluginmanager', __name__)
+
+
 class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
 
     # @TODO: emit signal for ???
 
-    def __init__(self, pluginmanager, parent=None, flags=QtCore.Qt.Widget,
-                 **kwargs):
+    def __init__(self, pluginmanager, parent=None,
+                 flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(PluginManagerGui, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
@@ -332,7 +338,8 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
         qt4support.setViewContextActions(self.pluginsTableWidget)
 
         # @TODO: check edit triggers
-        #int(self.pathListWidget.editTriggers() & self.pathListWidget.DoubleClicked)
+        #int(self.pathListWidget.editTriggers() &
+        #                                   self.pathListWidget.DoubleClicked)
 
         self.pathListWidget.itemSelectionChanged.connect(
                                         self.pathSelectionChanged)
@@ -343,7 +350,7 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
         self.downButton.clicked.connect(self.moveSelectedPathItemsDown)
         self.editButton.clicked.connect(self.editSelectedPathItem)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def pathSelectionChanged(self):
         enabled = bool(self.pathListWidget.selectedItems())
         self.editButton.setEnabled(enabled)
@@ -351,7 +358,7 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
         self.upButton.setEnabled(enabled)
         self.downButton.setEnabled(enabled)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def addPathItem(self):
         # @TODO: don't directly use _app attribute
         filedialog = self.pluginmanager._app.filedialog
@@ -364,13 +371,13 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
                 if dir_ not in existingdirs:
                     self.pathListWidget.addItem(dir_)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def removeSelectedPathItem(self):
         model = self.pathListWidget.model()
         for item in self.pathListWidget.selectedItems():
             model.removeRow(self.pathListWidget.row(item))
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def editSelectedPathItem(self):
         items = self.pathListWidget.selectedItems()
         if items:
@@ -406,7 +413,7 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
         listwidget.insertItem(row + offset, item)
         item.setSelected(selected)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def moveSelectedPathItemsUp(self):
         selected = sorted(self.pathListWidget.selectedItems(),
                           key=self.pathListWidget.row)
@@ -417,12 +424,13 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
         for item in selected:
             self._movePathItem(item, -1)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def moveSelectedPathItemsDown(self):
         selected = sorted(self.pathListWidget.selectedItems(),
                           key=self.pathListWidget.row, reverse=True)
 
-        if self.pathListWidget.row(selected[0]) == self.pathListWidget.count()-1:
+        if (self.pathListWidget.row(selected[0]) ==
+                                            self.pathListWidget.count() - 1):
             return
 
         for item in selected:
@@ -476,10 +484,10 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
             icon = qt4support.geticon('info.svg', __name__)
             w = QtGui.QPushButton(icon, '', tablewidget,
                                   toolTip=self.tr('Show plugin info.'),
-                                  clicked=functools.partial(self.showPluginInfo,
-                                                            index))
+                                  clicked=functools.partial(
+                                                self.showPluginInfo, index))
                                   #clicked=lambda index=index:
-                                  #                  self.showPluginInfo(index))
+                                  #              self.showPluginInfo(index))
             tablewidget.setCellWidget(index, 2, w)
 
             # active
@@ -565,10 +573,12 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
 
 
 PluginInfoFormBase = qt4support.getuiform('plugininfo', __name__)
+
+
 class PluginInfoForm(QtGui.QFrame, PluginInfoFormBase):
 
     def __init__(self, plugin=None, active=None, parent=None,
-                 flags=QtCore.Qt.Widget, **kwargs):
+                 flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(PluginInfoForm, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
@@ -603,7 +613,6 @@ class PluginInfoForm(QtGui.QFrame, PluginInfoFormBase):
         self.fullPathValue.setText(fullpath)
         self.loadedCheckBox.setChecked(active)
 
-
     def clear(self):
         self.nameValue.setText('')
         self.descriptionValue.setText('')
@@ -622,8 +631,8 @@ class PluginInfoForm(QtGui.QFrame, PluginInfoFormBase):
 
 class PluginInfoDialog(QtGui.QDialog):
 
-    def __init__(self, plugin, active, parent=None, flags=QtCore.Qt.Widget,
-                 **kwargs):
+    def __init__(self, plugin, active, parent=None,
+                 flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(PluginInfoDialog, self).__init__(parent, flags, **kwargs)
         self.setModal(True)
 

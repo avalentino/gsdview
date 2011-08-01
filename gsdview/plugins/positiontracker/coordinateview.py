@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -21,16 +21,17 @@
 
 '''Position tool.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+
+from qt import QtCore, QtGui
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 
-from PyQt4 import QtCore, QtGui
-
-
 class CoordinateView(QtGui.QWidget):
-    def __init__ (self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(CoordinateView, self).__init__(parent, flags, **kwargs)
 
         layout = QtGui.QHBoxLayout()
@@ -58,8 +59,14 @@ class CoordinateView(QtGui.QWidget):
         self.xedit.setText(str(scenepos.x()))
         self.yedit.setText(str(scenepos.y()))
 
+    # @COMPATIBILITY: pyside 1.0.1
+    def hide(self, *args):
+        # @NOTE: ignore extra arguments
+        super(CoordinateView, self).hide()
+
+
 class GeoCoordinateView(CoordinateView):
-    def __init__ (self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(GeoCoordinateView, self).__init__(parent, flags, **kwargs)
 
         self.xlabel.setText('lon:')

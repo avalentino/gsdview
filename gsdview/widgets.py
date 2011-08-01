@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -21,9 +21,6 @@
 
 '''Widgets and dialogs for GSDView.'''
 
-__author__   = '$Author$'
-__date__     = '$Date$'
-__revision__ = '$Revision$'
 
 import os
 import sys
@@ -32,16 +29,21 @@ import logging
 import platform
 import traceback
 
-from PyQt4 import QtCore, QtGui
+from qt import QtCore, QtGui
 
-from gsdview import info
-from gsdview import utils
-from gsdview import qt4support
+import info
+import utils
+import qt4support
+
+
+__author__ = '$Author$'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 
 def get_mainwin():
     #mainwin = QtGui.qApp.findChild(QtGui.QMainWindow,  'gsdview-mainwin')
-    for mainwin in QtGui.qApp.topLevelWidgets():
+    for mainwin in QtGui.QApplication.topLevelWidgets():
         if mainwin.objectName() == 'gsdview-mainwin':
             break
     else:
@@ -83,9 +85,11 @@ def _choosedir(dirname, dialog=None,):
 
 
 AboutDialogBase = qt4support.getuiform('aboutdialog', __name__)
+
+
 class AboutDialog(QtGui.QDialog, AboutDialogBase):
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(AboutDialog, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
@@ -97,7 +101,8 @@ class AboutDialog(QtGui.QDialog, AboutDialogBase):
         self.setLogo(logofile)
 
         # Set contents
-        self.titleLabel.setText('%s v. %s' % (self.tr(info.name), info.version))
+        self.titleLabel.setText('%s v. %s' % (self.tr(info.name),
+                                              info.version))
 
         description = '''<p>%s</p>
 <p>Home Page: <a href="%s">%s</a>
@@ -105,14 +110,14 @@ class AboutDialog(QtGui.QDialog, AboutDialogBase):
 Project Page: <a href="http://sourceforge.net/projects/gsdview">http://sourceforge.net/projects/gsdview</a></p>
 <par>
 <p><span style="font-size:9pt; font-style:italic;">%s</span></p>
-''' % (self.tr(info.description), info.website, info.website_label, info.copyright)
+''' % (self.tr(info.description), info.website, info.website_label,
+       info.copyright)
         self.aboutTextBrowser.setText(description)
 
         self.setVersions()
 
     def setLogo(self, logofile):
         self.gsdviewLogoLabel.setPixmap(QtGui.QPixmap(logofile))
-
 
     def setVersions(self):
         self.platformValue.setText(platform.platform())
@@ -128,7 +133,7 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview">http://sourcefor
     def addSoftwareVersion(self, sw, version, link=''):
         tablewidget = self.versionsTableWidget
         index = tablewidget.rowCount()
-        tablewidget.setRowCount(index+1)
+        tablewidget.setRowCount(index + 1)
 
         tablewidget.setItem(index, 0, QtGui.QTableWidgetItem(sw))
         tablewidget.setItem(index, 1, QtGui.QTableWidgetItem(version))
@@ -137,7 +142,8 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview">http://sourcefor
 
 class FileEntryWidget(QtGui.QWidget):
     def __init__(self, contents='', mode=QtGui.QFileDialog.AnyFile,
-                dialog=None, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+                 dialog=None, parent=None, flags=QtCore.Qt.WindowFlags(0),
+                 **kwargs):
         QtGui.QWidget.__init__(self, parent, flags, **kwargs)
 
         self.__completer = QtGui.QCompleter(self)
@@ -192,7 +198,7 @@ class FileEntryWidget(QtGui.QWidget):
 
     mode = property(_get_mode, _set_mode)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def choose(self):
         filename = self.lineEdit.text()
         filename = _choosefile(filename, self.dialog, self.mode)
@@ -207,9 +213,11 @@ class FileEntryWidget(QtGui.QWidget):
 
 
 GeneralPreferencesPageBase = qt4support.getuiform('general-page', __name__)
+
+
 class GeneralPreferencesPage(QtGui.QWidget, GeneralPreferencesPageBase):
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(GeneralPreferencesPage, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
@@ -229,7 +237,7 @@ class GeneralPreferencesPage(QtGui.QWidget, GeneralPreferencesPageBase):
         self.loglevelComboBox.setFocus()
 
         # Log level
-        logger = logging.getLogger() # @TODO: fix
+        logger = logging.getLogger()  # @TODO: fix
         level = logging.getLevelName(logger.level)
         self.setLoglevel(level)
 
@@ -311,6 +319,8 @@ class GeneralPreferencesPage(QtGui.QWidget, GeneralPreferencesPageBase):
 
 
 PreferencesDialogBase = qt4support.getuiform('preferences', __name__)
+
+
 class PreferencesDialog(QtGui.QDialog, PreferencesDialogBase):
     '''Extendible preferences dialogg for GSDView.
 
@@ -323,12 +333,12 @@ class PreferencesDialog(QtGui.QDialog, PreferencesDialogBase):
     #: SIGNAL: it is emitted when modifications are applied
     #:
     #: :C++ signature: `void apply()`
-    apply = QtCore.pyqtSignal()
+    apply = QtCore.Signal()
 
     # @TODO: also look at
-    # /usr/share/doc/python-qt4-doc/examples/tools/settingseditor/settingseditor.py
+    # .../python-qt4-doc/examples/tools/settingseditor/settingseditor.py
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(PreferencesDialog, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
@@ -352,7 +362,8 @@ class PreferencesDialog(QtGui.QDialog, PreferencesDialogBase):
         applybutton = self.buttonBox.button(QtGui.QDialogButtonBox.Apply)
         applybutton.clicked.connect(self.apply)
 
-    #@QtCore.pyqtSlot(QtGui.QListWidgetItem, QtGui.QListWidgetItem) # @TODO: check
+    # @TODO: check
+    #@QtCore.Slot(QtGui.QListWidgetItem, QtGui.QListWidgetItem)
     def changePage(self, current, previous):
         if not current:
             current = previous
@@ -392,12 +403,15 @@ class PreferencesDialog(QtGui.QDialog, PreferencesDialogBase):
 
 
 ExceptionDialogBase = qt4support.getuiform('exceptiondialog', __name__)
+
+
 class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
 
     # @TODO: traceback highlighting
 
     def __init__(self, exctype=None, excvalue=None, tracebackobj=None,
-                 parent=None, flags=QtCore.Qt.Widget, fill=True, **kwargs):
+                 parent=None, flags=QtCore.Qt.WindowFlags(0), fill=True,
+                 **kwargs):
         super(ExceptionDialog, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
@@ -407,7 +421,7 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
         closebutton = self.buttonBox.button(QtGui.QDialogButtonBox.Close)
         closebutton.setDefault(True)
 
-        style = QtGui.qApp.style()
+        style = QtGui.QApplication.style()
 
         icon = style.standardIcon(style.SP_CommandLink)
         sendbutton = QtGui.QPushButton(
@@ -442,7 +456,7 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
             else:
                 self._fill()
 
-    @QtCore.pyqtSlot(str)
+    @QtCore.Slot(str)
     def _linkActivated(self, link):
         # @TODO: better url parsing
         if 'mailto' in str(link):
@@ -467,7 +481,7 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
         if not isinstance(tb, basestring):
             self.tracebackobj = tb
             tb = ''.join(traceback.format_tb(tb))
-        else: # @TODO: check
+        else:  # @TODO: check
             self.resetExcInfo()
         self._setTracebackText(tb)
 
@@ -481,7 +495,8 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
 
     def _fill(self):
         if self._excInfoSet():
-            lines = traceback.format_exception_only(self.exctype, self.excvalue)
+            lines = traceback.format_exception_only(self.exctype,
+                                                    self.excvalue)
             msg = '\n'.join(lines)
             self.setErrorMsg(msg)
             self.setTraceback(self.tracebackobj)
@@ -509,7 +524,7 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
     def _excInfoSet(self):
         return all((self.exctype, self.excvalue, self.tracebackobj))
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def sendBugReport(self):
         if not self._excInfoSet():
             exctype, excvalue, tracebackobj = sys.exc_info()
@@ -519,14 +534,15 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
             tracebackobj = self.tracebackobj
 
         error = traceback.format_exception_only(exctype, excvalue)[-1].strip()
-        appname = QtGui.qApp.applicationName()
+        appname = QtGui.QApplication.applicationName()
         if appname:
             subject = '[%s] Bug report - %s' % (appname, error)
         else:
             subject = 'Bug report - %s' % error
         body = '[Please instest your comments and additinal info here.]'
         body += '\n\n' + '-' * 80 + '\n'
-        body += ''.join(utils.foramt_bugreport(exctype, excvalue, tracebackobj))
+        body += ''.join(utils.foramt_bugreport(exctype, excvalue,
+                                               tracebackobj))
 
         url = QtCore.QUrl('mailto:%s <%s>' % (info.author, info.author_email))
         url.addQueryItem('subject', subject)
@@ -561,12 +577,16 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
                 fd.close()
 
 try:
+    import qt
+    if qt.qt_api != 'pyqt':
+        raise ImportError
+
     from PyQt4 import Qsci
 
     class QsciExceptionDialog(ExceptionDialog):
 
         def __init__(self, exctype=None, excvalue=None, tracebackobj=None,
-                     parent=None, flags=QtCore.Qt.Widget, **kwargs):
+                     parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
 
             super(QsciExceptionDialog, self).__init__(exctype, excvalue,
                                                       tracebackobj,

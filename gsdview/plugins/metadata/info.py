@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -21,10 +21,10 @@
 
 '''Package info.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
-__version__  = (0, 6, 3)
+__version__ = (0, 6, 5)
 __requires__ = ['gdalbackend']
 
 __all__ = ['name', 'version', 'short_description', 'description',
@@ -43,7 +43,7 @@ widget for showing geo-datasets metadata.
 
 author = 'Antonio Valentino'
 author_email = 'a_valentino@users.sf.net'
-copyright = 'Copyright (C) 2008-2010 %s <%s>' % (author, author_email)
+copyright = 'Copyright (C) 2008-2011 %s <%s>' % (author, author_email)
 license_type = 'GNU GPL'
 website = 'http://gsdview.sourceforge.net'
 website_label = website

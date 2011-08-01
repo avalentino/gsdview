@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -21,14 +21,14 @@
 
 '''Log plane.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
-__version__  = (0, 6, 3)
+__version__ = (0, 6, 5)
 __requires__ = []
 
 __all__ = ['init', 'close', 'loadSettings', 'saveSettings',
-           'name','version', 'short_description','description',
+           'name', 'version', 'short_description', 'description',
            'author', 'author_email', 'copyright', 'license_type',
            'website', 'website_label',
 ]
@@ -42,7 +42,7 @@ description = __doc__
 
 author = 'Antonio Valentino'
 author_email = 'a_valentino@users.sf.net'
-copyright = 'Copyright (C) 2008-2010 %s <%s>' % (author, author_email)
+copyright = 'Copyright (C) 2008-2011 %s <%s>' % (author, author_email)
 license_type = 'GNU GPL'
 website = 'http://gsdview.sourceforge.net'
 website_label = website
@@ -51,7 +51,7 @@ website_label = website
 def init(app):
     import logging
 
-    from PyQt4 import QtCore, QtGui
+    from qt import QtCore, QtGui
 
     from exectools.qt4 import Qt4OutputPlane, Qt4LoggingHandler
 
@@ -72,14 +72,17 @@ def init(app):
     # Connect signals
     logplane.planeHideRequest.connect(panel.hide)
 
+
 def close(app):
     saveSettings(app.settings)
     #app.logger.remove(_global_aux.pop('handler'))
     #panel = app.findChild(QtGui.QDockWidget, 'outputPanel')
     #app.removeDockWidget(panel)
 
+
 def loadSettings(settings):
     pass
+
 
 def saveSettings(settings):
     pass

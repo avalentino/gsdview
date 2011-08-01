@@ -4,7 +4,7 @@ A Sphinx theme for SourceForge hosted projects
 :Author: Antonio Valentino
 :Contact: a_valentino@users.sf.net
 :Version: 1.0
-:Copyright (C): 2009-2010 Antonio Valentino
+:Copyright (C): 2009-2011 Antonio Valentino
 
 
 All `SourceForge.net`_ projects that use the `SourceForge.net`_ project web

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -21,33 +21,34 @@
 
 '''GUI front-end for the Geospatial Data Abstracton Library (GDAL).'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
-__revision__ = '$Revision$'
-
-__all__ = ['GSDView']
-
 
 import os
 import sys
 import logging
 
-from PyQt4 import QtCore, QtGui
+from qt import QtCore, QtGui
 
 from exectools.qt4 import Qt4ToolController, Qt4DialogLoggingHandler
 
-from gsdview import info
-from gsdview import utils
-from gsdview import errors
-from gsdview import qt4support
-from gsdview import graphicsview
-from gsdview import mousemanager
-from gsdview import pluginmanager
+import info
+import utils
+import errors
+import qt4support
+import graphicsview
+import mousemanager
+import pluginmanager
 
-from gsdview.mdi import ItemModelMainWindow
-from gsdview.appsite import USERCONFIGDIR, SYSPLUGINSDIR
-from gsdview.widgets import AboutDialog, PreferencesDialog
-from gsdview.widgets import GSDViewExceptionDialog as ExceptionDialog
+from mdi import ItemModelMainWindow
+from appsite import USERCONFIGDIR, SYSPLUGINSDIR
+from widgets import AboutDialog, PreferencesDialog
+from widgets import GSDViewExceptionDialog as ExceptionDialog
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
+
+__all__ = ['GSDView']
 
 
 class GSDView(ItemModelMainWindow):
@@ -59,11 +60,12 @@ class GSDView(ItemModelMainWindow):
 
     '''Main window class for GSDView application.'''
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         logger = logging.getLogger('gsdview')
 
         logger.debug('Main window base classes initialization ...')
-        QtGui.qApp.setWindowIcon(qt4support.geticon('GSDView.png', __name__))
+        QtGui.QApplication.setWindowIcon(
+                                qt4support.geticon('GSDView.png', __name__))
 
         super(GSDView, self).__init__(parent, flags, **kwargs)
         title = self.tr('GSDView Open Source Edition v. %s') % info.version
@@ -91,7 +93,7 @@ class GSDView(ItemModelMainWindow):
 
         # Stop button
         logger.debug('Setting up the stop button ...')
-        qstyle = QtGui.qApp.style()
+        qstyle = QtGui.QApplication.style()
         icon = qstyle.standardIcon(QtGui.QStyle.SP_BrowserStop)
 
         #: stop button for external tools
@@ -190,6 +192,11 @@ class GSDView(ItemModelMainWindow):
         self._addToolBarFromActions(self.mousemanager.actions,
                                     self.tr('Mouse toolbar'))
 
+        # Tools menu
+        self.toolsmenu = QtGui.QMenu(self.tr('&Tools'), self)
+        self.menuBar().addMenu(self.toolsmenu)
+        self.toolsmenu.hide()
+
         # Setup plugins
         logger.debug(self.tr('Setup plugins ...'))
         self.setupPlugins()
@@ -203,7 +210,7 @@ class GSDView(ItemModelMainWindow):
 
         #: settings sub-menu
         self.settings_submenu = QtGui.QMenu(self.tr('&View'),
-                                            aboutToShow=self.updateSettingsMenu)
+            aboutToShow=self.updateSettingsMenu)
         menu.addSeparator()
         menu.addMenu(self.settings_submenu)
 
@@ -217,7 +224,7 @@ class GSDView(ItemModelMainWindow):
 
         # @NOTE: the window state setup must happen after the plugins loading
         logger.info('Load settings ...')
-        self.loadSettings() # @TODO: pass settings
+        self.loadSettings()  # @TODO: pass settings
         # @TODO: force the log level set from command line
         #self.logger.setLevel(level)
 
@@ -235,7 +242,7 @@ class GSDView(ItemModelMainWindow):
                 return widget
         return None
 
-    @QtCore.pyqtSlot(QtCore.QPoint)
+    @QtCore.Slot(QtCore.QPoint)
     def itemContextMenu(self, pos):
         modelindex = self.treeview.indexAt(pos)
         if not modelindex.isValid():
@@ -343,7 +350,8 @@ class GSDView(ItemModelMainWindow):
                       triggered=self.closeItem)
 
         # Separator
-        QtGui.QAction(actionsgroup).setSeparator(True) #objectName='separator')
+        QtGui.QAction(actionsgroup).setSeparator(True)
+        # objectName='separator')
 
         # Exit
         icon = qt4support.geticon('quit.svg', __name__)
@@ -394,7 +402,8 @@ class GSDView(ItemModelMainWindow):
         self.fileActions = self._setupFileActions()
         self.settingsActions = self._setupSettingsActions()
         self.helpActions = self._setupHelpActions()
-        # @TODO: tree view actions: expand/collapse all, expand/collapse subtree
+        # @TODO: tree view actions: expand/collapse all, expand/collapse
+        #        subtree
         # @TODO: stop action
 
     def _addMenuFromActions(self, actions, name):
@@ -405,6 +414,12 @@ class GSDView(ItemModelMainWindow):
     def _addToolBarFromActions(self, actions, name):
         toolbar = qt4support.actionGroupToToolbar(actions, name)
         self.addToolBar(toolbar)
+
+        # @COMPATIBILITY: pyside 1.0.1
+        #                 without the call to toolbar.parent() the tolbar is
+        #                 not actually added
+        assert toolbar.parent()
+
         return toolbar
 
     def setupPlugins(self):
@@ -479,7 +494,8 @@ class GSDView(ItemModelMainWindow):
                 winstate = settings.value('winstate', QtCore.Qt.WindowNoState)
                 if winstate and winstate != QtCore.Qt.WindowNoState:
                     # @COMPATIBILITY: presumably a bug in PyQt4 4.7.2
-                    winstate = qt4support.intToWinState[winstate] # @TODO: check
+                    # @TODO: check
+                    winstate = qt4support.intToWinState[winstate]
                     self.setWindowState(winstate)
             except KeyError:
                 logging.debug('unable to restore the window state',
@@ -593,7 +609,8 @@ class GSDView(ItemModelMainWindow):
 
             # workdir
             # @NOTE: uncomment to preserve the session value
-            #workdir = settings.setValue('workdir', self.filedialog.directory())
+            #workdir = settings.setValue('workdir',
+            #                            self.filedialog.directory())
 
             # history
             #settings.setValue('history', self.filedialog.history())
@@ -633,7 +650,7 @@ class GSDView(ItemModelMainWindow):
             #logging.debug('save %s plugin preferences' % plugin.name)
             plugin.saveSettings(settings)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def updateSettingsMenu(self):
         # @TODO: rewrite; it should not be needed to copy the menu into a
         #        new one
@@ -648,12 +665,12 @@ class GSDView(ItemModelMainWindow):
             if self.tr('toolbar') not in action.text():
                 self.settings_submenu.addAction(action)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def applySettings(self):
         self.preferencesdialog.save(self.settings)
         self.loadSettings()
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def showPreferencesDialog(self):
         # @TODO: complete
         self.saveSettings()
@@ -662,9 +679,10 @@ class GSDView(ItemModelMainWindow):
             self.applySettings()
 
     ### File actions ##########################################################
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def openFile(self):
-        # @TODO: remove; this is a temporary workaround for a Qt bug in Cocoa version
+        # @TODO: remove; this is a temporary workaround for a Qt bug in
+        #        Cocoa version
         self.filedialog.selectNameFilter(self.filedialog.selectedNameFilter())
 
         # @TODO: allow multiple file selection
@@ -681,7 +699,8 @@ class GSDView(ItemModelMainWindow):
                             self.logger.debug('File "%s" opened with backend '
                                               '"%s"' % (filename, backendname))
                         else:
-                            self.logger.info('file %s" already open' % filename)
+                            self.logger.info('file %s" already open' %
+                                                                    filename)
                         break
                     except errors.OpenError:
                         #self.logger.exception('exception caught')
@@ -690,7 +709,7 @@ class GSDView(ItemModelMainWindow):
                 else:
                     self.logger.error('Unable to open file "%s"' % filename)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def closeItem(self):
         # @TODO: extend for multiple datasets
         #~ self.closeGdalDataset.emit()
@@ -710,7 +729,7 @@ class GSDView(ItemModelMainWindow):
 
         self.statusBar().showMessage('Ready.')
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def closeAll(self):
         root = self.datamodel.invisibleRootItem()
         while root.hasChildren():
@@ -723,8 +742,8 @@ class GSDView(ItemModelMainWindow):
                 root.removeRow(item.row())
 
     ### Auxiliary methods ####################################################
-    @QtCore.pyqtSlot()
-    @QtCore.pyqtSlot(str)
+    @QtCore.Slot()
+    @QtCore.Slot(str)
     def processingStarted(self, msg=None):
         if msg:
             self.statusBar().showMessage(msg)
@@ -732,12 +751,12 @@ class GSDView(ItemModelMainWindow):
         self.stopbutton.setEnabled(True)
         self.stopbutton.show()
 
-    @QtCore.pyqtSlot(int)
+    @QtCore.Slot(int)
     def updateProgressBar(self, fract):
         self.progressbar.show()
-        self.progressbar.setValue(int(100.*fract))
+        self.progressbar.setValue(int(100. * fract))
 
-    @QtCore.pyqtSlot(int)
+    @QtCore.Slot(int)
     def processingDone(self, returncode=0):
         #self.controller.reset() # @TODO: remove
         try:

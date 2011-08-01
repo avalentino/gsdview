@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -23,15 +23,15 @@ import os
 import sys
 import logging
 
-from PyQt4 import QtGui
-
 # Fix sys path
 from os.path import abspath, dirname
-parts = [dirname(__file__)] + [os.pardir]*4
+parts = [dirname(__file__)] + [os.pardir] * 4
 GSDVIEWROOT = abspath(os.path.join(*parts))
 del parts
 sys.path.insert(0, GSDVIEWROOT)
 sys.path.insert(1, os.path.join(GSDVIEWROOT, 'gsdview', 'plugins'))
+
+from qt import QtGui
 
 from stretch.widgets import *
 

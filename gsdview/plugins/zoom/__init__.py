@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -21,19 +21,20 @@
 
 '''Zoom tool.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
-__revision__ = '$Revision$'
-
-__all__ = ['init', 'close', 'loadSettings', 'saveSettings',
-           'name','version', 'short_description','description',
-           'author', 'author_email', 'copyright', 'license_type',
-           'website', 'website_label',
-]
 
 from zoom.info import *
 from zoom.info import __version__, __requires__
 
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
+
+__all__ = ['init', 'close', 'loadSettings', 'saveSettings',
+           'name', 'version', 'short_description', 'description',
+           'author', 'author_email', 'copyright', 'license_type',
+           'website', 'website_label',
+]
 
 _instance = None
 
@@ -50,7 +51,15 @@ def init(app):
                                               app.tr('Zoom toolbar'))
     app.addToolBar(toolbar)
 
+    # @COMPATIBILITY: pyside 1.0.1
+    #                 without the call to toolbar.parent() the tolbar is not
+    #                 actually added
+    assert toolbar.parent()
+
+    # @TODO: move to tool (??)
     tool.actions.setEnabled(False)
+
+    # @TODO: move to tool (??)
     app.mdiarea.subWindowActivated.connect(
                                 lambda w: tool.actions.setEnabled(bool(w)))
     app.subWindowClosed.connect(lambda: tool.actions.setEnabled(
@@ -59,13 +68,16 @@ def init(app):
     global _instance
     _instance = tool
 
+
 def close(app):
     saveSettings(app.settings)
     global _instance
     _instance = None
 
+
 def loadSettings(settings):
     pass
+
 
 def saveSettings(settings):
     pass

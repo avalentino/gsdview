@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -21,29 +21,34 @@
 
 '''Widgets and dialogs for GSDView.'''
 
-__author__   = '$Author$'
-__date__     = '$Date$'
-__revision__ = '$Revision$'
 
 import os
 import logging
 import ConfigParser
 
-import numpy
+import numpy as np
 from osgeo import gdal
-from PyQt4 import QtCore, QtGui
 
-from gsdview import utils
-from gsdview import qt4support
-from gsdview.widgets import get_filedialog, FileEntryWidget
+from qt import QtCore, QtGui
+
+from .. import utils
+from .. import qt4support
+from ..widgets import get_filedialog, FileEntryWidget
 
 from gsdview.gdalbackend import gdalsupport
 
 
+__author__ = '$Author$'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
+
+
 GDALInfoWidgetBase = qt4support.getuiform('gdalinfo', __name__)
+
+
 class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(GDALInfoWidget, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
@@ -69,7 +74,7 @@ class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
         hheader = tablewidget.horizontalHeader()
         #hheader.resizeSections(QtGui.QHeaderView.ResizeToContents)
         fontinfo = QtGui.QFontInfo(tablewidget.font())
-        hheader.setDefaultSectionSize(10*fontinfo.pixelSize())
+        hheader.setDefaultSectionSize(10 * fontinfo.pixelSize())
 
         sortingenabled = tablewidget.isSortingEnabled()
         tablewidget.setSortingEnabled(False)
@@ -78,16 +83,23 @@ class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
         for row in range(gdal.GetDriverCount()):
             driver = gdal.GetDriver(row)
             # @TODO: check for available ingo in gdal 1.5 and above
-            tablewidget.setItem(row, 0, QtGui.QTableWidgetItem(driver.ShortName))
-            tablewidget.setItem(row, 1, QtGui.QTableWidgetItem(driver.LongName))
-            tablewidget.setItem(row, 2, QtGui.QTableWidgetItem(driver.GetDescription()))
-            tablewidget.setItem(row, 3, QtGui.QTableWidgetItem(str(driver.HelpTopic)))
+            tablewidget.setItem(row, 0,
+                QtGui.QTableWidgetItem(driver.ShortName))
+            tablewidget.setItem(row, 1,
+                QtGui.QTableWidgetItem(driver.LongName))
+            tablewidget.setItem(row, 2,
+                QtGui.QTableWidgetItem(driver.GetDescription()))
+            tablewidget.setItem(row, 3,
+                QtGui.QTableWidgetItem(str(driver.HelpTopic)))
 
             metadata = driver.GetMetadata()
             if metadata:
-                tablewidget.setItem(row, 4, QtGui.QTableWidgetItem(str(metadata.pop(gdal.DMD_EXTENSION, ''))))
-                tablewidget.setItem(row, 5, QtGui.QTableWidgetItem(str(metadata.pop(gdal.DMD_MIMETYPE, ''))))
-                tablewidget.setItem(row, 6, QtGui.QTableWidgetItem(str(metadata.pop(gdal.DMD_CREATIONDATATYPES, ''))))
+                tablewidget.setItem(row, 4, QtGui.QTableWidgetItem(
+                    str(metadata.pop(gdal.DMD_EXTENSION, ''))))
+                tablewidget.setItem(row, 5, QtGui.QTableWidgetItem(
+                    str(metadata.pop(gdal.DMD_MIMETYPE, ''))))
+                tablewidget.setItem(row, 6, QtGui.QTableWidgetItem(
+                    str(metadata.pop(gdal.DMD_CREATIONDATATYPES, ''))))
 
                 data = metadata.pop(gdal.DMD_CREATIONOPTIONLIST, '')
                 # @TODO: parse xml
@@ -107,8 +119,10 @@ class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
         tablewidget.sortItems(0, QtCore.Qt.AscendingOrder)
 
     def updateCacheInfo(self):
-        self.gdalCacheMaxValue.setText('%.3f MB' % (gdal.GetCacheMax()/1024.**2))
-        self.gdalCacheUsedValue.setText('%.3f MB' % (gdal.GetCacheUsed()/1024.**2))
+        self.gdalCacheMaxValue.setText('%.3f MB' % (
+                                            gdal.GetCacheMax() / 1024. ** 2))
+        self.gdalCacheUsedValue.setText('%.3f MB' % (
+                                            gdal.GetCacheUsed() / 1024. ** 2))
 
     def showEvent(self, event):
         self.updateCacheInfo()
@@ -116,9 +130,11 @@ class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
 
 
 GDALPreferencesPageBase = qt4support.getuiform('gdalpage', __name__)
+
+
 class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(GDALPreferencesPage, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
@@ -152,7 +168,7 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
 
         # standard options
         cachesize = gdal.GetCacheMax()
-        self.cacheSpinBox.setValue(cachesize/1024**2)
+        self.cacheSpinBox.setValue(cachesize / 1024 ** 2)
         dialog = get_filedialog(self)
         for name in ('gdalDataDir', 'gdalDriverPath', 'ogrDriverPath'):
             widget = getattr(self, name + 'EntryWidget')
@@ -181,7 +197,7 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
         hheader = self.extraOptTableWidget.horizontalHeader()
         hheader.resizeSections(QtGui.QHeaderView.ResizeToContents)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def showinfo(self):
         dialog = QtGui.QDialog(self)
         dialog.setWindowTitle(self.tr('GDAL info'))
@@ -205,11 +221,11 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
             cachesize = settings.value('GDAL_CACHEMAX')
             if cachesize is not None:
                 self.cacheCheckBox.setChecked(True)
-                self.cacheSpinBox.setValue(int(cachesize)/1024**2)
+                self.cacheSpinBox.setValue(int(cachesize) / 1024 ** 2)
             else:
                 # show the current value and disable the control
                 cachesize = gdal.GetCacheMax()
-                self.cacheSpinBox.setValue(cachesize/1024**2)
+                self.cacheSpinBox.setValue(cachesize / 1024 ** 2)
                 self.cacheCheckBox.setChecked(False)
 
             # GDAL data dir
@@ -272,7 +288,7 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
 
             # cache
             if self.cacheCheckBox.isChecked():
-                value = self.cacheSpinBox.value() * 1024**2
+                value = self.cacheSpinBox.value() * 1024 ** 2
                 settings.setValue('GDAL_CACHEMAX', value)
             else:
                 settings.remove('GDAL_CACHEMAX')
@@ -316,7 +332,7 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
 
 class BackendPreferencesPage(GDALPreferencesPage):
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(BackendPreferencesPage, self).__init__(parent, flags, **kwargs)
         #self.setupUi(self)
 
@@ -363,6 +379,8 @@ class BackendPreferencesPage(GDALPreferencesPage):
 
 
 MetadataWidgetBase = qt4support.getuiform('metadata', __name__)
+
+
 class MetadataWidget(QtGui.QWidget, MetadataWidgetBase):
     '''Widget for matadata display.
 
@@ -375,9 +393,9 @@ class MetadataWidget(QtGui.QWidget, MetadataWidgetBase):
     #: SIGNAL: it is emitted when metadata domain changes
     #:
     #: :C++ signature: `void domainChanged(str)`
-    domainChanged = QtCore.pyqtSignal(str)
+    domainChanged = QtCore.Signal(str)
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(MetadataWidget, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
@@ -411,7 +429,7 @@ class MetadataWidget(QtGui.QWidget, MetadataWidgetBase):
 
         layout = self.metadataHorizontalLayout
         if enabled:
-            spacer = layout.itemAt(layout.count()-1)
+            spacer = layout.itemAt(layout.count() - 1)
             if isinstance(spacer, QtGui.QSpacerItem):
                 layout.removeItem(spacer)
                 assert layout.count() > 2
@@ -473,6 +491,8 @@ class MetadataWidget(QtGui.QWidget, MetadataWidgetBase):
 
 
 OverviewWidgetBase = qt4support.getuiform('overview', __name__)
+
+
 class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
     '''Widget for overview management.
 
@@ -489,9 +509,9 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
     #: is required
     #:
     #: :C++ signature: `void overviewComputationRequest()`
-    overviewComputationRequest = QtCore.pyqtSignal()
+    overviewComputationRequest = QtCore.Signal()
 
-    def __init__(self, item=None, parent=None, flags=QtCore.Qt.Widget,
+    def __init__(self, item=None, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kwargs):
         super(OverviewWidget, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
@@ -617,14 +637,15 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
 
         if not self._readonly:
             # Add powers of two
-            xexp = int(numpy.log2(item.XSize))
-            yexp = int(numpy.log2(item.YSize))
+            xexp = int(np.log2(item.XSize))
+            yexp = int(np.log2(item.YSize))
             mexexp = min(xexp, yexp)
-            mexexp = max(mexexp-4, 1)
+            mexexp = max(mexexp - 4, 1)
             for exp_ in range(1, mexexp):
-                level = 2**exp_
+                level = 2 ** exp_
                 if level in levels:
                     continue
+
                 xsize = int(item.XSize + level - 1) // level
                 ysize = int(item.YSize + level - 1) // level
                 self._addLevel(level, xsize, ysize)
@@ -673,8 +694,8 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
 
         return levels
 
-    @QtCore.pyqtSlot()
-    @QtCore.pyqtSlot(int)
+    @QtCore.Slot()
+    @QtCore.Slot(int)
     def addLevel(self, level=None, xsize=None, ysize=None, checked=False):
         if level is None:
             level = self.addLevelSpinBox.value()
@@ -707,7 +728,7 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
 
         self._updateStartButton()
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def _updateStartButton(self):
         if self.recomputeCheckBox.isChecked() or self._newLevels():
             self.startButton.setEnabled(True)
@@ -720,7 +741,8 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
         if self.rrdCheckBox.isChecked():
             args.extend(('--config', 'USE_RRD', 'YES'))
         else:
-            if self.compressionComboBox.currentText() not in ('DEFAULT', 'None'):
+            if self.compressionComboBox.currentText() not in ('DEFAULT',
+                                                              'None'):
                 args.extend(('--config', 'COMPRESS_OVERVIEW',
                              self.compressionComboBox.currentText()))
 
@@ -775,7 +797,7 @@ class SpecialOverviewWidget(OverviewWidget):
 
         return levels
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def _updateStartButton(self):
         if self._newLevels():
             self.startButton.setEnabled(True)
@@ -798,11 +820,12 @@ class OverviewDialog(QtGui.QDialog):
     #: SIGNAL: it is emitted when a time expensive computation of overviews
     #: is required
     #:
-    #: :C++ signature: `void overviewComputationRequest(PyQt_PyObject)`
-    overviewComputationRequest = QtCore.pyqtSignal('PyQt_PyObject')
+    #: :C++ signature: `void overviewComputationRequest(QtGui.QStandardItem)`
+    overviewComputationRequest = QtCore.Signal(QtGui.QStandardItem)  # @TODO: check backward compatibility
+    #overviewComputationRequest = QtCore.Signal(object)
 
-
-    def __init__(self, item=None, parent=None, flags=QtCore.Qt.Widget, **kargs):
+    def __init__(self, item=None, parent=None, flags=QtCore.Qt.WindowFlags(0),
+                 **kargs):
         super(OverviewDialog, self).__init__(parent, flags)
         self.setWindowTitle(self.tr('Overview computation'))
 
@@ -873,7 +896,8 @@ class OverviewDialog(QtGui.QDialog):
 
 
 class MajorObjectInfoDialog(QtGui.QDialog):
-    def __init__(self, gdalobj, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, gdalobj, parent=None, flags=QtCore.Qt.WindowFlags(0),
+                 **kwargs):
         super(MajorObjectInfoDialog, self).__init__(parent, flags, **kwargs)
         if hasattr(self, 'setupUi'):
             self.setupUi(self)
@@ -907,7 +931,7 @@ class MajorObjectInfoDialog(QtGui.QDialog):
     def setMetadata(self, metadatalist):
         self.metadataWidget.setMetadata(metadatalist)
 
-    @QtCore.pyqtSlot(str)
+    @QtCore.Slot(str)
     def updateMetadata(self, domain=''):
         if self._obj is not None:
             # @COMPATIBILITY: presumably a bug in PyQt4 4.7.2
@@ -951,7 +975,7 @@ class MajorObjectInfoDialog(QtGui.QDialog):
         return cfg
 
     # @TODO: move to metadata widget
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def saveMetadata(self):
         if not self._obj:
             QtGui.QMessageBox.information(self.tr('Information'),
@@ -984,7 +1008,7 @@ class MajorObjectInfoDialog(QtGui.QDialog):
                 with open(filename, 'w') as fd:
                     cfg.write(fd)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def printMetadata(self):
         cfg = self._metadataToCfg()
         doc = qt4support.cfgToTextDocument(cfg)
@@ -999,8 +1023,10 @@ def _setupImageStructureInfo(widget, metadata):
 
 
 HistogramConfigDialogBase = qt4support.getuiform('histoconfig', __name__)
+
+
 class HistogramConfigDialog(QtGui.QDialog, HistogramConfigDialogBase):
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(HistogramConfigDialog, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
@@ -1021,31 +1047,33 @@ class HistogramConfigDialog(QtGui.QDialog, HistogramConfigDialogBase):
         self.minSpinBox.editingFinished.connect(self.validate)
         self.maxSpinBox.editingFinished.connect(self.validate)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def validate(self):
         if self.minSpinBox.value() >= self.maxSpinBox.value():
             self.minSpinBox.lineEdit().setPalette(self._error_palette)
             self.maxSpinBox.lineEdit().setPalette(self._error_palette)
             return False
+
         self.minSpinBox.lineEdit().setPalette(self._default_palette)
         self.maxSpinBox.lineEdit().setPalette(self._default_palette)
+
         return True
 
     def setLimits(self, dtype):
-        vmin = -2**15 - 0.5
-        vmax = 2**16 - 0.5
-        if dtype in (numpy.uint8, numpy.uint16, numpy.uint32, numpy.uint64):
+        vmin = -2 ** 15 - 0.5
+        vmax = 2 ** 16 - 0.5
+        if dtype in (np.uint8, np.uint16, np.uint32, np.uint64):
             # Unsigned
             vmin = -0.5
-            if dtype == numpy.uint8:
+            if dtype == np.uint8:
                 vmax = 255.5
             else:
-                vmax = 2**16 - 0.5
-        elif dtype == numpy.int8:
+                vmax = 2 ** 16 - 0.5
+        elif dtype == np.int8:
             vmin = -128.5
             vmax = 127.5
-        elif dtype == numpy.int16:
-            vmax = 2**15 + 0.5
+        elif dtype == np.int16:
+            vmax = 2 ** 15 + 0.5
 
         self.minSpinBox.setMinimum(vmin)
         self.minSpinBox.setMaximum(vmax)
@@ -1054,6 +1082,8 @@ class HistogramConfigDialog(QtGui.QDialog, HistogramConfigDialogBase):
 
 
 BandInfoDialogBase = qt4support.getuiform('banddialog', __name__)
+
+
 class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
     '''Info dialog for GDAL raster bands.
 
@@ -1068,25 +1098,26 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
     #: SIGNAL: it is emitted when a time expensive computation of statistics
     #: is required
     #:
-    #: :C++ signature: `void statsComputationRequest(PyQt_PyObject)`
-    statsComputationRequest = QtCore.pyqtSignal('PyQt_PyObject')
+    #: :C++ signature: `void statsComputationRequest(QtGui.QStandardItem)`
+    statsComputationRequest = QtCore.Signal(QtGui.QStandardItem)  # @TODO: check backward compatibility
 
     #: SIGNAL: it is emitted when a time expensive computation of an histogram
     #: is required
     #:
-    #: :C++ signature: `void histogramComputationRequest(PyQt_PyObject)`
-    histogramComputationRequest = QtCore.pyqtSignal('PyQt_PyObject')
+    #: :C++ signature: `void histogramComputationRequest(QtGui.QStandardItem)`
+    histogramComputationRequest = QtCore.Signal(QtGui.QStandardItem)  # @TODO: check backward compatibility
+
     # @TODO: check
     #self.emit(QtCore.SIGNAL(
-    #                'histogramComputationRequest(PyQt_PyObject, int, int, int)'),
-    #                band, hmin, nmax, nbuckets)
+    #   'histogramComputationRequest(QtGui.QStandardItem, int, int, int)'),
+    #   band, hmin, nmax, nbuckets)
 
     #: SIGNAL: it is emitted when overview computation is required
     #:
     #: :C++ signature: `void overviewComputationRequest()`
-    overviewComputationRequest = QtCore.pyqtSignal('PyQt_PyObject')
+    overviewComputationRequest = QtCore.Signal(QtGui.QStandardItem)
 
-    def __init__(self, band=None, parent=None, flags=QtCore.Qt.Widget,
+    def __init__(self, band=None, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kwargs):
         super(BandInfoDialog, self).__init__(band, parent, flags, **kwargs)
 
@@ -1101,7 +1132,8 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
         #: overview widget
         self.overviewWidget = SpecialOverviewWidget(parent=self)
-        self.overviewWidget.addLevelButton.setIcon(geticon('add.svg', 'gsdview'))
+        self.overviewWidget.addLevelButton.setIcon(geticon('add.svg',
+                                                           'gsdview'))
         self.tabWidget.addTab(self.overviewWidget,
                               geticon('overview.svg', __name__),
                               self.tr('Overviews'))
@@ -1284,7 +1316,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.meanValue.setText(str(mean))
         self.stdValue.setText(str(stddev))
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     @qt4support.overrideCursor
     def updateStatistics(self):
         if self.band is None:
@@ -1438,7 +1470,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
             brush.setColor(qcolor)
             item = QtGui.QTableWidgetItem()
             item.setBackground(brush)
-            tablewidget.setItem(row, chan+1, item)
+            tablewidget.setItem(row, chan + 1, item)
 
         hheader = tablewidget.horizontalHeader()
         hheader.resizeSections(QtGui.QHeaderView.ResizeToContents)
@@ -1463,7 +1495,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
             self.overviewWidget.reset()
 
     # @TODO: check
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def _computeStats(self):
         self._checkgdalobj()
         self.statsComputationRequest.emit(self.band)
@@ -1487,7 +1519,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         #~ self.updateStatistics()
 
     # @TODO: check
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def _computeHistogram(self):
         self._checkgdalobj()
         self.histogramComputationRequest.emit(self.band)
@@ -1561,17 +1593,19 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         #~ self.setHistogram(vmin, vmax, nbuckets, hist)
         #~ self.updateStatistics() # @TODO: check
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def _computeOverviews(self):
         self._checkgdalobj()
         self.overviewComputationRequest.emit(self.band)
 
 
 DatasetInfoDialogBase = qt4support.getuiform('datasetdialog', __name__)
+
+
 class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
 
-    def __init__(self, dataset=None, parent=None, flags=QtCore.Qt.Widget,
-                 **kwargs):
+    def __init__(self, dataset=None, parent=None,
+                 flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(DatasetInfoDialog, self).__init__(dataset, parent, flags,
                                                 **kwargs)
 
@@ -1803,6 +1837,7 @@ p, li { white-space: pre-wrap; }
 
 #~ class SubDatasetInfoDialog(DatasetInfoDialog):
 
-    #~ def __init__(self, subdataset, parent=None, flags=QtCore.Qt.Widget):
+    #~ def __init__(self, subdataset, parent=None,
+                 #~ flags=QtCore.Qt.WindowFlags(0)):
         #~ assert dataset, 'a valid GDAL dataset expected'
         #~ DatasetInfoDialog.__init__(self, subdataset, parent, flags)

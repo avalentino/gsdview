@@ -1,11 +1,11 @@
 ..  :Source: doc/source/features.txt
-    :Version: 0.6.4
+    :Version: 0.6.5
     :Author: Antonio Valentino
     :Contact: a_valentino@users.sf.net
     :URL: http://gsdview.sourceforge.net
     :Revision: $Revision$
     :Date: $Date$
-    :Copyright (C): 2008-2010 Antonio Valentino
+    :Copyright (C): 2008-2011 Antonio Valentino
 
 
 Features
@@ -25,6 +25,7 @@ zoom in/out                                         X
 fast scroll/pan                                     X
 mouse modes handling                                X
 printing                                            --
+print/export metadata                              NEW
 RGB display                                         X
 arbitrary large raster data display                 X
 vector data display                                 --
@@ -66,17 +67,17 @@ selection tool                                      --
 rotation tool                                       --
 draw tools                                          --
 snapshot generation                                 --
-export raster data footprints to KML                --
-meta-data dump                                      --
-meta-data print                                     --
-export GCPs in vector format                        --
+export raster data footprints to KML               NEW
+meta-data dump                                      X
+meta-data print                                     X
+export GCPs in vector format                       NEW
 ================================================ =======
 
 ================================================ =======
 Processing                                       Status
 ================================================ =======
 run processing tasks in external processes          X
-processing tasks can be stopped by the user        NEW
+processing tasks can be stopped by the user         X
 support for standard GDAL tools                     --
 band arithmetic                                     --
 kernel filtering                                    --
@@ -119,9 +120,9 @@ Distribution                                     Status
 ================================================ =======
 Windows installer                                   --
 Debian packages                                     X
-RPM packages                                     [#pkg]_
+RPM packages                                        X
 standalone binary for GNU/Linux                  [#pkg]_
-standalone binary for Mac OS X                   [#mac]_
+standalone binary for Mac OS X                      X
 python egg                                       [#pkg]_
 source code availability                            X
 ================================================ =======
@@ -130,8 +131,6 @@ source code availability                            X
 .. rubric:: Footnotes
 
 .. [#pkg] the package is delivered on request.
-.. [#mac] due to the recent update to the new PyQT API the binary package
-          for Mac OS X is temporary not available.
 
 
 Legend

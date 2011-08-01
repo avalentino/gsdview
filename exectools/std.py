@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2006-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2006-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of exectools.
 
@@ -20,14 +20,15 @@
 
 '''Tools for running external processes using the subprocess module.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__revision__ = '$Revision$'
-__date__     = '$Date$'
-
 import sys
 
 from exectools import BaseToolController, EX_OK
 import subprocess2
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__revision__ = '$Revision: $'
+__date__ = '$Date: $'
 
 
 class StdToolController(BaseToolController):
@@ -77,14 +78,14 @@ class StdToolController(BaseToolController):
 
         try:
             self.subprocess = subprocess2.Popen(cmd,
-                                                stdin = subprocess2.PIPE,
-                                                stdout = subprocess2.PIPE,
-                                                stderr = subprocess2.STDOUT,
-                                                cwd = self._tool.cwd,
-                                                env = self._tool.env,
-                                                close_fds = closefds,
-                                                shell = self._tool.shell,
-                                                startupinfo = startupinfo)
+                                                stdin=subprocess2.PIPE,
+                                                stdout=subprocess2.PIPE,
+                                                stderr=subprocess2.STDOUT,
+                                                cwd=self._tool.cwd,
+                                                env=self._tool.env,
+                                                close_fds=closefds,
+                                                shell=self._tool.shell,
+                                                startupinfo=startupinfo)
             self.subprocess.stdin.close()
             self.connect_output_handlers()
         except OSError:

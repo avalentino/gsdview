@@ -1,0 +1,25 @@
+gsdtoolsui.tooldescriptors
+==========================
+
+.. automodule:: gsdtoolsui.tooldescriptors
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BaseGdalToolDescriptor
+      HistogramRequest
+      Ras2vecDescriptor
+      StatsDescriptor
+   
+   
+
+   
+   
+   

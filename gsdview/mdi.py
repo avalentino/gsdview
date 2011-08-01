@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -23,14 +23,15 @@
 
 # @TODO: move this to widgets sub-package or qt4freesolutions subpackage
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+
+from qt import QtCore, QtGui
+
+from qtwindowlistmenu import QtWindowListMenu
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
-
-
-from PyQt4 import QtCore, QtGui
-
-from gsdview.qtwindowlistmenu import QtWindowListMenu
 
 
 class MdiMainWindow(QtGui.QMainWindow):
@@ -46,9 +47,9 @@ class MdiMainWindow(QtGui.QMainWindow):
     #: SIGNAL: it is emitted when an MDI subwindow is closed
     #:
     #: :C++ signature: `void subWindowClosed()`
-    subWindowClosed = QtCore.pyqtSignal()
+    subWindowClosed = QtCore.Signal()
 
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(MdiMainWindow, self).__init__(parent, flags, **kwargs)
 
         #: MDI area instance (QMdiArea)
@@ -63,8 +64,8 @@ class MdiMainWindow(QtGui.QMainWindow):
 
 
 class ItemSubWindow(QtGui.QMdiSubWindow):
-
-    def __init__(self, item, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, item, parent=None, flags=QtCore.Qt.WindowFlags(0),
+                 **kwargs):
         super(ItemSubWindow, self).__init__(parent, flags, **kwargs)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
@@ -73,8 +74,7 @@ class ItemSubWindow(QtGui.QMdiSubWindow):
 
 
 class ItemModelMainWindow(MdiMainWindow):
-
-    def __init__(self, parent=None, flags=QtCore.Qt.Widget, **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(ItemModelMainWindow, self).__init__(parent, flags, **kwargs)
 
         #: main application datamodel (QStandardItemModel)
@@ -104,7 +104,13 @@ class ItemModelMainWindow(MdiMainWindow):
             return None
         return self.datamodel.itemFromIndex(modelindex)
 
-    #@QtCore.pyqtSlot(QtCore.QModelIndex) # @TODO: check
+    def currentToplevelItem(self):
+        item = self.currentItem()
+        while item.parent():
+            item = item.parent()
+        return item
+
+    #@QtCore.Slot(QtCore.QModelIndex) # @TODO: check
     def setActiveWinFromIndex(self, index):
         '''Set the active sub-window from index.
 
@@ -127,8 +133,12 @@ class ItemModelMainWindow(MdiMainWindow):
             except AttributeError:
                 # the window has not an associated item in the datamodel
                 pass
+            # @COMPATIBILITY: pyside 1.0.1
+            except NotImplementedError:
+                if id(window.item) == id(item):
+                    self.mdiarea.setActiveSubWindow(window)
 
-    @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
+    @QtCore.Slot(QtGui.QMdiSubWindow)
     def setActiveIndexFromWin(self, window):
         '''Set the active sub-window.
 
@@ -149,7 +159,7 @@ class ItemModelMainWindow(MdiMainWindow):
         else:
             self.treeview.setCurrentIndex(index)
 
-    #@QtCore.pyqtSlot(QtCore.QModelIndex, int, int) # @TODO: check
+    #@QtCore.Slot(QtCore.QModelIndex, int, int) # @TODO: check
     def onItemsClosed(self, modelindex, start, end):
         '''Closes sub-windows associated to the closed model items.
 
@@ -160,15 +170,36 @@ class ItemModelMainWindow(MdiMainWindow):
         if not modelindex.isValid():
             return
         parentitem = modelindex.model().itemFromIndex(modelindex)
-        for row in range(start, end+1):
+        for row in range(start, end + 1):
             item = parentitem.child(row)
             for subwin in self.mdiarea.subWindowList():
-                if subwin.item == item:
-                    subwin.close()
-                    # just une window per run (??)
-                    break
+                #if subwin.item == item:
+                #    subwin.close()
+                #    # just une window per run (??)
+                #    break
+
+                # @COMPATIBILITY: pyside 1.0.1
+                try:
+                    if subwin.item == item:
+                        subwin.close()
+                        break
+                except NotImplementedError:
+                    if id(subwin.item) == id(item):
+                        subwin.close()
+                        break
+
         for subwin in self.mdiarea.subWindowList():
-            if subwin.item == parentitem:
-                subwin.close()
-                # just une window per run (??)
-                break
+            #if subwin.item == parentitem:
+            #    subwin.close()
+            #    # just une window per run (??)
+            #    break
+
+            # @COMPATIBILITY: pyside 1.0.1
+            try:
+                if subwin.item == parentitem:
+                    subwin.close()
+                    break
+            except NotImplementedError:
+                if id(subwin.item) == id(parentitem):
+                    subwin.close()
+                    break

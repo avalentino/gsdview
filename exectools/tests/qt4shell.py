@@ -1,18 +1,56 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__author__  = 'Antonio Valentino <antonio.valentino@tiscali.it>'
-__date__    = '$Date: 2006/03/11 23:18:40 $'
-__version__ = '$Revision: 1.15 $'
+### Copyright (C) 2006-2011 Antonio Valentino <a_valentino@users.sf.net>
+
+### This file is part of exectools.
+
+### This module is free software; you can redistribute it and/or modify
+### it under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 2 of the License, or
+### (at your option) any later version.
+
+### This module is distributed in the hope that it will be useful,
+### but WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+### GNU General Public License for more details.
+
+### You should have received a copy of the GNU General Public License
+### along with this module; if not, write to the Free Software
+### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
+
+'''Simple interactive shell implementation using exectools and Qt4.'''
+
 
 import time
 import logging
 
-from PyQt4 import QtCore, QtGui
+try:
+    from qt import QtCore, QtGui
+except ImportError:
+    # Select the PyQt API 2
+    import sip
+    sip.setapi('QDate',       2)
+    sip.setapi('QDateTime',   2)
+    sip.setapi('QString',     2)
+    sip.setapi('QTextStream', 2)
+    sip.setapi('QTime',       2)
+    sip.setapi('QUrl',        2)
+    sip.setapi('QVariant',    2)
+
+    from PyQt4 import QtCore, QtGui
+    QtCore.Signal = QtCore.pyqtSignal
+    QtCore.Slot = QtCore.pyqtSlot
+
 
 import exectools
 from exectools.qt4 import (Qt4OutputPlane, Qt4OutputHandler, Qt4ToolController,
                            Qt4DialogLoggingHandler, Qt4LoggingHandler)
+
+
+__author__ = 'Antonio Valentino <antonio.valentino@tiscali.it>'
+__date__ = '$Date: 2006/03/11 23:18:40 $'
+__version__ = '$Revision: 1.15 $'
 
 
 class Qt4Shell(QtGui.QMainWindow):
@@ -33,7 +71,7 @@ class Qt4Shell(QtGui.QMainWindow):
         self.cmdbox = QtGui.QComboBox()
         self.cmdbox.setEditable(True)
         self.cmdbox.addItem('')
-        self.cmdbox.setCurrentIndex(self.cmdbox.count()-1)
+        self.cmdbox.setCurrentIndex(self.cmdbox.count() - 1)
         # @TODO: complete
         #self.entry.populate_popup.connect(self.on_populate_popup)
 
@@ -113,7 +151,7 @@ class Qt4Shell(QtGui.QMainWindow):
         finally:
             self.logger.debug('qt4shell session stopped at %s.' %
                                                                 time.asctime())
-        event.accept() # @TODO: check
+        event.accept()  # @TODO: check
 
     def load_history(self):
         self.cmdbox.clear()
@@ -126,7 +164,7 @@ class Qt4Shell(QtGui.QMainWindow):
             self.logger.debug('unable to read the history file "%s": %s.' %
                                                         (self.historyfile, e))
         self.cmdbox.addItem('')
-        self.cmdbox.setCurrentIndex(self.cmdbox.count()-1)
+        self.cmdbox.setCurrentIndex(self.cmdbox.count() - 1)
 
     def save_history(self):
         try:
@@ -163,14 +201,14 @@ class Qt4Shell(QtGui.QMainWindow):
     def _set_state(self, state):
         if(state == 'ready'):
             self._reset()
-            self.statusBar().showMessage('Ready') #, 2000) # ms
+            self.statusBar().showMessage('Ready')  # , 2000) # ms
             self.cmdbox.setFocus()
         elif(state == 'running'):
             self.cmdbox.setEnabled(False)
             self.cmdbutton.setText('Stop')
             self.cmdbutton.clicked.disconnect(self.execute)
             self.cmdbutton.clicked.connect(self.controller.stop_tool)
-            self.statusBar().showMessage('Running ...') #, 2000) # ms
+            self.statusBar().showMessage('Running ...')  # , 2000) # ms
         else:
             raise ValueError('invalid status: "%s".' % state)
         self._state = state
@@ -181,15 +219,15 @@ class Qt4Shell(QtGui.QMainWindow):
         cmd = str(self.cmdbox.currentText())
         if cmd:
             count = self.cmdbox.count()
-            if self.cmdbox.currentIndex() != count-1:
-                self.cmdbox.insertItem(count-1, cmd)
+            if self.cmdbox.currentIndex() != count - 1:
+                self.cmdbox.insertItem(count - 1, cmd)
             else:
-                self.cmdbox.removeItem(count-2)
+                self.cmdbox.removeItem(count - 2)
                 self.cmdbox.addItem('')
-            self.cmdbox.setCurrentIndex(self.cmdbox.count()-1)
+            self.cmdbox.setCurrentIndex(self.cmdbox.count() - 1)
         return cmd
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def execute(self):
         '''Execute the command line using the tool controller.
 

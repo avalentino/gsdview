@@ -17,9 +17,11 @@ Main Application
    gsdview.imgutils
    gsdview.info
    gsdview.launch
+   gsdview.layermanager
    gsdview.mdi
    gsdview.mousemanager
    gsdview.pluginmanager
+   gsdview.qt4draw
    gsdview.qt4support
    gsdview.qtwindowlistmenu
    gsdview.utils
@@ -33,16 +35,28 @@ Main Application
    gsdview.gdalbackend.helpers
    gsdview.gdalbackend.info
    gsdview.gdalbackend.modelitems
+   gsdview.gdalbackend.ogrqt4
    gsdview.gdalbackend.widgets
+
+
+Libraries
+---------
+
+.. autosummary::
+   :toctree: api/
 
    exectools
    exectools.std
    exectools.qt4
    exectools.gtk2
 
+   gsdtools
+   gsdtools.stats
+   gsdtools.ras2vec
+
 ..
-   gsdview.exectools.recipe_440544
-   gsdview.exectools.subprocess2
+   exectools.recipe_440544
+   exectools.subprocess2
 
 
 Plugins
@@ -52,23 +66,34 @@ Plugins
    :toctree: api/
 
    logplane
+
+   gsdtoolsui
+   gsdtoolsui.core
+   gsdtoolsui.info
+   gsdtoolsui.tooldescriptors
+
+   metadata
+   metadata.info
+   metadata.core
+
    overview
    overview.info
    overview.core
+
    positiontracker
    positiontracker.info
    positiontracker.core
    positiontracker.coordinateview
-   metadata
-   metadata.info
-   metadata.core
+
    stretch
    stretch.info
    stretch.core
    stretch.widgets
+
    worldmap
    worldmap.info
    worldmap.core
+
    zoom
    zoom.info
    zoom.core

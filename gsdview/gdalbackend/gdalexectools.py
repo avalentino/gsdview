@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -21,10 +21,6 @@
 
 '''Custom exectools components for GDAL.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
-__revision__ = '$Revision$'
-
 
 import re
 import logging
@@ -35,7 +31,13 @@ from exectools.qt4 import Qt4OutputHandler
 from osgeo import gdal
 
 
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
+
+
 class BaseGdalToolDescriptor(exectools.ToolDescriptor):
+    '''Base class for GDAL tool descriprors.'''
 
     def gdal_config_options(self, cmd=''):
         extra_args = []
@@ -49,7 +51,7 @@ class BaseGdalToolDescriptor(exectools.ToolDescriptor):
             if not key in cmd:
                 value = gdal.GetConfigOption(key, None)
                 if value:
-                    extra_args.extend(('--config', key, value))
+                    extra_args.extend(('--config', key, '"%s"' % value))
 
         return extra_args
 
@@ -70,7 +72,8 @@ class BaseGdalToolDescriptor(exectools.ToolDescriptor):
 class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
     '''Tool descriptor for the gdaladdo utility program.'''
 
-    RESAMPLING_METHODS = (
+    #: resampling methods
+    RESAMPLING_METHODS = [
         'nearest',
         'average',
         'gauss',
@@ -78,8 +81,9 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
         'average_mp',
         'average_magphase',
         'mode',
-    )
+    ]
 
+    #: TIFF compression methods
     TIFF_COMPRESSION_METHODS = (
         'JPEG',
         'LZW',
@@ -87,12 +91,31 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
         'DEFLATE',
     )
 
+    #: TIFF interleaving methods
     TIFF_INTERLEAVING_METHODS = ('PIXEL', 'BAND')
 
+    #: Allowed options for BigTIFF flag
     TIFF_USE_BIGTIFF_MODE = ('IF_NEEDED', 'IF_SAFER', 'YES', 'NO')
 
     def __init__(self, cwd=None, env=None,
                  stdout_handler=None, stderr_handler=None):
+        '''Initialization:
+
+        :param cwd:
+            program working directory
+        :param env:
+            environment dictionary
+        :param envmerge:
+            if set to True (default) it is the :attr:`env` dictionaty is
+            used to update the system environment
+        :param stdout_handler:
+            *OutputHandler* for the stdout of the tool
+        :param stderr_handler:
+            *OutputHandler* for the stderr of the tool
+
+        .. seealso:: :class:`exectools.BaseOutputHandler`
+
+        '''
 
         super(GdalAddOverviewDescriptor, self).__init__(
                     'gdaladdo', [], cwd, env, stdout_handler, stderr_handler)
@@ -204,7 +227,8 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
         self._use_bigtiff_mode = mode
 
     def gdal_config_options(self, cmd=''):
-        extra_args = super(GdalAddOverviewDescriptor, self).gdal_config_options(cmd)
+        extra_args = super(GdalAddOverviewDescriptor,
+                           self).gdal_config_options(cmd)
 
         if self.use_rrd is not None and 'USE_RRD' not in cmd:
             if self.use_rrd:
@@ -251,7 +275,7 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
 
 # @COMPATIBILITY: GDAL >= 1.7.0
 if gdal.VersionInfo() < '1700':
-    GdalAddOverviewDescriptor.RESAMPLING_METHODS.pop('cubic')
+    GdalAddOverviewDescriptor.RESAMPLING_METHODS.remove('cubic')
 
 
 class GdalInfoDescriptor(BaseGdalToolDescriptor):
@@ -259,9 +283,26 @@ class GdalInfoDescriptor(BaseGdalToolDescriptor):
 
     def __init__(self, cwd=None, env=None,
                  stdout_handler=None, stderr_handler=None):
+        '''
+        :param cwd:
+            program working directory
+        :param env:
+            environment dictionary
+        :param envmerge:
+            if set to True (default) it is the :attr:`env` dictionaty is
+            used to update the system environment
+        :param stdout_handler:
+            *OutputHandler* for the stdout of the tool
+        :param stderr_handler:
+            *OutputHandler* for the stderr of the tool
+
+        .. seealso:: :class:`exectools.BaseOutputHandler`
+
+        '''
 
         super(GdalInfoDescriptor, self).__init__('gdalinfo', [], cwd, env,
-                                                 stdout_handler, stderr_handler)
+                                                 stdout_handler,
+                                                 stderr_handler)
 
         #: force computation of the actual min/max values for each band in the
         #: dataset.
@@ -322,14 +363,19 @@ class GdalOutputHandler(Qt4OutputHandler):
 
     Every 2.5% of progress another number or period is emitted.
 
+    .. seealso:: :class:`exectools.BaseOutputHandler`,
+                 :class:`exectools.qt4.Qt4OutputHandler`
+
     '''
 
     def __init__(self, logger=None, statusbar=None, progressbar=None,
                  blinker=None, **kwargs):
         super(GdalOutputHandler, self).__init__(logger, statusbar, progressbar,
                                                 blinker, **kwargs)
-        #pattern = '(?P<percentage>\d{1,3})|(?P<pulse>\.)|((?P<text> - done\.?)$)'
-        pattern = '(?P<percentage>\d{1,3})|(?P<pulse>\.)|( - (?P<text>done\.?)\n)'
+        #pattern = ('(?P<percentage>\d{1,3})|(?P<pulse>\.)|'
+        #           '((?P<text> - done\.?)$)')
+        pattern = ('(?P<percentage>\d{1,3})|(?P<pulse>\.)|'
+                   '( - (?P<text>done\.?)\n)')
         self._progress_pattern = re.compile(pattern)
         self._percentage = 0.   # @TODO: remove.  Set the progressbar maximum
                                 #        to 1000 instead.
@@ -370,6 +416,7 @@ class GdalOutputHandler(Qt4OutputHandler):
 
 
 if __name__ == '__main__':
+
     def test_GdalOutputHandler_re():
         s = '0...10...20...30...40...50...60...70...80...90...100 - done.\n'
 
@@ -384,15 +431,21 @@ if __name__ == '__main__':
 
         class C(GdalOutputHandler):
             def __init__(self):
-                exectools.BaseOutputHandler.__init__(self, exectools.OFStream())
+                exectools.BaseOutputHandler.__init__(self,
+                                                     exectools.OFStream())
+
             def feed(self, data):
                 return exectools.BaseOutputHandler.feed(self, data)
+
             def close(self):
                 return exectools.BaseOutputHandler.close(self)
+
             def reset(self):
                 return exectools.BaseOutputHandler.reset(self)
+
             def handle_progress(self, data):
                 return exectools.BaseOutputHandler.handle_progress(self, data)
+
         h = C()
         h.feed(s)
         h.close()

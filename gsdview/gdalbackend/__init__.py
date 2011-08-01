@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -21,12 +21,20 @@
 
 '''GDAL backend for GSDView.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+
+# @TODO: should use absolute imports (from gsdview.gdalbackend import
+#        something)
+from info import *
+from info import __version__, __requires__
+from core import GDALBackend
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
 
 __all__ = ['init', 'close', 'loadSettings', 'saveSettings',
-           'name','version', 'short_description','description',
+           'name', 'version', 'short_description', 'description',
            'author', 'author_email', 'copyright', 'license_type',
            'website', 'website_label', 'getUseExceptions',
            'UseExceptions', 'DontUseExceptions',
@@ -35,16 +43,12 @@ __all__ = ['init', 'close', 'loadSettings', 'saveSettings',
            'findItemFromFilename', 'itemActions', 'itemContextMenu',
 ]
 
-# @TODO: should use absolute imports (from gsdview.gdalbackend import something)
-from info import *
-from info import __version__, __requires__
-from core import GDALBackend
-
 UseExceptions = GDALBackend.UseExceptions
 DontUseExceptions = GDALBackend.DontUseExceptions
 getUseExceptions = GDALBackend.getUseExceptions
 
 _backendobj = None
+
 
 def init(app):
     import os
@@ -156,9 +160,11 @@ del methodname, globals_, _definefunc
 def close(app):
     saveSettings(app.settings)
 
+
 def loadSettings(settings):
     if _backendobj:
         return _backendobj.loadSettings(settings)
+
 
 def saveSettings(settings):
     if _backendobj:

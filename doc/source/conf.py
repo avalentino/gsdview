@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # GSDView Open Edition documentation build configuration file, created by
-# sphinx-quickstart on Sun Aug 22 17:15:20 2010.
+# sphinx-quickstart on Thu Jun  2 20:12:05 2011.
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #
@@ -32,7 +32,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     #'sphinx.ext.doctest',
-    #'sphinx.ext.intersphinx',
+    'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
     #'sphinx.ext.coverage',
     'sphinx.ext.pngmath',
@@ -60,7 +60,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'GSDView'
-copyright = u'2008-2010, Antonio Valentino'
+copyright = u'2008-2011, Antonio Valentino'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -261,6 +261,29 @@ man_pages = [
      [u'Antonio Valentino'], 1)
 ]
 
+# If true, show URL addresses after external links.
+#man_show_urls = False
+
+
+# -- Options for Texinfo output ------------------------------------------------
+
+# Grouping the document tree into Texinfo files. List of tuples
+# (source start file, target name, title, author,
+#  dir menu entry, description, category)
+texinfo_documents = [
+  ('index', 'GSDView', u'GSDView Documentation', u'Antonio Valentino',
+   'GSDView', 'One line description of project.', 'Miscellaneous'),
+]
+
+# Documents to append as an appendix to all manuals.
+#texinfo_appendices = []
+
+# If false, no module index is generated.
+#texinfo_domain_indices = True
+
+# How to display URL addresses: 'footnote', 'no', or 'inline'.
+#texinfo_show_urls = 'footnote'
+
 
 # -- Options for Epub output ---------------------------------------------------
 
@@ -268,7 +291,7 @@ man_pages = [
 epub_title = u'GSDView Open Edition'
 epub_author = u'Antonio Valentino'
 epub_publisher = u'Antonio Valentino'
-epub_copyright = u'2008-2010, Antonio Valentino'
+epub_copyright = u'2008-2011, Antonio Valentino'
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.
@@ -283,6 +306,9 @@ epub_copyright = u'2008-2010, Antonio Valentino'
 
 # A unique identification for the text.
 #epub_uid = ''
+
+# A tuple containing the cover image and cover page html template filenames.
+#epub_cover = ()
 
 # HTML files that should be inserted before the pages created by sphinx.
 # The format is a list of tuples containing the path and title.
@@ -303,4 +329,4 @@ epub_copyright = u'2008-2010, Antonio Valentino'
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
-#intersphinx_mapping = {'http://docs.python.org/': None}
+intersphinx_mapping = {'http://docs.python.org/': None}

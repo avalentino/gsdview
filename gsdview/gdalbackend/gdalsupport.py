@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -21,18 +21,19 @@
 
 '''Support tools and classes for the GDAL library.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
-__revision__ = '$Revision$'
-
 
 import os
 import logging
 
-import numpy
+import numpy as np
 
 from osgeo import gdal
 from osgeo import osr
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 
 GDAL_CONFIG_OPTIONS = '''\
@@ -166,7 +167,7 @@ def uniqueDatasetID(prod):
             prod_id = os.path.basename(prod.GetDescription())
     elif driver_name == 'ESAT':
         metadata = prod.GetMetadata()
-        prod_id = os.path.splitext(metadata ['MPH_PRODUCT'])[0]
+        prod_id = os.path.splitext(metadata['MPH_PRODUCT'])[0]
     #~ elif driver_name = 'GTiff':
         #~ # ERS BTIF
         #~ pass
@@ -201,10 +202,30 @@ def uniqueDatasetID(prod):
     return prod_id
 
 
-def driverList():
-    '''Return the list of available GDAL drivers'''
+def driverList(drivertype='raster'):
+    '''Return the list of available GDAL/OGR drivers'''
 
-    return [gdal.GetDriver(index) for index in range(gdal.GetDriverCount())]
+    if not drivertype:
+        types = ['gdal']
+    elif isinstance(drivertype, basestring):
+        types = [drivertype]
+    else:
+        types = drivertype
+        if not set(('raster', 'vector')).issuperset(types):
+            raise ValueError('invalid type list: "%s"' % types)
+
+    drivers = []
+    if 'raster' in types:
+        drivers.extend(gdal.GetDriver(index)
+                                    for index in range(gdal.GetDriverCount()))
+
+    if 'vector' in types:
+        # @TODO: check
+        from osgeo import ogr
+        drivers.extend(ogr.GetDriver(index)
+                                    for index in range(ogr.GetDriverCount()))
+
+    return drivers
 
 
 def gdalFilters(mode='r'):
@@ -221,7 +242,7 @@ def gdalFilters(mode='r'):
             ext = metadata['DMD_EXTENSION']
             if ext:
                 if name.endswith(' (.%s)' % ext):
-                    name = name[0: -len(ext)-4]
+                    name = name[0: -len(ext) - 4]
 
                 if 'w' in mode:
                     CREATECOPY = metadata.get(gdal.DCAP_CREATECOPY)
@@ -234,6 +255,60 @@ def gdalFilters(mode='r'):
                 filters.append('%s (*.%s)' % (name, ext))
         except KeyError:
             pass
+
+    return filters
+
+
+def ogrFilters():   # mode='r'):
+    '''Returns the list of OGR file filters as expected by Qt'''
+
+    # @TODO: move to an OGR specific module (??)
+    filters = [
+        'All files (*)',
+        'ESRI Shapefiles (*.shp)',
+        'KML (*.kml, *.kmz)',
+        'Virtual Format (*.vrt)',
+        'Arc/Info Binary Coverage (*.???)',
+        'Arc/Info E00 (ASCII) Coverage (*.E00)',
+        'Atlas BNA (*.bna)',
+        'AutoCAD DXF (*.dfx)'
+        'Comma Separated Value (*.csv)',
+        'DODS/OPeNDAP (*.???)',
+        'ESRI Personal GeoDatabase (*.???)',
+        'ESRI ArcSDE (*.???)',
+        'FMEObjects Gateway (*.NTF)',
+        'GeoJSON (*.???)',
+        'GeoConcept text export (*.gxt, *.txt)',
+        'GeoRSS: Geographically Encoded Objects for RSS feeds (*,xml)',
+        'GML - Geography Markup Language (*.gml)',
+        'GMT ASCII Vectors (*.gmt)',
+        'GPSBabel (*.???)',
+        'GPX - GPS Exchange Format (*.gpx)',
+        'GRASS (*.???)',
+        'GTM - GPS TrackMaker (*.gtm)',
+        'IDB (*.???)',
+        'INTERLIS (*.???)',
+        'INGRES (*.???)',
+        'MapInfo TAB and MIF/MID (*.MIF, *.MID)',
+        'Microstation DGN (*.???)',
+        'MySQL (*.???)',
+        'NAS - ALKIS (*.???)',
+        'Oracle Spatial (*.???)',
+        'ODBC RDBMS (*.???)',
+        'OGDI Vectors (*.???)',
+        'OpenAir Special Use Airspace Format (*.???)',
+        'PDS - Planetary Data Systems TABLE (*.???)',
+        'PostgreSQL SQL Dump (*.sql)',
+        'PostgreSQL (*.???)',
+        'IHO S-57 (ENC) (*.000)',
+        'SDTS (*.???)',
+        'SQLite RDBMS (*.???)',
+        "SUA - Tim Newport-Peace's Special Use Airspace Format (*.SUA)",
+        'UK .NTF (*.NTF)',
+        'U.S. Census TIGER/Line (*.RT?)',
+        'VFK - Czech cadastral exchange data format (*.???)',
+        'X-Plane/Flightgear aeronautical data (*.dat)',
+    ]
 
     return filters
 
@@ -264,7 +339,8 @@ def isRGB(dataset, strict=False):
         return False
 
     # @TODO: allow different color orders (??)
-    bands = [dataset.GetRasterBand(b) for b in range(1, dataset.RasterCount+1)]
+    bands = [dataset.GetRasterBand(b)
+                                for b in range(1, dataset.RasterCount + 1)]
     for band, colorint in zip(bands, (gdal.GCI_RedBand,
                                       gdal.GCI_GreenBand,
                                       gdal.GCI_BlueBand,
@@ -293,6 +369,7 @@ SAFE_GDAL_STATS = (('1640' <= gdal.VersionInfo() < '1700') or
 GDAL_STATS_KEYS = ('STATISTICS_MINIMUM', 'STATISTICS_MAXIMUM',
                    'STATISTICS_MEAN', 'STATISTICS_STDDEV')
 
+
 def GetCachedStatistics(band):
     '''Retrieve cached statistics from a raster band.
 
@@ -307,10 +384,17 @@ def GetCachedStatistics(band):
 
     metadata = band.GetMetadata()
     stats = [metadata.get(name) for name in GDAL_STATS_KEYS]
+
+    # @TODO: remove.
+    #        It is no more needed if the numeric locale is correctly set.
+    #if None not in stats:
+    #    stats = [float(item.replace(',', '.')) for item in stats]
+
     if None not in stats:
-        stats = [float(item.replace(',', '.')) for item in stats]
+        stats = [float(item) for item in stats]
 
     return stats
+
 
 def SafeGetStatistics(band, approx_ok=False, force=True):
     '''Safe replacement of gdal.Band.GetSrtatistics.
@@ -373,6 +457,7 @@ def SafeGetStatistics(band, approx_ok=False, force=True):
             stats = (None, None, None, None)
 
     return stats
+
 
 def hasFastStats(band, approx_ok=True):
     '''Return true if band statistics can be retrieved quickly.
@@ -466,18 +551,20 @@ colorinterpretations = {
 
 def colortable2numpy(colortable):
     ncolors = colortable.GetCount()
-    colors = numpy.zeros((ncolors, 4), numpy.uint8)
+    colors = np.zeros((ncolors, 4), np.uint8)
     for row in range(ncolors):
         colors[row] = colortable.GetColorEntry(row)
 
     colorint = colortable.GetPaletteInterpretation()
     nchannels = colorinterpretations[colorint]['nchannels']
 
-    return colors[...,:nchannels]
+    return colors[..., 0:nchannels]
 
 
 ### Coordinate conversion helpers ############################################
 # @TODO: remove
+# @NOTE: bugs #3160 and #3709 have been fixed upstream with commits r22289
+#        and r22290 (1.8 branch). The fix should be included in GDAL v1.8.1.
 def _fixedGCPs(gcps):
     '''Fix Envisat GCPs
 
@@ -487,15 +574,15 @@ def _fixedGCPs(gcps):
 
     '''
 
-    lines = [gcp.GCPLine for gcp in gcps]
+    lines = np.asarray([gcp.GCPLine for gcp in gcps])
 
     # @TODO: this is a weak check; improve it
-    if numpy.alltrue(lines != numpy.sort(lines)):
+    if np.alltrue(lines != np.sort(lines)):
         # @WARNING: here we are assuming that the geolocation grid
         #           has at least 2 lines
         # @WARNING: here we are assuming a particular order of GCPs
-        upstepslocation = numpy.where(lines[1:] > lines[0:-1])[0] + 1
-        upsteps = lines[upstepslocation] - lines[upstepslocation-1]
+        upstepslocation = np.where(lines[1:] > lines[0:-1])[0] + 1
+        upsteps = lines[upstepslocation] - lines[upstepslocation - 1]
 
         # @WARNING: here we are assuming that the distance between geolocation
         #           grid linse is constant
@@ -503,7 +590,7 @@ def _fixedGCPs(gcps):
                                                 (upsteps.max(), upsteps.min()))
         linespacing = int(upsteps[0])
 
-        downstepslocation = numpy.where(lines[1:] < lines[0:-1])[0] + 1
+        downstepslocation = np.where(lines[1:] < lines[0:-1])[0] + 1
         for index in downstepslocation:
             jumpsize = int(lines[index - 1] - lines[index]) + linespacing
             lines[index:] += jumpsize
@@ -562,20 +649,20 @@ class CoordinateMapper(object):
         logging.debug('geotransform = %s' % str(self._geotransform))
 
         # Direct transform
-        M = numpy.array(((m11, m12), (m21, m22)))
-        C = numpy.array(([xoffset], [yoffset]))
+        M = np.array(((m11, m12), (m21, m22)))
+        C = np.array(([xoffset], [yoffset]))
         self._direct_transform = (M, C)
 
         # Invrse transform
-        M = numpy.linalg.inv(M)
-        C = -numpy.dot(M, C)
+        M = np.linalg.inv(M)
+        C = -np.dot(M, C)
         self._inverse_transform = (M, C)
 
     def _transform(self, x, y, M, C):
-        x, y = map(numpy.ravel, (x, y))
+        x, y = map(np.ravel, (x, y))
 
-        Pin = numpy.array((x, y))
-        return numpy.dot(M, Pin) + C
+        Pin = np.array((x, y))
+        return np.dot(M, Pin) + C
 
     def imgToGeoPoints(self, pixel, line):
         '''Coordinate conversion: (pixel,line) --> (lon,lat).'''
@@ -586,7 +673,7 @@ class CoordinateMapper(object):
             for index, (x, y) in enumerate(xy.transpose()):
                 xy[:, index] = self._srTransform.TransformPoint(x, y)[:2]
         # @TODO: check single point
-        return xy[0], xy[1] #, 0    # @TODO: h
+        return xy[0], xy[1]  # , 0    # @TODO: h
 
     def geoToImgPoints(self, lon, lat, h=0):
         '''Coordinate conversion: (lon,lat) --> (pixel,line).'''
@@ -605,11 +692,11 @@ class CoordinateMapper(object):
         '''
 
         # @TODO: check single point
-        px , py = numpy.meshgrid(pixel, line)
+        px, py = np.meshgrid(pixel, line)
         lon, lat = self.imgToGeoPoints(px, py)
-        lon.shape = lat.shape = (len(pixel), len(line)) # @TODO: check
+        lon.shape = lat.shape = (len(pixel), len(line))  # @TODO: check
 
-        return lon, lat #, 0    # @TODO: h
+        return lon, lat  # , 0    # @TODO: h
 
     def geoToImgGrid(self, lon, lat):
         '''Coordinate conversion: (lon,lat) --> (pixel,line) on regular grids.
@@ -620,9 +707,9 @@ class CoordinateMapper(object):
         '''
 
         # @TODO: check single point
-        px, py = numpy.meshgrid(lon, lat)
+        px, py = np.meshgrid(lon, lat)
         pixel, line = self.geoToImgPoints(px, py)
-        pixel.shape = line.shape = (len(lon), len(lat)) # @TODO: check
+        pixel.shape = line.shape = (len(lon), len(lat))  # @TODO: check
 
         return line, pixel
 
@@ -643,7 +730,8 @@ def coordinate_mapper(dataset):
 
 
 ### Overviews handling helpers ###############################################
-OVRMEMSIE = 400*1024    # 400kbytes
+OVRMEMSIE = 400 * 1024  # 400 kbytes
+
 
 class MissingOvrError(Exception):
     def __init__(self, ovrlevel):
@@ -687,7 +775,7 @@ def ovrLevelForSize(gdalobj, ovrsize=OVRMEMSIE):
         #bytePerPixel = gdal.GetDataTypeSize(band.DataType) / 8
         bytesperpixel = 1   # the quicklook image is always converted to byte
         datasize = band.XSize * band.YSize * bytesperpixel
-        ovrlevel = numpy.sqrt(datasize / float(ovrsize))
+        ovrlevel = np.sqrt(datasize / float(ovrsize))
         ovrlevel = max(round(ovrlevel), 1)
 
         return ovrLevelAdjust(ovrlevel, band.XSize)
@@ -695,7 +783,7 @@ def ovrLevelForSize(gdalobj, ovrsize=OVRMEMSIE):
         # assume gdalobj is a dataset to be represented as an RGB32
         dataset = gdalobj
         band = dataset.GetRasterBand(1)
-        return ovrLevelForSize(band, ovrsize/4)
+        return ovrLevelForSize(band, ovrsize / 4)
 
 
 def ovrLevels(gdalobj, raw=False):
@@ -747,8 +835,8 @@ def ovrBestIndex(gdalobj, ovrlevel=None, policy='NEAREST'):
         # gdalobj is a raster band
         band = gdalobj
         if ovrlevel is None:
-            ovrlevel = ovrLevelForSize(band) # 400K
-        levels = numpy.asarray(ovrLevels(band))
+            ovrlevel = ovrLevelForSize(band)  # 400K
+        levels = np.asarray(ovrLevels(band))
         if len(levels) == 0:
             raise MissingOvrError(ovrlevel)
 
@@ -757,13 +845,13 @@ def ovrBestIndex(gdalobj, ovrlevel=None, policy='NEAREST'):
             distances = abs(distances)
             mindist = distances.min()
         elif policy.upper() == 'GREATER':
-            indices = numpy.where(distances >= 0)[0]
-            if numpy.size(indices) == 0:
+            indices = np.where(distances >= 0)[0]
+            if np.size(indices) == 0:
                 raise MissingOvrError(ovrlevel)
             mindist = distances[indices].min()
         elif policy.upper() == 'SMALLER':
-            indices = numpy.where(distances <= 0)[0]
-            if numpy.size(indices) == 0:
+            indices = np.where(distances <= 0)[0]
+            if np.size(indices) == 0:
                 raise MissingOvrError(ovrlevel)
             mindist = distances[indices].max()
         else:
@@ -811,10 +899,10 @@ def ovrComputeLevels(gdalobj, ovrsize=OVRMEMSIE, estep=3, threshold=0.1):
     else:
         startexponent = 1
 
-    maxesponent = numpy.ceil(maxfactor**(1./estep))
-    exponents = numpy.arange(startexponent, maxesponent+1)
+    maxesponent = np.ceil(maxfactor ** (1. / estep))
+    exponents = np.arange(startexponent, maxesponent + 1)
     missinglevels = estep ** exponents
-    missinglevels = missinglevels.astype(numpy.int)
+    missinglevels = missinglevels.astype(np.int)
 
     # Remove exixtng levels to avoid re-computation
     levels = ovrLevels(gdalobj)
@@ -830,7 +918,7 @@ def ovrComputeLevels(gdalobj, ovrsize=OVRMEMSIE, estep=3, threshold=0.1):
             pass
         else:
             bestlevel = levels[index]
-            if bestlevel and abs(bestlevel - level)/float(level) < threshold:
+            if bestlevel and abs(bestlevel - level) / float(level) < threshold:
                 continue
         missinglevels.append(level)
 
@@ -877,7 +965,7 @@ def ovrRead(dataset, x=0, y=0, w=None, h=None, ovrindex=None,
     assert bstart > 0
     assert bstart - 1 + bcount <= dataset.RasterCount
 
-    #data = numpy.zeros((h, w, dataset.RasterCount), numpy.ubyte)
+    #data = np.zeros((h, w, dataset.RasterCount), np.ubyte)
     channels = []
     for bandindex in range(bstart, bstart + bcount):
         band = dataset.GetRasterBand(bandindex)
@@ -885,9 +973,9 @@ def ovrRead(dataset, x=0, y=0, w=None, h=None, ovrindex=None,
             band = band.GetOverview(ovrindex)
         channels.append(band.ReadAsArray(x, y, w, h))
 
-    data = numpy.dstack(channels)
+    data = np.dstack(channels)
     if dtype and dtype != data.dtype:
-        return numpy.astype(data)
+        return np.astype(data)
     else:
         return data
 

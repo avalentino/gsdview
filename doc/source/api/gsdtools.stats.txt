@@ -1,0 +1,35 @@
+gsdtools.stats
+==============
+
+.. automodule:: gsdtools.stats
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      GetStatisticsFromMetadata
+      SafeGetStatistics
+      computestats
+      copy_dataset_subwin
+      handlecmd
+      main
+      namedtuple
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      HistogramRequest
+      Statistics
+   
+   
+
+   
+   
+   

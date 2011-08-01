@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -21,10 +21,6 @@
 
 '''Core GDAL backend functions and classes.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
-__revision__ = '$Revision$'
-
 
 import os
 import glob
@@ -32,10 +28,16 @@ import shutil
 import tempfile
 
 from osgeo import gdal
-from PyQt4 import QtGui
 
-from gsdview.gdalbackend import modelitems
-from gsdview.gdalbackend import gdalsupport
+from qt import QtGui
+
+from ..gdalbackend import modelitems
+from ..gdalbackend import gdalsupport
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 
 class GdalHelper(object):
@@ -186,8 +188,8 @@ class GdalHelper(object):
     def do_finalize_on_error(self):
         pass
 
-    #@QtCore.pyqtSlot()
-    #@QtCore.pyqtSlot(int)
+    #@QtCore.Slot()
+    #@QtCore.Slot(int)
     def finalize(self, returncode=0):
         try:
             self._disconnect_signals()

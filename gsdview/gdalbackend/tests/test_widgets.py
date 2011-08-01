@@ -6,24 +6,13 @@ import logging
 
 from osgeo import gdal
 
-# Select the PyQt API 2
-import sip
-sip.setapi('QDate',       2)
-sip.setapi('QDateTime',   2)
-sip.setapi('QString',     2)
-sip.setapi('QTextStream', 2)
-sip.setapi('QTime',       2)
-sip.setapi('QUrl',        2)
-sip.setapi('QVariant',    2)
-
-from PyQt4 import QtGui
-
 # Fix sys path
 from os.path import abspath, dirname
 GSDVIEWROOT = abspath(os.path.join(dirname(__file__),
                                    os.pardir, os.pardir, os.pardir))
 sys.path.insert(0, GSDVIEWROOT)
 
+from qt import QtGui
 
 from gsdview.gdalbackend.widgets import *
 
@@ -38,6 +27,7 @@ def test_gdalinfowidget():
     dialog.show()
     app.exec_()
 
+
 def test_gdalpreferencespage():
     app = QtGui.QApplication(sys.argv)
     dialog = QtGui.QDialog()
@@ -48,11 +38,13 @@ def test_gdalpreferencespage():
     dialog.show()
     app.exec_()
 
+
 def test_datasetdialog(dataset):
     app = QtGui.QApplication(sys.argv)
     dialog = DatasetInfoDialog(dataset)
     dialog.show()
     sys.exit(app.exec_())
+
 
 def test_rasterbanddialog(band):
     app = QtGui.QApplication(sys.argv)
@@ -60,11 +52,13 @@ def test_rasterbanddialog(band):
     dialog.show()
     sys.exit(app.exec_())
 
+
 def test_histogram_config():
     app = QtGui.QApplication(sys.argv)
     dialog = HistogramConfigDialog()
     dialog.show()
     sys.exit(app.exec_())
+
 
 def testdriver(target, imagestruct=True):
     logging.basicConfig(level=logging.DEBUG)
@@ -95,6 +89,7 @@ def testdriver(target, imagestruct=True):
     else:
         raise ValueError('trget: %s' % target)
 
+
 def test_ovrwidget():
     filename = os.path.join(GSDVIEWROOT, 'gsdview', 'plugins',
                             'worldmap', 'images', 'world_4320x2160.jpg')
@@ -102,7 +97,7 @@ def test_ovrwidget():
     band = dataset.GetRasterBand(1)
 
     if True and band.GetOverviewCount() == 0:
-        dataset.BuildOverviews('average', [2,4,8], gdal.TermProgress)
+        dataset.BuildOverviews('average', [2, 4, 8], gdal.TermProgress)
 
     app = QtGui.QApplication(sys.argv)
 
@@ -123,6 +118,7 @@ def test_ovrwidget():
     w.overviewComputationRequest.connect(callback)
 
     sys.exit(app.exec_())
+
 
 def test_ovrdialog():
     filename = os.path.join(GSDVIEWROOT, 'gsdview', 'plugins',

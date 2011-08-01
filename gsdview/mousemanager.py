@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -32,14 +32,14 @@ making the system expandible, and also methods to register objects
 '''
 
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+from qt import QtCore, QtGui
+
+import qt4support
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
-
-
-from PyQt4 import QtCore, QtGui
-
-from gsdview import qt4support
 
 
 class MouseMode(QtCore.QObject):
@@ -139,12 +139,12 @@ class ScrollHandMode(MouseMode):
 
             # Conversion from degrees to zoom factor:
             # a factor of 1.1 every 15 degrees
-            k = 1.1/15.
+            k = 1.1 / 15.
 
             if delta >= 0:
                 factor = k * delta
             else:
-                factor = -1/(k * delta)
+                factor = -1 / (k * delta)
 
             obj.scale(factor, factor)
             event.accept()
@@ -179,7 +179,7 @@ class RubberBandMode(MouseMode):
     #: SIGNAL: it is emitted when a rectangular area is selected
     #:
     #: :C++ signature: `void rubberBandSeclection(const QRectF&)`
-    rubberBandSeclection = QtCore.pyqtSignal(QtCore.QRectF)
+    rubberBandSeclection = QtCore.Signal(QtCore.QRectF)
 
     def sceneEventFilter(self, obj, event):
         if event.type() == QtCore.QEvent.GraphicsSceneMouseRelease:
@@ -207,7 +207,7 @@ class MouseManager(QtCore.QObject):
     #: SIGNAL: it is emitted when the mouse mode is changed
     #:
     #: :C++ signature: `void modeChanged(const QString&)`
-    modeChanged = QtCore.pyqtSignal(str)
+    modeChanged = QtCore.Signal(str)
 
     def __init__(self, parent=None, stdmodes=True, **kwargs):
         QtCore.QObject.__init__(self, parent, **kwargs)
@@ -220,7 +220,7 @@ class MouseManager(QtCore.QObject):
             self.registerStandardModes()
 
     def registerStandardModes(self):
-        for mode in (PointerMode, ScrollHandMode): #, RubberBandMode):
+        for mode in (PointerMode, ScrollHandMode):  # , RubberBandMode):
             self.addMode(mode)
         if len(self._moderegistry) and not self.actions.checkedAction():
             self.actions.actions()[0].setChecked(True)

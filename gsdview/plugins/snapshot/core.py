@@ -21,8 +21,8 @@
 
 '''Core modue for image stretch control.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date: 2010/02/14 22:02:21 $'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date: 2010/02/14 22:02:21 $'
 __revision__ = '$Revision: 36b7b35ff3b6 $'
 
 from PyQt4 import QtCore, QtGui
@@ -119,4 +119,3 @@ class SnapshotTool(QtCore.QObject):
         else:
             QtGui.QMessageBox.warning(self.app, self.tr('Warning'),
                                 self.tr('Unable initialize painting device.'))
-

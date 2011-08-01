@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2006-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2006-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of exectools.
 
@@ -28,14 +28,11 @@ sub-process and allow asynchronous I/O both on Windows and Posix platforms.
 # @TODO: use ctypes instead of pywin32
 # @TODO: update to the new subprocess API (signal, kill, terminate)
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__revision__ = '$Revision$'
-__date__     = '$Date$'
-
 
 import os
 import time
 import errno
+import warnings
 import subprocess
 
 import recipe_440544
@@ -50,11 +47,16 @@ from subprocess import list2cmdline
 try:
     from subprocess import PIPE, STDOUT, call, check_call, CalledProcessError
     __all__ = ["Popen", "PIPE", "STDOUT", "call", "check_call",
-               "CalledProcessError"]
+               "CalledProcessError", "list2cmdline"]
 except ImportError:
     # @COMPATIBILITY with python 2.4
     from subprocess import PIPE, STDOUT, call
-    __all__ = ["Popen", "PIPE", "STDOUT", "call"]
+    __all__ = ["Popen", "PIPE", "STDOUT", "call", "list2cmdline"]
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__revision__ = '$Revision$'
+__date__ = '$Date$'
 
 
 class Popen(recipe_440544.Popen):
@@ -63,6 +65,7 @@ class Popen(recipe_440544.Popen):
     delay_after_stop = 0.2
 
     if subprocess.mswindows:
+
         def stop(self, force=True):
             if self.poll() is not None:
                 return True
@@ -72,7 +75,7 @@ class Popen(recipe_440544.Popen):
                 handle = OpenProcess(PROCESS_TERMINATE, False, self.pid)
                 TerminateProcess(handle, -1)
                 CloseHandle(handle)
-            except pywintypes.error, e:
+            except subprocess.pywintypes.error, e:
                 # @TODO: check error code
                 warnings.warn(e)
 
@@ -83,6 +86,7 @@ class Popen(recipe_440544.Popen):
                 return False
 
     else:
+
         def _kill(self, sigid):
             '''Ignore the exception when the process doesn't exist.'''
             try:

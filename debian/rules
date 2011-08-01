@@ -1,20 +1,20 @@
 #!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
 
 DEB_PYTHON_SYSTEM=pycentral
 
 include /usr/share/cdbs/1/rules/debhelper.mk
-#include /usr/share/cdbs/1/class/makefile.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 
-# Add here any variable or target overrides you need.
 DEB_COMPRESS_EXCLUDE += .txt .pdf .inv .ico .js
 
 install/gsdview::
 	find $(DEB_DESTDIR) -name 'LICENSE.txt' -delete
-
-binary-post-install/gsdview::
 	find $(DEB_DESTDIR) -name 'jquery.js*' -delete
-
-binary-predeb/gsdview::
 	dh_link /usr/share/javascript/jquery/jquery.js \
         usr/share/doc/gsdview/html/_static/jquery.js
+
+# @TODO: get-orig-source

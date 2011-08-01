@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -19,12 +19,12 @@
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
 
 
-'''Band overview.'''
+'''Package info.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
 __revision__ = '$Revision$'
-__version__  = (0, 6, 3)
+__version__ = (0, 6, 5)
 __requires__ = ['gdalbackend']
 
 __all__ = ['name', 'version', 'short_description', 'description',
@@ -48,7 +48,7 @@ Moving the red box with the mouse updates the main view to show the boxed area.
 
 author = 'Antonio Valentino'
 author_email = 'a_valentino@users.sf.net'
-copyright = 'Copyright (C) 2008-2010 %s <%s>' % (author, author_email)
+copyright = 'Copyright (C) 2008-2011 %s <%s>' % (author, author_email)
 license_type = 'GNU GPL'
 website = 'http://gsdview.sourceforge.net'
 website_label = website

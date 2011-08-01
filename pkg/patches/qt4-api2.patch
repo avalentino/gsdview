@@ -1,0 +1,22 @@
+Index: support/rthooks/pyi_rth_qt4plugins.py
+===================================================================
+--- support/rthooks/pyi_rth_qt4plugins.py	(revisione 1497)
++++ support/rthooks/pyi_rth_qt4plugins.py	(copia locale)
+@@ -10,6 +10,17 @@
+     d = os.path.join(os.path.dirname(sys.argv[0]), d)
+ 
+ 
++# Select the PyQt API 2
++import sip
++sip.setapi('QDate',       2)
++sip.setapi('QDateTime',   2)
++sip.setapi('QString',     2)
++sip.setapi('QTextStream', 2)
++sip.setapi('QTime',       2)
++sip.setapi('QUrl',        2)
++sip.setapi('QVariant',    2)
++
++
+ # We remove QT_PLUGIN_PATH variable, beasuse we want Qt4 to load
+ # plugins only from one path.
+ if 'QT_PLUGIN_PATH' in os.environ:

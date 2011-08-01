@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -21,27 +21,18 @@
 
 '''World map component for GSDView.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
-__revision__ = '$Revision$'
 
+import numpy as np
 
-import numpy
+from qt import QtCore, QtGui
 
-from PyQt4 import QtCore, QtGui
-
+from gsdview import utils
 from gsdview import qt4support
 
 
-# @TODO: make it available a an utility function
-# @TODO: support vectors
-def _geonormalize(x, range=360.):
-    halfrange = range/2.
-    if -halfrange <= x <= halfrange:
-        x = x % range
-    if x > halfrange:
-        x -= range
-    return x
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
 
 
 class WorldmapPanel(QtGui.QDockWidget):
@@ -179,13 +170,13 @@ class WorldmapPanel(QtGui.QDockWidget):
         if not polygon:
             return
 
-        lon = numpy.asarray([p.x() for p in polygon])
-        lat = numpy.asarray([p.y() for p in polygon])
+        lon = np.asarray([p.x() for p in polygon])
+        lat = np.asarray([p.y() for p in polygon])
 
         mlon = lon.mean()
         mlat = lat.mean()
 
-        delta = mlon - _geonormalize(mlon)
+        delta = mlon - utils.geonormalize(mlon)
         if delta:
             lon -= delta
             mlon -= delta
@@ -243,8 +234,8 @@ class WorldmapController(QtCore.QObject):
 
         self.panel.setFootprint(footprint)
 
-    @QtCore.pyqtSlot()
-    @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
+    @QtCore.Slot()
+    @QtCore.Slot(QtGui.QMdiSubWindow)
     def onSubWindowChanged(self, subwin=None):
         if subwin is None:
             subwin = self.app.mdiarea.activeSubWindow()
@@ -260,14 +251,14 @@ class WorldmapController(QtCore.QObject):
         else:
             self.setItemFootprint(item)
 
-    @QtCore.pyqtSlot(QtCore.QModelIndex)
+    @QtCore.Slot(QtCore.QModelIndex)
     def onItemClicked(self, index):
         if not self.app.mdiarea.activeSubWindow():
             item = self.app.datamodel.itemFromIndex(index)
             self.setItemFootprint(item)
 
-    @QtCore.pyqtSlot()
-    @QtCore.pyqtSlot(QtCore.QModelIndex, int, int)
+    @QtCore.Slot()
+    @QtCore.Slot(QtCore.QModelIndex, int, int)
     def onModelChanged(self, index=None, start=None, stop=None):
         subwin = self.app.mdiarea.activeSubWindow()
         if subwin:

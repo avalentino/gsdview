@@ -1,21 +1,47 @@
 ..  :Source: doc/source/CHANGES.txt
-    :Version: 0.6.4
+    :Version: 0.6.5
     :Author: Antonio Valentino
     :Contact: a_valentino@users.sf.net
     :URL: http://gsdview.sourceforge.net
     :Revision: $Revision$
     :Date: $Date$
-    :Copyright (C): 2008-2010 Antonio Valentino
+    :Copyright (C): 2008-2011 Antonio Valentino
 
 
 ChangeLog
 =========
 
-Changes from 0.6.3 to 0.6.4 (in development)
+Changes from 0.6.4 to 0.6.5 (in development)
 --------------------------------------------
 
-* Metadata export and printing (:issue:`67` and :issue:`68`)
 * Snapshot tool (:issue:`48`)
+* New gsdtools package providing extra utilities for geo-spatial data handling.
+  The gsdview.gsdtools module has been renamed into gsdview.imgutils.
+* New functions for KML export and dataset area display on "Google Earth"
+  and "Google Maps" (see :issue:`50`)
+* Fixed workaround for incorrect GCP handling of ENVISAT stripline products
+* Fixed global exception handler
+* Fixed calls to external GDAL utilities by adding quotes to config options
+* Fixed an unicode related issue in calls to gdal.SetConfigOption
+* Improved PyInstaller_ packaging (upgreded to 1.5.1)
+* Fix plugin loading when no plugin have to be loaded
+* Support for PySide_ (closes :issue:`69`, see also :issue:`70`)
+
+.. _PyInstaller: http://www.pyinstaller.org
+.. _PySide: http://www.pyside.org
+
+
+Changes from 0.6.3 to 0.6.4 (14/11/2010)
+----------------------------------------
+
+* Restored full compatibility wirh GDAL 1.6.x series
+* Metadata export and printing (:issue:`67` and :issue:`68`)
+* mainwin.py module renamed into mdi.py
+* Set numeric locale to "C" at application startup in order to prevent
+  issues with GDAL statistics serialization in virtual files
+* Improved management of Qt4 items type
+* Strongly improved GDAL dataset dialog
+* Update to the new debian package format and new packaging standards
 
 
 Changes from 0.6.2 to 0.6.3 (13/08/2010)
@@ -86,11 +112,8 @@ Changes from 0.6.0 to 0.6.1 (09/05/2010)
   If pre-compiled python forms are not available the GUI is set up using
   Qt UI files directly.
 * Now use docutils for generating the manpage (:issue:`33`)
-* Packaging using pyinstaller_ (:issue:`8`)
+* Packaging using PyInstaller_ (:issue:`8`)
 * Other bug fix (:issue:`21`, :issue:`31`, :issue:`36`)
-
-
-.. pyinstaller: http://www.pyinstaller.org
 
 
 Changes from 0.5.9 to 0.6.0 (24/08/2009)
@@ -107,8 +130,7 @@ Changes from 0.5.9 to 0.6.0 (24/08/2009)
 * Improved debian packaging (close :issue:`3`)
 * API reference added to documentation
 * Resources handling re-factoring (close :issue:`6`)
-* Initial support for `pyinstaller <http://www.pyinstaller.org>`_
-  packaging (:issue:`8`)
+* Initial support for PyInstaller_ packaging (:issue:`8`)
 * Improved project layout: exectools in now an independent python package,
   no more a sub-package of gsdview (close :issue:`10`)
 * `setuptools <http://pypi.python.org/pypi/setuptools>`_ support

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -46,13 +46,13 @@ class SplashLogHandler(logging.Handler):
     def __init__(self, splash, app=None, level=logging.NOTSET):
         logging.Handler.__init__(self, level)
         if not app:
-            from PyQt4.QtGui import qApp as app
+            from qt.QtGui import qApp as app
         self._app = app
         self._splash = splash
 
     def emit(self, record):
         try:
-            msg = self.format(record)
+            msg = str(self.format(record))
             self._splash.showMessage(self._splash.tr(msg))
             self.flush()
         except (KeyboardInterrupt, SystemExit):
@@ -67,7 +67,7 @@ class SplashLogHandler(logging.Handler):
 MODULES = ['os', 're', 'sys', 'itertools',
           'numpy',
           'osgeo.gdal', 'osgeo.osr',
-          'PyQt4.QtCore', 'PyQt4.QtGui',
+          'qt.QtCore', 'qt.QtGui',
           'exectools', 'exectools.qt4',
           'gsdview.info', 'gsdview.utils', 'gsdview.apptools',
           'gsdview.imgutils', 'gsdview.qt4support', 'gsdview.widgets',
@@ -81,7 +81,7 @@ MODULES = ['os', 're', 'sys', 'itertools',
 
 def preload(modules, app=None):
     if not app:
-        from PyQt4 import QtGui
+        from qt import QtGui
         app = QtGui.qApp
 
     timer = Timer()
@@ -96,6 +96,10 @@ def cmdline_ui():
     from optparse import OptionParser
 
     from gsdview import info
+
+    # filter out arguments that cause errors in Mac bundles
+    import sys
+    args = [arg for arg in sys.argv[1:] if not arg.startswith('-psn_')]
 
     parser = OptionParser(prog='gsdview',
                     #usage='%prog [options] [FILENAME [FILENAME [...]]]',
@@ -115,15 +119,21 @@ def cmdline_ui():
                       #~ 'A "%s" separated list can be used to specify multile '
                       #~ 'paths. ' % os.pathsep)
 
-    options, args = parser.parse_args()
+    options, args = parser.parse_args(args)
 
     return options, args
 
 
 def main():
+    # @IMPORTANT: force numeric locale to 'C' in order to avoid problems
+    #             with GDAL and PPROJ4
+    # @SEEALSO: http://trac.osgeo.org/gdal/wiki/FAQMiscellaneous#DoesGDALworkindifferentinternationalnumericlocales
+    import os
+    os.environ['LC_NUMERIC'] = 'C'
+
     options, args = cmdline_ui()
-    logging.basicConfig(#level=logging.DEBUG,
-                        level=logging.INFO,
+    # logging.basicConfig(level=logging.DEBUG,
+    logging.basicConfig(level=logging.INFO,
                         format='%(levelname)s: %(message)s')
     logger = logging.getLogger('gsdview')
     logger.setLevel(logging.DEBUG)
@@ -136,10 +146,10 @@ def main():
     timer = Timer()
 
     ### splash screen #########################################################
-    from PyQt4 import QtGui
+    from qt import QtGui
     logging.debug('Qt4 import: %d.%06ds' % timer.update())
 
-    import os, sys
+    import sys
     from gsdview.info import name as NAME
     from gsdview.info import version as VERSION
     from gsdview.utils import getresource
@@ -182,11 +192,16 @@ def main():
     sys.excepthook = mainwin.excepthook     # @TODO: check
 
     logger.info('Enter main event loop')
-    mainwin.raise_() # this will raise the window on Mac OS X
+
+    # @COMPATIBILITY: this will raise the window on Mac OS X
+    mainwin.raise_()
+
     sys.exit(app.exec_())
 
 if __name__ == '__main__':
-    import os, sys
+    import os
+    import sys
+
     GSDVIEWROOT = os.path.dirname(os.path.abspath(__file__))
     EXTRAPATH, PKGNAME = GSDVIEWROOT.rsplit(os.path.sep, 1)
     if PKGNAME != 'gsdview':

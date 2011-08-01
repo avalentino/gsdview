@@ -1,0 +1,28 @@
+gsdview.qt4draw
+===============
+
+.. automodule:: gsdview.qt4draw
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DrawEllipseMode
+      DrawLineMode
+      DrawPointMode
+      DrawRectMode
+      GraphicsItemGroup
+      GraphicsPointItem
+      MouseMode
+   
+   
+
+   
+   
+   

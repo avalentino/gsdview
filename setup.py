@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -19,11 +19,6 @@
 ### along with GSDView; if not, write to the Free Software
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
 
-
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date$'
-__revision__ = '$Revision$'
-
 import os
 import sys
 import platform
@@ -32,11 +27,6 @@ from glob import glob
 
 from gsdview import info
 from exectools import version as exectools_version
-
-PKGNAME = info.name.lower()
-
-cmdclass = {}
-kwargs = {}
 
 # Using ``setuptools`` enables lots of goodies, such as building eggs.
 from distutils import log
@@ -49,6 +39,17 @@ except ImportError:
     from distutils.core import setup
     from distutils.command.install_lib import install_lib
     has_setuptools = False
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date$'
+__revision__ = '$Revision$'
+
+PKGNAME = info.name.lower()
+
+cmdclass = {}
+kwargs = {}
+
 
 try:
     from sphinx.setup_command import BuildDoc
@@ -68,12 +69,35 @@ class ExtendedBuild(Build):
         Build.run(self)
         try:
             self.run_command('build_sphinx')
-            self.run_command('build_man')
+            if 'build_man' in cmdclass:
+                self.run_command('build_man')
         except:
             log.warn("Couldn't build documentation:\n%s" %
                      traceback.format_exception(*sys.exc_info()))
 
-cmdclass['build'] = ExtendedBuild
+# @NOTE: temporary disabled because could break debian packaging.
+#        The man page and docs are included in the source package generated
+#        via makefile.
+#cmdclass['build'] = ExtendedBuild
+
+if has_setuptools:
+    from setuptools.command.bdist_egg import bdist_egg
+
+    class ExtendedBdistEgg(bdist_egg):
+        def run(self):
+            try:
+                self.run_command('build_sphinx')
+                if 'build_man' in cmdclass:
+                    self.run_command('build_man')
+            except:
+                log.warn("Couldn't build documentation:\n%s" %
+                         traceback.format_exception(*sys.exc_info()))
+            bdist_egg.run(self)
+
+    # @NOTE: temporary disabled because could break debian packaging.
+    #        The man page and docs are included in the source package generated
+    #        via makefile.
+    cmdclass['bdist_egg'] = ExtendedBdistEgg
 
 
 # Fix the install_lib command in order to generate an updated appsite.py file
@@ -103,7 +127,7 @@ if not os.path.exists(DOCSDIR):
         DOCSDIR = os.path.join(SHAREDIR, 'doc', PKGNAME)
         LICENSEFILE = os.path.join(DOCSDIR, 'LICENSE.txt')
         SYSPLUGINSDIR = pkg_resources.resource_filename(
-                                        req, os.path.join('gsdview', 'plugins'))
+                                    req, os.path.join('gsdview', 'plugins'))
 
         del SHAREDIR, req
 
@@ -132,8 +156,6 @@ del PKGNAME, LIBDIR, os
 
         # Retrieve datadir
         install = self.get_finalized_command('install')
-
-        DATADIR = self._striproot(install.install_data)
 
         # Update the appsite.py file
         sitefile = 'appsite.py'
@@ -209,18 +231,18 @@ kwargs['data_files'] = datafiles
 if has_setuptools:
     packages = find_packages()
     kwargs.update(dict(
-        install_requires = ['GDAL >= 1.6.1',
-                            'numpy >= 1.3.0',
-                            #'sip (>= 4.7.5)',
-                            #'PyQt >= 4.6'
+        install_requires=['GDAL >= 1.6.1',
+                          'numpy >= 1.3.0',
+                          #'sip (>= 4.7.5)',
+                          #'PyQt >= 4.6'
         ],
         #extras_require = {},
-        keywords = 'gsdview gdal',
-        entry_points = {
+        keywords='gsdview gdal',
+        entry_points={
             'gui_scripts': ['gsdview = gsdview:main'],
             'setuptools.installation': ['eggsecutable = gsdview:main'],
         },
-        include_package_data = True,
+        include_package_data=True,
     ))
 else:
     packages = ['exectools',
@@ -270,4 +292,3 @@ setup(name              = PKGNAME,
       cmdclass          = cmdclass,
       **kwargs
 )
-

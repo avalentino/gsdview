@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -21,15 +21,17 @@
 
 '''Core modue for image stretch control.'''
 
-__author__   = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__     = '$Date: 2010/02/14 22:02:21 $'
-__revision__ = '$Revision: 36b7b35ff3b6 $'
 
-from PyQt4 import QtCore, QtGui
+from qt import QtCore, QtGui
 
 from gsdview import qt4support
 
 from stretch.widgets import StretchDialog
+
+
+__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
+__date__ = '$Date: 2010/02/14 22:02:21 $'
+__revision__ = '$Revision: 36b7b35ff3b6 $'
 
 
 class StretchTool(QtCore.QObject):
@@ -63,7 +65,7 @@ class StretchTool(QtCore.QObject):
 
         return action
 
-    @QtCore.pyqtSlot(bool)
+    @QtCore.Slot(bool)
     def onButtonToggled(self, checked=True):
         if checked:
             self.reset()
@@ -96,7 +98,7 @@ class StretchTool(QtCore.QObject):
         if maximum is not None:
             self.dialog.stretchwidget.setMaximum(maximum)
         else:
-            self.dialog.stretchwidget.setMaximum(max(imax, 2*imax))
+            self.dialog.stretchwidget.setMaximum(max(imax, 2 * imax))
 
         self.dialog.stretchwidget.setLow(imin)
         self.dialog.stretchwidget.setHigh(imax)
@@ -111,10 +113,13 @@ class StretchTool(QtCore.QObject):
         except AttributeError:
             return None
 
-    @QtCore.pyqtSlot()
-    @QtCore.pyqtSlot(QtGui.QMdiSubWindow)
+    @QtCore.Slot()
+    @QtCore.Slot(QtGui.QMdiSubWindow)
     def onSubWindowChanged(self, subwin=None):
-        if not subwin:
+        if subwin is None:
+            subwin = self.app.mdiarea.activeSubWindow()
+
+        if subwin is None:
             self.action.setEnabled(self.dialog.isVisible())
             self.dialog.setEnabled(False)
             return
@@ -137,21 +142,20 @@ class StretchTool(QtCore.QObject):
             else:
                 self.action.setEnabled(False)
 
-
     # @TODO: remove
-    #~ @QtCore.pyqtSlot(QtCore.QModelIndex)
+    #~ @QtCore.Slot(QtCore.QModelIndex)
     #~ def onItemClicked(self, index):
         #~ if not self.app.mdiarea.activeSubWindow():
             #~ item = self.app.datamodel.itemFromIndex(index)
             #~ self.reset(item)
 
-    #~ @QtCore.pyqtSlot()
-    #~ @QtCore.pyqtSlot(QtCore.QModelIndex, int, int)
+    #~ @QtCore.Slot()
+    #~ @QtCore.Slot(QtCore.QModelIndex, int, int)
     #~ def onModelChanged(self, index=None, start=None, stop=None):
         #~ item = self.app.currentGraphicsItem()
         #~ self.reset(item)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def onStretchChanged(self):
         item = self.currentGraphicsItem()
         try:

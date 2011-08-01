@@ -3,14 +3,14 @@
     =======
 
     :Source: README.txt
-    :Version: 0.6.4
+    :Version: 0.6.5
     :Author: Antonio Valentino
     :Contact: a_valentino@users.sf.net
     :URL: http://gsdview.sourceforge.net
     :Revision: $Revision$
     :Date: $Date$
     :License: `GNU General Public License`__ (GPL)
-    :Copyright (C): 2008-2010 Antonio Valentino <a_valentino@users.sf.net>
+    :Copyright (C): 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
 
     __ GPL_
 
@@ -46,14 +46,16 @@ In order to run GSDView you should have the following software installed:
 
 * Python_ 2.5 or higher
 * SIP_ 4.7.5 or higher
-* PyQt_ 4.6 or higher
+* PyQt4_ 4.6 or higher
 * numpy_ 1.3.0  or higher
 * gdal_ 1.6.1 or higher
+* PySide_ 1.0.1 or higher (in replacement of PyQt4_ an SIP_)
 
 .. _SIP: http://www.riverbankcomputing.co.uk/software/sip
-.. _PyQt: http://www.riverbankcomputing.co.uk/software/pyqt
+.. _PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt
 .. _numpy: http://www.numpy.org
 .. _gdal: http://www.gdal.org
+.. _PySide: http://www.pyside.org
 
 .. hint::
 
