@@ -437,6 +437,7 @@ class MetadataWidget(QtGui.QWidget, MetadataWidgetBase):
         # @TODO:check
         self._keyeater = KeyPressEater(parent=self)
         self.installEventFilter(self._keyeater)
+        #self.domainComboBox.lineEdit().installEventFilter(self._keyeater)
 
     def domainsEnabled(self):
         return self.domainLabel.isVisible()
