@@ -62,7 +62,7 @@ class MajorObjectItem(QtGui.QStandardItem):
             description = ''
 
         super(MajorObjectItem, self).__init__(QtGui.QIcon(self.iconfile),
-                                              description, **kwargs)
+                                              description)  #, **kwargs)
         self.setToolTip(description)
 
     # Give items the same iterface of GDAL objects.
