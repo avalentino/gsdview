@@ -75,7 +75,7 @@ if qt.qt_api == 'pyqt':
     import sip
     all_versions.append(('sip', sip.SIP_VERSION_STR,
                          'http://www.riverbankcomputing.co.uk/software/sip'))
-    all_versions.append(('PyQt4', QtCore.__version__,
+    all_versions.append(('PyQt4', QtCore.PYQT_VERSION_STR,
                          'http://www.riverbankcomputing.co.uk/software/pyqt'))
     try:
         from PyQt4 import Qsci
@@ -86,8 +86,9 @@ if qt.qt_api == 'pyqt':
                 'http://www.riverbankcomputing.co.uk/software/qscintilla'))
 
 elif qt.qt_api == 'pyside':
+    import PySide
     all_versions.append(
-        ('PySide', QtCore.__version__, 'http://www.pyside.org'))
+        ('PySide', PySide.__version__, 'http://www.pyside.org'))
 
 if platform.dist() != ('', '', ''):
     all_versions.append(('GNU/Linux', ' '.join(platform.dist()), ''))
@@ -97,8 +98,6 @@ elif platform.mac_ver() != ('', ('', '', ''), ''):
 elif platform.win32_ver() != ('', '', '', ''):
     all_versions.append(('Windows', platform.win32_ver()[0],
                          'http://www.microsoft.com/windows'))
-
-all_versions.append(('Machine', platform.machine(), ''))
 
 
 def all_versions_str():
