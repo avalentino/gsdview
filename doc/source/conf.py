@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # GSDView Open Edition documentation build configuration file, created by
-# sphinx-quickstart on Thu Jun  2 20:12:05 2011.
+# sphinx-quickstart on Mon Oct 10 20:10:48 2011.
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #

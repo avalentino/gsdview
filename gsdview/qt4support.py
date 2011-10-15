@@ -550,7 +550,7 @@ def getuifile(name, package=None):
     It is assumed that Qt UI files are located in the "ui" subfolfer of
     the package.
 
-    .. seealso:: :autolink:`gsdview.utils.getresource`
+    .. seealso:: :func:`gsdview.utils.getresource`
 
     '''
 
@@ -573,12 +573,12 @@ def getuiform(name, package=None):
               When pyside is used an :exc:`ImportError` is raised
               if pre-built forms are not available.
 
-    .. note:: like :autolink:`gsdview.qt4support.getuifile` this
+    .. note:: like :func:`gsdview.qt4support.getuifile` this
               function assumes that pre-build form modules and Qt UI
               files are located in the "ui" subfolfer of the package.
 
-    .. seealso:: :autolink:`gsdview.utils.getresource`,
-                 :autolink:`gsdview.qt4support.getuifile`
+    .. seealso:: :func:`gsdview.utils.getresource`,
+                 :func:`gsdview.qt4support.getuifile`
 
     '''
 
@@ -613,7 +613,7 @@ def geticonfile(name, package=None):
     It is assumed that icon files are located in the "images" subfolder
     of the package.
 
-    .. seealso:: :autolink:`gsdview.utils.getresource`
+    .. seealso:: :func:`gsdview.utils.getresource`
 
     '''
 
@@ -626,7 +626,7 @@ def geticon(name, package=None):
     It is assumed that icon files are located in the "images" subfolder
     of the package.
 
-    .. seealso:: :autolink:`gsdview.utils.getresource`
+    .. seealso:: :func:`gsdview.utils.getresource`
 
     '''
 

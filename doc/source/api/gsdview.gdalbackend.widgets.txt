@@ -31,6 +31,7 @@ gsdview.gdalbackend.widgets
       GDALPreferencesPageBase
       HistogramConfigDialog
       HistogramConfigDialogBase
+      KeyPressEater
       MajorObjectInfoDialog
       MetadataWidget
       MetadataWidgetBase
