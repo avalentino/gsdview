@@ -246,6 +246,7 @@ if has_setuptools:
     ))
 else:
     packages = ['exectools',
+                'gsdtools',
                 'gsdview',
                 'gsdview.gdalbackend',
                 'gsdview.plugins',
