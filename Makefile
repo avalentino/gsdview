@@ -29,7 +29,6 @@ man: doc/gsdview.1
 
 doc/gsdview.1: doc/source/manpage.txt
 	$(MAKE) -C doc man
-	cp -f $(DOCBUILDDIR)/man/gsdview.1 $@
 	#gzip -c $@ > $@.gz
 
 

@@ -43,7 +43,7 @@ clean:
 	-rm -f *~ *.bak
 
 distclean: clean
-	-rm -rf html GSDView.pdf gsdview.1
+	-rm -rf html man GSDView.pdf
 
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) html
@@ -118,9 +118,9 @@ text:
 	@echo "Build finished. The text files are in $(BUILDDIR)/text."
 
 man:
-	$(SPHINXBUILD) -b man $(ALLSPHINXOPTS) $(BUILDDIR)/man
+	$(SPHINXBUILD) -b man $(ALLSPHINXOPTS) man
 	@echo
-	@echo "Build finished. The manual pages are in $(BUILDDIR)/man."
+	@echo "Build finished. The manual pages are in man."
 
 texinfo:
 	$(SPHINXBUILD) -b texinfo $(ALLSPHINXOPTS) $(BUILDDIR)/texinfo

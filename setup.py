@@ -98,7 +98,7 @@ if has_setuptools:
     # @NOTE: temporary disabled because could break debian packaging.
     #        The man page and docs are included in the source package
     #        generated via makefile.
-    cmdclass['bdist_egg'] = ExtendedBdistEgg
+    #cmdclass['bdist_egg'] = ExtendedBdistEgg
 
 
 # Fix the install_lib command in order to generate an updated appsite.py file
@@ -157,6 +157,8 @@ del PKGNAME, LIBDIR, os
 
         # Retrieve datadir
         install = self.get_finalized_command('install')
+
+        DATADIR = self._striproot(install.install_data)
 
         # Update the appsite.py file
         sitefile = 'appsite.py'
@@ -220,7 +222,7 @@ if os.name == 'posix':
         mandir = 'man'
     else:
         mandir = os.path.join('share', 'man')
-    datafiles.append((os.path.join(mandir, 'man1'), ['doc/gsdview.1']))
+    datafiles.append((os.path.join(mandir, 'man1'), ['doc/man/gsdview.1']))
     datafiles.append((os.path.join('share', 'applications'),
                         ['gsdview.desktop']))
     datafiles.append((os.path.join('share', 'pixmaps'),
