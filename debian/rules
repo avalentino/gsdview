@@ -11,19 +11,25 @@
 
 override_dh_auto_install:
 	python setup.py install --root=debian/gsdview --install-layout=deb \
-		--install-lib=/usr/share/gsdview --install-scripts=/usr/share/gsdview/bin
+		--install-lib=/usr/share/gsdview \
+		--install-scripts=/usr/share/gsdview/bin \
+		--single-version-externally-managed
 	mv debian/gsdview/usr/share/gsdview/bin/gsdview debian/gsdview/usr/share/gsdview/run.py
 	rmdir debian/gsdview/usr/share/gsdview/bin
 	rm -f debian/gsdview/usr/share/doc/gsdview/LICENSE.txt
 
 
 override_dh_installchangelogs:
-	dh_installchangelogs doc/CHANGES.txt
+	dh_installchangelogs doc/source/CHANGES.txt
 
 
 override_dh_compress:
 	dh_compress -X.txt
 
 
-.PHONY: override_dh_auto_install override_dh_installchangelogs \
-		override_dh_compress
+override_dh_auto_clean:
+	make clean
+
+
+.PHONY: override_dh_auto_clean override_dh_auto_install \
+		override_dh_installchangelogs override_dh_compress

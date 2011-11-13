@@ -1,0 +1,2 @@
+?package(gsdview):needs="X11" section="Applications/Science/Geoscience"\
+  title="GSDView" command="/usr/bin/gsdview"

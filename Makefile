@@ -80,18 +80,18 @@ clean:
 	$(MAKE) -C doc clean
 	$(MAKE) -C pkg clean
 	$(RM) MANIFEST
-	$(RM) -r build gsdview.egg-info
+	$(RM) -r build
 	-find . -name '*.py[co]' -delete
 	-find . -name '*.bak' -delete
 	-find . -name '*~' -delete
-	$(RM) -r debian/gsdview debian/python-module-stampdir
-	#$(RM) debian/gsdview.* debian/files debian/pycompat
-	$(RM) python-build-stamp-*
 
 distclean: clean
 	$(MAKE) -C doc distclean
 	$(MAKE) -C pkg distclean
-	$(RM) -r dist
+	$(RM) -r dist gsdview.egg-info
 	$(RM) $(PYUIFILES)
 	$(RM) gsdview/ui/__init__.py gsdview/gdalbackend/ui/__init__.py \
           gsdview/plugins/stretch/ui/__init__.py
+	$(RM) -r debian/gsdview debian/python-module-stampdir
+	#$(RM) debian/gsdview.* debian/files debian/pycompat
+	$(RM) python-build-stamp-*
