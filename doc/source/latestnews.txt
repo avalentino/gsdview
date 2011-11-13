@@ -1,3 +1,10 @@
+:13/11/2011: GSDView Open Source Edition v. 0.6.5 released.
+
+             Fixed some compatibility issues with new PyQt4 and sip versions.
+             Full support to PySide_ (>= 1.0.4).
+
+             Please refer to :doc:`CHANGES` for more details.
+
 :31/07/2011: GSDView now also works with PySide_
 
              Full support to PySide_ has been implemented.
