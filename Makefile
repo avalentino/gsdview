@@ -32,7 +32,7 @@ doc/gsdview.1: doc/source/manpage.txt
 	#gzip -c $@ > $@.gz
 
 
-sdist: ui docs
+sdist: ui html man
 	python setup.py sdist --formats=gztar,zip
 
 # Not available in setuptools (??)
