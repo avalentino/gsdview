@@ -18,16 +18,24 @@
 Introduction
 ============
 
-GSDView (Geo-Spatial Data Viewer) is a lightweight viewer for geo-spatial
-data and products.
+GSDView (Geo-Spatial Data Viewer) Open Edition is a lightweight viewer for
+geo-spatial data and products.
 It is written in python_ and Qt4_ and it is mainly intended to be a graphical
 front-end for the GDAL__ library and tools.
 GSDView is modular and has a simple plug-in architecture.
 
-At the moment GSDView is at a very early development stage.
+.. note:: two editions of GSDView currently exist:
+
+    - an *open source* version named `GSDView Open Edition`_ that is freely
+      available (GPL2) and provides only very basic features
+    - a GSDView Pro Edition that is non free and provides a larger number
+      of features (including image analysis tools and integration components
+      for external image processing tools)
+
 
 .. _Python: http://www.python.org
 .. _Qt4: http://qt.nokia.com/products
+.. _`GSDView Open Edition`: http://gsdview.sf.net
 __ gdal_
 
 

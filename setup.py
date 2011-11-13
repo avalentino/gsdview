@@ -200,22 +200,20 @@ Topic :: Scientific/Engineering :: GIS
 Topic :: Scientific/Engineering :: Visualization
 '''
 
-
 datafiles = [
     (os.path.join('share', 'doc', PKGNAME), ['README.txt']),
     (os.path.join('share', 'doc', PKGNAME), ['LICENSE.txt']),
-    (os.path.join('share', 'doc', PKGNAME, 'html'),
-        [name for name in glob(os.path.join('doc', 'html', '*'))
-                                            if not os.path.isdir(name)]),
-    (os.path.join('share', 'doc', PKGNAME, 'html', '_sources'),
-        [name for name in glob(os.path.join('doc', 'html', '_sources', '*'))
-                                            if not os.path.isdir(name)]),
-    (os.path.join('share', 'doc', PKGNAME, 'html', '_static'),
-        [name for name in glob(os.path.join('doc', 'html', '_static', '*'))
-                                            if not os.path.isdir(name)]),
     #(os.path.join('share', 'doc', PKGNAME),
     #                [os.path.join('doc', 'GSDView.pdf')]),
 ]
+
+HTMLPREFIX = os.path.join('share', 'doc', PKGNAME)
+
+htmldocs = []
+for root, dirs, files in os.walk(os.path.join('doc', 'html')):
+    htmldocs = [os.path.join(root, filename) for filename in files]
+    dstdir = os.path.join(HTMLPREFIX, root.split(os.sep, 1)[-1])
+    datafiles.append((dstdir, htmldocs))
 
 if os.name == 'posix':
     if platform.system() == 'FreeBSD':
