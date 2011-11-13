@@ -2,26 +2,18 @@ Source: gsdview
 Section: science
 Priority: optional
 Maintainer: Antonio Valentino <a_valentino@users.sf.net>
-XS-Python-Version: >= 2.5
-Build-Depends: cdbs (>= 0.4.49), debhelper (>= 7.0.50~),
-               python-central (>= 0.6.0), python (>= 2.5),
-               python-sphinx, python-docutils (>= 0.6), texlive-base-bin,
-               python-sip, python-qt4, python-gdal (>= 1.6.1)
-Standards-Version: 3.9.1
+Build-Depends: debhelper (>= 8.1), python, python-sphinx (>= 1.0),
+               python-qt4 (>= 4.6), python-gdal (>= 1.6.1), texlive-base-bin
+Standards-Version: 3.9.2
 Homepage: http://gsdview.sourceforge.net
 
 Package: gsdview
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, python-sip, python-qt4,
-         python-gdal (>= 1.6.1), gdal-bin, libjs-jquery
-XB-Python-Version: ${python:Versions}
-Recommends: libproj0
-Description: Geo-Spatial Data Viewer
- It is a lightweight viewer for geo-spatial data and products written in
- Python and Qt4.
- .
- GSDView is modular and has a simple plug-in architecture.
- .
- It is mainly intended to be a graphical front-end for the GDAL library
- and tools.
- .
+Depends: ${misc:Depends}, ${python:Depends}, ${sphinxdoc:Depends},
+         python-qt4 (>= 4.6), python-gdal (>= 1.6.1), gdal-bin
+Recommends: libproj0, google-earth-stable, www-browser
+Description: Geo-Spatial Data Viewer open source edition
+ GSDView open source edition is a lightweight viewer for geo-spatial
+ data and products written in Python and Qt4. GSDView is modular and
+ has a simple plug-in architecture. It is mainly intended to be a
+ graphical front-end for the GDAL library and tools.

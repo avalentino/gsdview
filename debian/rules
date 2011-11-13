@@ -4,17 +4,26 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-DEB_PYTHON_SYSTEM=pycentral
 
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/class/python-distutils.mk
+%:
+	dh $@ --with python2 --with sphinxdoc
 
-DEB_COMPRESS_EXCLUDE += .txt .pdf .inv .ico .js
 
-install/gsdview::
-	find $(DEB_DESTDIR) -name 'LICENSE.txt' -delete
-	find $(DEB_DESTDIR) -name 'jquery.js*' -delete
-	dh_link /usr/share/javascript/jquery/jquery.js \
-        usr/share/doc/gsdview/html/_static/jquery.js
+override_dh_auto_install:
+	python setup.py install --root=debian/gsdview --install-layout=deb \
+		--install-lib=/usr/share/gsdview --install-scripts=/usr/share/gsdview/bin
+	mv debian/gsdview/usr/share/gsdview/bin/gsdview debian/gsdview/usr/share/gsdview/run.py
+	rmdir debian/gsdview/usr/share/gsdview/bin
+	rm -f debian/gsdview/usr/share/doc/gsdview/LICENSE.txt
 
-# @TODO: get-orig-source
+
+override_dh_installchangelogs:
+	dh_installchangelogs doc/CHANGES.txt
+
+
+override_dh_compress:
+	dh_compress -X.txt
+
+
+.PHONY: override_dh_auto_install override_dh_installchangelogs \
+		override_dh_compress
