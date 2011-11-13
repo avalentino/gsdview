@@ -93,7 +93,10 @@ class GSDToolsController(QtCore.QObject):
                 if sys.platform.startswith('win'):
                     googleearth = utils.which('googleearth.exe')
                 else:
-                    googleearth = utils.which('googleearth')
+                    for name in ('googleearth', 'google-earth'):
+                        googleearth = utils.which(name)
+                        if googleearth:
+                            break
 
             action = self.actions.findChild(QtGui.QAction,
                                             'openInGoogleEarthAction')
@@ -101,6 +104,7 @@ class GSDToolsController(QtCore.QObject):
                 self.googleearth = googleearth
                 action.setEnabled(True)
             else:
+                self.googleearth = None
                 action.setEnabled(False)
         finally:
             settings.endGroup()
@@ -181,7 +185,11 @@ class GSDToolsController(QtCore.QObject):
             # @TODO: QtGui.QMessageBox.error(...)
             logging.error('unable to export "%s" to "%s".' % (src, dst))
 
-        success = QtCore.QProcess.startDetached(self.googleearth, [dst])
+        #success = QtCore.QProcess.startDetached(self.googleearth, [dst])
+        logging.info('GoogleEarth: %s' % self.googleearth)
+        logging.info('KML: %s' % dst)
+        success = QtCore.QProcess.startDetached('sh', [self.googleearth, dst],
+            os.path.dirname(self.googleearth))
         if not success:
             logging.warning('unable to open "%s" in GoogleEarth.' % dst)
             # @TODO: check
