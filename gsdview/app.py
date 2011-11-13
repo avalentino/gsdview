@@ -416,7 +416,7 @@ class GSDView(ItemModelMainWindow):
         self.addToolBar(toolbar)
 
         # @COMPATIBILITY: pyside 1.0.1
-        #                 without the call to toolbar.parent() the tolbar is
+        #                 without the call to toolbar.parent() the toolbar is
         #                 not actually added
         assert toolbar.parent()
 
