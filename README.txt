@@ -49,7 +49,10 @@ In order to run GSDView you should have the following software installed:
 * PyQt4_ 4.6 or higher
 * numpy_ 1.3.0  or higher
 * gdal_ 1.6.1 or higher
-* PySide_ 1.0.1 or higher (in replacement of PyQt4_ an SIP_)
+
+In replacement of PyQt4_ an SIP_ it is possible to use:
+
+* PySide_ 1.0.4 or higher
 
 .. _SIP: http://www.riverbankcomputing.co.uk/software/sip
 .. _PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt
