@@ -43,7 +43,7 @@ clean:
 	-rm -f *~ *.bak
 
 distclean: clean
-	-rm -rf html GSDView.pdf
+	-rm -rf html GSDView.pdf gsdview.1
 
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) html

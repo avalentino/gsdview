@@ -27,6 +27,7 @@ from glob import glob
 
 from gsdview import info
 from exectools import version as exectools_version
+from gsdtools import __version__ as gsdtools_version
 
 # Using ``setuptools`` enables lots of goodies, such as building eggs.
 from distutils import log
@@ -95,8 +96,8 @@ if has_setuptools:
             bdist_egg.run(self)
 
     # @NOTE: temporary disabled because could break debian packaging.
-    #        The man page and docs are included in the source package generated
-    #        via makefile.
+    #        The man page and docs are included in the source package
+    #        generated via makefile.
     cmdclass['bdist_egg'] = ExtendedBdistEgg
 
 
@@ -219,7 +220,7 @@ if os.name == 'posix':
         mandir = 'man'
     else:
         mandir = os.path.join('share', 'man')
-    datafiles.append((os.path.join(mandir, 'man1'), ['debian/gsdview.1']))
+    datafiles.append((os.path.join(mandir, 'man1'), ['doc/gsdview.1']))
     datafiles.append((os.path.join('share', 'applications'),
                         ['gsdview.desktop']))
     datafiles.append((os.path.join('share', 'pixmaps'),
@@ -289,7 +290,8 @@ setup(name              = PKGNAME,
                            'PyQt4 (>= 4.6)'],
       provides          = ['%s (%s)' % (PKGNAME,
                                         '.'.join(map(str,info.__version__))),
-                           'exectools (%s)' % exectools_version],
+                           'exectools (%s)' % exectools_version,
+                           'gsdtools (%s)' % gsdtools_version],
       cmdclass          = cmdclass,
       **kwargs
 )
