@@ -57,7 +57,7 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
         self._floatmode = False
         self.lowSlider.valueChanged.connect(self._onLowSliderChanged)
         self.highSlider.valueChanged.connect(self._onHighSliderChanged)
-        # @COMPATIBILITY: the followin code breaks PySide 1.0.1.
+        # @COMPATIBILITY: the following code breaks PySide 1.0.1.
         #                 It is OK in PyQt4 and PySide 1.0.4
         try:
             self.minSpinBox.valueChanged[float].connect(self._onMinimumChanged)
