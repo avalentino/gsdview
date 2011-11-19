@@ -36,7 +36,7 @@ __version__ = (0, 6, 5)
 __all__ = ['EX_OK', 'PROGRESS', 'TAGS', 'level2tag',
            'BaseOutputHandler', 'BaseToolController', 'ToolDescriptor']
 
-version = '.'.join(map(str, __version__))
+version = '.'.join(map(str, __version__)) + '+'
 
 if sys.platform[:3] == 'win':
     EX_OK = 0

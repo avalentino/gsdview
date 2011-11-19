@@ -41,7 +41,7 @@ __all__ = ['name', 'version', 'short_description', 'description',
            'website', 'website_label', 'all_versions', 'all_versions_str']
 
 name = 'GSDView'
-version = '.'.join(map(str, __version__))
+version = '.'.join(map(str, __version__)) + '+'
 
 short_description = 'Geo-Spatial Data Viewer Open Source Edition'
 description = '''GSDView (Geo-Spatial Data Viewer) is a lightweight

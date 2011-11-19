@@ -33,7 +33,7 @@ __all__ = ['name', 'version', 'short_description', 'description',
 
 
 name = 'worldmap'
-version = '.'.join(map(str, __version__))
+version = '.'.join(map(str, __version__)) + '+'
 
 short_description = 'World map panel plugin for GSDView'
 description = '''The World map panel plugin provides a dock widget

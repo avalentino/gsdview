@@ -33,7 +33,7 @@ __all__ = ['name', 'version', 'short_description', 'description',
 
 
 name = 'overview'
-version = '.'.join(map(str, __version__))
+version = '.'.join(map(str, __version__)) + '+'
 
 short_description = 'Band overview plugin for GSDView'
 description = '''The band overview plugin allows to display the overview of

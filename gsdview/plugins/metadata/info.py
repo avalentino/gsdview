@@ -33,7 +33,7 @@ __all__ = ['name', 'version', 'short_description', 'description',
 
 
 name = 'metadata'
-version = '.'.join(map(str, __version__))
+version = '.'.join(map(str, __version__)) + '+'
 
 short_description = 'Metadata viewer plugin for GSDView'
 description = '''The metadata viewer plugin provides a dockable list view

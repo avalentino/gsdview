@@ -33,7 +33,7 @@ __all__ = ['name', 'version', 'short_description', 'description',
 
 
 name = 'gsdtoolsui'
-version = '.'.join(map(str, __version__))
+version = '.'.join(map(str, __version__)) + '+'
 
 short_description = 'UI front-end for GSDTools'
 description = '''The GSDTools plugin provides a simple UI front-end to the

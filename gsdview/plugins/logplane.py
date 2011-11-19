@@ -35,7 +35,7 @@ __all__ = ['init', 'close', 'loadSettings', 'saveSettings',
 
 # Info
 name = 'logplane'
-version = '.'.join(map(str, __version__))
+version = '.'.join(map(str, __version__)) + '+'
 
 short_description = 'Log plane for GSDView'
 description = __doc__
