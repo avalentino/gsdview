@@ -1,10 +1,11 @@
 Source: gsdview
 Section: science
 Priority: optional
-Maintainer: Antonio Valentino <a_valentino@users.sf.net>
+Maintainer: Antonio Valentino <antonio.valentino@tiscali.it>
 Build-Depends: debhelper (>= 8.1), python, python-sphinx (>= 1.0),
-               python-qt4 (>= 4.6), python-gdal (>= 1.6.1), texlive-base-bin
+               python-qt4 (>= 4.6), python-gdal (>= 1.6.1)
 Standards-Version: 3.9.2
+X-Python-Version: >= 2.5
 Homepage: http://gsdview.sourceforge.net
 
 Package: gsdview

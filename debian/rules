@@ -9,11 +9,18 @@
 	dh $@ --with python2 --with sphinxdoc
 
 
+override_dh_auto_build:
+	# Regenerate sphinx doc
+	if [ ! -d doc/html_save ] ; then \
+		mv doc/html doc/html_save; \
+	fi
+	$(MAKE) -C doc html
+
+
 override_dh_auto_install:
 	python setup.py install --root=debian/gsdview --install-layout=deb \
 		--install-lib=/usr/share/gsdview \
-		--install-scripts=/usr/share/gsdview/bin \
-		--single-version-externally-managed
+		--install-scripts=/usr/share/gsdview/bin
 	mv debian/gsdview/usr/share/gsdview/bin/gsdview debian/gsdview/usr/share/gsdview/run.py
 	rmdir debian/gsdview/usr/share/gsdview/bin
 	rm -f debian/gsdview/usr/share/doc/gsdview/LICENSE.txt
@@ -28,8 +35,12 @@ override_dh_compress:
 
 
 override_dh_auto_clean:
+	if [ -d doc/html_save ] ; then \
+		rm -rf doc/html; \
+		mv doc/html_save doc/html; \
+	fi
 	make clean
 
 
-.PHONY: override_dh_auto_clean override_dh_auto_install \
+.PHONY: override_dh_auto_build override_dh_auto_clean override_dh_auto_install \
 		override_dh_installchangelogs override_dh_compress
