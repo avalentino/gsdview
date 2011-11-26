@@ -1,9 +1,9 @@
 Index: support/rthooks/pyi_rth_qt4plugins.py
 ===================================================================
---- support/rthooks/pyi_rth_qt4plugins.py	(revisione 1497)
-+++ support/rthooks/pyi_rth_qt4plugins.py	(copia locale)
-@@ -10,6 +10,17 @@
-     d = os.path.join(os.path.dirname(sys.argv[0]), d)
+--- support/rthooks/pyi_rth_qt4plugins.py	(revision 1804)
++++ support/rthooks/pyi_rth_qt4plugins.py	(working copy)
+@@ -9,6 +9,17 @@
+ d = os.path.join(sys._MEIPASS, d)
  
  
 +# Select the PyQt API 2
