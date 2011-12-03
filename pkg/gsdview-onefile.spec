@@ -30,7 +30,7 @@ if sys.platform == 'darwin':
     GDALINFO = os.path.join(GDALROOT, 'unix', 'bin', 'gdalinfo')
     GDALADDO = os.path.join(GDALROOT, 'unix', 'bin', 'gdaladdo')
     # Workaround fo pyinstaller bug #157 (http://www.pyinstaller.org/ticket/157)
-    EXTRA_QT_RESOURCES = Tree('/Library/Frameworks/QtGui.framework/Resources/qt_menu.nib', os.path.join('Resources', 'qt_menu.nib'))
+    #EXTRA_QT_RESOURCES = Tree('/Library/Frameworks/QtGui.framework/Resources/qt_menu.nib', os.path.join('Resources', 'qt_menu.nib'))
     #EXTRA_QT_RESOURCES = Tree(os.path.join(QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.LibrariesPath),
     #                          'QtGui.framework/Resources/qt_menu.nib'), os.path.join('Resources', 'qt_menu.nib'))
     ICONFILE = os.path.join(GSDVIEWROOT, 'pkg', 'GSDView.icns')
@@ -96,7 +96,7 @@ exe = EXE(pyz,
           Tree(os.path.join(GDAL_DATA), 'data'),
 
           # Workaround fo pyinstaller bug #157 (http://www.pyinstaller.org/ticket/157)
-          EXTRA_QT_RESOURCES,
+          #EXTRA_QT_RESOURCES,
 
           name=os.path.join(GSDVIEWROOT, 'dist', 'onefile', 'gsdview'),
           debug=False,
@@ -113,4 +113,5 @@ if sys.platform == 'darwin' and BUILD_BUNDLE:
     from gsdview import info
     app = BUNDLE(exe,
                  name=os.path.join(GSDVIEWROOT, 'dist', 'onefile', info.name + '.app'),
-                 version=info.version)
+                 version=info.version,
+                 icon='GSDView.icns')
