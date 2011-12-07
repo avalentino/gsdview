@@ -2,7 +2,7 @@
 
 # development mode:
 #   http://www.mail-archive.com/pyinstaller@googlegroups.com/msg01421.html
-# Linux: policy change with system libraries :
+# Linux: policy change with system libraries:
 #   http://groups.google.com/group/PyInstaller/browse_thread/thread/dbe36a6fd985631b?hl=en#
 
 try:
@@ -33,10 +33,6 @@ if sys.platform == 'darwin':
     GDAL_DATA = os.path.join(GDALROOT, 'Resources', 'gdal')
     GDALINFO = os.path.join(GDALROOT, 'unix', 'bin', 'gdalinfo')
     GDALADDO = os.path.join(GDALROOT, 'unix', 'bin', 'gdaladdo')
-    # Workaround fo pyinstaller bug #157 (http://www.pyinstaller.org/ticket/157)
-    #EXTRA_QT_RESOURCES = Tree('/Library/Frameworks/QtGui.framework/Resources/qt_menu.nib', os.path.join('Resources', 'qt_menu.nib'))
-    #EXTRA_QT_RESOURCES = Tree(os.path.join(QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.LibrariesPath),
-    #                          'QtGui.framework/Resources/qt_menu.nib'), os.path.join('Resources', 'qt_menu.nib'))
     ICONFILE = os.path.join(GSDVIEWROOT, 'pkg', 'GSDView.icns')
 elif sys.platform[:3] == 'win':
     GDALROOT = r'c:\gdal170'
@@ -119,9 +115,6 @@ coll = COLLECT(exe,
                 (os.path.basename(GDALADDO), GDALADDO, 'DATA'),
                ],
                Tree(os.path.join(GDAL_DATA), 'data'),
-
-               # Workaround fo pyinstaller bug #157 (http://www.pyinstaller.org/ticket/157)
-               #EXTRA_QT_RESOURCES,
 
                strip=None,
                upx=True,
