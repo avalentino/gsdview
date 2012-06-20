@@ -121,7 +121,7 @@ class AppZoomTool(ZoomTool):
         subwin = self.app.mdiarea.currentSubWindow()
         try:
             view = subwin.widget()
-        except AttributeError, e:
+        except AttributeError as e:
             logging.debug(str(e))
         else:
             if isinstance(view, QtGui.QGraphicsView):

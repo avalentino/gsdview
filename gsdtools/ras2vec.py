@@ -362,7 +362,7 @@ def compact_index(srclist, dst):
 
         try:
             export_raster(src, dst, boxlayer, False, mark_corners=False)
-        except ValueError, e:
+        except ValueError as e:
             if 'no geographic info' in str(e):
                 logging.error(str(e))
             else:
@@ -390,7 +390,7 @@ def raster_index(srclist, dst, gcplayer=False, mark_corners=False):
 
         try:
             export_raster(src, dst, None, gcplayer, mark_corners=mark_corners)
-        except ValueError, e:
+        except ValueError as e:
             if 'no geographic info' in e.message:
                 logging.error(str(e))
             else:

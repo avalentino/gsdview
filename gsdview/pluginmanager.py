@@ -95,7 +95,7 @@ class PluginManager(object):
 
         try:
             vp = VersionPredicate(depstring)
-        except ValueError, e:
+        except ValueError as e:
             # @TODO: remove dependency from self._app
             self._app.logger.error('invalid version preficate "%s": %s' % (
                                                                 depstring, e))
@@ -104,7 +104,7 @@ class PluginManager(object):
         if vp.name in modules:
             try:
                 return vp.satisfied_by(modules[vp.name].version)
-            except ValueError, e:
+            except ValueError as e:
                 logging.warning(str(e))  # , exc_info=True)
                 return False
         else:
@@ -133,7 +133,7 @@ class PluginManager(object):
             module.init(self._app)
             self.plugins[name] = module
             logger.info('"%s" plugin loaded.' % name)
-        except Exception, e:   # AttributeError:
+        except Exception as e:   # AttributeError:
             logger.warning('error loading "%s" plugin: %s' % (name, e))
 
     # @WARNING: (pychecker) Parameter (type_) not used
@@ -182,7 +182,7 @@ class PluginManager(object):
                         else:
                             logger.warning('unable to find "%s" plugin' % name)
                             continue
-                    except ImportError, e:
+                    except ImportError as e:
                         logger.warning('unable to import "%s" plugin: %s' %
                                                                     (name, e))
                         continue
@@ -465,7 +465,7 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
                     name = module.name
                     short_description = module.short_description
                     break
-                except AttributeError, e:
+                except AttributeError as e:
                     msg = str(e)
                     if (not "'name'" in msg
                                     and not  "'short_description'" in msg):

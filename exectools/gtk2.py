@@ -115,7 +115,7 @@ class Popen(gobject.GObject, subprocess2.Popen):
                         self.emit('stderr-ready')
             except ValueError:
                 return conn.close()
-            except (pywintypes.error, Exception), why:
+            except (pywintypes.error, Exception) as why:
                 if why[0] in (109, errno.ESHUTDOWN):
                     return conn.close()
                 raise

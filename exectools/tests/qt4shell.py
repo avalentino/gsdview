@@ -160,7 +160,7 @@ class Qt4Shell(QtGui.QMainWindow):
                 self.cmdbox.addItem(cmd.rstrip())
 
             self.logger.debug('history file "%s" loaded.' % self.historyfile)
-        except (OSError, IOError), e:
+        except (OSError, IOError) as e:
             self.logger.debug('unable to read the history file "%s": %s.' %
                                                         (self.historyfile, e))
         self.cmdbox.addItem('')
@@ -175,7 +175,7 @@ class Qt4Shell(QtGui.QMainWindow):
             f.write(history)
             f.close()
             self.logger.debug('history saved in %s' % self.historyfile)
-        except (OSError, IOError), e:
+        except (OSError, IOError) as e:
             self.logger.warning('unable to save the history file "%s": %s' %
                                                         (self.historyfile, e))
 
@@ -243,7 +243,7 @@ class Qt4Shell(QtGui.QMainWindow):
                 #~ raise RuntimeError('simulated runtime error')
             except (KeyboardInterrupt, SystemExit):
                 raise
-            except Exception, e:
+            except Exception as e:
                 self.logger.exception(e)
                 self.reset()
 

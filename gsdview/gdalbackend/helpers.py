@@ -169,7 +169,7 @@ class GdalHelper(object):
 
         try:
             startfailure = self.do_start(*args, **kwargs)
-        except Exception, e:
+        except Exception as e:
             #self.logger.error(str(e), exc_info=True)
             self.logger.debug(str(e), exc_info=True)
             startfailure = True

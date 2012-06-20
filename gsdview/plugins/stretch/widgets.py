@@ -316,7 +316,7 @@ class StretchDialog(QtGui.QDialog, StretchDialogBase):
             return
         try:
             self.stretchwidget.setState(d)
-        except KeyError, e:
+        except KeyError as e:
             logging.info('unable to set state: %s' % str(e))
 
     def values(self):

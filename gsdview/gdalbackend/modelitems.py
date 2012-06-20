@@ -293,7 +293,7 @@ class DatasetItem(MajorObjectItem):
     def _checkedopen(self, filename, mode=gdal.GA_ReadOnly):
         try:
             gdalobj = gdal.Open(filename, mode)
-        except RuntimeError, e:
+        except RuntimeError as e:
             # @TODO: fix
             # @NOTE: explicitly reset the GDAL error status to workaround
             #        bug #3077 (http://trac.osgeo.org/gdal/ticket/3077)
