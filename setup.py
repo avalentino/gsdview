@@ -29,18 +29,6 @@ from gsdview import info
 from exectools import version as exectools_version
 from gsdtools import __version__ as gsdtools_version
 
-# Using ``setuptools`` enables lots of goodies, such as building eggs.
-from distutils import log
-from distutils.command.build import build as Build
-try:
-    from setuptools import setup, find_packages
-    from setuptools.command.install_lib import install_lib
-    has_setuptools = True
-except ImportError:
-    from distutils.core import setup
-    from distutils.command.install_lib import install_lib
-    has_setuptools = False
-
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__ = '$Date$'
@@ -50,6 +38,41 @@ PKGNAME = info.name.lower()
 
 cmdclass = {}
 kwargs = {}
+
+
+# Using ``setuptools`` enables lots of goodies, such as building eggs.
+from distutils import log
+from distutils.command.build import build as Build
+try:
+    has_setuptools = True
+
+    from setuptools import setup, find_packages
+    from setuptools.command.install_lib import install_lib
+
+    if sys.version_info >= (3,):
+        kwargs['use_2to3'] = True
+        kwargs['use_2to3_fixers'] = []
+        kwargs['use_2to3_exclude_fixers'] = ['lib2to3.fixes.fix_standarderror']
+
+except ImportError:
+    has_setuptools = False
+
+    from distutils.core import setup
+    from distutils.command.install_lib import install_lib
+
+    try:
+        from distutils.command.build_py import build_py_2to3
+        from distutils.command.build_scripts import build_scripts_2to3
+    except ImportError:
+        pass
+    else:
+        from lib2to3.refactor import get_fixers_from_package
+
+        fixers = get_fixers_from_package('lib2to3.fixes')
+        fixers.remove('lib2to3.fixes.fix_standarderror')
+
+        cmdclass['build_py'] = build_py_2to3
+        cmdclass['build_scripts'] = build_scripts_2to3
 
 
 try:
