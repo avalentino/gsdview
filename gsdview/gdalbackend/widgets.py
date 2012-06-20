@@ -24,7 +24,7 @@
 
 import os
 import logging
-import ConfigParser
+from ConfigParser import ConfigParser
 
 import numpy as np
 from osgeo import gdal
@@ -974,7 +974,7 @@ class MajorObjectInfoDialog(QtGui.QDialog):
     def _metadataToCfg(self, cfg=None):
         if cfg is None:
             # @TODO: use ordered dict if available
-            cfg = ConfigParser.ConfigParser()
+            cfg = ConfigParser()
 
         combobox = self.metadataWidget.domainComboBox
         domains = [combobox.itemText(i) for i in range(combobox.count())]

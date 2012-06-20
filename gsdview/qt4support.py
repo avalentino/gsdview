@@ -25,7 +25,6 @@
 import os
 import csv
 import logging
-#from io import StringIO    # @TODO: check
 from cStringIO import StringIO
 from ConfigParser import ConfigParser
 
