@@ -235,7 +235,7 @@ class BaseOutputHandler(object):
 
         '''
 
-        for tag_name, pattern in self._text_patterns.items():
+        for tag_name, pattern in self._text_patterns.iteritems():
             match = pattern.search(data)
             if match:
                 self.logger.info(data, extra={'tag': tag_name})
@@ -391,7 +391,7 @@ class ToolDescriptor(object):
             # handle cases like: executable = ['python', '-u', 'script.py']
             parts = list(executable)
 
-        parts.extend('%s=%s' % (key, value) for key, value in kwargs.items())
+        parts.extend('%s=%s' % (key, value) for key, value in kwargs.iteritems())
         parts.extend(str(arg) for arg in args)
 
         return parts

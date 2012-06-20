@@ -187,7 +187,7 @@ class StatsDescriptor(BaseGdalToolDescriptor):
         if self.hist.minmaxonly is not None and '--minmax-only' not in args:
             args = ['--minmax-only'] + args
         if self.hist.iscustom() and '--histreq' not in args:
-            values = [str(item) for item in self.hist.values()]
+            values = [str(item) for item in self.hist.itervalues()]
             args = ['--histreq'] + values + args
         if (self.hist.include_out_of_range is not None and
                 not set(('-i', '--include_out_of_range')).intersection(args)):

@@ -204,7 +204,7 @@ class BaseLayerManager(QtCore.QObject):
         selection = selectionmodel.selection()
         selectionmap = self._selectionmap(selection)
         newselection = QtGui.QItemSelection()
-        for parent, ranges in selectionmap.items():
+        for parent, ranges in selectionmap.iteritems():
             dst = 0
             for selectionrange in ranges:
                 newrange = self._moveSelectionRange(selectionrange, dst)
@@ -217,7 +217,7 @@ class BaseLayerManager(QtCore.QObject):
         selection = selectionmodel.selection()
         selectionmap = self._selectionmap(selection)
         newselection = QtGui.QItemSelection()
-        for parent, ranges in selectionmap.items():
+        for parent, ranges in selectionmap.iteritems():
             for selectionrange in ranges:
                 dst = selectionrange.top() - 1
                 newrange = self._moveSelectionRange(selectionrange, dst)
@@ -229,7 +229,7 @@ class BaseLayerManager(QtCore.QObject):
         selection = selectionmodel.selection()
         selectionmap = self._selectionmap(selection)
         newselection = QtGui.QItemSelection()
-        for parent, ranges in selectionmap.items():
+        for parent, ranges in selectionmap.iteritems():
             ranges.reverse()
             for selectionrange in ranges:
                 dst = selectionrange.top() + 1
@@ -243,7 +243,7 @@ class BaseLayerManager(QtCore.QObject):
         selectionmap = self._selectionmap(selection)
         newselection = QtGui.QItemSelection()
         nrows = selectionmodel.model().rowCount()
-        for parent, ranges in selectionmap.items():
+        for parent, ranges in selectionmap.iteritems():
             ranges.reverse()
             dst = nrows
             for selectionrange in ranges:
@@ -255,7 +255,7 @@ class BaseLayerManager(QtCore.QObject):
     def removeSelectedLayers(self, selectionmodel):
         selection = selectionmodel.selection()
         selectionmap = self._selectionmap(selection)
-        for parentindex, ranges in selectionmap.items():
+        for parentindex, ranges in selectionmap.iteritems():
             ranges.reverse()
             parentitem = self._parentitem(ranges[0])
             for selectionrange in ranges:

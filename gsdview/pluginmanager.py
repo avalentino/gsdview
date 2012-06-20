@@ -214,7 +214,7 @@ class PluginManager(object):
                 delayed = delayed_again
                 delayed_again = {}
 
-                for name, module in delayed.items():
+                for name, module in delayed.iteritems():
                     if not self._check_deps(module):
                         delayed_again[name] = module
                         logging.debug('loading of "%s" plugin delayed '
@@ -239,6 +239,8 @@ class PluginManager(object):
             module.close(self._app)
 
     def reset(self):
+        # the dictionary is modified during the iteration so the iteration
+        # have to be performed on a concrete list
         for name in self.plugins.keys():
             plugin = self.plugins.pop(name)
             # @TODO: find a more general form to pass arguments to plugins

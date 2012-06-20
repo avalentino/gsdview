@@ -109,7 +109,8 @@ class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
                 metadata.pop(gdal.DMD_HELPTOPIC, '')
                 metadata.pop(gdal.DMD_LONGNAME, '')
 
-                metadatalist = ['%s=%s' % (k, v) for k, v in metadata.items()]
+                metadatalist = ['%s=%s' % (k, v) 
+                                            for k, v in metadata.iteritems()]
                 tableitem = QtGui.QTableWidgetItem(', '.join(metadatalist))
                 tableitem.setToolTip('\n'.join(metadatalist))
                 tablewidget.setItem(row, 8, tableitem)
