@@ -325,7 +325,7 @@ class AddoHelper(GdalHelper):
                 self.tool.set_resampling_method('average')
 
             args = [os.path.basename(vrtfilename)]
-            args.extend(map(str, levels))
+            args.extend(str(level) for level in levels)
             self.tool.cwd = os.path.dirname(vrtfilename)
             self.controller.run_tool(self.tool, *args)
         else:

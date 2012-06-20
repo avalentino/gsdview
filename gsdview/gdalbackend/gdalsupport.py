@@ -659,7 +659,8 @@ class CoordinateMapper(object):
         self._inverse_transform = (M, C)
 
     def _transform(self, x, y, M, C):
-        x, y = map(np.ravel, (x, y))
+        x = np.ravel(x)
+        y = np.ravel(y)
 
         Pin = np.array((x, y))
         return np.dot(M, Pin) + C

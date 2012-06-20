@@ -109,7 +109,7 @@ def test_ovrwidget():
 
     def callback():
         args = w.optionlist()
-        levels = map(str, w.levels())
+        levels = [str(level) for level in w.levels()]
 
         parts = ['gdaladdo']
         parts.extend(args)

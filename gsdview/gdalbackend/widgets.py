@@ -782,7 +782,7 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
         if self.resamplingMethodComboBox.currentText() != 'DEFAULT':
             args.extend(('-r', self.resamplingMethodComboBox.currentText()))
 
-        args = map(str, args)
+        args = [str(arg) for arf in args]
 
         return args
 
