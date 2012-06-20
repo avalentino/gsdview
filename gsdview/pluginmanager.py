@@ -309,7 +309,7 @@ import functools
 from qt import QtCore, QtGui
 
 # @TODO: check dependency - getuiform, geticon, setViewContextActions
-import qt4support
+from . import qt4support
 
 
 PluginManagerGuiBase = qt4support.getuiform('pluginmanager', __name__)

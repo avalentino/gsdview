@@ -23,7 +23,7 @@
 import sys
 
 from exectools import BaseToolController, EX_OK
-import subprocess2
+from . import subprocess2
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
