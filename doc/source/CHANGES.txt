@@ -11,10 +11,10 @@
 ChangeLog
 =========
 
-Changes from 0.6.5 (development version)
+Changes from 0.6.6 (development version)
 ----------------------------------------
 
-@TBW
+* GSDView now requires Python >= 2.6
 
 
 Changes from 0.6.4 to 0.6.5 (13/11/2011)

@@ -52,7 +52,7 @@ Requirements
 
 In order to run GSDView you should have the following software installed:
 
-* Python_ 2.5 or higher
+* Python_ 2.6 or higher
 * SIP_ 4.7.5 or higher
 * PyQt4_ 4.6 or higher
 * numpy_ 1.3.0  or higher
