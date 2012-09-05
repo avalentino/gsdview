@@ -60,7 +60,8 @@ if hasattr(os, 'EX_USAGE'):
 else:
     EX_USAGE = 64
 
-DEFAULT_OGRDRIVER = 'KML'
+#DEFAULT_OGRDRIVER = 'KML'   # compatibility with old GDAL versions
+DEFAULT_OGRDRIVER = 'LIBKML'
 
 
 def makesrs(srs):
@@ -89,11 +90,11 @@ def create_box_layer(ds, name='', srs=None, gtype=ogr.wkbUnknown, opt=None):
     if layer is None:
         raise RuntimeError('layer creation failed.')
 
-    #~ field = ogr.FieldDefn('Name', ogr.OFTString)
-    #~ layer.CreateField(field)
+    field = ogr.FieldDefn('Name', ogr.OFTString)
+    layer.CreateField(field)
 
-    #~ field = ogr.FieldDefn('Description', ogr.OFTString)
-    #~ layer.CreateField(field)
+    field = ogr.FieldDefn('Description', ogr.OFTString)
+    layer.CreateField(field)
 
     return layer
 
@@ -109,11 +110,11 @@ def create_GCP_layer(ds, name='', srs=None, gtype=ogr.wkbPoint25D, opt=None):
     if layer is None:
         raise RuntimeError('layer creation failed.')
 
-    #~ field = ogr.FieldDefn('Name', ogr.OFTString)
-    #~ layer.CreateField(field)
+    field = ogr.FieldDefn('Name', ogr.OFTString)
+    layer.CreateField(field)
 
-    #~ field = ogr.FieldDefn('Description', ogr.OFTString)
-    #~ layer.CreateField(field)
+    field = ogr.FieldDefn('Description', ogr.OFTString)
+    layer.CreateField(field)
 
     #field = ogr.FieldDefn('X', ogr.OFTReal)
     #layer.CreateField(field)
