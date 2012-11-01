@@ -670,7 +670,6 @@ def cfgToTextDocument(cfg, doc=None):
     headerformat.setBackground(brush)
 
     for section in cfg.sections():
-        print 'section: "%s"' % section
         items = sorted(cfg.items(section))
         if not items:
             continue
