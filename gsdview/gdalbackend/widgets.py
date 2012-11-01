@@ -109,7 +109,7 @@ class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
                 metadata.pop(gdal.DMD_HELPTOPIC, '')
                 metadata.pop(gdal.DMD_LONGNAME, '')
 
-                metadatalist = ['%s=%s' % (k, v) 
+                metadatalist = ['%s=%s' % (k, v)
                                             for k, v in metadata.iteritems()]
                 tableitem = QtGui.QTableWidgetItem(', '.join(metadatalist))
                 tableitem.setToolTip('\n'.join(metadatalist))
@@ -167,7 +167,7 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
 
         # standard options
         cachesize = gdal.GetCacheMax()
-        self.cacheSpinBox.setValue(cachesize / 1024 ** 2)
+        self.cacheSpinBox.setValue(cachesize // 1024 ** 2)
         dialog = get_filedialog(self)
         for name in ('gdalDataDir', 'gdalDriverPath', 'ogrDriverPath'):
             widget = getattr(self, name + 'EntryWidget')
@@ -220,11 +220,11 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
             cachesize = settings.value('GDAL_CACHEMAX')
             if cachesize is not None:
                 self.cacheCheckBox.setChecked(True)
-                self.cacheSpinBox.setValue(int(cachesize) / 1024 ** 2)
+                self.cacheSpinBox.setValue(int(cachesize) // 1024 ** 2)
             else:
                 # show the current value and disable the control
                 cachesize = gdal.GetCacheMax()
-                self.cacheSpinBox.setValue(cachesize / 1024 ** 2)
+                self.cacheSpinBox.setValue(cachesize // 1024 ** 2)
                 self.cacheCheckBox.setChecked(False)
 
             # GDAL data dir
