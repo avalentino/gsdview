@@ -24,7 +24,7 @@
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__ = '$Date: 2010/02/14 12:21:23 $'
 __revision__ = '$Revision: 003973572867 $'
-__version__ = (0, 6, 5)
+__version__ = (0, 7, 0)
 __requires__ = []
 
 __all__ = ['name', 'version', 'short_description', 'description',
@@ -33,7 +33,7 @@ __all__ = ['name', 'version', 'short_description', 'description',
 
 
 name = 'stretch'
-version = '.'.join(map(str, __version__)) + '+'
+version = '.'.join(map(str, __version__)) + '.dev'
 
 short_description = 'Image stretch control for GSDView.'
 description = '''The stretch plugin provides a control dialog to modify

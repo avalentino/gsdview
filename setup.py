@@ -26,7 +26,7 @@ import traceback
 from glob import glob
 
 from gsdview import info
-from exectools import version as exectools_version
+from exectools import __version__ as exectools_version
 from gsdtools import __version__ as gsdtools_version
 
 
@@ -49,7 +49,7 @@ try:
     from setuptools import setup, find_packages
     from setuptools.command.install_lib import install_lib
 
-    if sys.version_info >= (3,):
+    if sys.version_info[0] >= 3:
         kwargs['use_2to3'] = True
         kwargs['use_2to3_fixers'] = []
         kwargs['use_2to3_exclude_fixers'] = ['lib2to3.fixes.fix_standarderror']
@@ -311,10 +311,9 @@ setup(name              = PKGNAME,
                            'numpy (>= 1.3.0)',
                            'sip (>= 4.7.5)',
                            'PyQt4 (>= 4.6)'],
-      provides          = ['%s (%s)' % (PKGNAME,
-                                        '.'.join(map(str, info.__version__))),
-                           'exectools (%s)' % exectools_version,
-                           'gsdtools (%s)' % gsdtools_version],
+      provides          = ['%s (%d.%d.%d)' % ((PKGNAME,) + info.__version__),
+                           'exectools (%d.%d.%d)' % exectools_version,
+                           'gsdtools (%d.%d.%d)' % gsdtools_version],
       cmdclass          = cmdclass,
       **kwargs
 )

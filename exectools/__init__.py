@@ -31,12 +31,12 @@ from cStringIO import StringIO
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
 __revision__ = '$Revision$'
 __date__ = '$Date$'
-__version__ = (0, 6, 5)
+__version__ = (0, 7, 0)
 
 __all__ = ['EX_OK', 'PROGRESS', 'TAGS', 'level2tag',
            'BaseOutputHandler', 'BaseToolController', 'ToolDescriptor']
 
-version = '.'.join(map(str, __version__)) + '+'
+version = '.'.join(map(str, __version__)) + '.dev'
 
 if sys.platform[:3] == 'win':
     EX_OK = 0
