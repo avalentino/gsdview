@@ -539,7 +539,7 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
             subject = '[%s] Bug report - %s' % (appname, error)
         else:
             subject = 'Bug report - %s' % error
-        body = '[Please instest your comments and additinal info here.]'
+        body = '[Please insert your comments and additional info here.]'
         body += '\n\n' + '-' * 80 + '\n'
         body += ''.join(utils.foramt_bugreport(exctype, excvalue,
                                                tracebackobj))
