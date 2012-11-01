@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2006-2011 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2006-2012 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of exectools.
 

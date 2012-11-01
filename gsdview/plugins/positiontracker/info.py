@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2011 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2012 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -43,7 +43,7 @@ coordinates in the status bar.
 
 author = 'Antonio Valentino'
 author_email = 'a_valentino@users.sf.net'
-copyright = 'Copyright (C) 2008-2011 %s <%s>' % (author, author_email)
+copyright = 'Copyright (C) 2008-2012 %s <%s>' % (author, author_email)
 license_type = 'GNU GPL'
 website = 'http://gsdview.sourceforge.net'
 website_label = website
