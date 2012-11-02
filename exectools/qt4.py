@@ -482,15 +482,19 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         if not self._tool:
             return
 
+        out_encoding = self._tool.output_encoding
+
         try:
             # retrieve residual data
             # @TODO: check if it is actually needed
             if self._tool.stdout_handler:
                 byteArray = self.subprocess.readAllStandardOutput()
-                self._tool.stdout_handler.feed(byteArray.data())
+                data = byteArray.data().decode(out_encoding)
+                self._tool.stdout_handler.feed(data)
             if self._tool.stderr_handler:
                 byteArray = self.subprocess.readAllStandardError()
-                self._tool.stderr_handler.feed(byteArray.data())
+                data = byteArray.data().decode(out_encoding)
+                self._tool.stderr_handler.feed(data)
 
             # close the pipe and wait for the subprocess termination
             self.subprocess.close()
@@ -548,7 +552,8 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
 
         byteArray = self.subprocess.readAllStandardOutput()
         if not byteArray.isEmpty():
-            self._tool.stdout_handler.feed(byteArray.data())
+            data = byteArray.data().decode(self._tool.output_encoding)
+            self._tool.stdout_handler.feed(data)
 
     @QtCore.Slot()
     def handle_stderr(self):
@@ -560,7 +565,8 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
 
         byteArray = self.subprocess.readAllStandardError()
         if not byteArray.isEmpty():
-            self._tool.stderr_handler.feed(byteArray.data())
+            data = byteArray.data().decode(self._tool.output_encoding)
+            self._tool.stderr_handler.feed(data)
 
     @QtCore.Slot(QtCore.QProcess.ProcessError)
     def handle_error(self, error):
@@ -581,12 +587,19 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
 
         msg = ''
         level = logging.DEBUG
+        if self.subprocess.state() == self.subprocess.NotRunning:
+            logging.debug('NotRunning')
+            exit_code = self.subprocess.exitCode()
+        else:
+            exit_code = 0
+
         if error == QtCore.QProcess.FailedToStart:
             msg = ('The process failed to start. Either the invoked program '
                    'is missing, or you may have insufficient permissions to '
                    'invoke the program.')
             level = logging.ERROR
-            self._reset()
+            # @TODO: check
+            #self._reset()
         elif error == QtCore.QProcess.Crashed:
             if not self._userstop and self.subprocess.exitCode() == EX_OK:
                 msg = ('The process crashed some time after starting '
@@ -614,8 +627,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         if msg:
             self.logger.log(level, msg)
 
-        # @TODO: check
-        #self.finished.emit(self.exitCode())
+        self.finished.emit(exit_code)
 
     #QtCore.Slot() # @TODO: check how to handle varargs
     def run_tool(self, tool, *args, **kwargs):

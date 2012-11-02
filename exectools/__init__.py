@@ -25,7 +25,7 @@ import re
 import os
 import sys
 import logging
-from cStringIO import StringIO
+from io import StringIO
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
@@ -268,7 +268,8 @@ class ToolDescriptor(object):
     '''
 
     def __init__(self, executable, args=None, cwd=None, env=None,
-                 stdout_handler=None, stderr_handler=None):
+                 stdout_handler=None, stderr_handler=None,
+                 output_encoding=None):
         '''
         :param executable:
             full path of the tool executable or just the tool program
@@ -288,6 +289,8 @@ class ToolDescriptor(object):
             *OutputHandler* for the stdout of the tool
         :param stderr_handler:
             *OutputHandler* for the stderr of the tool
+        :param output_encoding:
+            output encoding, it is used to decode the subprocess ouput
 
         .. seealso:: :class:`BaseOutputHandler`
 
@@ -323,6 +326,14 @@ class ToolDescriptor(object):
 
         #: the *OutputHandler* for the stderr of the tool
         self.stderr_handler = stderr_handler
+
+        if output_encoding is None:
+            output_encoding = sys.getdefaultencoding()
+            if output_encoding == 'ascii':
+                output_encoding = 'utf-8'
+
+        #: output encoding, it is used to decode the subprocess ouput
+        self.output_encoding = output_encoding
 
     def _getenv(self):
         if self.envmerge:
