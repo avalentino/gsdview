@@ -79,7 +79,7 @@ class Qt4Shell(QtGui.QMainWindow):
         self.cmdbutton.clicked.connect(self.execute)
 
         lineedit = self.cmdbox.lineEdit()
-        lineedit.returnPressed.connect(self.cmdbutton.clicked[''])
+        lineedit.returnPressed.connect(self.cmdbutton.click)
 
         hLayout = QtGui.QHBoxLayout()
         hLayout.addWidget(QtGui.QLabel('cmd > '))
