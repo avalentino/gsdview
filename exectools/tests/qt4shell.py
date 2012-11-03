@@ -67,6 +67,10 @@ class Qt4Shell(QtGui.QMainWindow):
     def __init__(self, debug=False):
         QtGui.QMainWindow.__init__(self)
 
+        # Icon
+        self.setWindowIcon(
+            self.style().standardIcon(QtGui.QStyle.SP_ComputerIcon))
+
         ### Command box ###
         self.cmdbox = QtGui.QComboBox()
         self.cmdbox.setEditable(True)

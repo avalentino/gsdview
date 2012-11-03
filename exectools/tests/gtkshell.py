@@ -95,6 +95,9 @@ class GtkShell(object):
 
         self.mainwin = gtk.Window()
         self.mainwin.set_title('GTK Shell')
+        self.mainwin.set_icon(
+            self.mainwin.render_icon(gtk.STOCK_EXECUTE,
+                                     gtk.ICON_SIZE_LARGE_TOOLBAR))
         self.mainwin.add(vbox)
         self.mainwin.set_default_size(650, 500)
         self.mainwin.add_accel_group(accelgroup)
