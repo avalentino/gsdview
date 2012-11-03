@@ -269,16 +269,17 @@ if has_setuptools:
         include_package_data=True,
     ))
 else:
-    packages = ['exectools',
-                'gsdtools',
-                'gsdview',
-                'gsdview.gdalbackend',
-                'gsdview.plugins',
-                'gsdview.plugins.overview',
-                'gsdview.plugins.metadata',
-                'gsdview.plugins.positiontracker',
-                'gsdview.plugins.worldmap',
-                'gsdview.plugins.zoom',
+    packages = [
+        'exectools',
+        'gsdtools',
+        'gsdview',
+        'gsdview.gdalbackend',
+        'gsdview.plugins',
+        'gsdview.plugins.overview',
+        'gsdview.plugins.metadata',
+        'gsdview.plugins.positiontracker',
+        'gsdview.plugins.worldmap',
+        'gsdview.plugins.zoom',
     ]
 
     if os.name == 'nt':
