@@ -403,7 +403,6 @@ class Qt4DialogLoggingHandler(logging.Handler):
                 msg.append('<p>%s</p>' % self.format(record).capitalize())
 
             msg = '\n'.join(msg)
-            msg = msg.encode('UTF-8', 'replace')  # @TODO: check
 
             self.dialog.setText(msg)
             self.dialog.exec_()
