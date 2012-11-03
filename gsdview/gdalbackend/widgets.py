@@ -1002,7 +1002,7 @@ class MajorObjectInfoDialog(QtGui.QDialog):
             return
 
         filters = [
-            'INI file firmat (*.ini)'
+            'INI file firmat (*.ini)',
             'Text file (*.txt)',
             'HTML file (*.html)',
             'All files (*)',
