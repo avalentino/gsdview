@@ -232,7 +232,7 @@ def scriptcmd(scriptname):
             #cmd = [sys.executable, '-u', scriptname] # no buffering
             cmd = [sys.executable, scriptname]
     else:
-        with file(scriptname, 'rb') as fd:
+        with open(scriptname, 'rb') as fd:
             shebang = fd.readline().rstrip()
             if shebang.startswith('#!'):
                 cmd = shebang[2:].split() + scriptname

@@ -567,7 +567,7 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
         report = ''.join(lines)
         filename = QtGui.QFileDialog.getSaveFileName(self)
         if filename:
-            fd = file(filename, 'w')
+            fd = open(filename, 'w')
             try:
                 fd.write(report)
             except Exception as e:
