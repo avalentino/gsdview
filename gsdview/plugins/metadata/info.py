@@ -24,7 +24,7 @@
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__ = '$Date$'
 __revision__ = '$Revision$'
-__version__ = (0, 6, 5)
+__version__ = (0, 7, 0)
 __requires__ = ['gdalbackend']
 
 __all__ = ['name', 'version', 'short_description', 'description',
@@ -33,7 +33,7 @@ __all__ = ['name', 'version', 'short_description', 'description',
 
 
 name = 'metadata'
-version = '.'.join(map(str, __version__)) + '+'
+version = '.'.join(map(str, __version__)) + '.dev'
 
 short_description = 'Metadata viewer plugin for GSDView'
 description = '''The metadata viewer plugin provides a dockable list view

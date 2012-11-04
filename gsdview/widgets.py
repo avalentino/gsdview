@@ -570,7 +570,7 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
             fd = file(filename, 'w')
             try:
                 fd.write(report)
-            except Exception, e:
+            except Exception as e:
                 msg = self.tr('Unable to save the bug-report:\n%s' % str(e))
                 QtGui.QMessageBox.warning(self, self.tr('WARNING'), msg)
             finally:

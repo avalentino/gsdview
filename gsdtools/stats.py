@@ -112,7 +112,7 @@ def GetStatisticsFromMetadata(band):
     if None in stats:
         stats = (None, None, None, None)
     else:
-        stats = map(float, stats)
+        stats = [float(item) for item in stats]
 
     if Statistics:
         stats = Statistics(*stats)

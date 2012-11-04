@@ -59,8 +59,8 @@ source_suffix = '.txt'
 master_doc = 'index'
 
 # General information about the project.
-project = u'GSDView'
-copyright = u'2008-2012, Antonio Valentino'
+project = 'GSDView'
+copyright = '2008-2012, Antonio Valentino'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -225,8 +225,8 @@ latex_font_size = '12pt'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'GSDView.tex', u'GSDView Documentation',
-   u'Antonio Valentino', 'manual'),
+  ('index', 'GSDView.tex', 'GSDView Documentation',
+   'Antonio Valentino', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -258,8 +258,8 @@ latex_logo = 'images/logo_large.pdf'
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('manpage', 'gsdview', u'Geo-spatial data viewer',
-     [u'Antonio Valentino'], 1)
+    ('manpage', 'gsdview', 'Geo-spatial data viewer',
+     ['Antonio Valentino'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -272,7 +272,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'GSDView', u'GSDView Documentation', u'Antonio Valentino',
+  ('index', 'GSDView', 'GSDView Documentation', 'Antonio Valentino',
    'GSDView', 'One line description of project.', 'Miscellaneous'),
 ]
 
@@ -289,10 +289,10 @@ texinfo_documents = [
 # -- Options for Epub output ---------------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = u'GSDView Open Edition'
-epub_author = u'Antonio Valentino'
-epub_publisher = u'Antonio Valentino'
-epub_copyright = u'2008-2012, Antonio Valentino'
+epub_title = 'GSDView Open Edition'
+epub_author = 'Antonio Valentino'
+epub_publisher = 'Antonio Valentino'
+epub_copyright = '2008-2012, Antonio Valentino'
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.

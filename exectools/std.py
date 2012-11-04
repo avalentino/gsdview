@@ -23,7 +23,7 @@
 import sys
 
 from exectools import BaseToolController, EX_OK
-import subprocess2
+from . import subprocess2
 
 
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
@@ -127,17 +127,20 @@ class StdToolController(BaseToolController):
                     if self._tool.stdout_handler:
                         data = self.subprocess.recv()
                         while data:
+                            data = data.decode(self._tool.output_encoding)
                             self._tool.stdout_handler.feed(data)
                             data = self.subprocess.recv()
                     if self._tool.stderr_handler:
                         data = self.subprocess.recv_err()
                         while data:
+                            data = data.decode(self._tool.output_encoding)
                             self._tool.stderr_handler.feed(data)
                             data = self.subprocess.recv_err()
                 else:
                     try:
                         if self._tool.stdout_handler:
                             data = self.subprocess.stdout.read()
+                            data = data.decode(self._tool.output_encoding)
                             self._tool.stdout_handler.feed(data)
                     except ValueError:
                         # I/O operation on closed file.
@@ -146,6 +149,7 @@ class StdToolController(BaseToolController):
                     try:
                         if self._tool.stderr_handler:
                             data = self.subprocess.stderr.read()
+                            data = data.decode(self._tool.output_encoding)
                             self._tool.stderr_handler.feed(data)
                     except ValueError:
                         # I/O operation on closed file.
@@ -226,6 +230,7 @@ class StdToolController(BaseToolController):
         else:
             data = self.subprocess.recv()
             if data:
+                data = data.decode(self._tool.output_encoding)
                 self._tool.stdout_handler.feed(data)
             return True
 
@@ -246,6 +251,7 @@ class StdToolController(BaseToolController):
         else:
             data = self.subprocess.recv_err()
             if data:
+                data = data.decode(self._tool.output_encoding)
                 self._tool.stderr_handler.feed(data)
             return True
 

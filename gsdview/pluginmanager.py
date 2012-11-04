@@ -95,7 +95,7 @@ class PluginManager(object):
 
         try:
             vp = VersionPredicate(depstring)
-        except ValueError, e:
+        except ValueError as e:
             # @TODO: remove dependency from self._app
             self._app.logger.error('invalid version preficate "%s": %s' % (
                                                                 depstring, e))
@@ -104,7 +104,7 @@ class PluginManager(object):
         if vp.name in modules:
             try:
                 return vp.satisfied_by(modules[vp.name].version)
-            except ValueError, e:
+            except ValueError as e:
                 logging.warning(str(e))  # , exc_info=True)
                 return False
         else:
@@ -133,7 +133,7 @@ class PluginManager(object):
             module.init(self._app)
             self.plugins[name] = module
             logger.info('"%s" plugin loaded.' % name)
-        except Exception, e:   # AttributeError:
+        except Exception as e:   # AttributeError:
             logger.warning('error loading "%s" plugin: %s' % (name, e))
 
     # @WARNING: (pychecker) Parameter (type_) not used
@@ -182,7 +182,7 @@ class PluginManager(object):
                         else:
                             logger.warning('unable to find "%s" plugin' % name)
                             continue
-                    except ImportError, e:
+                    except ImportError as e:
                         logger.warning('unable to import "%s" plugin: %s' %
                                                                     (name, e))
                         continue
@@ -214,7 +214,7 @@ class PluginManager(object):
                 delayed = delayed_again
                 delayed_again = {}
 
-                for name, module in delayed.items():
+                for name, module in delayed.iteritems():
                     if not self._check_deps(module):
                         delayed_again[name] = module
                         logging.debug('loading of "%s" plugin delayed '
@@ -239,6 +239,8 @@ class PluginManager(object):
             module.close(self._app)
 
     def reset(self):
+        # the dictionary is modified during the iteration so the iteration
+        # have to be performed on a concrete list
         for name in self.plugins.keys():
             plugin = self.plugins.pop(name)
             # @TODO: find a more general form to pass arguments to plugins
@@ -307,7 +309,7 @@ import functools
 from qt import QtCore, QtGui
 
 # @TODO: check dependency - getuiform, geticon, setViewContextActions
-import qt4support
+from . import qt4support
 
 
 PluginManagerGuiBase = qt4support.getuiform('pluginmanager', __name__)
@@ -463,7 +465,7 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
                     name = module.name
                     short_description = module.short_description
                     break
-                except AttributeError, e:
+                except AttributeError as e:
                     msg = str(e)
                     if (not "'name'" in msg
                                     and not  "'short_description'" in msg):

@@ -24,7 +24,7 @@
 
 import os
 import logging
-import ConfigParser
+from ConfigParser import ConfigParser
 
 import numpy as np
 from osgeo import gdal
@@ -109,7 +109,8 @@ class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
                 metadata.pop(gdal.DMD_HELPTOPIC, '')
                 metadata.pop(gdal.DMD_LONGNAME, '')
 
-                metadatalist = ['%s=%s' % (k, v) for k, v in metadata.items()]
+                metadatalist = ['%s=%s' % (k, v)
+                                            for k, v in metadata.iteritems()]
                 tableitem = QtGui.QTableWidgetItem(', '.join(metadatalist))
                 tableitem.setToolTip('\n'.join(metadatalist))
                 tablewidget.setItem(row, 8, tableitem)
@@ -166,7 +167,7 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
 
         # standard options
         cachesize = gdal.GetCacheMax()
-        self.cacheSpinBox.setValue(cachesize / 1024 ** 2)
+        self.cacheSpinBox.setValue(cachesize // 1024 ** 2)
         dialog = get_filedialog(self)
         for name in ('gdalDataDir', 'gdalDriverPath', 'ogrDriverPath'):
             widget = getattr(self, name + 'EntryWidget')
@@ -219,11 +220,11 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
             cachesize = settings.value('GDAL_CACHEMAX')
             if cachesize is not None:
                 self.cacheCheckBox.setChecked(True)
-                self.cacheSpinBox.setValue(int(cachesize) / 1024 ** 2)
+                self.cacheSpinBox.setValue(int(cachesize) // 1024 ** 2)
             else:
                 # show the current value and disable the control
                 cachesize = gdal.GetCacheMax()
-                self.cacheSpinBox.setValue(cachesize / 1024 ** 2)
+                self.cacheSpinBox.setValue(cachesize // 1024 ** 2)
                 self.cacheCheckBox.setChecked(False)
 
             # GDAL data dir
@@ -781,7 +782,7 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
         if self.resamplingMethodComboBox.currentText() != 'DEFAULT':
             args.extend(('-r', self.resamplingMethodComboBox.currentText()))
 
-        args = map(str, args)
+        args = [str(arg) for arf in args]
 
         return args
 
@@ -973,7 +974,7 @@ class MajorObjectInfoDialog(QtGui.QDialog):
     def _metadataToCfg(self, cfg=None):
         if cfg is None:
             # @TODO: use ordered dict if available
-            cfg = ConfigParser.ConfigParser()
+            cfg = ConfigParser()
 
         combobox = self.metadataWidget.domainComboBox
         domains = [combobox.itemText(i) for i in range(combobox.count())]
@@ -1001,7 +1002,7 @@ class MajorObjectInfoDialog(QtGui.QDialog):
             return
 
         filters = [
-            'INI file firmat (*.ini)'
+            'INI file firmat (*.ini)',
             'Text file (*.txt)',
             'HTML file (*.html)',
             'All files (*)',

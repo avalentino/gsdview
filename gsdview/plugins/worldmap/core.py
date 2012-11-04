@@ -185,14 +185,14 @@ class WorldmapPanel(QtGui.QDockWidget):
         self.box = self.plot(polygon)
 
         points = QtGui.QPolygonF([
-            QtCore.QPointF(mlon - self.bigBoxSize / 2,
-                           mlat - self.bigBoxSize / 2),
-            QtCore.QPointF(mlon + self.bigBoxSize / 2,
-                           mlat - self.bigBoxSize / 2),
-            QtCore.QPointF(mlon + self.bigBoxSize / 2,
-                           mlat + self.bigBoxSize / 2),
-            QtCore.QPointF(mlon - self.bigBoxSize / 2,
-                           mlat + self.bigBoxSize / 2),
+            QtCore.QPointF(mlon - self.bigBoxSize / 2.,
+                           mlat - self.bigBoxSize / 2.),
+            QtCore.QPointF(mlon + self.bigBoxSize / 2.,
+                           mlat - self.bigBoxSize / 2.),
+            QtCore.QPointF(mlon + self.bigBoxSize / 2.,
+                           mlat + self.bigBoxSize / 2.),
+            QtCore.QPointF(mlon - self.bigBoxSize / 2.,
+                           mlat + self.bigBoxSize / 2.),
         ])
         self.bigbox = self.plot(points)
 

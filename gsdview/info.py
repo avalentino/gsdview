@@ -34,14 +34,14 @@ from qt import QtCore
 __author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
 __date__ = '$Date$'
 __revision__ = '$Revision$'
-__version__ = (0, 6, 5)
+__version__ = (0, 7, 0)
 
 __all__ = ['name', 'version', 'short_description', 'description',
            'author', 'author_email', 'copyright', 'license_type',
            'website', 'website_label', 'all_versions', 'all_versions_str']
 
 name = 'GSDView'
-version = '.'.join(map(str, __version__)) + '+'
+version = '.'.join(str(v) for v in __version__) + '.dev'
 
 short_description = 'Geo-Spatial Data Viewer Open Source Edition'
 description = '''GSDView (Geo-Spatial Data Viewer) is a lightweight
@@ -103,19 +103,3 @@ elif platform.win32_ver() != ('', '', '', ''):
 def all_versions_str():
     return '\n'.join('%s v. %s (%s)' % (sw, version_, link)
                                         for sw, version_, link in all_versions)
-
-if __name__ == '__main__':
-    all_versions_str_ = '\n'.join('%s v. %s (%s)' % (sw, version_, link)
-                                        for sw, version_, link in all_versions)
-
-    print 'name', name
-    print 'version:', version
-    print 'short_description:', short_description
-    print 'description:', description
-    print 'author:', author
-    print 'author_email:', author_email
-    print 'copyright:', '\n'.join(copyright)
-    print 'license_type:', license_type
-    print 'website:', website
-    print 'website_label:', website_label
-    print 'all_versions_str:', all_versions_str_

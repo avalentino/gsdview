@@ -207,7 +207,7 @@ class BandItem(MajorObjectItem):
                                 range(self._obj.GetOverviewCount())))
 
             toremove = []
-            for level, index in oldlevelsmap.items():
+            for level, index in oldlevelsmap.iteritems():
                 if level not in levelsmap:
                     #self.removeRow(index)
                     toremove.append(index)
@@ -219,7 +219,7 @@ class BandItem(MajorObjectItem):
             for index in toremove:
                 self.takeRow(index)
 
-            for level, index in levelsmap.items():
+            for level, index in levelsmap.iteritems():
                 if level in oldlevelsmap:
                     continue
 
@@ -293,7 +293,7 @@ class DatasetItem(MajorObjectItem):
     def _checkedopen(self, filename, mode=gdal.GA_ReadOnly):
         try:
             gdalobj = gdal.Open(filename, mode)
-        except RuntimeError, e:
+        except RuntimeError as e:
             # @TODO: fix
             # @NOTE: explicitly reset the GDAL error status to workaround
             #        bug #3077 (http://trac.osgeo.org/gdal/ticket/3077)

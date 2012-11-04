@@ -25,7 +25,6 @@
 import os
 import csv
 import logging
-#from io import StringIO    # @TODO: check
 from cStringIO import StringIO
 from ConfigParser import ConfigParser
 
@@ -587,7 +586,7 @@ def getuiform(name, package=None):
         fromlist.append('ui')
         modname = '.'.join(fromlist + [name])
         module = __import__(modname, fromlist=fromlist)
-        formnames = [key for key in module.__dict__.keys()
+        formnames = [key for key in module.__dict__.iterkeys()
                                                 if key.startswith('Ui_')]
         formname = formnames[0]
         FormClass = getattr(module, formname)

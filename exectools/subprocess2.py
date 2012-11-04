@@ -35,7 +35,7 @@ import errno
 import warnings
 import subprocess
 
-import recipe_440544
+from . import recipe_440544
 
 if subprocess.mswindows:
     from win32api import OpenProcess, TerminateProcess, CloseHandle
@@ -75,7 +75,7 @@ class Popen(recipe_440544.Popen):
                 handle = OpenProcess(PROCESS_TERMINATE, False, self.pid)
                 TerminateProcess(handle, -1)
                 CloseHandle(handle)
-            except subprocess.pywintypes.error, e:
+            except subprocess.pywintypes.error as e:
                 # @TODO: check error code
                 warnings.warn(e)
 
@@ -91,7 +91,7 @@ class Popen(recipe_440544.Popen):
             '''Ignore the exception when the process doesn't exist.'''
             try:
                 os.kill(self.pid, sigid)
-            except OSError, e:
+            except OSError as e:
                 if e.errno != errno.ESRCH:
                     raise
 

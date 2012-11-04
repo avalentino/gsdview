@@ -1,5 +1,5 @@
 ..  :Source: doc/source/features.txt
-    :Version: 0.6.5+
+    :Version: 0.7.0
     :Author: Antonio Valentino
     :Contact: a_valentino@users.sf.net
     :URL: http://gsdview.sourceforge.net
@@ -25,7 +25,7 @@ zoom in/out                                         X
 fast scroll/pan                                     X
 mouse modes handling                                X
 printing                                            --
-print/export metadata                              NEW
+print/export metadata                               X
 RGB display                                         X
 arbitrary large raster data display                 X
 vector data display                                 --
@@ -67,10 +67,10 @@ selection tool                                      --
 rotation tool                                       --
 draw tools                                          --
 snapshot generation                                 --
-export raster data footprints to KML               NEW
+export raster data footprints to KML                X
 meta-data dump                                      X
 meta-data print                                     X
-export GCPs in vector format                       NEW
+export GCPs in vector format                        X
 ================================================ =======
 
 ================================================ =======
@@ -112,7 +112,7 @@ GNU Linux/Unix                                      X
 MS Windows XP (32 bit)                              X
 MS Windows Vista                                    --
 MS Windows 7                                        --
-Mac OS X                                           NEW
+Mac OS X                                            X
 ================================================ =======
 
 ================================================ =======

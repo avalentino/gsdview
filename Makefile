@@ -84,6 +84,7 @@ clean:
 	-find . -name '*.py[co]' -delete
 	-find . -name '*.bak' -delete
 	-find . -name '*~' -delete
+	-find . -name '__pycache__' -delete
 
 distclean: clean
 	$(MAKE) -C doc distclean

@@ -19,6 +19,6 @@
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
 
 
-'''GDAL based tols dr geo-spatial data handling.'''
+'''GDAL based tools dr geo-spatial data handling.'''
 
-__version__ = '1.0'
+__version__ = (1, 0, 0)
