@@ -17,6 +17,27 @@ __ `GSDView project page`_
 
 .. include:: latestnews.txt
 
+
+:31/07/2011: GSDView now also works with PySide_
+
+             Full support to PySide_ has been implemented.
+             Now GSDView can optionally use PySide_ as Qt4_ bindings instead
+             PyQt4_ and SIP_.
+
+:24/07/2011: A new tentative package for Mac OS X
+
+             A new tentative package for Mac OS X. It includes a beta
+             version of GDSView 0.6.5.
+
+             Feedback is very welcome.
+
+:28/11/2010: GSDView Open v. 0.6.4 run on Fedora_ 14.
+
+             In Fedora_ 14 it has been fixed a bug in GDAL packaging
+             that caused a GSDView crash on startup.
+             The (recently updated) RPM package now runs nicely on
+             Fedora_ too.
+
 :14/11/2010: GSDView Open Source Edition v. 0.6.4 released.
 
              This is an hot-fix release that restores the complete
@@ -27,7 +48,8 @@ __ `GSDView project page`_
 :13/11/2010: Ubuntu packages now available via Launchpad.
 
              Source packages and pre-build binary packages for Ubuntu 10.10
-             are now available via PPA (Personal Package Archive) on Launchpad_.
+             are now available via PPA (Personal Package Archive) on
+             Launchpad_.
 
              The archive and instructions for usage are at the following URL:
 
@@ -106,6 +128,9 @@ __ `GSDView project page`_
              This is still an alpha release with a minimal set of features.
 
 
+.. _PySide: http://www.pyside.org
+.. _Qt4: http://qt.nokia.com/products
+.. _Fedora: http://fedoraproject.org
 .. _Launchpad: http://www.launchpad.net
 .. _`development branch`: http://sourceforge.net/apps/trac/gsdview/browser/trunk
 .. _`Mac OS X`: http://www.apple.com/macosx

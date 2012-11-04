@@ -1,35 +1,36 @@
-:04/11/2012: Implementes support for Python 3.
+:04/11/2012: Implemented support for `Python 3`_.
+
+             Now GSDView can be run using `Python 3`_ (GDAL_ >= 2.0 is
+             required).
+             Contextually support for Python < 2.6 has been dropped.
+
+:03/09/2012: SCM moved to Git_
+
+             The GSDView code is now maintained in a Git_ repository.
+
+             Git_ is a modern and distributed SCM system that makes it easier
+             for developers to manage the development process.
+
+             All developers that have a checkout of the old SVN repository
+             should make a fresh checkout.
+
+:03/09/2012: The GSDView project moves to Allura_
+
+             The GSDView project on sourceforge.net has been converted to use
+             the new Allura_ platform.
 
 :13/11/2011: GSDView Open Source Edition v. 0.6.5 released.
 
-             Fixed some compatibility issues with new PyQt4 and sip versions.
-             Full support to PySide_ (>= 1.0.4).
+             Fixed some compatibility issues with new PyQt4_ and SIP_
+             versions.  Full support to PySide_ (>= 1.0.4).
 
              Please refer to :doc:`CHANGES` for more details.
 
-:31/07/2011: GSDView now also works with PySide_
 
-             Full support to PySide_ has been implemented.
-             Now GSDView can optionally use PySide_ as Qt4_ bindings instead
-             PyQt4_ and SIP_.
-
-:24/07/2011: A new tentative package for Mac OS X
-
-             A new tentative package for Mac OS X. It includes a beta
-             version of GDSView 0.6.5.
-
-             Feedback is very welcome.
-
-:28/11/2010: GSDView Open v. 0.6.4 run on Fedora_ 14.
-
-             In Fedora_ 14 it has been fixed a bug in GDAL packaging
-             that caused a GSDView crash on startup.
-             The (recently updated) RPM package now runs nicely on
-             Fedora_ too.
-
-.. _PySide: http://www.pyside.org
-.. _SIP: http://www.riverbankcomputing.co.uk/software/sip
+.. _`Python 3`: htts://docs.python.org/3/
+.. _GDAL: http://www.gdal.org
+.. _Git: http://git-scm.com
+.. _Allura: https://sourceforge.net/p/allura/wiki
 .. _PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt
-.. _Qt4: http://qt.nokia.com/products
-.. _Fedora: http://fedoraproject.org
+.. _SIP: http://www.riverbankcomputing.co.uk/software/sip
 

@@ -9,7 +9,6 @@ exectools
 
    .. autosummary::
    
-      StringIO
       level2tag
    
    
@@ -22,6 +21,7 @@ exectools
    
       BaseOutputHandler
       BaseToolController
+      StringIO
       ToolDescriptor
    
    

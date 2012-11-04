@@ -22,6 +22,7 @@ gsdview.gdalbackend.widgets
       BackendPreferencesPage
       BandInfoDialog
       BandInfoDialogBase
+      ConfigParser
       DatasetInfoDialog
       DatasetInfoDialogBase
       FileEntryWidget
