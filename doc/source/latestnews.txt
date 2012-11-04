@@ -1,3 +1,5 @@
+:04/11/2012: Implementes support for Python 3.
+
 :13/11/2011: GSDView Open Source Edition v. 0.6.5 released.
 
              Fixed some compatibility issues with new PyQt4 and sip versions.

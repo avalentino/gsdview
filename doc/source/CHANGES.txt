@@ -1,5 +1,5 @@
 ..  :Source: doc/source/CHANGES.txt
-    :Version: 0.6.5+
+    :Version: 0.7.0
     :Author: Antonio Valentino
     :Contact: a_valentino@users.sf.net
     :URL: http://gsdview.sourceforge.net
@@ -11,10 +11,13 @@
 ChangeLog
 =========
 
-Changes from 0.6.6 (development version)
-----------------------------------------
+Changes from 0.6.5 to 0.7.0 (in development)
+--------------------------------------------
 
-* GSDView now requires Python >= 2.6
+* Implemented support for Python 3.x (closes: :issue:`59`).
+  In order to run GSDView with Python 3 it is necessary to have GDAL >= 2.0.
+  GSDView now requires Python >= 2.6.
+* the exectools package now uses unicode buffers.
 
 
 Changes from 0.6.4 to 0.6.5 (13/11/2011)

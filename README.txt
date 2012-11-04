@@ -3,7 +3,7 @@
     =======
 
     :Source: README.txt
-    :Version: 0.6.5+
+    :Version: 0.7.0
     :Author: Antonio Valentino
     :Contact: a_valentino@users.sf.net
     :URL: http://gsdview.sourceforge.net
@@ -52,7 +52,7 @@ Requirements
 
 In order to run GSDView you should have the following software installed:
 
-* Python_ 2.6 or higher
+* Python_ 2.6 or higher (including Python 3.x)
 * SIP_ 4.7.5 or higher
 * PyQt4_ 4.6 or higher
 * numpy_ 1.3.0  or higher
@@ -67,6 +67,8 @@ In replacement of PyQt4_ an SIP_ it is possible to use:
 .. _numpy: http://www.numpy.org
 .. _gdal: http://www.gdal.org
 .. _PySide: http://www.pyside.org
+
+.. note:: in order to run GSDView with Python 3.x GDAL >= 2.0 is required.
 
 .. hint::
 
