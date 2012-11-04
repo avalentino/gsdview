@@ -3,7 +3,7 @@ A Sphinx theme for SourceForge hosted projects
 
 :Author: Antonio Valentino
 :Contact: a_valentino@users.sf.net
-:Version: 1.0
+:Version: 1.1
 :Copyright (C): 2009-2012 Antonio Valentino
 
 
@@ -22,7 +22,7 @@ Summary of changes against the standard theme
 ---------------------------------------------
 
 * SourceForge logo displayed in the sidebar of each page
-* SourceForge project links displayed in the sidebar (optional)
+* SourceForge project links displayed in the sidebar (optional).
 * additional links (provided via conf.py) displayed in the sidebar (optional)
 * `doctitle` displayed over the `relbar1` in the `master_doc`
 * different (and customizable) colours for todo directive
@@ -45,8 +45,10 @@ It can be done by setting the `html_theme_options` in the documentation
 
 If the *unixname* is not provided it is assumed: unixname = lower(project)
 
-.. warning:: if the *groupid* is not provided links needing it, and **SF logo**
-             are not displayed.
+.. warning::
+
+    if the *groupid* is not provided links needing it, and **SF logo** are
+    not displayed.
 
 
 `SourceForge.net`_ logo preferences
@@ -89,6 +91,8 @@ theme option::
 
     html_theme_options = {
         'hastrac': True,
+        'allura_wiki': True,
+        'allura_mailinglist': True,
     }
 
 .. _`hosted apps`: http://sourceforge.net/apps/trac/sourceforge/wiki/Hosted%20Apps
@@ -126,10 +130,38 @@ the *sourceforge* sphinx theme::
         #'sflogotype': '14',
         #'sflogowidth': '150',
         #'sflogoheight': '40',
+        'allura_wiki': True,
+        'allura_news': True,
+        #'allura_code': False,
+        #'allura_tickets': False,
+        'allura_mailinglist': True,
+        #'allura_blog': False,
+        #'allura_discussion': False,
+        #'allura_chat': False,
+        #'allura_donate': False,
         #'docstitlecolor': 'white',
         'extralinks': [
             ('GSDView Pro', 'http://www.example.com/products/gsdview/index.html'),
         ],
     }
     html_sidebars = {'index': 'sfpagesidebar.html'}
+
+
+Version history
+---------------
+
+1.1 - 04/11/2012
+~~~~~~~~~~~~~~~~
+
+* support for Allura_ platform
+* fixed a bug in the layout that prevented to use the collapsible sidebar
+
+
+1.0 - 15/11/2009
+~~~~~~~~~~~~~~~~
+
+Initial release.
+
+
+.. _Allura: https://sourceforge.net/p/allura/wiki
 

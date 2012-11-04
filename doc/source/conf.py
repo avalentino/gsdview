@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # GSDView Open Edition documentation build configuration file, created by
-# sphinx-quickstart on Mon Oct 10 20:10:48 2011.
+# sphinx-quickstart on Sun Nov  4 09:36:48 2012.
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #
@@ -41,8 +41,8 @@ extensions = [
     #'sphinx.ext.inheritance_diagram',
     #'sphinx.ext.refcounting',
     'sphinx.ext.ifconfig',
-    'sphinx.ext.viewcode',    # sphinx >= 1.0
-    'sphinx.ext.extlinks',    # sphinx >= 1.0
+    'sphinx.ext.viewcode',
+    'sphinx.ext.extlinks',
     #'sphinx.ext.oldcmarkup', # compatibility
 ]
 
@@ -127,15 +127,21 @@ extlinks = {'issue': ('http://sf.net/apps/trac/gsdview/ticket/%s', '#')}
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 html_theme = 'sourceforge'
+#html_theme = 'default'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
-    #'collapsiblesidebar': True,
+    'collapsiblesidebar': True,
     'unixname': 'gsdview',
     'groupid': '226458',
     'hastrac': True,
+    'allura_wiki': True,
+    #'allura_news': False,
+    'allura_code': True,
+    #'allura_tickets': True,
+    #'allura_mailinglist': True,
     'extralinks': [
         ('GSDView Pro', 'http://www.consorzio-innova.com/static/gsdview/index.html'),
     ],
@@ -216,11 +222,13 @@ htmlhelp_basename = 'GSDViewdoc'
 
 # -- Options for LaTeX output --------------------------------------------------
 
-# The paper size ('letter' or 'a4').
-latex_paper_size = 'a4'
+latex_elements = {
+# The paper size ('letterpaper' or 'a4paper').
+'papersize': 'a4paper',
 
 # The font size ('10pt', '11pt' or '12pt').
-latex_font_size = '12pt'
+#'pointsize': ''12pt',
+}
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
@@ -242,9 +250,6 @@ latex_logo = 'images/logo_large.pdf'
 
 # If true, show URL addresses after external links.
 #latex_show_urls = False
-
-# Additional stuff for the LaTeX preamble.
-#latex_preamble = ''
 
 # Documents to append as an appendix to all manuals.
 #latex_appendices = []

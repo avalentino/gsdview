@@ -8,16 +8,60 @@
     <li>
         <a href="http://sourceforge.net/projects/{{ unixname }}">SF Project Page</a>
     </li>
+    <li>
+        <a href="http://sourceforge.net/projects/{{ unixname }}/files">Downloads</a>
+    </li>
     {% if theme_groupid %}
     <li>
         <a href="http://sourceforge.net/project/screenshots.php?group_id={{ theme_groupid }}">Screenshots</a>
     </li>
-
+    {% endif %}
+    {% if theme_allura_wiki|tobool %}
     <li>
-        <a href="http://sourceforge.net/projects/{{ unixname }}/files">Downloads</a>
+        <a href="https://sourceforge.net/p/{{ unixname }}/wiki">Wiki</a>
     </li>
     {% endif %}
-    {% if theme_hastrac %}
+    {% if theme_allura_news|tobool %}
+    <li>
+        <a href="https://sourceforge.net/p/{{ unixname }}/news">News</a>
+    </li>
+    {% endif %}
+    {% if theme_allura_code|tobool %}
+    <li>
+        <a href="https://sourceforge.net/p/{{ unixname }}/code">Code Browser</a>
+    </li>
+    {% endif %}
+    {% if theme_allura_tickets|tobool %}
+    <li>
+        <a href="https://sourceforge.net/p/{{ unixname }}/tickets">Issue tracker</a>
+    </li>
+    {% endif %}
+    {% if theme_allura_mailinglist|tobool %}
+    <li>
+        <a href="https://sourceforge.net/p/{{ unixname }}/mailman">Mailing Lists</a>
+    </li>
+    {% endif %}
+    {% if theme_allura_blog|tobool %}
+    <li>
+        <a href="https://sourceforge.net/p/{{ unixname }}/blog">Blog</a>
+    </li>
+    {% endif %}
+    {% if theme_allura_discussion|tobool %}
+    <li>
+        <a href="https://sourceforge.net/p/{{ unixname }}/discussion">Discussions</a>
+    </li>
+    {% endif %}
+    {% if theme_allura_chat|tobool %}
+    <li>
+        <a href="https://sourceforge.net/p/{{ unixname }}/chat">Chat</a>
+    </li>
+    {% endif %}
+    {% if theme_allura_donate|tobool %}
+    <li>
+        <a href="https://sourceforge.net/p/{{ unixname }}/chat">Donate</a>
+    </li>
+    {% endif %}
+    {% if theme_hastrac|tobool %}
     <li>
         <a href="http://sourceforge.net/apps/trac/{{ unixname }}">Trac Site on SF.net</a>
     </li>
