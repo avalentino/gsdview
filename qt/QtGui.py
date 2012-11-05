@@ -19,3 +19,4 @@ if qt_api == 'pyqt':
 
 else:
     from PySide.QtGui import *
+    QFileDialog.getSaveFileNameAndFilter = QFileDialog.getSaveFileName

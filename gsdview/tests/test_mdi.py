@@ -54,12 +54,12 @@ class MdiChild(QtGui.QTextEdit):
             return self.saveFile(self.curFile)
 
     def saveAs(self):
-        fileName = QtGui.QFileDialog.getSaveFileName(self, self.tr('Save As'),
-                                                     self.curFile)
+        filename, _ = QtGui.QFileDialog.getSaveFileNameAndFilter(
+                                    self, self.tr('Save As'), self.curFile)
         if fileName.isEmpty:
             return False
 
-        return self.saveFile(fileName)
+        return self.saveFile(filename)
 
     def saveFile(self, fileName):
         file = QtCore.QFile(fileName)

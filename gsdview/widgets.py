@@ -565,7 +565,7 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
 
         lines = utils.foramt_bugreport(exctype, excvalue, tracebackobj)
         report = ''.join(lines)
-        filename = QtGui.QFileDialog.getSaveFileName(self)
+        filename, _ = QtGui.QFileDialog.getSaveFileNameAndFilter(self)
         if filename:
             fd = open(filename, 'w')
             try:

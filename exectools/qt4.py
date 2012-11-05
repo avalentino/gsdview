@@ -158,7 +158,8 @@ class Qt4OutputPlane(QtGui.QTextEdit):
         '''Save a file.'''
 
         filter_ = self.tr('Text files (*.txt)')
-        filename = QtGui.QFileDialog.getSaveFileName(self, '', '', filter_)
+        filename, _ = QtGui.QFileDialog.getSaveFileNameAndFilter(self, '', '',
+                                                                 filter_)
         if filename:
             text = self._report()
             logfile = open(filename, 'w')
