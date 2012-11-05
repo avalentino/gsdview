@@ -54,7 +54,8 @@ class SplashLogHandler(logging.Handler):
         try:
             msg = str(self.format(record))
             self._splash.showMessage(self._splash.tr(msg))
-            self.flush()
+            # Causes an EOFError with pyside
+            #self.flush()
         except (KeyboardInterrupt, SystemExit):
             raise
         except:
