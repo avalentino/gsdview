@@ -45,9 +45,9 @@ if not hasattr(sys, 'frozen'):
     SYSPLUGINSDIR = os.path.join(LIBDIR, 'plugins')
     del LIBDIR
 else:
-    if '_MEIPASS2' in os.environ:   # one-file temp's directory
-        # @WARNING: this also happend in one-dir case
-        GSDVIEWROOT = os.path.abspath(os.environ['_MEIPASS2'])
+    if hasattr(sys, '_MEIPASS'):   # one-file temp's directory
+        # @WARNING: this also happens in one-dir case
+        GSDVIEWROOT = os.path.abspath(sys._MEIPASS)
     else:   # one-dir
         GSDVIEWROOT = os.path.dirname(os.path.abspath(sys.executable))
     SYSPLUGINSDIR = os.path.join(GSDVIEWROOT, 'plugins')
