@@ -1,6 +1,6 @@
 # -*- mode: python -*-
 
-# Linux: policy change with system libraries :
+# Linux: policy change with system libraries:
 #   http://groups.google.com/group/PyInstaller/browse_thread/thread/dbe36a6fd985631b?hl=en#
 
 try:
@@ -46,11 +46,8 @@ else:
     GDALADDO = os.path.join(GDALROOT, 'bin', 'gdaladdo')
     ICONFILE = os.path.join(GSDVIEWROOT, 'doc', 'source', '_static', 'logo.ico')
 
-a = Analysis([os.path.join(HOMEPATH,'support', '_mountzlib.py'),
-              os.path.join(CONFIGDIR,'support', 'useUnicode.py'),
-              os.path.join(GSDVIEWROOT, 'scripts', 'gsdview'),
-             ],
-             pathex=['.', GSDVIEWROOT],
+a = Analysis([os.path.join(GSDVIEWROOT, 'scripts', 'gsdview')],
+             pathex=[GSDVIEWROOT],
              hookspath=['.'],
              excludes=['matplotlib', 'scipy', #'multiprocessing',
                        'Pyrex', '_tkinter', 'nose',

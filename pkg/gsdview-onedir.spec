@@ -50,11 +50,8 @@ else:
     GDALADDO = os.path.join(GDALROOT, 'bin', 'gdaladdo')
     ICONFILE = os.path.join(GSDVIEWROOT, 'doc', 'source', '_static', 'logo.ico')
 
-a = Analysis([os.path.join(HOMEPATH,'support', '_mountzlib.py'),
-              os.path.join(CONFIGDIR,'support', 'useUnicode.py'),
-              os.path.join(GSDVIEWROOT, 'scripts', 'gsdview'),
-             ],
-             pathex=['.', GSDVIEWROOT],
+a = Analysis([os.path.join(GSDVIEWROOT, 'scripts', 'gsdview')],
+             pathex=[GSDVIEWROOT],
              hookspath=['.'],
              excludes=['matplotlib', 'scipy', #'multiprocessing',
                        'Pyrex', '_tkinter', 'nose',
