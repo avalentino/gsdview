@@ -29,14 +29,15 @@ distclean: clean
 	$(RM) -r pyinstaller
 
 pyinstaller:
-	svn co http://svn.pyinstaller.org/trunk pyinstaller
+	git clone git://github.com/pyinstaller/pyinstaller.git
+	#git clone -b master git://github.com/pyinstaller/pyinstaller.git
 
 env: pyinstaller
-	svn up pyinstaller
-	#cd pyinstaller/source && python waf configure build install
-	if ! [ -f pyinstaller/gsdview_patches_applied ]; then \
-		cd pyinstaller;\
-		patch -b -N -p0 < ../patches/qt4-api2.patch;\
-		touch gsdview_patches_applied;\
-	fi
+	cd pyinstaller
+	git pull
+	#cd source && python waf configure build install
+	#if ! [ -f gsdview_patches_applied ]; then \
+	#	patch -b -N -p0 < ../patches/qt4-api2.patch;\
+	#	touch gsdview_patches_applied;\
+	#fi
 
