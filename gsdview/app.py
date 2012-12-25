@@ -375,6 +375,15 @@ class GSDView(ItemModelMainWindow):
                       statusTip=self.tr('Open the program preferences dialog'),
                       triggered=self.showPreferencesDialog)
 
+        style = self.style()
+        icon = style.standardIcon(QtGui.QStyle.SP_TitleBarMaxButton)
+        QtGui.QAction(icon, self.tr('&Full Screen'), actionsgroup,
+                      objectName='fullScreenAction',
+                      shortcut='Ctrl+Meta+F',
+                      toolTip=self.tr('Toggle full screen mode'),
+                      statusTip=self.tr('Toggle full screen mode'),
+                      triggered=self.toggleFullScreenMode)
+
         return actionsgroup
 
     def _setupHelpActions(self):
@@ -649,6 +658,10 @@ class GSDView(ItemModelMainWindow):
         for plugin in self.pluginmanager.plugins.itervalues():
             #logging.debug('save %s plugin preferences' % plugin.name)
             plugin.saveSettings(settings)
+
+    @QtCore.Slot()
+    def toggleFullScreenMode(self):
+        self.setWindowState(self.windowState() ^ QtCore.Qt.WindowFullScreen)
 
     @QtCore.Slot()
     def updateSettingsMenu(self):
