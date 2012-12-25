@@ -24,7 +24,7 @@ except ImportError:
 EXTRA_QT_RESOURCES = []
 GSDVIEWROOT = '..'
 
-if sys.platform == 'darwin':
+if sys.platform == 'darwin' and False:
     GDALROOT = '/Library/Frameworks/GDAL.framework'
     GDAL_DATA = os.path.join(GDALROOT, 'Resources', 'gdal')
     GDALINFO = os.path.join(GDALROOT, 'unix', 'bin', 'gdalinfo')
