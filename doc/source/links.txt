@@ -167,6 +167,50 @@ StaMPS_
 
     The package is no longer limited to persistent scatterers,
     but also incorporates a small baseline and a combined time series method.
+`ADORE DORIS`_
+    ADORE stands for Automated DORIS Environment. It is developed at the
+    University of Miami Geodesy Group, to help researchers generate
+    interferograms with ease. Just like DORIS it is an open source project
+    and it comes with the same license. ADORE can not do anything that
+    DORIS doesn't, it's only a simplified user interface.
+GIAnT_
+    GIAnT is a suite of Python libraries and scripts that implement
+    various published time-series InSAR algorithms in a common framework.
+    GIAnT was developed for:
+
+        * Rapid generation of time-series products from interferogram
+        * Direct comparison of time-series InSAR products using different
+          algorithms
+        * Cal-Val for time-series InSAR
+
+    The toolbox currently includes implementations of SBAS, N-SBAS and
+    MInTS algorithms. The toolbox also includes support for using PyAPS_
+    to correct stratified troposphere phase components and to use GPS
+    solutions if available to correct for orbital errors.
+PyAPS_
+    PyAPS is a python module that estimates differential phase delay maps
+    due to the stratified atmosphere for correcting radar interferograms.
+    It is based on Delaypackage originally written by Romain Jolivet for
+    estimating phase screens due to stratified atmosphere using ECMWF's
+    ERA Interim reanalysis.
+
+    PyAPS includes support for ERA Interim, NARR and MERRA weather models.
+    PyAPS uses the humidity, pressure and temperature information from
+    meteorological models to estimate the dry and wet components of the
+    atmospheric delay.
+Varres_
+    Varres is a variable resolution interferogram sampler that implements a
+    curvature-based quadtree like resampler for reducing unwrapped
+    interferometric phase to a smaller subset of observations.
+    Using the reduced set of observations which represent the non-redundant
+    observations in an unwrapped interferogram in modelling significantly
+    decreases computation cost.
+    Moroever, it can reduce bias due to uneven distribution of coherent
+    samples in the unwrapped interferogram.
+
+    The original matlab package has been extended to include support for
+    using a predefined map for resampling and estimation of an approximate
+    covariance matrix for the samples.
 ROI_PAC_
     Repeat Orbit Interferometry PACkage by Caltech/Jet Propulsion Laboratory,
     mainly for interferometric SAR processing.
@@ -186,6 +230,10 @@ IDIOT_
 
 .. _DORIS: http://enterprise.lr.tudelft.nl/doris
 .. _StaMPS: http://enterprise.lr.tudelft.nl/%7Eahooper/stamps/index.html
+.. _`ADORE DORIS`: http://code.google.com/p/adore-doris
+.. _GIAnT: http://earthdef.caltech.edu/projects/giant/wiki
+.. _PyAPS: http://earthdef.caltech.edu/projects/pyaps/wiki
+.. _Varres: http://earthdef.caltech.edu/projects/varres/wiki
 .. _ROI_PAC: http://roipac.org
 .. _IDIOT: http://srv-43-200.bv.tu-berlin.de/idiot
 
