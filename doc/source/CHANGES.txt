@@ -15,7 +15,7 @@ Changes from 0.6.5 to 0.7.0 (in development)
 --------------------------------------------
 
 * Implemented support for Python 3.x (closes: :issue:`59`).
-  In order to run GSDView with Python 3 it is necessary to have GDAL >= 2.0.
+  In order to run GSDView with Python 3 it is necessary to have GDAL >= 1.10.
   GSDView now requires Python >= 2.6.
 * the exectools package now uses unicode buffers.
 

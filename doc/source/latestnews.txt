@@ -1,6 +1,6 @@
 :04/11/2012: Implemented support for `Python 3`_.
 
-             Now GSDView can be run using `Python 3`_ (GDAL_ >= 2.0 is
+             Now GSDView can be run using `Python 3`_ (GDAL_ >= 1.10 is
              required).
              Contextually support for Python < 2.6 has been dropped.
 

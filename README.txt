@@ -68,7 +68,7 @@ In replacement of PyQt4_ an SIP_ it is possible to use:
 .. _gdal: http://www.gdal.org
 .. _PySide: http://www.pyside.org
 
-.. note:: in order to run GSDView with Python 3.x GDAL >= 2.0 is required.
+.. note:: in order to run GSDView with Python 3.x GDAL >= 1.10 is required.
 
 .. hint::
 
