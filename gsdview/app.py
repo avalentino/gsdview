@@ -375,8 +375,7 @@ class GSDView(ItemModelMainWindow):
                       statusTip=self.tr('Open the program preferences dialog'),
                       triggered=self.showPreferencesDialog)
 
-        style = self.style()
-        icon = style.standardIcon(QtGui.QStyle.SP_TitleBarMaxButton)
+        icon = qt4support.geticon('full-screen.svg', __name__)
         QtGui.QAction(icon, self.tr('&Full Screen'), actionsgroup,
                       objectName='fullScreenAction',
                       shortcut='Ctrl+Meta+F',
