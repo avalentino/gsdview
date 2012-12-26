@@ -3,13 +3,24 @@
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
-@import url("default.css");
+@import url("pydoctheme.css");
 
 /* -- body styles ----------------------------------------------------------- */
 div.docstitle {
     color: {{ theme_docstitlecolor }};
+    /* background-color: {{ theme_sidebarbgcolor }}; */
+    background-color: #EEEEEE;
+    border: 1px solid #EEEEEE;
+    border-radius: 15px;
     text-align: right;
     padding-right: 1em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+}
+
+div.related {
+    border-bottom: 1px solid #CCCCCC;
+    margin-bottom: 0.5em;
 }
 
 div.admonition-todo {
@@ -18,11 +29,11 @@ div.admonition-todo {
 }
 
 /* -- misc styles ----------------------------------------------------------- */
+/*
 dl.class dt, dl.function dt {
     border-bottom: 1px solid #CCCCCC;
 }
 
-/*
 tt.descclassname {
     font-style: bold;
     font-size: 1.2em;
