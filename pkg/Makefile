@@ -27,7 +27,7 @@ clean:
 	#if [ -d ../dist ]; then rmdir --ignore-fail-on-non-empty ../dist; fi
 
 distclean: clean
-	$(RM) -r pyinstaller
+	$(RM) -r pyinstaller gsdview_patches_applied
 
 pyinstaller:
 	git clone git://github.com/pyinstaller/pyinstaller.git
