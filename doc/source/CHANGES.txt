@@ -17,7 +17,15 @@ Changes from 0.6.5 to 0.7.0 (in development)
 * Implemented support for Python 3.x (closes: :issue:`59`).
   In order to run GSDView with Python 3 it is necessary to have GDAL >= 1.10.
   GSDView now requires Python >= 2.6.
-* the exectools package now uses unicode buffers.
+* Now it is possible to toggle the full-screen mode using a tool-button or a
+  keyboard shortcut.
+* The exectools package now uses unicode buffers.
+* Renewed sphinx_ theme. The HTML sphinx_ theme has been renewed.
+  It is now based on the pydoctheme.
+* The packaging scripts have been updated to run with the new
+  PyInstaller_ 2.0.
+
+.. _sphinx: http://sphinx-doc.org
 
 
 Changes from 0.6.4 to 0.6.5 (13/11/2011)

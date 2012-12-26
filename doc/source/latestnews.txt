@@ -1,10 +1,20 @@
+:26/12/2012: Renewed sphinx_ theme.
+
+             The HTML sphinx_ theme has been renewed.
+             It is now based on the pydoctheme.
+
+:24/12/2012: Packaging scripts updated to support PyInstaller_ 2.0.
+
+             The packaging scripts have been updated to run with the
+             new PyInstaller_ 2.0.
+
 :04/11/2012: Implemented support for `Python 3`_.
 
              Now GSDView can be run using `Python 3`_ (GDAL_ >= 1.10 is
              required).
              Contextually support for Python < 2.6 has been dropped.
 
-:03/09/2012: SCM moved to Git_
+:03/09/2012: SCM moved to Git_.
 
              The GSDView code is now maintained in a Git_ repository.
 
@@ -14,23 +24,10 @@
              All developers that have a checkout of the old SVN repository
              should make a fresh checkout.
 
-:03/09/2012: The GSDView project moves to Allura_
 
-             The GSDView project on sourceforge.net has been converted to use
-             the new Allura_ platform.
-
-:13/11/2011: GSDView Open Source Edition v. 0.6.5 released.
-
-             Fixed some compatibility issues with new PyQt4_ and SIP_
-             versions.  Full support to PySide_ (>= 1.0.4).
-
-             Please refer to :doc:`CHANGES` for more details.
-
-
-.. _`Python 3`: htts://docs.python.org/3/
+.. _sphinx: http://sphinx-doc.org
+.. _PyInstaller: http://www.pyinstaller.org
+.. _`Python 3`: http://docs.python.org/3
 .. _GDAL: http://www.gdal.org
 .. _Git: http://git-scm.com
-.. _Allura: https://sourceforge.net/p/allura/wiki
-.. _PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt
-.. _SIP: http://www.riverbankcomputing.co.uk/software/sip
 

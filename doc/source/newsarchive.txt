@@ -17,6 +17,17 @@ __ `GSDView project page`_
 
 .. include:: latestnews.txt
 
+:03/09/2012: The GSDView project moves to Allura_.
+
+             The GSDView project on sourceforge.net has been converted to use
+             the new Allura_ platform.
+
+:13/11/2011: GSDView Open Source Edition v. 0.6.5 released.
+
+             Fixed some compatibility issues with new PyQt4_ and SIP_
+             versions.  Full support to PySide_ (>= 1.0.4).
+
+             Please refer to :doc:`CHANGES` for more details.
 
 :31/07/2011: GSDView now also works with PySide_
 
@@ -128,14 +139,17 @@ __ `GSDView project page`_
              This is still an alpha release with a minimal set of features.
 
 
+.. _Allura: https://sourceforge.net/p/allura/wiki
+.. _PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt
+.. _SIP: http://www.riverbankcomputing.co.uk/software/sip
 .. _PySide: http://www.pyside.org
 .. _Qt4: http://qt.nokia.com/products
 .. _Fedora: http://fedoraproject.org
 .. _Launchpad: http://www.launchpad.net
-.. _`development branch`: http://sourceforge.net/apps/trac/gsdview/browser/trunk
+.. _`development branch`: http://sf.net/apps/trac/gsdview/browser/trunk
 .. _`Mac OS X`: http://www.apple.com/macosx
 .. _`GSDView project page`: http://sourceforge.net/projects/gsdview
 .. _download: http://sourceforge.net/projects/gsdview/files
-.. _sphinx: http://sphinx.pocoo.org
+.. _sphinx: http://sphinx-doc.org
 .. _SourceForge: http://sourceforge.net
 
