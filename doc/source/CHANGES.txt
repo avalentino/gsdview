@@ -20,6 +20,7 @@ Changes from 0.6.5 to 0.7.0 (in development)
 * Now it is possible to toggle the full-screen mode using a tool-button or a
   keyboard shortcut.
 * The exectools package now uses unicode buffers.
+* Improved zoom control in case of high resolution mice or touchpads.
 * Renewed sphinx_ theme. The HTML sphinx_ theme has been renewed.
   It is now based on the pydoctheme.
 * The packaging scripts have been updated to run with the new

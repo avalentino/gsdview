@@ -137,10 +137,14 @@ class ScrollHandMode(MouseMode):
             # Delta is expressed in 1/8 degree
             delta = event.delta() / 8.  # degree
 
-            # Conversion from degrees to zoom factor:
-            # a factor of 1.1 every 15 degrees
-            k = 1.1 / 15.
-
+            # Conversion from degrees to zoom factor
+            if abs(delta) < 15:
+                # fine resolution mouse
+                k = 1.1 / abs(delta)
+            else:
+                # a factor of 1.1 every 15 degrees
+                k = 1.1 / 15.
+            
             if delta >= 0:
                 factor = k * delta
             else:
@@ -150,6 +154,8 @@ class ScrollHandMode(MouseMode):
             event.accept()
 
             return True
+        else:
+            event.ignore()
 
         return False
 
