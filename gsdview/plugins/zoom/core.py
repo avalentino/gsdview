@@ -35,8 +35,12 @@ __revision__ = '$Revision$'
 
 
 class ZoomTool(QtCore.QObject):
+    DEFAULT_FACTOR = 1.2
+    
     def __init__(self, view=None, parent=None, **kwargs):
         super(ZoomTool, self).__init__(parent, **kwargs)
+        self.factor = self.DEFAULT_FACTOR
+        
         self._view = view
 
         self.actions = self._setupActions()
@@ -87,16 +91,15 @@ class ZoomTool(QtCore.QObject):
 
     @QtCore.Slot()
     def zoomIn(self):
-        factor = 1.2    # @TODO: make this configurable
         view = self.currentview()
         if view:
-            view.scale(factor, factor)
+            view.scale(self.factor, self.factor)
 
     @QtCore.Slot()
     def zoomOut(self):
-        factor = 1. / 1.2   # @TODO: make this configurable
         view = self.currentview()
         if view:
+            factor = 1. / self.factor
             view.scale(factor, factor)
 
     @QtCore.Slot()
