@@ -3,8 +3,8 @@ A Sphinx theme for SourceForge hosted projects
 
 :Author: Antonio Valentino
 :Contact: a_valentino@users.sf.net
-:Version: 1.1
-:Copyright (C): 2009-2012 Antonio Valentino
+:Version: 1.2
+:Copyright (C): 2009-2013 Antonio Valentino
 
 
 All `SourceForge.net`_ projects that use the `SourceForge.net`_ project web
@@ -90,7 +90,6 @@ possible to include a link pointing to it in the sidebar using the `hastrac`
 theme option::
 
     html_theme_options = {
-        'hastrac': True,
         'allura_wiki': True,
         'allura_mailinglist': True,
     }
@@ -125,7 +124,6 @@ the *sourceforge* sphinx theme::
     html_theme_options = {
         'unixname': 'gsdview',
         'groupid': '226458',
-        'hastrac': True,
         #'nosflinks': False,
         #'sflogotype': '14',
         #'sflogowidth': '150',
@@ -149,6 +147,13 @@ the *sourceforge* sphinx theme::
 
 Version history
 ---------------
+
+1.2 - 21/06/2013
+~~~~~~~~~~~~~~~~
+
+* removed the "hastrac" option (deprecated by SF)
+* removed link to screenshot (no more available as fix URL)
+
 
 1.1 - 04/11/2012
 ~~~~~~~~~~~~~~~~

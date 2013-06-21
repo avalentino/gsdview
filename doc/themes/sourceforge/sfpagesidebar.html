@@ -11,11 +11,6 @@
     <li>
         <a href="http://sourceforge.net/projects/{{ unixname }}/files">Downloads</a>
     </li>
-    {% if theme_groupid %}
-    <li>
-        <a href="http://sourceforge.net/project/screenshots.php?group_id={{ theme_groupid }}">Screenshots</a>
-    </li>
-    {% endif %}
     {% if theme_allura_wiki|tobool %}
     <li>
         <a href="https://sourceforge.net/p/{{ unixname }}/wiki">Wiki</a>
@@ -59,11 +54,6 @@
     {% if theme_allura_donate|tobool %}
     <li>
         <a href="https://sourceforge.net/p/{{ unixname }}/chat">Donate</a>
-    </li>
-    {% endif %}
-    {% if theme_hastrac|tobool %}
-    <li>
-        <a href="http://sourceforge.net/apps/trac/{{ unixname }}">Trac Site on SF.net</a>
     </li>
     {% endif %}
     {% endif %}
