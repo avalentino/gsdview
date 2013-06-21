@@ -53,5 +53,5 @@ Bugs
 ----
 
 Please refer to the *GSDView Open Source Edition* issue tracker system at
-http://sf.net/apps/trac/gsdview for an updated list of known
-issues with the latest release.
+https://github.com/avalentino/gsdview/issues?state=open for an updated list
+of known issues with the latest release.

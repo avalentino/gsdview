@@ -1,3 +1,11 @@
+:21/06/2013: Development site moved to GitHub_.
+
+             The `development site`_ of GSDView has been moved to GitHub_.
+             Now the source code repository, the wiki, and the issue tracker
+             can be found at https://github.com/avalentino/gsdview.
+             The main project page togeter with the the home page and file
+             download hosting are still on _SourceForge.
+
 :26/12/2012: Renewed sphinx_ theme.
 
              The HTML sphinx_ theme has been renewed.
@@ -14,20 +22,11 @@
              required).
              Contextually support for Python < 2.6 has been dropped.
 
-:03/09/2012: SCM moved to Git_.
 
-             The GSDView code is now maintained in a Git_ repository.
-
-             Git_ is a modern and distributed SCM system that makes it easier
-             for developers to manage the development process.
-
-             All developers that have a checkout of the old SVN repository
-             should make a fresh checkout.
-
-
+.. _GitHub: https://github.com
+.. _`development site`: https://github.com/avalentino/gsdview
+.. _SourceForge: http://sourceforge.net
 .. _sphinx: http://sphinx-doc.org
 .. _PyInstaller: http://www.pyinstaller.org
 .. _`Python 3`: http://docs.python.org/3
 .. _GDAL: http://www.gdal.org
-.. _Git: http://git-scm.com
-

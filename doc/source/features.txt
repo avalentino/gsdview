@@ -5,7 +5,7 @@
     :URL: http://gsdview.sourceforge.net
     :Revision: $Revision$
     :Date: $Date$
-    :Copyright (C): 2008-2012 Antonio Valentino
+    :Copyright (C): 2008-2013 Antonio Valentino
 
 
 Features

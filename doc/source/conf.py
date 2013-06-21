@@ -60,7 +60,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'GSDView'
-copyright = '2008-2012, Antonio Valentino'
+copyright = '2008-2013, Antonio Valentino'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -120,7 +120,8 @@ autosummary_generate = ['reference']
 todo_include_todos = True
 
 # External links configuration
-extlinks = {'issue': ('http://sf.net/apps/trac/gsdview/ticket/%s', '#')}
+extlinks = {'issue': ('https://github.com/avalentino/gsdview/issues/%s', '#')}
+
 
 # -- Options for HTML output ---------------------------------------------------
 
@@ -137,14 +138,16 @@ html_theme_options = {
     'collapsiblesidebar': True,
     'unixname': 'gsdview',
     'groupid': '226458',
-    'hastrac': True,
-    'allura_wiki': True,
+    #'allura_wiki': True,
     #'allura_news': False,
-    'allura_code': True,
+    #'allura_code': True,
     #'allura_tickets': True,
     #'allura_mailinglist': True,
     'extralinks': [
-        ('GSDView Pro', 'http://www.consorzio-innova.com/static/gsdview/index.html'),
+    #    ('GSDView Pro', 'http://www.consorzio-innova.com/static/gsdview/index.html'),
+        ('GitHub project site', 'https://github.com/avalentino/gsdview'),
+        ('Wiki', 'https://github.com/avalentino/gsdview/wiki'),
+        ('Issue tracker', 'https://github.com/avalentino/gsdview/issues'),
     ],
 }
 
@@ -298,7 +301,7 @@ texinfo_documents = [
 epub_title = 'GSDView Open Edition'
 epub_author = 'Antonio Valentino'
 epub_publisher = 'Antonio Valentino'
-epub_copyright = '2008-2012, Antonio Valentino'
+epub_copyright = '2008-2013, Antonio Valentino'
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.

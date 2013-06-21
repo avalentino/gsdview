@@ -5,7 +5,7 @@
     :URL: http://gsdview.sourceforge.net
     :Revision: $Revision$
     :Date: $Date$
-    :Copyright (C): 2008-2012 Antonio Valentino
+    :Copyright (C): 2008-2013 Antonio Valentino
 
 
 News archive
@@ -16,6 +16,16 @@ This page contains the complete news archive of the `GSDView project`__.
 __ `GSDView project page`_
 
 .. include:: latestnews.txt
+
+:03/09/2012: SCM moved to Git_.
+
+             The GSDView code is now maintained in a Git_ repository.
+
+             Git_ is a modern and distributed SCM system that makes it easier
+             for developers to manage the development process.
+
+             All developers that have a checkout of the old SVN repository
+             should make a fresh checkout.
 
 :03/09/2012: The GSDView project moves to Allura_.
 
@@ -139,6 +149,7 @@ __ `GSDView project page`_
              This is still an alpha release with a minimal set of features.
 
 
+.. _Git: http://git-scm.com
 .. _Allura: https://sourceforge.net/p/allura/wiki
 .. _PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt
 .. _SIP: http://www.riverbankcomputing.co.uk/software/sip

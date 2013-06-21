@@ -5,7 +5,7 @@
     :URL: http://gsdview.sourceforge.net
     :Revision: $Revision$
     :Date: $Date$
-    :Copyright (C): 2008-2012 Antonio Valentino
+    :Copyright (C): 2008-2013 Antonio Valentino
 
 
 ChangeLog
@@ -14,7 +14,7 @@ ChangeLog
 Changes from 0.6.5 to 0.7.0 (in development)
 --------------------------------------------
 
-* Implemented support for Python 3.x (closes: :issue:`59`).
+* Implemented support for Python 3.x (closes: :issue:`76`).
   In order to run GSDView with Python 3 it is necessary to have GDAL >= 1.10.
   GSDView now requires Python >= 2.6.
 * Now it is possible to toggle the full-screen mode using a tool-button or a
@@ -36,14 +36,14 @@ Changes from 0.6.4 to 0.6.5 (13/11/2011)
   handling.  The gsdview.gsdtools module has been renamed into
   gsdview.imgutils.
 * New functions for KML export and dataset area display on "Google Earth"
-  and "Google Maps" (see :issue:`50`)
+  and "Google Maps" (see :issue:`67`)
 * Fixed workaround for incorrect GCP handling of ENVISAT stripline products
 * Fixed global exception handler
 * Fixed calls to external GDAL utilities by adding quotes to config options
 * Fixed an unicode related issue in calls to gdal.SetConfigOption
 * Improved PyInstaller_ packaging (upgreded to 1.5.1)
 * Fix plugin loading when no plugin have to be loaded
-* Support for PySide_ (closes :issue:`69`, see also :issue:`70`)
+* Support for PySide_ (closes :issue:`86`, see also :issue:`87`)
 
 .. _PyInstaller: http://www.pyinstaller.org
 .. _PySide: http://www.pyside.org
@@ -53,7 +53,7 @@ Changes from 0.6.3 to 0.6.4 (14/11/2010)
 ----------------------------------------
 
 * Restored full compatibility wirh GDAL 1.6.x series
-* Metadata export and printing (:issue:`67` and :issue:`68`)
+* Metadata export and printing (:issue:`84` and :issue:`85`)
 * mainwin.py module renamed into mdi.py
 * Set numeric locale to "C" at application startup in order to prevent
   issues with GDAL statistics serialization in virtual files
@@ -65,18 +65,18 @@ Changes from 0.6.3 to 0.6.4 (14/11/2010)
 Changes from 0.6.2 to 0.6.3 (13/08/2010)
 ----------------------------------------
 
-* Switch to the new PyQt4 signal/slot API (close :issue:`25`)
-* Switch to PyQt4 API 2 for QString, QVariant etc (close :issue:`66`)
+* Switch to the new PyQt4 signal/slot API (close :issue:`42`)
+* Switch to PyQt4 API 2 for QString, QVariant etc (close :issue:`83`)
 * All classes that inherit from Qt objects or widgets now can be initialized
   using keyword arguments for Qt properties and signals setup
 * Improved overviews handling:
 
   - overview items are no more displayed in the treeview by default.
     It is possible to get the old behaviour by checking the appropriate
-    flag in the preferences dialog (close :issue:`34`)
+    flag in the preferences dialog (close :issue:`51`)
   - enabled action for overview computation in the dataset item context menu
   - the GDAL info dialog for raster bands has a new tab for overviews
-    that also allows computation of new overviews (close :issue:`57`)
+    that also allows computation of new overviews (close :issue:`74`)
 
 * Improved complex datasets support
 * Improved sub-datasets handling
@@ -89,13 +89,13 @@ Changes from 0.6.1 to 0.6.2 (20/07/2010)
 
 * System info reporting improvements
 * Fix system path setup in frozen environments
-* Exectools package improved (close :issue:`40`)
+* Exectools package improved (close :issue:`57`)
 * Always use (x,y,z) convention for geometric transforms
-* Enabled complex selection on all lists and tables (close :issue:`51`)
-* New button for stopping external tools (close :issue:`41`)
+* Enabled complex selection on all lists and tables (close :issue:`68`)
+* New button for stopping external tools (close :issue:`58`)
 * Drop GDAL 1.5.x series: now GSDView requires GDAL 1.6.1 or higher
 * Statistics and histograms computation now is fully asynchronous
-  (close :issue:`28`).
+  (close :issue:`45`).
   Configuration of custom histogram parameters in the GDAL info dialogs is
   temporary disabled.
 
@@ -103,14 +103,14 @@ Changes from 0.6.1 to 0.6.2 (20/07/2010)
 Changes from 0.6.0 to 0.6.1 (09/05/2010)
 ----------------------------------------
 
-* Basic support for RGB views (:issue:`1`)
+* Basic support for RGB views (:issue:`18`)
 * Use global exception hook to catch un-handled exceptions (close
-  :issue:`11`).  An error dialog is showed and the application quits.
-* New mouse manager component (:issue:`24`)
+  :issue:`28`).  An error dialog is showed and the application quits.
+* New mouse manager component (:issue:`41`)
 * Re-factoring of graphics items components
-* New tool (plugin) for image stretching (close :issue:`37`)
-* Strongly improved GDAL info dialogs (enhancement :issue:`22` and
-  :issue:`32`).  Now dialogs show more info including:
+* New tool (plugin) for image stretching (close :issue:`54`)
+* Strongly improved GDAL info dialogs (enhancement :issue:`39` and
+  :issue:`49`).  Now dialogs show more info including:
 
   - image structure metadata
   - histograms (only in table form at the moment)
@@ -119,25 +119,25 @@ Changes from 0.6.0 to 0.6.1 (09/05/2010)
     (standard domain was already available)
 
 * Plugins re-factoring
-* Auto detect GDAL framework binaries on Mac OS X (close :issue:`20`)
-* Improved support for Mac OS X (:issue:`14`, :issue:`15`, :issue:`16`,
-  :issue:`17`). None Qt >= 4.6.2 is required on Mac OS X.
-* Reduced a bit the time required for datasets opening (see :issue:`12`)
+* Auto detect GDAL framework binaries on Mac OS X (close :issue:`37`)
+* Improved support for Mac OS X (:issue:`31`, :issue:`32`, :issue:`33`,
+  :issue:`34`). None Qt >= 4.6.2 is required on Mac OS X.
+* Reduced a bit the time required for datasets opening (see :issue:`29`)
 * Improved the algorithm to determine the overview levels to compute at
-  band opening time (see :issue:`23`)
+  band opening time (see :issue:`40`)
 * Now it is possible to pre-compile UI files into python modules and use
   generated modules to set the GUI up.
   If pre-compiled python forms are not available the GUI is set up using
   Qt UI files directly.
-* Now use docutils for generating the manpage (:issue:`33`)
-* Packaging using PyInstaller_ (:issue:`8`)
-* Other bug fix (:issue:`21`, :issue:`31`, :issue:`36`)
+* Now use docutils for generating the manpage (:issue:`50`)
+* Packaging using PyInstaller_ (:issue:`25`)
+* Other bug fix (:issue:`38`, :issue:`48`, :issue:`53`)
 
 
 Changes from 0.5.9 to 0.6.0 (24/08/2009)
 ----------------------------------------
 
-* New plugin manager module (close :issue:`2`):
+* New plugin manager module (close :issue:`21`):
 
   - configurable search path for plugins
   - support for zip imports and eggs (**not tested**)
@@ -145,14 +145,14 @@ Changes from 0.5.9 to 0.6.0 (24/08/2009)
     via GUI
 
 * Fixed bug in sub-datasets handling
-* Improved debian packaging (close :issue:`3`)
+* Improved debian packaging (close :issue:`20`)
 * API reference added to documentation
-* Resources handling re-factoring (close :issue:`6`)
-* Initial support for PyInstaller_ packaging (:issue:`8`)
+* Resources handling re-factoring (close :issue:`23`)
+* Initial support for PyInstaller_ packaging (:issue:`25`)
 * Improved project layout: exectools in now an independent python package,
-  no more a sub-package of gsdview (close :issue:`10`)
+  no more a sub-package of gsdview (close :issue:`27`)
 * `setuptools <http://pypi.python.org/pypi/setuptools>`_ support
-  (close :issue:`7`)
+  (close :issue:`24`)
 
 
 Changes from 0.3.0 to 0.5.9 (10/05/2009)
