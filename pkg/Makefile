@@ -33,6 +33,7 @@ pyinstaller:
 	git clone git://github.com/pyinstaller/pyinstaller.git
 	#git clone -b master git://github.com/pyinstaller/pyinstaller.git
 
+# @TODO: see http://www.pyinstaller.org/ticket/657
 env: pyinstaller
 	cd pyinstaller && git pull
 	#cd pyinstaller/source && python waf configure build install
