@@ -75,7 +75,7 @@ NEST_
     in the future Sentinel-1.
 
     In addition, NEST supports handling of products from third party missions
-    including JERS-1, ALOS PALSAR, TerraSAR-X, Radarsat-1 & 2 and COSMO-Skymed.
+    including JERS-1, ALOS PALSAR, TerraSAR-X, Radarsat-1 & 2 and COSMO-SkyMed.
 BEST_
     Basic Envisat SAR Toolbox: the ESA collection of executable software
     tools that has been developed to facilitate the use of their SAR data
@@ -313,6 +313,8 @@ ENVISAT_
     * `Envisat auxiliary data <http://earth.esa.int/services/auxiliary_data>`_
     * `Earthquakes <http://earth.esa.int/category/index.cfm?fcategoryid=37>`_
       (L’Aquila, Haiti and Sichuan)
+`COSMO-SkyMed`_
+    * `Demo products <http://www.e-geos.it/products/demos.html>`_
 TerraSAR-X_
     * `Sample TerraSAR-X products <http://www.infoterra.de/tsx/freedata/start.php>`_
       can be found at Infoterra_ (`ditect ftp link <ftp://infoterra:itd@delivery.infoterra.de>`_)
@@ -371,6 +373,7 @@ misc
 
 .. _ERS: http://earth.esa.int/ers
 .. _ENVISAT: http://envisat.esa.int
+.. _`COSMO-SkyMed`: http://www.cosmo-skymed.it
 .. _TerraSAR-X: http://www.dlr.de/TerraSAR-X
 .. _Radarsat1: http://www.asc-csa.gc.ca/eng/satellites/radarsat1
 .. _Radarsat2: http://www.radarsat2.info
