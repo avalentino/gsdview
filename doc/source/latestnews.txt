@@ -4,7 +4,7 @@
              Now the source code repository, the wiki, and the issue tracker
              can be found at https://github.com/avalentino/gsdview.
              The main project page togeter with the the home page and file
-             download hosting are still on _SourceForge.
+             download hosting are still on SourceForge_.
 
 :26/12/2012: Renewed sphinx_ theme.
 
