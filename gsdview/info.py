@@ -101,5 +101,6 @@ elif platform.win32_ver() != ('', '', '', ''):
 
 
 def all_versions_str():
-    return '\n'.join('%s v. %s (%s)' % (sw, version_, link)
-                                        for sw, version_, link in all_versions)
+    return '\n'.join(
+        '%s v. %s %s' % (sw, version_, '(%s)' % link if link else '')
+                                    for sw, version_, link in all_versions)

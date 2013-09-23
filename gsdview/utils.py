@@ -107,18 +107,21 @@ def getresource(resource, package=None):
 
 
 def format_platform_info():
-    platform_info = ['architecture: %s %s\n' % platform.architecture()]
-    platform_info.append('platform: %s' % platform.platform())
+    platform_info = [
+        'architecture: %s %s\n' % platform.architecture(),
+        'machine: %s' % platform.machine(),
+        'platform: %s' % platform.platform(),
+    ]
     libc_ver = '%s %s\n' % platform.libc_ver()
     if libc_ver.strip():
         platform_info.append(libc_ver)
 
     if platform.dist() != ('', '', ''):
-        platform_info.append('GNU/Linux: %s' % ' '.join(platform.dist()))
+        platform_info.append('GNU/Linux: %s\n' % ' '.join(platform.dist()))
     elif platform.mac_ver() != ('', ('', '', ''), ''):
-        platform_info.append('Mac OS X: %s' % platform.mac_ver()[0])
+        platform_info.append('Mac OS X: %s\n' % platform.mac_ver()[0])
     elif platform.win32_ver() != ('', '', '', ''):
-        platform_info.append('Windows: %s' % platform.win32_ver()[0])
+        platform_info.append('Windows: %s\n' % platform.win32_ver()[0])
 
     platform_info.append('python_compiler: %s\n' % platform.python_compiler())
     platform_info.append('python_implementation: %s\n' %
