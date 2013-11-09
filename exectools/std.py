@@ -26,11 +26,6 @@ from exectools import BaseToolController, EX_OK
 from . import subprocess2
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__revision__ = '$Revision: $'
-__date__ = '$Date: $'
-
-
 class StdToolController(BaseToolController):
     '''Class for controlling command line tools.
 

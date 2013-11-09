@@ -35,10 +35,6 @@ else:
 
 from osgeo import gdal
 
-
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
 __version__ = '1.0'
 
 GDAL_STATS_KEYS = ('STATISTICS_MINIMUM', 'STATISTICS_MAXIMUM',

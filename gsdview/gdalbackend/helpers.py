@@ -35,11 +35,6 @@ from ..gdalbackend import modelitems
 from ..gdalbackend import gdalsupport
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
-
 class GdalHelper(object):
     '''Basee helper class for running external GDAL tools.
 

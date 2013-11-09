@@ -36,11 +36,6 @@ from gsdtools import ras2vec
 from . import info
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
-
 class GSDToolsController(QtCore.QObject):
     def __init__(self, app, **kwargs):
         super(GSDToolsController, self).__init__(app, **kwargs)

@@ -48,11 +48,6 @@ from exectools.qt4 import (Qt4OutputPlane, Qt4OutputHandler, Qt4ToolController,
                            Qt4DialogLoggingHandler, Qt4LoggingHandler)
 
 
-__author__ = 'Antonio Valentino <antonio.valentino@tiscali.it>'
-__date__ = '$Date: 2006/03/11 23:18:40 $'
-__version__ = '$Revision: 1.15 $'
-
-
 class Qt4Shell(QtGui.QMainWindow):
     '''Qt4 interactive shell using tool controller.
 

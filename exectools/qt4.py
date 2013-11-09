@@ -44,10 +44,6 @@ except ImportError:
 from exectools import BaseOutputHandler, BaseToolController, EX_OK, level2tag
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__revision__ = '$Revision$'
-__date__ = '$Date$'
-
 __all__ = ['Qt4Blinker', 'Qt4OutputPlane', 'Qt4OutputHandler',
            'Qt4LoggingHandler', 'Qt4DialogLoggingHandler', 'Qt4ToolController']
 

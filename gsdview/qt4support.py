@@ -33,10 +33,6 @@ from qt import QtCore, QtGui, QtSvg
 from . import utils
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
 intToWinState = {
     int(QtCore.Qt.WindowNoState):       QtCore.Qt.WindowNoState,
     int(QtCore.Qt.WindowMinimized):     QtCore.Qt.WindowMinimized,

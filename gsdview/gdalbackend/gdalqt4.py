@@ -37,11 +37,6 @@ from ..qt4support import numpy2qimage
 from ..gdalbackend import gdalsupport
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
-
 def gdalcolorentry2qcolor(colrentry, interpretation=gdal.GPI_RGB):
     qcolor = QtGui.QColor()
 

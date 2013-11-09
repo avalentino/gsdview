@@ -31,11 +31,6 @@ from exectools.qt4 import Qt4OutputHandler
 from osgeo import gdal
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
-
 class BaseGdalToolDescriptor(exectools.ToolDescriptor):
     '''Base class for GDAL tool descriprors.'''
 

@@ -31,11 +31,6 @@ from osgeo import gdal
 from osgeo import osr
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
-
 GDAL_CONFIG_OPTIONS = '''\
 GDAL_DATA
 GDAL_SKIP

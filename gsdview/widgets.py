@@ -36,11 +36,6 @@ from . import utils
 from . import qt4support
 
 
-__author__ = '$Author$'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
-
 def get_mainwin():
     #mainwin = QtGui.qApp.findChild(QtGui.QMainWindow,  'gsdview-mainwin')
     for mainwin in QtGui.QApplication.topLevelWidgets():

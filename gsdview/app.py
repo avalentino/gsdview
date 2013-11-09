@@ -44,10 +44,6 @@ from .widgets import AboutDialog, PreferencesDialog
 from .widgets import GSDViewExceptionDialog as ExceptionDialog
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
 __all__ = ['GSDView']
 
 

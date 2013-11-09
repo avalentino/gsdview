@@ -25,11 +25,6 @@
 from qt import QtCore, QtGui
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
-
 class CoordinateView(QtGui.QWidget):
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(CoordinateView, self).__init__(parent, flags, **kwargs)

@@ -29,11 +29,6 @@ from gsdview import qt4support
 from .widgets import StretchDialog
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date: 2010/02/14 22:02:21 $'
-__revision__ = '$Revision: 36b7b35ff3b6 $'
-
-
 class StretchTool(QtCore.QObject):
     def __init__(self, app, **kwargs):
         super(StretchTool, self).__init__(app, **kwargs)

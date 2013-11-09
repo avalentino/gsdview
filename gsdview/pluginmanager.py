@@ -34,11 +34,6 @@ except ImportError:
     logging.getLogger(__name__).debug('"pkg_resources" not found.')
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date: 2009-05-31 10:28:43 +0200 (dom, 31 mag 2009) $'
-__revision__ = '$Revision: 430 $'
-
-
 class PluginManager(object):
     def __init__(self, app, syspath=None):
         super(PluginManager, self).__init__()

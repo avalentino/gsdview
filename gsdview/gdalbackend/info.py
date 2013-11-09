@@ -22,9 +22,6 @@
 '''GDAL backend for GSDView.'''
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
 __version__ = (0, 7, 0)
 __requires__ = []
 

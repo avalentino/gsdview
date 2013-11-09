@@ -36,10 +36,6 @@ from ..gdalbackend import gdalqt4
 from ..gdalbackend import gdalsupport
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
 VISIBLE_OVERVIEW_ITEMS = False
 
 

@@ -33,11 +33,6 @@ from exectools.gtk2 import (GtkOutputPlane, GtkOutputHandler,
                             GtkLoggingHandler)
 
 
-__author__ = 'Antonio Valentino <antonio.valentino@tiscali.it>'
-__date__ = '$Date: 2006/03/11 23:18:40 $'
-__version__ = '$Revision: 1.15 $'
-
-
 class GtkShell(object):
     historyfile = 'history.txt'
 

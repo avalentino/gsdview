@@ -30,11 +30,6 @@ from gsdview import utils
 from gsdview import qt4support
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
-
 class WorldmapPanel(QtGui.QDockWidget):
     # @TODO: use zoom plugin
 

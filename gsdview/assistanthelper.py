@@ -27,11 +27,6 @@ import sys
 from qt import QtCore, QtGui
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date: 2009-09-04 20:24:24 +0200 (ven, 04 set 2009) $'
-__revision__ = '$Revision: 531 $'
-
-
 class Assistant(object):
     '''Helper class controllig an external QAssistant proces.'''
 

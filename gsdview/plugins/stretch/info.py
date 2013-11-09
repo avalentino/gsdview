@@ -21,9 +21,6 @@
 
 '''Package info.'''
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date: 2010/02/14 12:21:23 $'
-__revision__ = '$Revision: 003973572867 $'
 __version__ = (0, 7, 0)
 __requires__ = []
 

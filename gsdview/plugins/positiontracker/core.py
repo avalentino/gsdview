@@ -27,11 +27,6 @@ from qt import QtCore
 from .coordinateview import CoordinateView, GeoCoordinateView
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
-
 class TrackingTool(QtCore.QObject):
     def __init__(self, app, **kwargs):
         super(TrackingTool, self).__init__(app, **kwargs)

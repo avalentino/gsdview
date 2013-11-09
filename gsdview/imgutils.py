@@ -25,11 +25,6 @@
 import numpy as np
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
-
 ### LUT utils ################################################################
 def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0,
                omax=None):

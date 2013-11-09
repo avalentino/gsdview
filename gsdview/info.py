@@ -31,9 +31,6 @@ import qt
 from qt import QtCore
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
 __version__ = (0, 7, 0)
 
 __all__ = ['name', 'version', 'short_description', 'description',

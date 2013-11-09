@@ -37,11 +37,6 @@ from qt import QtCore, QtGui
 from . import qt4support
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
-
 class MouseMode(QtCore.QObject):
     '''Base class for mouse mode desctiptors.
 

@@ -29,11 +29,6 @@ from qt import QtCore, QtGui
 from .qtwindowlistmenu import QtWindowListMenu
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
-
 class MdiMainWindow(QtGui.QMainWindow):
     '''Base class for MDI applications.
 

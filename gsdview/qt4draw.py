@@ -27,11 +27,6 @@ from qt import QtCore, QtGui
 from .mousemanager import MouseMode  # , RubberBandMode
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
-
 ### Graphics Items ############################################################
 def _highlightSelectedGraphicsItem(item, painter, option, boundingrect=None):
     '''Highlights item as selected.

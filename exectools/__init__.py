@@ -28,9 +28,6 @@ import logging
 from io import StringIO
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__revision__ = '$Revision$'
-__date__ = '$Date$'
 __version__ = (0, 7, 0)
 
 __all__ = ['EX_OK', 'PROGRESS', 'TAGS', 'level2tag',

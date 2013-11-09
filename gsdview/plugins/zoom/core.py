@@ -29,11 +29,6 @@ from qt import QtCore, QtGui
 from gsdview import qt4support
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
-
 class ZoomTool(QtCore.QObject):
     DEFAULT_FACTOR = 1.2
 

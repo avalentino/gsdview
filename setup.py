@@ -30,10 +30,6 @@ from exectools import __version__ as exectools_version
 from gsdtools import __version__ as gsdtools_version
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
 PKGNAME = info.name.lower()
 
 cmdclass = {}

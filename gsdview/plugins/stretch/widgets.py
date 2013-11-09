@@ -29,11 +29,6 @@ from qt import QtCore, QtGui
 from gsdview import qt4support
 
 
-__author__ = '$Author: a_valentino $'
-__date__ = '$Date: 2010/02/14 12:21:23 $'
-__revision__ = '$Revision: 003973572867 $'
-
-
 StretchWidgetBase = qt4support.getuiform('doubleslider', __name__)
 
 

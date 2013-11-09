@@ -38,11 +38,6 @@ from ..widgets import get_filedialog, FileEntryWidget
 from . import gdalsupport
 
 
-__author__ = '$Author$'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
-
 GDALInfoWidgetBase = qt4support.getuiform('gdalinfo', __name__)
 
 

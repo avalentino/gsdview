@@ -36,11 +36,6 @@ from exectools import BaseOutputHandler, level2tag
 from exectools.std import StdToolController
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__revision__ = '$Revision$'
-__date__ = '$Date$'
-
-
 class Popen(gobject.GObject, subprocess2.Popen):
 
     _timeout = 100  # ms

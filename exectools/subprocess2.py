@@ -54,11 +54,6 @@ except ImportError:
     __all__ = ["Popen", "PIPE", "STDOUT", "call", "list2cmdline"]
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__revision__ = '$Revision$'
-__date__ = '$Date$'
-
-
 class Popen(recipe_440544.Popen):
     # @TODO: see subprocess.Popen.terminate(), subprocess.Popen.kill(), and
     #        subprocess.Popen.send_signal() from Python 2.6

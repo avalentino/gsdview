@@ -31,11 +31,6 @@ from gsdview import utils
 from gsdview.gdalbackend.gdalexectools import BaseGdalToolDescriptor
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
-
 def _gsdtoolcmd(name):
     path = os.path.abspath(gsdtools.__path__)
     script = os.path.join(path, name + '.py')

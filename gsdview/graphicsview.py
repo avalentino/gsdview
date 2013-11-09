@@ -25,11 +25,6 @@
 from qt import QtCore, QtGui
 
 
-__author__ = 'Antonio Valentino <a_valentino@users.sf.net>'
-__date__ = '$Date$'
-__revision__ = '$Revision$'
-
-
 # @TODO: move to gdalqt4.py
 # @TODO: maybe this is not the best solution. Maybe a custom GraphicsItem
 #        would be better
