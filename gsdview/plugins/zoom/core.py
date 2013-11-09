@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2012 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2013 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -36,11 +36,11 @@ __revision__ = '$Revision$'
 
 class ZoomTool(QtCore.QObject):
     DEFAULT_FACTOR = 1.2
-    
+
     def __init__(self, view=None, parent=None, **kwargs):
         super(ZoomTool, self).__init__(parent, **kwargs)
         self.factor = self.DEFAULT_FACTOR
-        
+
         self._view = view
 
         self.actions = self._setupActions()

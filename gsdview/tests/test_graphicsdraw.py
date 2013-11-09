@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2012 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2013 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of exectools.
 
@@ -212,7 +212,7 @@ class GraphicsDrawApp(QtGui.QMainWindow):
         title = self.tr('Qt4 Graphics Draw Example')
         text = ['<h1>Graphics Draw</h1>'
                 '<p>Example program for the basic Qt4 graphics drawing.</p>',
-                '<p>Copyright (C): 2010-2012 '
+                '<p>Copyright (C): 2010-2013 '
                 '<a href="mailto:a_valentino@users.sf.net">'
                     'Antonio Valentino<a>.</p>']
         text = self.tr('\n'.join(text))

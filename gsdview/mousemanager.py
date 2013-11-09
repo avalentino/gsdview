@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2012 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2013 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of GSDView.
 
@@ -144,7 +144,7 @@ class ScrollHandMode(MouseMode):
             else:
                 # a factor of 1.1 every 15 degrees
                 k = 1.1 / 15.
-            
+
             if delta >= 0:
                 factor = k * delta
             else:

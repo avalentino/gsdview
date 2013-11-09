@@ -10,7 +10,7 @@
     :Revision: $Revision$
     :Date: $Date$
     :License: `GNU General Public License`__ (GPL)
-    :Copyright (C): 2008-2012 Antonio Valentino <a_valentino@users.sf.net>
+    :Copyright (C): 2008-2013 Antonio Valentino <a_valentino@users.sf.net>
 
     __ GPL_
 
