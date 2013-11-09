@@ -31,9 +31,9 @@ import traceback
 
 from qt import QtCore, QtGui
 
-from . import info
-from . import utils
-from . import qt4support
+from gsdview import info
+from gsdview import utils
+from gsdview import qt4support
 
 
 def get_mainwin():

@@ -30,8 +30,7 @@ import gtk
 import pango
 import gobject
 
-from . import subprocess2
-
+from exectools import subprocess2
 from exectools import BaseOutputHandler, level2tag
 from exectools.std import StdToolController
 

@@ -28,7 +28,7 @@ from osgeo import ogr, osr
 
 from qt import QtCore, QtGui
 
-from .. import qt4draw
+from gsdview import qt4draw
 
 
 ### Graphics Items ############################################################

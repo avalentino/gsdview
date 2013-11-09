@@ -31,11 +31,11 @@ from osgeo import gdal
 
 from qt import QtCore, QtGui
 
-from .. import utils
-from .. import qt4support
-from ..widgets import get_filedialog, FileEntryWidget
+from gsdview import utils
+from gsdview import qt4support
+from gsdview.widgets import get_filedialog, FileEntryWidget
 
-from . import gdalsupport
+from gsdview.gdalbackend import gdalsupport
 
 
 GDALInfoWidgetBase = qt4support.getuiform('gdalinfo', __name__)

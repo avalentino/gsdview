@@ -35,8 +35,8 @@ except ImportError:
     import logging
     logging.getLogger('gsdview').debug('"pkg_resources" not found.')
 
-from . import info
-from . import appsite
+from gsdview import info
+from gsdview import appsite
 
 
 __all__ = ['which', 'isexecutable', 'isscript', 'scriptcmd', 'default_workdir',

@@ -29,11 +29,11 @@ from osgeo import gdal
 
 from qt import QtCore, QtGui
 
-from .. import qt4support
-from ..errors import OpenError
-from ..gdalbackend import info
-from ..gdalbackend import gdalqt4
-from ..gdalbackend import gdalsupport
+from gsdview import qt4support
+from gsdview.errors import OpenError
+from gsdview.gdalbackend import info
+from gsdview.gdalbackend import gdalqt4
+from gsdview.gdalbackend import gdalsupport
 
 
 VISIBLE_OVERVIEW_ITEMS = False

@@ -35,7 +35,7 @@ import errno
 import warnings
 import subprocess
 
-from . import recipe_440544
+from exectools import recipe_440544
 
 if subprocess.mswindows:
     from win32api import OpenProcess, TerminateProcess, CloseHandle

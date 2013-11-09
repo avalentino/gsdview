@@ -24,7 +24,7 @@
 
 from qt import QtCore, QtGui
 
-from .mousemanager import MouseMode  # , RubberBandMode
+from gsdview.mousemanager import MouseMode  # , RubberBandMode
 
 
 ### Graphics Items ############################################################

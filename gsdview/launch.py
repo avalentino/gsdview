@@ -93,10 +93,10 @@ def preload(modules, app=None):
         logging.debug('%s import: %d.%06ds' % ((modname,) + timer.update()))
 
 
-def cmdline_ui():
+def cmdline_ui():sdview
     from optparse import OptionParser
 
-    from . import info
+    from g import info
 
     # filter out arguments that cause errors in Mac bundles
     import sys
@@ -151,9 +151,9 @@ def main():
     logging.debug('Qt4 import: %d.%06ds' % timer.update())
 
     import sys
-    from .info import name as NAME
-    from .info import version as VERSION
-    from .utils import getresource
+    from gsdview.info import name as NAME
+    from gsdview.info import version as VERSION
+    from gsdview.utils import getresource
 
     app = QtGui.QApplication(sys.argv)
     app.setApplicationName(NAME)
@@ -178,7 +178,7 @@ def main():
 
     ### GUI ###################################################################
     logger.info('Build GUI ...')
-    from .app import GSDView
+    from gsdview.app import GSDView
     mainwin = GSDView()    # @TODO: pass plugins_path, loglevel??
     mainwin.show()
     logger.info('GUI setup completed')

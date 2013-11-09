@@ -28,13 +28,13 @@ from osgeo import gdal
 
 from qt import QtCore, QtGui
 
-from .. import qt4support
+from gsdview import qt4support
 
-from . import widgets
-from . import helpers
-from . import modelitems
-from . import gdalsupport
-from . import gdalexectools
+from gsdview.gdalbackend import widgets
+from gsdview.gdalbackend import helpers
+from gsdview.gdalbackend import modelitems
+from gsdview.gdalbackend import gdalsupport
+from gsdview.gdalbackend import gdalexectools
 
 
 __all__ = ['GDALBackend']
@@ -705,7 +705,7 @@ class GDALBackend(QtCore.QObject):
 
 
 ### MISC ######################################################################
-from ..mdi import ItemSubWindow
+from gsdview.mdi import ItemSubWindow
 
 
 # @TODO: move elsewhere

@@ -26,7 +26,7 @@
 
 from qt import QtCore, QtGui
 
-from .qtwindowlistmenu import QtWindowListMenu
+from gsdview.qtwindowlistmenu import QtWindowListMenu
 
 
 class MdiMainWindow(QtGui.QMainWindow):

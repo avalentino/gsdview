@@ -30,7 +30,7 @@ from ConfigParser import ConfigParser
 
 from qt import QtCore, QtGui, QtSvg
 
-from . import utils
+from gsdview import utils
 
 
 intToWinState = {

@@ -304,7 +304,7 @@ import functools
 from qt import QtCore, QtGui
 
 # @TODO: check dependency - getuiform, geticon, setViewContextActions
-from . import qt4support
+from gsdview import qt4support
 
 
 PluginManagerGuiBase = qt4support.getuiform('pluginmanager', __name__)

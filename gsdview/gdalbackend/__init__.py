@@ -22,9 +22,9 @@
 '''GDAL backend for GSDView.'''
 
 
-from .info import *
-from .info import __version__, __requires__
-from .core import GDALBackend
+from gsdview.gdalbackend.info import *
+from gsdview.gdalbackend.info import __version__, __requires__
+from gsdview.gdalbackend.core import GDALBackend
 
 
 __all__ = ['init', 'close', 'loadSettings', 'saveSettings',
@@ -50,11 +50,11 @@ def init(app):
 
     from osgeo import gdal
 
-    from .. import utils
-    from .. import qt4support
+    from gsdview import utils
+    from gsdview import qt4support
 
-    from . import widgets
-    from . import gdalsupport
+    from gsdview.gdalbackend import widgets
+    from gsdview.gdalbackend import gdalsupport
 
     # @TODO: check
     #UseExceptions()
@@ -101,7 +101,7 @@ def init(app):
 
     # Fix path for GDAL tools
     if getattr(sys, 'frozen', False):
-        from .. import appsite
+        from gsdview import appsite
         os.environ['PATH'] = os.pathsep.join((appsite.GSDVIEWROOT,
                                               os.getenv('PATH', '')))
         gdal.SetConfigOption('GDAL_DATA',

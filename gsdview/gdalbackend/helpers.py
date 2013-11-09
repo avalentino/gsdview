@@ -31,8 +31,8 @@ from osgeo import gdal
 
 from qt import QtGui
 
-from ..gdalbackend import modelitems
-from ..gdalbackend import gdalsupport
+from gsdview.gdalbackend import modelitems
+from gsdview.gdalbackend import gdalsupport
 
 
 class GdalHelper(object):

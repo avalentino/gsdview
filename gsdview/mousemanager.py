@@ -34,7 +34,7 @@ making the system expandible, and also methods to register objects
 
 from qt import QtCore, QtGui
 
-from . import qt4support
+from gsdview import qt4support
 
 
 class MouseMode(QtCore.QObject):

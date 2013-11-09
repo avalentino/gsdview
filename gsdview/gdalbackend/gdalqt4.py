@@ -32,9 +32,9 @@ from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
 
 from qt import QtCore, QtGui
 
-from .. import imgutils
-from ..qt4support import numpy2qimage
-from ..gdalbackend import gdalsupport
+from gsdview import imgutils
+from gsdview.qt4support import numpy2qimage
+from gsdview.gdalbackend import gdalsupport
 
 
 def gdalcolorentry2qcolor(colrentry, interpretation=gdal.GPI_RGB):

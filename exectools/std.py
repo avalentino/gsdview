@@ -23,7 +23,7 @@
 import sys
 
 from exectools import BaseToolController, EX_OK
-from . import subprocess2
+from exectools import subprocess2
 
 
 class StdToolController(BaseToolController):
