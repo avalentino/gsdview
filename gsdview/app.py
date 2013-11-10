@@ -439,7 +439,7 @@ class GSDView(ItemModelMainWindow):
         self.pluginmanager.save_settings(self.settings)
 
     def setupLogging(self):
-        logger = logging.getLogger('gsdview')    # 'gsdview' # @TODO: fix
+        logger = logging.getLogger()    # 'gsdview' # @TODO: fix
 
         # move this to launch.py
         fmt = ('%(levelname)s: %(asctime)s %(filename)s line %(lineno)d in '
