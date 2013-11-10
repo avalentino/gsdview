@@ -132,10 +132,10 @@ def copy_dataset_subwin(dataset, srcwin, bands=None, vrtfile=''):
     if not vrtds:
         if vrtfile:
             msg = 'unable to create a vrtual dataset for "%s" in "%s".' % (
-                                            dataset.GetDescription(), vrtfile)
+                dataset.GetDescription(), vrtfile)
         else:
             msg = ('unable to create and anonymous vrtual dataset for "%s".' %
-                                                    dataset.GetDescription())
+                   dataset.GetDescription())
         raise RuntimeError(msg)
 
     if bands is None:
@@ -200,8 +200,8 @@ class HistogramRequest(object):
         return self.hmin, self.hmax, self.nbuckets
 
     def iscustom(self):
-        return all(val is not None
-                            for val in (self.hmin, self.hmax, self.nbuckets))
+        return all(
+            val is not None for val in (self.hmin, self.hmax, self.nbuckets))
 
 
 def computestats(dataset, bands=None, computestats=True, histreq=None,
@@ -249,7 +249,7 @@ def computestats(dataset, bands=None, computestats=True, histreq=None,
         if histreq:
             if not histreq.iscustom():
                 hmin, hmax, nbuckets, hist = band.GetDefaultHistogram(
-                                                    callback=callback)
+                    callback=callback)
             else:
                 hmin, hmax, nbuckets = histreq.values()
                 nbuckets = int(nbuckets)
@@ -271,7 +271,7 @@ def computestats(dataset, bands=None, computestats=True, histreq=None,
     return statistics, histograms
 
 
-### Command line tool #########################################################
+# Command line tool #########################################################
 def handlecmd(argv=None):
     import optparse
 
@@ -281,9 +281,9 @@ def handlecmd(argv=None):
     argv = gdal.GeneralCmdLineProcessor(argv)
 
     parser = optparse.OptionParser(
-                        usage='%prog [options] FILENAME',
-                        version='%%prog %s' % __version__,
-                        description=__doc__)
+        usage='%prog [options] FILENAME',
+        version='%%prog %s' % __version__,
+        description=__doc__)
     parser.add_option('--no-stats', dest='stats', action='store_false',
                       default=True,
                       help='disable statistics computation (default: False)')

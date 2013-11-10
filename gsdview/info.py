@@ -79,8 +79,9 @@ if qt.qt_api == 'pyqt':
     except ImportError:
         pass
     else:
-        all_versions.append(('QScintilla', Qsci.QSCINTILLA_VERSION_STR,
-                'http://www.riverbankcomputing.co.uk/software/qscintilla'))
+        all_versions.append((
+            'QScintilla', Qsci.QSCINTILLA_VERSION_STR,
+            'http://www.riverbankcomputing.co.uk/software/qscintilla'))
 
 elif qt.qt_api == 'pyside':
     import PySide
@@ -100,4 +101,4 @@ elif platform.win32_ver() != ('', '', '', ''):
 def all_versions_str():
     return '\n'.join(
         '%s v. %s %s' % (sw, version_, '(%s)' % link if link else '')
-                                    for sw, version_, link in all_versions)
+        for sw, version_, link in all_versions)

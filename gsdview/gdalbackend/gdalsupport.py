@@ -211,14 +211,14 @@ def driverList(drivertype='raster'):
 
     drivers = []
     if 'raster' in types:
-        drivers.extend(gdal.GetDriver(index)
-                                    for index in range(gdal.GetDriverCount()))
+        drivers.extend(
+            gdal.GetDriver(index) for index in range(gdal.GetDriverCount()))
 
     if 'vector' in types:
         # @TODO: check
         from osgeo import ogr
-        drivers.extend(ogr.GetDriver(index)
-                                    for index in range(ogr.GetDriverCount()))
+        drivers.extend(
+            ogr.GetDriver(index) for index in range(ogr.GetDriverCount()))
 
     return drivers
 
@@ -334,8 +334,9 @@ def isRGB(dataset, strict=False):
         return False
 
     # @TODO: allow different color orders (??)
-    bands = [dataset.GetRasterBand(b)
-                                for b in range(1, dataset.RasterCount + 1)]
+    bands = [
+        dataset.GetRasterBand(b) for b in range(1, dataset.RasterCount + 1)
+    ]
     for band, colorint in zip(bands, (gdal.GCI_RedBand,
                                       gdal.GCI_GreenBand,
                                       gdal.GCI_BlueBand,
@@ -357,7 +358,7 @@ def isRGB(dataset, strict=False):
     return True
 
 
-### Statistics helpers ########################################################
+# Statistics helpers ########################################################
 SAFE_GDAL_STATS = (('1640' <= gdal.VersionInfo() < '1700') or
                    (gdal.VersionInfo() > '1720'))
 
@@ -483,7 +484,7 @@ def hasFastStats(band, approx_ok=True):
 
     return result
 
-### Color table helpers #####################################################
+# Color table helpers #####################################################
 colorinterpretations = {
     gdal.GPI_Gray: {
         'nchannels': 1,
@@ -556,7 +557,7 @@ def colortable2numpy(colortable):
     return colors[..., 0:nchannels]
 
 
-### Coordinate conversion helpers ############################################
+# Coordinate conversion helpers ############################################
 # @TODO: remove
 # @NOTE: bugs #3160 and #3709 have been fixed upstream with commits r22289
 #        and r22290 (1.8 branch). The fix should be included in GDAL v1.8.1.
@@ -725,7 +726,7 @@ def coordinate_mapper(dataset):
     return mapper
 
 
-### Overviews handling helpers ###############################################
+# Overviews handling helpers ###############################################
 OVRMEMSIE = 400 * 1024  # 400 kbytes
 
 
@@ -976,7 +977,7 @@ def ovrRead(dataset, x=0, y=0, w=None, h=None, ovrindex=None,
         return data
 
 
-### Misc helpers ##############################################################
+# Misc helpers ##############################################################
 def has_complex_bands(dataset):
     result = False
     for band_id in range(1, dataset.RasterCount + 1):

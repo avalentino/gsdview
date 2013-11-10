@@ -35,7 +35,7 @@ from gsdview import qt4draw
 from gsdview.mousemanager import MouseManager, RubberBandMode
 
 
-### Main application ##########################################################
+# Main application ##########################################################
 class GraphicsDrawApp(QtGui.QMainWindow):
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0)):
         QtGui.QMainWindow.__init__(self, parent, flags)
@@ -122,7 +122,7 @@ class GraphicsDrawApp(QtGui.QMainWindow):
                       triggered=self.onSave)
 
         icon = QtGui.QIcon(
-                ':/trolltech/dialogs/qprintpreviewdialog/images/print-32.png')
+            ':/trolltech/dialogs/qprintpreviewdialog/images/print-32.png')
         QtGui.QAction(icon, self.tr('&Print'), actions,
                       objectName='printAction',
                       shortcut=self.tr('Ctrl+P'),
@@ -175,7 +175,7 @@ class GraphicsDrawApp(QtGui.QMainWindow):
                       objectName='zoomResetAction',
                       statusTip=self.tr('Zoom 1:1'),
                       triggered=lambda: self.graphicsview.setMatrix(
-                                            QtGui.QMatrix(1, 0, 0, -1, 0, 0)))
+                      QtGui.QMatrix(1, 0, 0, -1, 0, 0)))
 
         icon = QtGui.QIcon(
             ':/trolltech/dialogs/qprintpreviewdialog/images/fit-page-32.png')
@@ -184,8 +184,8 @@ class GraphicsDrawApp(QtGui.QMainWindow):
                       statusTip=self.tr('Zoom Fit'),
                       #checkable=True,
                       triggered=lambda: self.graphicsview.fitInView(
-                                                self.graphicsview.sceneRect(),
-                                                QtCore.Qt.KeepAspectRatio))
+                      self.graphicsview.sceneRect(),
+                      QtCore.Qt.KeepAspectRatio))
 
         return actions
 
@@ -193,7 +193,7 @@ class GraphicsDrawApp(QtGui.QMainWindow):
         actions = QtGui.QActionGroup(self)
 
         icon = QtGui.QIcon(
-                    ':/trolltech/styles/commonstyle/images/fileinfo-32.png')
+            ':/trolltech/styles/commonstyle/images/fileinfo-32.png')
         QtGui.QAction(icon, self.tr('About'), actions,
                       objectName='aboutAction',
                       statusTip=self.tr('About'),
@@ -214,7 +214,7 @@ class GraphicsDrawApp(QtGui.QMainWindow):
                 '<p>Example program for the basic Qt4 graphics drawing.</p>',
                 '<p>Copyright (C): 2010-2013 '
                 '<a href="mailto:a_valentino@users.sf.net">'
-                    'Antonio Valentino<a>.</p>']
+                'Antonio Valentino<a>.</p>']
         text = self.tr('\n'.join(text))
         QtGui.QMessageBox.about(self, title, text)
 
@@ -226,10 +226,10 @@ class GraphicsDrawApp(QtGui.QMainWindow):
 
     @QtCore.Slot()
     def onReset(self):
-        ret = QtGui.QMessageBox.question(self,
-                self.tr('Reset'),
-                self.tr('Are you sure you want to reset the document?\n'
-                        'All changes will be lost.'))
+        ret = QtGui.QMessageBox.question(
+            self, self.tr('Reset'),
+            self.tr('Are you sure you want to reset the document?\n'
+                    'All changes will be lost.'))
         if ret == QtGui.QMessageBox.Ok:
             self.reset()
 
@@ -239,13 +239,11 @@ class GraphicsDrawApp(QtGui.QMainWindow):
             self.tr('All files (*)'),
         ]
         filters.extend('%s file (*.%s)' % (str(f).upper(), str(f))
-                        for f in QtGui.QImageReader.supportedImageFormats())
+                       for f in QtGui.QImageReader.supportedImageFormats())
 
         filename, filter_ = QtGui.QFileDialog.getOpenFileNameAndFilter(
-                                        self,
-                                        self.tr('Load picture'),
-                                        QtCore.QDir.home().absolutePath(),
-                                        ';;'.join(filters))  # , filters[1])
+            self, self.tr('Load picture'), QtCore.QDir.home().absolutePath(),
+            ';;'.join(filters))  # , filters[1])
         if filename:
             if '.svg' in filename:
                 item = QtSvg.QGraphicsSvgItem(filename)

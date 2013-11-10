@@ -129,14 +129,14 @@ class GdalHelper(object):
         if self.progressdialog:
             self.progressdialog.canceled.connect(self.controller.stop_tool)
             self.app.progressbar.valueChanged.connect(
-                                                self.progressdialog.setValue)
+                self.progressdialog.setValue)
 
     def _disconnect_signals(self):
         # @TODO: catch exceptions
         self.controller.finished.disconnect(self.finalize)
         if self.progressdialog:
             self.app.progressbar.valueChanged.disconnect(
-                                                self.progressdialog.setValue)
+                self.progressdialog.setValue)
             self.progressdialog.canceled.disconnect(self.controller.stop_tool)
 
     def do_start(self, *args, **kwargs):
@@ -150,7 +150,7 @@ class GdalHelper(object):
             return
         else:
             self.logger.debug('run the "%s" subprocess.' %
-                                    os.path.basename(self.tool.executable))
+                              os.path.basename(self.tool.executable))
 
         # @TODO: check: this instruuctin in this position don' seems to work
         #        (the progressbar hangs)

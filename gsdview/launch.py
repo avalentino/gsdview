@@ -65,18 +65,19 @@ class SplashLogHandler(logging.Handler):
         self._app.processEvents()
 
 
-MODULES = ['os', 're', 'sys', 'itertools',
-          'numpy',
-          'osgeo.gdal', 'osgeo.osr',
-          'qt.QtCore', 'qt.QtGui',
-          'exectools', 'exectools.qt4',
-          'gsdview.info', 'gsdview.utils', 'gsdview.apptools',
-          'gsdview.imgutils', 'gsdview.qt4support', 'gsdview.widgets',
-          'gsdview.graphicsview', 'gsdview.mainwin', 'gsdview.app',
-          'gsdview.gdalbackend', 'gsdview.gdalbackend.core',
-          'gsdview.gdalbackend.gdalqt4', 'gsdview.gdalbackend.widgets',
-          'gsdview.gdalbackend.modelitems', 'gsdview.gdalbackend.gdalsupport',
-          'gsdview.gdalbackend.gdalexectools',
+MODULES = [
+    'os', 're', 'sys', 'itertools',
+    'numpy',
+    'osgeo.gdal', 'osgeo.osr',
+    'qt.QtCore', 'qt.QtGui',
+    'exectools', 'exectools.qt4',
+    'gsdview.info', 'gsdview.utils', 'gsdview.apptools',
+    'gsdview.imgutils', 'gsdview.qt4support', 'gsdview.widgets',
+    'gsdview.graphicsview', 'gsdview.mainwin', 'gsdview.app',
+    'gsdview.gdalbackend', 'gsdview.gdalbackend.core',
+    'gsdview.gdalbackend.gdalqt4', 'gsdview.gdalbackend.widgets',
+    'gsdview.gdalbackend.modelitems', 'gsdview.gdalbackend.gdalsupport',
+    'gsdview.gdalbackend.gdalexectools',
 ]
 
 
@@ -93,32 +94,36 @@ def preload(modules, app=None):
         logging.debug('%s import: %d.%06ds' % ((modname,) + timer.update()))
 
 
-def cmdline_ui():sdview
+def cmdline_ui():
     from optparse import OptionParser
 
-    from g import info
+    from gsdview import info
 
     # filter out arguments that cause errors in Mac bundles
     import sys
     args = [arg for arg in sys.argv[1:] if not arg.startswith('-psn_')]
 
-    parser = OptionParser(prog='gsdview',
-                    #usage='%prog [options] [FILENAME [FILENAME [...]]]',
-                    usage='%prog [options]',
-                    version='%%prog Open Source Edition %s' % info.version,
-                    description=info.description,
-                    epilog='Home Page: %s' % info.website)
+    parser = OptionParser(
+        prog='gsdview',
+        #usage='%prog [options] [FILENAME [FILENAME [...]]]',
+        usage='%prog [options]',
+        version='%%prog Open Source Edition %s' % info.version,
+        description=info.description,
+        epilog='Home Page: %s' % info.website)
 
     # @TODO: complete
-    #~ parser.add_option('-c', '--config-file', dest='configfile', metavar='FILE',
-                      #~ help='use specified cnfig file instead of default one')
-    #~ parser.add_option('-d', '--debug', action='store_true', dest='debug',
-                      #~ help='print debug messages')
-    #~ parser.add_option('-p', '--plugins-path', dest='plugins_path',
-                      #~ metavar='PATH',
-                      #~ help='prepend the specified path to default ones. '
-                      #~ 'A "%s" separated list can be used to specify multile '
-                      #~ 'paths. ' % os.pathsep)
+    #~ parser.add_option(
+        #~ '-c', '--config-file', dest='configfile', metavar='FILE',
+        #~ help='use specified cnfig file instead of default one')
+    #~ parser.add_option(
+        #~ '-d', '--debug', action='store_true', dest='debug',
+        #~ help='print debug messages')
+    #~ parser.add_option(
+        #~ '-p', '--plugins-path', dest='plugins_path',
+        #~ metavar='PATH',
+        #~ help='prepend the specified path to default ones. '
+        #~ 'A "%s" separated list can be used to specify '
+        #~ 'multile paths. ' % os.pathsep)
 
     options, args = parser.parse_args(args)
 
@@ -146,7 +151,7 @@ def main():
 
     timer = Timer()
 
-    ### splash screen #########################################################
+    # splash screen #########################################################
     from qt import QtGui
     logging.debug('Qt4 import: %d.%06ds' % timer.update())
 
@@ -173,10 +178,10 @@ def main():
     logger.debug('Splash screen setup completed')
     logging.debug('splash screen setup: %d.%06ds' % timer.update())
 
-    ### modules loading #######################################################
+    # modules loading #######################################################
     preload(MODULES, app)
 
-    ### GUI ###################################################################
+    # GUI ###################################################################
     logger.info('Build GUI ...')
     from gsdview.app import GSDView
     mainwin = GSDView()    # @TODO: pass plugins_path, loglevel??
@@ -184,7 +189,7 @@ def main():
     logger.info('GUI setup completed')
     logging.debug('GUI setup: %d.%06ds' % timer.update())
 
-    ### close splash and run app ##############################################
+    # close splash and run app ##############################################
     logger.removeHandler(splash_loghandler)
     splash.finish(mainwin)
     app.processEvents()

@@ -29,13 +29,13 @@ try:
 except ImportError:
     # Select the PyQt API 2
     import sip
-    sip.setapi('QDate',       2)
-    sip.setapi('QDateTime',   2)
-    sip.setapi('QString',     2)
+    sip.setapi('QDate', 2)
+    sip.setapi('QDateTime', 2)
+    sip.setapi('QString', 2)
     sip.setapi('QTextStream', 2)
-    sip.setapi('QTime',       2)
-    sip.setapi('QUrl',        2)
-    sip.setapi('QVariant',    2)
+    sip.setapi('QTime', 2)
+    sip.setapi('QUrl', 2)
+    sip.setapi('QVariant', 2)
 
     from PyQt4 import QtCore, QtGui
     QtCore.Signal = QtCore.pyqtSignal
@@ -110,7 +110,7 @@ class Qt4OutputPlane(QtGui.QTextEdit):
         self.actionSaveAs = QtGui.QAction(icon, self.tr('&Save As'), self,
                                           shortcut=self.tr('Ctrl+S'),
                                           statusTip=self.tr(
-                                                        'Save text to file'),
+                                              'Save text to file'),
                                           triggered=self.save)
         self.actions.addAction(self.actionSaveAs)
 
@@ -128,7 +128,7 @@ class Qt4OutputPlane(QtGui.QTextEdit):
         self.actionHide = QtGui.QAction(icon, self.tr('&Hide'), self,
                                         shortcut=self.tr('Ctrl+W'),
                                         statusTip=self.tr(
-                                                        'Hide the text plane'),
+                                            'Hide the text plane'),
                                         triggered=self.planeHideRequest)
         self.actions.addAction(self.actionHide)
 
@@ -206,8 +206,9 @@ class Qt4OutputHandler(QtCore.QObject, BaseOutputHandler):
                 blinker.hide()
             self.pulse.connect(blinker.show)
             self.pulse.connect(blinker.pulse)
-            self.pulse[str].connect(lambda text:
-                        statusbar.showMessage(text, self._statusbar_timeout))
+            self.pulse[str].connect(
+                lambda text: statusbar.showMessage(
+                    text, self._statusbar_timeout))
 
             if progressbar is None:
                 progressbar = QtGui.QProgressBar(self.statusbar)
@@ -392,8 +393,8 @@ class Qt4DialogLoggingHandler(logging.Handler):
             self.dialog.setWindowTitle(level)
             msg = ['<h1>%s</h1>' % level]
             if record.exc_info:
-                msg.append('<p><b>%s<b></p><br>' %
-                                        record.getMessage().capitalize())
+                msg.append(
+                    '<p><b>%s<b></p><br>' % record.getMessage().capitalize())
                 # @TODO: background-color="white"
                 msg.append('<pre>%s</pre>' % self.format(record))
             else:
@@ -503,9 +504,8 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
             if self._userstop:
                 self.logger.info('Execution stopped by the user.')
             elif exitCode != EX_OK:
-                msg = ('Process (PID=%d) exited with return code %d.' %
-                                       (self.subprocess.pid(),
-                                        self.subprocess.exitCode()))
+                msg = ('Process (PID=%d) exited with return code %d.' % (
+                    self.subprocess.pid(), self.subprocess.exitCode()))
                 self.logger.warning(msg)
 
             # Call finalize hook if available
@@ -525,11 +525,11 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
             self.subprocess.waitForFinished()
             stopped = self.subprocess.state() == self.subprocess.NotRunning
             if not stopped:
-                self.logger.warning('reset running process (PID=%d)' %
-                                                        self.subprocess.pid())
+                self.logger.warning(
+                    'reset running process (PID=%d)' % self.subprocess.pid())
 
         assert self.subprocess.state() == self.subprocess.NotRunning, \
-                                                'the process is still running'
+            'the process is still running'
         self.subprocess.setProcessState(self.subprocess.NotRunning)
         # @TODO: check
         self.subprocess.closeReadChannel(QtCore.QProcess.StandardOutput)
@@ -650,8 +650,9 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         cmd = ' '.join(cmd)
 
         if self._tool.env:
-            qenv = ['%s=%s' % (key, val)
-                                for key, val in self._tool.env.iteritems()]
+            qenv = [
+                '%s=%s' % (key, val) for key, val in self._tool.env.iteritems()
+            ]
             self.subprocess.setEnvironment(qenv)
 
         if self._tool.cwd:
@@ -669,8 +670,8 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         self.subprocess.waitForFinished(self._delay_after_stop)
         stopped = self.subprocess.state() == self.subprocess.NotRunning
         if not stopped and force:
-            self.logger.info('Force process termination (PID=%d).' %
-                                                        self.subprocess.pid())
+            self.logger.info(
+                'Force process termination (PID=%d).' % self.subprocess.pid())
             self.subprocess.kill()
 
     @QtCore.Slot()
@@ -701,5 +702,5 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
             stopped = self.subprocess.state() == self.subprocess.NotRunning
             if not stopped:
                 msg = ('Unable to stop the sub-process (PID=%d).' %
-                                                        self.subprocess.pid())
+                       self.subprocess.pid())
                 self.logger.warning(msg)

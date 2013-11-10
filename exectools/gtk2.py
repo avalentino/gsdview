@@ -188,11 +188,11 @@ class GtkOutputPlane(gtk.TextView):
         # @TODO: improve formats handling add/remove/list/edit
         if formats is None:
             formats = {
-                'error':     {'foreground': 'red'},
-                'warning':   {'foreground': 'orange'},
-                'info':      {'foreground': 'blue'},
-                'debug':     {'foreground': 'gray'},
-                'cmd':       {'weight':     pango.WEIGHT_BOLD},
+                'error': {'foreground': 'red'},
+                'warning': {'foreground': 'orange'},
+                'info': {'foreground': 'blue'},
+                'debug': {'foreground': 'gray'},
+                'cmd': {'weight': pango.WEIGHT_BOLD},
             }
             #'message':{}
 
@@ -202,11 +202,11 @@ class GtkOutputPlane(gtk.TextView):
 
     def _setup_filedialog(self):
         dialog = gtk.FileChooserDialog(
-                        title='Save Output Log',
-                        #parent=self.textview.get_toplevel(),
-                        action=gtk.FILE_CHOOSER_ACTION_SAVE,
-                        buttons=(gtk.STOCK_OK, gtk.RESPONSE_OK,
-                                 gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL))
+            title='Save Output Log',
+            #parent=self.textview.get_toplevel(),
+            action=gtk.FILE_CHOOSER_ACTION_SAVE,
+            buttons=(gtk.STOCK_OK, gtk.RESPONSE_OK, gtk.STOCK_CANCEL,
+                     gtk.RESPONSE_CANCEL))
 
         patterns = [('*.txt', 'Text files'), ('*', 'All Files')]
         for pattern, name in patterns:
@@ -252,12 +252,11 @@ class GtkOutputPlane(gtk.TextView):
                 msg = ('File "%s" already exists.\n\n'
                        'Are you sure you want overwrite it?' % filename)
                 msgdialog = gtk.MessageDialog(
-                                    parent=dialog,
-                                    flags=gtk.DIALOG_MODAL |
-                                             gtk.DIALOG_DESTROY_WITH_PARENT,
-                                    type=gtk.MESSAGE_QUESTION,
-                                    buttons=gtk.BUTTONS_YES_NO,
-                                    message_format=msg)
+                    parent=dialog,
+                    flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+                    type=gtk.MESSAGE_QUESTION,
+                    buttons=gtk.BUTTONS_YES_NO,
+                    message_format=msg)
                 msgdialog.set_default_response(gtk.RESPONSE_NO)
                 response = msgdialog.run()
                 msgdialog.destroy()
@@ -305,10 +304,12 @@ class GtkOutputHandler(gobject.GObject, BaseOutputHandler):
     '''GTK progress handler'''
 
     __gsignals__ = {
-        'pulse': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
-                                                    (gobject.TYPE_STRING,),),
-        'percentage-changed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
-                                                    (gobject.TYPE_FLOAT,),),
+        'pulse': (
+            gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_STRING,),
+        ),
+        'percentage-changed': (
+            gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_FLOAT,),
+        ),
     }
 
     def __init__(self, logger=None, statusbar=None, progressbar=None,
@@ -332,12 +333,15 @@ class GtkOutputHandler(gobject.GObject, BaseOutputHandler):
                 progressbar = gtk.ProgressBar()
                 statusbar.pack_end(progressbar)
                 progressbar.hide()
-            self.connect('percentage-changed',
-                                lambda obj, perc: progressbar.show())
-            self.connect('percentage-changed', lambda obj, value:
-                            progressbar.set_text(self.percentage_fmt % value))
-            self.connect('percentage-changed', lambda obj, value:
-                            progressbar.set_fraction(value / 100.))
+            self.connect(
+                'percentage-changed', lambda obj, perc: progressbar.show())
+            self.connect(
+                'percentage-changed',
+                lambda obj, value: progressbar.set_text(
+                    self.percentage_fmt % value))
+            self.connect(
+                'percentage-changed',
+                lambda obj, value: progressbar.set_fraction(value / 100.))
         else:
             self.context_id = None
 
@@ -519,8 +523,8 @@ class GtkToolController(gobject.GObject, StdToolController):
     '''GTK tool controller'''
 
     __gsignals__ = {
-        'finished': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
-                                                    (gobject.TYPE_INT,),),
+        'finished': (
+            gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_INT,),),
     }
 
     def __init__(self, logger=None):
@@ -650,6 +654,6 @@ class GtkToolController(gobject.GObject, StdToolController):
 
         if not self._userstop:
             msg = ('Connection broken with sub-process PID=%d' %
-                                                        self.subprocess.pid)
+                   self.subprocess.pid)
             #self.logger.error(msg)
             self.logger.debug(msg)

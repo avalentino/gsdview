@@ -23,7 +23,6 @@ import os
 import sys
 import platform
 import traceback
-from glob import glob
 
 from gsdview import info
 from exectools import __version__ as exectools_version
@@ -240,10 +239,12 @@ if os.name == 'posix':
     else:
         mandir = os.path.join('share', 'man')
     datafiles.append((os.path.join(mandir, 'man1'), ['doc/man/gsdview.1']))
-    datafiles.append((os.path.join('share', 'applications'),
-                        ['gsdview.desktop']))
-    datafiles.append((os.path.join('share', 'pixmaps'),
-                        [os.path.join('gsdview', 'images', 'GSDView.png')]))
+    datafiles.append((
+        os.path.join('share', 'applications'),
+        ['gsdview.desktop']))
+    datafiles.append((
+        os.path.join('share', 'pixmaps'),
+        [os.path.join('gsdview', 'images', 'GSDView.png')]))
 
 kwargs['data_files'] = datafiles
 
@@ -251,10 +252,11 @@ kwargs['data_files'] = datafiles
 if has_setuptools:
     packages = find_packages()
     kwargs.update(dict(
-        install_requires=['GDAL >= 1.6.1',
-                          'numpy >= 1.3.0',
-                          #'sip (>= 4.7.5)',
-                          #'PyQt >= 4.6'
+        install_requires=[
+            'GDAL >= 1.6.1',
+            'numpy >= 1.3.0',
+            #'sip (>= 4.7.5)',
+            #'PyQt >= 4.6'
         ],
         #extras_require = {},
         keywords='gsdview gdal',
@@ -290,27 +292,32 @@ else:
     }
 
 
-setup(name              = PKGNAME,
-      version           = info.version,
-      description       = info.short_description,
-      long_description  = info.description,
-      author            = info.author,
-      author_email      = info.author_email,
-      maintainer        = info.author,
-      maintainer_email  = info.author_email,
-      url               = info.website,
-      download_url      = info.download_url,
-      packages          = packages,
-      classifiers       = [line for line in classifiers.split('\n') if line],
-      license           = info.license_type,
-      platforms         = ['any'],
-      requires          = ['GDAL (>= 1.6.1)',
-                           'numpy (>= 1.3.0)',
-                           'sip (>= 4.7.5)',
-                           'PyQt4 (>= 4.6)'],
-      provides          = ['%s (%d.%d.%d)' % ((PKGNAME,) + info.__version__),
-                           'exectools (%d.%d.%d)' % exectools_version,
-                           'gsdtools (%d.%d.%d)' % gsdtools_version],
-      cmdclass          = cmdclass,
-      **kwargs
+setup(
+    name=PKGNAME,
+    version=info.version,
+    description=info.short_description,
+    long_description=info.description,
+    author=info.author,
+    author_email=info.author_email,
+    maintainer=info.author,
+    maintainer_email=info.author_email,
+    url=info.website,
+    download_url=info.download_url,
+    packages=packages,
+    classifiers=[line for line in classifiers.split('\n') if line],
+    license=info.license_type,
+    platforms=['any'],
+    requires=[
+        'GDAL (>= 1.6.1)',
+        'numpy (>= 1.3.0)',
+        'sip (>= 4.7.5)',
+        'PyQt4 (>= 4.6)',
+    ],
+    provides=[
+        '%s (%d.%d.%d)' % ((PKGNAME,) + info.__version__),
+        'exectools (%d.%d.%d)' % exectools_version,
+        'gsdtools (%d.%d.%d)' % gsdtools_version,
+    ],
+    cmdclass=cmdclass,
+    **kwargs
 )

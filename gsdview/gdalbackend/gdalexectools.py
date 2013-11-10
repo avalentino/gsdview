@@ -113,7 +113,7 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
         '''
 
         super(GdalAddOverviewDescriptor, self).__init__(
-                    'gdaladdo', [], cwd, env, stdout_handler, stderr_handler)
+            'gdaladdo', [], cwd, env, stdout_handler, stderr_handler)
 
         #: ensure that gdaladdo works in readonly mode
         self.readonly = False
@@ -147,9 +147,10 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
         ''' % ', '.join(GdalAddOverviewDescriptor.RESAMPLING_METHODS)
 
         if method is not None and method not in self.RESAMPLING_METHODS:
-            raise ValueError('invalid resampling method: "%s". '
-                             'Available methods are: %s' % (method,
-                                    ', '.join(self.RESAMPLING_METHODS)))
+            raise ValueError(
+                'invalid resampling method: "%s". '
+                'Available methods are: %s' % (
+                    method, ', '.join(self.RESAMPLING_METHODS)))
         self._resampling_method = method
 
     def compression_method(self):
@@ -233,25 +234,25 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
             extra_args.extend(('--config', 'USE_RRD', value))
 
         if (self.photometric_interpretation is not None and
-            'PHOTOMETRIC_OVERVIEW' not in cmd):
+                'PHOTOMETRIC_OVERVIEW' not in cmd):
 
             extra_args.extend(('--config', 'PHOTOMETRIC_OVERVIEW',
                                self.photometric_interpretation))
 
         if (self._compression_method is not None and
-            'COMPRESS_OVERVIEW' not in cmd):
+                'COMPRESS_OVERVIEW' not in cmd):
 
             extra_args.extend(('--config', 'COMPRESS_OVERVIEW',
                                self._compression_method))
 
         if (self._interleaving_method is not None and
-            'INTERLEAVE_OVERVIEW' not in cmd):
+                'INTERLEAVE_OVERVIEW' not in cmd):
 
             extra_args.extend(('--config', 'INTERLEAVE_OVERVIEW',
                                self._interleaving_method))
 
         if (self._use_bigtiff_mode is not None and
-            'BIGTIFF_OVERVIEW' not in cmd):
+                'BIGTIFF_OVERVIEW' not in cmd):
 
             extra_args.extend(('--config', 'BIGTIFF_OVERVIEW',
                                self._use_bigtiff_mode))

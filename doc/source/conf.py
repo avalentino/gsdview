@@ -11,17 +11,17 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+import os
+import sys
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
 GSDVIEWROOT = os.path.abspath(os.path.join(os.pardir, os.pardir))
 sys.path.insert(0, GSDVIEWROOT)
 sys.path.insert(1, os.path.join(GSDVIEWROOT, 'gsdview', 'plugins'))
 
-# -- General configuration -----------------------------------------------------
+# -- General configuration -----------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
 needs_sphinx = '1.0'
@@ -106,7 +106,7 @@ pygments_style = 'sphinx'
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
 
-# -- Extensions configuration --------------------------------------------------
+# -- Extensions configuration --------------------------------------------
 
 # Autodoc configuration
 autoclass_content = 'both'
@@ -123,7 +123,7 @@ todo_include_todos = True
 extlinks = {'issue': ('https://github.com/avalentino/gsdview/issues/%s', '#')}
 
 
-# -- Options for HTML output ---------------------------------------------------
+# -- Options for HTML output ---------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
@@ -144,7 +144,7 @@ html_theme_options = {
     #'allura_tickets': True,
     #'allura_mailinglist': True,
     'extralinks': [
-    #    ('GSDView Pro', 'http://www.consorzio-innova.com/static/gsdview/index.html'),
+        #('GSDView Pro', 'http://www.consorzio-innova.com/static/gsdview/index.html'),
         ('GitHub project site', 'https://github.com/avalentino/gsdview'),
         ('Wiki', 'https://github.com/avalentino/gsdview/wiki'),
         ('Issue tracker', 'https://github.com/avalentino/gsdview/issues'),
@@ -224,7 +224,7 @@ html_use_index = False
 htmlhelp_basename = 'GSDViewdoc'
 
 
-# -- Options for LaTeX output --------------------------------------------------
+# -- Options for LaTeX output --------------------------------------------
 
 latex_elements = {
 # The paper size ('letterpaper' or 'a4paper').
@@ -262,7 +262,7 @@ latex_logo = 'images/logo_large.pdf'
 #latex_domain_indices = True
 
 
-# -- Options for manual page output --------------------------------------------
+# -- Options for manual page output --------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
@@ -275,14 +275,14 @@ man_pages = [
 #man_show_urls = False
 
 
-# -- Options for Texinfo output ------------------------------------------------
+# -- Options for Texinfo output ------------------------------------------
 
 # Grouping the document tree into Texinfo files. List of tuples
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'GSDView', 'GSDView Documentation', 'Antonio Valentino',
-   'GSDView', 'One line description of project.', 'Miscellaneous'),
+    ('index', 'GSDView', 'GSDView Documentation', 'Antonio Valentino',
+     'GSDView', 'One line description of project.', 'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.
@@ -295,7 +295,7 @@ texinfo_documents = [
 #texinfo_show_urls = 'footnote'
 
 
-# -- Options for Epub output ---------------------------------------------------
+# -- Options for Epub output ---------------------------------------------
 
 # Bibliographic Dublin Core info.
 epub_title = 'GSDView Open Edition'

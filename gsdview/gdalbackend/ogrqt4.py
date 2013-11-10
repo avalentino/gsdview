@@ -31,7 +31,7 @@ from qt import QtCore, QtGui
 from gsdview import qt4draw
 
 
-### Graphics Items ############################################################
+# Graphics Items ############################################################
 #~ class GraphicsLayerItem(qt4draw.GraphicsItemGroup):
     #~ '''Qt graphics item representing an OGR Layer.'''
 
@@ -70,7 +70,7 @@ from gsdview import qt4draw
         #~ self.fid = fid
 
 
-### Helpers for geometry management ###########################################
+# Helpers for geometry management ###########################################
 def transformGeometry(geom, transform):
     '''Apply an OSR transform to an OGR geometry.
 
@@ -146,7 +146,7 @@ def singleGeometryToGraphicsItem(geom, transform=None):
         qitem.setBrush(brush)
 
     elif (gtype in (ogr.wkbLineString, ogr.wkbLineString25D) and
-                                                geom.GetPointCount() == 2):
+            geom.GetPointCount() == 2):
         p0 = geom.GetPoint(0)
         p1 = geom.GetPoint(1)
         if transform:
@@ -283,14 +283,14 @@ def layerToGraphicsItem(layer, srs=None, transform=None):
 
     layer_srs = layer.GetSpatialRef()
     if (srs is not None and layer_srs is not None and
-                                            not layer_srs.IsSame(srs)):
+            not layer_srs.IsSame(srs)):
         srs_transform = osr.CoordinateTransformation(layer_srs, srs)
     else:
         srs_transform = None
 
     if layer.GetFeatureCount() > MAX_FEATURE_COUNT:
         raise RuntimeError('too many features in layed %s: %d' % (
-                                    layer.GetName(), layer.GetFeatureCount()))
+                           layer.GetName(), layer.GetFeatureCount()))
 
     #~ print 'extent:', layer.GetExtent() # @TODO: check
     #qlayer = GraphicsLayerItem(layer.GetName())
@@ -326,8 +326,7 @@ def layerToGraphicsItem(layer, srs=None, transform=None):
                 logging.warning('unable to instantiate a graphics '
                                 'item from OGR geometry "%s"' % geom)
         else:
-            logging.info('feature %d has no geometry' %
-                                                    feature.GetFID())
+            logging.info('feature %d has no geometry' % feature.GetFID())
         qlayer.addToGroup(qfeature)
 
     nfeatures = len(qlayer.childItems())
@@ -342,7 +341,7 @@ def layerToGraphicsItem(layer, srs=None, transform=None):
     return qlayer
 
 
-### Helpers for layers management #############################################
+# Helpers for layers management #############################################
 #~ class LayerItemModel(QtGui.QStandardItemModel):
     #~ #def __init__(self, parent=None, **kargs):
     #~ #    super(LayerItemModel, self).__init__(parent, **kargs)
@@ -394,7 +393,7 @@ def layerToGraphicsItem(layer, srs=None, transform=None):
         #~ pass
 
 
-### OGR feature style #########################################################
+# OGR feature style #########################################################
 '''Style String Syntax
 
 Each feature object has a style property (a string)::

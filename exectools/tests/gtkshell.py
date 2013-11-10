@@ -37,8 +37,7 @@ class GtkShell(object):
     historyfile = 'history.txt'
 
     def __init__(self, debug=False):
-
-        ### Command box ###
+        # Command box
         cmdlabel = gtk.Label('cmd >')
         cmdlabel.set_padding(5, 0)
 
@@ -65,19 +64,19 @@ class GtkShell(object):
         hbox.pack_start(self.cmdbox)
         hbox.pack_start(self.cmdbutton, fill=False, expand=False)
 
-        ### Output plane ###
+        # Output plane
         outputplane = GtkOutputPlane(hide_button=False)
         outputplane.set_editable(False)
         scrolledwin = gtk.ScrolledWindow()
         scrolledwin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrolledwin.add(outputplane)
 
-        ### Status bar ###
+        # Status bar
         self.statusbar = gtk.Statusbar()
         id_ = self.statusbar.get_context_id('ready')
         self.statusbar.push(id_, 'Ready.')
 
-        ### Main window ###
+        # Main window
         vbox = gtk.VBox(spacing=3)
         vbox.set_border_width(3)
         vbox.pack_start(hbox, fill=True, expand=False)
@@ -99,7 +98,7 @@ class GtkShell(object):
         self.mainwin.connect('destroy', self.quit)
         self.mainwin.show_all()
 
-        ### Setup the log system ###
+        # Setup the log system
         if debug:
             level = logging.DEBUG
             logging.basicConfig(level=level)
@@ -122,13 +121,13 @@ class GtkShell(object):
 
         self.logger.setLevel(level)
 
-        ### Setup high level components and initialize the parent classes ###
+        # Setup high level components and initialize the parent classes
         handler = GtkOutputHandler(self.logger, self.statusbar)
         self.tool = exectools.ToolDescriptor('', stdout_handler=handler)
         self.controller = GtkToolController(logger=self.logger)
         self.controller.connect('finished', self.on_finished)
 
-        ### Final setup ###
+        # Final setup
         self._state = 'ready'   # or maybe __state
 
         self.logger.debug('gtkshell session started at %s.' % time.asctime())
@@ -141,8 +140,8 @@ class GtkShell(object):
         try:
             self.save_history()
         finally:
-            self.logger.debug('gtkshell session stopped at %s.' %
-                                                            time.asctime())
+            self.logger.debug(
+                'gtkshell session stopped at %s.' % time.asctime())
             gtk.main_quit()
 
     def load_history(self):
@@ -152,7 +151,7 @@ class GtkShell(object):
             self.logger.debug('history file "%s" loaded.' % self.historyfile)
         except (OSError, IOError) as e:
             self.logger.debug('unable to read the history file "%s": %s.' %
-                                                        (self.historyfile, e))
+                              (self.historyfile, e))
 
     def save_history(self):
         try:
@@ -164,7 +163,7 @@ class GtkShell(object):
             self.logger.debug('history saved in %s' % self.historyfile)
         except (OSError, IOError) as e:
             self.logger.warning('unable to save the history file "%s": %s' %
-                                                        (self.historyfile, e))
+                                (self.historyfile, e))
 
     def _reset(self):
         self.controller._reset()

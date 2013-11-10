@@ -106,7 +106,7 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview">http://sourcefor
 <par>
 <p><span style="font-size:9pt; font-style:italic;">%s</span></p>
 ''' % (self.tr(info.description), info.website, info.website_label,
-       info.copyright)
+            info.copyright)
         self.aboutTextBrowser.setText(description)
 
         self.setVersions()
@@ -155,8 +155,8 @@ class FileEntryWidget(QtGui.QWidget):
             self.lineEdit.setText(contents)
 
         icon = qt4support.geticon('open.svg', __name__)
-        self.button = QtGui.QPushButton(icon, '',
-                                toolTip=self.tr('select from file dialog'))
+        self.button = QtGui.QPushButton(
+            icon, '', toolTip=self.tr('select from file dialog'))
 
         layout = QtGui.QHBoxLayout()
         layout.addWidget(self.lineEdit)
@@ -219,14 +219,14 @@ class GeneralPreferencesPage(QtGui.QWidget, GeneralPreferencesPageBase):
         # Avoid promoted widgets
         self.cachedirEntryWidget = FileEntryWidget()
         self.cachedirEntryWidget.setToolTip(
-                    self.tr('Location of the directory for file cache.\n'
-                            'Default: "$HOME/.gsdview".'))
+            self.tr('Location of the directory for file cache.\n'
+                    'Default: "$HOME/.gsdview".'))
         self.preferencesGridLayout.addWidget(self.cachedirEntryWidget, 1, 1)
 
         self.workdirEntryWidget = FileEntryWidget()
         self.workdirEntryWidget.setToolTip(
-                    self.tr('Base directory for files and directories '
-                            'selection.\nDefault: "$HOME".'))
+            self.tr('Base directory for files and directories selection.\n'
+                    'Default: "$HOME".'))
         self.fileDialogHorizontalLayout.addWidget(self.workdirEntryWidget)
 
         self.loglevelComboBox.setFocus()
@@ -420,19 +420,19 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
 
         icon = style.standardIcon(style.SP_CommandLink)
         sendbutton = QtGui.QPushButton(
-                            icon, self.tr('Send'),
-                            toolTip=self.tr('Send the bug-report via email.'),
-                            autoDefault=False,
-                            clicked=self.sendBugReport)
+            icon, self.tr('Send'),
+            toolTip=self.tr('Send the bug-report via email.'),
+            autoDefault=False,
+            clicked=self.sendBugReport)
         self.sendbutton = sendbutton
         self.buttonBox.addButton(sendbutton, QtGui.QDialogButtonBox.ActionRole)
 
         icon = style.standardIcon(style.SP_DialogSaveButton)
         savebutton = QtGui.QPushButton(
-                            icon, self.tr('&Save'),
-                            toolTip=self.tr('Save the bug-report on file.'),
-                            autoDefault=False,
-                            clicked=self.saveBugReport)
+            icon, self.tr('&Save'),
+            toolTip=self.tr('Save the bug-report on file.'),
+            autoDefault=False,
+            clicked=self.saveBugReport)
         self.savebutton = savebutton
         self.buttonBox.addButton(savebutton, QtGui.QDialogButtonBox.ActionRole)
 
@@ -596,9 +596,9 @@ try:
             self.groupboxVerticalLayout.addWidget(self.tracebackTextEdit)
 
             self.tracebackTextEdit.setMarginLineNumbers(
-                                        Qsci.QsciScintilla.NumberMargin, True)
+                Qsci.QsciScintilla.NumberMargin, True)
             self.tracebackTextEdit.setMarginWidth(
-                                        Qsci.QsciScintilla.NumberMargin, 30)
+                Qsci.QsciScintilla.NumberMargin, 30)
 
             lexer = Qsci.QsciLexerPython()
             self.tracebackTextEdit.setLexer(lexer)
@@ -607,7 +607,7 @@ try:
             self.tracebackTextEdit.setReadOnly(True)
 
             self.tracebackGroupBox.toggled.connect(
-                                            self.tracebackTextEdit.setVisible)
+                self.tracebackTextEdit.setVisible)
 
             if not self._excInfoSet():
                 self.setExcInfo(*sys.exc_info())
@@ -629,11 +629,13 @@ except ImportError:
 class GSDViewExceptionDialog(GSDViewExceptionDialogBase):
     def __init__(self, *args, **kwargs):
         super(GSDViewExceptionDialog, self).__init__(*args, **kwargs)
-        text = ('Please file a bug report at '
+        text = (
+            'Please file a bug report at '
             '<a href="%(website)s">%(website_label)s</a> '
             'or report the problem via email to '
             '<a href="mailto:$(author_email)s?subject=[gsdview] Bug report">'
-                '%(author)s'
-            '</a>.')
+            '%(author)s'
+            '</a>.'
+        )
         text = text % info.__dict__
         self.setText(self.tr(text))

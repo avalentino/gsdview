@@ -143,10 +143,7 @@ class GSDToolsController(QtCore.QObject):
         target = os.path.join(utils.default_workdir(), target)
 
         dst, filter_ = QtGui.QFileDialog.getSaveFileNameAndFilter(
-                                        self.app,
-                                        self.tr('Save KML'),
-                                        target,
-                                        ';;'.join(filters))
+            self.app, self.tr('Save KML'), target, ';;'.join(filters))
 
         dst = str(dst)
 
@@ -183,13 +180,14 @@ class GSDToolsController(QtCore.QObject):
         #success = QtCore.QProcess.startDetached(self.googleearth, [dst])
         logging.info('GoogleEarth: %s' % self.googleearth)
         logging.info('KML: %s' % dst)
-        success = QtCore.QProcess.startDetached('sh', [self.googleearth, dst],
-            os.path.dirname(self.googleearth))
+        success = QtCore.QProcess.startDetached(
+            'sh', [self.googleearth, dst], os.path.dirname(self.googleearth))
         if not success:
             logging.warning('unable to open "%s" in GoogleEarth.' % dst)
             # @TODO: check
-            QtGui.QMessageBox.warning(self.app, self.tr('Warning'),
-                        self.tr('Unable to open "%s" in GoogleEarth.') % dst)
+            QtGui.QMessageBox.warning(
+                self.app, self.tr('Warning'),
+                self.tr('Unable to open "%s" in GoogleEarth.') % dst)
 
     @QtCore.Slot()
     def openInGoogleMaps(self):
@@ -209,8 +207,8 @@ class GSDToolsController(QtCore.QObject):
         try:
             cmapper = item.cmapper
         except AttributeError:
-            logging.error('item "%s" seems to heve no geographic info.' %
-                                                                item.filename)
+            logging.error(
+                'item "%s" seems to heve no geographic info.' % item.filename)
             return
 
         pixel, line = item.RasterXSize / 2., item.RasterYSize / 2.
@@ -225,8 +223,9 @@ class GSDToolsController(QtCore.QObject):
         if not success:
             logging.warning('unable to open URL: "%s"' % str(url))
             # @TODO: check
-            QtGui.QMessageBox.warning(self.app, self.tr('Warning'),
-                            self.tr('Unable to open URL: "%s"') % str(url))
+            QtGui.QMessageBox.warning(
+                self.app, self.tr('Warning'),
+                self.tr('Unable to open URL: "%s"') % str(url))
 
     @QtCore.Slot()
     @QtCore.Slot(QtGui.QMdiSubWindow)

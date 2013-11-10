@@ -26,10 +26,11 @@ from .info import *
 from .info import __version__, __requires__
 
 
-__all__ = ['init', 'close', 'loadSettings', 'saveSettings',
-           'name', 'version', 'short_description', 'description',
-           'author', 'author_email', 'copyright', 'license_type',
-           'website', 'website_label',
+__all__ = [
+    'init', 'close', 'loadSettings', 'saveSettings',
+    'name', 'version', 'short_description', 'description',
+    'author', 'author_email', 'copyright', 'license_type',
+    'website', 'website_label',
 ]
 
 _instance = None
@@ -57,9 +58,9 @@ def init(app):
 
     # @TODO: move to tool (??)
     app.mdiarea.subWindowActivated.connect(
-                                lambda w: tool.actions.setEnabled(bool(w)))
+        lambda w: tool.actions.setEnabled(bool(w)))
     app.subWindowClosed.connect(lambda: tool.actions.setEnabled(
-                                    bool(app.mdiarea.activeSubWindow())))
+        bool(app.mdiarea.activeSubWindow())))
 
     global _instance
     _instance = tool

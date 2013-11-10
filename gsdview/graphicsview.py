@@ -78,7 +78,7 @@ class GraphicsView(QtGui.QGraphicsView):
         #~ self.newSize.emit(event.size())
         #~ return QtGui.QGraphicsView.resizeEvent(self, event)
 
-    ### Emit signals on transform modifications ###############################
+    # Emit signals on transform modifications ###############################
     #~ def scale(self, sx, sy):
         #~ QtGui.QGraphicsView.scale(self, sx, sy)
         #~ self.scaled.emit()
@@ -175,13 +175,13 @@ class GraphicsViewMonitor(QtCore.QObject):
 
     def register(self, graphicsview):
         graphicsview.horizontalScrollBar().valueChanged.connect(
-                                    lambda: self.scrolled.emit(graphicsview))
+            lambda: self.scrolled.emit(graphicsview))
         graphicsview.verticalScrollBar().valueChanged.connect(
-                                    lambda: self.scrolled.emit(graphicsview))
+            lambda: self.scrolled.emit(graphicsview))
         graphicsview.horizontalScrollBar().rangeChanged.connect(
-                            lambda: self.viewportResized.emit(graphicsview))
+            lambda: self.viewportResized.emit(graphicsview))
         graphicsview.verticalScrollBar().rangeChanged.connect(
-                            lambda: self.viewportResized.emit(graphicsview))
+            lambda: self.viewportResized.emit(graphicsview))
         graphicsview.installEventFilter(self)
 
         # Many views can refer to the same scene so before installing a new
@@ -233,7 +233,7 @@ class GraphicsViewMonitor(QtCore.QObject):
         #~ return method(object, event)
         #~ #return True # stop event
 
-    ### Mouse events ##########################################################
+    # Mouse events ##########################################################
     #~ def enterEvent(self, obj, event):
         #~ self.enter.emit(obj)
         #~ return obj.eventFilter(obj, event)

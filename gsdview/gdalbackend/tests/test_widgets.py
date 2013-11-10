@@ -74,7 +74,7 @@ def testdriver(target, imagestruct=True):
         if not os.path.exists(pctfilename):
             import subprocess
 
-            subprocess.call(('rgb2pct.py',  filename, pctfilename))
+            subprocess.call(('rgb2pct.py', filename, pctfilename))
         filename = pctfilename
 
     dataset = gdal.Open(filename)

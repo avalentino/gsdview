@@ -78,8 +78,8 @@ class StatsDescriptor(BaseGdalToolDescriptor):
         else:
             cmd = _gsdtoolcmd('stats')
 
-        super(StatsDescriptor, self).__init__(cmd, [],
-                                    cwd, env, stdout_handler, stderr_handler)
+        super(StatsDescriptor, self).__init__(
+            cmd, [], cwd, env, stdout_handler, stderr_handler)
 
         #: Disable statistics computation (default: False)
         self.nostats = None
@@ -174,10 +174,10 @@ class StatsDescriptor(BaseGdalToolDescriptor):
         if self.hist.computehistogram and '--hist' not in args:
             args = ['--hist'] + args
         if (self.band is not None and
-                            not set(('-b', '--band')).intersection(args)):
+                not set(('-b', '--band')).intersection(args)):
             args = ['--band', str(self.band)] + args
         if (self.approxok is not None and
-                            not set(('-a', '--approxok')).intersection(args)):
+                not set(('-a', '--approxok')).intersection(args)):
             args = ['--approxok'] + args
         if self.hist.minmaxonly is not None and '--minmax-only' not in args:
             args = ['--minmax-only'] + args
@@ -191,10 +191,10 @@ class StatsDescriptor(BaseGdalToolDescriptor):
             values = [str(item) for item in self.srcwin]
             args = ['--srcwin'] + values + args
         if (self.outfile is not None and
-                            not set(('-o', '--outfile')).intersection(args)):
+                not set(('-o', '--outfile')).intersection(args)):
             args = ['--outfile', self.outfile] + args
         if (self.quiet is not None and
-                            not set(('-q', '--quiet')).intersection(args)):
+                not set(('-q', '--quiet')).intersection(args)):
             args = ['--quiet'] + args
 
         return super(StatsDescriptor, self).cmdline(*args, **kwargs)
@@ -232,8 +232,8 @@ class Ras2vecDescriptor(BaseGdalToolDescriptor):
         else:
             cmd = _gsdtoolcmd('ras2vec')
 
-        super(Ras2vecDescriptor, self).__init__(cmd, [],
-                                    cwd, env, stdout_handler, stderr_handler)
+        super(Ras2vecDescriptor, self).__init__(
+            cmd, [], cwd, env, stdout_handler, stderr_handler)
 
         #: Generate an additional layer for GCPs.
         self.gcps = None
@@ -247,13 +247,13 @@ class Ras2vecDescriptor(BaseGdalToolDescriptor):
     def cmdline(self, *args, **kwargs):
         args = list(args)
         if (self.gcps is not None and
-                            not set(('-g', '--gcps')).intersection(args)):
+                not set(('-g', '--gcps')).intersection(args)):
             args = ['--gcps'] + args
         if (self.corners is not None and
-                            not set(('-c', '--corners')).intersection(args)):
+                not set(('-c', '--corners')).intersection(args)):
             args = ['--corners'] + args
         if (self.abspath is not None and
-                            not set(('-a', '--abspath')).intersection(args)):
+                not set(('-a', '--abspath')).intersection(args)):
             args = ['--abspath'] + args
 
         return super(Ras2vecDescriptor, self).cmdline(*args, **kwargs)

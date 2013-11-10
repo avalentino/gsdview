@@ -32,14 +32,15 @@ class MdiChild(QtGui.QTextEdit):
         self.setWindowTitle(self.curFile + '[*]')
 
     def loadFile(self, fileName):
-        file = QtCore.QFile(fileName)
-        if not file.open(QtCore.QFile.ReadOnly | QtCore.QFile.Text):
-            QtGui.QMessageBox.warning(self, self.tr('MDI'),
-                        self.tr('Cannot read file %s:\n%s.') % (
-                                                fileName, file.errorString()))
+        qfile = QtCore.QFile(fileName)
+        if not qfile.open(QtCore.QFile.ReadOnly | QtCore.QFile.Text):
+            QtGui.QMessageBox.warning(
+                self, self.tr('MDI'),
+                self.tr('Cannot read file %s:\n%s.') % (fileName,
+                                                        qfile.errorString()))
             return False
 
-        instr = QtCore.QTextStream(file)
+        instr = QtCore.QTextStream(qfile)
         QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
         self.setPlainText(instr.readAll())
         QtGui.QApplication.restoreOverrideCursor()
@@ -55,22 +56,23 @@ class MdiChild(QtGui.QTextEdit):
 
     def saveAs(self):
         filename, _ = QtGui.QFileDialog.getSaveFileNameAndFilter(
-                                    self, self.tr('Save As'), self.curFile)
+            self, self.tr('Save As'), self.curFile)
         if fileName.isEmpty:
             return False
 
         return self.saveFile(filename)
 
     def saveFile(self, fileName):
-        file = QtCore.QFile(fileName)
+        qfile = QtCore.QFile(fileName)
 
-        if not file.open(QtCore.QFile.WriteOnly | QtCore.QFile.Text):
-            QtGui.QMessageBox.warning(self, self.tr('MDI'),
-                    self.tr('Cannot write file %s:\n%s.') % (
-                                                fileName, file.errorString()))
+        if not qfile.open(QtCore.QFile.WriteOnly | QtCore.QFile.Text):
+            QtGui.QMessageBox.warning(
+                self, self.tr('MDI'),
+                self.tr('Cannot write file %s:\n%s.') % (fileName,
+                                                         qfile.errorString()))
             return False
 
-        outstr = QtCore.QTextStream(file)
+        outstr = QtCore.QTextStream(qfile)
         QtCore.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
         outstr << self.toPlainText()
         QtCore.QApplication.restoreOverrideCursor()
@@ -96,13 +98,14 @@ class MdiChild(QtGui.QTextEdit):
 
     def maybeSave(self):
         if self.document().isModified():
-            ret = QtGui.QMessageBox.warning(self, self.tr('MDI'),
-                    self.tr("'%s' has been modified.\n"
-                            "Do you want to save your changes?") %
-                                            self.userFriendlyCurrentFile(),
-                    QtGui.QMessageBox.Yes | QtGui.QMessageBox.Default,
-                    QtGui.QMessageBox.No,
-                    QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Escape)
+            ret = QtGui.QMessageBox.warning(
+                self, self.tr('MDI'),
+                self.tr("'%s' has been modified.\n"
+                        "Do you want to save your changes?") %
+                self.userFriendlyCurrentFile(),
+                QtGui.QMessageBox.Yes | QtGui.QMessageBox.Default,
+                QtGui.QMessageBox.No,
+                QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Escape)
             if ret == QtGui.QMessageBox.Yes:
                 return self.save()
             elif ret == QtGui.QMessageBox.Cancel:
@@ -193,7 +196,8 @@ class TestMdiMainWindow(MdiMainWindow):
 
     @QtCore.Slot()
     def about(self):
-        QtGui.QMessageBox.about(self, self.tr('About MDI'),
+        QtGui.QMessageBox.about(
+            self, self.tr('About MDI'),
             self.tr('The <b>MDI</b> example demonstrates how to write '
                     'multiple document interface applications using Qt.'))
 

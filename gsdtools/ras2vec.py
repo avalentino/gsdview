@@ -78,7 +78,7 @@ def makesrs(srs):
 def create_box_layer(ds, name='', srs=None, gtype=ogr.wkbUnknown, opt=None):
     srs = makesrs(srs)
 
-    if opt == None:
+    if opt is None:
         opt = ''
 
     layer = ds.CreateLayer(name, srs, gtype, opt)
@@ -98,7 +98,7 @@ def create_box_layer(ds, name='', srs=None, gtype=ogr.wkbUnknown, opt=None):
 def create_GCP_layer(ds, name='', srs=None, gtype=ogr.wkbPoint25D, opt=None):
     srs = makesrs(srs)
 
-    if opt == None:
+    if opt is None:
         opt = ''
 
     layer = ds.CreateLayer(name, srs, gtype, opt)
@@ -146,8 +146,8 @@ def geographic_info(ds, srsout=None):
     else:
         gcps = []
         if not ds.GetProjection():
-            raise ValueError('no geographic info in "%s"' %
-                                                        ds.GetDescription())
+            raise ValueError(
+                'no geographic info in "%s"' % ds.GetDescription())
         srs.ImportFromWkt(ds.GetProjection())
         geomatrix = ds.GetGeoTransform()
 
@@ -163,10 +163,10 @@ def geographic_info(ds, srsout=None):
     # dataset corners setup
     corners = []
     for id_, (pixel, line) in enumerate((
-                                (0,                  0),
-                                (0,                  ds.RasterYSize - 1),
-                                (ds.RasterXSize - 1, ds.RasterYSize - 1),
-                                (ds.RasterXSize - 1, 0))):
+            (0, 0),
+            (0, ds.RasterYSize - 1),
+            (ds.RasterXSize - 1, ds.RasterYSize - 1),
+            (ds.RasterXSize - 1, 0))):
 
         X = geomatrix[0] + geomatrix[1] * pixel + geomatrix[2] * line
         Y = geomatrix[3] + geomatrix[4] * pixel + geomatrix[5] * line
@@ -269,8 +269,8 @@ def create_datasource(filename, drivername=None):
         drivername = DEFAULT_OGRDRIVER
     driver = ogr.GetDriverByName(drivername)
     if not driver:
-        raise RuntimeError('unable to instantiate the "%s" driver.' %
-                                                                drivername)
+        raise RuntimeError(
+            'unable to instantiate the "%s" driver.' % drivername)
     else:
         logging.info('using "%s" driver.' % drivername)
 
@@ -288,8 +288,8 @@ def export_raster(src, dst, boxlayer=None, gcplayer=None, srsout=None,
         filename = src
         src = gdal.Open(filename)
         if src is None:
-            raise RuntimeError('unable to open source dataset: "%s"' %
-                                                                    filename)
+            raise RuntimeError(
+                'unable to open source dataset: "%s"' % filename)
 
     if isinstance(dst, basestring):
         dst = create_datasource(dst)
@@ -405,7 +405,7 @@ def raster_tree_index(src, dst, boxlayer=None, gcplayer=None,
         dst = create_datasource(dst)
 
     gdal.PushErrorHandler('CPLQuietErrorHandler')
-    for root, dirs, files,  in os.walk(src):
+    for root, dirs, files in os.walk(src):
         for filename in files:
             try:
                 filename = os.path.join(root, filename)
@@ -420,7 +420,7 @@ def raster_tree_index(src, dst, boxlayer=None, gcplayer=None,
     gdal.PopErrorHandler()
 
 
-### Command line tool #########################################################
+# Command line tool #########################################################
 def handlecmd(argv=None):
     import optparse
 
@@ -428,9 +428,9 @@ def handlecmd(argv=None):
     argv = gdal.GeneralCmdLineProcessor(argv)
 
     parser = optparse.OptionParser(
-                        usage='%prog [options] OUTPUT INPUT [INPUT [...]]',
-                        version='%%prog %s' % __version__,
-                        description=__doc__)
+        usage='%prog [options] OUTPUT INPUT [INPUT [...]]',
+        version='%%prog %s' % __version__,
+        description=__doc__)
     #parser.add_option('-o', '--outfile', type='str',
     #                  help='output file name (default: generated)')
     #parser.add_option('-f', '--format', type='str', default='KML',

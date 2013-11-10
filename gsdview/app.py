@@ -61,7 +61,7 @@ class GSDView(ItemModelMainWindow):
 
         logger.debug('Main window base classes initialization ...')
         QtGui.QApplication.setWindowIcon(
-                                qt4support.geticon('GSDView.png', __name__))
+            qt4support.geticon('GSDView.png', __name__))
 
         super(GSDView, self).__init__(parent, flags, **kwargs)
         title = self.tr('GSDView Open Source Edition v. %s') % info.version
@@ -130,9 +130,9 @@ class GSDView(ItemModelMainWindow):
         #: plugin manager instance
         self.pluginmanager = pluginmanager.PluginManager(self, SYSPLUGINSDIR)
         self.preferencesdialog.addPage(
-                pluginmanager.PluginManagerGui(self.pluginmanager, self),
-                qt4support.geticon('plugin.svg', __name__),
-                label='Plugins')
+            pluginmanager.PluginManagerGui(self.pluginmanager, self),
+            qt4support.geticon('plugin.svg', __name__),
+            label='Plugins')
 
         # Settings
         if not os.path.isdir(USERCONFIGDIR):
@@ -205,8 +205,8 @@ class GSDView(ItemModelMainWindow):
                                     self.tr('Settings toolbar'))
 
         #: settings sub-menu
-        self.settings_submenu = QtGui.QMenu(self.tr('&View'),
-            aboutToShow=self.updateSettingsMenu)
+        self.settings_submenu = QtGui.QMenu(
+            self.tr('&View'), aboutToShow=self.updateSettingsMenu)
         menu.addSeparator()
         menu.addMenu(self.settings_submenu)
 
@@ -229,7 +229,7 @@ class GSDView(ItemModelMainWindow):
 
         self.statusBar().showMessage('Ready')
 
-    ### Model/View utils ######################################################
+    # Model/View utils ######################################################
     def currentGraphicsView(self):
         window = self.mdiarea.activeSubWindow()
         if window:
@@ -253,7 +253,7 @@ class GSDView(ItemModelMainWindow):
         if menu:
             menu.exec_(self.treeview.mapToGlobal(pos))
 
-    ### Event handlers ########################################################
+    # Event handlers ########################################################
     def closeEvent(self, event):
         self.controller.stop_tool()
         # @TODO: whait for finished (??)
@@ -278,7 +278,7 @@ class GSDView(ItemModelMainWindow):
         except AttributeError:
             pass
 
-    ### Custom exception hook #################################################
+    # Custom exception hook #################################################
     def excepthook(self, exctype, excvalue, tracebackobj):
         '''Global function to catch unhandled exceptions.
 
@@ -302,7 +302,7 @@ class GSDView(ItemModelMainWindow):
             self.close()
             return
 
-        # #TODO: check
+        # @TODO: check
         # Guard for avoiding multiple dialog opening
         if hasattr(self, '_busy'):
             return
@@ -321,7 +321,7 @@ class GSDView(ItemModelMainWindow):
             logging.warning('ignoring an unhandled exception may cause '
                             'program malfunctions.')
 
-    ### Setup helpers #########################################################
+    # Setup helpers #########################################################
     def _setupFileActions(self):
         # @TODO: add a "close all" (items) action
         actionsgroup = QtGui.QActionGroup(self)
@@ -477,7 +477,7 @@ class GSDView(ItemModelMainWindow):
 
         return controller
 
-    ### Settings ##############################################################
+    # Settings ##############################################################
     def _restoreWindowState(self, settings=None):
         if settings is None:
             settings = self.settings
@@ -686,7 +686,7 @@ class GSDView(ItemModelMainWindow):
         if self.preferencesdialog.exec_():
             self.applySettings()
 
-    ### File actions ##########################################################
+    # File actions ##########################################################
     @QtCore.Slot()
     def openFile(self):
         # @TODO: remove; this is a temporary workaround for a Qt bug in
@@ -707,8 +707,8 @@ class GSDView(ItemModelMainWindow):
                             self.logger.debug('File "%s" opened with backend '
                                               '"%s"' % (filename, backendname))
                         else:
-                            self.logger.info('file %s" already open' %
-                                                                    filename)
+                            self.logger.info(
+                                'file %s" already open' % filename)
                         break
                     except errors.OpenError:
                         #self.logger.exception('exception caught')
@@ -749,7 +749,7 @@ class GSDView(ItemModelMainWindow):
             except AttributeError:
                 root.removeRow(item.row())
 
-    ### Auxiliary methods ####################################################
+    # Auxiliary methods ####################################################
     @QtCore.Slot()
     @QtCore.Slot(str)
     def processingStarted(self, msg=None):

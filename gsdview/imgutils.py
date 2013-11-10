@@ -25,7 +25,7 @@
 import numpy as np
 
 
-### LUT utils ################################################################
+# LUT utils ################################################################
 def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0,
                omax=None):
     '''Compute a linear LUT.
@@ -68,8 +68,8 @@ def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0,
 
     dtype = np.dtype(dtype)
     if dtype not in (np.uint8, np.uint16):
-        raise ValueError('invalid dtype "%s" (uint8 or uint16 expected)' %
-                                                                        dtype)
+        raise ValueError(
+            'invalid dtype "%s" (uint8 or uint16 expected)' % dtype)
     nmax = 2 ** (8 * dtype.itemsize)
 
     if omax is None:
@@ -131,8 +131,8 @@ def histogram_equalized_lut(hist, dtype='uint8', fill=False):
 
     dtype = np.dtype(dtype)
     if dtype not in (np.uint8, np.uint16):
-        raise ValueError('invalid dtype "%s" (uint8 or uint16 expected)' %
-                                                                        dtype)
+        raise ValueError(
+            'invalid dtype "%s" (uint8 or uint16 expected)' % dtype)
     nmax = 2 ** (8 * dtype.itemsize)
 
     hist = np.ravel(hist)
@@ -168,8 +168,8 @@ def log_lut(dtype='uint8'):
 
     dtype = np.dtype(dtype)
     if dtype not in (np.uint8, np.uint16):
-        raise ValueError('invalid dtype "%s" (uint8 or uint16 expected)' %
-                                                                        dtype)
+        raise ValueError(
+            'invalid dtype "%s" (uint8 or uint16 expected)' % dtype)
     nmax = 2 ** (8 * dtype.itemsize)
     vmax = nmax - 1
 
@@ -185,8 +185,8 @@ def root(dtype='uint8'):
 
     dtype = np.dtype(dtype)
     if dtype not in (np.uint8, np.uint16):
-        raise ValueError('invalid dtype "%s" (uint8 or uint16 expected)' %
-                                                                        dtype)
+        raise ValueError(
+            'invalid dtype "%s" (uint8 or uint16 expected)' % dtype)
     nmax = 2 ** (8 * dtype.itemsize)
     vmax = nmax - 1
 
@@ -202,8 +202,8 @@ def square(dtype='uint8'):
 
     dtype = np.dtype(dtype)
     if dtype not in (np.uint8, np.uint16):
-        raise ValueError('invalid dtype "%s" (uint8 or uint16 expected)' %
-                                                                        dtype)
+        raise ValueError(
+            'invalid dtype "%s" (uint8 or uint16 expected)' % dtype)
     nmax = 8 ** dtype.itemsize
     vmax = nmax - 1
 
@@ -214,7 +214,7 @@ def square(dtype='uint8'):
     return lut.astype(dtype)
 
 
-### Stretching utils #########################################################
+# Stretching utils #########################################################
 class BaseStretcher(object):
     '''Base class for stretcher objects.
 

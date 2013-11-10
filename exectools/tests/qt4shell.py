@@ -30,13 +30,13 @@ try:
 except ImportError:
     # Select the PyQt API 2
     import sip
-    sip.setapi('QDate',       2)
-    sip.setapi('QDateTime',   2)
-    sip.setapi('QString',     2)
+    sip.setapi('QDate', 2)
+    sip.setapi('QDateTime', 2)
+    sip.setapi('QString', 2)
     sip.setapi('QTextStream', 2)
-    sip.setapi('QTime',       2)
-    sip.setapi('QUrl',        2)
-    sip.setapi('QVariant',    2)
+    sip.setapi('QTime', 2)
+    sip.setapi('QUrl', 2)
+    sip.setapi('QVariant', 2)
 
     from PyQt4 import QtCore, QtGui
     QtCore.Signal = QtCore.pyqtSignal
@@ -66,7 +66,7 @@ class Qt4Shell(QtGui.QMainWindow):
         self.setWindowIcon(
             self.style().standardIcon(QtGui.QStyle.SP_ComputerIcon))
 
-        ### Command box ###
+        # Command box
         self.cmdbox = QtGui.QComboBox()
         self.cmdbox.setEditable(True)
         self.cmdbox.addItem('')
@@ -85,7 +85,7 @@ class Qt4Shell(QtGui.QMainWindow):
         hLayout.addWidget(self.cmdbox, 1)
         hLayout.addWidget(self.cmdbutton)
 
-        ### Output plane ###
+        # Output plane
         outputplane = Qt4OutputPlane()
         outputplane.setReadOnly(True)
         outputplane.actions.removeAction(outputplane.actionHide)
@@ -93,7 +93,7 @@ class Qt4Shell(QtGui.QMainWindow):
         vLayout.addLayout(hLayout)
         vLayout.addWidget(outputplane)
 
-        ### Main window ###
+        # Main window
         centralWidget = QtGui.QWidget()
         centralWidget.setLayout(vLayout)
         self.setCentralWidget(centralWidget)
@@ -108,7 +108,7 @@ class Qt4Shell(QtGui.QMainWindow):
         #~ self.mainwin.add_accel_group(accelgroup)
         #~ self.mainwin.destroy.connect(self.quit)
 
-        ### Setup the log system ###
+        # Setup the log system
         if debug:
             level = logging.DEBUG
             logging.basicConfig(level=level)
@@ -131,13 +131,12 @@ class Qt4Shell(QtGui.QMainWindow):
 
         self.logger.setLevel(level)
 
-        ### Setup high level components and initialize the parent classes ###
+        # Setup high level components and initialize the parent classes
         handler = Qt4OutputHandler(self.logger, self.statusBar())
         self.tool = exectools.ToolDescriptor('', stdout_handler=handler)
         self.controller = Qt4ToolController(self.logger, parent=self)
         self.controller.finished.connect(lambda returncode: self.reset())
 
-        ###
         #self.shell = True
         self._state = 'ready'   # or maybe __state
 
@@ -149,7 +148,7 @@ class Qt4Shell(QtGui.QMainWindow):
             self.save_history()
         finally:
             self.logger.debug('qt4shell session stopped at %s.' %
-                                                                time.asctime())
+                              time.asctime())
         event.accept()  # @TODO: check
 
     def load_history(self):
@@ -161,14 +160,16 @@ class Qt4Shell(QtGui.QMainWindow):
             self.logger.debug('history file "%s" loaded.' % self.historyfile)
         except (OSError, IOError) as e:
             self.logger.debug('unable to read the history file "%s": %s.' %
-                                                        (self.historyfile, e))
+                              (self.historyfile, e))
         self.cmdbox.addItem('')
         self.cmdbox.setCurrentIndex(self.cmdbox.count() - 1)
 
     def save_history(self):
         try:
-            history = [str(self.cmdbox.itemText(index))
-                                    for index in range(self.cmdbox.count())]
+            history = [
+                str(self.cmdbox.itemText(index))
+                for index in range(self.cmdbox.count())
+            ]
             history = '\n'.join(history)
             f = open(self.historyfile, 'w')
             f.write(history)
@@ -176,7 +177,7 @@ class Qt4Shell(QtGui.QMainWindow):
             self.logger.debug('history saved in %s' % self.historyfile)
         except (OSError, IOError) as e:
             self.logger.warning('unable to save the history file "%s": %s' %
-                                                        (self.historyfile, e))
+                                (self.historyfile, e))
 
     def _reset(self):
         self.controller.reset()

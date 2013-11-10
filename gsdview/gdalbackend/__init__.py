@@ -27,14 +27,15 @@ from gsdview.gdalbackend.info import __version__, __requires__
 from gsdview.gdalbackend.core import GDALBackend
 
 
-__all__ = ['init', 'close', 'loadSettings', 'saveSettings',
-           'name', 'version', 'short_description', 'description',
-           'author', 'author_email', 'copyright', 'license_type',
-           'website', 'website_label', 'getUseExceptions',
-           'UseExceptions', 'DontUseExceptions',
-           'openFile', 'openImageView', 'newImageView', 'openItemMatadataView',
-           'openRGBImageView', 'openSubDataset', 'closeCurrentItem',
-           'findItemFromFilename', 'itemActions', 'itemContextMenu',
+__all__ = [
+    'init', 'close', 'loadSettings', 'saveSettings',
+    'name', 'version', 'short_description', 'description',
+    'author', 'author_email', 'copyright', 'license_type',
+    'website', 'website_label', 'getUseExceptions',
+    'UseExceptions', 'DontUseExceptions',
+    'openFile', 'openImageView', 'newImageView', 'openItemMatadataView',
+    'openRGBImageView', 'openSubDataset', 'closeCurrentItem',
+    'findItemFromFilename', 'itemActions', 'itemContextMenu',
 ]
 
 UseExceptions = GDALBackend.UseExceptions
@@ -64,8 +65,8 @@ def init(app):
 
     # update versions info in about dialog
     app.aboutdialog.addSoftwareVersion('GDAL',
-                                        gdal.VersionInfo('RELEASE_NAME'),
-                                        'http://www.gdal.org')
+                                       gdal.VersionInfo('RELEASE_NAME'),
+                                       'http://www.gdal.org')
 
     # GDAL icon
     icon = qt4support.geticon('GDALLogoColor.svg', __name__)

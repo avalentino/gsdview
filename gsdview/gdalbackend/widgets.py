@@ -77,14 +77,14 @@ class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
         for row in range(gdal.GetDriverCount()):
             driver = gdal.GetDriver(row)
             # @TODO: check for available ingo in gdal 1.5 and above
-            tablewidget.setItem(row, 0,
-                QtGui.QTableWidgetItem(driver.ShortName))
-            tablewidget.setItem(row, 1,
-                QtGui.QTableWidgetItem(driver.LongName))
-            tablewidget.setItem(row, 2,
-                QtGui.QTableWidgetItem(driver.GetDescription()))
-            tablewidget.setItem(row, 3,
-                QtGui.QTableWidgetItem(str(driver.HelpTopic)))
+            tablewidget.setItem(
+                row, 0, QtGui.QTableWidgetItem(driver.ShortName))
+            tablewidget.setItem(
+                row, 1, QtGui.QTableWidgetItem(driver.LongName))
+            tablewidget.setItem(
+                row, 2, QtGui.QTableWidgetItem(driver.GetDescription()))
+            tablewidget.setItem(
+                row, 3, QtGui.QTableWidgetItem(str(driver.HelpTopic)))
 
             metadata = driver.GetMetadata()
             if metadata:
@@ -104,8 +104,9 @@ class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
                 metadata.pop(gdal.DMD_HELPTOPIC, '')
                 metadata.pop(gdal.DMD_LONGNAME, '')
 
-                metadatalist = ['%s=%s' % (k, v)
-                                            for k, v in metadata.iteritems()]
+                metadatalist = [
+                    '%s=%s' % (k, v) for k, v in metadata.iteritems()
+                ]
                 tableitem = QtGui.QTableWidgetItem(', '.join(metadatalist))
                 tableitem.setToolTip('\n'.join(metadatalist))
                 tablewidget.setItem(row, 8, tableitem)
@@ -114,10 +115,10 @@ class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
         tablewidget.sortItems(0, QtCore.Qt.AscendingOrder)
 
     def updateCacheInfo(self):
-        self.gdalCacheMaxValue.setText('%.3f MB' % (
-                                            gdal.GetCacheMax() / 1024. ** 2))
-        self.gdalCacheUsedValue.setText('%.3f MB' % (
-                                            gdal.GetCacheUsed() / 1024. ** 2))
+        self.gdalCacheMaxValue.setText(
+            '%.3f MB' % (gdal.GetCacheMax() / 1024. ** 2))
+        self.gdalCacheUsedValue.setText(
+            '%.3f MB' % (gdal.GetCacheUsed() / 1024. ** 2))
 
     def showEvent(self, event):
         self.updateCacheInfo()
@@ -140,19 +141,19 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
                                                       enabled=False)
         self.optionsGridLayout.addWidget(self.gdalDataDirEntryWidget, 1, 1)
         self.gdalDataCheckBox.toggled.connect(
-                                    self.gdalDataDirEntryWidget.setEnabled)
+            self.gdalDataDirEntryWidget.setEnabled)
 
         self.gdalDriverPathEntryWidget = FileEntryWidget(mode=DirectoryOnly,
                                                          enabled=False)
         self.optionsGridLayout.addWidget(self.gdalDriverPathEntryWidget, 3, 1)
         self.gdalDriverPathCheckBox.toggled.connect(
-                                    self.gdalDriverPathEntryWidget.setEnabled)
+            self.gdalDriverPathEntryWidget.setEnabled)
 
         self.ogrDriverPathEntryWidget = FileEntryWidget(mode=DirectoryOnly,
                                                         enabled=False)
         self.optionsGridLayout.addWidget(self.ogrDriverPathEntryWidget, 4, 1)
         self.ogrDriverPathCheckBox.toggled.connect(
-                                    self.ogrDriverPathEntryWidget.setEnabled)
+            self.ogrDriverPathEntryWidget.setEnabled)
 
         # info button
         self.infoButton.clicked.connect(self.showinfo)
@@ -411,11 +412,11 @@ class MetadataWidget(QtGui.QWidget, MetadataWidgetBase):
 
         # signals
         self.domainComboBox.currentIndexChanged[str].connect(
-                                                            self.domainChanged)
+            self.domainChanged)
 
         # icons
         icon = QtGui.QIcon(
-                ':/trolltech/dialogs/qprintpreviewdialog/images/print-24.png')
+            ':/trolltech/dialogs/qprintpreviewdialog/images/print-24.png')
         self.printButton.setIcon(icon)
         icon = self.style().standardIcon(QtGui.QStyle.SP_DialogSaveButton)
         self.exportButton.setIcon(icon)
@@ -638,7 +639,7 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
         # @COMPATIBILITY: GDAL >= 1.7.0
         if hasattr(gdal.Band, 'HasArbitraryOverviews'):
             self.hasArbitraryOverviewsValue.setText(
-                                            str(item.HasArbitraryOverviews()))
+                str(item.HasArbitraryOverviews()))
 
         view = self.ovrTreeView
 
@@ -701,8 +702,8 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
         levels = []
         for index in range(model.rowCount()):
             checkitem = model.item(index, 0)
-            if (checkitem.checkState() == QtCore.Qt.Checked and
-                                                        checkitem.isEnabled()):
+            if ((checkitem.checkState() == QtCore.Qt.Checked) and
+                    checkitem.isEnabled()):
                 item = model.item(index, 1)
                 levels.append(int(item.text()))
 
@@ -777,7 +778,7 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
         if self.resamplingMethodComboBox.currentText() != 'DEFAULT':
             args.extend(('-r', self.resamplingMethodComboBox.currentText()))
 
-        args = [str(arg) for arf in args]
+        args = [str(arg) for arg in args]
 
         return args
 
@@ -835,7 +836,7 @@ class OverviewDialog(QtGui.QDialog):
     #: is required
     #:
     #: :C++ signature: `void overviewComputationRequest(QtGui.QStandardItem)`
-    overviewComputationRequest = QtCore.Signal(QtGui.QStandardItem)  # @TODO: check backward compatibility
+    overviewComputationRequest = QtCore.Signal(QtGui.QStandardItem)
     #overviewComputationRequest = QtCore.Signal(object)
 
     def __init__(self, item=None, parent=None, flags=QtCore.Qt.WindowFlags(0),
@@ -881,7 +882,7 @@ class OverviewDialog(QtGui.QDialog):
         self.description.setText('')
         if self._item:
             self.overviewWidget.overviewComputationRequest.disconnect(
-                                                self._emitComputationRequest)
+                self._emitComputationRequest)
         self._item = None
 
     def setItem(self, item):
@@ -898,7 +899,7 @@ class OverviewDialog(QtGui.QDialog):
             self.description.setText(self._item.GetDescription())
             self.description.setCursorPosition(0)
             self.overviewWidget.overviewComputationRequest.connect(
-                                                self._emitComputationRequest)
+                self._emitComputationRequest)
         else:
             self.reset()
 
@@ -1006,10 +1007,7 @@ class MajorObjectInfoDialog(QtGui.QDialog):
         # @TODO: use common dialaog
         target = os.path.join(utils.default_workdir(), 'metadata.ini')
         filename, filter_ = QtGui.QFileDialog.getSaveFileNameAndFilter(
-                                            self,
-                                            self.tr('Save'),
-                                            target,
-                                            ';;'.join(filters))
+            self, self.tr('Save'), target, ';;'.join(filters))
         if filename:
             cfg = self._metadataToCfg()
             ext = os.path.splitext(filename)[-1]
@@ -1113,13 +1111,13 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
     #: is required
     #:
     #: :C++ signature: `void statsComputationRequest(QtGui.QStandardItem)`
-    statsComputationRequest = QtCore.Signal(QtGui.QStandardItem)  # @TODO: check backward compatibility
+    statsComputationRequest = QtCore.Signal(QtGui.QStandardItem)
 
     #: SIGNAL: it is emitted when a time expensive computation of an histogram
     #: is required
     #:
     #: :C++ signature: `void histogramComputationRequest(QtGui.QStandardItem)`
-    histogramComputationRequest = QtCore.Signal(QtGui.QStandardItem)  # @TODO: check backward compatibility
+    histogramComputationRequest = QtCore.Signal(QtGui.QStandardItem)
 
     # @TODO: check
     #self.emit(QtCore.SIGNAL(
@@ -1173,27 +1171,27 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         # @TODO: check
         self.computeStatsButton.clicked.connect(self._computeStats)
         self.approxStatsCheckBox.toggled.connect(
-                                        self.computeStatsButton.setEnabled)
+            self.computeStatsButton.setEnabled)
         # @TODO: check
         self.computeHistogramButton.clicked.connect(self._computeHistogram)
         self.customHistogramCheckBox.toggled.connect(
-                                        self.computeHistogramButton.setEnabled)
+            self.computeHistogramButton.setEnabled)
 
         self.overviewWidget.overviewComputationRequest.connect(
-                                                        self._computeOverviews)
+            self._computeOverviews)
 
     def _disconnect_signals(self):
         # @TODO: check
         self.computeStatsButton.clicked.disconnect(self._computeStats)
         self.approxStatsCheckBox.toggled.disconnect(
-                                        self.computeStatsButton.setEnabled)
+            self.computeStatsButton.setEnabled)
         # @TODO: check
         self.computeHistogramButton.clicked.dosconnect(self._computeHistogram)
         self.customHistogramCheckBox.toggled.disconnect(
-                                        self.computeHistogramButton.setEnabled)
+            self.computeHistogramButton.setEnabled)
 
         self.overviewWidget.overviewComputationRequest.disconnect(
-                                                        self._computeOverviews)
+            self._computeOverviews)
 
     @property
     def band(self):
@@ -1397,7 +1395,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
         if gdal.VersionInfo() < '1700':
             # @TODO: check
-            if self.computeHistogramButton.isEnabled() == False:
+            if not self.computeHistogramButton.isEnabled():
                 # Histogram already computed
                 hist = self.band.GetDefaultHistogram()
             else:
@@ -1520,98 +1518,11 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self._checkgdalobj()
         self.statsComputationRequest.emit(self.band)
 
-        #~ logging.info('start statistics computation')
-
-        #~ band = self.band
-        #~ approx = self.approxStatsCheckBox.isChecked()
-        #~ band.ComputeStatistics(approx)#, callback=None, callback_data=None)
-
-        #~ # @COMPATIBILITY: workaround fo flagging statistics as computed
-        #~ # @SEALSO: ticket #3572 on GDAL Trac
-        #~ stats = band.GetStatistics(True, True)
-        #~ for name, value in zip(gdalsupport.GDAL_STATS_KEYS, stats):
-            #~ band.SetMetadataItem(name, str(value))
-
-        #~ # @TODO: check
-        #~ #if self.domainComboBox.currentText() == '':
-        #~ #    self.updateMetadata()
-        #~ logging.debug('statistics computation completed')
-        #~ self.updateStatistics()
-
     # @TODO: check
     @QtCore.Slot()
     def _computeHistogram(self):
         self._checkgdalobj()
         self.histogramComputationRequest.emit(self.band)
-
-        #~ band = self.band
-        #~ approx = self.approxStatsCheckBox.isChecked()
-        #~ if self.customHistogramCheckBox.isChecked():
-            #~ dialog = HistogramConfigDialog(self)
-
-            #~ # @COMPATIBILITY: bug in GDAL 1.6.x line
-            #~ # @WARNING: causes a crash in GDAL < 1.6.4 (r18405)
-            #~ # @SEEALSO: http://trac.osgeo.org/gdal/ticket/3304
-            #~ if gdal.VersionInfo() < '1640':
-                #~ dialog.approxCheckBox.setChecked(True)
-                #~ dialog.approxCheckBox.setEnabled(False)
-
-            #~ from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
-            #~ try:
-                #~ dtype = GDALTypeCodeToNumericTypeCode(band.DataType)
-            #~ except KeyError:
-                #~ pass
-            #~ else:
-                #~ dialog.setLimits(dtype)
-
-            #~ tablewidget = self.histogramTableWidget
-            #~ if tablewidget.rowCount() > 0:
-                #~ item = tablewidget.item(0, 0)
-                #~ vmin = float(item.text())
-                #~ item = tablewidget.item(tablewidget.rowCount() - 1 , 1)
-                #~ vmax = float(item.text())
-
-                #~ dialog.minSpinBox.setValue(vmin)
-                #~ dialog.maxSpinBox.setValue(vmax)
-                #~ dialog.nBucketsSpinBox.setValue(tablewidget.rowCount())
-
-            #~ done = False
-            #~ while not done:
-                #~ ret = dialog.exec_()
-                #~ if ret == QtGui.QDialog.Rejected:
-                    #~ return
-                #~ if dialog.validate() is False:
-                    #~ msg = self.tr('The histogram minimum have been set to a '
-                                  #~ 'value that is greater or equal of the '
-                                  #~ 'histogram maximum.\n'
-                                  #~ 'Please fix it.')
-                    #~ QtGui.QMessageBox.warning(self, self.tr('WARNING!'), msg)
-                #~ else:
-                    #~ done = True
-
-            #~ vmin = dialog.minSpinBox.value()
-            #~ vmax = dialog.maxSpinBox.value()
-            #~ nbuckets = dialog.nBucketsSpinBox.value()
-            #~ include_out_of_range = dialog.outOfRangeCheckBox.isChecked()
-            #~ approx = dialog.approxCheckBox.isChecked()
-
-            #~ # @TODO: use callback for progress reporting
-            #~ hist = qt4support.callExpensiveFunc(
-                                #~ band.GetHistogram,
-                                #~ vmin, vmax, nbuckets,
-                                #~ include_out_of_range, approx)
-                                #~ #callback=None, callback_data=None)
-
-        #~ else:
-            #~ # @TODO: use callback for progress reporting
-            #~ hist = qt4support.callExpensiveFunc(band.GetDefaultHistogram)
-                                                #~ #callback=None,
-                                                #~ #callback_data=None)
-            #~ vmin, vmax, nbuckets, hist = hist
-
-        #~ self.computeHistogramButton.setEnabled(False)
-        #~ self.setHistogram(vmin, vmax, nbuckets, hist)
-        #~ self.updateStatistics() # @TODO: check
 
     @QtCore.Slot()
     def _computeOverviews(self):
@@ -1826,8 +1737,8 @@ p, li { white-space: pre-wrap; }
                 gcplist = self.dataset.GetGCPs()
             except SystemError:
                 logging.debug('unable to read GCPs from dataset %s' %
-                                    self.dataset.GetDescription())
-                                    #, exc_info=True)
+                              self.dataset.GetDescription())
+                              #, exc_info=True)
             else:
                 if not gcplist:
                     # Disable the GCPs tab

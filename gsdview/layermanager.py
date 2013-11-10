@@ -28,8 +28,9 @@ import itertools
 from qt import QtCore, QtGui
 
 
-SelectCurrentRows = (QtGui.QItemSelectionModel.SelectCurrent |
-                                                QtGui.QItemSelectionModel.Rows)
+SelectCurrentRows = (
+    QtGui.QItemSelectionModel.SelectCurrent | QtGui.QItemSelectionModel.Rows
+)
 
 
 class BaseLayerManager(QtCore.QObject):
@@ -113,15 +114,16 @@ class BaseLayerManager(QtCore.QObject):
                 assert lastitem.parent() == item.parent()
                 if lastitem.bottom() + 1 >= item.top():
                     model = lastitem.model()
-                    topleft = model.index(min(lastitem.top(), item.top()),
-                                          #min(lastitem.left(), item.left()),
-                                          0,
-                                          lastitem.parent())
+                    topleft = model.index(
+                        min(lastitem.top(), item.top()),
+                        #min(lastitem.left(), item.left()),
+                        0,
+                        lastitem.parent())
                     bottomright = model.index(
-                                        max(lastitem.bottom(), item.bottom()),
-                                        #max(lastitem.right(), item.right()),
-                                        model.columnCount() - 1,
-                                        lastitem.parent())
+                        max(lastitem.bottom(), item.bottom()),
+                        #max(lastitem.right(), item.right()),
+                        model.columnCount() - 1,
+                        lastitem.parent())
                     ranges[-1] = QtGui.QItemSelectionRange(topleft,
                                                            bottomright)
                 else:
@@ -287,10 +289,13 @@ class BaseLayerManager(QtCore.QObject):
                 if nselected == 0:
                     action.setEnabled(False)
                 else:
-                    items = [model.itemFromIndex(index)
-                                                    for index in selectedrows]
-                    activerows = [item.row() for item in items
-                                    if item.checkState() == QtCore.Qt.Checked]
+                    items = [
+                        model.itemFromIndex(index) for index in selectedrows
+                    ]
+                    activerows = [
+                        item.row() for item in items
+                        if item.checkState() == QtCore.Qt.Checked
+                    ]
 
                     if action.objectName() == 'showLayerAction':
                         action.setEnabled(len(activerows) != nselected)
@@ -314,8 +319,8 @@ class BaseLayerManager(QtCore.QObject):
             if index.column() != 0:
                 return
         else:
-            raise TypeError('unexpected type for index parameter: "%s"' %
-                                                                type(index))
+            raise TypeError(
+                'unexpected type for index parameter: "%s"' % type(index))
 
         checked = bool(item.checkState() == QtCore.Qt.Checked)
         qlayer = item.data()  # index.data(QtCore.Qt.UserRole + 1)
@@ -403,7 +408,7 @@ class LayerManager(BaseLayerManager):
         actions = super(LayerManager, self)._setupActions()
 
         icon = QtGui.QIcon(
-                ':/trolltech/styles/commonstyle/images/viewdetailed-128.png')
+            ':/trolltech/styles/commonstyle/images/viewdetailed-128.png')
         QtGui.QAction(icon, self.tr('Select all'), actions,
                       objectName='selectAllAction',
                       statusTip=self.tr('Select all'),
@@ -430,7 +435,7 @@ class LayerManager(BaseLayerManager):
 
     def eventFilter(self, obj, event):
         if (event.type() == QtCore.QEvent.KeyPress and
-                                        event.key() == QtCore.Qt.Key_Space):
+                event.key() == QtCore.Qt.Key_Space):
             self.toggleSelectedItems()
             return True
         else:

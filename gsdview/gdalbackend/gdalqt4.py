@@ -151,7 +151,7 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
         v2 = QtCore.QLineF(0, 0, 0, 1)
         # LOD is the transformed area of a 1x1 rectangle.
         return np.sqrt(worldTransform.map(v1).length() *
-                                            worldTransform.map(v2).length())
+                       worldTransform.map(v2).length())
 
     @staticmethod
     def _levelOfDetail(option, painter):
@@ -161,10 +161,10 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
         # http://doc.qt.nokia.com/4.6/qgraphicsitem.html#GraphicsItemFlag-enum
         if hasattr(option, 'levelOfDetailFromTransform'):
             levelOfDetail = option.levelOfDetailFromTransform(
-                                                    painter.transform())
+                painter.transform())
         elif QtCore.qVersion() >= '4.6.0':
             levelOfDetail = BaseGdalGraphicsItem._levelOfDetailFromTransform(
-                                                        painter.transform())
+                painter.transform())
         else:
             levelOfDetail = option.levelOfDetail
         return levelOfDetail
@@ -246,15 +246,15 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
 
         if band:
             tmap = {
-                gdal.GDT_Byte:      (0, 255),
-                gdal.GDT_UInt16:    (0, 2 ** 16 - 1),
-                gdal.GDT_UInt32:    (0, 2 ** 32 - 1),
-                gdal.GDT_Int16:     (-2 ** 15, 2 ** 15 - 1),
-                gdal.GDT_Int32:     (-2 ** 31, 2 ** 31 - 1),
-                gdal.GDT_CInt16:    (0, 2 ** 15 * np.sqrt(2)),
-                gdal.GDT_CInt32:    (0, 2 ** 31 * np.sqrt(2)),
-                gdal.GDT_CFloat32:  (0, None),
-                gdal.GDT_CFloat64:  (0, None),
+                gdal.GDT_Byte: (0, 255),
+                gdal.GDT_UInt16: (0, 2 ** 16 - 1),
+                gdal.GDT_UInt32: (0, 2 ** 32 - 1),
+                gdal.GDT_Int16: (-2 ** 15, 2 ** 15 - 1),
+                gdal.GDT_Int32: (-2 ** 31, 2 ** 31 - 1),
+                gdal.GDT_CInt16: (0, 2 ** 15 * np.sqrt(2)),
+                gdal.GDT_CInt32: (0, 2 ** 31 * np.sqrt(2)),
+                gdal.GDT_CFloat32: (0, None),
+                gdal.GDT_CFloat64: (0, None),
             }
             return tmap.get(band.DataType, (None, None))
 

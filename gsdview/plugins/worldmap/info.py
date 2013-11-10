@@ -25,9 +25,11 @@
 __version__ = (0, 7, 0)
 __requires__ = []
 
-__all__ = ['name', 'version', 'short_description', 'description',
-           'author', 'author_email', 'copyright', 'license_type',
-           'website', 'website_label']
+__all__ = [
+    'name', 'version', 'short_description', 'description',
+    'author', 'author_email', 'copyright', 'license_type',
+    'website', 'website_label',
+]
 
 
 name = 'worldmap'

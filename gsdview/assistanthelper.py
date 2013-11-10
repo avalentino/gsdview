@@ -60,11 +60,11 @@ class Assistant(object):
 
         if self.proc.state() != QtCore.QProcess.Running:
             app = QtCore.QLibraryInfo.location(
-                                            QtCore.QLibraryInfo.BinariesPath)
+                QtCore.QLibraryInfo.BinariesPath)
             app += QtCore.QDir.separator()
             if sys.platform == 'darwin':
                 app += QtCore.QLatin1String(
-                                    'Assistant.app/Contents/MacOS/Assistant')
+                    'Assistant.app/Contents/MacOS/Assistant')
             else:
                 app += QtCore.QLatin1String('assistant')
 
@@ -81,8 +81,9 @@ class Assistant(object):
                     tr = QtGui.qApp.tr
                 else:
                     tr = str
-                QtGui.QMessageBox.critical(0, tr('Simple Text Viewer'),
-                        tr('Unable to launch Qt Assistant (%s)') % app)
+                QtGui.QMessageBox.critical(
+                    0, tr('Simple Text Viewer'),
+                    tr('Unable to launch Qt Assistant (%s)') % app)
                 return False
 
         return True

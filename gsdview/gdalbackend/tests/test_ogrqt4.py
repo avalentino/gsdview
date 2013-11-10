@@ -180,7 +180,7 @@ class VectorGraphicsApp(QtGui.QMainWindow):
                       objectName='zoomResetAction',
                       statusTip=self.tr('Zoom 1:1'),
                       triggered=lambda: self.graphicsview.setMatrix(
-                                            QtGui.QMatrix(1, 0, 0, -1, 0, 0)))
+                          QtGui.QMatrix(1, 0, 0, -1, 0, 0)))
 
         icon = QtGui.QIcon(
             ':/trolltech/dialogs/qprintpreviewdialog/images/fit-page-32.png')
@@ -189,8 +189,8 @@ class VectorGraphicsApp(QtGui.QMainWindow):
                       statusTip=self.tr('Zoom Fit'),
                       #checkable=True,
                       triggered=lambda: self.graphicsview.fitInView(
-                                                self.graphicsview.sceneRect(),
-                                                QtCore.Qt.KeepAspectRatio))
+                          self.graphicsview.sceneRect(),
+                          QtCore.Qt.KeepAspectRatio))
 
         return actions
 
@@ -198,7 +198,7 @@ class VectorGraphicsApp(QtGui.QMainWindow):
         actions = QtGui.QActionGroup(self)
 
         icon = QtGui.QIcon(
-                    ':/trolltech/styles/commonstyle/images/fileinfo-32.png')
+            ':/trolltech/styles/commonstyle/images/fileinfo-32.png')
         QtGui.QAction(icon, self.tr('About'), actions,
                       objectName='aboutAction',
                       statusTip=self.tr('About'),
@@ -215,12 +215,13 @@ class VectorGraphicsApp(QtGui.QMainWindow):
     @QtCore.Slot()
     def about(self):
         title = self.tr('MouseManager Example')
-        text = ['<h1>Mouse Manager</h1>'
-                '<p>Example program for the OGR proxy components.</p>',
-                '<p>Copyright (C): 2009-2013 '
-                '<a href="mailto:a_valentino@users.sf.net">'
-                    'Antonio Valentino'
-                '<a>.</p>']
+        text = [
+            '<h1>Mouse Manager</h1>'
+            '<p>Example program for the OGR proxy components.</p>',
+            '<p>Copyright (C): 2009-2013 '
+            '<a href="mailto:a_valentino@users.sf.net">Antonio Valentino<a>.'
+            '</p>'
+        ]
         text = self.tr('\n'.join(text))
         QtGui.QMessageBox.about(self, title, text)
 
@@ -239,11 +240,11 @@ class VectorGraphicsApp(QtGui.QMainWindow):
             'KML (*.kml, *.kmz)',
         ]
         filenames, filter_ = QtGui.QFileDialog.getOpenFileNamesAndFilter(
-                                        self,
-                                        self.tr('Open Vector'),
-                                        QtCore.QDir.home().absolutePath(),
-                                        ';;'.join(ogrFilters),
-                                        ogrFilters[1])
+            self,
+            self.tr('Open Vector'),
+            QtCore.QDir.home().absolutePath(),
+            ';;'.join(ogrFilters),
+            ogrFilters[1])
 
         for filename in filenames:
             filename = str(filename)    # unicode --> str
@@ -294,9 +295,10 @@ class VectorGraphicsApp(QtGui.QMainWindow):
                 item.setCheckable(True)
                 item.setCheckState(QtCore.Qt.Checked)
                 item.setData(qlayer)
-                item.setToolTip(self.tr('Layer "%s": %d features.' % (
-                                                    layer.GetName(),
-                                                    len(qlayer.childItems()))))
+                item.setToolTip(
+                    self.tr('Layer "%s": %d features.' % (
+                        layer.GetName(),
+                        len(qlayer.childItems()))))
 
                 self.model.appendRow(item)
 

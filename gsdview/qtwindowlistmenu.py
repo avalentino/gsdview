@@ -143,9 +143,9 @@ class QtWindowListMenu(QtGui.QMenu):
         QtGui.QAction(self.tr('Ne&xt'), self._stdGroup,
                       statusTip=self.tr('Move the focus to the next window'))
 
-        QtGui.QAction(self.tr('Pre&vious'), self._stdGroup,
-                      statusTip=self.tr(
-                                    'Move the focus to the previous window'))
+        QtGui.QAction(
+            self.tr('Pre&vious'), self._stdGroup,
+            statusTip=self.tr('Move the focus to the previous window'))
 
         act = self._stdGroup.addAction('')
         act.setSeparator(True)
@@ -186,7 +186,7 @@ class QtWindowListMenu(QtGui.QMenu):
             acts['CascadeAction'].triggered.disconnect(mdi.cascadeSubWindows)
             acts['NextAction'].triggered.disconnect(mdi.activateNextSubWindow)
             acts['PrevAction'].triggered.disconnect(
-                                                mdi.activatePreviousSubWindow)
+                mdi.activatePreviousSubWindow)
 
         self.mdi = mdiArea
         if not self.mdi:

@@ -168,9 +168,8 @@ class StdToolController(BaseToolController):
                 if self._userstop:
                     self.logger.info('Execution stopped by the user.')
                 elif self.subprocess.returncode != EX_OK:
-                    msg = ('Process (PID=%d) exited with return code %d.' %
-                                           (self.subprocess.pid,
-                                            self.subprocess.returncode))
+                    msg = ('Process (PID=%d) exited with return code %d.' % (
+                        self.subprocess.pid, self.subprocess.returncode))
                     self.logger.warning(msg)
 
                 # Call finalize hook is available
@@ -193,7 +192,7 @@ class StdToolController(BaseToolController):
 
         assert (self.subprocess is None or
                 self.subprocess.returncode is not None), \
-                                        'the process is still running'
+            'the process is still running'
 
         super(StdToolController, self)._reset()
 
@@ -270,7 +269,7 @@ class StdToolController(BaseToolController):
             stopped = self.subprocess.stop(force)
             if not stopped:
                 msg = ('Unable to stop the sub-process (PID=%d).' %
-                                                        self.subprocess.pid)
+                       self.subprocess.pid)
                 self.logger.warning(msg)
                 self._reset()
             # The subprocess is successfully stopped.

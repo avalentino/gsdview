@@ -34,15 +34,15 @@ from gsdview import utils
 
 
 intToWinState = {
-    int(QtCore.Qt.WindowNoState):       QtCore.Qt.WindowNoState,
-    int(QtCore.Qt.WindowMinimized):     QtCore.Qt.WindowMinimized,
-    int(QtCore.Qt.WindowMaximized):     QtCore.Qt.WindowMaximized,
-    int(QtCore.Qt.WindowFullScreen):    QtCore.Qt.WindowFullScreen,
-    int(QtCore.Qt.WindowActive):        QtCore.Qt.WindowActive,
+    int(QtCore.Qt.WindowNoState): QtCore.Qt.WindowNoState,
+    int(QtCore.Qt.WindowMinimized): QtCore.Qt.WindowMinimized,
+    int(QtCore.Qt.WindowMaximized): QtCore.Qt.WindowMaximized,
+    int(QtCore.Qt.WindowFullScreen): QtCore.Qt.WindowFullScreen,
+    int(QtCore.Qt.WindowActive): QtCore.Qt.WindowActive,
 }
 
 
-### Menus and toolbars helpers ###############################################
+# Menus and toolbars helpers ###############################################
 def actionGroupToMenu(actionGroup, label, mainwin):
     menu = QtGui.QMenu(label, mainwin)
     menu.addActions(actionGroup.actions())
@@ -64,7 +64,7 @@ def actionGroupToToolbar(actionGroup, label, name=None):
     return toolbar
 
 
-### Application cursor helpers ###############################################
+# Application cursor helpers ###############################################
 def overrideCursor(func):
     def aux(*args, **kwargs):
         QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
@@ -83,12 +83,14 @@ def callExpensiveFunc(func, *args, **kwargs):
         QtGui.QApplication.restoreOverrideCursor()
 
 
-### Table model/view helpers ##################################################
+# Table model/view helpers ##################################################
 def clearTable(tablewidget):
     '''Remove contents from a table widget preserving labels. '''
 
-    labels = [str(tablewidget.horizontalHeaderItem(col).text())
-                            for col in range(tablewidget.columnCount())]
+    labels = [
+        str(tablewidget.horizontalHeaderItem(col).text())
+        for col in range(tablewidget.columnCount())
+    ]
     tablewidget.clear()
     tablewidget.setHorizontalHeaderLabels(labels)
     tablewidget.setRowCount(0)
@@ -230,8 +232,9 @@ def modelToTextDocument(model, doc=None):
     headerformat.setBackground(brush)
 
     # horizontal header
-    headers = [model.headerData(col, QtCore.Qt.Horizontal)
-                                                    for col in range(ncols)]
+    headers = [
+        model.headerData(col, QtCore.Qt.Horizontal) for col in range(ncols)
+    ]
     if any(headers):
         table.insertRows(0, 1)
         for col, text in enumerate(headers):
@@ -246,8 +249,9 @@ def modelToTextDocument(model, doc=None):
             cellCursor.insertText(text)
 
     # vertical header
-    headers = [model.headerData(row, QtCore.Qt.Vertical)
-                                                    for row in range(nrows)]
+    headers = [
+        model.headerData(row, QtCore.Qt.Vertical) for row in range(nrows)
+    ]
 
     if any(headers):
         table.insertColumns(0, 1)
@@ -298,10 +302,7 @@ def exportTable(model, parent=None):
             parent = None
 
     filename, filter_ = QtGui.QFileDialog.getSaveFileNameAndFilter(
-                                            parent,
-                                            model.tr('Save'),
-                                            target,
-                                            ';;'.join(filters))
+        parent, model.tr('Save'), target, ';;'.join(filters))
     if filename:
         ext = os.path.splitext(filename)[-1]
         ext = ext.lower()
@@ -361,7 +362,7 @@ def setViewContextActions(widget):
     widget.addAction(action)
 
     icon = QtGui.QIcon(
-                ':/trolltech/dialogs/qprintpreviewdialog/images/print-32.png')
+        ':/trolltech/dialogs/qprintpreviewdialog/images/print-32.png')
     action = QtGui.QAction(icon, widget.tr('&Print'), widget,
                            objectName='printAction',
                            shortcut=widget.tr('Ctrl+P'),
@@ -379,7 +380,7 @@ def setViewContextActions(widget):
     #~ widget.addAction(action)
 
 
-### Printing helpers ##########################################################
+# Printing helpers ##########################################################
 def coreprint(obj, printer):
     painter = QtGui.QPainter(printer)
     painter.setRenderHint(QtGui.QPainter.Antialiasing)
@@ -456,7 +457,7 @@ def printPreview(obj, printer=None, parent=None):
             coreprint(obj, printer)
 
 
-### QImage helpers ###########################################################
+# QImage helpers ###########################################################
 #from PyQt4.Qwt5 import toQImage as _toQImage
 #def numpy2qimage(data):
 #    # @NOTE: for Qwt5 < 5.2.0
@@ -527,8 +528,9 @@ def numpy2qimage(data):
         format_ = QtGui.QImage.Format_RGB32
 
     else:
-        raise ValueError('unable to convert data: shape=%s, dtype="%s"' % (
-                                        data.shape, np.dtype(data.dtype)))
+        raise ValueError(
+            'unable to convert data: shape=%s, dtype="%s"' % (
+                data.shape, np.dtype(data.dtype)))
 
     result = QtGui.QImage(image.data, w, h, format_)
     result.ndarray = image
@@ -538,7 +540,7 @@ def numpy2qimage(data):
     return result
 
 
-### Resources helpers #########################################################
+# Resources helpers #########################################################
 def getuifile(name, package=None):
     '''Return the ui file path.
 
@@ -582,8 +584,9 @@ def getuiform(name, package=None):
         fromlist.append('ui')
         modname = '.'.join(fromlist + [name])
         module = __import__(modname, fromlist=fromlist)
-        formnames = [key for key in module.__dict__.iterkeys()
-                                                if key.startswith('Ui_')]
+        formnames = [
+            key for key in module.__dict__.iterkeys() if key.startswith('Ui_')
+        ]
         formname = formnames[0]
         FormClass = getattr(module, formname)
         logging.debug('load "%s" form base class from pre-compiled python '
@@ -630,7 +633,7 @@ def geticon(name, package=None):
     return QtGui.QIcon(iconfile)
 
 
-### Misc helpers ##############################################################
+# Misc helpers ##############################################################
 def cfgToTextDocument(cfg, doc=None):
     if doc is None:
         doc = QtGui.QTextDocument()
@@ -722,11 +725,12 @@ def imgexport(obj, parent=None):
         obj.tr('PDF file (*.pdf)'),
         obj.tr('PostScript file (*.ps)'),
     ]
-    filters.extend('%s file (*.%s)' % (str(fmt).upper(), str(fmt))
-                        for fmt in QtGui.QImageWriter.supportedImageFormats())
+    filters.extend('%s file (*.%s)' % (
+        str(fmt).upper(), str(fmt))
+        for fmt in QtGui.QImageWriter.supportedImageFormats())
 
-    formats = set(str(fmt).lower() for fmt in
-                                    QtGui.QImageWriter.supportedImageFormats())
+    formats = set(
+        str(fmt).lower() for fmt in QtGui.QImageWriter.supportedImageFormats())
     formats.update(('svg', 'pdf', 'ps'))
 
     # @TODO: check
@@ -739,10 +743,7 @@ def imgexport(obj, parent=None):
     target = os.path.join(utils.default_workdir(), 'image.jpeg')
 
     filename, filter_ = QtGui.QFileDialog.getSaveFileNameAndFilter(
-                                    parent,
-                                    obj.tr('Save picture'),
-                                    target,
-                                    ';;'.join(filters))
+        parent, obj.tr('Save picture'), target, ';;'.join(filters))
     ext = 'unknown'
     while filename and (ext not in formats):
         ext = os.path.splitext(filename)[1]
@@ -752,17 +753,12 @@ def imgexport(obj, parent=None):
                 break
             else:
                 QtGui.QMessageBox.information(
-                            parent,
-                            obj.tr('Unknown file format'),
-                            obj.tr('Unknown file format "%s".\n'
-                                   'Please retry.') % ext)
+                    parent, obj.tr('Unknown file format'),
+                    obj.tr('Unknown file format "%s".\nPlease retry.') % ext)
 
                 filename, filter_ = QtGui.QFileDialog.getSaveFileNameAndFilter(
-                                            parent,
-                                            obj.tr('Save draw'),
-                                            filename,
-                                            ';;'.join(filters),
-                                            filter_)
+                    parent, obj.tr('Save draw'), filename, ';;'.join(filters),
+                    filter_)
         else:
             ext = 'unknown'
 
@@ -805,6 +801,6 @@ def imgexport(obj, parent=None):
                 device.save(filename)
         else:
             QtGui.QMessageBox.warning(
-                        parent,
-                        obj.tr('Warning'),
-                        obj.tr('Unable initialize painting device.'))
+                parent,
+                obj.tr('Warning'),
+                obj.tr('Unable initialize painting device.'))

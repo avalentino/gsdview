@@ -58,7 +58,7 @@ class MajorObjectItem(QtGui.QStandardItem):
             description = ''
 
         super(MajorObjectItem, self).__init__(QtGui.QIcon(self.iconfile),
-                                              description)  #, **kwargs)
+                                              description)  # , **kwargs)
         self.setToolTip(description)
 
     # Give items the same iterface of GDAL objects.
@@ -75,7 +75,7 @@ class MajorObjectItem(QtGui.QStandardItem):
                 self.child(0).close()
             except AttributeError:
                 logging.debug('unexpected child item class: "%s"' %
-                                                type(self.child(0)).__name__)
+                              type(self.child(0)).__name__)
             # @NOTE: use takeRow instead of removeRow in order to avoid the
             #        underlying C/C++ object is deleted before all sub-windows
             #        that hold a reference to the stditem are destroyed
@@ -300,7 +300,7 @@ class DatasetItem(MajorObjectItem):
 
         if gdalobj is None:
             raise OpenError('"%s" is not a valid GDAL dataset' %
-                                                    os.path.basename(filename))
+                            os.path.basename(filename))
         return gdalobj
 
     def _setup_scene(self, parent=None):
@@ -463,7 +463,7 @@ class CachedDatasetItem(DatasetItem):
 
         if vrtdataset is None:
             raise ValueError('unable to open the GDAL virtual dataset: "%s"' %
-                                            os.path.basename(vrtfilename))
+                             os.path.basename(vrtfilename))
         return vrtfilename, vrtdataset
 
     # Give items the same iterface of GDAL objects.

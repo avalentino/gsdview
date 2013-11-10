@@ -120,8 +120,8 @@ def format_platform_info():
         platform_info.append('Windows: %s\n' % platform.win32_ver()[0])
 
     platform_info.append('python_compiler: %s\n' % platform.python_compiler())
-    platform_info.append('python_implementation: %s\n' %
-                                            platform.python_implementation())
+    platform_info.append(
+        'python_implementation: %s\n' % platform.python_implementation())
 
     return platform_info
 
@@ -166,7 +166,7 @@ else:
         if os.path.isfile(cmd):
             mode = os.stat(cmd)[stat.ST_MODE]
             if ((mode & stat.S_IXUSR) or (mode & stat.S_IXGRP) or
-                                                    (mode & stat.S_IXOTH)):
+                    (mode & stat.S_IXOTH)):
                 return True
         return False
 
@@ -239,7 +239,7 @@ def scriptcmd(scriptname):
     return cmd
 
 
-### Geographic tools ##########################################################
+# Geographic tools ##########################################################
 # @TODO: support vectors
 def geonormalize(x, angle_range=360.):
     '''Normalize angles to fit expected range

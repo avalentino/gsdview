@@ -196,8 +196,8 @@ class RubberBandMode(MouseMode):
 
     def scrollbarEventFilter(self, obj, event):
         # ignore wheel events if some button is pressed
-        if ((event.type() == QtCore.QEvent.Wheel)
-                                and (event.buttons() != QtCore.Qt.NoButton)):
+        if ((event.type() == QtCore.QEvent.Wheel) and
+                (event.buttons() != QtCore.Qt.NoButton)):
             return True
         else:
             return False

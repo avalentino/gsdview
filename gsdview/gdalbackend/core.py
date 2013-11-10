@@ -199,7 +199,7 @@ class GDALBackend(QtCore.QObject):
                     action.trigger()
                     break
 
-    ### Actions setup #########################################################
+    # Actions setup #########################################################
     def _setupMajorObjectItemActions(self, actionsgroup=None):
         if actionsgroup is None:
             actionsgroup = QtGui.QActionGroup(self)
@@ -254,7 +254,7 @@ class GDALBackend(QtCore.QObject):
         # @TODO: remove open
         # @TODO: remove overviews build
         #~ actionsgroup = self._setupBandItemActions()
-        #~ action = actionsgroup.findChild(QtGui.QAction, 'actionBuidOverviews')
+        #~ action = actionsgroup.findChild(QtGui.QAction,'actionBuidOverviews')
         #~ actionsgroup.removeAction(action)
         #~ return actionsgroup
         return self._setupBandItemActions(actionsgroup)
@@ -284,7 +284,7 @@ class GDALBackend(QtCore.QObject):
                       shortcut=self.tr('Ctrl+B'),
                       toolTip=self.tr('Build overviews for all raster bands'),
                       statusTip=self.tr(
-                        'Build overviews for all raster bands'),
+                          'Build overviews for all raster bands'),
                       triggered=self.buildOverviews)
 
         # @TODO: add band, add virtual band, open GCPs view
@@ -333,7 +333,7 @@ class GDALBackend(QtCore.QObject):
 
         return actionsmap
 
-    ### Actions enabling ######################################################
+    # Actions enabling ######################################################
     def _getBandItemActions(self, item=None, actionsgroup=None):
         if actionsgroup is None:
             actionsgroup = self._actionsmap['BandItem']
@@ -431,7 +431,7 @@ class GDALBackend(QtCore.QObject):
 
         return actionsgroup
 
-    ### Major object ##########################################################
+    # Major object ##########################################################
     @QtCore.Slot()
     def openItemMatadataView(self):
         # @TODO: implementation
@@ -467,11 +467,11 @@ class GDALBackend(QtCore.QObject):
                 helper.dialog = dialog
 
             dialog.statsComputationRequest.connect(
-                                        self._helpers['statsdialog'].start)
+                self._helpers['statsdialog'].start)
             dialog.histogramComputationRequest.connect(
-                                        self._helpers['histdialog'].start)
+                self._helpers['histdialog'].start)
             dialog.overviewComputationRequest.connect(
-                                        self._helpers['ovrdialog'].start)
+                self._helpers['ovrdialog'].start)
 
             dialog.finished.connect(self._resethelpers)
 
@@ -493,15 +493,15 @@ class GDALBackend(QtCore.QObject):
             self._app.logger.debug('unable to show info dialog for "%s" '
                                    'item class' % (item.__class__.__name__))
 
-    ### Driver ################################################################
-    ### Dataset ###############################################################
+    # Driver ################################################################
+    # Dataset ###############################################################
     @QtCore.Slot()
     @QtCore.Slot(QtGui.QStandardItem)
     def openRGBImageView(self, item=None):
         if item is None:
             item = self._app.currentItem()
-        assert isinstance(item, modelitems.DatasetItem), ('item = %s' %
-                                                                    str(item))
+        assert isinstance(item, modelitems.DatasetItem), (
+            'item = %s' % str(item))
 
         if not item.scene:
             msg = "This dataset can't be opened in RGB mode."
@@ -520,8 +520,8 @@ class GDALBackend(QtCore.QObject):
         if item is None:
             item = self._app.currentItem()
 
-        assert isinstance(item, modelitems.DatasetItem), ('item = %s' %
-                                                                    str(item))
+        assert isinstance(item, modelitems.DatasetItem), (
+            'item = %s' % str(item))
 
         dialog = widgets.OverviewDialog(item, self._app)
         helper = self._helpers['ovrdialog']
@@ -537,7 +537,7 @@ class GDALBackend(QtCore.QObject):
         self._app.treeview.collapse(item.index())
         item.close()
 
-    ### Sub-dataset ###########################################################
+    # Sub-dataset ###########################################################
     @QtCore.Slot()
     def openSubDataset(self):
         item = self._app.currentItem()
@@ -565,7 +565,7 @@ class GDALBackend(QtCore.QObject):
         #    child = item.child(row)
         #    self._app.treeview.expand(child.index())
 
-    ### Raster Band ###########################################################
+    # Raster Band ###########################################################
     @QtCore.Slot()
     @QtCore.Slot(QtGui.QStandardItem)  # @TODO: check
     @qt4support.overrideCursor
@@ -630,8 +630,8 @@ class GDALBackend(QtCore.QObject):
     # @TODO: Open, Masked bands
     # @TODO: dataset --> Build overviews
 
-    ### Overview ##############################################################
-    ### Virtualband ###########################################################
+    # Overview ##############################################################
+    # Virtualband ###########################################################
     def loadGDALSettings(self, settings):
         logger = self._app.logger
 
@@ -704,7 +704,7 @@ class GDALBackend(QtCore.QObject):
             settings.endGroup()
 
 
-### MISC ######################################################################
+# MISC ######################################################################
 from gsdview.mdi import ItemSubWindow
 
 

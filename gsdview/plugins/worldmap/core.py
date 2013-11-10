@@ -273,7 +273,8 @@ if __name__ == '__main__':
     mainwin = QtGui.QMainWindow()
     mainwin.setCentralWidget(QtGui.QTextEdit())
 
-    dataset = gdal.Open(os.path.expanduser('~/projects/gsdview/data/ENVISAT/'
+    dataset = gdal.Open(os.path.expanduser(
+        '~/projects/gsdview/data/ENVISAT/'
         'ASA_APM_1PNIPA20031105_172352_000000182021_00227_08798_0001.N1'))
     panel = WorldmapPanel()
     panel.setDataset(dataset)

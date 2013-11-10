@@ -346,7 +346,7 @@ class ToolDescriptor(object):
 
     env = property(_getenv, _setenv, doc='the tool environment')
 
-    ## @COMPATIBILITY: property.setter nedds Python >= 2.6
+    # @COMPATIBILITY: property.setter nedds Python >= 2.6
     #@property
     #def env(self):
     #    if self.envmerge:
@@ -399,7 +399,7 @@ class ToolDescriptor(object):
             # handle cases like: executable = ['python', '-u', 'script.py']
             parts = list(executable)
 
-        parts.extend('%s=%s' % (key, value) for key, value in kwargs.iteritems())
+        parts.extend('%s=%s' % (key, value) for key, value in kwargs.items())
         parts.extend(str(arg) for arg in args)
 
         return parts

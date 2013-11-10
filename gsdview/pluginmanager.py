@@ -92,8 +92,8 @@ class PluginManager(object):
             vp = VersionPredicate(depstring)
         except ValueError as e:
             # @TODO: remove dependency from self._app
-            self._app.logger.error('invalid version preficate "%s": %s' % (
-                                                                depstring, e))
+            self._app.logger.error(
+                'invalid version preficate "%s": %s' % (depstring, e))
             return False
 
         if vp.name in modules:
@@ -178,15 +178,15 @@ class PluginManager(object):
                             logger.warning('unable to find "%s" plugin' % name)
                             continue
                     except ImportError as e:
-                        logger.warning('unable to import "%s" plugin: %s' %
-                                                                    (name, e))
+                        logger.warning(
+                            'unable to import "%s" plugin: %s' % (name, e))
                         continue
 
                 if not info_only:
                     if not self._check_deps(module):
                         delayed[name] = module
-                        logging.info('loading of "%s" plugin delayed' %
-                                                                module.name)
+                        logging.info(
+                            'loading of "%s" plugin delayed' % module.name)
                     else:
                         self.load_module(module, name)
 
@@ -296,7 +296,7 @@ class PluginManager(object):
             settings.endGroup()
 
 
-### GUI #######################################################################
+# GUI #######################################################################
 
 # @TODO: move Qt specific implementation elsewhere
 import functools
@@ -336,10 +336,10 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
 
         # @TODO: check edit triggers
         #int(self.pathListWidget.editTriggers() &
-        #                                   self.pathListWidget.DoubleClicked)
+        #    self.pathListWidget.DoubleClicked)
 
         self.pathListWidget.itemSelectionChanged.connect(
-                                        self.pathSelectionChanged)
+            self.pathSelectionChanged)
 
         self.addButton.clicked.connect(self.addPathItem)
         self.removeButton.clicked.connect(self.removeSelectedPathItem)
@@ -362,8 +362,10 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
         filedialog.setFileMode(filedialog.Directory)
         if(filedialog.exec_()):
             dirs = filedialog.selectedFiles()
-            existingdirs = [str(self.pathListWidget.item(row).text())
-                                for row in range(self.pathListWidget.count())]
+            existingdirs = [
+                str(self.pathListWidget.item(row).text())
+                for row in range(self.pathListWidget.count())
+            ]
             for dir_ in dirs:
                 if dir_ not in existingdirs:
                     self.pathListWidget.addItem(dir_)
@@ -427,7 +429,7 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
                           key=self.pathListWidget.row, reverse=True)
 
         if (self.pathListWidget.row(selected[0]) ==
-                                            self.pathListWidget.count() - 1):
+                self.pathListWidget.count() - 1):
             return
 
         for item in selected:
@@ -463,7 +465,7 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
                 except AttributeError as e:
                     msg = str(e)
                     if (not "'name'" in msg
-                                    and not  "'short_description'" in msg):
+                            and not "'short_description'" in msg):
                         raise
                     disabled = True
                 except KeyError:
@@ -482,7 +484,7 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
             w = QtGui.QPushButton(icon, '', tablewidget,
                                   toolTip=self.tr('Show plugin info.'),
                                   clicked=functools.partial(
-                                                self.showPluginInfo, index))
+                                      self.showPluginInfo, index))
                                   #clicked=lambda index=index:
                                   #              self.showPluginInfo(index))
             tablewidget.setCellWidget(index, 2, w)
@@ -590,14 +592,14 @@ class PluginInfoForm(QtGui.QFrame, PluginInfoFormBase):
 
         self.authorValue.setText(plugin.author)
         self.emailValue.setText(
-                '&lt;<a href="mailto:%(email)s">%(email)s</a>&gt;' %
-                                            dict(email=plugin.author_email))
+            '&lt;<a href="mailto:%(email)s">%(email)s</a>&gt;' %
+            dict(email=plugin.author_email))
         self.versionValue.setText(plugin.version)
         self.revisionValue.setText(plugin.__revision__)
         self.licenseValue.setText(plugin.license_type)
         self.copyrightValue.setText(plugin.copyright)
         self.websiteValue.setText('<a href="%s">%s</a>' %
-                                        (plugin.website, plugin.website_label))
+                                  (plugin.website, plugin.website_label))
 
         fullpath = plugin.__file__
         if fullpath.endswith('.pyc') or fullpath.endswith('.pyo'):

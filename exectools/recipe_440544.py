@@ -1,5 +1,5 @@
-### Recipe 440554 from the Python Cookbok online:
-### http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/440554
+# Recipe 440554 from the Python Cookbok online:
+# http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/440554
 
 '''
 Title:          Module to allow Asynchronous subprocess use on Windows and
@@ -64,6 +64,7 @@ else:
     import select
     import fcntl
 
+
 class Popen(subprocess.Popen):
     def recv(self, maxsize=None):
         return self._recv('stdout', maxsize)
@@ -95,7 +96,7 @@ class Popen(subprocess.Popen):
                 (errCode, written) = WriteFile(x, input)
             except ValueError:
                 return self._close('stdin')
-            except (subprocess.pywintypes.error, Exception), why:
+            except (subprocess.pywintypes.error, Exception) as why:
                 if why[0] in (109, errno.ESHUTDOWN):
                     return self._close('stdin')
                 raise
@@ -116,7 +117,7 @@ class Popen(subprocess.Popen):
                     (errCode, read) = ReadFile(x, nAvail, None)
             except ValueError:
                 return self._close(which)
-            except (subprocess.pywintypes.error, Exception), why:
+            except (subprocess.pywintypes.error, Exception) as why:
                 if why[0] in (109, errno.ESHUTDOWN):
                     return self._close(which)
                 raise
@@ -135,8 +136,8 @@ class Popen(subprocess.Popen):
 
             try:
                 written = os.write(self.stdin.fileno(), input)
-            except OSError, why:
-                if why[0] == errno.EPIPE: #broken pipe
+            except OSError as why:
+                if why[0] == errno.EPIPE:  # broken pipe
                     return self._close('stdin')
                 raise
 
@@ -149,7 +150,7 @@ class Popen(subprocess.Popen):
 
             flags = fcntl.fcntl(conn, fcntl.F_GETFL)
             if not conn.closed:
-                fcntl.fcntl(conn, fcntl.F_SETFL, flags| os.O_NONBLOCK)
+                fcntl.fcntl(conn, fcntl.F_SETFL, flags | os.O_NONBLOCK)
 
             try:
                 if not select.select([conn], [], [], 0)[0]:
@@ -168,10 +169,11 @@ class Popen(subprocess.Popen):
 
 message = "Other end disconnected!"
 
+
 def recv_some(p, t=.1, e=1, tr=5, stderr=0):
     if tr < 1:
         tr = 1
-    x = time.time()+t
+    x = time.time() + t
     y = []
     r = ''
     pr = p.recv
@@ -187,8 +189,9 @@ def recv_some(p, t=.1, e=1, tr=5, stderr=0):
         elif r:
             y.append(r)
         else:
-            time.sleep(max((x-time.time())/tr, 0))
+            time.sleep(max((x - time.time()) / tr, 0))
     return ''.join(y)
+
 
 def send_all(p, data):
     while len(data):

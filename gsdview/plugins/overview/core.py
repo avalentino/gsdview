@@ -303,8 +303,8 @@ class OverviewController(QtCore.QObject):
     def onItemChanged(self, item):
         if hasattr(item, 'scene'):
             srcview = self.app.currentGraphicsView()
-            if (srcview and srcview.scene() is item.scene
-                                and not self.panel.graphicsview.scene()):
+            if (srcview and srcview.scene() is item.scene and
+                    not self.panel.graphicsview.scene()):
                 self.panel.setItem(item)
 
     # @TODO: translate into an event handler

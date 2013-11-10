@@ -18,8 +18,9 @@ mswindows = (sys.platform == "win32")
 #
 
 if mswindows:
-    SETBINARY = ('import msvcrt; msvcrt.setmode(sys.stdout.fileno(), '
-                                                'os.O_BINARY);')
+    SETBINARY = (
+        'import msvcrt; msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY);'
+    )
 else:
     SETBINARY = ''
 
@@ -81,16 +82,17 @@ class ProcessTestCase(unittest.TestCase):
         # call() function with keyword args
         newenv = os.environ.copy()
         newenv["FRUIT"] = "banana"
-        rc = subprocess.call([sys.executable, "-c",
-                          'import sys, os;'
-                          'sys.exit(os.getenv("FRUIT")=="banana")'],
-                        env=newenv)
+        rc = subprocess.call(
+            [sys.executable, "-c",
+             'import sys, os; sys.exit(os.getenv("FRUIT")=="banana")'],
+            env=newenv)
         self.assertEqual(rc, 1)
 
     def test_stdin_none(self):
         # .stdin is None when not redirected
-        p = subprocess.Popen([sys.executable, "-c", 'print "banana"'],
-                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(
+            [sys.executable, "-c", 'print "banana"'],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         p.wait()
         self.assertEqual(p.stdin, None)
 
@@ -106,23 +108,25 @@ class ProcessTestCase(unittest.TestCase):
 
     def test_stderr_none(self):
         # .stderr is None when not redirected
-        p = subprocess.Popen([sys.executable, "-c", 'print "banana"'],
-                         stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen(
+            [sys.executable, "-c", 'print "banana"'],
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         p.wait()
         self.assertEqual(p.stderr, None)
 
     def test_executable(self):
-        p = subprocess.Popen(["somethingyoudonthave",
-                              "-c", "import sys; sys.exit(47)"],
-                             executable=sys.executable)
+        p = subprocess.Popen(
+            ["somethingyoudonthave", "-c", "import sys; sys.exit(47)"],
+            executable=sys.executable)
         p.wait()
         self.assertEqual(p.returncode, 47)
 
     def test_stdin_pipe(self):
         # stdin redirection
-        p = subprocess.Popen([sys.executable, "-c",
-                         'import sys; sys.exit(sys.stdin.read() == "pear")'],
-                        stdin=subprocess.PIPE)
+        p = subprocess.Popen(
+            [sys.executable, "-c",
+             'import sys; sys.exit(sys.stdin.read() == "pear")'],
+            stdin=subprocess.PIPE)
         p.stdin.write("pear")
         p.stdin.close()
         p.wait()
@@ -134,9 +138,10 @@ class ProcessTestCase(unittest.TestCase):
         d = tf.fileno()
         os.write(d, "pear")
         os.lseek(d, 0, 0)
-        p = subprocess.Popen([sys.executable, "-c",
-                         'import sys; sys.exit(sys.stdin.read() == "pear")'],
-                         stdin=d)
+        p = subprocess.Popen(
+            [sys.executable, "-c",
+             'import sys; sys.exit(sys.stdin.read() == "pear")'],
+            stdin=d)
         p.wait()
         self.assertEqual(p.returncode, 1)
 
@@ -145,26 +150,27 @@ class ProcessTestCase(unittest.TestCase):
         tf = tempfile.TemporaryFile()
         tf.write("pear")
         tf.seek(0)
-        p = subprocess.Popen([sys.executable, "-c",
-                         'import sys; sys.exit(sys.stdin.read() == "pear")'],
-                         stdin=tf)
+        p = subprocess.Popen(
+            [sys.executable,
+             "-c", 'import sys; sys.exit(sys.stdin.read() == "pear")'],
+            stdin=tf)
         p.wait()
         self.assertEqual(p.returncode, 1)
 
     def test_stdout_pipe(self):
         # stdout redirection
-        p = subprocess.Popen([sys.executable, "-c",
-                          'import sys; sys.stdout.write("orange")'],
-                         stdout=subprocess.PIPE)
+        p = subprocess.Popen(
+            [sys.executable, "-c", 'import sys; sys.stdout.write("orange")'],
+            stdout=subprocess.PIPE)
         self.assertEqual(p.stdout.read(), "orange")
 
     def test_stdout_filedes(self):
         # stdout is set to open file descriptor
         tf = tempfile.TemporaryFile()
         d = tf.fileno()
-        p = subprocess.Popen([sys.executable, "-c",
-                          'import sys; sys.stdout.write("orange")'],
-                         stdout=d)
+        p = subprocess.Popen(
+            [sys.executable, "-c", 'import sys; sys.stdout.write("orange")'],
+            stdout=d)
         p.wait()
         os.lseek(d, 0, 0)
         self.assertEqual(os.read(d, 1024), "orange")
@@ -172,18 +178,19 @@ class ProcessTestCase(unittest.TestCase):
     def test_stdout_fileobj(self):
         # stdout is set to open file object
         tf = tempfile.TemporaryFile()
-        p = subprocess.Popen([sys.executable, "-c",
-                          'import sys; sys.stdout.write("orange")'],
-                         stdout=tf)
+        p = subprocess.Popen(
+            [sys.executable, "-c", 'import sys; sys.stdout.write("orange")'],
+            stdout=tf)
         p.wait()
         tf.seek(0)
         self.assertEqual(tf.read(), "orange")
 
     def test_stderr_pipe(self):
         # stderr redirection
-        p = subprocess.Popen([sys.executable, "-c",
-                          'import sys; sys.stderr.write("strawberry")'],
-                         stderr=subprocess.PIPE)
+        p = subprocess.Popen(
+            [sys.executable, "-c",
+             'import sys; sys.stderr.write("strawberry")'],
+            stderr=subprocess.PIPE)
         self.assertEqual(remove_stderr_debug_decorations(p.stderr.read()),
                          "strawberry")
 
@@ -191,9 +198,10 @@ class ProcessTestCase(unittest.TestCase):
         # stderr is set to open file descriptor
         tf = tempfile.TemporaryFile()
         d = tf.fileno()
-        p = subprocess.Popen([sys.executable, "-c",
-                          'import sys; sys.stderr.write("strawberry")'],
-                         stderr=d)
+        p = subprocess.Popen(
+            [sys.executable, "-c",
+             'import sys; sys.stderr.write("strawberry")'],
+            stderr=d)
         p.wait()
         os.lseek(d, 0, 0)
         self.assertEqual(remove_stderr_debug_decorations(os.read(d, 1024)),
@@ -202,9 +210,10 @@ class ProcessTestCase(unittest.TestCase):
     def test_stderr_fileobj(self):
         # stderr is set to open file object
         tf = tempfile.TemporaryFile()
-        p = subprocess.Popen([sys.executable, "-c",
-                          'import sys; sys.stderr.write("strawberry")'],
-                         stderr=tf)
+        p = subprocess.Popen(
+            [sys.executable, "-c",
+             'import sys; sys.stderr.write("strawberry")'],
+            stderr=tf)
         p.wait()
         tf.seek(0)
         self.assertEqual(remove_stderr_debug_decorations(tf.read()),
@@ -212,13 +221,14 @@ class ProcessTestCase(unittest.TestCase):
 
     def test_stdout_stderr_pipe(self):
         # capture stdout and stderr to the same pipe
-        p = subprocess.Popen([sys.executable, "-c",
-                          'import sys;'
-                          'sys.stdout.write("apple");'
-                          'sys.stdout.flush();'
-                          'sys.stderr.write("orange")'],
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.STDOUT)
+        p = subprocess.Popen(
+            [sys.executable, "-c",
+             'import sys;'
+             'sys.stdout.write("apple");'
+             'sys.stdout.flush();'
+             'sys.stderr.write("orange")'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT)
         output = p.stdout.read()
         stripped = remove_stderr_debug_decorations(output)
         self.assertEqual(stripped, "appleorange")
@@ -226,13 +236,14 @@ class ProcessTestCase(unittest.TestCase):
     def test_stdout_stderr_file(self):
         # capture stdout and stderr to the same open file
         tf = tempfile.TemporaryFile()
-        p = subprocess.Popen([sys.executable, "-c",
-                          'import sys;'
-                          'sys.stdout.write("apple");'
-                          'sys.stdout.flush();'
-                          'sys.stderr.write("orange")'],
-                         stdout=tf,
-                         stderr=tf)
+        p = subprocess.Popen(
+            [sys.executable, "-c",
+             'import sys;'
+             'sys.stdout.write("apple");'
+             'sys.stdout.flush();'
+             'sys.stderr.write("orange")'],
+            stdout=tf,
+            stderr=tf)
         p.wait()
         tf.seek(0)
         output = tf.read()
@@ -253,22 +264,22 @@ class ProcessTestCase(unittest.TestCase):
         os.chdir(tmpdir)
         tmpdir = os.getcwd()
         os.chdir(cwd)
-        p = subprocess.Popen([sys.executable, "-c",
-                          'import sys,os;' \
-                          'sys.stdout.write(os.getcwd())'],
-                         stdout=subprocess.PIPE,
-                         cwd=tmpdir)
+        p = subprocess.Popen(
+            [sys.executable, "-c",
+             'import sys,os; sys.stdout.write(os.getcwd())'],
+            stdout=subprocess.PIPE,
+            cwd=tmpdir)
         normcase = os.path.normcase
         self.assertEqual(normcase(p.stdout.read()), normcase(tmpdir))
 
     def test_env(self):
         newenv = os.environ.copy()
         newenv["FRUIT"] = "orange"
-        p = subprocess.Popen([sys.executable, "-c",
-                          'import sys,os;' \
-                          'sys.stdout.write(os.getenv("FRUIT"))'],
-                         stdout=subprocess.PIPE,
-                         env=newenv)
+        p = subprocess.Popen(
+            [sys.executable, "-c",
+             'import sys,os; sys.stdout.write(os.getenv("FRUIT"))'],
+            stdout=subprocess.PIPE,
+            env=newenv)
         self.assertEqual(p.stdout.read(), "orange")
 
     def test_communicate_stdin(self):
@@ -300,13 +311,14 @@ class ProcessTestCase(unittest.TestCase):
         self.assert_(stderr.startswith("pineapple"))
 
     def test_communicate(self):
-        p = subprocess.Popen([sys.executable, "-c",
-                          'import sys,os;' \
-                          'sys.stderr.write("pineapple");' \
-                          'sys.stdout.write(sys.stdin.read())'],
-                         stdin=subprocess.PIPE,
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
+        p = subprocess.Popen(
+            [sys.executable, "-c",
+             'import sys,os;'
+             'sys.stderr.write("pineapple");'
+             'sys.stdout.write(sys.stdin.read())'],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
         (stdout, stderr) = p.communicate("banana")
         self.assertEqual(stdout, "banana")
         self.assertEqual(remove_stderr_debug_decorations(stderr),
@@ -314,8 +326,8 @@ class ProcessTestCase(unittest.TestCase):
 
     def test_communicate_returns(self):
         # communicate() should return None if no redirection is active
-        p = subprocess.Popen([sys.executable, "-c",
-                              "import sys; sys.exit(47)"])
+        p = subprocess.Popen(
+            [sys.executable, "-c", "import sys; sys.exit(47)"])
         (stdout, stderr) = p.communicate()
         self.assertEqual(stdout, None)
         self.assertEqual(stderr, None)
@@ -331,47 +343,49 @@ class ProcessTestCase(unittest.TestCase):
             pipe_buf = os.fpathconf(x, "PC_PIPE_BUF")
         os.close(x)
         os.close(y)
-        p = subprocess.Popen([sys.executable, "-c",
-                          'import sys,os;'
-                          'sys.stdout.write(sys.stdin.read(47));' \
-                          'sys.stderr.write("xyz"*%d);' \
-                          'sys.stdout.write(sys.stdin.read())' % pipe_buf],
-                         stdin=subprocess.PIPE,
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
+        p = subprocess.Popen(
+            [sys.executable, "-c",
+             'import sys,os;'
+             'sys.stdout.write(sys.stdin.read(47));'
+             'sys.stderr.write("xyz"*%d);'
+             'sys.stdout.write(sys.stdin.read())' % pipe_buf],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
         string_to_write = "abc" * pipe_buf
         (stdout, stderr) = p.communicate(string_to_write)
         self.assertEqual(stdout, string_to_write)
 
     def test_writes_before_communicate(self):
         # stdin.write before communicate()
-        p = subprocess.Popen([sys.executable, "-c",
-                          'import sys,os;' \
-                          'sys.stdout.write(sys.stdin.read())'],
-                         stdin=subprocess.PIPE,
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
+        p = subprocess.Popen(
+            [sys.executable, "-c",
+             'import sys,os; sys.stdout.write(sys.stdin.read())'],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
         p.stdin.write("banana")
         (stdout, stderr) = p.communicate("split")
         self.assertEqual(stdout, "bananasplit")
         self.assertEqual(remove_stderr_debug_decorations(stderr), "")
 
     def test_universal_newlines(self):
-        p = subprocess.Popen([sys.executable, "-c",
-                          'import sys,os;' + SETBINARY +
-                          'sys.stdout.write("line1\\n");'
-                          'sys.stdout.flush();'
-                          'sys.stdout.write("line2\\r");'
-                          'sys.stdout.flush();'
-                          'sys.stdout.write("line3\\r\\n");'
-                          'sys.stdout.flush();'
-                          'sys.stdout.write("line4\\r");'
-                          'sys.stdout.flush();'
-                          'sys.stdout.write("\\nline5");'
-                          'sys.stdout.flush();'
-                          'sys.stdout.write("\\nline6");'],
-                         stdout=subprocess.PIPE,
-                         universal_newlines=1)
+        p = subprocess.Popen(
+            [sys.executable, "-c",
+             'import sys,os;' + SETBINARY +
+             'sys.stdout.write("line1\\n");'
+             'sys.stdout.flush();'
+             'sys.stdout.write("line2\\r");'
+             'sys.stdout.flush();'
+             'sys.stdout.write("line3\\r\\n");'
+             'sys.stdout.flush();'
+             'sys.stdout.write("line4\\r");'
+             'sys.stdout.flush();'
+             'sys.stdout.write("\\nline5");'
+             'sys.stdout.flush();'
+             'sys.stdout.write("\\nline6");'],
+            stdout=subprocess.PIPE,
+            universal_newlines=1)
         stdout = p.stdout.read()
         if hasattr(file, 'newlines'):
             # Interpreter with universal newline support
@@ -384,21 +398,22 @@ class ProcessTestCase(unittest.TestCase):
 
     def test_universal_newlines_communicate(self):
         # universal newlines through communicate()
-        p = subprocess.Popen([sys.executable, "-c",
-                          'import sys,os;' + SETBINARY +
-                          'sys.stdout.write("line1\\n");'
-                          'sys.stdout.flush();'
-                          'sys.stdout.write("line2\\r");'
-                          'sys.stdout.flush();'
-                          'sys.stdout.write("line3\\r\\n");'
-                          'sys.stdout.flush();'
-                          'sys.stdout.write("line4\\r");'
-                          'sys.stdout.flush();'
-                          'sys.stdout.write("\\nline5");'
-                          'sys.stdout.flush();'
-                          'sys.stdout.write("\\nline6");'],
-                         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                         universal_newlines=1)
+        p = subprocess.Popen(
+            [sys.executable, "-c",
+             'import sys,os;' + SETBINARY +
+             'sys.stdout.write("line1\\n");'
+             'sys.stdout.flush();'
+             'sys.stdout.write("line2\\r");'
+             'sys.stdout.flush();'
+             'sys.stdout.write("line3\\r\\n");'
+             'sys.stdout.flush();'
+             'sys.stdout.write("line4\\r");'
+             'sys.stdout.flush();'
+             'sys.stdout.write("\\nline5");'
+             'sys.stdout.flush();'
+             'sys.stdout.write("\\nline6");'],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            universal_newlines=1)
         (stdout, stderr) = p.communicate()
         if hasattr(file, 'newlines'):
             # Interpreter with universal newline support
@@ -412,16 +427,18 @@ class ProcessTestCase(unittest.TestCase):
     def test_no_leaking(self):
         # Make sure we leak no resources
         if (not hasattr(test_support, "is_resource_enabled") or
-            test_support.is_resource_enabled("subprocess") and not mswindows):
+                test_support.is_resource_enabled("subprocess") and
+                not mswindows):
             max_handles = 1026  # too much for most UNIX systems
         else:
             max_handles = 65
         for i in range(max_handles):
-            p = subprocess.Popen([sys.executable, "-c",
-                    "import sys;sys.stdout.write(sys.stdin.read())"],
-                    stdin=subprocess.PIPE,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE)
+            p = subprocess.Popen(
+                [sys.executable, "-c",
+                 "import sys;sys.stdout.write(sys.stdin.read())"],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
             data = p.communicate("lime")[0]
             self.assertEqual(data, "lime")
 
@@ -442,8 +459,8 @@ class ProcessTestCase(unittest.TestCase):
                          'ab ""')
 
     def test_poll(self):
-        p = subprocess.Popen([sys.executable,
-                          "-c", "import time; time.sleep(1)"])
+        p = subprocess.Popen(
+            [sys.executable, "-c", "import time; time.sleep(1)"])
         count = 0
         while p.poll() is None:
             time.sleep(0.1)
@@ -457,8 +474,8 @@ class ProcessTestCase(unittest.TestCase):
         self.assertEqual(p.poll(), 0)
 
     def test_wait(self):
-        p = subprocess.Popen([sys.executable,
-                          "-c", "import time; time.sleep(2)"])
+        p = subprocess.Popen(
+            [sys.executable, "-c", "import time; time.sleep(2)"])
         self.assertEqual(p.wait(), 0)
         # Subsequent invocations should just return the returncode
         self.assertEqual(p.wait(), 0)
@@ -481,8 +498,9 @@ class ProcessTestCase(unittest.TestCase):
         def test_exceptions(self):
             # catched & re-raised exceptions
             try:
-                p = subprocess.Popen([sys.executable, "-c", ""],
-                                 cwd="/this/path/does/not/exist")
+                p = subprocess.Popen(
+                    [sys.executable, "-c", ""],
+                    cwd="/this/path/does/not/exist")
             except OSError as e:
                 # The attribute child_traceback should contain "os.chdir"
                 # somewhere.
@@ -526,11 +544,11 @@ class ProcessTestCase(unittest.TestCase):
 
         def test_preexec(self):
             # preexec function
-            p = subprocess.Popen([sys.executable, "-c",
-                              'import sys,os;' \
-                              'sys.stdout.write(os.getenv("FRUIT"))'],
-                             stdout=subprocess.PIPE,
-                             preexec_fn=lambda: os.putenv("FRUIT", "apple"))
+            p = subprocess.Popen(
+                [sys.executable, "-c",
+                 'import sys,os; sys.stdout.write(os.getenv("FRUIT"))'],
+                stdout=subprocess.PIPE,
+                preexec_fn=lambda: os.putenv("FRUIT", "apple"))
             self.assertEqual(p.stdout.read(), "apple")
 
         def test_args_string(self):
@@ -604,16 +622,17 @@ class ProcessTestCase(unittest.TestCase):
             # Since Python is a console process, it won't be affected
             # by wShowWindow, but the argument should be silently
             # ignored
-            subprocess.call([sys.executable, "-c", "import sys; sys.exit(0)"],
-                        startupinfo=startupinfo)
+            subprocess.call(
+                [sys.executable, "-c", "import sys; sys.exit(0)"],
+                startupinfo=startupinfo)
 
         def test_creationflags(self):
             # creationflags argument
             CREATE_NEW_CONSOLE = 16
             sys.stderr.write("    a DOS box should flash briefly ...\n")
-            subprocess.call(sys.executable +
-                                ' -c "import time; time.sleep(0.25)"',
-                            creationflags=CREATE_NEW_CONSOLE)
+            subprocess.call(
+                sys.executable + ' -c "import time; time.sleep(0.25)"',
+                creationflags=CREATE_NEW_CONSOLE)
 
         def test_invalid_args(self):
             # invalid arguments should raise ValueError

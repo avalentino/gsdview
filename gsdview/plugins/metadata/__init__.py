@@ -26,10 +26,11 @@ from .info import *
 from .info import __version__, __requires__
 
 
-__all__ = ['init', 'close', 'loadSettings', 'saveSettings',
-           'name', 'version', 'short_description', 'description',
-           'author', 'author_email', 'copyright', 'license_type',
-           'website', 'website_label',
+__all__ = [
+    'init', 'close', 'loadSettings', 'saveSettings',
+    'name', 'version', 'short_description', 'description',
+    'author', 'author_email', 'copyright', 'license_type',
+    'website', 'website_label',
 ]
 
 _instance = None

@@ -136,7 +136,7 @@ class MainWin(QtGui.QMainWindow):
                 '<p>Example program for the Mouse manager component.</p>',
                 '<p>Copyright (C): 2009-2013 '
                 '<a href="mailto:a_valentino@users.sf.net">'
-                    'Antonio Valentino'
+                'Antonio Valentino'
                 '<a>.</p>']
         text = self.tr('\n'.join(text))
         QtGui.QMessageBox.about(self, title, text)

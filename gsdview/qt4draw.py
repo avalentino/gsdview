@@ -27,7 +27,7 @@ from qt import QtCore, QtGui
 from gsdview.mousemanager import MouseMode  # , RubberBandMode
 
 
-### Graphics Items ############################################################
+# Graphics Items ############################################################
 def _highlightSelectedGraphicsItem(item, painter, option, boundingrect=None):
     '''Highlights item as selected.
 
@@ -217,7 +217,7 @@ class GraphicsItemGroup(QtGui.QGraphicsItemGroup):
                 pass
 
 
-### Drawing tools #############################################################
+# Drawing tools #############################################################
 class DrawPointMode(MouseMode):
     dragmode = QtGui.QGraphicsView.NoDrag
     cursor = QtCore.Qt.CrossCursor
@@ -227,11 +227,11 @@ class DrawPointMode(MouseMode):
 
     def sceneEventFilter(self, obj, event):
         if (event.type() == QtCore.QEvent.GraphicsSceneMousePress and
-                                    event.button() == QtCore.Qt.LeftButton):
+                event.button() == QtCore.Qt.LeftButton):
             return True
 
         elif (event.type() == QtCore.QEvent.GraphicsSceneMouseRelease and
-                                    event.button() == QtCore.Qt.LeftButton):
+                event.button() == QtCore.Qt.LeftButton):
             pen = QtGui.QPen()
             pen.setColor(QtCore.Qt.red)
 
@@ -268,33 +268,33 @@ class DrawLineMode(MouseMode):
 
     def sceneEventFilter(self, obj, event):
         if (event.type() == QtCore.QEvent.GraphicsSceneMousePress and
-                                    event.button() == QtCore.Qt.LeftButton):
+                event.button() == QtCore.Qt.LeftButton):
             assert(self.rubberband is None)
             self.rubberband = QtGui.QRubberBand(QtGui.QRubberBand.Line)
-            self.rubberband.setGeometry(QtCore.QRect(event.screenPos(),
-                                                     QtCore.QSize()))
+            self.rubberband.setGeometry(
+                QtCore.QRect(event.screenPos(), QtCore.QSize()))
             self.rubberband.show()
             return True
 
         if (event.type() == QtCore.QEvent.GraphicsSceneMouseRelease and
-                                    event.button() == QtCore.Qt.LeftButton):
+                event.button() == QtCore.Qt.LeftButton):
             assert(self.rubberband is not None)
             self.rubberband.hide()
             self.rubberband = None
             line = QtCore.QLineF(
-                            event.buttonDownScenePos(QtCore.Qt.LeftButton),
-                            event.scenePos())
+                event.buttonDownScenePos(QtCore.Qt.LeftButton),
+                event.scenePos())
             item = obj.addLine(line, self.pen)
             item.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
             item.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
             return True
 
         elif (event.type() == QtCore.QEvent.GraphicsSceneMouseMove and
-                                bool(event.buttons() & QtCore.Qt.LeftButton)):
+                bool(event.buttons() & QtCore.Qt.LeftButton)):
             assert(self.rubberband is not None)
             rect = QtCore.QRect(
-                            event.buttonDownScreenPos(QtCore.Qt.LeftButton),
-                            event.screenPos()).normalized()
+                event.buttonDownScreenPos(QtCore.Qt.LeftButton),
+                event.screenPos()).normalized()
             self.rubberband.setGeometry(rect)
             return True
 
@@ -342,7 +342,7 @@ class DrawLineMode(MouseMode):
             #~ return True
 
         #~ elif (event.type() == QtCore.QEvent.GraphicsSceneMouseMove and
-                                #~ bool(event.buttons() & QtCore.Qt.LeftButton)):
+                    #~ bool(event.buttons() & QtCore.Qt.LeftButton)):
             #~ assert(self.rubberband is not None)
             #~ rect = QtCore.QRect(
                             #~ event.buttonDownScreenPos(QtCore.Qt.LeftButton),
@@ -372,7 +372,7 @@ class DrawRectMode(MouseMode):
 
     def sceneEventFilter(self, obj, event):
         if (event.type() == QtCore.QEvent.GraphicsSceneMousePress and
-                                    event.button() == QtCore.Qt.LeftButton):
+                event.button() == QtCore.Qt.LeftButton):
             assert(self.rubberband is None)
             self.rubberband = QtGui.QRubberBand(QtGui.QRubberBand.Rectangle)
             self.rubberband.setGeometry(QtCore.QRect(event.screenPos(),
@@ -381,24 +381,24 @@ class DrawRectMode(MouseMode):
             return True
 
         if (event.type() == QtCore.QEvent.GraphicsSceneMouseRelease and
-                                    event.button() == QtCore.Qt.LeftButton):
+                event.button() == QtCore.Qt.LeftButton):
             assert(self.rubberband is not None)
             self.rubberband.hide()
             self.rubberband = None
             rect = QtCore.QRectF(
-                            event.buttonDownScenePos(QtCore.Qt.LeftButton),
-                            event.scenePos()).normalized()
+                event.buttonDownScenePos(QtCore.Qt.LeftButton),
+                event.scenePos()).normalized()
             item = obj.addRect(rect, self.pen, self.brush)
             item.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
             item.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
             return True
 
         elif (event.type() == QtCore.QEvent.GraphicsSceneMouseMove and
-                                bool(event.buttons() & QtCore.Qt.LeftButton)):
+                bool(event.buttons() & QtCore.Qt.LeftButton)):
             assert(self.rubberband is not None)
             rect = QtCore.QRect(
-                            event.buttonDownScreenPos(QtCore.Qt.LeftButton),
-                            event.screenPos()).normalized()
+                event.buttonDownScreenPos(QtCore.Qt.LeftButton),
+                event.screenPos()).normalized()
             self.rubberband.setGeometry(rect)
             return True
 
@@ -424,33 +424,33 @@ class DrawEllipseMode(MouseMode):
 
     def sceneEventFilter(self, obj, event):
         if (event.type() == QtCore.QEvent.GraphicsSceneMousePress and
-                                    event.button() == QtCore.Qt.LeftButton):
+                event.button() == QtCore.Qt.LeftButton):
             assert(self.rubberband is None)
             self.rubberband = QtGui.QRubberBand(QtGui.QRubberBand.Rectangle)
-            self.rubberband.setGeometry(QtCore.QRect(event.screenPos(),
-                                                     QtCore.QSize()))
+            self.rubberband.setGeometry(
+                QtCore.QRect(event.screenPos(), QtCore.QSize()))
             self.rubberband.show()
             return True
 
         if (event.type() == QtCore.QEvent.GraphicsSceneMouseRelease and
-                                    event.button() == QtCore.Qt.LeftButton):
+                event.button() == QtCore.Qt.LeftButton):
             assert(self.rubberband is not None)
             self.rubberband.hide()
             self.rubberband = None
             rect = QtCore.QRectF(
-                            event.buttonDownScenePos(QtCore.Qt.LeftButton),
-                            event.scenePos()).normalized()
+                event.buttonDownScenePos(QtCore.Qt.LeftButton),
+                event.scenePos()).normalized()
             item = obj.addEllipse(rect, self.pen, self.brush)
             item.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
             item.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
             return True
 
         elif (event.type() == QtCore.QEvent.GraphicsSceneMouseMove and
-                                bool(event.buttons() & QtCore.Qt.LeftButton)):
+                bool(event.buttons() & QtCore.Qt.LeftButton)):
             assert(self.rubberband is not None)
             rect = QtCore.QRect(
-                            event.buttonDownScreenPos(QtCore.Qt.LeftButton),
-                            event.screenPos()).normalized()
+                event.buttonDownScreenPos(QtCore.Qt.LeftButton),
+                event.screenPos()).normalized()
             self.rubberband.setGeometry(rect)
             return True
 
