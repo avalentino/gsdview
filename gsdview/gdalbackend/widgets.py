@@ -351,8 +351,7 @@ class BackendPreferencesPage(GDALPreferencesPage):
             value = settings.value('visible_overview_items')
             if value is not None:
                 # @COMPATIBILITY: presumably a bug in PyQt4 (4.7.2)
-                if isinstance(value, basestring):
-                    value = True if value in ('true', 'True') else False
+                value = True if value in ('true', 'True') else False
 
                 self.showOverviewCheckbox.setChecked(value)
         finally:
