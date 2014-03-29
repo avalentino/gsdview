@@ -11,7 +11,9 @@ GSDView Open Edition
 * SourceForge `Project Page <http://sourceforge.net/projects/gsdview>`_
 * `Screenshots <http://sourceforge.net/project/screenshots.php?group_id=226458>`_
 * `Downloads <http://sourceforge.net/projects/gsdview/files>`_
-* `Trac Site <http://sourceforge.net/apps/trac/gsdview>`_ on SourceForge.net
+* `Developer page <https://github.com/avalentino/gsdview>`_ on GitHub_
+
+.. _GitHub: https://github.com
 
 
 GSDView Pro Edition

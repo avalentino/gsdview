@@ -156,7 +156,7 @@ if not os.path.exists(DOCSDIR):
             'Unable to locate the application data directory.\\n'
             'Please check yout installation.\\n'
             'If the error persists please file a bug report at:\\n'
-            '  http://sourceforge.net/apps/trac/gsdview/wiki')
+            '  https://github.com/avalentino/gsdview')
 
 del PKGNAME, LIBDIR, os
 '''

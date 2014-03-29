@@ -157,7 +157,7 @@ __ `GSDView project page`_
 .. _Qt4: http://qt.nokia.com/products
 .. _Fedora: http://fedoraproject.org
 .. _Launchpad: http://www.launchpad.net
-.. _`development branch`: http://sf.net/apps/trac/gsdview/browser/trunk
+.. _`development branch`: https://github.com/avalentino/gsdview
 .. _`Mac OS X`: http://www.apple.com/macosx
 .. _`GSDView project page`: http://sourceforge.net/projects/gsdview
 .. _download: http://sourceforge.net/projects/gsdview/files
