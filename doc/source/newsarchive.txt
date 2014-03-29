@@ -154,11 +154,11 @@ __ `GSDView project page`_
 .. _PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt
 .. _SIP: http://www.riverbankcomputing.co.uk/software/sip
 .. _PySide: http://www.pyside.org
-.. _Qt4: http://qt.nokia.com/products
+.. _Qt4: http://qt-project.org
 .. _Fedora: http://fedoraproject.org
-.. _Launchpad: http://www.launchpad.net
+.. _Launchpad: https://www.launchpad.net
 .. _`development branch`: https://github.com/avalentino/gsdview
-.. _`Mac OS X`: http://www.apple.com/macosx
+.. _`Mac OS X`: http://www.apple.com/osx
 .. _`GSDView project page`: http://sourceforge.net/projects/gsdview
 .. _download: http://sourceforge.net/projects/gsdview/files
 .. _sphinx: http://sphinx-doc.org

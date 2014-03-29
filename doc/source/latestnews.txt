@@ -28,5 +28,5 @@
 .. _SourceForge: http://sourceforge.net
 .. _sphinx: http://sphinx-doc.org
 .. _PyInstaller: http://www.pyinstaller.org
-.. _`Python 3`: http://docs.python.org/3
+.. _`Python 3`: https://docs.python.org/3
 .. _GDAL: http://www.gdal.org

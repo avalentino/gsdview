@@ -33,9 +33,9 @@ GSDView is modular and has a simple plug-in architecture.
       for external image processing tools)
 
 
-.. _Python: http://www.python.org
-.. _Qt4: http://qt.nokia.com/products
-.. _`GSDView Open Edition`: http://gsdview.sf.net
+.. _Python: https://www.python.org
+.. _Qt4: http://qt-project.org
+.. _`GSDView Open Edition`: http://gsdview.sourceforge.net
 __ gdal_
 
 
@@ -113,7 +113,7 @@ You can also install GSDView in a custom location::
    If it doesn't exist you can get it by making a copy of the
    ``run.py`` file and renaming it ``run.pyw``.
 
-.. _Windows: http://www.microsoft.com/windows
+.. _Windows: http://windows.microsoft.com
 
 
 License

@@ -151,7 +151,7 @@ Changes from 0.5.9 to 0.6.0 (24/08/2009)
 * Initial support for PyInstaller_ packaging (:issue:`25`)
 * Improved project layout: exectools in now an independent python package,
   no more a sub-package of gsdview (close :issue:`27`)
-* `setuptools <http://pypi.python.org/pypi/setuptools>`_ support
+* `setuptools <https://pypi.python.org/pypi/setuptools>`_ support
   (close :issue:`24`)
 
 
