@@ -30,7 +30,10 @@ sys.path.insert(0, GSDVIEWROOT)
 
 from qt import QtGui
 
-from gsdview.widgets import *
+from gsdview.widgets import (
+    AboutDialog, FileEntryWidget, GeneralPreferencesPage, PreferencesDialog,
+    GSDViewExceptionDialog,
+)
 
 
 def test_aboutdialog():

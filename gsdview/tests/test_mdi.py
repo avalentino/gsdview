@@ -10,7 +10,7 @@ sys.path.insert(0, GSDVIEWROOT)
 
 from qt import QtCore, QtGui
 
-from gsdview.mdi import *
+from gsdview.mdi import MdiMainWindow
 from gsdview.qt4support import geticon
 
 
@@ -57,7 +57,7 @@ class MdiChild(QtGui.QTextEdit):
     def saveAs(self):
         filename, _ = QtGui.QFileDialog.getSaveFileNameAndFilter(
             self, self.tr('Save As'), self.curFile)
-        if fileName.isEmpty:
+        if filename.isEmpty:
             return False
 
         return self.saveFile(filename)

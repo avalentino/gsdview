@@ -30,7 +30,7 @@ sys.path.insert(0, GSDVIEWROOT)
 
 
 import numpy as np
-from gsdview.imgutils import *
+from gsdview.imgutils import linear_lut
 
 
 class TestLinearLUT(unittest.TestCase):

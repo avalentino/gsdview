@@ -14,7 +14,10 @@ sys.path.insert(0, GSDVIEWROOT)
 
 from qt import QtGui
 
-from gsdview.gdalbackend.widgets import *
+from gsdview.gdalbackend.widgets import (
+    GDALInfoWidget, GDALPreferencesPage, DatasetInfoDialog, BandInfoDialog,
+    HistogramConfigDialog, OverviewWidget, OverviewDialog,
+)
 
 
 def test_gdalinfowidget():

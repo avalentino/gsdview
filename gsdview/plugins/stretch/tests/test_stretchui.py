@@ -33,7 +33,7 @@ sys.path.insert(1, os.path.join(GSDVIEWROOT, 'gsdview', 'plugins'))
 
 from qt import QtGui
 
-from stretch.widgets import *
+from stretch.widgets import StretchDialog
 
 
 def test_stretchingdialog(floatmode=False):
