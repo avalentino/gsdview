@@ -1,6 +1,6 @@
 ### :Source: Makefile
 ### :Author: Antonio Valentino
-### :Contact: a_valentino@users.sf.net
+### :Contact: antonio.valentino@tiscali.it
 ### :URL: http://gsdview.sourceforge.net
 ### :Revision: $Revision$
 ### :Date: $Date$

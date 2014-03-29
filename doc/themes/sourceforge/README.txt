@@ -2,7 +2,7 @@ A Sphinx theme for SourceForge hosted projects
 ==============================================
 
 :Author: Antonio Valentino
-:Contact: a_valentino@users.sf.net
+:Contact: antonio.valentino@tiscali.it
 :Version: 1.2
 :Copyright (C): 2009-2013 Antonio Valentino
 

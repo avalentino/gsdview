@@ -1,7 +1,7 @@
 ..  :Source: doc/source/features.txt
     :Version: 0.7.0
     :Author: Antonio Valentino
-    :Contact: a_valentino@users.sf.net
+    :Contact: antonio.valentino@tiscali.it
     :URL: http://gsdview.sourceforge.net
     :Revision: $Revision$
     :Date: $Date$

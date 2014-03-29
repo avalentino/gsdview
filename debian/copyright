@@ -3,7 +3,7 @@ Upstream-Name: gsdview
 Source: http://sourceforge.net/projects/gsdview
 
 Files: *
-Copyright: 2008-2014 Antonio Valentino <a_valentino@users.sf.net>
+Copyright: 2008-2014 Antonio Valentino <antonio.valentino@tiscali.it>
 License: GPL-2
 
 Files: debian/*

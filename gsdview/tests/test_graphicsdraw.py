@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2014 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2014 Antonio Valentino <antonio.valentino@tiscali.it>
 
 ### This file is part of exectools.
 
@@ -213,7 +213,7 @@ class GraphicsDrawApp(QtGui.QMainWindow):
         text = ['<h1>Graphics Draw</h1>'
                 '<p>Example program for the basic Qt4 graphics drawing.</p>',
                 '<p>Copyright (C): 2010-2014 '
-                '<a href="mailto:a_valentino@users.sf.net">'
+                '<a href="mailto:antonio.valentino@tiscali.it">'
                 'Antonio Valentino<a>.</p>']
         text = self.tr('\n'.join(text))
         QtGui.QMessageBox.about(self, title, text)

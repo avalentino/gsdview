@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2014 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2014 Antonio Valentino <antonio.valentino@tiscali.it>
 
 ### This file is part of GSDView.
 
@@ -37,7 +37,7 @@ short_description = 'GDAL backend for GSDView'
 description = __doc__
 
 author = 'Antonio Valentino'
-author_email = 'a_valentino@users.sf.net'
+author_email = 'antonio.valentino@tiscali.it'
 copyright = 'Copyright (C) 2008-2014 %s <%s>' % (author, author_email)
 license_type = 'GNU GPL'
 website = 'http://gsdview.sourceforge.net'

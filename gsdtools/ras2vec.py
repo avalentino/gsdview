@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-### Copyright (C) 2008-2014 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2014 Antonio Valentino <antonio.valentino@tiscali.it>
 
 ### This file is part of GSDView.
 
