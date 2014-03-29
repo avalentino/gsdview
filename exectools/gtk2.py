@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2006-2013 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2006-2014 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of exectools.
 

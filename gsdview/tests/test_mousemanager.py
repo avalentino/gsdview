@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2013 Antonio Valentino <a_valentino@users.sf.net>
+### Copyright (C) 2008-2014 Antonio Valentino <a_valentino@users.sf.net>
 
 ### This file is part of exectools.
 
@@ -134,7 +134,7 @@ class MainWin(QtGui.QMainWindow):
         title = self.tr('MouseManager Example')
         text = ['<h1>Mouse Manager</h1>'
                 '<p>Example program for the Mouse manager component.</p>',
-                '<p>Copyright (C): 2009-2013 '
+                '<p>Copyright (C): 2009-2014 '
                 '<a href="mailto:a_valentino@users.sf.net">'
                 'Antonio Valentino'
                 '<a>.</p>']

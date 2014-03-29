@@ -3,11 +3,11 @@ Upstream-Name: gsdview
 Source: http://sourceforge.net/projects/gsdview
 
 Files: *
-Copyright: 2008-2013 Antonio Valentino <a_valentino@users.sf.net>
+Copyright: 2008-2014 Antonio Valentino <a_valentino@users.sf.net>
 License: GPL-2
 
 Files: debian/*
-Copyright: 2008-2013 Antonio Valentino <antonio.valentino@tiscali.it>
+Copyright: 2008-2014 Antonio Valentino <antonio.valentino@tiscali.it>
 License: GPL-2
 
 License: GPL-2
