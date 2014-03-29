@@ -280,8 +280,10 @@ class StretchDialog(QtGui.QDialog, StretchDialogBase):
 
         self.stretchwidget.valueChanged.connect(self.valueChanged)
 
-        #~ self.stretchwidget.lowSpinBox.valueChanged.connect(self.valueChanged)
-        #~ self.stretchwidget.highSpinBox.valueChanged.connect(self.valueChanged)
+        #~ self.stretchwidget.lowSpinBox.valueChanged.connect(
+        #~     self.valueChanged)
+        #~ self.stretchwidget.highSpinBox.valueChanged.connect(
+        #~     self.valueChanged)
 
     def advanced(self):
         return self.stretchwidget.lowSpinBox.isVisible()

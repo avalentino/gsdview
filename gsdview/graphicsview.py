@@ -161,7 +161,8 @@ class GraphicsViewMonitor(QtCore.QObject):
                                                       #~ mapped=self.scrolled)
         #~ #self.mappers['scroll'].mapped.connect(self.scrolled)
 
-        #~ self.mappers['scale'] = QtCore.QSignalMapper(self, mapped=self.scaled)
+        #~ self.mappers['scale'] = QtCore.QSignalMapper(
+        #~     self, mapped=self.scaled)
         #~ #self.mappers['scale'].mapped.connect(self.scaled)
 
     #~ def register(self, graphicsview):

@@ -145,47 +145,61 @@ class GraphicsDrawApp(QtGui.QMainWindow):
         actions = QtGui.QActionGroup(self)
 
         icon = style.standardIcon(QtGui.QStyle.SP_DialogResetButton)
-        QtGui.QAction(icon, self.tr('Reset'), actions,
-                      objectName='resetAction',
-                      statusTip=self.tr('Reset'),
-                      triggered=self.onReset)
+        QtGui.QAction(
+            icon,
+            self.tr('Reset'),
+            actions,
+            objectName='resetAction',
+            statusTip=self.tr('Reset'),
+            triggered=self.onReset)
 
         QtGui.QAction(actions).setSeparator(True)
 
         icon = QtGui.QIcon(
             ':/trolltech/dialogs/qprintpreviewdialog/images/zoom-in-32.png')
-        QtGui.QAction(icon, self.tr('Zoom In'), actions,
-                      objectName='zoomInAction',
-                      statusTip=self.tr('Zoom In'),
-                      shortcut=self.tr('Ctrl++'),
-                      triggered=lambda: self.graphicsview.scale(1.2, 1.2))
+        QtGui.QAction(
+            icon,
+            self.tr('Zoom In'),
+            actions,
+            objectName='zoomInAction',
+            statusTip=self.tr('Zoom In'),
+            shortcut=self.tr('Ctrl++'),
+            triggered=lambda: self.graphicsview.scale(1.2, 1.2))
 
         icon = QtGui.QIcon(
             ':/trolltech/dialogs/qprintpreviewdialog/images/zoom-out-32.png')
-        QtGui.QAction(icon, self.tr('Zoom Out'), actions,
-                      objectName='zoomOutAction',
-                      statusTip=self.tr('Zoom Out'),
-                      shortcut=self.tr('Ctrl+-'),
-                      triggered=lambda: self.graphicsview.scale(1 / 1.2,
-                                                                1 / 1.2))
+        QtGui.QAction(
+            icon,
+            self.tr('Zoom Out'),
+            actions,
+            objectName='zoomOutAction',
+            statusTip=self.tr('Zoom Out'),
+            shortcut=self.tr('Ctrl+-'),
+            triggered=lambda: self.graphicsview.scale(1 / 1.2, 1 / 1.2))
 
         icon = QtGui.QIcon(
             ':/trolltech/dialogs/qprintpreviewdialog/images/page-setup-24.png')
-        QtGui.QAction(icon, self.tr('Zoom 1:1'), actions,
-                      objectName='zoomResetAction',
-                      statusTip=self.tr('Zoom 1:1'),
-                      triggered=lambda: self.graphicsview.setMatrix(
-                      QtGui.QMatrix(1, 0, 0, -1, 0, 0)))
+        QtGui.QAction(
+            icon,
+            self.tr('Zoom 1:1'),
+            actions,
+            objectName='zoomResetAction',
+            statusTip=self.tr('Zoom 1:1'),
+            triggered=lambda: self.graphicsview.setMatrix(
+                QtGui.QMatrix(1, 0, 0, -1, 0, 0)))
 
         icon = QtGui.QIcon(
             ':/trolltech/dialogs/qprintpreviewdialog/images/fit-page-32.png')
-        QtGui.QAction(icon, self.tr('Zoom Fit'), actions,
-                      objectName='zoomFitAction',
-                      statusTip=self.tr('Zoom Fit'),
-                      #checkable=True,
-                      triggered=lambda: self.graphicsview.fitInView(
-                      self.graphicsview.sceneRect(),
-                      QtCore.Qt.KeepAspectRatio))
+        QtGui.QAction(
+            icon,
+            self.tr('Zoom Fit'),
+            actions,
+            objectName='zoomFitAction',
+            statusTip=self.tr('Zoom Fit'),
+            #checkable=True,
+            triggered=lambda: self.graphicsview.fitInView(
+                self.graphicsview.sceneRect(),
+                QtCore.Qt.KeepAspectRatio))
 
         return actions
 

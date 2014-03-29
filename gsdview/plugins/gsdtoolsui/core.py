@@ -47,7 +47,8 @@ class GSDToolsController(QtCore.QObject):
         app.mdiarea.subWindowActivated.connect(self.onSubWindowChanged)
         #app.subWindowClosed.connect(self.onSubWindowChanged)
         #~ app.treeview.clicked.connect(self.onItemChanged)
-        #~ app.treeview.selectionModel().selectionChanged(self.self.onItemChanged)
+        #~ app.treeview.selectionModel().selectionChanged(
+        #~    self.self.onItemChanged)
         #~ ##void currentChanged(const QModelIndex& current,
         #~ ##                    const QModelIndex& previous)
 
