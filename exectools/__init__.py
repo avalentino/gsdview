@@ -33,6 +33,15 @@ if sys.version_info < (3, 0):
 else:
     string_types = (str,)
 
+# callable
+try:
+    callable = callable
+except NameError:
+    from collections import Callable as _Callable
+
+    def callable(obj):
+        return isinstance(obj, _Callable)
+
 __version__ = (0, 7, 0)
 
 __all__ = ['EX_OK', 'PROGRESS', 'TAGS', 'level2tag',

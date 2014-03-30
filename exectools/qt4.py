@@ -43,6 +43,7 @@ except ImportError:
 
 from exectools import (
     BaseOutputHandler, BaseToolController, EX_OK, level2tag, string_types,
+    callable,
 )
 
 

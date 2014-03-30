@@ -28,10 +28,19 @@ import sys
 
 
 PY2 = sys.version_info < (3, 0)
-
 PY3 = not PY2
 
+# strings
 if PY2:
     string_types = (basestring,)
 else:
     string_types = (str,)
+
+# callable
+try:
+    callable = callable
+except NameError:
+    from collections import Callable as _Callable
+
+    def callable(obj):
+        return isinstance(obj, _Callable)
