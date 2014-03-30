@@ -19,6 +19,8 @@
 ### along with GSDView; if not, write to the Free Software
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
 
+from __future__ import print_function
+
 import os
 import sys
 import logging
@@ -73,7 +75,7 @@ def test_preferencesdialog():
 def test_exceptiondialog():
     def f(depth, verbose=False):
         if verbose:
-            print 1 / depth
+            print(1 / depth)
         else:
             1 / depth
         return f(depth - 1, verbose)
@@ -85,7 +87,7 @@ def test_exceptiondialog():
         #d = ExceptionDialog()
         d.show()
         app.exec_()
-    print 'done.'
+    print('done.')
 
 
 if __name__ == '__main__':

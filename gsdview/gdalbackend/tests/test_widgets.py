@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import pront_function
+
 import os
 import sys
 import logging
@@ -119,7 +121,7 @@ def test_ovrwidget():
         parts.append(os.path.basename(filename))
         parts.extend(levels)
 
-        print ' '.join(parts)
+        print(' '.join(parts))
 
     w.overviewComputationRequest.connect(callback)
 
