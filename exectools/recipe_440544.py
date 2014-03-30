@@ -66,7 +66,6 @@ else:
     import select
     import fcntl
 
-
 class Popen(subprocess.Popen):
     def recv(self, maxsize=None):
         return self._recv('stdout', maxsize)
@@ -200,7 +199,10 @@ def send_all(p, data):
         sent = p.send(data)
         if sent is None:
             raise Exception(message)
-        data = buffer(data, sent)
+        try:
+            data = buffer(data, sent)
+        except Exception:
+            data = data[sent:]
 
 if __name__ == '__main__':
     if sys.platform == 'win32':
