@@ -22,6 +22,8 @@
 '''Custom exectools components for GDAL.'''
 
 
+from __future__ import print_function
+
 import re
 import logging
 
@@ -420,7 +422,7 @@ if __name__ == '__main__':
         h._progress_pattern = GdalOutputHandler()._progress_pattern
         h.feed(s)
         h.close()
-        print 'done.'
+        print('done.')
 
     def test_GdalOutputHandler1():
         s = '0...10...20...30...40...50...60...70...80...90...100 - done.\n'
@@ -445,7 +447,7 @@ if __name__ == '__main__':
         h = C()
         h.feed(s)
         h.close()
-        print 'done.'
+        print('done.')
 
     def test_GdalOutputHandler2():
         s = '0...10...20...30...40...50...60...70...80...90...100 - done.\n'

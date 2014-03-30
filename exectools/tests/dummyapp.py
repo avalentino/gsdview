@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 import os
 import sys
 import time
@@ -15,9 +17,9 @@ for signame in ('SIGINT', 'SIGQUIT', 'SIGTERM'):
 
 
 def handler(signum, frame):
-    print
-    print '%s (%d) signal trapped' % (sigmap[signum], signum)
-    print 'Now exit the program.'
+    print()
+    print('%s (%d) signal trapped' % (sigmap[signum], signum))
+    print('Now exit the program.')
     sys.exit(signum)
 
 for sig_id in sigmap:
@@ -59,12 +61,12 @@ assert(refresh_rate > 0), 'invalid refresh_rate'
 
 verbose = options.verbose
 
-print 'PID =', os.getpid()
-print 'mode = "%s"' % mode
+print('PID =', os.getpid())
+print('mode = "%s"' % mode)
 if duration < 0:
-    print 'duration = infinite'
+    print('duration = infinite')
 else:
-    print 'duration =', duration
+    print('duration =', duration)
 
 pulses = '-/|\\'
 t0 = time.time()
@@ -73,18 +75,19 @@ percentage = 0.
 index = 0
 while duration < 0 or elapsed < duration:
     if mode == 'percentage':
-        print '\r  %6.2f%%' % percentage,
+        print('\r  %6.2f%%' % percentage, end=' ')
     elif mode == 'pulse':
-        print '\r%s' % pulses[index % len(pulses)],
+        print('\r%s' % pulses[index % len(pulses)], end=' ')
     elif mode == 'mixed':
         if (index % 4) == 0:
-            print '\r%s %6.2f%%' % (pulses[index % len(pulses)], percentage),
+            print('\r%s %6.2f%%' % (pulses[index % len(pulses)], percentage),
+                  end=' ')
         else:
-            print '\r%s' % pulses[index % len(pulses)],
+            print('\r%s' % pulses[index % len(pulses)], end=' ')
     else:  # 'elapsed'
-        print '\r%.2f' % elapsed,
+        print('\r%.2f' % elapsed, end=' ')
     if verbose:
-        print
+        print()
     index += 1
     time.sleep(refresh_rate)
     elapsed = time.time() - t0
@@ -92,11 +95,11 @@ while duration < 0 or elapsed < duration:
     sys.stdout.flush()
 
 if mode in ('percentage', 'mixed'):
-    print '\r  %6.2f%%' % 100.
+    print('\r  %6.2f%%' % 100.)
 elif not verbose:
     if mode == 'elapsed':
-        print
+        print()
     elif mode == 'pulse':
         sys.stdout.write('\r')
 
-print 'done.'
+print('done.')
