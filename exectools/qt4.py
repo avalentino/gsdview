@@ -651,7 +651,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
 
         if self._tool.env:
             qenv = [
-                '%s=%s' % (key, val) for key, val in self._tool.env.iteritems()
+                '%s=%s' % (key, val) for key, val in self._tool.env.items()
             ]
             self.subprocess.setEnvironment(qenv)
 

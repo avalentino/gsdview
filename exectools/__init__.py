@@ -232,7 +232,7 @@ class BaseOutputHandler(object):
 
         '''
 
-        for tag_name, pattern in self._text_patterns.iteritems():
+        for tag_name, pattern in self._text_patterns.items():
             match = pattern.search(data)
             if match:
                 self.logger.info(data, extra={'tag': tag_name})

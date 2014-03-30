@@ -580,7 +580,7 @@ class GSDView(ItemModelMainWindow):
         # @TODO
 
         # plugins
-        for plugin in self.pluginmanager.plugins.itervalues():
+        for plugin in self.pluginmanager.plugins.values():
             plugin.loadSettings(settings)
 
     def _saveWindowState(self, settings=None):
@@ -650,7 +650,7 @@ class GSDView(ItemModelMainWindow):
 
         # @NOTE: cache preferences are only modified via preferences dialog
 
-        for plugin in self.pluginmanager.plugins.itervalues():
+        for plugin in self.pluginmanager.plugins.values():
             #logging.debug('save %s plugin preferences' % plugin.name)
             plugin.saveSettings(settings)
 

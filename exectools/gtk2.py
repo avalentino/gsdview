@@ -197,7 +197,7 @@ class GtkOutputPlane(gtk.TextView):
             #'message':{}
 
         buffer_ = self.get_buffer()
-        for key, value in formats.iteritems():
+        for key, value in formats.items():
             buffer_.create_tag(key, **value)
 
     def _setup_filedialog(self):

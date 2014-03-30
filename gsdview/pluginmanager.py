@@ -209,7 +209,7 @@ class PluginManager(object):
                 delayed = delayed_again
                 delayed_again = {}
 
-                for name, module in delayed.iteritems():
+                for name, module in delayed.items():
                     if not self._check_deps(module):
                         delayed_again[name] = module
                         logging.debug('loading of "%s" plugin delayed '

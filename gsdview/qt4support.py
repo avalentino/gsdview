@@ -585,7 +585,7 @@ def getuiform(name, package=None):
         modname = '.'.join(fromlist + [name])
         module = __import__(modname, fromlist=fromlist)
         formnames = [
-            key for key in module.__dict__.iterkeys() if key.startswith('Ui_')
+            key for key in module.__dict__.keys() if key.startswith('Ui_')
         ]
         formname = formnames[0]
         FormClass = getattr(module, formname)

@@ -203,7 +203,7 @@ class BandItem(MajorObjectItem):
                                 range(self._obj.GetOverviewCount())))
 
             toremove = []
-            for level, index in oldlevelsmap.iteritems():
+            for level, index in oldlevelsmap.items():
                 if level not in levelsmap:
                     #self.removeRow(index)
                     toremove.append(index)
@@ -215,7 +215,7 @@ class BandItem(MajorObjectItem):
             for index in toremove:
                 self.takeRow(index)
 
-            for level, index in levelsmap.iteritems():
+            for level, index in levelsmap.items():
                 if level in oldlevelsmap:
                     continue
 
