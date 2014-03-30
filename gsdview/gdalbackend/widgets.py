@@ -24,7 +24,12 @@
 
 import os
 import logging
-from ConfigParser import ConfigParser
+
+try:
+    from configparser import ConfigParser
+except ImportError:
+    # @COMPATIBILITY: python 2.x
+    from ConfigParser import ConfigParser
 
 import numpy as np
 from osgeo import gdal
