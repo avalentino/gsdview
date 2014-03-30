@@ -193,8 +193,11 @@ class HistogramRequest(object):
                 'include_out_of_range=%(include_out_of_range)s, '
                 'computehistogram=%(computehistogram)s)' % self.__dict__)
 
-    def __nonzero__(self):
+    def __bool__(self):
         return bool(self.computehistogram)
+
+    if sys.version_info < (3, 0):
+        __nonzero__ = __bool__
 
     def values(self):
         return self.hmin, self.hmax, self.nbuckets
