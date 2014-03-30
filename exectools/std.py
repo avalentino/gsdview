@@ -22,8 +22,7 @@
 
 import sys
 
-from exectools import BaseToolController, EX_OK
-from exectools import subprocess2
+from exectools import BaseToolController, EX_OK, subprocess2, string_types
 
 
 class StdToolController(BaseToolController):
@@ -84,7 +83,7 @@ class StdToolController(BaseToolController):
             self.subprocess.stdin.close()
             self.connect_output_handlers()
         except OSError:
-            if not isinstance(args, basestring):
+            if not isinstance(args, string_types):
                 args = ' '.join(args)
             msg = 'Unable to execute: "%s"' % args
             self.logger.error(msg, exc_info=True)

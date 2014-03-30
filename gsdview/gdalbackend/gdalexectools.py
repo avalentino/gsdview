@@ -32,6 +32,8 @@ from exectools.qt4 import Qt4OutputHandler
 
 from osgeo import gdal
 
+from gsdview.five import string_types
+
 
 class BaseGdalToolDescriptor(exectools.ToolDescriptor):
     '''Base class for GDAL tool descriprors.'''
@@ -57,7 +59,8 @@ class BaseGdalToolDescriptor(exectools.ToolDescriptor):
 
         extra_args = self.gdal_config_options(parts)
         if extra_args:
-            if not self.executable or isinstance(self.executable, basestring):
+            if (not self.executable or
+                    isinstance(self.executable, string_types)):
                 parts = [parts[0]] + extra_args + parts[1:]
             else:
                 executable = list(self.executable)

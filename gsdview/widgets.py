@@ -34,6 +34,7 @@ from qt import QtCore, QtGui
 from gsdview import info
 from gsdview import utils
 from gsdview import qt4support
+from gsdview.five import string_types
 
 
 def get_mainwin():
@@ -473,7 +474,7 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
         self.tracebackTextEdit.document().setPlainText(text)
 
     def setTraceback(self, tb):
-        if not isinstance(tb, basestring):
+        if not isinstance(tb, string_types):
             self.tracebackobj = tb
             tb = ''.join(traceback.format_tb(tb))
         else:  # @TODO: check

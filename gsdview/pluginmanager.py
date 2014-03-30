@@ -33,6 +33,8 @@ try:
 except ImportError:
     logging.getLogger(__name__).debug('"pkg_resources" not found.')
 
+from gsdview.five import string_types
+
 
 class PluginManager(object):
     def __init__(self, app, syspath=None):
@@ -135,7 +137,7 @@ class PluginManager(object):
     def load(self, names, paths=None, info_only=False, type_='plugins'):
         if paths is None:
             paths = self.paths
-        elif isinstance(paths, basestring):
+        elif isinstance(paths, string_types):
             paths = [paths]
 
         if not paths:
@@ -145,7 +147,7 @@ class PluginManager(object):
 
         if names is None:
             names = []
-        elif isinstance(names, basestring):
+        elif isinstance(names, string_types):
             names = [names]
 
         # @TODO: make the module independent from gsdview
@@ -226,7 +228,7 @@ class PluginManager(object):
 
     # @WARNING: (pychecker) Parameter (type_) not used
     def unload(self, names, type_='plugin'):
-        if isinstance(names, basestring):
+        if isinstance(names, string_types):
             names = [names]
         for name in names:
             module = self.plugins.pop(name)

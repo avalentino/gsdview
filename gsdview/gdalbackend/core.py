@@ -29,6 +29,7 @@ from osgeo import gdal
 from qt import QtCore, QtGui
 
 from gsdview import qt4support
+from gsdview.five import string_types
 
 from gsdview.gdalbackend import widgets
 from gsdview.gdalbackend import helpers
@@ -684,7 +685,7 @@ class GDALBackend(QtCore.QObject):
             value = settings.value('visible_overview_items')
 
             # @COMPATIBILITY: presumably a bug in PyQt4 (4.7.2)
-            if isinstance(value, basestring):
+            if isinstance(value, string_types):
                 value = True if value in ('true', 'True') else False
 
             modelitems.VISIBLE_OVERVIEW_ITEMS = value

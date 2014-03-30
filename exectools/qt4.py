@@ -41,7 +41,9 @@ except ImportError:
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
 
-from exectools import BaseOutputHandler, BaseToolController, EX_OK, level2tag
+from exectools import (
+    BaseOutputHandler, BaseToolController, EX_OK, level2tag, string_types,
+)
 
 
 __all__ = ['Qt4Blinker', 'Qt4OutputPlane', 'Qt4OutputHandler',
@@ -323,7 +325,7 @@ class Qt4LoggingHandler(logging.Handler):
     def _write(self, data, format_=None):
         '''Write data on the textview.'''
 
-        if isinstance(format_, basestring):
+        if isinstance(format_, string_types):
             format_ = self._formats.get(format_, '')
 
         if data and not data.endswith('\n'):

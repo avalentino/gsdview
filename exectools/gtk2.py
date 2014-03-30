@@ -30,7 +30,7 @@ import gtk
 import pango
 import gobject
 
-from exectools import subprocess2
+from exectools import subprocess2, string_types
 from exectools import BaseOutputHandler, level2tag
 from exectools.std import StdToolController
 
@@ -621,7 +621,7 @@ class GtkToolController(gobject.GObject, StdToolController):
             self.subprocess.stdin.close()
             self.connect_output_handlers()
         except OSError:
-            if not isinstance(cmd, basestring):
+            if not isinstance(cmd, string_types):
                 cmd = ' '.join(cmd)
             msg = 'Unable to execute: "%s"' % cmd
             self.logger.error(msg, exc_info=True)

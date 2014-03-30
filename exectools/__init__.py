@@ -27,6 +27,11 @@ import sys
 import logging
 from io import StringIO
 
+# @COMPATIBILITY: PY3
+if sys.version_info < (3, 0):
+    string_types = (basestring,)
+else:
+    string_types = (str,)
 
 __version__ = (0, 7, 0)
 
@@ -67,7 +72,7 @@ class BaseOutputHandler(object):
         self._buffer = StringIO()
         self._wpos = self._buffer.tell()
 
-        if logger is None or isinstance(logger, basestring):
+        if logger is None or isinstance(logger, string_types):
             self.logger = logging.getLogger(logger)
         else:
             # @TODO: remove assertion
@@ -393,7 +398,7 @@ class ToolDescriptor(object):
             except IndexError:
                 raise ValueError('"executable" not set')
 
-        if isinstance(executable, basestring):
+        if isinstance(executable, string_types):
             parts = [executable]
         else:
             # handle cases like: executable = ['python', '-u', 'script.py']
@@ -437,7 +442,7 @@ class BaseToolController(object):
 
         self._tool = None
 
-        if logger is None or isinstance(logger, basestring):
+        if logger is None or isinstance(logger, string_types):
             self.logger = logging.getLogger(logger)
         else:
             assert isinstance(logger, logging.Logger)
@@ -511,7 +516,7 @@ class BaseToolController(object):
         else:
             prompt = '$'
 
-        if not isinstance(cmd, basestring):
+        if not isinstance(cmd, string_types):
             cmd = ' '.join(cmd)
 
         self.logger.info('%s %s' % (prompt, cmd), extra={'tag': 'cmd'})

@@ -30,6 +30,8 @@ import numpy as np
 from osgeo import gdal
 from osgeo import osr
 
+from gsdview.five import string_types
+
 
 GDAL_CONFIG_OPTIONS = '''\
 GDAL_DATA
@@ -202,7 +204,7 @@ def driverList(drivertype='raster'):
 
     if not drivertype:
         types = ['gdal']
-    elif isinstance(drivertype, basestring):
+    elif isinstance(drivertype, string_types):
         types = [drivertype]
     else:
         types = drivertype
