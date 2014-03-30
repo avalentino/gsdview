@@ -54,7 +54,7 @@ class TestLinearLUT(unittest.TestCase):
 
     def test_dtype_out_of_range(self):
         invalid_types = [
-            v for k, v in np.typeDict.iteritems() if isinstance(k, int)
+            v for k, v in np.typeDict.items() if isinstance(k, int)
         ]
         invalid_types.remove(np.uint8)
         invalid_types.remove(np.uint16)
