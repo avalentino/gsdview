@@ -128,10 +128,16 @@ class PluginManager(object):
         try:
             # @TODO: find a more general form to pass arguments to plugins
             module.init(self._app)
-            self.plugins[name] = module
-            logger.info('"%s" plugin loaded.' % name)
         except Exception as e:   # AttributeError:
             logger.warning('error loading "%s" plugin: %s' % (name, e))
+            try:
+                module.close(self._app)
+            except Exception as e:
+                #logging.debug(repr(e))
+                pass
+        else:
+            self.plugins[name] = module
+            logger.info('"%s" plugin loaded.' % name)
 
     # @WARNING: (pychecker) Parameter (type_) not used
     def load(self, names, paths=None, info_only=False, type_='plugins'):

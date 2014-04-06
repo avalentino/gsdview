@@ -52,7 +52,13 @@ def close(app):
     saveSettings(app.settings)
 
     global _instance
+    instance = _instance
     _instance = None
+
+    if instance:
+        app.removeDockWidget(instance.panel)
+        instance.panel.close()
+        #_instance.deleteLater()
 
 
 def loadSettings(settings):
