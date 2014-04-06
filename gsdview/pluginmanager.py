@@ -286,6 +286,8 @@ class PluginManager(object):
             self.autoload = settings.value('autoload_plugins', [])
             if self.autoload is None:
                 self.autoload = []
+            elif isinstance(self.autoload, string_types):
+                self.autoload = [self.autoload]
 
             self.load(self.autoload)
 
@@ -294,6 +296,8 @@ class PluginManager(object):
             available_plugins = set(self.allplugins)
 
             old_plugins = settings.value('available_plugins', [])
+            if old_plugins is None:
+                old_plugins = []
             new_plugins = available_plugins.difference(old_plugins)
 
             self.load(list(new_plugins))
