@@ -33,7 +33,7 @@ except ImportError:
     # @COMPATIBILITY: python 2.x
     from ConfigParser import ConfigParser
 
-from qt import QtCore, QtGui, QtSvg
+from qt import QtCore, QtGui, QtSvg, uic
 
 from gsdview import utils
 
@@ -597,12 +597,6 @@ def getuiform(name, package=None):
         logging.debug('load "%s" form base class from pre-compiled python '
                       'module' % formname)
     except ImportError:
-        import qt
-        if qt.qt_api != 'pyqt':
-            raise
-
-        from PyQt4 import uic
-
         uifile = getuifile(name + '.ui', package)
         FormClass, QtBaseClass = uic.loadUiType(uifile)
         logging.debug('load "%s" form class from ui file' % FormClass.__name__)
