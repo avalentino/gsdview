@@ -57,8 +57,7 @@ def close(app):
 
     if instance:
         app.removeDockWidget(instance.panel)
-        instance.panel.close()
-        #_instance.deleteLater()
+        instance.panel.deleteLater()
 
 
 def loadSettings(settings):
