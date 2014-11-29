@@ -306,6 +306,9 @@ Free EO Data
 Optical and SAR imagery
 ~~~~~~~~~~~~~~~~~~~~~~~
 
+ESA_ Sample data
+    * https://earth.esa.int/web/nest/downloads/sample-data
+
 ERS_
     * `Earthquakes <http://earth.esa.int/category/index.cfm?fcategoryid=37>`_
       (L’Aquila, Haiti and Sichuan)
