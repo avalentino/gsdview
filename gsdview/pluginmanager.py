@@ -244,7 +244,7 @@ class PluginManager(object):
     def reset(self):
         # the dictionary is modified during the iteration so the iteration
         # have to be performed on a concrete list
-        for name in self.plugins.keys():
+        for name in tuple(self.plugins.keys()):
             plugin = self.plugins.pop(name)
             # @TODO: find a more general form to pass arguments to plugins
             plugin.close(self._app)
