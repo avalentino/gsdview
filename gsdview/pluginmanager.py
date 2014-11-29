@@ -51,7 +51,7 @@ class PluginManager(object):
 
         return sorted(plugins)
 
-    allplugins = property(_get_allplugins, doc='List of all availabe plugins.')
+    allplugins = property(_get_allplugins, doc='List of all available plugins.')
 
     def _scanpaths(self):
         if not self.paths:
@@ -95,7 +95,7 @@ class PluginManager(object):
         except ValueError as e:
             # @TODO: remove dependency from self._app
             self._app.logger.error(
-                'invalid version preficate "%s": %s' % (depstring, e))
+                'invalid version predicate "%s": %s' % (depstring, e))
             return False
 
         if vp.name in modules:
