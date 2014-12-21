@@ -19,15 +19,18 @@
 ### along with this module; if not, write to the Free Software
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
+
 from __future__ import print_function
 
 import os
 import sys
 
+
 # Fix sys path
-from os.path import abspath, dirname
-GSDVIEWROOT = abspath(os.path.join(dirname(__file__), os.pardir, os.pardir))
+GSDVIEWROOT = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.insert(0, GSDVIEWROOT)
+
 
 from qt import QtCore, QtGui
 
