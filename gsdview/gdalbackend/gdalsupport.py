@@ -610,12 +610,21 @@ class CoordinateMapper(object):
 
     def __init__(self, dataset):
         super(CoordinateMapper, self).__init__()
+
+        projection = ''
+        self._geotransform = None
+
         if dataset.GetGCPCount():
-            projection = dataset.GetGCPProjection()
-            gcps = dataset.GetGCPs()
-            gcps = _fixedGCPs(gcps)      # @TODO: remove
-            self._geotransform = gdal.GCPsToGeoTransform(gcps)
-        else:
+            try:
+                projection = dataset.GetGCPProjection()
+                gcps = dataset.GetGCPs()
+                gcps = _fixedGCPs(gcps)      # @TODO: remove
+                self._geotransform = gdal.GCPsToGeoTransform(gcps)
+            except Exception:
+                logging.warning('unable to retrieve geo-transform and '
+                                'projection from GCPs for %s' % dataset)
+
+        if not self._geotransform:
             projection = dataset.GetProjection()
             if not projection:
                 projection = dataset.GetProjectionRef()
