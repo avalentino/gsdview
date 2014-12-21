@@ -37,6 +37,10 @@ class StretchTool(QtCore.QObject):
         self.dialog = StretchDialog(parent=app)
         self.dialog.hide()
 
+        # This should not be necessary since tha main window (app) is set
+        # as parent of the StretchDialog
+        QtGui.qApp.lastWindowClosed.connect(self.dialog.close)
+
         self.action = self._setupAction()
         self.action.setEnabled(False)
 
