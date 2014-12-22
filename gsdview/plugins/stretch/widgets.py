@@ -46,10 +46,11 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
     #: :C++ signature: `void valueChanged()`
     valueChanged = QtCore.Signal()
 
-    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0),
+                 floatmode=True, **kwargs):
         super(StretchWidget, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
-        self._floatmode = False
+        self._floatmode = floatmode
         self.lowSlider.valueChanged.connect(self._onLowSliderChanged)
         self.highSlider.valueChanged.connect(self._onHighSliderChanged)
         # @COMPATIBILITY: the following code breaks PySide 1.0.1.
@@ -71,41 +72,45 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
         self._fixStep(self.minSpinBox)
         self._fixStep(self.maxSpinBox)
 
-    def _getFloatMode(self):
+    @QtCore.Property(bool)
+    def floatmode(self):
         return self._floatmode
 
-    def _setFloatMode(self, floatmode=True):
+    @floatmode.setter
+    def floatmode(self, floatmode=True):
+        '''Set the stretch widget in floating point mode.'''
+
         floatmode = bool(floatmode)
         if floatmode == self._floatmode:
             return
+
         self._floatmode = floatmode
         if self._floatmode:
-            self.lowSlider.setRange(0, 1000)
-            self.highSlider.setRange(0, 1000)
+            self.lowSlider.setRange(0, 1000000)
+            self.highSlider.setRange(0, 1000000)
             self.lowSlider.setValue(self._pos(self.lowSpinBox.value()))
             self.highSlider.setValue(self._pos(self.highSpinBox.value()))
         else:
             vmin = self.minSpinBox.value()
-            vmax = self.minSpinBox.value()
+            vmax = self.maxSpinBox.value()
             self.lowSlider.setRange(vmin, vmax)
             self.highSlider.setRange(vmin, vmax)
             self.lowSlider.setValue(self.lowSpinBox.value())
             self.highSlider.setValue(self.highSpinBox.value())
-
-    floatmode = property(_getFloatMode, _setFloatMode,
-                         doc='Set the tretch widget in floating point mode.')
 
     def _pos(self, value):
         N = self.highSlider.maximum() - self.lowSlider.minimum()
         k = (self.maxSpinBox.value() - self.minSpinBox.value()) / float(N)
         if k == 0:
             return 0
+
         return (value - self.minSpinBox.value()) / k
 
     def _value(self, pos):
         N = self.highSlider.maximum() - self.lowSlider.minimum()
         k = (self.maxSpinBox.value() - self.minSpinBox.value()) / float(N)
-        return k * pos + self.minSpinBox.value()
+
+        return self.minSpinBox.value() + k * pos
 
     def _setValue(self, value, spinbox, slider):
         spinbox.setValue(value)
@@ -262,11 +267,12 @@ class StretchDialog(QtGui.QDialog, StretchDialogBase):
     #: :C++ signature: `void valueChanged()`
     valueChanged = QtCore.Signal()
 
-    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
+    def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0),
+                 floatmode=True, **kwargs):
         super(StretchDialog, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
-        self.stretchwidget = StretchWidget(self)
+        self.stretchwidget = StretchWidget(self, floatmode=floatmode)
         self.mainLayout.insertWidget(0, self.stretchwidget)
 
         if not self.checkBox.isChecked():
@@ -294,13 +300,13 @@ class StretchDialog(QtGui.QDialog, StretchDialogBase):
         self.stretchwidget.lowSpinBox.setVisible(advmode)
         self.stretchwidget.lowSlider.setVisible(advmode)
 
-    def _getFloatmode(self):
+    @QtCore.Property(bool)
+    def floatmode(self):
         return self.stretchwidget.floatmode
 
-    def _setFloatmode(self, mode):
+    @floatmode.setter
+    def floatmode(self, mode):
         self.stretchwidget.floatmode = mode
-
-    floatmode = property(_getFloatmode, _setFloatmode)
 
     def saveState(self):
         self.state = self.stretchwidget.state()

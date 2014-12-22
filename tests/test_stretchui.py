@@ -51,14 +51,14 @@ class StretchWidgetTestCase(unittest.TestCase):
         self.assertEqual(self.stretch.maximum(), 255)
 
     def test_floatmode_change_to_false(self):
-        self.stretch.setFloatMode(True)
+        self.stretch.floatmode = True
 
         low = self.stretch.low()
         high = self.stretch.high()
         minimum = self.stretch.minimum()
         maximum = self.stretch.maximum()
 
-        self.stretch.setFloatMode(not self.stretch.floatMode)
+        self.stretch.floatmode = not self.stretch.floatmode
 
         self.assertAlmostEqual(self.stretch.low(), low, 2)
         self.assertAlmostEqual(self.stretch.high(), high, 2)
@@ -66,14 +66,14 @@ class StretchWidgetTestCase(unittest.TestCase):
         self.assertAlmostEqual(self.stretch.maximum(), maximum, 2)
 
     def test_floatmode_change_to_true(self):
-        self.stretch.setFloatMode(False)
+        self.stretch.floatmode = False
 
         low = self.stretch.low()
         high = self.stretch.high()
         minimum = self.stretch.minimum()
         maximum = self.stretch.maximum()
 
-        self.stretch.setFloatMode(not self.stretch.floatMode)
+        self.stretch.floatmode = not self.stretch.floatmode
 
         self.assertAlmostEqual(self.stretch.low(), low, 2)
         self.assertAlmostEqual(self.stretch.high(), high, 2)
@@ -86,14 +86,14 @@ class StretchWidgetTestCase(unittest.TestCase):
         minimum = self.stretch.minimum()
         maximum = self.stretch.maximum()
 
-        self.stretch.setFloatMode(not self.stretch.floatMode)
+        self.stretch.floatmode = not self.stretch.floatmode
 
         self.assertAlmostEqual(self.stretch.low(), low, 2)
         self.assertAlmostEqual(self.stretch.high(), high, 2)
         self.assertAlmostEqual(self.stretch.minimum(), minimum, 2)
         self.assertAlmostEqual(self.stretch.maximum(), maximum, 2)
 
-        self.stretch.setFloatMode(not self.stretch.floatMode)
+        self.stretch.floatmode = not self.stretch.floatmode
 
         self.assertAlmostEqual(self.stretch.low(), low, 2)
         self.assertAlmostEqual(self.stretch.high(), high, 2)
