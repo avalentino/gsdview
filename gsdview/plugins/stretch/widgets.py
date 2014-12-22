@@ -274,7 +274,8 @@ class StretchDialog(QtGui.QDialog, StretchDialogBase):
         self.saveState()
 
         self.checkBox.toggled.connect(self.setAdvanced)
-        self.resetButton.clicked.connect(self.reset)
+        self.buttonBox.button(QtGui.QDialogButtonBox.Reset).clicked.connect(
+            self.reset)
 
         self.stretchwidget.valueChanged.connect(self.valueChanged)
 
