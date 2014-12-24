@@ -33,7 +33,7 @@ except ImportError:
     # @COMPATIBILITY: python 2.x
     from ConfigParser import ConfigParser
 
-from qt import QtCore, QtWidgets, QtGui, QtSvg, uic
+from qt import QtCore, QtWidgets, QtGui, QtSvg, QtPrintSupport, uic
 
 from gsdview import utils
 
@@ -399,7 +399,7 @@ def coreprint(obj, printer):
 
 def printObject(obj, printer=None, parent=None):
     if printer is None:
-        printer = QtWidgets.QPrinter(QtWidgets.QPrinter.PrinterResolution)
+        printer = QtPrintSupport.QPrinter(QtPrintSupport.QPrinter.PrinterResolution)
         #printer.setOutputFile(os.path.join(utils.default_workdir().
         #                                   'filename.pdf'))
 
@@ -437,7 +437,7 @@ def printObject(obj, printer=None, parent=None):
 
 def printPreview(obj, printer=None, parent=None):
     if printer is None:
-        printer = QtWidgets.QPrinter(QtWidgets.QPrinter.PrinterResolution)
+        printer = QtPrintSupport.QPrinter(QtPrintSupport.QPrinter.PrinterResolution)
 
     # @TODO: check
     if parent is None:
@@ -777,13 +777,13 @@ def imgexport(obj, parent=None):
             srcsize = QtWidgets.QSize(800, 600)
 
         if ext in ('pdf', 'ps'):
-            device = QtWidgets.QPrinter(QtWidgets.QPrinter.HighResolution)
+            device = QtPrintSupport.QPrinter(QtPrintSupport.QPrinter.HighResolution)
             device.setOutputFileName(filename)
             if ext == 'pdf':
-                device.setOutputFormat(QtWidgets.QPrinter.PdfFormat)
+                device.setOutputFormat(QtPrintSupport.QPrinter.PdfFormat)
             else:
                 # ext == 'ps'
-                device.setOutputFormat(QtWidgets.QPrinter.PostScriptFormat)
+                device.setOutputFormat(QtPrintSupport.QPrinter.PostScriptFormat)
         elif ext == 'svg':
             device = QtSvg.QSvgGenerator()
             device.setFileName(filename)
