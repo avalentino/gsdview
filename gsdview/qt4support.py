@@ -229,7 +229,7 @@ def modelToTextDocument(model, doc=None):
             cellCursor.insertText(text)  # , textformat)
 
     # headers style
-    headerformat = QtWidgets.QTextCharFormat()
+    headerformat = QtGui.QTextCharFormat()
     headerformat.setFontWeight(QtWidgets.QFont.Bold)
     brush = headerformat.background()
     brush.setColor(QtCore.Qt.lightGray)
@@ -658,12 +658,12 @@ def cfgToTextDocument(cfg, doc=None):
     titleblockformat.setTopMargin(20)
     titleblockformat.setBottomMargin(10)
 
-    titleformat = QtWidgets.QTextCharFormat()
+    titleformat = QtGui.QTextCharFormat()
     titleformat.setFontWeight(QtWidgets.QFont.Bold)
     #titleformat.setPointSze(12)
 
     # headers style
-    headerformat = QtWidgets.QTextCharFormat()
+    headerformat = QtGui.QTextCharFormat()
     headerformat.setFontWeight(QtWidgets.QFont.Bold)
     brush = headerformat.background()
     brush.setColor(QtCore.Qt.lightGray)
