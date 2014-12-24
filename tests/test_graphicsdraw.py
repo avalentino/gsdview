@@ -191,8 +191,8 @@ class GraphicsDrawApp(QtWidgets.QMainWindow):
             actions,
             objectName='zoomResetAction',
             statusTip=self.tr('Zoom 1:1'),
-            triggered=lambda: self.graphicsview.setMatrix(
-                QtWidgets.QMatrix(1, 0, 0, -1, 0, 0)))
+            triggered=lambda: self.graphicsview.setTransform(
+                QtGui.QTransform(1, 0, 0, -1, 0, 0)))
 
         icon = QtGui.QIcon(
             ':/trolltech/dialogs/qprintpreviewdialog/images/fit-page-32.png')
@@ -244,7 +244,7 @@ class GraphicsDrawApp(QtWidgets.QMainWindow):
     def reset(self):
         self.scene.clear()
         self.scene.setSceneRect(0, 0, 800, 600)
-        self.graphicsview.setTransform(QtWidgets.QTransform())
+        self.graphicsview.setTransform(QtGui.QTransform())
 
     @QtCore.Slot()
     def onReset(self):

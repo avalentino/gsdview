@@ -184,8 +184,8 @@ class VectorGraphicsApp(QtWidgets.QMainWindow):
             icon, self.tr('Zoom 1:1'), actions,
             objectName='zoomResetAction',
             statusTip=self.tr('Zoom 1:1'),
-            triggered=lambda: self.graphicsview.setMatrix(
-                QtWidgets.QMatrix(1, 0, 0, -1, 0, 0)))
+            triggered=lambda: self.graphicsview.setTransform(
+                QtGui.QTransform(1, 0, 0, -1, 0, 0)))
 
         icon = QtGui.QIcon(
             ':/trolltech/dialogs/qprintpreviewdialog/images/fit-page-32.png')
@@ -275,7 +275,7 @@ class VectorGraphicsApp(QtWidgets.QMainWindow):
         # @TODO: remove
         #~ from math import sin, cos, radians
         #~ a = radians(-45)
-        #~ qtransform = QtWidgets.QTransform(
+        #~ qtransform = QtGui.QTransform(
             #~ cos(a), -sin(a), sin(a), cos(a), 0, 0)
         #~ #affine_transform = qtransform
         #~ transform = lambda x, y, z: qtransform.map(x, y)

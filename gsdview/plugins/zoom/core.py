@@ -112,7 +112,7 @@ class ZoomTool(QtCore.QObject):
     def zoom100(self):
         view = self.currentview()
         if view:
-            view.setMatrix(QtWidgets.QMatrix())
+            view.setTransform(QtGui.QTransform())
 
 
 class AppZoomTool(ZoomTool):

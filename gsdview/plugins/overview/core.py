@@ -132,7 +132,7 @@ class NavigationGraphicsView(QtWidgets.QGraphicsView):
         if self._autoscale:
             self.fitInView()
         else:
-            self.setMatrix(QtWidgets.QMatrix())
+            self.setTransform(QtGui.QTransform())
             self.update()
 
     autoscale = property(_getAutoscale, _setAutoscale)

@@ -143,7 +143,7 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
         # http://doc.qt.nokia.com/4.6/qgraphicsitem.html#GraphicsItemFlag-enum
         #
         # From qt/src/gui/styles/qstyleoption.cpp:5130
-        if worldTransform.type() <= QtWidgets.QTransform.TxTranslate:
+        if worldTransform.type() <= QtGui.QTransform.TxTranslate:
             return 1    # Translation only? The LOD is 1.
 
         # Two unit vectors.

@@ -125,7 +125,7 @@ class MainWin(QtWidgets.QMainWindow):
     @QtCore.Slot()
     def openfile(self):
         self.scene.clear()
-        self.graphicsview.setMatrix(QtWidgets.QMatrix())
+        self.graphicsview.setTransform(QtGui.QTransform())
         filename = QtWidgets.QFileDialog.getOpenFileName()
         if filename:
             pixmap = QtGui.QPixmap(filename)
