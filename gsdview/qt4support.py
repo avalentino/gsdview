@@ -230,7 +230,7 @@ def modelToTextDocument(model, doc=None):
 
     # headers style
     headerformat = QtGui.QTextCharFormat()
-    headerformat.setFontWeight(QtWidgets.QFont.Bold)
+    headerformat.setFontWeight(QtGui.QFont.Bold)
     brush = headerformat.background()
     brush.setColor(QtCore.Qt.lightGray)
     brush.setStyle(QtCore.Qt.SolidPattern)
@@ -659,12 +659,12 @@ def cfgToTextDocument(cfg, doc=None):
     titleblockformat.setBottomMargin(10)
 
     titleformat = QtGui.QTextCharFormat()
-    titleformat.setFontWeight(QtWidgets.QFont.Bold)
+    titleformat.setFontWeight(QtGui.QFont.Bold)
     #titleformat.setPointSze(12)
 
     # headers style
     headerformat = QtGui.QTextCharFormat()
-    headerformat.setFontWeight(QtWidgets.QFont.Bold)
+    headerformat.setFontWeight(QtGui.QFont.Bold)
     brush = headerformat.background()
     brush.setColor(QtCore.Qt.lightGray)
     brush.setStyle(QtCore.Qt.SolidPattern)
