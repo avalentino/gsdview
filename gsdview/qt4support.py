@@ -654,7 +654,7 @@ def cfgToTextDocument(cfg, doc=None):
     tableformat.setHeaderRowCount(1)
 
     # headers style
-    titleblockformat = QtWidgets.QTextBlockFormat()
+    titleblockformat = QtGui.QTextBlockFormat()
     titleblockformat.setTopMargin(20)
     titleblockformat.setBottomMargin(10)
 
