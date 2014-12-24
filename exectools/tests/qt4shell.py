@@ -26,7 +26,7 @@ import time
 import logging
 
 try:
-    from qt import QtCore, QtGui
+    from qt import QtCore, QtWidgets
 except ImportError:
     # Select the PyQt API 2
     import sip
@@ -38,7 +38,7 @@ except ImportError:
     sip.setapi('QUrl', 2)
     sip.setapi('QVariant', 2)
 
-    from PyQt4 import QtCore, QtGui
+    from PyQt5 import QtCore, QtWidgets
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
 
@@ -48,7 +48,7 @@ from exectools.qt4 import (Qt4OutputPlane, Qt4OutputHandler, Qt4ToolController,
                            Qt4DialogLoggingHandler, Qt4LoggingHandler)
 
 
-class Qt4Shell(QtGui.QMainWindow):
+class Qt4Shell(QtWidgets.QMainWindow):
     '''Qt4 interactive shell using tool controller.
 
     :SLOTS:
@@ -60,28 +60,28 @@ class Qt4Shell(QtGui.QMainWindow):
     historyfile = 'history.txt'
 
     def __init__(self, debug=False):
-        QtGui.QMainWindow.__init__(self)
+        super(Qt4Shell, self).__init__()
 
         # Icon
         self.setWindowIcon(
-            self.style().standardIcon(QtGui.QStyle.SP_ComputerIcon))
+            self.style().standardIcon(QtWidgets.QStyle.SP_ComputerIcon))
 
         # Command box
-        self.cmdbox = QtGui.QComboBox()
+        self.cmdbox = QtWidgets.QComboBox()
         self.cmdbox.setEditable(True)
         self.cmdbox.addItem('')
         self.cmdbox.setCurrentIndex(self.cmdbox.count() - 1)
         # @TODO: complete
         #self.entry.populate_popup.connect(self.on_populate_popup)
 
-        self.cmdbutton = QtGui.QPushButton('Run')
+        self.cmdbutton = QtWidgets.QPushButton('Run')
         self.cmdbutton.clicked.connect(self.execute)
 
         lineedit = self.cmdbox.lineEdit()
         lineedit.returnPressed.connect(self.cmdbutton.click)
 
-        hLayout = QtGui.QHBoxLayout()
-        hLayout.addWidget(QtGui.QLabel('cmd > '))
+        hLayout = QtWidgets.QHBoxLayout()
+        hLayout.addWidget(QtWidgets.QLabel('cmd > '))
         hLayout.addWidget(self.cmdbox, 1)
         hLayout.addWidget(self.cmdbutton)
 
@@ -89,12 +89,12 @@ class Qt4Shell(QtGui.QMainWindow):
         outputplane = Qt4OutputPlane()
         outputplane.setReadOnly(True)
         outputplane.actions.removeAction(outputplane.actionHide)
-        vLayout = QtGui.QVBoxLayout()
+        vLayout = QtWidgets.QVBoxLayout()
         vLayout.addLayout(hLayout)
         vLayout.addWidget(outputplane)
 
         # Main window
-        centralWidget = QtGui.QWidget()
+        centralWidget = QtWidgets.QWidget()
         centralWidget.setLayout(vLayout)
         self.setCentralWidget(centralWidget)
 
@@ -281,7 +281,7 @@ class Qt4Shell(QtGui.QMainWindow):
 
 if __name__ == '__main__':
     import sys
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     mainwin = Qt4Shell(debug=True)
     mainwin.show()
     sys.exit(app.exec_())

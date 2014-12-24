@@ -25,7 +25,7 @@ import time
 import logging
 
 try:
-    from qt import QtCore, QtGui
+    from qt import QtCore, QtWidgets, QtGui
 except ImportError:
     # Select the PyQt API 2
     import sip
@@ -37,7 +37,7 @@ except ImportError:
     sip.setapi('QUrl', 2)
     sip.setapi('QVariant', 2)
 
-    from PyQt4 import QtCore, QtGui
+    from PyQt5 import QtCore, QtWidgets
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
 
@@ -51,7 +51,7 @@ __all__ = ['Qt4Blinker', 'Qt4OutputPlane', 'Qt4OutputHandler',
            'Qt4LoggingHandler', 'Qt4DialogLoggingHandler', 'Qt4ToolController']
 
 
-class Qt4Blinker(QtGui.QLabel):
+class Qt4Blinker(QtWidgets.QLabel):
     '''Qt4 linker.
 
     :SLOTS:
@@ -62,8 +62,8 @@ class Qt4Blinker(QtGui.QLabel):
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(Qt4Blinker, self).__init__(parent, flags, **kwargs)
-        #qstyle = QtGui.QApplication.style()
-        #pixmap = qstyle.standardPixmap(QtGui.QStyle.SP_MediaStop)
+        #qstyle = QtWidgets.QApplication.style()
+        #pixmap = qstyle.standardPixmap(QtWidgets.QStyle.SP_MediaStop)
         pixmap = QtGui.QPixmap(
             ':/trolltech/styles/commonstyle/images/standardbutton-no-32.png')
         self.setPixmap(pixmap)
@@ -81,7 +81,7 @@ class Qt4Blinker(QtGui.QLabel):
         self.setEnabled(sensitive)
 
     def flush(self):
-        #QtGui.qApp.processEvents() # @TODO: check
+        #QtWidgets.qApp.processEvents() # @TODO: check
         pass
 
     def reset(self):
@@ -90,7 +90,7 @@ class Qt4Blinker(QtGui.QLabel):
         self.setEnabled(True)
 
 
-class Qt4OutputPlane(QtGui.QTextEdit):
+class Qt4OutputPlane(QtWidgets.QTextEdit):
 
     #: SIGNAL: emits a hide request.
     #:
@@ -103,40 +103,41 @@ class Qt4OutputPlane(QtGui.QTextEdit):
         self.banner = None
 
     def _setupActions(self):
-        qstype = QtGui.QApplication.style()
+        qstype = QtWidgets.QApplication.style()
 
         # Setup actions
-        self.actions = QtGui.QActionGroup(self)
+        self.actions = QtWidgets.QActionGroup(self)
 
         # Save As
-        icon = qstype.standardIcon(QtGui.QStyle.SP_DialogSaveButton)
-        self.actionSaveAs = QtGui.QAction(icon, self.tr('&Save As'), self,
-                                          shortcut=self.tr('Ctrl+S'),
-                                          statusTip=self.tr(
-                                              'Save text to file'),
-                                          triggered=self.save)
+        icon = qstype.standardIcon(QtWidgets.QStyle.SP_DialogSaveButton)
+        self.actionSaveAs = QtWidgets.QAction(
+            icon, self.tr('&Save As'), self,
+            shortcut=self.tr('Ctrl+S'),
+            statusTip=self.tr('Save text to file'),
+            triggered=self.save)
         self.actions.addAction(self.actionSaveAs)
 
         # Clear
         icon = QtGui.QIcon(':/trolltech/styles/commonstyle/images/'
                            'standardbutton-clear-32.png')
-        self.actionClear = QtGui.QAction(icon, self.tr('&Clear'), self,
-                                         shortcut=self.tr('Shift+F5'),
-                                         statusTip=self.tr('Clear the text'),
-                                         triggered=self.clear)
+        self.actionClear = QtWidgets.QAction(
+            icon, self.tr('&Clear'), self,
+            shortcut=self.tr('Shift+F5'),
+            statusTip=self.tr('Clear the text'),
+            triggered=self.clear)
         self.actions.addAction(self.actionClear)
 
         # Close
-        icon = qstype.standardIcon(QtGui.QStyle.SP_DialogCloseButton)
-        self.actionHide = QtGui.QAction(icon, self.tr('&Hide'), self,
-                                        shortcut=self.tr('Ctrl+W'),
-                                        statusTip=self.tr(
-                                            'Hide the text plane'),
-                                        triggered=self.planeHideRequest)
+        icon = qstype.standardIcon(QtWidgets.QStyle.SP_DialogCloseButton)
+        self.actionHide = QtWidgets.QAction(
+            icon, self.tr('&Hide'), self,
+            shortcut=self.tr('Ctrl+W'),
+            statusTip=self.tr('Hide the text plane'),
+            triggered=self.planeHideRequest)
         self.actions.addAction(self.actionHide)
 
     def contextMenuEvent(self, event):
-        menu = QtGui.QTextEdit.createStandardContextMenu(self)
+        menu = QtWidgets.QTextEdit.createStandardContextMenu(self)
         menu.addSeparator()
         menu.addActions(self.actions.actions())
         menu.exec_(event.globalPos())
@@ -151,14 +152,14 @@ class Qt4OutputPlane(QtGui.QTextEdit):
         text = self.toPlainText()
         return '%s\n\n%s' % (header, text)
 
-    # def clear(self): # it is a standard QtGui.QTextEdit method
+    # def clear(self): # it is a standard QtWidgets.QTextEdit method
 
     def save(self):
         '''Save a file.'''
 
         filter_ = self.tr('Text files (*.txt)')
-        filename, _ = QtGui.QFileDialog.getSaveFileNameAndFilter(self, '', '',
-                                                                 filter_)
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self, '', '', filter_)
         if filename:
             text = self._report()
             logfile = open(filename, 'w')
@@ -214,7 +215,7 @@ class Qt4OutputHandler(QtCore.QObject, BaseOutputHandler):
                     text, self._statusbar_timeout))
 
             if progressbar is None:
-                progressbar = QtGui.QProgressBar(self.statusbar)
+                progressbar = QtWidgets.QProgressBar(self.statusbar)
                 progressbar.setTextVisible(True)
                 statusbar.addPermanentWidget(progressbar)  # , 1) # stretch=1
                 progressbar.hide()
@@ -321,7 +322,7 @@ class Qt4LoggingHandler(logging.Handler):
         return fmap
 
     def _flush(self):
-        QtGui.qApp.processEvents()
+        QtWidgets.qApp.processEvents()
 
     def _write(self, data, format_=None):
         '''Write data on the textview.'''
@@ -358,14 +359,14 @@ class Qt4DialogLoggingHandler(logging.Handler):
     '''Qt4 handler for the logging dialog.'''
 
     levelsmap = {
-        logging.CRITICAL: QtGui.QMessageBox.Critical,
+        logging.CRITICAL: QtWidgets.QMessageBox.Critical,
         # FATAL = CRITICAL
-        logging.ERROR: QtGui.QMessageBox.Critical,
-        logging.WARNING: QtGui.QMessageBox.Warning,
+        logging.ERROR: QtWidgets.QMessageBox.Critical,
+        logging.WARNING: QtWidgets.QMessageBox.Warning,
         # WARN = WARNING
-        logging.INFO: QtGui.QMessageBox.Information,
-        logging.DEBUG: QtGui.QMessageBox.Information,
-        logging.NOTSET: QtGui.QMessageBox.Information,
+        logging.INFO: QtWidgets.QMessageBox.Information,
+        logging.DEBUG: QtWidgets.QMessageBox.Information,
+        logging.NOTSET: QtWidgets.QMessageBox.Information,
     }
 
     def __init__(self, dialog=None, parent=None):
@@ -373,10 +374,10 @@ class Qt4DialogLoggingHandler(logging.Handler):
         if dialog is None:
             # @TODO: check
             #~ if parent is None:
-                #~ parent = QtGui.qApp.mainWidget()
+                #~ parent = QtWidgets.qApp.mainWidget()
 
-            dialog = QtGui.QMessageBox(parent)
-            dialog.addButton(QtGui.QMessageBox.Close)
+            dialog = QtWidgets.QMessageBox(parent)
+            dialog.addButton(QtWidgets.QMessageBox.Close)
             # @TODO: set dialog title
             dialog.setTextFormat(QtCore.Qt.AutoText)
         self.dialog = dialog
@@ -653,10 +654,10 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         cmd = ' '.join(cmd)
 
         if self._tool.env:
-            qenv = [
-                '%s=%s' % (key, val) for key, val in self._tool.env.items()
-            ]
-            self.subprocess.setEnvironment(qenv)
+            qenv = QtCore.QProcessEnvironment()
+            for key, val in self._tool.env.items():
+                qenv.insert(key, str(val))
+            self.subprocess.setProcessEnvironment(qenv)
 
         if self._tool.cwd:
             self.subprocess.setWorkingDirectory(self._tool.cwd)

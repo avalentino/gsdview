@@ -34,6 +34,9 @@ import time
 import errno
 import warnings
 import subprocess
+from subprocess import *
+
+__all__ = subprocess.__all__
 
 from exectools import recipe_440544
 
@@ -41,17 +44,6 @@ if subprocess.mswindows:
     from win32api import OpenProcess, TerminateProcess, CloseHandle
 else:
     import signal
-
-from subprocess import list2cmdline
-
-try:
-    from subprocess import PIPE, STDOUT, call, check_call, CalledProcessError
-    __all__ = ["Popen", "PIPE", "STDOUT", "call", "check_call",
-               "CalledProcessError", "list2cmdline"]
-except ImportError:
-    # @COMPATIBILITY with python 2.4
-    from subprocess import PIPE, STDOUT, call
-    __all__ = ["Popen", "PIPE", "STDOUT", "call", "list2cmdline"]
 
 
 class Popen(recipe_440544.Popen):
