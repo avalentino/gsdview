@@ -200,7 +200,7 @@ def modelToTextDocument(model, doc=None):
     cursor.movePosition(QtGui.QTextCursor.End)
     cursor.beginEditBlock()
 
-    format = QtWidgets.QTextTableFormat()
+    format = QtGui.QTextTableFormat()
     format.setCellPadding(5)
     format.setCellSpacing(0)
     format.setBorderStyle(QtWidgets.QTextFrameFormat.BorderStyle_Solid)
@@ -645,7 +645,7 @@ def cfgToTextDocument(cfg, doc=None):
     cursor.movePosition(QtGui.QTextCursor.End)
 
     # table style
-    tableformat = QtWidgets.QTextTableFormat()
+    tableformat = QtGui.QTextTableFormat()
     tableformat.setTopMargin(10)
     tableformat.setBottomMargin(10)
     tableformat.setCellPadding(5)
