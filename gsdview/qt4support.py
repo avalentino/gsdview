@@ -410,7 +410,7 @@ def printObject(obj, printer=None, parent=None):
         except AttributeError:
             parent = None
 
-    #dialog = QtWidgets.QPrintDialog(printer)
+    #dialog = QtPrintSupport.QPrintDialog(printer)
     #try:
     #    window = obj.window()
     #except AttributeError:
@@ -420,7 +420,7 @@ def printObject(obj, printer=None, parent=None):
     #dialog.setOptionTabs([preview])
     #ret = d.exec_()
 
-    ret = QtWidgets.QPrintDialog(printer, parent).exec_()
+    ret = QtPrintSupport.QPrintDialog(printer, parent).exec_()
     if ret == QtWidgets.QDialog.Accepted:
         if isinstance(obj, (QtGui.QTextDocument, QtWidgets.QTextEdit)):
             obj.print_(printer)
@@ -451,7 +451,7 @@ def printPreview(obj, printer=None, parent=None):
     ret = dialog.exec_()
 
     # @WARNING: duplicate code
-    ret = QtWidgets.QPrintDialog(printer, parent).exec_()
+    ret = QtPrintSupport.QPrintDialog(printer, parent).exec_()
     if ret == QtWidgets.QDialog.Accepted:
         if isinstance(obj, (QtGui.QTextDocument, QtWidgets.QTextEdit)):
             obj.print_(printer)
