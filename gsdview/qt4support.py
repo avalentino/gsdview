@@ -194,7 +194,7 @@ def modelToCsv(model, dialect='excel'):
 
 def modelToTextDocument(model, doc=None):
     if doc is None:
-        doc = QtWidgets.QTextDocument()
+        doc = QtGui.QTextDocument()
 
     cursor = QtWidgets.QTextCursor(doc)
     cursor.movePosition(QtWidgets.QTextCursor.End)
@@ -422,7 +422,7 @@ def printObject(obj, printer=None, parent=None):
 
     ret = QtWidgets.QPrintDialog(printer, parent).exec_()
     if ret == QtWidgets.QDialog.Accepted:
-        if isinstance(obj, (QtWidgets.QTextDocument, QtWidgets.QTextEdit)):
+        if isinstance(obj, (QtGui.QTextDocument, QtWidgets.QTextEdit)):
             obj.print_(printer)
         elif hasattr(obj, 'model'):
             model = obj.model()
@@ -453,7 +453,7 @@ def printPreview(obj, printer=None, parent=None):
     # @WARNING: duplicate code
     ret = QtWidgets.QPrintDialog(printer, parent).exec_()
     if ret == QtWidgets.QDialog.Accepted:
-        if isinstance(obj, (QtWidgets.QTextDocument, QtWidgets.QTextEdit)):
+        if isinstance(obj, (QtGui.QTextDocument, QtWidgets.QTextEdit)):
             obj.print_(printer)
         elif hasattr(object, 'model'):
             model = obj.model()
@@ -639,7 +639,7 @@ def geticon(name, package=None):
 # Misc helpers ##############################################################
 def cfgToTextDocument(cfg, doc=None):
     if doc is None:
-        doc = QtWidgets.QTextDocument()
+        doc = QtGui.QTextDocument()
 
     cursor = QtWidgets.QTextCursor(doc)
     cursor.movePosition(QtWidgets.QTextCursor.End)
