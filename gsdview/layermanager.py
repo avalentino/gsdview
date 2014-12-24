@@ -29,8 +29,8 @@ from qt import QtCore, QtWidgets, QtGui
 
 
 SelectCurrentRows = (
-    QtWidgets.QItemSelectionModel.SelectCurrent |
-    QtWidgets.QItemSelectionModel.Rows
+    QtCore.QItemSelectionModel.SelectCurrent |
+    QtCore.QItemSelectionModel.Rows
 )
 
 
@@ -108,13 +108,13 @@ class BaseLayerManager(QtCore.QObject):
     @staticmethod
     def _selectionmap(selection):
         sortedselection = sorted(selection,
-                                 key=QtWidgets.QItemSelectionRange.parent)
+                                 key=QtCore.QItemSelectionRange.parent)
 
         selectionmap = {}  # collections.OrderedDict()
         for key, group in itertools.groupby(
-                sortedselection, QtWidgets.QItemSelectionRange.parent):
+                sortedselection, QtCore.QItemSelectionRange.parent):
             ranges = []
-            for item in sorted(group, key=QtWidgets.QItemSelectionRange.top):
+            for item in sorted(group, key=QtCore.QItemSelectionRange.top):
                 if len(ranges) == 0:
                     ranges.append(item)
                     continue
@@ -132,8 +132,8 @@ class BaseLayerManager(QtCore.QObject):
                         #max(lastitem.right(), item.right()),
                         model.columnCount() - 1,
                         lastitem.parent())
-                    ranges[-1] = QtWidgets.QItemSelectionRange(topleft,
-                                                               bottomright)
+                    ranges[-1] = QtCore.QItemSelectionRange(topleft,
+                                                            bottomright)
                 else:
                     ranges.append(item)
             selectionmap[key] = ranges
@@ -202,13 +202,13 @@ class BaseLayerManager(QtCore.QObject):
         bottomright = model.index(dst + nrows_selected - 1, ncols - 1,
                                   parentindex)
 
-        return QtWidgets.QItemSelectionRange(topleft, bottomright)
+        return QtCore.QItemSelectionRange(topleft, bottomright)
 
     def moveSelectionToTop(self, selectionmodel):
         #assert selectionmodel.model() is self.model
         selection = selectionmodel.selection()
         selectionmap = self._selectionmap(selection)
-        newselection = QtWidgets.QItemSelection()
+        newselection = QtCore.QItemSelection()
         for parent, ranges in selectionmap.items():
             dst = 0
             for selectionrange in ranges:
@@ -221,7 +221,7 @@ class BaseLayerManager(QtCore.QObject):
         #assert selectionmodel.model() is self.model
         selection = selectionmodel.selection()
         selectionmap = self._selectionmap(selection)
-        newselection = QtWidgets.QItemSelection()
+        newselection = QtCore.QItemSelection()
         for parent, ranges in selectionmap.items():
             for selectionrange in ranges:
                 dst = selectionrange.top() - 1
@@ -233,7 +233,7 @@ class BaseLayerManager(QtCore.QObject):
         #assert selectionmodel.model() is self.model
         selection = selectionmodel.selection()
         selectionmap = self._selectionmap(selection)
-        newselection = QtWidgets.QItemSelection()
+        newselection = QtCore.QItemSelection()
         for parent, ranges in selectionmap.items():
             ranges.reverse()
             for selectionrange in ranges:
@@ -246,7 +246,7 @@ class BaseLayerManager(QtCore.QObject):
         #assert selectionmodel.model() is self.model
         selection = selectionmodel.selection()
         selectionmap = self._selectionmap(selection)
-        newselection = QtWidgets.QItemSelection()
+        newselection = QtCore.QItemSelection()
         nrows = selectionmodel.model().rowCount()
         for parent, ranges in selectionmap.items():
             ranges.reverse()

@@ -26,6 +26,9 @@ if qt_api == 'pyqt5':
 
 elif qt_api == 'pyqt4':
     from PyQt4.QtCore import *
+    from PyQt4.QtGui import (
+        QItemSelection, QItemSelectionModel, QItemSelectionRange,
+    )
 
     from PyQt4.QtCore import pyqtProperty as Property
     from PyQt4.QtCore import pyqtSignal as Signal
@@ -36,6 +39,9 @@ elif qt_api == 'pyqt4':
 
 elif qt_api == 'pyside':
     from PySide.QtCore import *
+    from PySide.QtGui import (
+        QItemSelection, QItemSelectionModel, QItemSelectionRange,
+    )
 
     try:
         from PySide import __version__, __version_info__

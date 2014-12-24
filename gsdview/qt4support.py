@@ -115,9 +115,9 @@ def selectAllItems(itemview):
         # assume it is a list
         bottomright = model.index(model.rowCount() - 1)
 
-    selection = QtWidgets.QItemSelection(topleft, bottomright)
+    selection = QtCore.QItemSelection(topleft, bottomright)
     itemview.selectionModel().select(selection,
-                                     QtWidgets.QItemSelectionModel.Select)
+                                     QtCore.QItemSelectionModel.Select)
 
 
 #@QtCore.Slot(QtWidgets.QWidget) # @TODO: check

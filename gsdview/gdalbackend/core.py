@@ -153,7 +153,7 @@ class GDALBackend(QtCore.QObject):
 
             # @TODO: remove selection code
             sm = self._app.treeview.selectionModel()
-            sm.select(item.index(), QtWidgets.QItemSelectionModel.Select)
+            sm.select(item.index(), QtCore.QItemSelectionModel.Select)
 
             # @TODO: maybe it is better to use an exception here
             return None
