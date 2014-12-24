@@ -18,7 +18,7 @@
 ### along with this module; if not, write to the Free Software
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
 
-'''Tools for running external processes in a Qt4 GUI.'''
+'''Tools for running external processes in a Qt GUI.'''
 
 
 import time
@@ -47,12 +47,12 @@ from exectools import (
 )
 
 
-__all__ = ['Qt4Blinker', 'Qt4OutputPlane', 'Qt4OutputHandler',
-           'Qt4LoggingHandler', 'Qt4DialogLoggingHandler', 'Qt4ToolController']
+__all__ = ['QtBlinker', 'QtOutputPane', 'QtOutputHandler',
+           'QtLoggingHandler', 'QtDialogLoggingHandler', 'QtToolController']
 
 
-class Qt4Blinker(QtWidgets.QLabel):
-    '''Qt4 linker.
+class QtBlinker(QtWidgets.QLabel):
+    '''Qt linker.
 
     :SLOTS:
 
@@ -61,7 +61,7 @@ class Qt4Blinker(QtWidgets.QLabel):
     '''
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
-        super(Qt4Blinker, self).__init__(parent, flags, **kwargs)
+        super(QtBlinker, self).__init__(parent, flags, **kwargs)
         #qstyle = QtWidgets.QApplication.style()
         #pixmap = qstyle.standardPixmap(QtWidgets.QStyle.SP_MediaStop)
         pixmap = QtGui.QPixmap(
@@ -90,7 +90,7 @@ class Qt4Blinker(QtWidgets.QLabel):
         self.setEnabled(True)
 
 
-class Qt4OutputPlane(QtWidgets.QTextEdit):
+class QtOutputPane(QtWidgets.QTextEdit):
 
     #: SIGNAL: emits a hide request.
     #:
@@ -98,7 +98,7 @@ class Qt4OutputPlane(QtWidgets.QTextEdit):
     planeHideRequest = QtCore.Signal()
 
     def __init__(self, parent=None, **kwargs):
-        super(Qt4OutputPlane, self).__init__(parent, **kwargs)
+        super(QtOutputPane, self).__init__(parent, **kwargs)
         self._setupActions()
         self.banner = None
 
@@ -167,8 +167,8 @@ class Qt4OutputPlane(QtWidgets.QTextEdit):
             logfile.close()
 
 
-class Qt4OutputHandler(QtCore.QObject, BaseOutputHandler):
-    '''Qt4 Output Handler.
+class QtOutputHandler(QtCore.QObject, BaseOutputHandler):
+    '''Qt Output Handler.
 
     :SIGNALS:
 
@@ -205,7 +205,7 @@ class Qt4OutputHandler(QtCore.QObject, BaseOutputHandler):
         self.statusbar = statusbar
         if self.statusbar:
             if blinker is None:
-                blinker = Qt4Blinker()
+                blinker = QtBlinker()
                 statusbar.addPermanentWidget(blinker)
                 blinker.hide()
             self.pulse.connect(blinker.show)
@@ -238,14 +238,14 @@ class Qt4OutputHandler(QtCore.QObject, BaseOutputHandler):
 
         if self.blinker:
             self.blinker.show()
-        super(Qt4OutputHandler, self).feed(data)
+        super(QtOutputHandler, self).feed(data)
 
     def close(self):
         '''Reset the instance.'''
 
         if self.statusbar:
             self.statusbar.clearMessage()
-        super(Qt4OutputHandler, self).close()
+        super(QtOutputHandler, self).close()
 
     def reset(self):
         '''Reset the handler instance.
@@ -255,7 +255,7 @@ class Qt4OutputHandler(QtCore.QObject, BaseOutputHandler):
 
         '''
 
-        super(Qt4OutputHandler, self).reset()
+        super(QtOutputHandler, self).reset()
         if self.progressbar:
             self.progressbar.setRange(0, 100)
             self.progressbar.reset()
@@ -286,8 +286,8 @@ class Qt4OutputHandler(QtCore.QObject, BaseOutputHandler):
             self.percentageChanged.emit(int(percentage))
 
 
-class Qt4LoggingHandler(logging.Handler):
-    '''Custom handler for logging on Qt4 textviews.'''
+class QtLoggingHandler(logging.Handler):
+    '''Custom handler for logging on Qt textviews.'''
 
     def __init__(self, textview):
         logging.Handler.__init__(self)
@@ -355,8 +355,8 @@ class Qt4LoggingHandler(logging.Handler):
             self.handleError(record)
 
 
-class Qt4DialogLoggingHandler(logging.Handler):
-    '''Qt4 handler for the logging dialog.'''
+class QtDialogLoggingHandler(logging.Handler):
+    '''Qt handler for the logging dialog.'''
 
     levelsmap = {
         logging.CRITICAL: QtWidgets.QMessageBox.Critical,
@@ -415,8 +415,8 @@ class Qt4DialogLoggingHandler(logging.Handler):
             self.handleError(record)
 
 
-class Qt4ToolController(QtCore.QObject, BaseToolController):
-    '''Qt4 tool controller.
+class QtToolController(QtCore.QObject, BaseToolController):
+    '''Qt tool controller.
 
     :SIGNALS:
 
@@ -540,7 +540,7 @@ class Qt4ToolController(QtCore.QObject, BaseToolController):
         self.subprocess.closeReadChannel(QtCore.QProcess.StandardError)
         self.subprocess.closeWriteChannel()
 
-        super(Qt4ToolController, self)._reset()
+        super(QtToolController, self)._reset()
         self.subprocess.close()
 
     @QtCore.Slot()

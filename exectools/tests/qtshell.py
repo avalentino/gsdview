@@ -19,7 +19,7 @@
 ### along with this module; if not, write to the Free Software
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
 
-'''Simple interactive shell implementation using exectools and Qt4.'''
+'''Simple interactive shell implementation using exectools and Qt.'''
 
 
 import time
@@ -44,12 +44,12 @@ except ImportError:
 
 
 import exectools
-from exectools.qt4 import (Qt4OutputPlane, Qt4OutputHandler, Qt4ToolController,
-                           Qt4DialogLoggingHandler, Qt4LoggingHandler)
+from exectools.qt import (QtOutputPane, QtOutputHandler, QtToolController,
+                          QtDialogLoggingHandler, QtLoggingHandler)
 
 
-class Qt4Shell(QtWidgets.QMainWindow):
-    '''Qt4 interactive shell using tool controller.
+class QtShell(QtWidgets.QMainWindow):
+    '''Qt interactive shell using tool controller.
 
     :SLOTS:
 
@@ -60,7 +60,7 @@ class Qt4Shell(QtWidgets.QMainWindow):
     historyfile = 'history.txt'
 
     def __init__(self, debug=False):
-        super(Qt4Shell, self).__init__()
+        super(QtShell, self).__init__()
 
         # Icon
         self.setWindowIcon(
@@ -86,7 +86,7 @@ class Qt4Shell(QtWidgets.QMainWindow):
         hLayout.addWidget(self.cmdbutton)
 
         # Output plane
-        outputplane = Qt4OutputPlane()
+        outputplane = QtOutputPane()
         outputplane.setReadOnly(True)
         outputplane.actions.removeAction(outputplane.actionHide)
         vLayout = QtWidgets.QVBoxLayout()
@@ -103,7 +103,7 @@ class Qt4Shell(QtWidgets.QMainWindow):
         #~ accelgroup.connect_group(ord('d'), gtk.gdk.CONTROL_MASK,
                                  #~ gtk.ACCEL_VISIBLE, self.quit)
 
-        self.setWindowTitle('Qt4 Shell')
+        self.setWindowTitle('Qt Shell')
         self.setGeometry(0, 0, 800, 600)
         #~ self.mainwin.add_accel_group(accelgroup)
         #~ self.mainwin.destroy.connect(self.quit)
@@ -118,13 +118,13 @@ class Qt4Shell(QtWidgets.QMainWindow):
         self.logger = logging.getLogger()
 
         formatter = logging.Formatter('%(levelname)s: %(message)s')
-        handler = Qt4LoggingHandler(outputplane)
+        handler = QtLoggingHandler(outputplane)
         handler.setLevel(level)
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
 
         formatter = logging.Formatter('%(message)s')
-        handler = Qt4DialogLoggingHandler(parent=self, dialog=None)
+        handler = QtDialogLoggingHandler(parent=self, dialog=None)
         handler.setLevel(logging.WARNING)
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
@@ -132,22 +132,22 @@ class Qt4Shell(QtWidgets.QMainWindow):
         self.logger.setLevel(level)
 
         # Setup high level components and initialize the parent classes
-        handler = Qt4OutputHandler(self.logger, self.statusBar())
+        handler = QtOutputHandler(self.logger, self.statusBar())
         self.tool = exectools.ToolDescriptor('', stdout_handler=handler)
-        self.controller = Qt4ToolController(self.logger, parent=self)
+        self.controller = QtToolController(self.logger, parent=self)
         self.controller.finished.connect(lambda returncode: self.reset())
 
         #self.shell = True
         self._state = 'ready'   # or maybe __state
 
-        self.logger.debug('qt4shell session started at %s.' % time.asctime())
+        self.logger.debug('qtshell session started at %s.' % time.asctime())
         self.load_history()
 
     def closeEvent(self, event):
         try:
             self.save_history()
         finally:
-            self.logger.debug('qt4shell session stopped at %s.' %
+            self.logger.debug('qtshell session stopped at %s.' %
                               time.asctime())
         event.accept()  # @TODO: check
 
@@ -282,6 +282,6 @@ class Qt4Shell(QtWidgets.QMainWindow):
 if __name__ == '__main__':
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    mainwin = Qt4Shell(debug=True)
+    mainwin = QtShell(debug=True)
     mainwin.show()
     sys.exit(app.exec_())
