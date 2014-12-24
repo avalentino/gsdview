@@ -196,8 +196,8 @@ def modelToTextDocument(model, doc=None):
     if doc is None:
         doc = QtGui.QTextDocument()
 
-    cursor = QtWidgets.QTextCursor(doc)
-    cursor.movePosition(QtWidgets.QTextCursor.End)
+    cursor = QtGui.QTextCursor(doc)
+    cursor.movePosition(QtGui.QTextCursor.End)
     cursor.beginEditBlock()
 
     format = QtWidgets.QTextTableFormat()
@@ -641,8 +641,8 @@ def cfgToTextDocument(cfg, doc=None):
     if doc is None:
         doc = QtGui.QTextDocument()
 
-    cursor = QtWidgets.QTextCursor(doc)
-    cursor.movePosition(QtWidgets.QTextCursor.End)
+    cursor = QtGui.QTextCursor(doc)
+    cursor.movePosition(QtGui.QTextCursor.End)
 
     # table style
     tableformat = QtWidgets.QTextTableFormat()
@@ -676,7 +676,7 @@ def cfgToTextDocument(cfg, doc=None):
             continue
 
         cursor.beginEditBlock()
-        cursor.movePosition(QtWidgets.QTextCursor.End)
+        cursor.movePosition(QtGui.QTextCursor.End)
 
         # title
         cursor.insertBlock(titleblockformat)
