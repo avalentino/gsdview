@@ -31,17 +31,17 @@ GSDVIEWROOT = os.path.abspath(
 sys.path.insert(0, GSDVIEWROOT)
 
 
-from qt import QtGui
+from qt import QtWidgets
 
 from gsdview.plugins.stretch.widgets import StretchWidget, StretchDialog
 
 
 class StretchWidgetTestCase(unittest.TestCase):
     FLOATMODE = True
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
 
     def setUp(self):
-        #self.app = QtGui.QApplication(sys.argv)
+        #self.app = QtWidgets.QApplication(sys.argv)
         self.stretch = StretchWidget(floatmode=self.FLOATMODE)
 
     def test_defaults(self):
@@ -102,7 +102,7 @@ class StretchWidgetTestCase(unittest.TestCase):
 
 
 def _test_stretchingdialog(floatmode=False):
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     d = StretchDialog(floatmode=floatmode)
     #state = d.stretchwidget.state()
     d.show()

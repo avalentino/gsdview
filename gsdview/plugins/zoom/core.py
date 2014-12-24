@@ -24,7 +24,7 @@
 
 import logging
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets, QtGui
 
 from gsdview import qt4support
 
@@ -41,43 +41,48 @@ class ZoomTool(QtCore.QObject):
         self.actions = self._setupActions()
 
     def _setupActions(self):
-        actions = QtGui.QActionGroup(self)
+        actions = QtWidgets.QActionGroup(self)
 
         # Zoom in
         icon = qt4support.geticon('zoom-in.svg', 'gsdview')
-        QtGui.QAction(icon, self.tr('Zoom In'), actions,
-                      objectName='zoomInAction',
-                      statusTip=self.tr('Zoom In'),
-                      shortcut=QtGui.QKeySequence(self.tr('Ctrl++')),
-                      triggered=self.zoomIn)
+        QtWidgets.QAction(
+            icon, self.tr('Zoom In'), actions,
+            objectName='zoomInAction',
+            statusTip=self.tr('Zoom In'),
+            shortcut=QtGui.QKeySequence(self.tr('Ctrl++')),
+            triggered=self.zoomIn)
 
         # Zoom out
         icon = qt4support.geticon('zoom-out.svg', 'gsdview')
-        QtGui.QAction(icon, self.tr('Zoom Out'), actions,
-                      objectName='zoomOutAction',
-                      statusTip=self.tr('Zoom Out'),
-                      shortcut=QtGui.QKeySequence(self.tr('Ctrl+-')),
-                      triggered=self.zoomOut)
+        QtWidgets.QAction(
+            icon, self.tr('Zoom Out'), actions,
+            objectName='zoomOutAction',
+            statusTip=self.tr('Zoom Out'),
+            shortcut=QtGui.QKeySequence(self.tr('Ctrl+-')),
+            triggered=self.zoomOut)
 
         # Zoom fit
         icon = qt4support.geticon('zoom-fit.svg', 'gsdview')
-        QtGui.QAction(icon, self.tr('Zoom Fit'), actions,
-                      objectName='zoomFitAction',
-                      statusTip=self.tr('Zoom to fit the window size'),
-                      triggered=self.zoomFit)
+        QtWidgets.QAction(
+            icon, self.tr('Zoom Fit'), actions,
+            objectName='zoomFitAction',
+            statusTip=self.tr('Zoom to fit the window size'),
+            triggered=self.zoomFit)
 
         # Zoom 100
         icon = qt4support.geticon('zoom-100.svg', 'gsdview')
-        QtGui.QAction(icon, self.tr('Zoom 100%'), actions,
-                      objectName='zoom100Action',
-                      statusTip=self.tr('Original size'),
-                      triggered=self.zoom100)
+        QtWidgets.QAction(
+            icon, self.tr('Zoom 100%'), actions,
+            objectName='zoom100Action',
+            statusTip=self.tr('Original size'),
+            triggered=self.zoom100)
 
         # Manual Zoom
         #icon = QtGui.QIcon() #qt4support.geticon('zoom-100.svg', 'gsdview')
-        #QtGui.QWidgetAction(icon, self.tr('Zoom 100%'), actions,
-        #              statusTip=self.tr('Original size'),
-        #              triggered=self.zoom100)
+        #QtWidgets.QWidgetAction(
+        #    icon, self.tr('Zoom 100%'), actions,
+        #    statusTip=self.tr('Original size'),
+        #    triggered=self.zoom100)
 
         return actions
 
@@ -107,7 +112,7 @@ class ZoomTool(QtCore.QObject):
     def zoom100(self):
         view = self.currentview()
         if view:
-            view.setMatrix(QtGui.QMatrix())
+            view.setMatrix(QtWidgets.QMatrix())
 
 
 class AppZoomTool(ZoomTool):
@@ -122,7 +127,7 @@ class AppZoomTool(ZoomTool):
         except AttributeError as e:
             logging.debug(str(e))
         else:
-            if isinstance(view, QtGui.QGraphicsView):
+            if isinstance(view, QtWidgets.QGraphicsView):
                 return view
             else:
                 return None

@@ -26,9 +26,9 @@ import os
 import sys
 import logging
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets, QtGui
 
-from exectools.qt4 import Qt4ToolController, Qt4DialogLoggingHandler
+from exectools.qt import QtToolController, QtDialogLoggingHandler
 
 from gsdview import info
 from gsdview import utils
@@ -60,7 +60,7 @@ class GSDView(ItemModelMainWindow):
         logger = logging.getLogger('gsdview')
 
         logger.debug('Main window base classes initialization ...')
-        QtGui.QApplication.setWindowIcon(
+        QtWidgets.QApplication.setWindowIcon(
             qt4support.geticon('GSDView.png', __name__))
 
         super(GSDView, self).__init__(parent, flags, **kwargs)
@@ -72,9 +72,9 @@ class GSDView(ItemModelMainWindow):
         logger.debug('Setting up file dialog ...')
 
         #: application global file dialog instance
-        self.filedialog = QtGui.QFileDialog(self)
-        self.filedialog.setFileMode(QtGui.QFileDialog.ExistingFile)
-        self.filedialog.setViewMode(QtGui.QFileDialog.Detail)
+        self.filedialog = QtWidgets.QFileDialog(self)
+        self.filedialog.setFileMode(QtWidgets.QFileDialog.ExistingFile)
+        self.filedialog.setViewMode(QtWidgets.QFileDialog.Detail)
 
         logger.debug('Setting up the about dialog ...')
 
@@ -89,11 +89,11 @@ class GSDView(ItemModelMainWindow):
 
         # Stop button
         logger.debug('Setting up the stop button ...')
-        qstyle = QtGui.QApplication.style()
-        icon = qstyle.standardIcon(QtGui.QStyle.SP_BrowserStop)
+        qstyle = QtWidgets.QApplication.style()
+        icon = qstyle.standardIcon(QtWidgets.QStyle.SP_BrowserStop)
 
         #: stop button for external tools
-        self.stopbutton = QtGui.QPushButton(icon, self.tr('Stop'), self)
+        self.stopbutton = QtWidgets.QPushButton(icon, self.tr('Stop'), self)
         self.statusBar().addPermanentWidget(self.stopbutton)
         self.stopbutton.hide()
 
@@ -101,7 +101,7 @@ class GSDView(ItemModelMainWindow):
         logger.debug('Setting up the progress bar ...')
 
         #: application progress bar
-        self.progressbar = QtGui.QProgressBar(self)
+        self.progressbar = QtWidgets.QProgressBar(self)
         self.progressbar.setTextVisible(True)
         self.statusBar().addPermanentWidget(self.progressbar)
         self.progressbar.hide()
@@ -189,7 +189,7 @@ class GSDView(ItemModelMainWindow):
                                     self.tr('Mouse toolbar'))
 
         # Tools menu
-        self.toolsmenu = QtGui.QMenu(self.tr('&Tools'), self)
+        self.toolsmenu = QtWidgets.QMenu(self.tr('&Tools'), self)
         self.menuBar().addMenu(self.toolsmenu)
         self.toolsmenu.hide()
 
@@ -205,7 +205,7 @@ class GSDView(ItemModelMainWindow):
                                     self.tr('Settings toolbar'))
 
         #: settings sub-menu
-        self.settings_submenu = QtGui.QMenu(
+        self.settings_submenu = QtWidgets.QMenu(
             self.tr('&View'), aboutToShow=self.updateSettingsMenu)
         menu.addSeparator()
         menu.addMenu(self.settings_submenu)
@@ -234,7 +234,7 @@ class GSDView(ItemModelMainWindow):
         window = self.mdiarea.activeSubWindow()
         if window:
             widget = window.widget()
-            if isinstance(widget, QtGui.QGraphicsView):
+            if isinstance(widget, QtWidgets.QGraphicsView):
                 return widget
         return None
 
@@ -315,7 +315,7 @@ class GSDView(ItemModelMainWindow):
         dialog = ExceptionDialog(exctype, excvalue, tracebackobj, self)
         #dialog.show()
         ret = dialog.exec_()
-        if ret == QtGui.QDialog.Rejected:
+        if ret == QtWidgets.QDialog.Rejected:
             self.close()
         else:
             logging.warning('ignoring an unhandled exception may cause '
@@ -324,81 +324,88 @@ class GSDView(ItemModelMainWindow):
     # Setup helpers #########################################################
     def _setupFileActions(self):
         # @TODO: add a "close all" (items) action
-        actionsgroup = QtGui.QActionGroup(self)
+        actionsgroup = QtWidgets.QActionGroup(self)
 
         # Open
         icon = qt4support.geticon('open.svg', __name__)
-        QtGui.QAction(icon, self.tr('&Open'), actionsgroup,
-                      objectName='openAction',
-                      shortcut=self.tr('Ctrl+O'),
-                      toolTip=self.tr('Open an existing file'),
-                      statusTip=self.tr('Open an existing file'),
-                      triggered=self.openFile)
+        QtWidgets.QAction(
+            icon, self.tr('&Open'), actionsgroup,
+            objectName='openAction',
+            shortcut=self.tr('Ctrl+O'),
+            toolTip=self.tr('Open an existing file'),
+            statusTip=self.tr('Open an existing file'),
+            triggered=self.openFile)
 
         # Close
         icon = qt4support.geticon('close.svg', __name__)
-        QtGui.QAction(icon, self.tr('&Close'), actionsgroup,
-                      objectName='closeAction',
-                      # 'Ctrl+W' shortcu is used for closing windows
-                      #shortcut=self.tr('Ctrl+W'),
-                      toolTip=self.tr('Close the current file'),
-                      statusTip=self.tr('Close the current file'),
-                      triggered=self.closeItem)
+        QtWidgets.QAction(
+            icon, self.tr('&Close'), actionsgroup,
+            objectName='closeAction',
+            # 'Ctrl+W' shortcu is used for closing windows
+            #shortcut=self.tr('Ctrl+W'),
+            toolTip=self.tr('Close the current file'),
+            statusTip=self.tr('Close the current file'),
+            triggered=self.closeItem)
 
         # Separator
-        QtGui.QAction(actionsgroup).setSeparator(True)
+        QtWidgets.QAction(actionsgroup).setSeparator(True)
         # objectName='separator')
 
         # Exit
         icon = qt4support.geticon('quit.svg', __name__)
-        QtGui.QAction(icon, self.tr('&Exit'), actionsgroup,
-                      objectName='exitAction',
-                      shortcut=self.tr('Ctrl+X'),
-                      toolTip=self.tr('Exit the program'),
-                      statusTip=self.tr('Exit the program'),
-                      triggered=self.close)
+        QtWidgets.QAction(
+            icon, self.tr('&Exit'), actionsgroup,
+            objectName='exitAction',
+            shortcut=self.tr('Ctrl+X'),
+            toolTip=self.tr('Exit the program'),
+            statusTip=self.tr('Exit the program'),
+            triggered=self.close)
 
         return actionsgroup
 
     def _setupSettingsActions(self):
-        actionsgroup = QtGui.QActionGroup(self)
+        actionsgroup = QtWidgets.QActionGroup(self)
 
         # Preferences
         icon = qt4support.geticon('preferences.svg', __name__)
-        QtGui.QAction(icon, self.tr('&Preferences'), actionsgroup,
-                      objectName='preferencesAction',
-                      toolTip=self.tr('Open the program preferences dialog'),
-                      statusTip=self.tr('Open the program preferences dialog'),
-                      triggered=self.showPreferencesDialog)
+        QtWidgets.QAction(
+            icon, self.tr('&Preferences'), actionsgroup,
+            objectName='preferencesAction',
+            toolTip=self.tr('Open the program preferences dialog'),
+            statusTip=self.tr('Open the program preferences dialog'),
+            triggered=self.showPreferencesDialog)
 
         icon = qt4support.geticon('full-screen.svg', __name__)
-        QtGui.QAction(icon, self.tr('&Full Screen'), actionsgroup,
-                      objectName='fullScreenAction',
-                      shortcut='Ctrl+Meta+F',
-                      toolTip=self.tr('Toggle full screen mode'),
-                      statusTip=self.tr('Toggle full screen mode'),
-                      triggered=self.toggleFullScreenMode)
+        QtWidgets.QAction(
+            icon, self.tr('&Full Screen'), actionsgroup,
+            objectName='fullScreenAction',
+            shortcut='Ctrl+Meta+F',
+            toolTip=self.tr('Toggle full screen mode'),
+            statusTip=self.tr('Toggle full screen mode'),
+            triggered=self.toggleFullScreenMode)
 
         return actionsgroup
 
     def _setupHelpActions(self):
-        actionsgroup = QtGui.QActionGroup(self)
+        actionsgroup = QtWidgets.QActionGroup(self)
 
         # About
         icon = qt4support.geticon('about.svg', __name__)
-        QtGui.QAction(icon, self.tr('&About'), actionsgroup,
-                      objectName='aboutAction',
-                      toolTip=self.tr('Show program information'),
-                      statusTip=self.tr('Show program information'),
-                      triggered=lambda: self.aboutdialog.exec_())
+        QtWidgets.QAction(
+            icon, self.tr('&About'), actionsgroup,
+            objectName='aboutAction',
+            toolTip=self.tr('Show program information'),
+            statusTip=self.tr('Show program information'),
+            triggered=lambda: self.aboutdialog.exec_())
 
         # AboutQt
         icon = QtGui.QIcon(':/trolltech/qmessagebox/images/qtlogo-64.png')
-        QtGui.QAction(icon, self.tr('About &Qt'), actionsgroup,
-                      objectName='aboutQtAction',
-                      toolTip=self.tr('Show information about Qt'),
-                      statusTip=self.tr('Show information about Qt'),
-                      triggered=lambda: QtGui.QMessageBox.aboutQt(self))
+        QtWidgets.QAction(
+            icon, self.tr('About &Qt'), actionsgroup,
+            objectName='aboutQtAction',
+            toolTip=self.tr('Show information about Qt'),
+            statusTip=self.tr('Show information about Qt'),
+            triggered=lambda: QtWidgets.QMessageBox.aboutQt(self))
 
         return actionsgroup
 
@@ -452,7 +459,7 @@ class GSDView(ItemModelMainWindow):
         logger.addHandler(handler)
 
         formatter = logging.Formatter('%(message)s')
-        handler = Qt4DialogLoggingHandler(parent=self, dialog=None)
+        handler = QtDialogLoggingHandler(parent=self, dialog=None)
         handler.setLevel(logging.WARNING)
         handler.setFormatter(formatter)
         logger.addHandler(handler)
@@ -470,7 +477,7 @@ class GSDView(ItemModelMainWindow):
         return logger
 
     def setupController(self, logger, statusbar, progressbar):
-        controller = Qt4ToolController(logger, parent=self)
+        controller = QtToolController(logger, parent=self)
         controller.subprocess.started.connect(self.processingStarted)
         controller.finished.connect(self.processingDone)
         self.stopbutton.clicked.connect(controller.stop_tool)
@@ -771,7 +778,7 @@ class GSDView(ItemModelMainWindow):
             if returncode != 0:
                 msg = ('An error occurred during the quicklook generation.\n'
                        'Now close the dataset.')
-                QtGui.QMessageBox.warning(self, '', msg)
+                QtWidgets.QMessageBox.warning(self, '', msg)
                 self.closeItem()   # @TODO: check
         finally:
             self.progressbar.hide()

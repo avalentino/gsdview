@@ -29,7 +29,7 @@ import logging
 import platform
 import traceback
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets, QtGui
 
 from gsdview import info
 from gsdview import utils
@@ -38,8 +38,9 @@ from gsdview.five import string_types
 
 
 def get_mainwin():
-    #mainwin = QtGui.qApp.findChild(QtGui.QMainWindow,  'gsdview-mainwin')
-    for mainwin in QtGui.QApplication.topLevelWidgets():
+    #mainwin = QtWidgets.qApp.findChild(
+    #    QtWidgets.QMainWindow,  'gsdview-mainwin')
+    for mainwin in QtWidgets.QApplication.topLevelWidgets():
         if mainwin.objectName() == 'gsdview-mainwin':
             break
     else:
@@ -50,12 +51,13 @@ def get_mainwin():
 
 def get_filedialog(parent=None):
     try:
-        #mainwin = QtGui.qApp.findChild(QtGui.QMainWindow,  'gsdview-mainwin')
+        #mainwin = QtWidgets.qApp.findChild(
+        #    QtWidgets.QMainWindow,  'gsdview-mainwin')
         mainwin = get_mainwin()
         dialog = mainwin.filedialog
     except AttributeError:
         logging.debug('unable to find the GDSView main window widget')
-        dialog = QtGui.QFileDialog(parent)
+        dialog = QtWidgets.QFileDialog(parent)
     return dialog
 
 
@@ -77,13 +79,13 @@ def _choosefile(filename='', dialog=None, mode=None):
 
 
 def _choosedir(dirname, dialog=None,):
-    return _choosefile(dirname, dialog, QtGui.QFileDialog.DirectoryOnly)
+    return _choosefile(dirname, dialog, QtWidgets.QFileDialog.DirectoryOnly)
 
 
 AboutDialogBase = qt4support.getuiform('aboutdialog', __name__)
 
 
-class AboutDialog(QtGui.QDialog, AboutDialogBase):
+class AboutDialog(QtWidgets.QDialog, AboutDialogBase):
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(AboutDialog, self).__init__(parent, flags, **kwargs)
@@ -122,44 +124,45 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview">http://sourcefor
         tablewidget.horizontalHeader().setStretchLastSection(True)
         tablewidget.setRowCount(len(info.all_versions))
         for row, (sw, version, link) in enumerate(info.all_versions):
-            tablewidget.setItem(row, 0, QtGui.QTableWidgetItem(sw))
-            tablewidget.setItem(row, 1, QtGui.QTableWidgetItem(version))
-            tablewidget.setItem(row, 2, QtGui.QTableWidgetItem(link))
+            tablewidget.setItem(row, 0, QtWidgets.QTableWidgetItem(sw))
+            tablewidget.setItem(row, 1, QtWidgets.QTableWidgetItem(version))
+            tablewidget.setItem(row, 2, QtWidgets.QTableWidgetItem(link))
 
     def addSoftwareVersion(self, sw, version, link=''):
         tablewidget = self.versionsTableWidget
         index = tablewidget.rowCount()
         tablewidget.setRowCount(index + 1)
 
-        tablewidget.setItem(index, 0, QtGui.QTableWidgetItem(sw))
-        tablewidget.setItem(index, 1, QtGui.QTableWidgetItem(version))
-        tablewidget.setItem(index, 2, QtGui.QTableWidgetItem(link))
+        tablewidget.setItem(index, 0, QtWidgets.QTableWidgetItem(sw))
+        tablewidget.setItem(index, 1, QtWidgets.QTableWidgetItem(version))
+        tablewidget.setItem(index, 2, QtWidgets.QTableWidgetItem(link))
 
 
-class FileEntryWidget(QtGui.QWidget):
-    def __init__(self, contents='', mode=QtGui.QFileDialog.AnyFile,
+class FileEntryWidget(QtWidgets.QWidget):
+    def __init__(self, contents='', mode=QtWidgets.QFileDialog.AnyFile,
                  dialog=None, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kwargs):
-        QtGui.QWidget.__init__(self, parent, flags, **kwargs)
+        QtWidgets.QWidget.__init__(self, parent, flags, **kwargs)
 
-        self.__completer = QtGui.QCompleter(self)
+        self.__completer = QtWidgets.QCompleter(self)
         # @TODO: use QFileSystemModel instraed
-        #model = QtGui.QFileSystemModel(self.__completer)
-        model = QtGui.QDirModel(self.__completer)
+        #model = QtWidgets.QFileSystemModel(self.__completer)
+        model = QtWidgets.QDirModel(self.__completer)
         #model.setFilter(QtCore.QDir.AllEntries)
-        #self.completer.setCompletionMode(QtGui.QCompleter.InlineCompletion)
+        #self.completer.setCompletionMode(
+        #    QtWidgets.QCompleter.InlineCompletion)
         self.__completer.setModel(model)
 
-        self.lineEdit = QtGui.QLineEdit()
+        self.lineEdit = QtWidgets.QLineEdit()
         self.lineEdit.setCompleter(self.__completer)
         if contents:
             self.lineEdit.setText(contents)
 
         icon = qt4support.geticon('open.svg', __name__)
-        self.button = QtGui.QPushButton(
+        self.button = QtWidgets.QPushButton(
             icon, '', toolTip=self.tr('select from file dialog'))
 
-        layout = QtGui.QHBoxLayout()
+        layout = QtWidgets.QHBoxLayout()
         layout.addWidget(self.lineEdit)
         layout.addWidget(self.button)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -178,14 +181,15 @@ class FileEntryWidget(QtGui.QWidget):
         return self._mode
 
     def _set_mode(self, mode):
-        if mode == QtGui.QFileDialog.ExistingFiles:
-            raise ValueError('"QtGui.QFileDialog.ExistingFiles": multiple '
+        if mode == QtWidgets.QFileDialog.ExistingFiles:
+            raise ValueError('"QtWidgets.QFileDialog.ExistingFiles": multiple '
                              'files selection not allowed')
         model = self.lineEdit.completer().model()
-        if mode in (QtGui.QFileDialog.AnyFile, QtGui.QFileDialog.ExistingFile):
+        if mode in (QtWidgets.QFileDialog.AnyFile,
+                    QtWidgets.QFileDialog.ExistingFile):
             model.setFilter(QtCore.QDir.AllEntries)
-        elif mode in (QtGui.QFileDialog.Directory,
-                      QtGui.QFileDialog.DirectoryOnly):
+        elif mode in (QtWidgets.QFileDialog.Directory,
+                      QtWidgets.QFileDialog.DirectoryOnly):
             model.setFilter(QtCore.QDir.Dirs)
         else:
             raise ValueError('invalid mode: "%d"' % mode)
@@ -211,7 +215,7 @@ class FileEntryWidget(QtGui.QWidget):
 GeneralPreferencesPageBase = qt4support.getuiform('general-page', __name__)
 
 
-class GeneralPreferencesPage(QtGui.QWidget, GeneralPreferencesPageBase):
+class GeneralPreferencesPage(QtWidgets.QWidget, GeneralPreferencesPageBase):
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(GeneralPreferencesPage, self).__init__(parent, flags, **kwargs)
@@ -240,11 +244,11 @@ class GeneralPreferencesPage(QtGui.QWidget, GeneralPreferencesPageBase):
         # Work directory
         dialog = get_filedialog(self)
         self.workdirEntryWidget.dialog = dialog
-        self.workdirEntryWidget.mode = QtGui.QFileDialog.Directory
-        #self.workdirEntryWidget.mode = QtGui.QFileDialog.DirectoryOnly
+        self.workdirEntryWidget.mode = QtWidgets.QFileDialog.Directory
+        #self.workdirEntryWidget.mode = QtWidgets.QFileDialog.DirectoryOnly
         self.cachedirEntryWidget.dialog = dialog
-        self.cachedirEntryWidget.mode = QtGui.QFileDialog.Directory
-        #self.cachedirEntryWidget.mode = QtGui.QFileDialog.DirectoryOnly
+        self.cachedirEntryWidget.mode = QtWidgets.QFileDialog.Directory
+        #self.cachedirEntryWidget.mode = QtWidgets.QFileDialog.DirectoryOnly
 
     def load(self, settings):
         # general
@@ -317,7 +321,7 @@ class GeneralPreferencesPage(QtGui.QWidget, GeneralPreferencesPageBase):
 PreferencesDialogBase = qt4support.getuiform('preferences', __name__)
 
 
-class PreferencesDialog(QtGui.QDialog, PreferencesDialogBase):
+class PreferencesDialog(QtWidgets.QDialog, PreferencesDialogBase):
     '''Extendible preferences dialogg for GSDView.
 
     :SIGNALS:
@@ -355,11 +359,11 @@ class PreferencesDialog(QtGui.QDialog, PreferencesDialogBase):
 
         self.listWidget.currentItemChanged.connect(self.changePage)
 
-        applybutton = self.buttonBox.button(QtGui.QDialogButtonBox.Apply)
+        applybutton = self.buttonBox.button(QtWidgets.QDialogButtonBox.Apply)
         applybutton.clicked.connect(self.apply)
 
     # @TODO: check
-    #@QtCore.Slot(QtGui.QListWidgetItem, QtGui.QListWidgetItem)
+    #@QtCore.Slot(QtWidgets.QListWidgetItem, QtWidgets.QListWidgetItem)
     def changePage(self, current, previous):
         if not current:
             current = previous
@@ -371,7 +375,7 @@ class PreferencesDialog(QtGui.QDialog, PreferencesDialogBase):
             raise TypeError('preference pages must have both "load" and '
                             '"save" methods')
         index = self.stackedWidget.addWidget(page)
-        item = QtGui.QListWidgetItem(icon, label)
+        item = QtWidgets.QListWidgetItem(icon, label)
         self.listWidget.addItem(item)
         assert self.listWidget.row(item) == index
 
@@ -401,7 +405,7 @@ class PreferencesDialog(QtGui.QDialog, PreferencesDialogBase):
 ExceptionDialogBase = qt4support.getuiform('exceptiondialog', __name__)
 
 
-class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
+class ExceptionDialog(QtWidgets.QDialog, ExceptionDialogBase):
 
     # @TODO: traceback highlighting
 
@@ -414,28 +418,30 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
         title = 'Critical error: unhandled exception occurred'
         self.setWindowTitle(self.tr(title))
 
-        closebutton = self.buttonBox.button(QtGui.QDialogButtonBox.Close)
+        closebutton = self.buttonBox.button(QtWidgets.QDialogButtonBox.Close)
         closebutton.setDefault(True)
 
-        style = QtGui.QApplication.style()
+        style = QtWidgets.QApplication.style()
 
         icon = style.standardIcon(style.SP_CommandLink)
-        sendbutton = QtGui.QPushButton(
+        sendbutton = QtWidgets.QPushButton(
             icon, self.tr('Send'),
             toolTip=self.tr('Send the bug-report via email.'),
             autoDefault=False,
             clicked=self.sendBugReport)
         self.sendbutton = sendbutton
-        self.buttonBox.addButton(sendbutton, QtGui.QDialogButtonBox.ActionRole)
+        self.buttonBox.addButton(
+            sendbutton, QtWidgets.QDialogButtonBox.ActionRole)
 
         icon = style.standardIcon(style.SP_DialogSaveButton)
-        savebutton = QtGui.QPushButton(
+        savebutton = QtWidgets.QPushButton(
             icon, self.tr('&Save'),
             toolTip=self.tr('Save the bug-report on file.'),
             autoDefault=False,
             clicked=self.saveBugReport)
         self.savebutton = savebutton
-        self.buttonBox.addButton(savebutton, QtGui.QDialogButtonBox.ActionRole)
+        self.buttonBox.addButton(
+            savebutton, QtWidgets.QDialogButtonBox.ActionRole)
 
         pixmap = style.standardPixmap(style.SP_MessageBoxCritical)
         self.iconLabel.setPixmap(pixmap)
@@ -458,7 +464,7 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
         if 'mailto' in str(link):
             self.sendBugReport()
         else:
-            QtGui.QDesktopServices.openUrl(QtCore.QUrl(link))
+            QtWidgets.QDesktopServices.openUrl(QtCore.QUrl(link))
 
     def errorMsg(self):
         self.errormsgLabel.text()
@@ -530,7 +536,7 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
             tracebackobj = self.tracebackobj
 
         error = traceback.format_exception_only(exctype, excvalue)[-1].strip()
-        appname = QtGui.QApplication.applicationName()
+        appname = QtWidgets.QApplication.applicationName()
         if appname:
             subject = '[%s] Bug report - %s' % (appname, error)
         else:
@@ -544,12 +550,12 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
         url.addQueryItem('subject', subject)
         url.addQueryItem('body', body)
 
-        ret = QtGui.QDesktopServices.openUrl(url)
+        ret = QtWidgets.QDesktopServices.openUrl(url)
         if not ret:
             msg = self.tr('Unable to send the bug-report.\n'
                           'Please save the bug-report on file and send it '
                           'manually.')
-            QtGui.QMessageBox.warning(self, self.tr('WARNING'), msg)
+            QtWidgets.QMessageBox.warning(self, self.tr('WARNING'), msg)
 
     def saveBugReport(self):
         if not self._excInfoSet():
@@ -561,14 +567,14 @@ class ExceptionDialog(QtGui.QDialog, ExceptionDialogBase):
 
         lines = utils.foramt_bugreport(exctype, excvalue, tracebackobj)
         report = ''.join(lines)
-        filename, _ = QtGui.QFileDialog.getSaveFileNameAndFilter(self)
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(self)
         if filename:
             fd = open(filename, 'w')
             try:
                 fd.write(report)
             except Exception as e:
                 msg = self.tr('Unable to save the bug-report:\n%s' % str(e))
-                QtGui.QMessageBox.warning(self, self.tr('WARNING'), msg)
+                QtWidgets.QMessageBox.warning(self, self.tr('WARNING'), msg)
             finally:
                 fd.close()
 

@@ -30,7 +30,7 @@ GSDVIEWROOT = os.path.abspath(
     os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.insert(0, GSDVIEWROOT)
 
-from qt import QtGui
+from qt import QtWidgets
 
 from gsdview.widgets import (
     AboutDialog, FileEntryWidget, GeneralPreferencesPage, PreferencesDialog,
@@ -39,16 +39,16 @@ from gsdview.widgets import (
 
 
 def test_aboutdialog():
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     d = AboutDialog()
     d.show()
     app.exec_()
 
 
 def test_fileentrywidget():
-    app = QtGui.QApplication(sys.argv)
-    d = QtGui.QDialog()
-    layout = QtGui.QVBoxLayout()
+    app = QtWidgets.QApplication(sys.argv)
+    d = QtWidgets.QDialog()
+    layout = QtWidgets.QVBoxLayout()
     layout.addWidget(FileEntryWidget())
     d.setLayout(layout)
     d.show()
@@ -56,9 +56,9 @@ def test_fileentrywidget():
 
 
 def test_generalpreferencespage():
-    app = QtGui.QApplication(sys.argv)
-    d = QtGui.QDialog()
-    layout = QtGui.QVBoxLayout()
+    app = QtWidgets.QApplication(sys.argv)
+    d = QtWidgets.QDialog()
+    layout = QtWidgets.QVBoxLayout()
     layout.addWidget(GeneralPreferencesPage())
     d.setLayout(layout)
     d.show()
@@ -66,7 +66,7 @@ def test_generalpreferencespage():
 
 
 def test_preferencesdialog():
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     d = PreferencesDialog()
     d.show()
     app.exec_()
@@ -82,7 +82,7 @@ def test_exceptiondialog():
     try:
         f(4)
     except Exception:
-        app = QtGui.QApplication(sys.argv)
+        app = QtWidgets.QApplication(sys.argv)
         d = GSDViewExceptionDialog()
         #d = ExceptionDialog()
         d.show()

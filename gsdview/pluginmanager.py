@@ -45,13 +45,14 @@ class PluginManager(object):
         self.autoload = []
         self._app = app
 
-    def _get_allplugins(self):
+    @property
+    def allplugins(self):
+        '''List of all available plugins.'''
+
         plugins = set(self.plugins.keys())
         plugins.update(self._scanpaths())
 
         return sorted(plugins)
-
-    allplugins = property(_get_allplugins, doc='List of all available plugins.')
 
     def _scanpaths(self):
         if not self.paths:
@@ -280,7 +281,7 @@ class PluginManager(object):
             if paths is not None:
                 self.paths = paths
 
-            if self.syspath and not self.syspath in self.paths:
+            if self.syspath and self.syspath not in self.paths:
                 self.paths.append(self.syspath)
 
             self.autoload = settings.value('autoload_plugins', [])
@@ -313,7 +314,7 @@ class PluginManager(object):
 # @TODO: move Qt specific implementation elsewhere
 import functools
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets
 
 # @TODO: check dependency - getuiform, geticon, setViewContextActions
 from gsdview import qt4support
@@ -322,7 +323,7 @@ from gsdview import qt4support
 PluginManagerGuiBase = qt4support.getuiform('pluginmanager', __name__)
 
 
-class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
+class PluginManagerGui(QtWidgets.QWidget, PluginManagerGuiBase):
 
     # @TODO: emit signal for ???
 
@@ -476,8 +477,8 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
                     break
                 except AttributeError as e:
                     msg = str(e)
-                    if (not "'name'" in msg
-                            and not "'short_description'" in msg):
+                    if ("'name'" not in msg
+                            and "'short_description'" not in msg):
                         raise
                     disabled = True
                 except KeyError:
@@ -487,23 +488,22 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
             tablewidget.insertRow(index)
 
             # name/description
-            tablewidget.setItem(index, 0, QtGui.QTableWidgetItem(name))
+            tablewidget.setItem(index, 0, QtWidgets.QTableWidgetItem(name))
             tablewidget.setItem(index, 1,
-                                QtGui.QTableWidgetItem(short_description))
+                                QtWidgets.QTableWidgetItem(short_description))
 
             # info
             icon = qt4support.geticon('info.svg', __name__)
-            w = QtGui.QPushButton(icon, '', tablewidget,
-                                  toolTip=self.tr('Show plugin info.'),
-                                  clicked=functools.partial(
-                                      self.showPluginInfo, index))
-                                  #clicked=lambda index=index:
-                                  #              self.showPluginInfo(index))
+            w = QtWidgets.QPushButton(
+                icon, '', tablewidget,
+                toolTip=self.tr('Show plugin info.'),
+                clicked=functools.partial(self.showPluginInfo, index))
+                #clicked=lambda index=index: self.showPluginInfo(index))
             tablewidget.setCellWidget(index, 2, w)
 
             # active
             checked = bool(plugin in self.pluginmanager.plugins)
-            w = QtGui.QCheckBox(tablewidget, checked=checked)
+            w = QtWidgets.QCheckBox(tablewidget, checked=checked)
             tablewidget.setCellWidget(index, 3, w)
 
             # TODO: remove this block when plugins unloading will be
@@ -513,8 +513,9 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
 
             # autoload
             checked = bool(plugin in self.pluginmanager.autoload)
-            w = QtGui.QCheckBox(tablewidget, checked=checked,
-                                toolTip=self.tr('Load on startup'))
+            w = QtWidgets.QCheckBox(
+                tablewidget, checked=checked,
+                toolTip=self.tr('Load on startup'))
             tablewidget.setCellWidget(index, 4, w)
 
             if disabled:
@@ -586,7 +587,7 @@ class PluginManagerGui(QtGui.QWidget, PluginManagerGuiBase):
 PluginInfoFormBase = qt4support.getuiform('plugininfo', __name__)
 
 
-class PluginInfoForm(QtGui.QFrame, PluginInfoFormBase):
+class PluginInfoForm(QtWidgets.QFrame, PluginInfoFormBase):
 
     def __init__(self, plugin=None, active=None, parent=None,
                  flags=QtCore.Qt.WindowFlags(0), **kwargs):
@@ -640,19 +641,19 @@ class PluginInfoForm(QtGui.QFrame, PluginInfoFormBase):
         self.loadedCheckBox.setChecked(False)
 
 
-class PluginInfoDialog(QtGui.QDialog):
+class PluginInfoDialog(QtWidgets.QDialog):
 
     def __init__(self, plugin, active, parent=None,
                  flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(PluginInfoDialog, self).__init__(parent, flags, **kwargs)
         self.setModal(True)
 
-        bbox = QtGui.QDialogButtonBox()
+        bbox = QtWidgets.QDialogButtonBox()
         bbox.addButton(bbox.Close)
         b = bbox.button(bbox.Close)
         b.clicked.connect(self.accept)
 
-        layout = QtGui.QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(PluginInfoForm(plugin, active))
         layout.addWidget(bbox)
         self.setLayout(layout)

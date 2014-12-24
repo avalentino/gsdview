@@ -31,36 +31,36 @@ GSDVIEWROOT = abspath(os.path.join(dirname(__file__),
                                    os.pardir, os.pardir, os.pardir))
 sys.path.insert(0, GSDVIEWROOT)
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets, QtGui
 
 from gsdview.mousemanager import MouseManager
 from gsdview.layermanager import LayerManager
 from gsdview.gdalbackend import ogrqt4
 
 
-class VectorGraphicsApp(QtGui.QMainWindow):
+class VectorGraphicsApp(QtWidgets.QMainWindow):
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0)):
-        QtGui.QMainWindow.__init__(self, parent, flags)
+        QtWidgets.QMainWindow.__init__(self, parent, flags)
         self.statusBar().show()
 
         self.model = QtGui.QStandardItemModel(self)
         self.model.setColumnCount(2)
 
-        self.treeview = QtGui.QTreeView()
+        self.treeview = QtWidgets.QTreeView()
         self.treeview.setModel(self.model)
         self.treeview.setHeaderHidden(True)
         self.treeview.setIndentation(0)
         self.treeview.setSelectionMode(
-            QtGui.QAbstractItemView.ExtendedSelection)
+            QtWidgets.QAbstractItemView.ExtendedSelection)
         self.treeview.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.treeview.header().setStretchLastSection(True)
 
-        self.treedock = QtGui.QDockWidget(self.tr('Layers View'), self)
+        self.treedock = QtWidgets.QDockWidget(self.tr('Layers View'), self)
         self.treedock.setWidget(self.treeview)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.treedock)
 
-        self.scene = QtGui.QGraphicsScene(self)
-        self.graphicsview = QtGui.QGraphicsView(self.scene, self)
+        self.scene = QtWidgets.QGraphicsScene(self)
+        self.graphicsview = QtWidgets.QGraphicsView(self.scene, self)
         self.setCentralWidget(self.graphicsview)
 
         self.mousemanager = MouseManager(self)
@@ -72,54 +72,54 @@ class VectorGraphicsApp(QtGui.QMainWindow):
         # File Actions
         self.fileactions = self._setupFileActions()
 
-        menu = QtGui.QMenu('File', self)
+        menu = QtWidgets.QMenu('File', self)
         menu.addActions(self.fileactions.actions())
         self.menuBar().addMenu(menu)
         self._filemenu = menu
 
-        toolbar = QtGui.QToolBar('File toolbar', self)
+        toolbar = QtWidgets.QToolBar('File toolbar', self)
         toolbar.addActions(self.fileactions.actions())
         self.addToolBar(toolbar)
 
         # Mouse Actions
-        menu = QtGui.QMenu('Mouse', self)
+        menu = QtWidgets.QMenu('Mouse', self)
         menu.addActions(self.mousemanager.actions.actions())
         self.menuBar().addMenu(menu)
 
-        toolbar = QtGui.QToolBar('Mouse toolbar')
+        toolbar = QtWidgets.QToolBar('Mouse toolbar')
         toolbar.addActions(self.mousemanager.actions.actions())
         self.addToolBar(toolbar)
 
         # View Actions
         self.viewactions = self._setupViewActions()
 
-        menu = QtGui.QMenu('View', self)
+        menu = QtWidgets.QMenu('View', self)
         menu.addActions(self.viewactions.actions())
         self.menuBar().addMenu(menu)
 
-        toolbar = QtGui.QToolBar('View toolbar')
+        toolbar = QtWidgets.QToolBar('View toolbar')
         toolbar.addActions(self.viewactions.actions())
         self.addToolBar(toolbar)
 
         # Layer Actions
         layeractions = self.layermanager.actions
 
-        menu = QtGui.QMenu('Layer', self)
+        menu = QtWidgets.QMenu('Layer', self)
         menu.addActions(layeractions.actions())
         self.menuBar().addMenu(menu)
 
-        toolbar = QtGui.QToolBar('Layer toolbar')
+        toolbar = QtWidgets.QToolBar('Layer toolbar')
         toolbar.addActions(layeractions.actions())
         self.addToolBar(toolbar)
 
         # Help action
         self.helpactions = self._setupHelpActions()
 
-        menu = QtGui.QMenu('Help', self)
+        menu = QtWidgets.QMenu('Help', self)
         menu.addActions(self.helpactions.actions())
         self.menuBar().addMenu(menu)
 
-        toolbar = QtGui.QToolBar('Help toolbar', self)
+        toolbar = QtWidgets.QToolBar('Help toolbar', self)
         toolbar.addActions(self.helpactions.actions())
         self.addToolBar(toolbar)
 
@@ -130,85 +130,93 @@ class VectorGraphicsApp(QtGui.QMainWindow):
     def _setupFileActions(self):
         style = self.style()
 
-        actions = QtGui.QActionGroup(self)
+        actions = QtWidgets.QActionGroup(self)
 
-        icon = style.standardIcon(QtGui.QStyle.SP_DialogOpenButton)
-        QtGui.QAction(icon, self.tr('Open Vector'), actions,
-                      objectName='openVectorAction',
-                      statusTip=self.tr('Open Vector'),
-                      triggered=self.onOpenVector)
+        icon = style.standardIcon(QtWidgets.QStyle.SP_DialogOpenButton)
+        QtWidgets.QAction(
+            icon, self.tr('Open Vector'), actions,
+            objectName='openVectorAction',
+            statusTip=self.tr('Open Vector'),
+            triggered=self.onOpenVector)
 
-        icon = style.standardIcon(QtGui.QStyle.SP_DialogResetButton)
-        QtGui.QAction(icon, self.tr('Close All'), actions,
-                      objectName='claseAllAction',
-                      statusTip=self.tr('Close All'),
-                      triggered=self.reset)
+        icon = style.standardIcon(QtWidgets.QStyle.SP_DialogResetButton)
+        QtWidgets.QAction(
+            icon, self.tr('Close All'), actions,
+            objectName='claseAllAction',
+            statusTip=self.tr('Close All'),
+            triggered=self.reset)
 
-        QtGui.QAction(actions).setSeparator(True)
+        QtWidgets.QAction(actions).setSeparator(True)
 
-        icon = style.standardIcon(QtGui.QStyle.SP_DialogCancelButton)
-        QtGui.QAction(icon, self.tr('Exit'), actions,
-                      objectName='exitAction',
-                      statusTip=self.tr('Exit'),
-                      triggered=self.close)
+        icon = style.standardIcon(QtWidgets.QStyle.SP_DialogCancelButton)
+        QtWidgets.QAction(
+            icon, self.tr('Exit'), actions,
+            objectName='exitAction',
+            statusTip=self.tr('Exit'),
+            triggered=self.close)
 
         return actions
 
     def _setupViewActions(self):
-        actions = QtGui.QActionGroup(self)
+        actions = QtWidgets.QActionGroup(self)
 
         icon = QtGui.QIcon(
             ':/trolltech/dialogs/qprintpreviewdialog/images/zoom-in-32.png')
-        QtGui.QAction(icon, self.tr('Zoom In'), actions,
-                      objectName='zoomInAction',
-                      statusTip=self.tr('Zoom In'),
-                      shortcut=self.tr('Ctrl++'),
-                      triggered=lambda: self.graphicsview.scale(1.2, 1.2))
+        QtWidgets.QAction(
+            icon, self.tr('Zoom In'), actions,
+            objectName='zoomInAction',
+            statusTip=self.tr('Zoom In'),
+            shortcut=self.tr('Ctrl++'),
+            triggered=lambda: self.graphicsview.scale(1.2, 1.2))
 
         icon = QtGui.QIcon(
             ':/trolltech/dialogs/qprintpreviewdialog/images/zoom-out-32.png')
-        QtGui.QAction(icon, self.tr('Zoom Out'), actions,
-                      objectName='zoomOutAction',
-                      statusTip=self.tr('Zoom Out'),
-                      shortcut=self.tr('Ctrl+-'),
-                      triggered=lambda: self.graphicsview.scale(1 / 1.2,
-                                                                1 / 1.2))
+        QtWidgets.QAction(
+            icon, self.tr('Zoom Out'), actions,
+            objectName='zoomOutAction',
+            statusTip=self.tr('Zoom Out'),
+            shortcut=self.tr('Ctrl+-'),
+            triggered=lambda: self.graphicsview.scale(1 / 1.2, 1 / 1.2))
 
         icon = QtGui.QIcon(
             ':/trolltech/dialogs/qprintpreviewdialog/images/page-setup-24.png')
-        QtGui.QAction(icon, self.tr('Zoom 1:1'), actions,
-                      objectName='zoomResetAction',
-                      statusTip=self.tr('Zoom 1:1'),
-                      triggered=lambda: self.graphicsview.setMatrix(
-                          QtGui.QMatrix(1, 0, 0, -1, 0, 0)))
+        QtWidgets.QAction(
+            icon, self.tr('Zoom 1:1'), actions,
+            objectName='zoomResetAction',
+            statusTip=self.tr('Zoom 1:1'),
+            triggered=lambda: self.graphicsview.setMatrix(
+                QtWidgets.QMatrix(1, 0, 0, -1, 0, 0)))
 
         icon = QtGui.QIcon(
             ':/trolltech/dialogs/qprintpreviewdialog/images/fit-page-32.png')
-        QtGui.QAction(icon, self.tr('Zoom Fit'), actions,
-                      objectName='zoomFitAction',
-                      statusTip=self.tr('Zoom Fit'),
-                      #checkable=True,
-                      triggered=lambda: self.graphicsview.fitInView(
-                          self.graphicsview.sceneRect(),
-                          QtCore.Qt.KeepAspectRatio))
+        QtWidgets.QAction(
+            icon, self.tr('Zoom Fit'), actions,
+            objectName='zoomFitAction',
+            statusTip=self.tr('Zoom Fit'),
+            #checkable=True,
+            triggered=lambda: self.graphicsview.fitInView(
+                self.graphicsview.sceneRect(),
+                QtCore.Qt.KeepAspectRatio))
 
         return actions
 
     def _setupHelpActions(self):
-        actions = QtGui.QActionGroup(self)
+        actions = QtWidgets.QActionGroup(self)
 
         icon = QtGui.QIcon(
             ':/trolltech/styles/commonstyle/images/fileinfo-32.png')
-        QtGui.QAction(icon, self.tr('About'), actions,
-                      objectName='aboutAction',
-                      statusTip=self.tr('About'),
-                      triggered=self.about)
+        QtWidgets.QAction(
+            icon, self.tr('About'), actions,
+            objectName='aboutAction',
+            statusTip=self.tr('About'),
+            triggered=self.about)
 
         icon = QtGui.QIcon(':/trolltech/qmessagebox/images/qtlogo-64.png')
-        QtGui.QAction(icon, self.tr('About Qt'), actions,
-                      objectName='aboutQtAction',
-                      statusTip=self.tr('About Qt'),
-                      triggered=QtGui.QApplication.aboutQt)
+        QtWidgets.QAction(
+            icon, self.tr('About Qt'), actions,
+            objectName='aboutQtAction',
+            statusTip=self.tr('About Qt'),
+            triggered=QtWidgets.QApplication.aboutQt)
 
         return actions
 
@@ -223,7 +231,7 @@ class VectorGraphicsApp(QtGui.QMainWindow):
             '</p>'
         ]
         text = self.tr('\n'.join(text))
-        QtGui.QMessageBox.about(self, title, text)
+        QtWidgets.QMessageBox.about(self, title, text)
 
     @QtCore.Slot()
     def reset(self):
@@ -239,7 +247,7 @@ class VectorGraphicsApp(QtGui.QMainWindow):
             'ESRI Shapefiles (*.shp)',
             'KML (*.kml, *.kmz)',
         ]
-        filenames, filter_ = QtGui.QFileDialog.getOpenFileNamesAndFilter(
+        filenames, filter_ = QtWidgets.QFileDialog.getOpenFileNamesAndFilter(
             self,
             self.tr('Open Vector'),
             QtCore.QDir.home().absolutePath(),
@@ -267,7 +275,8 @@ class VectorGraphicsApp(QtGui.QMainWindow):
         # @TODO: remove
         #~ from math import sin, cos, radians
         #~ a = radians(-45)
-        #~ qtransform = QtGui.QTransform(cos(a), -sin(a), sin(a), cos(a), 0, 0)
+        #~ qtransform = QtWidgets.QTransform(
+            #~ cos(a), -sin(a), sin(a), cos(a), 0, 0)
         #~ #affine_transform = qtransform
         #~ transform = lambda x, y, z: qtransform.map(x, y)
 
@@ -357,7 +366,7 @@ def main(*argv):
     else:
         argv = list(argv)
 
-    app = QtGui.QApplication(argv)
+    app = QtWidgets.QApplication(argv)
     app.setApplicationName('VectorGraphicsApp')
     w = VectorGraphicsApp()
     w.show()

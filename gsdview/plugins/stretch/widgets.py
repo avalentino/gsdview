@@ -24,7 +24,7 @@
 
 import logging
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets
 
 from gsdview import qt4support
 
@@ -32,7 +32,7 @@ from gsdview import qt4support
 StretchWidgetBase = qt4support.getuiform('doubleslider', __name__)
 
 
-class StretchWidget(QtGui.QWidget, StretchWidgetBase):
+class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
     '''Stretch widget.
 
     :SIGNALS:
@@ -245,7 +245,7 @@ class StretchWidget(QtGui.QWidget, StretchWidgetBase):
 StretchDialogBase = qt4support.getuiform('stretchdialog', __name__)
 
 
-class StretchDialog(QtGui.QDialog, StretchDialogBase):
+class StretchDialog(QtWidgets.QDialog, StretchDialogBase):
     '''Stretch dialog.
 
     :SIGNALS:
@@ -274,8 +274,8 @@ class StretchDialog(QtGui.QDialog, StretchDialogBase):
         self.saveState()
 
         self.checkBox.toggled.connect(self.setAdvanced)
-        self.buttonBox.button(QtGui.QDialogButtonBox.Reset).clicked.connect(
-            self.reset)
+        self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.Reset).clicked.connect(self.reset)
 
         self.stretchwidget.valueChanged.connect(self.valueChanged)
 

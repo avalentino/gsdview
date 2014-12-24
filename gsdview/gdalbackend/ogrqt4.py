@@ -19,14 +19,14 @@
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
 
 
-'''Helper tools and custom components for binding OGR and Qt4.'''
+'''Helper tools and custom components for binding OGR and Qt.'''
 
 
 import logging
 
 from osgeo import ogr, osr
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets
 
 from gsdview import qt4draw
 
@@ -35,7 +35,7 @@ from gsdview import qt4draw
 #~ class GraphicsLayerItem(qt4draw.GraphicsItemGroup):
     #~ '''Qt graphics item representing an OGR Layer.'''
 
-    #~ Type = QtGui.QGraphicsItem.UserType + 102
+    #~ Type = QtWidgets.QGraphicsItem.UserType + 102
 
     #~ def __init__(self, name=None, index=None, datasource=None,
                  #~ parent=None, scene=None, **kargs):
@@ -62,7 +62,7 @@ from gsdview import qt4draw
 #~ class GraphicsFeatureItem(qt4draw.GraphicsItemGroup):
     #~ '''Qt graphics item representing an OGR feature.'''
 
-    #~ Type = QtGui.QGraphicsItem.UserType + 103
+    #~ Type = QtWidgets.QGraphicsItem.UserType + 103
 
     #~ def __init__(self, fid=None, parent=None, scene=None, **kargs):
         #~ super(GraphicsFeatureItem, self).__init__(parent, scene, **kargs)
@@ -153,23 +153,23 @@ def singleGeometryToGraphicsItem(geom, transform=None):
             p0 = transform(*p0)
             p1 = transform(*p1)
         qline = QtCore.QLineF(p0[0], p0[1], p1[0], p1[1])
-        qitem = QtGui.QGraphicsLineItem(qline)
+        qitem = QtWidgets.QGraphicsLineItem(qline)
 
     elif gtype in (ogr.wkbLinearRing, ogr.wkbPolygon, ogr.wkbPolygon25D,
                    ogr.wkbLineString, ogr.wkbLineString25D):
 
         # @NOTE: use only if geometry is a ring
         if geom.IsRing():
-            qpoly = QtGui.QPolygonF(geom.GetPointCount())
+            qpoly = QtWidgets.QPolygonF(geom.GetPointCount())
             for index in range(geom.GetPointCount()):
                 point = geom.GetPoint(index)
                 if transform:
                     point = transform(*point)
                 qpoly[index] = QtCore.QPointF(point[0], point[1])
-            qitem = QtGui.QGraphicsPolygonItem(qpoly)
+            qitem = QtWidgets.QGraphicsPolygonItem(qpoly)
             #qitem.setFillRule(QtCore.Qt.WindingFill)    # @TODO: check
         else:
-            qpath = QtGui.QPainterPath()
+            qpath = QtWidgets.QPainterPath()
             #qpath.setFillRule(QtCore.Qt.WindingFill)    # @TODO: check
             point = geom.GetPoint(0)
             if transform:
@@ -180,7 +180,7 @@ def singleGeometryToGraphicsItem(geom, transform=None):
                 if transform:
                     point = transform(*point)
                 qpath.lineTo(point[0], point[1])
-            qitem = QtGui.QGraphicsPathItem(qpath)
+            qitem = QtWidgets.QGraphicsPathItem(qpath)
 
     elif gtype in (ogr.wkbMultiPoint, ogr.wkbMultiPoint25D,
                    ogr.wkbMultiLineString, ogr.wkbMultiLineString25D,
@@ -220,7 +220,7 @@ def geometryToGraphicsItem(geom, transform=None):
     '''
 
     if geom.GetGeometryCount() > 1:
-        #qitem = QtGui.QGraphicsItemGroup()
+        #qitem = QtWidgets.QGraphicsItemGroup()
         qitem = qt4draw.GraphicsItemGroup()
         for index, subgeom in enumerate(geom):
             qsubitem = geometryToGraphicsItem(subgeom, transform)
@@ -230,7 +230,7 @@ def geometryToGraphicsItem(geom, transform=None):
             else:
                 logging.debug('unable to instantiate a graphics item from '
                               'OGR geometry "%s"' % subgeom)
-        #qitem.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
+        #qitem.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable)
         return qitem
     elif geom.GetGeometryCount() == 1:
         subgeom = geom.GetGeometryRef(0)
@@ -238,7 +238,7 @@ def geometryToGraphicsItem(geom, transform=None):
     else:
         qitem = singleGeometryToGraphicsItem(geom, transform)
 
-    qitem.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
+    qitem.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable)
 
     return qitem
 

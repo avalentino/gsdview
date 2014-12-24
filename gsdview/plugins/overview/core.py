@@ -24,13 +24,13 @@
 
 import logging
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets, QtGui
 
 from gsdview.qt4support import overrideCursor
 from gsdview.gdalbackend import gdalsupport
 
 
-class NavigationGraphicsView(QtGui.QGraphicsView):
+class NavigationGraphicsView(QtWidgets.QGraphicsView):
     '''Graphics view for dataset navigation.
 
     The view usually displays an auto-scalled low resolution overview
@@ -58,7 +58,7 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
     #: :C++ signature: `void mousePressed(QPointF, Qt::MouseButtons,
     #:                                    QGraphicsView::DragMode)`
     mousePressed = QtCore.Signal(QtCore.QPointF, QtCore.Qt.MouseButtons,
-                                 QtGui.QGraphicsView.DragMode)
+                                 QtWidgets.QGraphicsView.DragMode)
 
     #: SIGNAL: it is emitted when the mouse is moved on the view
     #:
@@ -72,7 +72,7 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
     #: :C++ signature: `void mouseMoved(QPointF, Qt::MouseButtons,
     #:                                    QGraphicsView::DragMode)`
     mouseMoved = QtCore.Signal(QtCore.QPointF, QtCore.Qt.MouseButtons,
-                               QtGui.QGraphicsView.DragMode)
+                               QtWidgets.QGraphicsView.DragMode)
 
     def __init__(self, parent=None, **kwargs):
         super(NavigationGraphicsView, self).__init__(parent, **kwargs)
@@ -91,13 +91,13 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
             #           *all* attached views and for each view the entire
             #           exposedRect is updated.
             #           Using QGraphicsView.invalidateScene with the
-            #           QtGui.QGraphicsScene.ForegroundLayer parameter
+            #           QtWidgets.QGraphicsScene.ForegroundLayer parameter
             #           should be faster and repaint only one layer of the
             #           current view.
 
             # @TODO: check
             #self.invalidateScene(self.sceneRect(),
-            #                     QtGui.QGraphicsScene.ForegroundLayer)
+            #                     QtWidgets.QGraphicsScene.ForegroundLayer)
             self.scene().update()
 
     viewbox = property(getbox, setbox, doc='viewport box in scene coordinates')
@@ -122,7 +122,7 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
                 rect = scene.sceneRect()
             else:
                 return
-        QtGui.QGraphicsView.fitInView(self, rect, aspectRatioMode)
+        QtWidgets.QGraphicsView.fitInView(self, rect, aspectRatioMode)
 
     def _getAutoscale(self):
         return self._autoscale
@@ -132,7 +132,7 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
         if self._autoscale:
             self.fitInView()
         else:
-            self.setMatrix(QtGui.QMatrix())
+            self.setMatrix(QtWidgets.QMatrix())
             self.update()
 
     autoscale = property(_getAutoscale, _setAutoscale)
@@ -140,21 +140,21 @@ class NavigationGraphicsView(QtGui.QGraphicsView):
     def resizeEvent(self, event):
         if self.autoscale:
             self.fitInView()
-        return QtGui.QGraphicsView.resizeEvent(self, event)
+        return QtWidgets.QGraphicsView.resizeEvent(self, event)
 
     # @TODO: use event filters
     def mousePressEvent(self, event):
         pos = self.mapToScene(event.pos())
         self.mousePressed.emit(pos, event.buttons(), self.dragMode())
-        return QtGui.QGraphicsView.mousePressEvent(self, event)
+        return QtWidgets.QGraphicsView.mousePressEvent(self, event)
 
     def mouseMoveEvent(self, event):
         pos = self.mapToScene(event.pos())
         self.mouseMoved.emit(pos, event.buttons(), self.dragMode())
-        return QtGui.QGraphicsView.mouseMoveEvent(self, event)
+        return QtWidgets.QGraphicsView.mouseMoveEvent(self, event)
 
 
-class BandOverviewDock(QtGui.QDockWidget):
+class BandOverviewDock(QtWidgets.QDockWidget):
     OVRMAXSIZE = 10 * 1024 ** 2  # 10MB
 
     def __init__(self, app, flags=QtCore.Qt.WindowFlags(0), **kwargs):
@@ -223,7 +223,7 @@ class BandOverviewDock(QtGui.QDockWidget):
             view.centerOn(scenepos)
 
     @QtCore.Slot()
-    @QtCore.Slot(QtGui.QGraphicsView)
+    @QtCore.Slot(QtWidgets.QGraphicsView)
     def updateMainViewBox(self, srcview=None):
         if not self.graphicsview.scene():
             return
@@ -281,7 +281,7 @@ class OverviewController(QtCore.QObject):
         self.panel.graphicsview.mouseMoved.connect(self.onNewPos)
 
     @QtCore.Slot()
-    @QtCore.Slot(QtGui.QMdiSubWindow)
+    @QtCore.Slot(QtWidgets.QMdiSubWindow)
     def onSubWindowChanged(self, subwin=None):
         if subwin is None:
             subwin = self.app.mdiarea.activeSubWindow()
@@ -309,7 +309,7 @@ class OverviewController(QtCore.QObject):
 
     # @TODO: translate into an event handler
     @QtCore.Slot(QtCore.QPointF, QtCore.Qt.MouseButtons,
-                 QtGui.QGraphicsView.DragMode)
+                 QtWidgets.QGraphicsView.DragMode)
     def onNewPos(self, pos, buttons, dragmode):
         if buttons & QtCore.Qt.LeftButton:
             self.panel.centerMainViewOn(pos)

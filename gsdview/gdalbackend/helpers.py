@@ -29,7 +29,7 @@ import tempfile
 
 from osgeo import gdal
 
-from qt import QtGui
+from qt import QtWidgets
 
 from gsdview.gdalbackend import modelitems
 from gsdview.gdalbackend import gdalsupport
@@ -59,7 +59,7 @@ class GdalHelper(object):
         self._tmpdir = None
 
     def setup_progress_dialog(self, title=''):
-        dialog = QtGui.QProgressDialog(self.app)
+        dialog = QtWidgets.QProgressDialog(self.app)
         dialog.setModal(True)
         if title:
             dialog.setLabelText(title)

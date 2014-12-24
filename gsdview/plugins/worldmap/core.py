@@ -24,13 +24,13 @@
 
 import numpy as np
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets, QtGui
 
 from gsdview import utils
 from gsdview import qt4support
 
 
-class WorldmapPanel(QtGui.QDockWidget):
+class WorldmapPanel(QtWidgets.QDockWidget):
     # @TODO: use zoom plugin
 
     bigBoxSize = 40
@@ -41,9 +41,9 @@ class WorldmapPanel(QtGui.QDockWidget):
                                             **kwargs)
         #self.setObjectName('worldmapPanel') # @TODO: check
 
-        scene = QtGui.QGraphicsScene(self)
+        scene = QtWidgets.QGraphicsScene(self)
         scene.setSceneRect(-180, -90, 360, 180)
-        self.graphicsview = QtGui.QGraphicsView(scene)
+        self.graphicsview = QtWidgets.QGraphicsView(scene)
         self.graphicsview.scale(2., -2.)
 
         self.worldmapitem = None
@@ -56,11 +56,11 @@ class WorldmapPanel(QtGui.QDockWidget):
                                                   self.tr('Zoom toolbar'))
         toolbar.setOrientation(QtCore.Qt.Vertical)
 
-        mainlayout = QtGui.QHBoxLayout()
+        mainlayout = QtWidgets.QHBoxLayout()
         mainlayout.addWidget(self.graphicsview)
         mainlayout.addWidget(toolbar)
 
-        mainwidget = QtGui.QWidget()
+        mainwidget = QtWidgets.QWidget()
         mainwidget.setLayout(mainlayout)
         self.setWidget(mainwidget)
 
@@ -71,25 +71,27 @@ class WorldmapPanel(QtGui.QDockWidget):
         self.graphicsview.installEventFilter(self)
 
     def _setupActions(self):
-        actions = QtGui.QActionGroup(self)
+        actions = QtWidgets.QActionGroup(self)
 
         # Zoom in
         icon = qt4support.geticon('zoom-in.svg', 'gsdview')
-        QtGui.QAction(icon, self.tr('Zoom In'), actions,
-                      objectName='zoomOutAction',
-                      statusTip=self.tr('Zoom In'),
-                      shortcut=QtGui.QKeySequence(self.tr('Ctrl++')),
-                      enabled=False,
-                      triggered=lambda: self._zoom(+1))
+        QtWidgets.QAction(
+            icon, self.tr('Zoom In'), actions,
+            objectName='zoomOutAction',
+            statusTip=self.tr('Zoom In'),
+            shortcut=QtGui.QKeySequence(self.tr('Ctrl++')),
+            enabled=False,
+            triggered=lambda: self._zoom(+1))
 
         # Zoom out
         icon = qt4support.geticon('zoom-out.svg', 'gsdview')
-        QtGui.QAction(icon, self.tr('Zoom Out'), actions,
-                      objectName='zoomOutAction',
-                      statusTip=self.tr('Zoom Out'),
-                      shortcut=QtGui.QKeySequence(self.tr('Ctrl+-')),
-                      enabled=False,
-                      triggered=lambda: self._zoom(-1))
+        QtWidgets.QAction(
+            icon, self.tr('Zoom Out'), actions,
+            objectName='zoomOutAction',
+            statusTip=self.tr('Zoom Out'),
+            shortcut=QtGui.QKeySequence(self.tr('Ctrl+-')),
+            enabled=False,
+            triggered=lambda: self._zoom(-1))
 
         return actions
 
@@ -110,18 +112,12 @@ class WorldmapPanel(QtGui.QDockWidget):
 
         worldmapitem = scene.addPixmap(worldmap)
         worldmapitem.setTransformationMode(QtCore.Qt.SmoothTransformation)
+
         # @NOTE: reverse the y axis
-        worldmapitem.scale(360. / worldmap.width(), -180. / worldmap.height())
-        worldmapitem.setOffset(-worldmap.width() / 2. + 0.5,
-                               -worldmap.height() / 2. + 0.5)
-        #~ transform = QtGui.QTransform(360./worldmap.width(),
-                                     #~ 0,
-                                     #~ 0,
-                                     #~ 180./worldmap.height(),
-                                     #~ -worldmap.width()/2.+0.5,
-                                     #~ -worldmap.height()/2.+0.5)
-        #~ worldmapitem.setTransform(transform)
-        #~ worldmapitem.update()
+        worldmapitem.setTransform(
+            QtGui.QTransform(360. / worldmap.width(), 0,
+                             0, -180. / worldmap.height(),
+                             -180, 90))
         self.worldmapitem = worldmapitem
         #~ return worldmapitem
 
@@ -152,7 +148,7 @@ class WorldmapPanel(QtGui.QDockWidget):
             #~ poly.append(poly[0])
 
         # View box on the overview
-        pen = QtGui.QPen(QtCore.Qt.SolidLine)
+        pen = QtWidgets.QPen(QtCore.Qt.SolidLine)
         pen.setColor(QtGui.QColor(QtCore.Qt.red))
 
         item = self.graphicsview.scene().addPolygon(polygon, pen)
@@ -179,7 +175,7 @@ class WorldmapPanel(QtGui.QDockWidget):
 
         self.box = self.plot(polygon)
 
-        points = QtGui.QPolygonF([
+        points = QtWidgets.QPolygonF([
             QtCore.QPointF(mlon - self.bigBoxSize / 2.,
                            mlat - self.bigBoxSize / 2.),
             QtCore.QPointF(mlon + self.bigBoxSize / 2.,
@@ -230,7 +226,7 @@ class WorldmapController(QtCore.QObject):
         self.panel.setFootprint(footprint)
 
     @QtCore.Slot()
-    @QtCore.Slot(QtGui.QMdiSubWindow)
+    @QtCore.Slot(QtWidgets.QMdiSubWindow)
     def onSubWindowChanged(self, subwin=None):
         if subwin is None:
             subwin = self.app.mdiarea.activeSubWindow()
@@ -269,9 +265,9 @@ if __name__ == '__main__':
 
     from osgeo import gdal
 
-    app = QtGui.QApplication(sys.argv)
-    mainwin = QtGui.QMainWindow()
-    mainwin.setCentralWidget(QtGui.QTextEdit())
+    app = QtWidgets.QApplication(sys.argv)
+    mainwin = QtWidgets.QMainWindow()
+    mainwin.setCentralWidget(QtWidgets.QTextEdit())
 
     dataset = gdal.Open(os.path.expanduser(
         '~/projects/gsdview/data/ENVISAT/'

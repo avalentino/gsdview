@@ -24,7 +24,7 @@
 
 import sys
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets
 
 
 class Assistant(object):
@@ -77,11 +77,11 @@ class Assistant(object):
             self.proc.start(app, args)
 
             if not self.proc.waitForStarted():
-                if QtGui.aApp is not None:
-                    tr = QtGui.qApp.tr
+                if QtWidgets.aApp is not None:
+                    tr = QtWidgets.qApp.tr
                 else:
                     tr = str
-                QtGui.QMessageBox.critical(
+                QtWidgets.QMessageBox.critical(
                     0, tr('Simple Text Viewer'),
                     tr('Unable to launch Qt Assistant (%s)') % app)
                 return False

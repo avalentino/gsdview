@@ -46,7 +46,7 @@ class SplashLogHandler(logging.Handler):
     def __init__(self, splash, app=None, level=logging.NOTSET):
         logging.Handler.__init__(self, level)
         if not app:
-            from qt.QtGui import qApp as app
+            from qt.QtWidgets import qApp as app
         self._app = app
         self._splash = splash
 
@@ -69,8 +69,8 @@ MODULES = [
     'os', 're', 'sys', 'itertools',
     'numpy',
     'osgeo.gdal', 'osgeo.osr',
-    'qt.QtCore', 'qt.QtGui',
-    'exectools', 'exectools.qt4',
+    'qt.QtCore', 'qt.QtWidgets',
+    'exectools', 'exectools.qt',
     'gsdview.info', 'gsdview.utils', 'gsdview.apptools',
     'gsdview.imgutils', 'gsdview.qt4support', 'gsdview.widgets',
     'gsdview.graphicsview', 'gsdview.mainwin', 'gsdview.app',
@@ -83,8 +83,8 @@ MODULES = [
 
 def preload(modules, app=None):
     if not app:
-        from qt import QtGui
-        app = QtGui.qApp
+        from qt import QtWidgets
+        app = QtWidgets.qApp
 
     timer = Timer()
     logger = logging.getLogger('gsdview')
@@ -152,21 +152,21 @@ def main():
     timer = Timer()
 
     # splash screen #########################################################
-    from qt import QtGui
-    logging.debug('Qt4 import: %d.%06ds' % timer.update())
+    from qt import QtWidgets, QtGui
+    logging.debug('Qt import: %d.%06ds' % timer.update())
 
     import sys
     from gsdview.info import name as NAME
     from gsdview.info import version as VERSION
     from gsdview.utils import getresource
 
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     app.setApplicationName(NAME)
     app.setApplicationVersion(VERSION)
 
     pngfile = getresource(os.path.join('images', 'splash.png'), __name__)
     pixmap = QtGui.QPixmap(pngfile)
-    splash = QtGui.QSplashScreen(pixmap)
+    splash = QtWidgets.QSplashScreen(pixmap)
     splash.show()
     app.processEvents()
 

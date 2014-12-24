@@ -19,7 +19,7 @@
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
 
 
-'''GDAL items for Qt4 QStandardItemModel.'''
+'''GDAL items for Qt QStandardItemModel.'''
 
 
 import os
@@ -27,7 +27,7 @@ import logging
 
 from osgeo import gdal
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets, QtGui
 
 from gsdview import qt4support
 from gsdview.errors import OpenError
@@ -159,8 +159,8 @@ class BandItem(MajorObjectItem):
             item = OverviewItem(ovr)
             if not item.text():
                 text = 'Overview'
-                if QtGui.qApp is not None:
-                    text = QtGui.qApp.tr(text)
+                if QtWidgets.qApp is not None:
+                    text = QtWidgets.qApp.tr(text)
                 description = '%s n. %d' % (text, index)
                 item.setText(description)
                 item.setToolTip(description)
@@ -169,7 +169,7 @@ class BandItem(MajorObjectItem):
     def _setup_scene(self, parent=None):
         try:
             # @TODO: check for scenes with no parent
-            scene = QtGui.QGraphicsScene(parent)
+            scene = QtWidgets.QGraphicsScene(parent)
             graphicsitem = gdalqt4.graphicsItemFactory(self)
             scene.addItem(graphicsitem)
             return scene, graphicsitem
@@ -223,8 +223,8 @@ class BandItem(MajorObjectItem):
                 item = OverviewItem(ovr)
                 if not item.text():
                     text = 'Overview'
-                    if QtGui.qApp is not None:
-                        text = QtGui.qApp.tr(text)
+                    if QtWidgets.qApp is not None:
+                        text = QtWidgets.qApp.tr(text)
                     description = '%s n. %d' % (text, index)
                     item.setText(description)
                     item.setToolTip(description)
@@ -312,7 +312,7 @@ class DatasetItem(MajorObjectItem):
             # dataset is not an RGB image
             return None, None
         else:
-            scene = QtGui.QGraphicsScene(parent)
+            scene = QtWidgets.QGraphicsScene(parent)
             scene.addItem(graphicsitem)
             return scene, graphicsitem
 
@@ -331,10 +331,12 @@ class DatasetItem(MajorObjectItem):
 
         lon, lat = self.cmapper.imgToGeoGrid([0.5, self.RasterXSize - 0.5],
                                              [0.5, self.RasterYSize - 0.5])
-        polygon = QtGui.QPolygonF([QtCore.QPointF(lon[0, 0], lat[0, 0]),
-                                   QtCore.QPointF(lon[0, 1], lat[0, 1]),
-                                   QtCore.QPointF(lon[1, 1], lat[1, 1]),
-                                   QtCore.QPointF(lon[1, 0], lat[1, 0])])
+        polygon = QtWidgets.QPolygonF([
+            QtCore.QPointF(lon[0, 0], lat[0, 0]),
+            QtCore.QPointF(lon[0, 1], lat[0, 1]),
+            QtCore.QPointF(lon[1, 1], lat[1, 1]),
+            QtCore.QPointF(lon[1, 0], lat[1, 0])
+        ])
 
         return polygon
 
@@ -356,8 +358,8 @@ class DatasetItem(MajorObjectItem):
             item = BandItem(gdalobj.GetRasterBand(index + 1))
             if not item.text():
                 text = 'Raster Band'
-                if QtGui.qApp is not None:
-                    text = QtGui.qApp.tr(text)
+                if QtWidgets.qApp is not None:
+                    text = QtWidgets.qApp.tr(text)
                 description = '%s n. %d' % (text, index + 1)
                 item.setText(description)
                 item.setToolTip(description)

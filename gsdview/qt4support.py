@@ -33,7 +33,7 @@ except ImportError:
     # @COMPATIBILITY: python 2.x
     from ConfigParser import ConfigParser
 
-from qt import QtCore, QtGui, QtSvg, uic
+from qt import QtCore, QtWidgets, QtGui, QtSvg, uic
 
 from gsdview import utils
 
@@ -49,7 +49,7 @@ intToWinState = {
 
 # Menus and toolbars helpers ###############################################
 def actionGroupToMenu(actionGroup, label, mainwin):
-    menu = QtGui.QMenu(label, mainwin)
+    menu = QtWidgets.QMenu(label, mainwin)
     menu.addActions(actionGroup.actions())
     return menu
 
@@ -61,7 +61,7 @@ def actionGroupToToolbar(actionGroup, label, name=None):
         parts[0] = parts[0].lower()
         name = ''.join(parts)
 
-    toolbar = QtGui.QToolBar(label)
+    toolbar = QtWidgets.QToolBar(label)
     toolbar.addActions(actionGroup.actions())
     if name:
         toolbar.setObjectName(name)
@@ -72,20 +72,20 @@ def actionGroupToToolbar(actionGroup, label, name=None):
 # Application cursor helpers ###############################################
 def overrideCursor(func):
     def aux(*args, **kwargs):
-        QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
+        QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
         try:
             return func(*args, **kwargs)
         finally:
-            QtGui.QApplication.restoreOverrideCursor()
+            QtWidgets.QApplication.restoreOverrideCursor()
     return aux
 
 
 def callExpensiveFunc(func, *args, **kwargs):
-    QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
+    QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
     try:
         return func(*args, **kwargs)
     finally:
-        QtGui.QApplication.restoreOverrideCursor()
+        QtWidgets.QApplication.restoreOverrideCursor()
 
 
 # Table model/view helpers ##################################################
@@ -115,12 +115,12 @@ def selectAllItems(itemview):
         # assume it is a list
         bottomright = model.index(model.rowCount() - 1)
 
-    selection = QtGui.QItemSelection(topleft, bottomright)
+    selection = QtWidgets.QItemSelection(topleft, bottomright)
     itemview.selectionModel().select(selection,
-                                     QtGui.QItemSelectionModel.Select)
+                                     QtWidgets.QItemSelectionModel.Select)
 
 
-#@QtCore.Slot(QtGui.QWidget) # @TODO: check
+#@QtCore.Slot(QtWidgets.QWidget) # @TODO: check
 def copySelectedItems(itemview):
     '''Copy selected items of an QAbstractItemView to the clipboard and
     also return copied data.'''
@@ -141,9 +141,9 @@ def copySelectedItems(itemview):
     data = '\n'.join(lines)
 
     if data:
-        clipboard = QtGui.QApplication.clipboard()
-        clipboard.setText(data, QtGui.QClipboard.Clipboard)
-        clipboard.setText(data, QtGui.QClipboard.Selection)
+        clipboard = QtWidgets.QApplication.clipboard()
+        clipboard.setText(data, QtWidgets.QClipboard.Clipboard)
+        clipboard.setText(data, QtWidgets.QClipboard.Selection)
 
     # @TODO: check
     #data = QtCore.QByteArray()
@@ -152,9 +152,9 @@ def copySelectedItems(itemview):
     #mimedata = QtCore.QMimeData()
     #mimedata.setData('text/csv', data)
 
-    #clipboard = QtGui.QApplication.clipboard()
-    #clipboard.setMimeData(mimedata, QtGui.QClipboard.Clipboard)
-    #clipboard.setMimeData(mimedata, QtGui.QClipboard.Selection)
+    #clipboard = QtWidgets.QApplication.clipboard()
+    #clipboard.setMimeData(mimedata, QtWidgets.QClipboard.Clipboard)
+    #clipboard.setMimeData(mimedata, QtWidgets.QClipboard.Selection)
 
     return data
 
@@ -194,16 +194,16 @@ def modelToCsv(model, dialect='excel'):
 
 def modelToTextDocument(model, doc=None):
     if doc is None:
-        doc = QtGui.QTextDocument()
+        doc = QtWidgets.QTextDocument()
 
-    cursor = QtGui.QTextCursor(doc)
-    cursor.movePosition(QtGui.QTextCursor.End)
+    cursor = QtWidgets.QTextCursor(doc)
+    cursor.movePosition(QtWidgets.QTextCursor.End)
     cursor.beginEditBlock()
 
-    format = QtGui.QTextTableFormat()
+    format = QtWidgets.QTextTableFormat()
     format.setCellPadding(5)
     format.setCellSpacing(0)
-    format.setBorderStyle(QtGui.QTextFrameFormat.BorderStyle_Solid)
+    format.setBorderStyle(QtWidgets.QTextFrameFormat.BorderStyle_Solid)
     format.setHeaderRowCount(1)
 
     nrows = model.rowCount()
@@ -214,7 +214,7 @@ def modelToTextDocument(model, doc=None):
         ncols = 1
     table = cursor.insertTable(nrows, ncols, format)
 
-    #textformat = QtGui.QTextFormat()
+    #textformat = QtWidgets.QTextFormat()
 
     for row in range(nrows):
         for col in range(ncols):
@@ -229,8 +229,8 @@ def modelToTextDocument(model, doc=None):
             cellCursor.insertText(text)  # , textformat)
 
     # headers style
-    headerformat = QtGui.QTextCharFormat()
-    headerformat.setFontWeight(QtGui.QFont.Bold)
+    headerformat = QtWidgets.QTextCharFormat()
+    headerformat.setFontWeight(QtWidgets.QFont.Bold)
     brush = headerformat.background()
     brush.setColor(QtCore.Qt.lightGray)
     brush.setStyle(QtCore.Qt.SolidPattern)
@@ -306,7 +306,7 @@ def exportTable(model, parent=None):
         except AttributeError:
             parent = None
 
-    filename, filter_ = QtGui.QFileDialog.getSaveFileNameAndFilter(
+    filename, filter_ = QtWidgets.QFileDialog.getSaveFileName(
         parent, model.tr('Save'), target, ';;'.join(filters))
     if filename:
         ext = os.path.splitext(filename)[-1]
@@ -341,43 +341,47 @@ def setViewContextActions(widget):
     #    widget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
     icon = geticon('copy.svg', __name__)
-    action = QtGui.QAction(icon, widget.tr('&Copy'), widget,
-                           objectName='copyAction',
-                           shortcut=widget.tr('Ctrl+C'),
-                           toolTip=widget.tr('Copy selected items'),
-                           triggered=lambda: copySelectedItems(widget))
+    action = QtWidgets.QAction(
+        icon, widget.tr('&Copy'), widget,
+        objectName='copyAction',
+        shortcut=widget.tr('Ctrl+C'),
+        toolTip=widget.tr('Copy selected items'),
+        triggered=lambda: copySelectedItems(widget))
     widget.addAction(action)
 
     #':/trolltech/dialogs/qprintpreviewdialog/images/view-page-multi-32.png'
     icon = QtGui.QIcon(
         ':/trolltech/styles/commonstyle/images/viewlist-128.png')
-    action = QtGui.QAction(icon, widget.tr('Select &All'), widget,
-                           objectName='selectAllAction',
-                           #shortcut=widget.tr('Ctrl+A'),
-                           toolTip=widget.tr('Select all items'),
-                           triggered=lambda: selectAllItems(widget))
+    action = QtWidgets.QAction(
+        icon, widget.tr('Select &All'), widget,
+        objectName='selectAllAction',
+        #shortcut=widget.tr('Ctrl+A'),
+        toolTip=widget.tr('Select all items'),
+        triggered=lambda: selectAllItems(widget))
     widget.addAction(action)
 
-    icon = widget.style().standardIcon(QtGui.QStyle.SP_DialogSaveButton)
-    action = QtGui.QAction(icon, widget.tr('&Save As'), widget,
-                           objectName='saveAsAction',
-                           shortcut=widget.tr('Ctrl+S'),
-                           statusTip=widget.tr('Save as'),
-                           triggered=lambda: exportTable(widget.model()))
+    icon = widget.style().standardIcon(QtWidgets.QStyle.SP_DialogSaveButton)
+    action = QtWidgets.QAction(
+        icon, widget.tr('&Save As'), widget,
+        objectName='saveAsAction',
+        shortcut=widget.tr('Ctrl+S'),
+        statusTip=widget.tr('Save as'),
+        triggered=lambda: exportTable(widget.model()))
     widget.addAction(action)
 
     icon = QtGui.QIcon(
         ':/trolltech/dialogs/qprintpreviewdialog/images/print-32.png')
-    action = QtGui.QAction(icon, widget.tr('&Print'), widget,
-                           objectName='printAction',
-                           shortcut=widget.tr('Ctrl+P'),
-                           statusTip=widget.tr('Print'),
-                           triggered=lambda: printObject(widget))
+    action = QtWidgets.QAction(
+        icon, widget.tr('&Print'), widget,
+        objectName='printAction',
+        shortcut=widget.tr('Ctrl+P'),
+        statusTip=widget.tr('Print'),
+        triggered=lambda: printObject(widget))
     widget.addAction(action)
 
     #~ icon = QtGui.QIcon(
         #~ ':/trolltech/styles/commonstyle/images/filecontents-128.png')
-    #~ action = QtGui.QAction(icon, widget.tr('Print Preview'), widget,
+    #~ action = QtWidgets.QAction(icon, widget.tr('Print Preview'), widget,
                            #~ objectName='printPreviewAction',
                            #~ statusTip=widget.tr('Print Preview'))#,
                            #~ #triggered=tablePrintPreview)
@@ -387,15 +391,15 @@ def setViewContextActions(widget):
 
 # Printing helpers ##########################################################
 def coreprint(obj, printer):
-    painter = QtGui.QPainter(printer)
-    painter.setRenderHint(QtGui.QPainter.Antialiasing)
+    painter = QtWidgets.QPainter(printer)
+    painter.setRenderHint(QtWidgets.QPainter.Antialiasing)
     obj.render(painter)
     painter.end()
 
 
 def printObject(obj, printer=None, parent=None):
     if printer is None:
-        printer = QtGui.QPrinter(QtGui.QPrinter.PrinterResolution)
+        printer = QtWidgets.QPrinter(QtWidgets.QPrinter.PrinterResolution)
         #printer.setOutputFile(os.path.join(utils.default_workdir().
         #                                   'filename.pdf'))
 
@@ -406,19 +410,19 @@ def printObject(obj, printer=None, parent=None):
         except AttributeError:
             parent = None
 
-    #dialog = QtGui.QPrintDialog(printer)
+    #dialog = QtWidgets.QPrintDialog(printer)
     #try:
     #    window = obj.window()
     #except AttributeError:
     #    window = = None
-    #preview = QtGui.QPrintPreviewWidget(printer, window)
+    #preview = QtWidgets.QPrintPreviewWidget(printer, window)
     #preview.paintRequested.connect(coreprint)
     #dialog.setOptionTabs([preview])
     #ret = d.exec_()
 
-    ret = QtGui.QPrintDialog(printer, parent).exec_()
-    if ret == QtGui.QDialog.Accepted:
-        if isinstance(obj, (QtGui.QTextDocument, QtGui.QTextEdit)):
+    ret = QtWidgets.QPrintDialog(printer, parent).exec_()
+    if ret == QtWidgets.QDialog.Accepted:
+        if isinstance(obj, (QtWidgets.QTextDocument, QtWidgets.QTextEdit)):
             obj.print_(printer)
         elif hasattr(obj, 'model'):
             model = obj.model()
@@ -433,7 +437,7 @@ def printObject(obj, printer=None, parent=None):
 
 def printPreview(obj, printer=None, parent=None):
     if printer is None:
-        printer = QtGui.QPrinter(QtGui.QPrinter.PrinterResolution)
+        printer = QtWidgets.QPrinter(QtWidgets.QPrinter.PrinterResolution)
 
     # @TODO: check
     if parent is None:
@@ -442,14 +446,14 @@ def printPreview(obj, printer=None, parent=None):
         except AttributeError:
             parent = None
 
-    dialog = QtGui.QPrintPreviewDialog(printer, parent)
+    dialog = QtWidgets.QPrintPreviewDialog(printer, parent)
     dialog.paintRequested.connect(coreprint)
     ret = dialog.exec_()
 
     # @WARNING: duplicate code
-    ret = QtGui.QPrintDialog(printer, parent).exec_()
-    if ret == QtGui.QDialog.Accepted:
-        if isinstance(obj, (QtGui.QTextDocument, QtGui.QTextEdit)):
+    ret = QtWidgets.QPrintDialog(printer, parent).exec_()
+    if ret == QtWidgets.QDialog.Accepted:
+        if isinstance(obj, (QtWidgets.QTextDocument, QtWidgets.QTextEdit)):
             obj.print_(printer)
         elif hasattr(object, 'model'):
             model = obj.model()
@@ -635,32 +639,32 @@ def geticon(name, package=None):
 # Misc helpers ##############################################################
 def cfgToTextDocument(cfg, doc=None):
     if doc is None:
-        doc = QtGui.QTextDocument()
+        doc = QtWidgets.QTextDocument()
 
-    cursor = QtGui.QTextCursor(doc)
-    cursor.movePosition(QtGui.QTextCursor.End)
+    cursor = QtWidgets.QTextCursor(doc)
+    cursor.movePosition(QtWidgets.QTextCursor.End)
 
     # table style
-    tableformat = QtGui.QTextTableFormat()
+    tableformat = QtWidgets.QTextTableFormat()
     tableformat.setTopMargin(10)
     tableformat.setBottomMargin(10)
     tableformat.setCellPadding(5)
     tableformat.setCellSpacing(0)
-    tableformat.setBorderStyle(QtGui.QTextFrameFormat.BorderStyle_Solid)
+    tableformat.setBorderStyle(QtWidgets.QTextFrameFormat.BorderStyle_Solid)
     tableformat.setHeaderRowCount(1)
 
     # headers style
-    titleblockformat = QtGui.QTextBlockFormat()
+    titleblockformat = QtWidgets.QTextBlockFormat()
     titleblockformat.setTopMargin(20)
     titleblockformat.setBottomMargin(10)
 
-    titleformat = QtGui.QTextCharFormat()
-    titleformat.setFontWeight(QtGui.QFont.Bold)
+    titleformat = QtWidgets.QTextCharFormat()
+    titleformat.setFontWeight(QtWidgets.QFont.Bold)
     #titleformat.setPointSze(12)
 
     # headers style
-    headerformat = QtGui.QTextCharFormat()
-    headerformat.setFontWeight(QtGui.QFont.Bold)
+    headerformat = QtWidgets.QTextCharFormat()
+    headerformat.setFontWeight(QtWidgets.QFont.Bold)
     brush = headerformat.background()
     brush.setColor(QtCore.Qt.lightGray)
     brush.setStyle(QtCore.Qt.SolidPattern)
@@ -672,7 +676,7 @@ def cfgToTextDocument(cfg, doc=None):
             continue
 
         cursor.beginEditBlock()
-        cursor.movePosition(QtGui.QTextCursor.End)
+        cursor.movePosition(QtWidgets.QTextCursor.End)
 
         # title
         cursor.insertBlock(titleblockformat)
@@ -682,7 +686,7 @@ def cfgToTextDocument(cfg, doc=None):
         ncols = 2
         table = cursor.insertTable(nrows, ncols, tableformat)
 
-        #textformat = QtGui.QTextFormat()
+        #textformat = QtWidgets.QTextFormat()
 
         for index, (key, value) in enumerate(items):
             cell = table.cellAt(index, 0)
@@ -729,7 +733,8 @@ def imgexport(obj, parent=None):
         for fmt in QtGui.QImageWriter.supportedImageFormats())
 
     formats = set(
-        str(fmt).lower() for fmt in QtGui.QImageWriter.supportedImageFormats())
+        str(fmt).lower()
+        for fmt in QtGui.QImageWriter.supportedImageFormats())
     formats.update(('svg', 'pdf', 'ps'))
 
     # @TODO: check
@@ -741,7 +746,7 @@ def imgexport(obj, parent=None):
 
     target = os.path.join(utils.default_workdir(), 'image.jpeg')
 
-    filename, filter_ = QtGui.QFileDialog.getSaveFileNameAndFilter(
+    filename, filter_ = QtWidgets.QFileDialog.getSaveFileName(
         parent, obj.tr('Save picture'), target, ';;'.join(filters))
     ext = 'unknown'
     while filename and (ext not in formats):
@@ -751,11 +756,11 @@ def imgexport(obj, parent=None):
             if ext in formats:
                 break
             else:
-                QtGui.QMessageBox.information(
+                QtWidgets.QMessageBox.information(
                     parent, obj.tr('Unknown file format'),
                     obj.tr('Unknown file format "%s".\nPlease retry.') % ext)
 
-                filename, filter_ = QtGui.QFileDialog.getSaveFileNameAndFilter(
+                filename, filter_ = QtWidgets.QFileDialog.getSaveFileName(
                     parent, obj.tr('Save draw'), filename, ';;'.join(filters),
                     filter_)
         else:
@@ -769,16 +774,16 @@ def imgexport(obj, parent=None):
             # trapped by the previous check
             srcsize = obj.sceneRect().toRect().size()
         else:
-            srcsize = QtGui.QSize(800, 600)
+            srcsize = QtWidgets.QSize(800, 600)
 
         if ext in ('pdf', 'ps'):
-            device = QtGui.QPrinter(QtGui.QPrinter.HighResolution)
+            device = QtWidgets.QPrinter(QtWidgets.QPrinter.HighResolution)
             device.setOutputFileName(filename)
             if ext == 'pdf':
-                device.setOutputFormat(QtGui.QPrinter.PdfFormat)
+                device.setOutputFormat(QtWidgets.QPrinter.PdfFormat)
             else:
                 # ext == 'ps'
-                device.setOutputFormat(QtGui.QPrinter.PostScriptFormat)
+                device.setOutputFormat(QtWidgets.QPrinter.PostScriptFormat)
         elif ext == 'svg':
             device = QtSvg.QSvgGenerator()
             device.setFileName(filename)
@@ -791,15 +796,15 @@ def imgexport(obj, parent=None):
             # @TODO: check
             device.fill(QtCore.Qt.white)
 
-        painter = QtGui.QPainter()
+        painter = QtWidgets.QPainter()
         if painter.begin(device):
-            #painter.setRenderHint(QtGui.QPainter.Antialiasing)
+            #painter.setRenderHint(QtWidgets.QPainter.Antialiasing)
             obj.render(painter)
             painter.end()
             if hasattr(device, 'save'):
                 device.save(filename)
         else:
-            QtGui.QMessageBox.warning(
+            QtWidgets.QMessageBox.warning(
                 parent,
                 obj.tr('Warning'),
                 obj.tr('Unable initialize painting device.'))

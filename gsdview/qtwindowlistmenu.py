@@ -26,10 +26,10 @@ Python port of the Window Wenu component from Qt Solutions.
 '''
 
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets, QtGui
 
 
-class QtWindowListMenu(QtGui.QMenu):
+class QtWindowListMenu(QtWidgets.QMenu):
     '''The QtWindowListMenu class is a menu that provides navigation
     commands for the subwindows in a QMdiArea.
 
@@ -112,8 +112,8 @@ class QtWindowListMenu(QtGui.QMenu):
         self.setTitle(self.tr('&Windows'))
         self.aboutToShow.connect(self.syncWithMdiArea)
 
-        self._stdGroup = QtGui.QActionGroup(self, exclusive=False)
-        self._winGroup = QtGui.QActionGroup(self, exclusive=True)
+        self._stdGroup = QtWidgets.QActionGroup(self, exclusive=False)
+        self._winGroup = QtWidgets.QActionGroup(self, exclusive=True)
                                             #, triggered=self.activateWindow)
 
         # @COMPATIBILITY: with pyside 1.0.1
@@ -121,29 +121,34 @@ class QtWindowListMenu(QtGui.QMenu):
 
         # Create the standard menu items.
         # @Note: Creation order must match the StandardAction enum values ;-)
-        QtGui.QAction(self.tr('Cl&ose'), self._stdGroup,
-                      shortcut=self.tr('Ctrl+F4'),
-                      statusTip=self.tr('Close the active window'))
+        QtWidgets.QAction(
+            self.tr('Cl&ose'), self._stdGroup,
+            shortcut=self.tr('Ctrl+F4'),
+            statusTip=self.tr('Close the active window'))
 
-        QtGui.QAction(self.tr('Close &All'), self._stdGroup,
-                      statusTip=self.tr('Close all the windows'))
-
-        act = self._stdGroup.addAction('')
-        act.setSeparator(True)
-
-        QtGui.QAction(self.tr('&Tile'), self._stdGroup,
-                      statusTip=self.tr('Tile the windows'))
-
-        QtGui.QAction(self.tr('&Cascade'), self._stdGroup,
-                      statusTip=self.tr('Cascade the windows'))
+        QtWidgets.QAction(
+            self.tr('Close &All'), self._stdGroup,
+            statusTip=self.tr('Close all the windows'))
 
         act = self._stdGroup.addAction('')
         act.setSeparator(True)
 
-        QtGui.QAction(self.tr('Ne&xt'), self._stdGroup,
-                      statusTip=self.tr('Move the focus to the next window'))
+        QtWidgets.QAction(
+            self.tr('&Tile'), self._stdGroup,
+            statusTip=self.tr('Tile the windows'))
 
-        QtGui.QAction(
+        QtWidgets.QAction(
+            self.tr('&Cascade'), self._stdGroup,
+            statusTip=self.tr('Cascade the windows'))
+
+        act = self._stdGroup.addAction('')
+        act.setSeparator(True)
+
+        QtWidgets.QAction(
+            self.tr('Ne&xt'), self._stdGroup,
+            statusTip=self.tr('Move the focus to the next window'))
+
+        QtWidgets.QAction(
             self.tr('Pre&vious'), self._stdGroup,
             statusTip=self.tr('Move the focus to the previous window'))
 
@@ -232,10 +237,10 @@ class QtWindowListMenu(QtGui.QMenu):
             parent = parent.parentWidget()
             if not parent:
                 return False
-            if isinstance(mdi, QtGui.QMdiArea):
+            if isinstance(mdi, QtWidgets.QMdiArea):
                 mdi = parent
             else:
-                mdi = parent.findChild(QtGui.QMdiArea)
+                mdi = parent.findChild(QtWidgets.QMdiArea)
 
         self.attachToMdiArea(mdi)
         return True
@@ -279,13 +284,14 @@ class QtWindowListMenu(QtGui.QMenu):
                 text = '%d %s' % (idx + 1, title)
 
             icon = self._iconMap.get(win, self._defIcon)
-            action = QtGui.QAction(icon, text, self._winGroup, checkable=True)
+            action = QtWidgets.QAction(
+                icon, text, self._winGroup, checkable=True)
             action.setChecked(win == self.mdi.activeSubWindow())
             self._winMap[action] = win
 
         self.addActions(self._winGroup.actions())
 
-    @QtCore.Slot(QtGui.QAction)
+    @QtCore.Slot(QtWidgets.QAction)
     def activateWindow(self, act):
         '''Activate the corresponding sub-window in the MDI area
 

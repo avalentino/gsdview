@@ -28,7 +28,7 @@ import re
 import logging
 
 import exectools
-from exectools.qt4 import Qt4OutputHandler
+from exectools.qt import QtOutputHandler
 
 from osgeo import gdal
 
@@ -41,13 +41,13 @@ class BaseGdalToolDescriptor(exectools.ToolDescriptor):
     def gdal_config_options(self, cmd=''):
         extra_args = []
 
-        if not 'GDAL_CACHEMAX' in cmd:
+        if 'GDAL_CACHEMAX' not in cmd:
             value = gdal.GetCacheMax()
             extra_args.extend(('--config', 'GDAL_CACHEMAX', str(value)))
 
         for key in ('CPL_DEBUG', 'GDAL_SKIP', 'GDAL_DATA',
                     'GDAL_DRIVER_PATH', 'OGR_DRIVER_PATH'):
-            if not key in cmd:
+            if key not in cmd:
                 value = gdal.GetConfigOption(key, None)
                 if value:
                     extra_args.extend(('--config', key, '"%s"' % value))
@@ -353,7 +353,7 @@ class GdalInfoDescriptor(BaseGdalToolDescriptor):
         return super(GdalInfoDescriptor, self).cmdline(*args, **kwargs)
 
 
-class GdalOutputHandler(Qt4OutputHandler):
+class GdalOutputHandler(QtOutputHandler):
     '''Handler for the GDAL simple progress report to terminal.
 
     This progress reporter prints simple progress report to the
@@ -365,7 +365,7 @@ class GdalOutputHandler(Qt4OutputHandler):
     Every 2.5% of progress another number or period is emitted.
 
     .. seealso:: :class:`exectools.BaseOutputHandler`,
-                 :class:`exectools.qt4.Qt4OutputHandler`
+                 :class:`exectools.qt.QtOutputHandler`
 
     '''
 

@@ -25,11 +25,12 @@
 import logging
 import itertools
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets, QtGui
 
 
 SelectCurrentRows = (
-    QtGui.QItemSelectionModel.SelectCurrent | QtGui.QItemSelectionModel.Rows
+    QtWidgets.QItemSelectionModel.SelectCurrent |
+    QtWidgets.QItemSelectionModel.Rows
 )
 
 
@@ -39,59 +40,66 @@ class BaseLayerManager(QtCore.QObject):
         self.actions = self._setupActions()
 
     def _setupActions(self):
-        style = QtGui.QApplication.style()
+        style = QtWidgets.QApplication.style()
 
-        actions = QtGui.QActionGroup(self)
+        actions = QtWidgets.QActionGroup(self)
 
         icon = QtGui.QIcon(':/trolltech/styles/commonstyle/images/up-128.png')
-        QtGui.QAction(icon, self.tr('Move to top'), actions,
-                      objectName='moveToTopAction',
-                      statusTip=self.tr('Move to top'),
-                      shortcut=self.tr('Ctrl+PgUp'))
+        QtWidgets.QAction(
+            icon, self.tr('Move to top'), actions,
+            objectName='moveToTopAction',
+            statusTip=self.tr('Move to top'),
+            shortcut=self.tr('Ctrl+PgUp'))
 
-        icon = style.standardIcon(QtGui.QStyle.SP_ArrowUp)
-        QtGui.QAction(icon, self.tr('Move up'), actions,
-                      objectName='moveUpAction',
-                      statusTip=self.tr('Move up'),
-                      shortcut=self.tr('Ctrl+Up'))
+        icon = style.standardIcon(QtWidgets.QStyle.SP_ArrowUp)
+        QtWidgets.QAction(
+            icon, self.tr('Move up'), actions,
+            objectName='moveUpAction',
+            statusTip=self.tr('Move up'),
+            shortcut=self.tr('Ctrl+Up'))
 
-        icon = style.standardIcon(QtGui.QStyle.SP_ArrowDown)
-        QtGui.QAction(icon, self.tr('Move down'), actions,
-                      objectName='moveDownAction',
-                      statusTip=self.tr('Move down'),
-                      shortcut=self.tr('Ctrl+Down'))
+        icon = style.standardIcon(QtWidgets.QStyle.SP_ArrowDown)
+        QtWidgets.QAction(
+            icon, self.tr('Move down'), actions,
+            objectName='moveDownAction',
+            statusTip=self.tr('Move down'),
+            shortcut=self.tr('Ctrl+Down'))
 
         icon = QtGui.QIcon(
             ':/trolltech/styles/commonstyle/images/down-128.png')
-        QtGui.QAction(icon, self.tr('Move to bottom'), actions,
-                      objectName='moveToBottomAction',
-                      statusTip=self.tr('Move to bottom'),
-                      shortcut=self.tr('Ctrl+PgDown'))
+        QtWidgets.QAction(
+            icon, self.tr('Move to bottom'), actions,
+            objectName='moveToBottomAction',
+            statusTip=self.tr('Move to bottom'),
+            shortcut=self.tr('Ctrl+PgDown'))
 
         #~ #'standardbutton-closetab-16.png'
         icon = QtGui.QIcon(':/trolltech/styles/commonstyle/images/'
                            'standardbutton-cancel-128.png')
-        QtGui.QAction(icon, self.tr('Remove'), actions,
-                      objectName='removeLayerAction',
-                      statusTip=self.tr('Remove'),
-                      shortcut=self.tr('Del'))
+        QtWidgets.QAction(
+            icon, self.tr('Remove'), actions,
+            objectName='removeLayerAction',
+            statusTip=self.tr('Remove'),
+            shortcut=self.tr('Del'))
 
         icon = QtGui.QIcon(
             ':/trolltech/styles/commonstyle/images/standardbutton-yes-128.png')
-        QtGui.QAction(icon, self.tr('Show'), actions,
-                      objectName='showLayerAction',
-                      statusTip=self.tr('Show the layer'))
+        QtWidgets.QAction(
+            icon, self.tr('Show'), actions,
+            objectName='showLayerAction',
+            statusTip=self.tr('Show the layer'))
 
         icon = QtGui.QIcon(
             ':/trolltech/styles/commonstyle/images/standardbutton-no-128.png')
-        QtGui.QAction(icon, self.tr('Hide'), actions,
-                      objectName='hideLayerAction',
-                      statusTip=self.tr('Hide the layer'))
+        QtWidgets.QAction(
+            icon, self.tr('Hide'), actions,
+            objectName='hideLayerAction',
+            statusTip=self.tr('Hide the layer'))
 
         return actions
 
     def action(self, name):
-        return self.actions.findChild(QtGui.QAction, name)
+        return self.actions.findChild(QtWidgets.QAction, name)
 
     def isLayer(self, item):
         # @TODO: complete
@@ -100,13 +108,13 @@ class BaseLayerManager(QtCore.QObject):
     @staticmethod
     def _selectionmap(selection):
         sortedselection = sorted(selection,
-                                 key=QtGui.QItemSelectionRange.parent)
+                                 key=QtWidgets.QItemSelectionRange.parent)
 
         selectionmap = {}  # collections.OrderedDict()
-        for key, group in itertools.groupby(sortedselection,
-                                            QtGui.QItemSelectionRange.parent):
+        for key, group in itertools.groupby(
+                sortedselection, QtWidgets.QItemSelectionRange.parent):
             ranges = []
-            for item in sorted(group, key=QtGui.QItemSelectionRange.top):
+            for item in sorted(group, key=QtWidgets.QItemSelectionRange.top):
                 if len(ranges) == 0:
                     ranges.append(item)
                     continue
@@ -124,8 +132,8 @@ class BaseLayerManager(QtCore.QObject):
                         #max(lastitem.right(), item.right()),
                         model.columnCount() - 1,
                         lastitem.parent())
-                    ranges[-1] = QtGui.QItemSelectionRange(topleft,
-                                                           bottomright)
+                    ranges[-1] = QtWidgets.QItemSelectionRange(topleft,
+                                                               bottomright)
                 else:
                     ranges.append(item)
             selectionmap[key] = ranges
@@ -194,13 +202,13 @@ class BaseLayerManager(QtCore.QObject):
         bottomright = model.index(dst + nrows_selected - 1, ncols - 1,
                                   parentindex)
 
-        return QtGui.QItemSelectionRange(topleft, bottomright)
+        return QtWidgets.QItemSelectionRange(topleft, bottomright)
 
     def moveSelectionToTop(self, selectionmodel):
         #assert selectionmodel.model() is self.model
         selection = selectionmodel.selection()
         selectionmap = self._selectionmap(selection)
-        newselection = QtGui.QItemSelection()
+        newselection = QtWidgets.QItemSelection()
         for parent, ranges in selectionmap.items():
             dst = 0
             for selectionrange in ranges:
@@ -213,7 +221,7 @@ class BaseLayerManager(QtCore.QObject):
         #assert selectionmodel.model() is self.model
         selection = selectionmodel.selection()
         selectionmap = self._selectionmap(selection)
-        newselection = QtGui.QItemSelection()
+        newselection = QtWidgets.QItemSelection()
         for parent, ranges in selectionmap.items():
             for selectionrange in ranges:
                 dst = selectionrange.top() - 1
@@ -225,7 +233,7 @@ class BaseLayerManager(QtCore.QObject):
         #assert selectionmodel.model() is self.model
         selection = selectionmodel.selection()
         selectionmap = self._selectionmap(selection)
-        newselection = QtGui.QItemSelection()
+        newselection = QtWidgets.QItemSelection()
         for parent, ranges in selectionmap.items():
             ranges.reverse()
             for selectionrange in ranges:
@@ -238,7 +246,7 @@ class BaseLayerManager(QtCore.QObject):
         #assert selectionmodel.model() is self.model
         selection = selectionmodel.selection()
         selectionmap = self._selectionmap(selection)
-        newselection = QtGui.QItemSelection()
+        newselection = QtWidgets.QItemSelection()
         nrows = selectionmodel.model().rowCount()
         for parent, ranges in selectionmap.items():
             ranges.reverse()
@@ -262,7 +270,7 @@ class BaseLayerManager(QtCore.QObject):
                     if not self.isLayer(item):
                         break
                     graphicsitem = item.data()
-                    assert isinstance(graphicsitem, QtGui.QGraphicsItem)
+                    assert isinstance(graphicsitem, QtWidgets.QGraphicsItem)
                     scene = graphicsitem.scene()
                     scene.removeItem(graphicsitem)
                 else:
@@ -409,26 +417,27 @@ class LayerManager(BaseLayerManager):
 
         icon = QtGui.QIcon(
             ':/trolltech/styles/commonstyle/images/viewdetailed-128.png')
-        QtGui.QAction(icon, self.tr('Select all'), actions,
-                      objectName='selectAllAction',
-                      statusTip=self.tr('Select all'),
-                      shortcut=self.tr('Ctrl-A'),
-                      triggered=self.view.selectAll)
+        QtWidgets.QAction(
+            icon, self.tr('Select all'), actions,
+            objectName='selectAllAction',
+            statusTip=self.tr('Select all'),
+            shortcut=self.tr('Ctrl-A'),
+            triggered=self.view.selectAll)
 
         # connect actions
-        action = actions.findChild(QtGui.QAction, 'moveToTopAction')
+        action = actions.findChild(QtWidgets.QAction, 'moveToTopAction')
         action.triggered.connect(self.moveSelectionToTop)
-        action = actions.findChild(QtGui.QAction, 'moveUpAction')
+        action = actions.findChild(QtWidgets.QAction, 'moveUpAction')
         action.triggered.connect(self.moveSelectionUp)
-        action = actions.findChild(QtGui.QAction, 'moveDownAction')
+        action = actions.findChild(QtWidgets.QAction, 'moveDownAction')
         action.triggered.connect(self.moveSelectionDown)
-        action = actions.findChild(QtGui.QAction, 'moveToBottomAction')
+        action = actions.findChild(QtWidgets.QAction, 'moveToBottomAction')
         action.triggered.connect(self.moveSelectionToBottom)
-        action = actions.findChild(QtGui.QAction, 'removeLayerAction')
+        action = actions.findChild(QtWidgets.QAction, 'removeLayerAction')
         action.triggered.connect(self.removeSelectedLayers)
-        action = actions.findChild(QtGui.QAction, 'showLayerAction')
+        action = actions.findChild(QtWidgets.QAction, 'showLayerAction')
         action.triggered.connect(self.checkSelectedItems)
-        action = actions.findChild(QtGui.QAction, 'hideLayerAction')
+        action = actions.findChild(QtWidgets.QAction, 'hideLayerAction')
         action.triggered.connect(self.uncheckSelectedItems)
 
         return actions

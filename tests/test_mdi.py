@@ -29,13 +29,13 @@ GSDVIEWROOT = os.path.abspath(
 sys.path.insert(0, GSDVIEWROOT)
 
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets
 
 from gsdview.mdi import MdiMainWindow
 from gsdview.qt4support import geticon
 
 
-class MdiChild(QtGui.QTextEdit):
+class MdiChild(QtWidgets.QTextEdit):
     sequenceNumber = 1
 
     def __init__(self):
@@ -55,16 +55,16 @@ class MdiChild(QtGui.QTextEdit):
     def loadFile(self, fileName):
         qfile = QtCore.QFile(fileName)
         if not qfile.open(QtCore.QFile.ReadOnly | QtCore.QFile.Text):
-            QtGui.QMessageBox.warning(
+            QtWidgets.QMessageBox.warning(
                 self, self.tr('MDI'),
                 self.tr('Cannot read file %s:\n%s.') % (fileName,
                                                         qfile.errorString()))
             return False
 
         instr = QtCore.QTextStream(qfile)
-        QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
+        QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
         self.setPlainText(instr.readAll())
-        QtGui.QApplication.restoreOverrideCursor()
+        QtWidgets.QApplication.restoreOverrideCursor()
 
         self.setCurrentFile(fileName)
         return True
@@ -76,7 +76,7 @@ class MdiChild(QtGui.QTextEdit):
             return self.saveFile(self.curFile)
 
     def saveAs(self):
-        filename, _ = QtGui.QFileDialog.getSaveFileNameAndFilter(
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self, self.tr('Save As'), self.curFile)
         if filename.isEmpty:
             return False
@@ -87,7 +87,7 @@ class MdiChild(QtGui.QTextEdit):
         qfile = QtCore.QFile(fileName)
 
         if not qfile.open(QtCore.QFile.WriteOnly | QtCore.QFile.Text):
-            QtGui.QMessageBox.warning(
+            QtWidgets.QMessageBox.warning(
                 self, self.tr('MDI'),
                 self.tr('Cannot write file %s:\n%s.') % (fileName,
                                                          qfile.errorString()))
@@ -119,17 +119,17 @@ class MdiChild(QtGui.QTextEdit):
 
     def maybeSave(self):
         if self.document().isModified():
-            ret = QtGui.QMessageBox.warning(
+            ret = QtWidgets.QMessageBox.warning(
                 self, self.tr('MDI'),
                 self.tr("'%s' has been modified.\n"
                         "Do you want to save your changes?") %
                 self.userFriendlyCurrentFile(),
-                QtGui.QMessageBox.Yes | QtGui.QMessageBox.Default,
-                QtGui.QMessageBox.No,
-                QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Escape)
-            if ret == QtGui.QMessageBox.Yes:
+                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Default,
+                QtWidgets.QMessageBox.No,
+                QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Escape)
+            if ret == QtWidgets.QMessageBox.Yes:
                 return self.save()
-            elif ret == QtGui.QMessageBox.Cancel:
+            elif ret == QtWidgets.QMessageBox.Cancel:
                 return False
 
         return True
@@ -179,7 +179,7 @@ class TestMdiMainWindow(MdiMainWindow):
 
     @QtCore.Slot()
     def open(self):
-        fileName = QtGui.QFileDialog.getOpenFileName(self)
+        fileName = QtWidgets.QFileDialog.getOpenFileName(self)
         if not fileName.isEmpty():
             existing = self.findMdiChild(fileName)
             if existing:
@@ -217,12 +217,12 @@ class TestMdiMainWindow(MdiMainWindow):
 
     @QtCore.Slot()
     def about(self):
-        QtGui.QMessageBox.about(
+        QtWidgets.QMessageBox.about(
             self, self.tr('About MDI'),
             self.tr('The <b>MDI</b> example demonstrates how to write '
                     'multiple document interface applications using Qt.'))
 
-    @QtCore.Slot(QtGui.QMdiSubWindow)
+    @QtCore.Slot(QtWidgets.QMdiSubWindow)
     def updateActions(self, window=None):
         hasMdiChild = (window is not None)
         self.saveAct.setEnabled(hasMdiChild)
@@ -243,74 +243,73 @@ class TestMdiMainWindow(MdiMainWindow):
         return child
 
     def createActions(self):
-        style = QtGui.QApplication.style()
+        style = QtWidgets.QApplication.style()
 
         icon = style.standardIcon(style.SP_FileIcon)
-        self.newAct = QtGui.QAction(icon, self.tr('&New'), self,
-                                    shortcut=self.tr('Ctrl+N'),
-                                    statusTip=self.tr('Create a new file'),
-                                    triggered=self.newFile)
+        self.newAct = QtWidgets.QAction(
+            icon, self.tr('&New'), self,
+            shortcut=self.tr('Ctrl+N'),
+            statusTip=self.tr('Create a new file'),
+            triggered=self.newFile)
 
         icon = style.standardIcon(style.SP_DialogOpenButton)
-        self.openAct = QtGui.QAction(icon, self.tr('&Open...'), self,
-                                     shortcut=self.tr('Ctrl+O'),
-                                     statusTip=self.tr('Open an existing '
-                                                       'file'),
-                                     triggered=self.open)
+        self.openAct = QtWidgets.QAction(
+            icon, self.tr('&Open...'), self,
+            shortcut=self.tr('Ctrl+O'),
+            statusTip=self.tr('Open an existing file'),
+            triggered=self.open)
 
         icon = style.standardIcon(style.SP_DialogSaveButton)
-        self.saveAct = QtGui.QAction(icon, self.tr('&Save'), self,
-                                     shortcut=self.tr('Ctrl+S'),
-                                     statusTip=self.tr('Save the document to '
-                                                       'disk'),
-                                     triggered=self.save)
+        self.saveAct = QtWidgets.QAction(
+            icon, self.tr('&Save'), self,
+            shortcut=self.tr('Ctrl+S'),
+            statusTip=self.tr('Save the document to disk'),
+            triggered=self.save)
 
-        self.saveAsAct = QtGui.QAction(self.tr('Save &As...'), self,
-                                       statusTip=self.tr('Save the document '
-                                                         'under a new name'),
-                                       triggered=self.saveAs)
+        self.saveAsAct = QtWidgets.QAction(
+            self.tr('Save &As...'), self,
+            statusTip=self.tr('Save the document under a new name'),
+            triggered=self.saveAs)
 
-        self.exitAct = QtGui.QAction(self.tr('E&xit'), self,
-                                     shortcut=self.tr('Ctrl+Q'),
-                                     statusTip=self.tr('Exit the application'),
-                                     triggered=self.close)
+        self.exitAct = QtWidgets.QAction(
+            self.tr('E&xit'), self,
+            shortcut=self.tr('Ctrl+Q'),
+            statusTip=self.tr('Exit the application'),
+            triggered=self.close)
 
         icon = geticon('cut.svg', 'gsdview')
-        self.cutAct = QtGui.QAction(icon, self.tr('Cu&t'), self,
-                                    shortcut=self.tr('Ctrl+X'),
-                                    statusTip=self.tr("Cut the current "
-                                                      "selection's contents "
-                                                      "to the clipboard"),
-                                    triggered=self.cut)
+        self.cutAct = QtWidgets.QAction(
+            icon, self.tr('Cu&t'), self,
+            shortcut=self.tr('Ctrl+X'),
+            statusTip=self.tr("Cut the current  selection's contents  to the "
+                              "clipboard"),
+            triggered=self.cut)
 
         icon = geticon('copy.svg', 'gsdview.gdalbackend')
-        self.copyAct = QtGui.QAction(icon, self.tr('&Copy'), self,
-                                     shortcut=self.tr("Ctrl+C"),
-                                     statusTip=self.tr("Copy the current "
-                                                       "selection's contents "
-                                                       "to the clipboard"),
-                                     triggered=self.copy)
+        self.copyAct = QtWidgets.QAction(
+            icon, self.tr('&Copy'), self,
+            shortcut=self.tr("Ctrl+C"),
+            statusTip=self.tr("Copy the current selection's contents to the "
+                              "clipboard"),
+            triggered=self.copy)
 
         icon = geticon('paste.svg', 'gsdview')
-        self.pasteAct = QtGui.QAction(icon, self.tr('&Paste'), self,
-                                      shortcut=self.tr("Ctrl+V"),
-                                      statusTip=self.tr("Paste the "
-                                                        "clipboard's contents "
-                                                        "into the current "
-                                                        "selection"),
-                                      triggered=self.paste)
+        self.pasteAct = QtWidgets.QAction(
+            icon, self.tr('&Paste'), self,
+            shortcut=self.tr("Ctrl+V"),
+            statusTip=self.tr("Paste the clipboard's contents into the "
+                              "current selection"),
+            triggered=self.paste)
 
-        self.aboutAct = QtGui.QAction(self.tr('&About'), self,
-                                      statusTip=self.tr("Show the "
-                                                        "application's About "
-                                                        "box"),
-                                      triggered=self.about)
+        self.aboutAct = QtWidgets.QAction(
+            self.tr('&About'), self,
+            statusTip=self.tr("Show the application's About box"),
+            triggered=self.about)
 
-        self.aboutQtAct = QtGui.QAction(self.tr('About &Qt'), self,
-                                        statusTip=self.tr("Show the Qt "
-                                                          "library's About "
-                                                          "box"),
-                                        triggered=QtGui.QApplication.aboutQt)
+        self.aboutQtAct = QtWidgets.QAction(
+            self.tr('About &Qt'), self,
+            statusTip=self.tr("Show the Qt library's About box"),
+            triggered=QtWidgets.QApplication.aboutQt)
 
     def createMenus(self):
         self.fileMenu = self.menuBar().addMenu(self.tr('&File'))
@@ -354,7 +353,7 @@ class TestMdiMainWindow(MdiMainWindow):
 
 def test_mdimainwin():
     import sys
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     mainwindow = TestMdiMainWindow()
     mainwindow.show()
     sys.exit(app.exec_())

@@ -31,7 +31,7 @@ making the system expandible, and also methods to register objects
 
 '''
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets, QtGui
 
 from gsdview import qt4support
 from gsdview.five import string_types
@@ -65,7 +65,7 @@ class MouseMode(QtCore.QObject):
 
     '''
 
-    dragmode = QtGui.QGraphicsView.NoDrag
+    dragmode = QtWidgets.QGraphicsView.NoDrag
     cursor = None
     icon = QtGui.QIcon()
     label = ''
@@ -86,9 +86,9 @@ class MouseMode(QtCore.QObject):
 
         '''
 
-        if isinstance(obj, QtGui.QGraphicsScene):
+        if isinstance(obj, QtWidgets.QGraphicsScene):
             return self.sceneEventFilter(obj, event)
-        elif isinstance(obj, QtGui.QGraphicsView):
+        elif isinstance(obj, QtWidgets.QGraphicsView):
             if event.type() == QtCore.QEvent.Enter:
                 obj.setDragMode(self.dragmode)
                 if self.cursor:
@@ -96,7 +96,7 @@ class MouseMode(QtCore.QObject):
                 else:
                     obj.unsetCursor()
             return self.viewEventFilter(obj, event)
-        elif isinstance(obj, QtGui.QScrollBar):
+        elif isinstance(obj, QtWidgets.QScrollBar):
             return self.scrollbarEventFilter(obj, event)
         else:
             return False
@@ -112,7 +112,7 @@ class MouseMode(QtCore.QObject):
 
 
 class PointerMode(MouseMode):
-    dragmode = QtGui.QGraphicsView.NoDrag
+    dragmode = QtWidgets.QGraphicsView.NoDrag
     cursor = None
     icon = qt4support.geticon('arrow.svg', __name__)
     label = 'Pointer'
@@ -120,7 +120,7 @@ class PointerMode(MouseMode):
 
 
 class ScrollHandMode(MouseMode):
-    dragmode = QtGui.QGraphicsView.ScrollHandDrag
+    dragmode = QtWidgets.QGraphicsView.ScrollHandDrag
     cursor = None
     icon = qt4support.geticon('hand.svg', __name__)
     label = 'Scroll hand'
@@ -129,8 +129,12 @@ class ScrollHandMode(MouseMode):
     def viewEventFilter(self, obj, event):
         if event.type() == QtCore.QEvent.Wheel:
 
+            # @COMPATIBILITY: Qt4 <--> Qt5
             # Delta is expressed in 1/8 degree
-            delta = event.delta() / 8.  # degree
+            try:
+                delta = event.angleDelta().y() / 8.  # degree
+            except AttributeError:
+                delta = event.delta() / 8.  # degree
 
             # Conversion from degrees to zoom factor
             if abs(delta) < 15:
@@ -171,7 +175,7 @@ class RubberBandMode(MouseMode):
 
     '''
 
-    dragmode = QtGui.QGraphicsView.RubberBandDrag
+    dragmode = QtWidgets.QGraphicsView.RubberBandDrag
     cursor = QtCore.Qt.CrossCursor
     icon = qt4support.geticon('area.svg', __name__)
     label = 'Rubber band'
@@ -191,7 +195,7 @@ class RubberBandMode(MouseMode):
             return True
 
         #return obj.eventFilter(obj, event)   # @TODO: check
-        #return QtGui.QGraphicsScene.eventFilter(self, obj, event)
+        #return QtWidgets.QGraphicsScene.eventFilter(self, obj, event)
         return False
 
     def scrollbarEventFilter(self, obj, event):
@@ -214,7 +218,7 @@ class MouseManager(QtCore.QObject):
         QtCore.QObject.__init__(self, parent, **kwargs)
 
         self._moderegistry = []
-        self.actions = QtGui.QActionGroup(self)
+        self.actions = QtWidgets.QActionGroup(self)
         self.actions.setExclusive(True)
 
         if stdmodes:
@@ -229,15 +233,16 @@ class MouseManager(QtCore.QObject):
     def _newModeAction(self, mode, parent):
         if isinstance(mode.icon, string_types):
             icon = QtGui.QIcon(mode.icon)
-        elif isinstance(mode.icon, QtGui.QStyle.StandardPixmap):
-            style = QtGui.QApplication.style()
+        elif isinstance(mode.icon, QtWidgets.QStyle.StandardPixmap):
+            style = QtWidgets.QApplication.style()
             icon = style.standardIcon(mode.icon)
         else:
             icon = mode.icon
 
-        action = QtGui.QAction(icon, self.tr(mode.label), parent,
-                               statusTip=self.tr(mode.label),
-                               checkable=True)
+        action = QtWidgets.QAction(
+            icon, self.tr(mode.label), parent,
+            statusTip=self.tr(mode.label),
+            checkable=True)
         action.triggered.connect(lambda: self.modeChanged.emit(self.mode))
         return action
 

@@ -24,12 +24,12 @@
 # @TODO: move this to widgets sub-package or qt4freesolutions subpackage
 
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets, QtGui
 
 from gsdview.qtwindowlistmenu import QtWindowListMenu
 
 
-class MdiMainWindow(QtGui.QMainWindow):
+class MdiMainWindow(QtWidgets.QMainWindow):
     '''Base class for MDI applications.
 
     :SIGNALS:
@@ -48,7 +48,7 @@ class MdiMainWindow(QtGui.QMainWindow):
         super(MdiMainWindow, self).__init__(parent, flags, **kwargs)
 
         #: MDI area instance (QMdiArea)
-        self.mdiarea = QtGui.QMdiArea()
+        self.mdiarea = QtWidgets.QMdiArea()
         self.setCentralWidget(self.mdiarea)
         self.mdiarea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.mdiarea.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
@@ -58,7 +58,7 @@ class MdiMainWindow(QtGui.QMainWindow):
         self.windowmenu.attachToMdiArea(self.mdiarea)
 
 
-class ItemSubWindow(QtGui.QMdiSubWindow):
+class ItemSubWindow(QtWidgets.QMdiSubWindow):
     def __init__(self, item, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kwargs):
         super(ItemSubWindow, self).__init__(parent, flags, **kwargs)
@@ -77,10 +77,12 @@ class ItemModelMainWindow(MdiMainWindow):
 
         # @TODO: custom treeview with "currentChanged" slot re-implemented
         #: tree view for the main application data model
-        self.treeview = QtGui.QTreeView()
-        # @TODO self.treeview.setSelectionMode(QtGui.QTreeView.SingleSelection)
+        self.treeview = QtWidgets.QTreeView()
+        # @TODO
+        #self.treeview.setSelectionMode(QtWidgets.QTreeView.SingleSelection)
         self.treeview.setModel(self.datamodel)
-        self.treeview.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.treeview.setEditTriggers(
+            QtWidgets.QAbstractItemView.NoEditTriggers)
         self.treeview.header().hide()
 
         self.treeview.clicked.connect(self.setActiveWinFromIndex)
@@ -88,7 +90,7 @@ class ItemModelMainWindow(MdiMainWindow):
         self.datamodel.rowsAboutToBeRemoved.connect(self.onItemsClosed)
 
         # setup the treeview dock
-        treeviewdock = QtGui.QDockWidget(self.tr('Data Browser'), self)
+        treeviewdock = QtWidgets.QDockWidget(self.tr('Data Browser'), self)
         treeviewdock.setWidget(self.treeview)
         treeviewdock.setObjectName('TreeViewPanel')
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, treeviewdock)
@@ -133,7 +135,7 @@ class ItemModelMainWindow(MdiMainWindow):
                 if id(window.item) == id(item):
                     self.mdiarea.setActiveSubWindow(window)
 
-    @QtCore.Slot(QtGui.QMdiSubWindow)
+    @QtCore.Slot(QtWidgets.QMdiSubWindow)
     def setActiveIndexFromWin(self, window):
         '''Set the active sub-window.
 

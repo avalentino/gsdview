@@ -26,7 +26,7 @@ import os
 
 from osgeo import gdal
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets, QtGui
 
 from gsdview import qt4support
 from gsdview.five import string_types
@@ -153,7 +153,7 @@ class GDALBackend(QtCore.QObject):
 
             # @TODO: remove selection code
             sm = self._app.treeview.selectionModel()
-            sm.select(item.index(), QtGui.QItemSelectionModel.Select)
+            sm.select(item.index(), QtWidgets.QItemSelectionModel.Select)
 
             # @TODO: maybe it is better to use an exception here
             return None
@@ -187,14 +187,14 @@ class GDALBackend(QtCore.QObject):
         actions = self._actionsmap[type(item).__name__]
         name = defaultActionsMap.get(type(item))
         if name:
-            action = actions.findChild(QtGui.QAction, name)
+            action = actions.findChild(QtWidgets.QAction, name)
             if action:
                 action.trigger()
                 return
 
         for itemtype in defaultActionsMap:
             if isinstance(item, itemtype):
-                action = actions.findChild(QtGui.QAction,
+                action = actions.findChild(QtWidgets.QAction,
                                            defaultActionsMap[itemtype])
                 if action:
                     action.trigger()
@@ -203,44 +203,45 @@ class GDALBackend(QtCore.QObject):
     # Actions setup #########################################################
     def _setupMajorObjectItemActions(self, actionsgroup=None):
         if actionsgroup is None:
-            actionsgroup = QtGui.QActionGroup(self)
+            actionsgroup = QtWidgets.QActionGroup(self)
 
         # open metadata view
         icon = qt4support.geticon('metadata.svg', __name__)
-        QtGui.QAction(icon, self.tr('Open &Metadata View'), actionsgroup,
-                      objectName='actionOpenItemMetadataView',
-                      shortcut=self.tr('Ctrl+M'),
-                      toolTip=self.tr('Show metadata in a new window'),
-                      statusTip=self.tr('Show metadata in a new window'),
-                      triggered=self.openItemMatadataView,
-                      enabled=False)    # @TODO: remove
+        QtWidgets.QAction(
+            icon, self.tr('Open &Metadata View'), actionsgroup,
+            objectName='actionOpenItemMetadataView',
+            shortcut=self.tr('Ctrl+M'),
+            toolTip=self.tr('Show metadata in a new window'),
+            statusTip=self.tr('Show metadata in a new window'),
+            triggered=self.openItemMatadataView,
+            enabled=False)    # @TODO: remove
 
         # show properties
         # @TODO: standard info icon from gdsview package
         icon = qt4support.geticon('info.svg', 'gsdview')
-        QtGui.QAction(icon, self.tr('&Show Properties'), actionsgroup,
-                      objectName='actionShowItemProperties',
-                      shortcut=self.tr('Ctrl+S'),
-                      toolTip=self.tr('Show the property dialog for the '
-                                      'cutent item'),
-                      statusTip=self.tr('Show the property dialog for the '
-                                        'cutent item'),
-                      triggered=self.showItemProperties)
+        QtWidgets.QAction(
+            icon, self.tr('&Show Properties'), actionsgroup,
+            objectName='actionShowItemProperties',
+            shortcut=self.tr('Ctrl+S'),
+            toolTip=self.tr('Show the property dialog for the cutent item'),
+            statusTip=self.tr('Show the property dialog for the cutent item'),
+            triggered=self.showItemProperties)
 
         return actionsgroup
 
     def _setupBandItemActions(self, actionsgroup=None):
         if actionsgroup is None:
-            actionsgroup = QtGui.QActionGroup(self)
+            actionsgroup = QtWidgets.QActionGroup(self)
 
         # open image view
         icon = qt4support.geticon('open.svg', __name__)
-        QtGui.QAction(icon, self.tr('&Open Image View'), actionsgroup,
-                      objectName='actionOpenImageView',
-                      shortcut=self.tr('Ctrl+O'),
-                      toolTip=self.tr('Open an image view'),
-                      statusTip=self.tr('Open a new image view'),
-                      triggered=self.openImageView)
+        QtWidgets.QAction(
+            icon, self.tr('&Open Image View'), actionsgroup,
+            objectName='actionOpenImageView',
+            shortcut=self.tr('Ctrl+O'),
+            toolTip=self.tr('Open an image view'),
+            statusTip=self.tr('Open a new image view'),
+            triggered=self.openImageView)
 
         # @TODO: add a new action for newImageView
 
@@ -255,7 +256,8 @@ class GDALBackend(QtCore.QObject):
         # @TODO: remove open
         # @TODO: remove overviews build
         #~ actionsgroup = self._setupBandItemActions()
-        #~ action = actionsgroup.findChild(QtGui.QAction,'actionBuidOverviews')
+        #~ action = actionsgroup.findChild(
+            #~ QtWidgets.QAction,'actionBuidOverviews')
         #~ actionsgroup.removeAction(action)
         #~ return actionsgroup
         return self._setupBandItemActions(actionsgroup)
@@ -266,38 +268,40 @@ class GDALBackend(QtCore.QObject):
 
     def _setupDatasetItemActions(self, actionsgroup=None):
         if actionsgroup is None:
-            actionsgroup = QtGui.QActionGroup(self)
+            actionsgroup = QtWidgets.QActionGroup(self)
 
         # open RGB
         # @TODO: find an icon for RGB
         icon = qt4support.geticon('rasterband.svg', __name__)
-        QtGui.QAction(icon, self.tr('Open as RGB'), actionsgroup,
-                      objectName='actionOpenRGBImageView',
-                      #shortcut=self.tr('Ctrl+B'),
-                      toolTip=self.tr('Display the dataset as an RGB image'),
-                      statusTip=self.tr('Open as RGB'),
-                      triggered=self.openRGBImageView)
+        QtWidgets.QAction(
+            icon, self.tr('Open as RGB'), actionsgroup,
+            objectName='actionOpenRGBImageView',
+            #shortcut=self.tr('Ctrl+B'),
+            toolTip=self.tr('Display the dataset as an RGB image'),
+            statusTip=self.tr('Open as RGB'),
+            triggered=self.openRGBImageView)
 
         # build overviews
         icon = qt4support.geticon('overview.svg', __name__)
-        QtGui.QAction(icon, self.tr('&Build overviews'),
-                      actionsgroup, objectName='actionBuidOverviews',
-                      shortcut=self.tr('Ctrl+B'),
-                      toolTip=self.tr('Build overviews for all raster bands'),
-                      statusTip=self.tr(
-                          'Build overviews for all raster bands'),
-                      triggered=self.buildOverviews)
+        QtWidgets.QAction(
+            icon, self.tr('&Build overviews'),
+            actionsgroup, objectName='actionBuidOverviews',
+            shortcut=self.tr('Ctrl+B'),
+            toolTip=self.tr('Build overviews for all raster bands'),
+            statusTip=self.tr('Build overviews for all raster bands'),
+            triggered=self.buildOverviews)
 
         # @TODO: add band, add virtual band, open GCPs view
 
         # close
         icon = qt4support.geticon('close.svg', 'gsdview')
-        QtGui.QAction(icon, self.tr('Close'), actionsgroup,
-                      objectName='actionCloseItem',
-                      shortcut=self.tr('Ctrl+W'),
-                      toolTip=self.tr('Close the current item'),
-                      statusTip=self.tr('Close the current item'),
-                      triggered=self.closeCurrentItem)
+        QtWidgets.QAction(
+            icon, self.tr('Close'), actionsgroup,
+            objectName='actionCloseItem',
+            shortcut=self.tr('Ctrl+W'),
+            toolTip=self.tr('Close the current item'),
+            statusTip=self.tr('Close the current item'),
+            triggered=self.closeCurrentItem)
 
         self._setupMajorObjectItemActions(actionsgroup)
 
@@ -305,16 +309,17 @@ class GDALBackend(QtCore.QObject):
 
     def _setupSubDatasetItemActions(self, actionsgroup=None):
         if actionsgroup is None:
-            actionsgroup = QtGui.QActionGroup(self)
+            actionsgroup = QtWidgets.QActionGroup(self)
 
         # open
         icon = qt4support.geticon('open.svg', __name__)
-        QtGui.QAction(icon, self.tr('Open Sub Dataset'), actionsgroup,
-                      objectName='actionOpenSubDatasetItem',
-                      shortcut=self.tr('Ctrl+O'),
-                      toolTip=self.tr('Open Sub Dataset'),
-                      statusTip=self.tr('Open Sub Dataset'),
-                      triggered=self.openSubDataset)
+        QtWidgets.QAction(
+            icon, self.tr('Open Sub Dataset'), actionsgroup,
+            objectName='actionOpenSubDatasetItem',
+            shortcut=self.tr('Ctrl+O'),
+            toolTip=self.tr('Open Sub Dataset'),
+            statusTip=self.tr('Open Sub Dataset'),
+            triggered=self.openSubDataset)
 
         self._setupDatasetItemActions(actionsgroup)
 
@@ -339,7 +344,8 @@ class GDALBackend(QtCore.QObject):
         if actionsgroup is None:
             actionsgroup = self._actionsmap['BandItem']
 
-        action = actionsgroup.findChild(QtGui.QAction, 'actionOpenImageView')
+        action = actionsgroup.findChild(
+            QtWidgets.QAction, 'actionOpenImageView')
         action.setEnabled(True)
 
         if item is not None:
@@ -373,7 +379,7 @@ class GDALBackend(QtCore.QObject):
             actionsgroup = self._actionsmap['DatasetItem']
 
         # RGB
-        action = actionsgroup.findChild(QtGui.QAction,
+        action = actionsgroup.findChild(QtWidgets.QAction,
                                         'actionOpenRGBImageView')
         if gdalsupport.isRGB(item):
             # @TODO: remove this to allow multiple views on the same item
@@ -409,13 +415,14 @@ class GDALBackend(QtCore.QObject):
 
         actionsgroup = self._getDatasetItemActions(item, actionsgroup)
 
-        openaction = actionsgroup.findChild(QtGui.QAction,
-                                            'actionOpenSubDatasetItem')
-        closeaction = actionsgroup.findChild(QtGui.QAction, 'actionCloseItem')
-        propertyaction = actionsgroup.findChild(QtGui.QAction,
+        openaction = actionsgroup.findChild(
+            QtWidgets.QAction, 'actionOpenSubDatasetItem')
+        closeaction = actionsgroup.findChild(
+            QtWidgets.QAction, 'actionCloseItem')
+        propertyaction = actionsgroup.findChild(QtWidgets.QAction,
                                                 'actionShowItemProperties')
-        ovraction = actionsgroup.findChild(QtGui.QAction,
-                                           'actionBuidOverviews')
+        ovraction = actionsgroup.findChild(
+            QtWidgets.QAction, 'actionBuidOverviews')
 
         if item is not None:
             assert isinstance(item, modelitems.SubDatasetItem)
@@ -509,7 +516,7 @@ class GDALBackend(QtCore.QObject):
             self._app.logger.info(msg)
             #title = self.tr('WARNING')
             #msg = self.tr(msg)
-            #QtGui.QMessageBox.warning(self._app, title, msg)
+            #QtWidgets.QMessageBox.warning(self._app, title, msg)
             return
 
         # only open a new view if there is no other on the item selected
@@ -719,6 +726,6 @@ class GraphicsViewSubWindow(ItemSubWindow):
         self.setWindowTitle(title)
 
         scene = item.scene
-        graphicsview = QtGui.QGraphicsView(scene)
+        graphicsview = QtWidgets.QGraphicsView(scene)
         graphicsview.setMouseTracking(True)
         self.setWidget(graphicsview)

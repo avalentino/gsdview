@@ -22,25 +22,26 @@
 '''Browser component for geo-datasets metadata.'''
 
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets
 
 from gsdview import qt4support
 
 
-class MetadataViewer(QtGui.QDockWidget):
+class MetadataViewer(QtWidgets.QDockWidget):
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         #title = self.tr('Dataset Browser')
         super(MetadataViewer, self).__init__('Metadata Viewer', parent, flags,
                                              **kwargs)
         #self.setObjectName('metadataViewerPanel') # @TODO: check
 
-        self.infoTable = QtGui.QTableWidget(5, 2, self)
+        self.infoTable = QtWidgets.QTableWidget(5, 2, self)
         self.infoTable.verticalHeader().hide()
         self.infoTable.setHorizontalHeaderLabels(['Name', 'Value'])
         self.infoTable.horizontalHeader().setStretchLastSection(True)
         #self.tableWidget.horizontalHeader().hide()
         # @TODO: comment if you want allow the uset to edit items
-        self.infoTable.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.infoTable.setEditTriggers(
+            QtWidgets.QAbstractItemView.NoEditTriggers)
         self.infoTable.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
         qt4support.setViewContextActions(self.infoTable)
@@ -56,14 +57,14 @@ class MetadataViewer(QtGui.QDockWidget):
 
         for row, data in enumerate(metadatalist):
             name, value = data.split('=', 1)
-            #item = QtGui.QTableWidgetItem(name)
+            #item = QtWidgets.QTableWidgetItem(name)
             #item.setFlags(item.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.infoTable.setItem(row, 0, QtGui.QTableWidgetItem(name))
-            self.infoTable.setItem(row, 1, QtGui.QTableWidgetItem(value))
+            self.infoTable.setItem(row, 0, QtWidgets.QTableWidgetItem(name))
+            self.infoTable.setItem(row, 1, QtWidgets.QTableWidgetItem(value))
 
         # Fix table header behaviour
         header = self.infoTable.horizontalHeader()
-        header.resizeSections(QtGui.QHeaderView.ResizeToContents)
+        header.resizeSections(QtWidgets.QHeaderView.ResizeToContents)
         header.setStretchLastSection(True)
 
     def clear(self):
@@ -112,7 +113,7 @@ class MetadataController(QtCore.QObject):
         self.setItemMetadata(item)
 
     @QtCore.Slot()
-    @QtCore.Slot(QtGui.QMdiSubWindow)
+    @QtCore.Slot(QtWidgets.QMdiSubWindow)
     def onSubWindowChanged(self, subwin=None):
         if not subwin:
             subwin = self.app.mdiarea.activeSubWindow()

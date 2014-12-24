@@ -19,7 +19,7 @@
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
 
 
-'''Helper tools and custom components for binding GDAL and Qt4.'''
+'''Helper tools and custom components for binding GDAL and Qt.'''
 
 
 import logging
@@ -30,7 +30,7 @@ from numpy import ma
 from osgeo import gdal
 from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets, QtGui
 
 from gsdview import imgutils
 from gsdview.qt4support import numpy2qimage
@@ -48,7 +48,7 @@ def gdalcolorentry2qcolor(colrentry, interpretation=gdal.GPI_RGB):
         qcolor.setCmyk(colrentry.c1, colrentry.c2, colrentry.c3, colrentry.c4)
     elif interpretation == gdal.GPI_HLS:
         qcolor.setHsv(colrentry.c1, colrentry.c2, colrentry.c3)
-                                                        #, colrentry.c4)
+                    # , colrentry.c4)
     else:
         raise ValueError('invalid color intepretatin: "%s"' % interpretation)
 
@@ -70,20 +70,20 @@ def safeDataStats(data, nodata=None):
 # @TODO: move GraphicsView here
 
 
-class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
+class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
     Type = QtGui.QStandardItem.UserType + 1
 
-    def __init__(self, gdalobj, parent=None, scene=None, **kwargs):
-        super(BaseGdalGraphicsItem, self).__init__(parent, scene, **kwargs)
+    def __init__(self, gdalobj, parent=None, **kwargs):
+        super(BaseGdalGraphicsItem, self).__init__(parent, **kwargs)
 
         # @COMPATIBILITY: Qt >= 4.6.0 needs this flag to be set otherwise the
         #                 exact exposedRect is not computed
         # @SEEALSO: ItemUsesExtendedStyleOption item at
         # http://doc.qt.nokia.com/4.6/qgraphicsitem.html#GraphicsItemFlag-enum
         try:
-            self.setFlag(QtGui.QGraphicsItem.ItemUsesExtendedStyleOptions)
+            self.setFlag(QtWidgets.QGraphicsItem.ItemUsesExtendedStyleOptions)
         except AttributeError:
-            self.setFlag(QtGui.QGraphicsItem.GraphicsItemFlag(0x200))
+            self.setFlag(QtWidgets.QGraphicsItem.GraphicsItemFlag(0x200))
 
         self.gdalobj = gdalobj
         try:
@@ -143,7 +143,7 @@ class BaseGdalGraphicsItem(QtGui.QGraphicsItem):
         # http://doc.qt.nokia.com/4.6/qgraphicsitem.html#GraphicsItemFlag-enum
         #
         # From qt/src/gui/styles/qstyleoption.cpp:5130
-        if worldTransform.type() <= QtGui.QTransform.TxTranslate:
+        if worldTransform.type() <= QtWidgets.QTransform.TxTranslate:
             return 1    # Translation only? The LOD is 1.
 
         # Two unit vectors.
@@ -273,9 +273,8 @@ class UIntGdalGraphicsItem(BaseGdalGraphicsItem):
 
     Type = BaseGdalGraphicsItem.Type + 1
 
-    def __init__(self, band, parent=None, scene=None, **kwargs):
-        super(UIntGdalGraphicsItem, self).__init__(band, parent, scene,
-                                                   **kwargs)
+    def __init__(self, band, parent=None, **kwargs):
+        super(UIntGdalGraphicsItem, self).__init__(band, parent, **kwargs)
 
         # @TODO: maybe it is batter to use a custo mexception: ItemTypeError
         if band.DataType not in (gdal.GDT_Byte, gdal.GDT_UInt16):
@@ -301,7 +300,7 @@ class UIntGdalGraphicsItem(BaseGdalGraphicsItem):
         # @WARNING: option.levelOfDetail is no more usable
         #threshold = 1600*1600
         #if w * h > threshold:
-        #    newoption = QtGui.QStyleOptionGraphicsItem(option)
+        #    newoption = QtWidgets.QStyleOptionGraphicsItem(option)
         #    newoption.levelOfDetail = option.levelOfDetail*threshold/(w*h)
         #    return self.paint(painter, newoption, widget)
 
@@ -320,8 +319,8 @@ class GdalGraphicsItem(BaseGdalGraphicsItem):
 
     Type = BaseGdalGraphicsItem.Type + 2
 
-    def __init__(self, band, parent=None, scene=None, **kwargs):
-        super(GdalGraphicsItem, self).__init__(band, parent, scene, **kwargs)
+    def __init__(self, band, parent=None, **kwargs):
+        super(GdalGraphicsItem, self).__init__(band, parent, **kwargs)
 
         if gdal.DataTypeIsComplex(band.DataType):
             # @TODO: raise ItemTypeError or NotImplementedError
@@ -344,7 +343,7 @@ class GdalGraphicsItem(BaseGdalGraphicsItem):
         # @WARNING: option.levelOfDetail is no more usable
         #threshold = 1600*1600
         #if w * h > threshold:
-        #    newoption = QtGui.QStyleOptionGraphicsItem(option)
+        #    newoption = QtWidgets.QStyleOptionGraphicsItem(option)
         #    newoption.levelOfDetail = (option.levelOfDetail *
         #                                               threshold / (w * h))
         #    return self.paint(painter, newoption, widget)
@@ -364,9 +363,9 @@ class GdalComplexGraphicsItem(GdalGraphicsItem):
 
     Type = GdalGraphicsItem.Type + 1
 
-    def __init__(self, band, parent=None, scene=None, **kwargs):
+    def __init__(self, band, parent=None, **kwargs):
         # @NOTE: skip GdalGraphicsItem __init__
-        BaseGdalGraphicsItem.__init__(self, band, parent, scene, **kwargs)
+        BaseGdalGraphicsItem.__init__(self, band, parent, **kwargs)
 
     def dataRange(self, data=None):
         if data:
@@ -384,7 +383,7 @@ class GdalComplexGraphicsItem(GdalGraphicsItem):
         # @TODO: threshold check
         #threshold = 1600*1600
         #if w * h > threshold:
-        #    newoption = QtGui.QStyleOptionGraphicsItem(option)
+        #    newoption = QtWidgets.QStyleOptionGraphicsItem(option)
         #    newoption.levelOfDetail = (option.levelOfDetail *
         #                                               threshold / (w * h))
         #    return self.paint(painter, newoption, widget)
@@ -406,11 +405,10 @@ class GdalRgbGraphicsItem(BaseGdalGraphicsItem):
 
     Type = BaseGdalGraphicsItem.Type + 3
 
-    def __init__(self, dataset, parent=None, scene=None, **kwargs):
+    def __init__(self, dataset, parent=None, **kwargs):
         if not gdalsupport.isRGB(dataset):
             raise TypeError('RGB or RGBA iamge expected')
-        super(GdalRgbGraphicsItem, self).__init__(dataset, parent, scene,
-                                                  **kwargs)
+        super(GdalRgbGraphicsItem, self).__init__(dataset, parent, **kwargs)
         self.stretch = None
 
     def paint(self, painter, option, widget):
@@ -428,7 +426,7 @@ class GdalRgbGraphicsItem(BaseGdalGraphicsItem):
         painter.drawImage(rect, image)
 
 
-def graphicsItemFactory(gdalobj, parent=None, scene=None):
+def graphicsItemFactory(gdalobj, parent=None):
     '''Factory function for GDAL graphics items.
 
     Instantiates on object of the GDAL graphics item class taht best
@@ -438,13 +436,13 @@ def graphicsItemFactory(gdalobj, parent=None, scene=None):
 
     if gdalsupport.isRGB(gdalobj):
         logging.debug('new GdalRgbGraphicsItem')
-        return GdalRgbGraphicsItem(gdalobj, parent, scene)
+        return GdalRgbGraphicsItem(gdalobj, parent)
     elif gdalobj.DataType in (gdal.GDT_Byte, gdal.GDT_UInt16):
         logging.debug('new GdalUIntGraphicsItem')
-        return UIntGdalGraphicsItem(gdalobj, parent, scene)
+        return UIntGdalGraphicsItem(gdalobj, parent)
     elif gdal.DataTypeIsComplex(gdalobj.DataType):
         logging.debug('new GdalComplexGraphicsItem')
-        return GdalComplexGraphicsItem(gdalobj, parent, scene)
+        return GdalComplexGraphicsItem(gdalobj, parent)
     else:
         logging.debug('new GdalGraphicsItem')
-        return GdalGraphicsItem(gdalobj, parent, scene)
+        return GdalGraphicsItem(gdalobj, parent)

@@ -22,7 +22,7 @@
 '''Core modue for image stretch control.'''
 
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets
 
 from gsdview import qt4support
 
@@ -39,7 +39,7 @@ class StretchTool(QtCore.QObject):
 
         # This should not be necessary since tha main window (app) is set
         # as parent of the StretchDialog
-        QtGui.qApp.lastWindowClosed.connect(self.dialog.close)
+        QtWidgets.qApp.lastWindowClosed.connect(self.dialog.close)
 
         self.action = self._setupAction()
         self.action.setEnabled(False)
@@ -50,17 +50,18 @@ class StretchTool(QtCore.QObject):
         #~ self.app.subWindowClosed(self.onModelChanged)
         self.dialog.valueChanged.connect(self.onStretchChanged)
 
-        self.toolbar = QtGui.QToolBar(self.tr('Stretching Toolbar'))
+        self.toolbar = QtWidgets.QToolBar(self.tr('Stretching Toolbar'))
         self.toolbar.setObjectName('stretchingToolbar')
         self.toolbar.addAction(self.action)
 
     def _setupAction(self):
         icon = qt4support.geticon('stretching.svg', __name__)
-        action = QtGui.QAction(icon, self.tr('Stretch'), self,
-                               objectName='stretchAction',
-                               statusTip=self.tr('Stretch'),
-                               checkable=True,
-                               triggered=self.onButtonToggled)
+        action = QtWidgets.QAction(
+            icon, self.tr('Stretch'), self,
+            objectName='stretchAction',
+            statusTip=self.tr('Stretch'),
+            checkable=True,
+            triggered=self.onButtonToggled)
 
         return action
 
@@ -113,7 +114,7 @@ class StretchTool(QtCore.QObject):
             return None
 
     @QtCore.Slot()
-    @QtCore.Slot(QtGui.QMdiSubWindow)
+    @QtCore.Slot(QtWidgets.QMdiSubWindow)
     def onSubWindowChanged(self, subwin=None):
         if subwin is None:
             subwin = self.app.mdiarea.activeSubWindow()

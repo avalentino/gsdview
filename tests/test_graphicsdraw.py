@@ -30,7 +30,7 @@ GSDVIEWROOT = os.path.abspath(
 sys.path.insert(0, GSDVIEWROOT)
 
 
-from qt import QtCore, QtGui, QtSvg
+from qt import QtCore, QtWidgets, QtGui, QtSvg
 
 from gsdview import qt4support
 from gsdview import qt4draw
@@ -38,13 +38,13 @@ from gsdview.mousemanager import MouseManager, RubberBandMode
 
 
 # Main application ##########################################################
-class GraphicsDrawApp(QtGui.QMainWindow):
+class GraphicsDrawApp(QtWidgets.QMainWindow):
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0)):
-        QtGui.QMainWindow.__init__(self, parent, flags)
+        QtWidgets.QMainWindow.__init__(self, parent, flags)
         self.statusBar().show()
 
-        self.scene = QtGui.QGraphicsScene(self)
-        self.graphicsview = QtGui.QGraphicsView(self.scene, self)
+        self.scene = QtWidgets.QGraphicsScene(self)
+        self.graphicsview = QtWidgets.QGraphicsView(self.scene, self)
         #~ self.graphicsview.setMouseTracking(True)    # @TODO: check
         self.setCentralWidget(self.graphicsview)
 
@@ -61,43 +61,43 @@ class GraphicsDrawApp(QtGui.QMainWindow):
         # File Actions
         self.fileactions = self._setupFileActions()
 
-        menu = QtGui.QMenu('&File', self)
+        menu = QtWidgets.QMenu('&File', self)
         menu.addActions(self.fileactions.actions())
         self.menuBar().addMenu(menu)
         self._filemenu = menu
 
-        toolbar = QtGui.QToolBar('File toolbar', self)
+        toolbar = QtWidgets.QToolBar('File toolbar', self)
         toolbar.addActions(self.fileactions.actions())
         self.addToolBar(toolbar)
 
         # Mouse Actions
-        menu = QtGui.QMenu('Mouse', self)
+        menu = QtWidgets.QMenu('Mouse', self)
         menu.addActions(self.mousemanager.actions.actions())
         self.menuBar().addMenu(menu)
 
-        toolbar = QtGui.QToolBar('Mouse toolbar')
+        toolbar = QtWidgets.QToolBar('Mouse toolbar')
         toolbar.addActions(self.mousemanager.actions.actions())
         self.addToolBar(toolbar)
 
         # View Actions
         self.viewactions = self._setupViewActions()
 
-        menu = QtGui.QMenu('&View', self)
+        menu = QtWidgets.QMenu('&View', self)
         menu.addActions(self.viewactions.actions())
         self.menuBar().addMenu(menu)
 
-        toolbar = QtGui.QToolBar('View toolbar')
+        toolbar = QtWidgets.QToolBar('View toolbar')
         toolbar.addActions(self.viewactions.actions())
         self.addToolBar(toolbar)
 
         # Help action
         self.helpactions = self._setupHelpActions()
 
-        menu = QtGui.QMenu('&Help', self)
+        menu = QtWidgets.QMenu('&Help', self)
         menu.addActions(self.helpactions.actions())
         self.menuBar().addMenu(menu)
 
-        toolbar = QtGui.QToolBar('Help toolbar', self)
+        toolbar = QtWidgets.QToolBar('Help toolbar', self)
         toolbar.addActions(self.helpactions.actions())
         self.addToolBar(toolbar)
 
@@ -107,47 +107,51 @@ class GraphicsDrawApp(QtGui.QMainWindow):
     def _setupFileActions(self):
         style = self.style()
 
-        actions = QtGui.QActionGroup(self)
+        actions = QtWidgets.QActionGroup(self)
 
-        icon = style.standardIcon(QtGui.QStyle.SP_DialogOpenButton)
-        QtGui.QAction(icon, self.tr('&Open'), actions,
-                      objectName='openAction',
-                      shortcut=self.tr('Ctrl+O'),
-                      statusTip=self.tr('Open'),
-                      triggered=self.onOpen)
+        icon = style.standardIcon(QtWidgets.QStyle.SP_DialogOpenButton)
+        QtWidgets.QAction(
+            icon, self.tr('&Open'), actions,
+            objectName='openAction',
+            shortcut=self.tr('Ctrl+O'),
+            statusTip=self.tr('Open'),
+            triggered=self.onOpen)
 
-        icon = style.standardIcon(QtGui.QStyle.SP_DialogSaveButton)
-        QtGui.QAction(icon, self.tr('&Save As'), actions,
-                      objectName='saveAsAction',
-                      shortcut=self.tr('Ctrl+S'),
-                      statusTip=self.tr('Save as'),
-                      triggered=self.onSave)
+        icon = style.standardIcon(QtWidgets.QStyle.SP_DialogSaveButton)
+        QtWidgets.QAction(
+            icon, self.tr('&Save As'), actions,
+            objectName='saveAsAction',
+            shortcut=self.tr('Ctrl+S'),
+            statusTip=self.tr('Save as'),
+            triggered=self.onSave)
 
         icon = QtGui.QIcon(
             ':/trolltech/dialogs/qprintpreviewdialog/images/print-32.png')
-        QtGui.QAction(icon, self.tr('&Print'), actions,
-                      objectName='printAction',
-                      shortcut=self.tr('Ctrl+P'),
-                      statusTip=self.tr('Print'),
-                      triggered=self.onPrint)
+        QtWidgets.QAction(
+            icon, self.tr('&Print'), actions,
+            objectName='printAction',
+            shortcut=self.tr('Ctrl+P'),
+            statusTip=self.tr('Print'),
+            triggered=self.onPrint)
 
-        QtGui.QAction(actions).setSeparator(True)
+        QtWidgets.QAction(actions).setSeparator(True)
 
-        icon = style.standardIcon(QtGui.QStyle.SP_DialogCancelButton)
-        QtGui.QAction(icon, self.tr('&Quit'), actions,
-                      objectName='exitAction',
-                      shortcut=self.tr('Ctrl+Q'),
-                      statusTip=self.tr('Quit'),
-                      triggered=self.close)
+        icon = style.standardIcon(QtWidgets.QStyle.SP_DialogCancelButton)
+        QtWidgets.QAction(
+            icon, self.tr('&Quit'), actions,
+            objectName='exitAction',
+            shortcut=self.tr('Ctrl+Q'),
+            statusTip=self.tr('Quit'),
+            triggered=self.close)
 
         return actions
 
     def _setupViewActions(self):
         style = self.style()
-        actions = QtGui.QActionGroup(self)
+        actions = QtWidgets.QActionGroup(self)
 
-        icon = style.standardIcon(QtGui.QStyle.SP_DialogResetButton)
-        QtGui.QAction(
+        icon = style.standardIcon(QtWidgets.QStyle.SP_DialogResetButton)
+        QtWidgets.QAction(
             icon,
             self.tr('Reset'),
             actions,
@@ -155,11 +159,11 @@ class GraphicsDrawApp(QtGui.QMainWindow):
             statusTip=self.tr('Reset'),
             triggered=self.onReset)
 
-        QtGui.QAction(actions).setSeparator(True)
+        QtWidgets.QAction(actions).setSeparator(True)
 
         icon = QtGui.QIcon(
             ':/trolltech/dialogs/qprintpreviewdialog/images/zoom-in-32.png')
-        QtGui.QAction(
+        QtWidgets.QAction(
             icon,
             self.tr('Zoom In'),
             actions,
@@ -170,7 +174,7 @@ class GraphicsDrawApp(QtGui.QMainWindow):
 
         icon = QtGui.QIcon(
             ':/trolltech/dialogs/qprintpreviewdialog/images/zoom-out-32.png')
-        QtGui.QAction(
+        QtWidgets.QAction(
             icon,
             self.tr('Zoom Out'),
             actions,
@@ -181,18 +185,18 @@ class GraphicsDrawApp(QtGui.QMainWindow):
 
         icon = QtGui.QIcon(
             ':/trolltech/dialogs/qprintpreviewdialog/images/page-setup-24.png')
-        QtGui.QAction(
+        QtWidgets.QAction(
             icon,
             self.tr('Zoom 1:1'),
             actions,
             objectName='zoomResetAction',
             statusTip=self.tr('Zoom 1:1'),
             triggered=lambda: self.graphicsview.setMatrix(
-                QtGui.QMatrix(1, 0, 0, -1, 0, 0)))
+                QtWidgets.QMatrix(1, 0, 0, -1, 0, 0)))
 
         icon = QtGui.QIcon(
             ':/trolltech/dialogs/qprintpreviewdialog/images/fit-page-32.png')
-        QtGui.QAction(
+        QtWidgets.QAction(
             icon,
             self.tr('Zoom Fit'),
             actions,
@@ -206,20 +210,22 @@ class GraphicsDrawApp(QtGui.QMainWindow):
         return actions
 
     def _setupHelpActions(self):
-        actions = QtGui.QActionGroup(self)
+        actions = QtWidgets.QActionGroup(self)
 
         icon = QtGui.QIcon(
             ':/trolltech/styles/commonstyle/images/fileinfo-32.png')
-        QtGui.QAction(icon, self.tr('About'), actions,
-                      objectName='aboutAction',
-                      statusTip=self.tr('About'),
-                      triggered=self.about)
+        QtWidgets.QAction(
+            icon, self.tr('About'), actions,
+            objectName='aboutAction',
+            statusTip=self.tr('About'),
+            triggered=self.about)
 
         icon = QtGui.QIcon(':/trolltech/qmessagebox/images/qtlogo-64.png')
-        QtGui.QAction(icon, self.tr('About Qt'), actions,
-                      objectName='aboutQtAction',
-                      statusTip=self.tr('About Qt'),
-                      triggered=QtGui.QApplication.aboutQt)
+        QtWidgets.QAction(
+            icon, self.tr('About Qt'), actions,
+            objectName='aboutQtAction',
+            statusTip=self.tr('About Qt'),
+            triggered=QtWidgets.QApplication.aboutQt)
 
         return actions
 
@@ -232,21 +238,21 @@ class GraphicsDrawApp(QtGui.QMainWindow):
                 '<a href="mailto:antonio.valentino@tiscali.it">'
                 'Antonio Valentino<a>.</p>']
         text = self.tr('\n'.join(text))
-        QtGui.QMessageBox.about(self, title, text)
+        QtWidgets.QMessageBox.about(self, title, text)
 
     @QtCore.Slot()
     def reset(self):
         self.scene.clear()
         self.scene.setSceneRect(0, 0, 800, 600)
-        self.graphicsview.setTransform(QtGui.QTransform())
+        self.graphicsview.setTransform(QtWidgets.QTransform())
 
     @QtCore.Slot()
     def onReset(self):
-        ret = QtGui.QMessageBox.question(
+        ret = QtWidgets.QMessageBox.question(
             self, self.tr('Reset'),
             self.tr('Are you sure you want to reset the document?\n'
                     'All changes will be lost.'))
-        if ret == QtGui.QMessageBox.Ok:
+        if ret == QtWidgets.QMessageBox.Ok:
             self.reset()
 
     @QtCore.Slot()
@@ -257,7 +263,7 @@ class GraphicsDrawApp(QtGui.QMainWindow):
         filters.extend('%s file (*.%s)' % (str(f).upper(), str(f))
                        for f in QtGui.QImageReader.supportedImageFormats())
 
-        filename, filter_ = QtGui.QFileDialog.getOpenFileNameAndFilter(
+        filename, filter_ = QtWidgets.QFileDialog.getOpenFileName(
             self, self.tr('Load picture'), QtCore.QDir.home().absolutePath(),
             ';;'.join(filters))  # , filters[1])
         if filename:
@@ -265,10 +271,10 @@ class GraphicsDrawApp(QtGui.QMainWindow):
                 item = QtSvg.QGraphicsSvgItem(filename)
             else:
                 image = QtGui.QImage(filename)
-                item = QtGui.QGraphicsPixmapItem(image)
+                item = QtWidgets.QGraphicsPixmapItem(image)
 
-            item.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
-            item.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
+            item.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True)
+            item.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, True)
 
             self.scene.addItem(item)
 
@@ -292,7 +298,7 @@ def main(*argv):
     else:
         argv = list(argv)
 
-    app = QtGui.QApplication(argv)
+    app = QtWidgets.QApplication(argv)
     app.setApplicationName('GraphicsDrawApp')
     w = GraphicsDrawApp()
     w.show()

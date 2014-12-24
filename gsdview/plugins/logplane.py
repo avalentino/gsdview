@@ -49,21 +49,21 @@ website_label = website
 def init(app):
     import logging
 
-    from qt import QtCore, QtGui
+    from qt import QtCore, QtWidgets
 
-    from exectools.qt4 import Qt4OutputPlane, Qt4LoggingHandler
+    from exectools.qt import QtOutputPane, QtLoggingHandler
 
-    panel = QtGui.QDockWidget('Output Log', app, objectName='outputPanel')
+    panel = QtWidgets.QDockWidget('Output Log', app, objectName='outputPanel')
     # @TODO: try to add actions to a QTextEdit widget instead of using a
     #        custom widget
-    logplane = Qt4OutputPlane()
+    logplane = QtOutputPane()
     panel.setWidget(logplane)
 
     app.addDockWidget(QtCore.Qt.BottomDockWidgetArea, panel)
 
     # setupLogger
     formatter = logging.Formatter('%(levelname)s: %(message)s')
-    handler = Qt4LoggingHandler(logplane)
+    handler = QtLoggingHandler(logplane)
     handler.setFormatter(formatter)
     app.logger.addHandler(handler)
 
@@ -74,7 +74,7 @@ def init(app):
 def close(app):
     saveSettings(app.settings)
     #app.logger.remove(_global_aux.pop('handler'))
-    #panel = app.findChild(QtGui.QDockWidget, 'outputPanel')
+    #panel = app.findChild(QtWidgets.QDockWidget, 'outputPanel')
     #app.removeDockWidget(panel)
 
 

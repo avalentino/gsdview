@@ -22,7 +22,7 @@
 '''Drawing components for Qt4.'''
 
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets, QtGui
 
 from gsdview.mousemanager import MouseMode  # , RubberBandMode
 
@@ -64,21 +64,22 @@ def _highlightSelectedGraphicsItem(item, painter, option, boundingrect=None):
 
     fgcolor = option.palette.windowText().color()
     # ensure good contrast against fgcolor
-    bgcolor = QtGui.QColor(0 if fgcolor.red() > 127 else 255,
-                           0 if fgcolor.green() > 127 else 255,
-                           0 if fgcolor.blue() > 127 else 255)
+    bgcolor = QtGui.QColor(
+        0 if fgcolor.red() > 127 else 255,
+        0 if fgcolor.green() > 127 else 255,
+        0 if fgcolor.blue() > 127 else 255)
 
-    painter.setPen(QtGui.QPen(bgcolor, penWidth, QtCore.Qt.SolidLine))
+    painter.setPen(QtWidgets.QPen(bgcolor, penWidth, QtCore.Qt.SolidLine))
     painter.setBrush(QtCore.Qt.NoBrush)
     painter.drawRect(boundingrect.adjusted(pad, pad, -pad, -pad))
 
-    painter.setPen(QtGui.QPen(option.palette.windowText(), 0,
-                              QtCore.Qt.DashLine))
+    painter.setPen(
+        QtWidgets.QPen(option.palette.windowText(), 0, QtCore.Qt.DashLine))
     painter.setBrush(QtCore.Qt.NoBrush)
     painter.drawRect(boundingrect.adjusted(pad, pad, -pad, -pad))
 
 
-class GraphicsPointItem(QtGui.QAbstractGraphicsShapeItem):
+class GraphicsPointItem(QtWidgets.QAbstractGraphicsShapeItem):
     '''Qt graphics item for point merkers.
 
     Draw a symbol that scales its size according to the zoom level in
@@ -93,7 +94,7 @@ class GraphicsPointItem(QtGui.QAbstractGraphicsShapeItem):
 
     '''
 
-    Type = QtGui.QGraphicsItem.UserType + 100
+    Type = QtWidgets.QGraphicsItem.UserType + 100
 
     def __init__(self, x=None, y=None, radius=None, parent=None, scene=None,
                  **kargs):
@@ -104,7 +105,7 @@ class GraphicsPointItem(QtGui.QAbstractGraphicsShapeItem):
         # @SEEALSO: ItemUsesExtendedStyleOption item at
         # http://doc.qt.nokia.com/4.6/qgraphicsitem.html#GraphicsItemFlag-enum
         try:
-            self.setFlag(QtGui.QGraphicsItem.ItemUsesExtendedStyleOptions)
+            self.setFlag(QtWidgets.QGraphicsItem.ItemUsesExtendedStyleOptions)
         except AttributeError:
             ItemUsesExtendedStyleOptions = 0x200
             self.setFlag(ItemUsesExtendedStyleOptions)
@@ -158,7 +159,7 @@ class GraphicsPointItem(QtGui.QAbstractGraphicsShapeItem):
                      self._radius * self._maxfact)
         painter.drawEllipse(QtCore.QPointF(0, 0), radius, radius)
 
-        if option.state & QtGui.QStyle.State_Selected:
+        if option.state & QtWidgets.QStyle.State_Selected:
             penwidth = self.pen().widthF()
             diameter = 2. * radius
             rect = QtCore.QRectF(-radius - penwidth / 2,
@@ -168,16 +169,16 @@ class GraphicsPointItem(QtGui.QAbstractGraphicsShapeItem):
             _highlightSelectedGraphicsItem(self, painter, option, rect)
 
 
-class GraphicsItemGroup(QtGui.QGraphicsItemGroup):
+class GraphicsItemGroup(QtWidgets.QGraphicsItemGroup):
     '''Qt graphics item group with common style.'''
 
-    Type = QtGui.QGraphicsItem.UserType + 101
+    Type = QtWidgets.QGraphicsItem.UserType + 101
 
     def __init__(self, parent=None, scene=None, **kargs):
         super(GraphicsItemGroup, self).__init__(parent, scene, **kargs)
 
-        self._pen = QtGui.QPen()
-        self._brush = QtGui.QBrush()
+        self._pen = QtWidgets.QPen()
+        self._brush = QtWidgets.QBrush()
 
     def addToGroup(self, item):
         super(GraphicsItemGroup, self).addToGroup(item)
@@ -192,7 +193,7 @@ class GraphicsItemGroup(QtGui.QGraphicsItemGroup):
         return self._pen
 
     def setPen(self, pen):
-        if not isinstance(pen, QtGui.QPen):
+        if not isinstance(pen, QtWidgets.QPen):
             raise TypeError('invalid pen object: %s' % pen)
         self._pen = pen
 
@@ -206,7 +207,7 @@ class GraphicsItemGroup(QtGui.QGraphicsItemGroup):
         return self._brush
 
     def setBrush(self, brush):
-        if not isinstance(brush, QtGui.QBrush):
+        if not isinstance(brush, QtWidgets.QBrush):
             raise TypeError('invalid brush object: %s' % brush)
         self._brush = brush
 
@@ -219,7 +220,7 @@ class GraphicsItemGroup(QtGui.QGraphicsItemGroup):
 
 # Drawing tools #############################################################
 class DrawPointMode(MouseMode):
-    dragmode = QtGui.QGraphicsView.NoDrag
+    dragmode = QtWidgets.QGraphicsView.NoDrag
     cursor = QtCore.Qt.CrossCursor
     icon = ':/trolltech/styles/commonstyle/images/standardbutton-yes-128.png'
     label = 'Draw Point'
@@ -232,10 +233,10 @@ class DrawPointMode(MouseMode):
 
         elif (event.type() == QtCore.QEvent.GraphicsSceneMouseRelease and
                 event.button() == QtCore.Qt.LeftButton):
-            pen = QtGui.QPen()
+            pen = QtWidgets.QPen()
             pen.setColor(QtCore.Qt.red)
 
-            brush = QtGui.QBrush()
+            brush = QtWidgets.QBrush()
             brush.setColor(QtCore.Qt.red)
             brush.setStyle(QtCore.Qt.SolidPattern)
 
@@ -244,8 +245,8 @@ class DrawPointMode(MouseMode):
             item = GraphicsPointItem(point.x(), point.y(), RADIUS)
             item.setPen(pen)
             item.setBrush(brush)
-            item.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
-            item.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
+            item.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True)
+            item.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, True)
             obj.addItem(item)
             return True
 
@@ -253,7 +254,7 @@ class DrawPointMode(MouseMode):
 
 
 class DrawLineMode(MouseMode):
-    dragmode = QtGui.QGraphicsView.NoDrag
+    dragmode = QtWidgets.QGraphicsView.NoDrag
     cursor = QtCore.Qt.CrossCursor
     icon = ':/trolltech/dialogs/qprintpreviewdialog/images/fit-width-24.png'
     label = 'Draw Line'
@@ -262,7 +263,7 @@ class DrawLineMode(MouseMode):
     def __init__(self, parent=None):
         super(DrawLineMode, self).__init__(parent)
         self.rubberband = None
-        self.pen = QtGui.QPen()
+        self.pen = QtWidgets.QPen()
         self.pen.setWidth(1)
         self.pen.setColor(QtCore.Qt.red)
 
@@ -270,7 +271,7 @@ class DrawLineMode(MouseMode):
         if (event.type() == QtCore.QEvent.GraphicsSceneMousePress and
                 event.button() == QtCore.Qt.LeftButton):
             assert(self.rubberband is None)
-            self.rubberband = QtGui.QRubberBand(QtGui.QRubberBand.Line)
+            self.rubberband = QtWidgets.QRubberBand(QtWidgets.QRubberBand.Line)
             self.rubberband.setGeometry(
                 QtCore.QRect(event.screenPos(), QtCore.QSize()))
             self.rubberband.show()
@@ -285,8 +286,8 @@ class DrawLineMode(MouseMode):
                 event.buttonDownScenePos(QtCore.Qt.LeftButton),
                 event.scenePos())
             item = obj.addLine(line, self.pen)
-            item.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
-            item.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
+            item.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True)
+            item.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, True)
             return True
 
         elif (event.type() == QtCore.QEvent.GraphicsSceneMouseMove and
@@ -302,7 +303,7 @@ class DrawLineMode(MouseMode):
 
 
 #~ class DrawPolygonMode(MouseMode):
-    #~ dragmode = QtGui.QGraphicsView.NoDrag
+    #~ dragmode = QtWidgets.QGraphicsView.NoDrag
     #~ cursor = QtCore.Qt.CrossCursor
     #~ icon = ':/trolltech/dialogs/qprintpreviewdialog/images/fit-width-24.png'
     #~ label = 'Draw Line'
@@ -311,10 +312,10 @@ class DrawLineMode(MouseMode):
     #~ def __init__(self, parent=None):
         #~ super(DrawPolygonMode, self).__init__(parent)
         #~ self.rubberband = None
-        #~ self.pen = QtGui.QPen()
+        #~ self.pen = QtWidgets.QPen()
         #~ self.pen.setWidth(1)
         #~ self.pen.setColor(QtCore.Qt.red)
-        #~ self.brush = QtGui.QBrush()
+        #~ self.brush = QtWidgets.QBrush()
         #~ #self.brush.setStyle(QtCore.Qt.SolidPattern)
         #~ #self.brush.setColor(QtCore.Qt.red)
 
@@ -322,7 +323,7 @@ class DrawLineMode(MouseMode):
         #~ if (event.type() == QtCore.QEvent.GraphicsSceneMousePress and
                                     #~ event.button() == QtCore.Qt.LeftButton):
             #~ assert(self.rubberband is None)
-            #~ self.rubberband = QtGui.QRubberBand(QtGui.QRubberBand.Line)
+            #~ self.rubberband = QtWidgets.QRubberBand(QtWidgets.QRubberBand.Line)
             #~ self.rubberband.setGeometry(QtCore.QRect(event.screenPos(),
                                                      #~ QtCore.QSize()))
             #~ self.rubberband.show()
@@ -337,8 +338,8 @@ class DrawLineMode(MouseMode):
                             #~ event.buttonDownScenePos(QtCore.Qt.LeftButton),
                             #~ event.scenePos())
             #~ item = obj.addLine(line, self.pen)
-            #~ item.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
-            #~ item.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
+            #~ item.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True)
+            #~ item.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, True)
             #~ return True
 
         #~ elif (event.type() == QtCore.QEvent.GraphicsSceneMouseMove and
@@ -354,7 +355,7 @@ class DrawLineMode(MouseMode):
 
 
 class DrawRectMode(MouseMode):
-    dragmode = QtGui.QGraphicsView.NoDrag
+    dragmode = QtWidgets.QGraphicsView.NoDrag
     cursor = QtCore.Qt.CrossCursor
     icon = ':/trolltech/styles/commonstyle/images/media-stop-32.png'
     label = 'Draw Rect'
@@ -363,10 +364,10 @@ class DrawRectMode(MouseMode):
     def __init__(self, parent=None):
         super(DrawRectMode, self).__init__(parent)
         self.rubberband = None
-        self.pen = QtGui.QPen()
+        self.pen = QtWidgets.QPen()
         self.pen.setWidth(1)
         self.pen.setColor(QtCore.Qt.red)
-        self.brush = QtGui.QBrush()
+        self.brush = QtWidgets.QBrush()
         #self.brush.setStyle(QtCore.Qt.SolidPattern)
         #self.brush.setColor(QtCore.Qt.red)
 
@@ -374,9 +375,10 @@ class DrawRectMode(MouseMode):
         if (event.type() == QtCore.QEvent.GraphicsSceneMousePress and
                 event.button() == QtCore.Qt.LeftButton):
             assert(self.rubberband is None)
-            self.rubberband = QtGui.QRubberBand(QtGui.QRubberBand.Rectangle)
-            self.rubberband.setGeometry(QtCore.QRect(event.screenPos(),
-                                                     QtCore.QSize()))
+            self.rubberband = QtWidgets.QRubberBand(
+                QtWidgets.QRubberBand.Rectangle)
+            self.rubberband.setGeometry(
+                QtCore.QRect(event.screenPos(), QtCore.QSize()))
             self.rubberband.show()
             return True
 
@@ -389,8 +391,8 @@ class DrawRectMode(MouseMode):
                 event.buttonDownScenePos(QtCore.Qt.LeftButton),
                 event.scenePos()).normalized()
             item = obj.addRect(rect, self.pen, self.brush)
-            item.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
-            item.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
+            item.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True)
+            item.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, True)
             return True
 
         elif (event.type() == QtCore.QEvent.GraphicsSceneMouseMove and
@@ -406,7 +408,7 @@ class DrawRectMode(MouseMode):
 
 
 class DrawEllipseMode(MouseMode):
-    dragmode = QtGui.QGraphicsView.NoDrag
+    dragmode = QtWidgets.QGraphicsView.NoDrag
     cursor = QtCore.Qt.CrossCursor
     icon = ':/trolltech/styles/commonstyle/images/standardbutton-no-128.png'
     label = 'Draw Ellipse'
@@ -415,10 +417,10 @@ class DrawEllipseMode(MouseMode):
     def __init__(self, parent=None):
         super(DrawEllipseMode, self).__init__(parent)
         self.rubberband = None
-        self.pen = QtGui.QPen()
+        self.pen = QtWidgets.QPen()
         self.pen.setWidth(1)
         self.pen.setColor(QtCore.Qt.red)
-        self.brush = QtGui.QBrush()
+        self.brush = QtWidgets.QBrush()
         #self.brush.setStyle(QtCore.Qt.SolidPattern)
         #self.brush.setColor(QtCore.Qt.red)
 
@@ -426,7 +428,7 @@ class DrawEllipseMode(MouseMode):
         if (event.type() == QtCore.QEvent.GraphicsSceneMousePress and
                 event.button() == QtCore.Qt.LeftButton):
             assert(self.rubberband is None)
-            self.rubberband = QtGui.QRubberBand(QtGui.QRubberBand.Rectangle)
+            self.rubberband = QtWidgets.QRubberBand(QtWidgets.QRubberBand.Rectangle)
             self.rubberband.setGeometry(
                 QtCore.QRect(event.screenPos(), QtCore.QSize()))
             self.rubberband.show()
@@ -441,8 +443,8 @@ class DrawEllipseMode(MouseMode):
                 event.buttonDownScenePos(QtCore.Qt.LeftButton),
                 event.scenePos()).normalized()
             item = obj.addEllipse(rect, self.pen, self.brush)
-            item.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
-            item.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
+            item.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True)
+            item.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, True)
             return True
 
         elif (event.type() == QtCore.QEvent.GraphicsSceneMouseMove and

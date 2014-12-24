@@ -27,7 +27,7 @@ import sys
 import logging
 import tempfile
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets
 
 from gsdview import utils
 from gsdview import qt4support
@@ -56,28 +56,31 @@ class GSDToolsController(QtCore.QObject):
         pass
 
     def _setupActions(self):
-        actions = QtGui.QActionGroup(self)
+        actions = QtWidgets.QActionGroup(self)
 
         # KML export
         icon = qt4support.geticon('area.svg', 'gsdview')
-        QtGui.QAction(icon, self.tr('KML export'), actions,
-                      objectName='kmlExportAction',
-                      statusTip=self.tr('KML export'),
-                      triggered=self.exportKML)
+        QtWidgets.QAction(
+            icon, self.tr('KML export'), actions,
+            objectName='kmlExportAction',
+            statusTip=self.tr('KML export'),
+            triggered=self.exportKML)
 
         # Open in google earth
         icon = qt4support.geticon('earth.svg', __name__)
-        QtGui.QAction(icon, self.tr('Open in Google Earth'), actions,
-                      objectName='openInGoogleEarthAction',
-                      statusTip=self.tr('Open in Google Earth'),
-                      triggered=self.openInGoogleEarth)
+        QtWidgets.QAction(
+            icon, self.tr('Open in Google Earth'), actions,
+            objectName='openInGoogleEarthAction',
+            statusTip=self.tr('Open in Google Earth'),
+            triggered=self.openInGoogleEarth)
 
         # Open in google maps
         icon = qt4support.geticon('overview.svg', 'gsdview.gdalbackend')
-        QtGui.QAction(icon, self.tr('Open in Google Maps'), actions,
-                      objectName='openInGoogleMapsAction',
-                      statusTip=self.tr('Open in Google Maps'),
-                      triggered=self.openInGoogleMaps)
+        QtWidgets.QAction(
+            icon, self.tr('Open in Google Maps'), actions,
+            objectName='openInGoogleMapsAction',
+            statusTip=self.tr('Open in Google Maps'),
+            triggered=self.openInGoogleMaps)
 
         return actions
 
@@ -94,7 +97,7 @@ class GSDToolsController(QtCore.QObject):
                         if googleearth:
                             break
 
-            action = self.actions.findChild(QtGui.QAction,
+            action = self.actions.findChild(QtWidgets.QAction,
                                             'openInGoogleEarthAction')
             if googleearth:
                 self.googleearth = googleearth
@@ -130,8 +133,9 @@ class GSDToolsController(QtCore.QObject):
 
         if item is None:
             logging.info('no item to export.')
-            QtGui.QMessageBox.information(self.app, self.tr('Information'),
-                                          self.tr('No item to export.'))
+            QtWidgets.QMessageBox.information(
+                self.app, self.tr('Information'),
+                self.tr('No item to export.'))
             return
 
         src = item.filename
@@ -143,7 +147,7 @@ class GSDToolsController(QtCore.QObject):
         target = os.path.splitext(target)[0] + '.kml'
         target = os.path.join(utils.default_workdir(), target)
 
-        dst, filter_ = QtGui.QFileDialog.getSaveFileNameAndFilter(
+        dst, filter_ = QtWidgets.QFileDialog.getSaveFileName(
             self.app, self.tr('Save KML'), target, ';;'.join(filters))
 
         dst = str(dst)
@@ -153,7 +157,7 @@ class GSDToolsController(QtCore.QObject):
                 ras2vec.export_raster(src, dst, boxlayer='box',
                                       gcplayer='GCPs', mark_corners=True)
             except (OSError, RuntimeError):
-                # @TODO: QtGui.QMessageBox.error(...)
+                # @TODO: QtWidgets.QMessageBox.error(...)
                 logging.error('unable to export "%s" to "%s".' % (src, dst))
 
     @QtCore.Slot()
@@ -162,8 +166,9 @@ class GSDToolsController(QtCore.QObject):
 
         if item is None:
             logging.info('no item selected.')
-            QtGui.QMessageBox.information(self.app, self.tr('Information'),
-                                          self.tr('No item selected.'))
+            QtWidgets.QMessageBox.information(
+                self.app, self.tr('Information'),
+                self.tr('No item selected.'))
             return
 
         src = item.filename
@@ -175,7 +180,7 @@ class GSDToolsController(QtCore.QObject):
             ras2vec.export_raster(src, dst, boxlayer='box', gcplayer='GCPs',
                                   mark_corners=True)
         except (OSError, RuntimeError):
-            # @TODO: QtGui.QMessageBox.error(...)
+            # @TODO: QtWidgets.QMessageBox.error(...)
             logging.error('unable to export "%s" to "%s".' % (src, dst))
 
         #success = QtCore.QProcess.startDetached(self.googleearth, [dst])
@@ -186,7 +191,7 @@ class GSDToolsController(QtCore.QObject):
         if not success:
             logging.warning('unable to open "%s" in GoogleEarth.' % dst)
             # @TODO: check
-            QtGui.QMessageBox.warning(
+            QtWidgets.QMessageBox.warning(
                 self.app, self.tr('Warning'),
                 self.tr('Unable to open "%s" in GoogleEarth.') % dst)
 
@@ -201,8 +206,9 @@ class GSDToolsController(QtCore.QObject):
         item = self._currentDatasetItem()
         if item is None:
             logging.info('no item selected.')
-            QtGui.QMessageBox.information(self.app, self.tr('Information'),
-                                          self.tr('No item selected.'))
+            QtWidgets.QMessageBox.information(
+                self.app, self.tr('Information'),
+                self.tr('No item selected.'))
             return
 
         try:
@@ -220,16 +226,16 @@ class GSDToolsController(QtCore.QObject):
         url.addQueryItem('t', 'h')                      # map type (hybrid)
         url.addQueryItem('z', '9')                      # zoom level (1, 20)
 
-        success = QtGui.QDesktopServices.openUrl(url)
+        success = QtWidgets.QDesktopServices.openUrl(url)
         if not success:
             logging.warning('unable to open URL: "%s"' % str(url))
             # @TODO: check
-            QtGui.QMessageBox.warning(
+            QtWidgets.QMessageBox.warning(
                 self.app, self.tr('Warning'),
                 self.tr('Unable to open URL: "%s"') % str(url))
 
     @QtCore.Slot()
-    @QtCore.Slot(QtGui.QMdiSubWindow)
+    @QtCore.Slot(QtWidgets.QMdiSubWindow)
     def onSubWindowChanged(self, subwin=None):
         item = self._currentDatasetItem()
         enabled = bool(item is not None and hasattr(item, 'cmapper'))

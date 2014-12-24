@@ -22,27 +22,27 @@
 '''Position tool.'''
 
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets
 
 
-class CoordinateView(QtGui.QWidget):
+class CoordinateView(QtWidgets.QWidget):
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(CoordinateView, self).__init__(parent, flags, **kwargs)
 
-        layout = QtGui.QHBoxLayout()
+        layout = QtWidgets.QHBoxLayout()
 
-        self.xlabel = QtGui.QLabel('x:')
+        self.xlabel = QtWidgets.QLabel('x:')
         layout.addWidget(self.xlabel)
 
-        self.xedit = QtGui.QLineEdit()
+        self.xedit = QtWidgets.QLineEdit()
         self.xedit.setMaxLength(6)
         self.xedit.setReadOnly(True)
         layout.addWidget(self.xedit)
 
-        self.ylabel = QtGui.QLabel('y:')
+        self.ylabel = QtWidgets.QLabel('y:')
         layout.addWidget(self.ylabel)
 
-        self.yedit = QtGui.QLineEdit()
+        self.yedit = QtWidgets.QLineEdit()
         self.yedit.setMaxLength(6)
         self.yedit.setReadOnly(True)
         layout.addWidget(self.yedit)

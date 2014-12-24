@@ -34,7 +34,7 @@ except ImportError:
 import numpy as np
 from osgeo import gdal
 
-from qt import QtCore, QtGui
+from qt import QtCore, QtWidgets, QtGui
 
 from gsdview import utils
 from gsdview import qt4support
@@ -46,7 +46,7 @@ from gsdview.gdalbackend import gdalsupport
 GDALInfoWidgetBase = qt4support.getuiform('gdalinfo', __name__)
 
 
-class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
+class GDALInfoWidget(QtWidgets.QWidget, GDALInfoWidgetBase):
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(GDALInfoWidget, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
@@ -71,7 +71,7 @@ class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
         tablewidget.verticalHeader().hide()
 
         hheader = tablewidget.horizontalHeader()
-        #hheader.resizeSections(QtGui.QHeaderView.ResizeToContents)
+        #hheader.resizeSections(QtWidgets.QHeaderView.ResizeToContents)
         fontinfo = QtGui.QFontInfo(tablewidget.font())
         hheader.setDefaultSectionSize(10 * fontinfo.pixelSize())
 
@@ -83,26 +83,26 @@ class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
             driver = gdal.GetDriver(row)
             # @TODO: check for available ingo in gdal 1.5 and above
             tablewidget.setItem(
-                row, 0, QtGui.QTableWidgetItem(driver.ShortName))
+                row, 0, QtWidgets.QTableWidgetItem(driver.ShortName))
             tablewidget.setItem(
-                row, 1, QtGui.QTableWidgetItem(driver.LongName))
+                row, 1, QtWidgets.QTableWidgetItem(driver.LongName))
             tablewidget.setItem(
-                row, 2, QtGui.QTableWidgetItem(driver.GetDescription()))
+                row, 2, QtWidgets.QTableWidgetItem(driver.GetDescription()))
             tablewidget.setItem(
-                row, 3, QtGui.QTableWidgetItem(str(driver.HelpTopic)))
+                row, 3, QtWidgets.QTableWidgetItem(str(driver.HelpTopic)))
 
             metadata = driver.GetMetadata()
             if metadata:
-                tablewidget.setItem(row, 4, QtGui.QTableWidgetItem(
+                tablewidget.setItem(row, 4, QtWidgets.QTableWidgetItem(
                     str(metadata.pop(gdal.DMD_EXTENSION, ''))))
-                tablewidget.setItem(row, 5, QtGui.QTableWidgetItem(
+                tablewidget.setItem(row, 5, QtWidgets.QTableWidgetItem(
                     str(metadata.pop(gdal.DMD_MIMETYPE, ''))))
-                tablewidget.setItem(row, 6, QtGui.QTableWidgetItem(
+                tablewidget.setItem(row, 6, QtWidgets.QTableWidgetItem(
                     str(metadata.pop(gdal.DMD_CREATIONDATATYPES, ''))))
 
                 data = metadata.pop(gdal.DMD_CREATIONOPTIONLIST, '')
                 # @TODO: parse xml
-                tableitem = QtGui.QTableWidgetItem(data)
+                tableitem = QtWidgets.QTableWidgetItem(data)
                 tableitem.setToolTip(data)
                 tablewidget.setItem(row, 7, tableitem)
 
@@ -110,7 +110,7 @@ class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
                 metadata.pop(gdal.DMD_LONGNAME, '')
 
                 metadatalist = ['%s=%s' % (k, v) for k, v in metadata.items()]
-                tableitem = QtGui.QTableWidgetItem(', '.join(metadatalist))
+                tableitem = QtWidgets.QTableWidgetItem(', '.join(metadatalist))
                 tableitem.setToolTip('\n'.join(metadatalist))
                 tablewidget.setItem(row, 8, tableitem)
 
@@ -125,13 +125,13 @@ class GDALInfoWidget(QtGui.QWidget, GDALInfoWidgetBase):
 
     def showEvent(self, event):
         self.updateCacheInfo()
-        QtGui.QWidget.showEvent(self, event)
+        QtWidgets.QWidget.showEvent(self, event)
 
 
 GDALPreferencesPageBase = qt4support.getuiform('gdalpage', __name__)
 
 
-class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
+class GDALPreferencesPage(QtWidgets.QWidget, GDALPreferencesPageBase):
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(GDALPreferencesPage, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
@@ -139,7 +139,7 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
         self.infoButton.setIcon(qt4support.geticon('info.svg', 'gsdview'))
 
         # Avoid promoted widgets
-        DirectoryOnly = QtGui.QFileDialog.DirectoryOnly
+        DirectoryOnly = QtWidgets.QFileDialog.DirectoryOnly
         self.gdalDataDirEntryWidget = FileEntryWidget(mode=DirectoryOnly,
                                                       enabled=False)
         self.optionsGridLayout.addWidget(self.gdalDataDirEntryWidget, 1, 1)
@@ -171,7 +171,7 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
         for name in ('gdalDataDir', 'gdalDriverPath', 'ogrDriverPath'):
             widget = getattr(self, name + 'EntryWidget')
             widget.dialog = dialog
-            widget.mode = QtGui.QFileDialog.Directory
+            widget.mode = QtWidgets.QFileDialog.Directory
 
         # extra options
         self._extraoptions = {}
@@ -183,28 +183,29 @@ class GDALPreferencesPage(QtGui.QWidget, GDALPreferencesPageBase):
         self.extraOptTableWidget.setRowCount(len(extraoptions))
 
         for row, key in enumerate(extraoptions):
-            item = QtGui.QTableWidgetItem(key)
+            item = QtWidgets.QTableWidgetItem(key)
             item.setFlags(item.flags() ^ QtCore.Qt.ItemIsEditable)
             self.extraOptTableWidget.setItem(row, 0, item)
             value = gdal.GetConfigOption(key, '')
-            item = QtGui.QTableWidgetItem(value)
+            item = QtWidgets.QTableWidgetItem(value)
             self.extraOptTableWidget.setItem(row, 1, item)
             if value:
                 self._extraoptions[key] = value
 
         hheader = self.extraOptTableWidget.horizontalHeader()
-        hheader.resizeSections(QtGui.QHeaderView.ResizeToContents)
+        hheader.resizeSections(QtWidgets.QHeaderView.ResizeToContents)
 
     @QtCore.Slot()
     def showinfo(self):
-        dialog = QtGui.QDialog(self)
+        dialog = QtWidgets.QDialog(self)
         dialog.setWindowTitle(self.tr('GDAL info'))
-        layout = QtGui.QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(GDALInfoWidget())
 
-        buttonbox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Close,
-                                           accepted=dialog.accept,
-                                           rejected=dialog.reject)
+        buttonbox = QtWidgets.QDialogButtonBox(
+            QtWidgets.QDialogButtonBox.Close,
+            accepted=dialog.accept,
+            rejected=dialog.reject)
         layout.addWidget(buttonbox)
 
         dialog.setLayout(layout)
@@ -336,14 +337,15 @@ class BackendPreferencesPage(GDALPreferencesPage):
         # GDAL backend
         msg = 'Show overview items in the tree view.'
         tip = msg + "\nNOTE: this setting doesn't affects items already open."
-        checkbox = QtGui.QCheckBox(self.tr(msg), toolTip=self.tr(tip))
+        checkbox = QtWidgets.QCheckBox(self.tr(msg), toolTip=self.tr(tip))
         self.showOverviewCheckbox = checkbox
 
-        layout = QtGui.QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(checkbox)
-        #~ layout.addSpacerItem(QtGui.QSpacerItem(0, 20))
+        #~ layout.addSpacerItem(QtWidgets.QSpacerItem(0, 20))
 
-        self.groupbox = QtGui.QGroupBox(self.tr('GDAL Backend Preferences'))
+        self.groupbox = QtWidgets.QGroupBox(
+            self.tr('GDAL Backend Preferences'))
         self.groupbox.setLayout(layout)
         self.verticalLayout.insertWidget(1, self.groupbox)
 
@@ -394,7 +396,7 @@ class KeyPressEater(QtCore.QObject):
 MetadataWidgetBase = qt4support.getuiform('metadata', __name__)
 
 
-class MetadataWidget(QtGui.QWidget, MetadataWidgetBase):
+class MetadataWidget(QtWidgets.QWidget, MetadataWidgetBase):
     '''Widget for matadata display.
 
     :SIGNALS:
@@ -420,17 +422,17 @@ class MetadataWidget(QtGui.QWidget, MetadataWidgetBase):
         icon = QtGui.QIcon(
             ':/trolltech/dialogs/qprintpreviewdialog/images/print-24.png')
         self.printButton.setIcon(icon)
-        icon = self.style().standardIcon(QtGui.QStyle.SP_DialogSaveButton)
+        icon = self.style().standardIcon(QtWidgets.QStyle.SP_DialogSaveButton)
         self.exportButton.setIcon(icon)
 
         # contect menu
         qt4support.setViewContextActions(self.tableWidget)
 
         # buttons
-        printAction = self.findChild(QtGui.QAction, 'printAction')
+        printAction = self.findChild(QtWidgets.QAction, 'printAction')
         self.printButton.clicked.connect(printAction.triggered)
 
-        saveAction = self.findChild(QtGui.QAction, 'saveAsAction')
+        saveAction = self.findChild(QtWidgets.QAction, 'saveAsAction')
         self.exportButton.clicked.connect(saveAction.triggered)
 
         # @TODO:check
@@ -448,13 +450,13 @@ class MetadataWidget(QtGui.QWidget, MetadataWidgetBase):
         layout = self.metadataHorizontalLayout
         if enabled:
             spacer = layout.itemAt(layout.count() - 1)
-            if isinstance(spacer, QtGui.QSpacerItem):
+            if isinstance(spacer, QtWidgets.QSpacerItem):
                 layout.removeItem(spacer)
                 assert layout.count() > 2
                 layout.insertItem(2, spacer)
         else:
             spacer = layout.itemAt(2)
-            if isinstance(spacer, QtGui.QSpacerItem):
+            if isinstance(spacer, QtWidgets.QSpacerItem):
                 layout.removeItem(spacer)
                 layout.addItem(spacer)
 
@@ -497,8 +499,8 @@ class MetadataWidget(QtGui.QWidget, MetadataWidgetBase):
 
         for row, data in enumerate(metadatalist):
             name, value = data.split('=', 1)
-            tablewidget.setItem(row, 0, QtGui.QTableWidgetItem(name))
-            tablewidget.setItem(row, 1, QtGui.QTableWidgetItem(value))
+            tablewidget.setItem(row, 0, QtWidgets.QTableWidgetItem(name))
+            tablewidget.setItem(row, 1, QtWidgets.QTableWidgetItem(value))
 
         # Fix table header behaviour
         tablewidget.setSortingEnabled(sortingenabled)
@@ -511,7 +513,7 @@ class MetadataWidget(QtGui.QWidget, MetadataWidgetBase):
 OverviewWidgetBase = qt4support.getuiform('overview', __name__)
 
 
-class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
+class OverviewWidget(QtWidgets.QWidget, OverviewWidgetBase):
     '''Widget for overview management.
 
     Display existing overview levels and allow to to sibmit overview
@@ -667,7 +669,7 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
                 ysize = int(item.YSize + level - 1) // level
                 self._addLevel(level, xsize, ysize)
 
-        view.header().resizeSections(QtGui.QHeaderView.ResizeToContents)
+        view.header().resizeSections(QtWidgets.QHeaderView.ResizeToContents)
         view.sortByColumn(1, QtCore.Qt.AscendingOrder)
 
         self.addLevelSpinBox.setEnabled(True)
@@ -740,7 +742,7 @@ class OverviewWidget(QtGui.QWidget, OverviewWidgetBase):
         self._addLevel(level, xsize, ysize, checked)
 
         view = self.ovrTreeView
-        view.header().resizeSections(QtGui.QHeaderView.ResizeToContents)
+        view.header().resizeSections(QtWidgets.QHeaderView.ResizeToContents)
         view.sortByColumn(1, QtCore.Qt.AscendingOrder)
 
         self._updateStartButton()
@@ -822,7 +824,7 @@ class SpecialOverviewWidget(OverviewWidget):
             self.startButton.setEnabled(False)
 
 
-class OverviewDialog(QtGui.QDialog):
+class OverviewDialog(QtWidgets.QDialog):
     '''Dialog for overview management.
 
     Display existing overview levels and allow to to sibmit overview
@@ -837,7 +839,8 @@ class OverviewDialog(QtGui.QDialog):
     #: SIGNAL: it is emitted when a time expensive computation of overviews
     #: is required
     #:
-    #: :C++ signature: `void overviewComputationRequest(QtGui.QStandardItem)`
+    #: :C++ signature: `void overviewComputationRequest(
+    #:                                          QtGui.QStandardItem)`
     overviewComputationRequest = QtCore.Signal(QtGui.QStandardItem)
     #overviewComputationRequest = QtCore.Signal(object)
 
@@ -846,23 +849,24 @@ class OverviewDialog(QtGui.QDialog):
         super(OverviewDialog, self).__init__(parent, flags)
         self.setWindowTitle(self.tr('Overview computation'))
 
-        label = QtGui.QLabel(self.tr('Dataset:'))
+        label = QtWidgets.QLabel(self.tr('Dataset:'))
 
         #: dataset label
-        self.description = QtGui.QLineEdit()
+        self.description = QtWidgets.QLineEdit()
         self.description.setReadOnly(True)
 
-        hlayout = QtGui.QHBoxLayout()
+        hlayout = QtWidgets.QHBoxLayout()
         hlayout.addWidget(label)
         hlayout.addWidget(self.description)
 
         #: overview widget
         self.overviewWidget = SpecialOverviewWidget()
 
-        buttonbox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Close)
+        buttonbox = QtWidgets.QDialogButtonBox(
+            QtWidgets.QDialogButtonBox.Close)
         buttonbox.rejected.connect(self.reject)
 
-        layout = QtGui.QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addLayout(hlayout)
         layout.addWidget(self.overviewWidget)
         layout.addWidget(buttonbox)
@@ -912,7 +916,7 @@ class OverviewDialog(QtGui.QDialog):
             self.reset()
 
 
-class MajorObjectInfoDialog(QtGui.QDialog):
+class MajorObjectInfoDialog(QtWidgets.QDialog):
     def __init__(self, gdalobj, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kwargs):
         super(MajorObjectInfoDialog, self).__init__(parent, flags, **kwargs)
@@ -927,11 +931,13 @@ class MajorObjectInfoDialog(QtGui.QDialog):
         layout.addWidget(self.metadataWidget)
         self.metadataWidget.domainChanged.connect(self.updateMetadata)
 
-        action = self.metadataWidget.findChild(QtGui.QAction, 'saveAsAction')
+        action = self.metadataWidget.findChild(
+            QtWidgets.QAction, 'saveAsAction')
         action.triggered.disconnect()
         action.triggered.connect(self.saveMetadata)
 
-        action = self.metadataWidget.findChild(QtGui.QAction, 'printAction')
+        action = self.metadataWidget.findChild(
+            QtWidgets.QAction, 'printAction')
         action.triggered.disconnect()
         action.triggered.connect(self.printMetadata)
 
@@ -995,8 +1001,9 @@ class MajorObjectInfoDialog(QtGui.QDialog):
     @QtCore.Slot()
     def saveMetadata(self):
         if not self._obj:
-            QtGui.QMessageBox.information(self.tr('Information'),
-                                          self.tr('Nothing to save.'))
+            QtWidgets.QMessageBox.information(
+                self.tr('Information'),
+                self.tr('Nothing to save.'))
             return
 
         filters = [
@@ -1008,7 +1015,7 @@ class MajorObjectInfoDialog(QtGui.QDialog):
 
         # @TODO: use common dialaog
         target = os.path.join(utils.default_workdir(), 'metadata.ini')
-        filename, filter_ = QtGui.QFileDialog.getSaveFileNameAndFilter(
+        filename, filter_ = QtWidgets.QFileDialog.getSaveFileName(
             self, self.tr('Save'), target, ';;'.join(filters))
         if filename:
             cfg = self._metadataToCfg()
@@ -1039,7 +1046,7 @@ def _setupImageStructureInfo(widget, metadata):
 HistogramConfigDialogBase = qt4support.getuiform('histoconfig', __name__)
 
 
-class HistogramConfigDialog(QtGui.QDialog, HistogramConfigDialogBase):
+class HistogramConfigDialog(QtWidgets.QDialog, HistogramConfigDialogBase):
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(HistogramConfigDialog, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
@@ -1051,12 +1058,12 @@ class HistogramConfigDialog(QtGui.QDialog, HistogramConfigDialogBase):
 
         # Colors
         self._default_palette = self.minSpinBox.palette()
-        self._error_palette = QtGui.QPalette(self._default_palette)
+        self._error_palette = QtWidgets.QPalette(self._default_palette)
 
         color = QtGui.QColor(QtCore.Qt.red)
-        self._error_palette.setColor(QtGui.QPalette.Text, color)
+        self._error_palette.setColor(QtWidgets.QPalette.Text, color)
         color.setAlpha(50)
-        self._error_palette.setColor(QtGui.QPalette.Base, color)
+        self._error_palette.setColor(QtWidgets.QPalette.Base, color)
 
         self.minSpinBox.editingFinished.connect(self.validate)
         self.maxSpinBox.editingFinished.connect(self.validate)
@@ -1118,7 +1125,8 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
     #: SIGNAL: it is emitted when a time expensive computation of an histogram
     #: is required
     #:
-    #: :C++ signature: `void histogramComputationRequest(QtGui.QStandardItem)`
+    #: :C++ signature: `void histogramComputationRequest(
+    #:                                          QtGui.QStandardItem)`
     histogramComputationRequest = QtCore.Signal(QtGui.QStandardItem)
 
     # @TODO: check
@@ -1377,11 +1385,11 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
             start = vmin + row * w
             stop = start + w
             tablewidget.setItem(row, 0,
-                                QtGui.QTableWidgetItem(str(start)))
+                                QtWidgets.QTableWidgetItem(str(start)))
             tablewidget.setItem(row, 1,
-                                QtGui.QTableWidgetItem(str(stop)))
+                                QtWidgets.QTableWidgetItem(str(stop)))
             tablewidget.setItem(row, 2,
-                                QtGui.QTableWidgetItem(str(hist[row])))
+                                QtWidgets.QTableWidgetItem(str(hist[row])))
 
         # @TODO: plotting
 
@@ -1479,21 +1487,21 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         else:
             raise ValueError('invalid color intepretatin: "%s"' % colorint)
 
-        brush = QtGui.QBrush()
+        brush = QtWidgets.QBrush()
         brush.setStyle(QtCore.Qt.SolidPattern)
 
         for row, color in enumerate(colors):
             for chan, value in enumerate(color):
                 tablewidget.setItem(row, chan,
-                                    QtGui.QTableWidgetItem(str(value)))
+                                    QtWidgets.QTableWidgetItem(str(value)))
             qcolor = func(*color)
             brush.setColor(qcolor)
-            item = QtGui.QTableWidgetItem()
+            item = QtWidgets.QTableWidgetItem()
             item.setBackground(brush)
             tablewidget.setItem(row, chan + 1, item)
 
         hheader = tablewidget.horizontalHeader()
-        hheader.resizeSections(QtGui.QHeaderView.ResizeToContents)
+        hheader.resizeSections(QtWidgets.QHeaderView.ResizeToContents)
 
     def updateColorTable(self):
         if self.band is None:
@@ -1712,7 +1720,7 @@ p, li { white-space: pre-wrap; }
         sortingenabled = tablewidget.isSortingEnabled()
         tablewidget.setSortingEnabled(False)
 
-        Item = QtGui.QTableWidgetItem
+        Item = QtWidgets.QTableWidgetItem
         for row, gcp in enumerate(gcplist):
             tablewidget.setItem(row, 0, Item(str(gcp.GCPPixel)))
             tablewidget.setItem(row, 1, Item(str(gcp.GCPLine)))

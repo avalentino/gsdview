@@ -111,7 +111,7 @@ def init(app):
         #if app.settings.value('GDAL_DATA').isValid():
         #    msg = app.tr('"GDAL_DATA" from the user configuration file '
         #                     'overrides the default value')
-        #    QtGui.QMessageBox.warning(app, app.tr('WARNING'), msg)
+        #    QtWidgets.QMessageBox.warning(app, app.tr('WARNING'), msg)
     elif sys.platform == 'darwin':
         gdaladdobin = utils.which('gdaladdo')
         if not gdaladdobin:
@@ -147,7 +147,7 @@ def _definefunc(methodname):
 # @TODO: check (maybe it is better to make it explicitly)
 globals_ = globals()
 for methodname in __all__:
-    if not methodname in globals_ and methodname in GDALBackend.__dict__:
+    if methodname not in globals_ and methodname in GDALBackend.__dict__:
         globals_[methodname] = _definefunc(methodname)
 del methodname, globals_, _definefunc
 
