@@ -203,7 +203,7 @@ def modelToTextDocument(model, doc=None):
     format = QtGui.QTextTableFormat()
     format.setCellPadding(5)
     format.setCellSpacing(0)
-    format.setBorderStyle(QtWidgets.QTextFrameFormat.BorderStyle_Solid)
+    format.setBorderStyle(QtGui.QTextFrameFormat.BorderStyle_Solid)
     format.setHeaderRowCount(1)
 
     nrows = model.rowCount()
@@ -650,7 +650,7 @@ def cfgToTextDocument(cfg, doc=None):
     tableformat.setBottomMargin(10)
     tableformat.setCellPadding(5)
     tableformat.setCellSpacing(0)
-    tableformat.setBorderStyle(QtWidgets.QTextFrameFormat.BorderStyle_Solid)
+    tableformat.setBorderStyle(QtGui.QTextFrameFormat.BorderStyle_Solid)
     tableformat.setHeaderRowCount(1)
 
     # headers style
