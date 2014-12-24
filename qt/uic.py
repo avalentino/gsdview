@@ -2,10 +2,13 @@
 
 from . import qt_api
 
-if qt_api == 'pyqt':
+if qt_api == 'pyqt5':
+    from PyQt5.uic import *
+
+elif qt_api == 'pyqt4':
     from PyQt4.uic import *
 
-else:
+elif qt_api == 'pyside':
     from pysideuic import *
 
     # Credit:

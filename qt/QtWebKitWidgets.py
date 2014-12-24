@@ -3,22 +3,16 @@
 from . import qt_api
 
 __all__ = [
-    'QWebDatabase',
-    'QWebElement',
-    'QWebElementCollection',
-    'QWebHistory',
-    'QWebHistoryInterface',
-    'QWebHistoryItem',
-    'QWebPluginFactory',
-    'QWebSecurityOrigin',
-    'QWebSettings',
-    'qWebKitMajorVersion',
-    'qWebKitMinorVersion',
-    'qWebKitVersion',
+    'QGraphicsWebView',
+    'QWebFrame',
+    'QWebHitTestResult',
+    'QWebInspector',
+    'QWebPage',
+    'QWebView',
 ]
 
 if qt_api == 'pyqt5':
-    from PyQt5.QtWebKit import *
+    from PyQt5.QtWebKitWidgets import *
 
 elif qt_api == 'pyqt4':
     import PyQt4.QtWebKit as _QtWebKit
