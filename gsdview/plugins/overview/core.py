@@ -45,6 +45,7 @@ class NavigationGraphicsView(QtWidgets.QGraphicsView):
     '''
 
     BOXCOLOR = QtGui.QColor(QtCore.Qt.red)
+    BOXWIDTH = 20
 
     #: SIGNAL: it is emitted when a mouse button is presses on the view
     #:
@@ -80,6 +81,11 @@ class NavigationGraphicsView(QtWidgets.QGraphicsView):
         self._autoscale = True
         self.setMouseTracking(True)
 
+        # default pen
+        self._pen = QtGui.QPen()
+        self._pen.setColor(self.BOXCOLOR)
+        self._pen.setWidth(self.BOXWIDTH)
+
     def getbox(self):
         return self._viewbox
 
@@ -109,7 +115,7 @@ class NavigationGraphicsView(QtWidgets.QGraphicsView):
         pen = painter.pen()
         try:
             box = self.viewbox.intersected(self.sceneRect())
-            painter.setPen(self.BOXCOLOR)
+            painter.setPen(self._pen)
             painter.drawRect(box)
             #painter.drawConvexPolygon(self.viewbox) #@TODO: check
         finally:
