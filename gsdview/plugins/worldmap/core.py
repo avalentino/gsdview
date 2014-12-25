@@ -148,7 +148,7 @@ class WorldmapPanel(QtWidgets.QDockWidget):
             #~ poly.append(poly[0])
 
         # View box on the overview
-        pen = QtWidgets.QPen(QtCore.Qt.SolidLine)
+        pen = QtGui.QPen(QtCore.Qt.SolidLine)
         pen.setColor(QtGui.QColor(QtCore.Qt.red))
 
         item = self.graphicsview.scene().addPolygon(polygon, pen)
@@ -175,7 +175,7 @@ class WorldmapPanel(QtWidgets.QDockWidget):
 
         self.box = self.plot(polygon)
 
-        points = QtWidgets.QPolygonF([
+        points = QtGui.QPolygonF([
             QtCore.QPointF(mlon - self.bigBoxSize / 2.,
                            mlat - self.bigBoxSize / 2.),
             QtCore.QPointF(mlon + self.bigBoxSize / 2.,

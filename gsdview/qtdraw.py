@@ -69,12 +69,12 @@ def _highlightSelectedGraphicsItem(item, painter, option, boundingrect=None):
         0 if fgcolor.green() > 127 else 255,
         0 if fgcolor.blue() > 127 else 255)
 
-    painter.setPen(QtWidgets.QPen(bgcolor, penWidth, QtCore.Qt.SolidLine))
+    painter.setPen(QtGio.QPen(bgcolor, penWidth, QtCore.Qt.SolidLine))
     painter.setBrush(QtCore.Qt.NoBrush)
     painter.drawRect(boundingrect.adjusted(pad, pad, -pad, -pad))
 
     painter.setPen(
-        QtWidgets.QPen(option.palette.windowText(), 0, QtCore.Qt.DashLine))
+        QtGio.QPen(option.palette.windowText(), 0, QtCore.Qt.DashLine))
     painter.setBrush(QtCore.Qt.NoBrush)
     painter.drawRect(boundingrect.adjusted(pad, pad, -pad, -pad))
 
@@ -177,8 +177,8 @@ class GraphicsItemGroup(QtWidgets.QGraphicsItemGroup):
     def __init__(self, parent=None, scene=None, **kargs):
         super(GraphicsItemGroup, self).__init__(parent, scene, **kargs)
 
-        self._pen = QtWidgets.QPen()
-        self._brush = QtWidgets.QBrush()
+        self._pen = QtGui.QPen()
+        self._brush = QtGui.QBrush()
 
     def addToGroup(self, item):
         super(GraphicsItemGroup, self).addToGroup(item)
@@ -193,7 +193,7 @@ class GraphicsItemGroup(QtWidgets.QGraphicsItemGroup):
         return self._pen
 
     def setPen(self, pen):
-        if not isinstance(pen, QtWidgets.QPen):
+        if not isinstance(pen, QtGui.QPen):
             raise TypeError('invalid pen object: %s' % pen)
         self._pen = pen
 
@@ -233,10 +233,10 @@ class DrawPointMode(MouseMode):
 
         elif (event.type() == QtCore.QEvent.GraphicsSceneMouseRelease and
                 event.button() == QtCore.Qt.LeftButton):
-            pen = QtWidgets.QPen()
+            pen = QtGui.QPen()
             pen.setColor(QtCore.Qt.red)
 
-            brush = QtWidgets.QBrush()
+            brush = QtGui.QBrush()
             brush.setColor(QtCore.Qt.red)
             brush.setStyle(QtCore.Qt.SolidPattern)
 
@@ -263,7 +263,7 @@ class DrawLineMode(MouseMode):
     def __init__(self, parent=None):
         super(DrawLineMode, self).__init__(parent)
         self.rubberband = None
-        self.pen = QtWidgets.QPen()
+        self.pen = QtGui.QPen()
         self.pen.setWidth(1)
         self.pen.setColor(QtCore.Qt.red)
 
@@ -312,7 +312,7 @@ class DrawLineMode(MouseMode):
     #~ def __init__(self, parent=None):
         #~ super(DrawPolygonMode, self).__init__(parent)
         #~ self.rubberband = None
-        #~ self.pen = QtWidgets.QPen()
+        #~ self.pen = QtGui.QPen()
         #~ self.pen.setWidth(1)
         #~ self.pen.setColor(QtCore.Qt.red)
         #~ self.brush = QtWidgets.QBrush()
@@ -364,7 +364,7 @@ class DrawRectMode(MouseMode):
     def __init__(self, parent=None):
         super(DrawRectMode, self).__init__(parent)
         self.rubberband = None
-        self.pen = QtWidgets.QPen()
+        self.pen = QtGui.QPen()
         self.pen.setWidth(1)
         self.pen.setColor(QtCore.Qt.red)
         self.brush = QtWidgets.QBrush()
@@ -417,7 +417,7 @@ class DrawEllipseMode(MouseMode):
     def __init__(self, parent=None):
         super(DrawEllipseMode, self).__init__(parent)
         self.rubberband = None
-        self.pen = QtWidgets.QPen()
+        self.pen = QtGui.QPen()
         self.pen.setWidth(1)
         self.pen.setColor(QtCore.Qt.red)
         self.brush = QtWidgets.QBrush()

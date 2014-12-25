@@ -160,7 +160,7 @@ def singleGeometryToGraphicsItem(geom, transform=None):
 
         # @NOTE: use only if geometry is a ring
         if geom.IsRing():
-            qpoly = QtWidgets.QPolygonF(geom.GetPointCount())
+            qpoly = QtGui.QPolygonF(geom.GetPointCount())
             for index in range(geom.GetPointCount()):
                 point = geom.GetPoint(index)
                 if transform:
