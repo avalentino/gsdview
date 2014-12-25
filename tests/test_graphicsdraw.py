@@ -53,7 +53,7 @@ class GraphicsDrawApp(QtWidgets.QMainWindow):
         self.mousemanager.addMode(RubberBandMode)
         self.mousemanager.addMode(qtdraw.DrawPointMode)
         self.mousemanager.addMode(qtdraw.DrawLineMode)
-        #self.mousemanager.addMode(qt4draw.DrawPolygonMode)
+        #self.mousemanager.addMode(qtdraw.DrawPolygonMode)
         self.mousemanager.addMode(qtdraw.DrawRectMode)
         self.mousemanager.addMode(qtdraw.DrawEllipseMode)
         self.mousemanager.mode = 'hand'
@@ -231,9 +231,9 @@ class GraphicsDrawApp(QtWidgets.QMainWindow):
 
     @QtCore.Slot()
     def about(self):
-        title = self.tr('Qt4 Graphics Draw Example')
+        title = self.tr('Qt Graphics Draw Example')
         text = ['<h1>Graphics Draw</h1>'
-                '<p>Example program for the basic Qt4 graphics drawing.</p>',
+                '<p>Example program for the basic Qt graphics drawing.</p>',
                 '<p>Copyright (C): 2010-2014 '
                 '<a href="mailto:antonio.valentino@tiscali.it">'
                 'Antonio Valentino<a>.</p>']

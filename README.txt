@@ -20,7 +20,7 @@ Introduction
 
 GSDView (Geo-Spatial Data Viewer) Open Edition is a lightweight viewer for
 geo-spatial data and products.
-It is written in python_ and Qt4_ and it is mainly intended to be a graphical
+It is written in python_ and Qt_ and it is mainly intended to be a graphical
 front-end for the GDAL__ library and tools.
 GSDView is modular and has a simple plug-in architecture.
 
@@ -34,7 +34,7 @@ GSDView is modular and has a simple plug-in architecture.
 
 
 .. _Python: https://www.python.org
-.. _Qt4: http://qt-project.org
+.. _Qt: http://qt-project.org
 .. _`GSDView Open Edition`: http://gsdview.sourceforge.net
 __ gdal_
 
@@ -54,16 +54,16 @@ In order to run GSDView you should have the following software installed:
 
 * Python_ 2.6 or higher (including Python 3.x)
 * SIP_ 4.7.5 or higher
-* PyQt4_ 4.6 or higher
+* PyQt5_ or PyQt4 4.6 or higher
 * numpy_ 1.3.0  or higher
 * gdal_ 1.6.1 or higher
 
-In replacement of PyQt4_ an SIP_ it is possible to use:
+In replacement of PyQt5_ or PyQt4 and SIP_ it is possible to use:
 
-* PySide_ 1.0.4 or higher
+* PySide_ 1.0.4 or higher (experimental support)
 
 .. _SIP: http://www.riverbankcomputing.co.uk/software/sip
-.. _PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt
+.. _PyQt5: http://www.riverbankcomputing.co.uk/software/pyqt
 .. _numpy: http://www.numpy.org
 .. _gdal: http://www.gdal.org
 .. _PySide: http://www.pyside.org
@@ -75,7 +75,7 @@ In replacement of PyQt4_ an SIP_ it is possible to use:
    Ubuntu_ and Debian_ users can resolve all dependencies by running the
    following command as superuser::
 
-     # apt-get install python-qt4 python-gdal gdal-bin
+     # apt-get install python-qt5 python-gdal gdal-bin
 
 .. _Ubuntu: http://www.ubuntu.com
 .. _Debian: http://www.debian.org

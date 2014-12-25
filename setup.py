@@ -311,7 +311,8 @@ setup(
         'GDAL (>= 1.6.1)',
         'numpy (>= 1.3.0)',
         'sip (>= 4.7.5)',
-        'PyQt4 (>= 4.6)',
+        #'PyQt4 (>= 4.6)',
+        #'PyQt5',
     ],
     provides=[
         '%s (%d.%d.%d)' % ((PKGNAME,) + info.__version__),
