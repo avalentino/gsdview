@@ -32,8 +32,8 @@ sys.path.insert(0, GSDVIEWROOT)
 
 from qt import QtCore, QtWidgets, QtGui, QtSvg
 
-from gsdview import qt4support
-from gsdview import qt4draw
+from gsdview import qtsupport
+from gsdview import qtdraw
 from gsdview.mousemanager import MouseManager, RubberBandMode
 
 
@@ -51,11 +51,11 @@ class GraphicsDrawApp(QtWidgets.QMainWindow):
         self.mousemanager = MouseManager(self)
         self.mousemanager.register(self.graphicsview)
         self.mousemanager.addMode(RubberBandMode)
-        self.mousemanager.addMode(qt4draw.DrawPointMode)
-        self.mousemanager.addMode(qt4draw.DrawLineMode)
+        self.mousemanager.addMode(qtdraw.DrawPointMode)
+        self.mousemanager.addMode(qtdraw.DrawLineMode)
         #self.mousemanager.addMode(qt4draw.DrawPolygonMode)
-        self.mousemanager.addMode(qt4draw.DrawRectMode)
-        self.mousemanager.addMode(qt4draw.DrawEllipseMode)
+        self.mousemanager.addMode(qtdraw.DrawRectMode)
+        self.mousemanager.addMode(qtdraw.DrawEllipseMode)
         self.mousemanager.mode = 'hand'
 
         # File Actions
@@ -280,11 +280,11 @@ class GraphicsDrawApp(QtWidgets.QMainWindow):
 
     @QtCore.Slot()
     def onSave(self):
-        qt4support.imgexport(self.scene, self)
+        qtsupport.imgexport(self.scene, self)
 
     @QtCore.Slot()
     def onPrint(self):
-        qt4support.printObject(self.scene, parent=self)
+        qtsupport.printObject(self.scene, parent=self)
 
 
 def main(*argv):

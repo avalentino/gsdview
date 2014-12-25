@@ -35,7 +35,7 @@ from qt import QtCore, QtWidgets, QtGui
 
 from gsdview.mousemanager import MouseManager
 from gsdview.layermanager import LayerManager
-from gsdview.gdalbackend import ogrqt4
+from gsdview.gdalbackend import ogrqt
 
 
 class VectorGraphicsApp(QtWidgets.QMainWindow):
@@ -288,11 +288,11 @@ class VectorGraphicsApp(QtWidgets.QMainWindow):
             raise RuntimeError('too many layers: %d' % ds.GetLayerCount())
 
         for index, layer in enumerate(ds):
-            qlayer = ogrqt4.layerToGraphicsItem(layer, srs, transform)
+            qlayer = ogrqt.layerToGraphicsItem(layer, srs, transform)
             #qlayer.datasource = ds.GetName()
             #qlayer.index = index
-            qlayer.setData(ogrqt4.DATAKEY['datasource'], ds.GetName())
-            qlayer.setData(ogrqt4.DATAKEY['index'], index)
+            qlayer.setData(ogrqt.DATAKEY['datasource'], ds.GetName())
+            qlayer.setData(ogrqt.DATAKEY['index'], index)
 
             if affine_transform:
                 qlayer.setTransform(affine_transform)

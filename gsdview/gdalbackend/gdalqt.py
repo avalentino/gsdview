@@ -33,7 +33,7 @@ from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
 from qt import QtCore, QtWidgets, QtGui
 
 from gsdview import imgutils
-from gsdview.qt4support import numpy2qimage
+from gsdview.qtsupport import numpy2qimage
 from gsdview.gdalbackend import gdalsupport
 
 

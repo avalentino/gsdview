@@ -26,10 +26,10 @@ import logging
 
 from qt import QtCore, QtWidgets
 
-from gsdview import qt4support
+from gsdview import qtsupport
 
 
-StretchWidgetBase = qt4support.getuiform('doubleslider', __name__)
+StretchWidgetBase = qtsupport.getuiform('doubleslider', __name__)
 
 
 class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
@@ -242,7 +242,7 @@ class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
         return d
 
 
-StretchDialogBase = qt4support.getuiform('stretchdialog', __name__)
+StretchDialogBase = qtsupport.getuiform('stretchdialog', __name__)
 
 
 class StretchDialog(QtWidgets.QDialog, StretchDialogBase):

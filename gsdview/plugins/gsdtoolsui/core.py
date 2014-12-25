@@ -30,7 +30,7 @@ import tempfile
 from qt import QtCore, QtWidgets
 
 from gsdview import utils
-from gsdview import qt4support
+from gsdview import qtsupport
 from gsdtools import ras2vec
 
 from . import info
@@ -59,7 +59,7 @@ class GSDToolsController(QtCore.QObject):
         actions = QtWidgets.QActionGroup(self)
 
         # KML export
-        icon = qt4support.geticon('area.svg', 'gsdview')
+        icon = qtsupport.geticon('area.svg', 'gsdview')
         QtWidgets.QAction(
             icon, self.tr('KML export'), actions,
             objectName='kmlExportAction',
@@ -67,7 +67,7 @@ class GSDToolsController(QtCore.QObject):
             triggered=self.exportKML)
 
         # Open in google earth
-        icon = qt4support.geticon('earth.svg', __name__)
+        icon = qtsupport.geticon('earth.svg', __name__)
         QtWidgets.QAction(
             icon, self.tr('Open in Google Earth'), actions,
             objectName='openInGoogleEarthAction',
@@ -75,7 +75,7 @@ class GSDToolsController(QtCore.QObject):
             triggered=self.openInGoogleEarth)
 
         # Open in google maps
-        icon = qt4support.geticon('overview.svg', 'gsdview.gdalbackend')
+        icon = qtsupport.geticon('overview.svg', 'gsdview.gdalbackend')
         QtWidgets.QAction(
             icon, self.tr('Open in Google Maps'), actions,
             objectName='openInGoogleMapsAction',

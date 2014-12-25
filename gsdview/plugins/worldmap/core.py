@@ -27,7 +27,7 @@ import numpy as np
 from qt import QtCore, QtWidgets, QtGui
 
 from gsdview import utils
-from gsdview import qt4support
+from gsdview import qtsupport
 
 
 class WorldmapPanel(QtWidgets.QDockWidget):
@@ -52,7 +52,7 @@ class WorldmapPanel(QtWidgets.QDockWidget):
         self.actions = self._setupActions()
         self.actionZoomIn, self.actionZoomOut = self.actions.actions()
 
-        toolbar = qt4support.actionGroupToToolbar(self.actions,
+        toolbar = qtsupport.actionGroupToToolbar(self.actions,
                                                   self.tr('Zoom toolbar'))
         toolbar.setOrientation(QtCore.Qt.Vertical)
 
@@ -74,7 +74,7 @@ class WorldmapPanel(QtWidgets.QDockWidget):
         actions = QtWidgets.QActionGroup(self)
 
         # Zoom in
-        icon = qt4support.geticon('zoom-in.svg', 'gsdview')
+        icon = qtsupport.geticon('zoom-in.svg', 'gsdview')
         QtWidgets.QAction(
             icon, self.tr('Zoom In'), actions,
             objectName='zoomOutAction',
@@ -84,7 +84,7 @@ class WorldmapPanel(QtWidgets.QDockWidget):
             triggered=lambda: self._zoom(+1))
 
         # Zoom out
-        icon = qt4support.geticon('zoom-out.svg', 'gsdview')
+        icon = qtsupport.geticon('zoom-out.svg', 'gsdview')
         QtWidgets.QAction(
             icon, self.tr('Zoom Out'), actions,
             objectName='zoomOutAction',
@@ -106,7 +106,7 @@ class WorldmapPanel(QtWidgets.QDockWidget):
             scene.removeItem(self.worldmapitem)
 
         #~ imgfile = qt4support.geticonfile('world_2160x1080.jpg', __name__)
-        imgfile = qt4support.geticonfile('world_4320x2160.jpg', __name__)
+        imgfile = qtsupport.geticonfile('world_4320x2160.jpg', __name__)
         #~ imgfile = qt4support.geticonfile('world_5400x2700.jpg', __name__)
         worldmap = QtGui.QPixmap(imgfile)
 

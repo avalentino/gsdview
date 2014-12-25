@@ -37,13 +37,13 @@ from osgeo import gdal
 from qt import QtCore, QtWidgets, QtGui
 
 from gsdview import utils
-from gsdview import qt4support
+from gsdview import qtsupport
 from gsdview.widgets import get_filedialog, FileEntryWidget
 
 from gsdview.gdalbackend import gdalsupport
 
 
-GDALInfoWidgetBase = qt4support.getuiform('gdalinfo', __name__)
+GDALInfoWidgetBase = qtsupport.getuiform('gdalinfo', __name__)
 
 
 class GDALInfoWidget(QtWidgets.QWidget, GDALInfoWidgetBase):
@@ -52,7 +52,7 @@ class GDALInfoWidget(QtWidgets.QWidget, GDALInfoWidgetBase):
         self.setupUi(self)
 
         # Context menu actions
-        qt4support.setViewContextActions(self.gdalDriversTableWidget)
+        qtsupport.setViewContextActions(self.gdalDriversTableWidget)
 
         # @TODO: check for available info in gdal 1.5 and above
         try:
@@ -128,7 +128,7 @@ class GDALInfoWidget(QtWidgets.QWidget, GDALInfoWidgetBase):
         QtWidgets.QWidget.showEvent(self, event)
 
 
-GDALPreferencesPageBase = qt4support.getuiform('gdalpage', __name__)
+GDALPreferencesPageBase = qtsupport.getuiform('gdalpage', __name__)
 
 
 class GDALPreferencesPage(QtWidgets.QWidget, GDALPreferencesPageBase):
@@ -136,7 +136,7 @@ class GDALPreferencesPage(QtWidgets.QWidget, GDALPreferencesPageBase):
         super(GDALPreferencesPage, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
-        self.infoButton.setIcon(qt4support.geticon('info.svg', 'gsdview'))
+        self.infoButton.setIcon(qtsupport.geticon('info.svg', 'gsdview'))
 
         # Avoid promoted widgets
         DirectoryOnly = QtWidgets.QFileDialog.DirectoryOnly
@@ -162,7 +162,7 @@ class GDALPreferencesPage(QtWidgets.QWidget, GDALPreferencesPageBase):
         self.infoButton.clicked.connect(self.showinfo)
 
         # Context menu actions
-        qt4support.setViewContextActions(self.extraOptTableWidget)
+        qtsupport.setViewContextActions(self.extraOptTableWidget)
 
         # standard options
         cachesize = gdal.GetCacheMax()
@@ -393,7 +393,7 @@ class KeyPressEater(QtCore.QObject):
         return super(KeyPressEater, self).eventFilter(obj, event)
 
 
-MetadataWidgetBase = qt4support.getuiform('metadata', __name__)
+MetadataWidgetBase = qtsupport.getuiform('metadata', __name__)
 
 
 class MetadataWidget(QtWidgets.QWidget, MetadataWidgetBase):
@@ -426,7 +426,7 @@ class MetadataWidget(QtWidgets.QWidget, MetadataWidgetBase):
         self.exportButton.setIcon(icon)
 
         # contect menu
-        qt4support.setViewContextActions(self.tableWidget)
+        qtsupport.setViewContextActions(self.tableWidget)
 
         # buttons
         printAction = self.findChild(QtWidgets.QAction, 'printAction')
@@ -487,7 +487,7 @@ class MetadataWidget(QtWidgets.QWidget, MetadataWidgetBase):
     def setMetadata(self, metadatalist):
         tablewidget = self.tableWidget
 
-        qt4support.clearTable(tablewidget)
+        qtsupport.clearTable(tablewidget)
         if not metadatalist:
             self.metadataNumValue.setText(0)
             return
@@ -507,10 +507,10 @@ class MetadataWidget(QtWidgets.QWidget, MetadataWidgetBase):
 
     def resetMetadata(self):
         self.metadataNumValue.setText('0')
-        qt4support.clearTable(self.tableWidget)
+        qtsupport.clearTable(self.tableWidget)
 
 
-OverviewWidgetBase = qt4support.getuiform('overview', __name__)
+OverviewWidgetBase = qtsupport.getuiform('overview', __name__)
 
 
 class OverviewWidget(QtWidgets.QWidget, OverviewWidgetBase):
@@ -1021,7 +1021,7 @@ class MajorObjectInfoDialog(QtWidgets.QDialog):
             cfg = self._metadataToCfg()
             ext = os.path.splitext(filename)[-1]
             if ext.lower() == '.html':
-                doc = qt4support.cfgToTextDocument(cfg)
+                doc = qtsupport.cfgToTextDocument(cfg)
                 data = doc.toHtml()
                 with open(filename, 'w') as fd:
                     fd.write(data)
@@ -1032,8 +1032,8 @@ class MajorObjectInfoDialog(QtWidgets.QDialog):
     @QtCore.Slot()
     def printMetadata(self):
         cfg = self._metadataToCfg()
-        doc = qt4support.cfgToTextDocument(cfg)
-        qt4support.printObject(doc)
+        doc = qtsupport.cfgToTextDocument(cfg)
+        qtsupport.printObject(doc)
 
 
 def _setupImageStructureInfo(widget, metadata):
@@ -1043,7 +1043,7 @@ def _setupImageStructureInfo(widget, metadata):
     widget.pixelTypeValue.setText(metadata.get('PIXELTYPE', ''))
 
 
-HistogramConfigDialogBase = qt4support.getuiform('histoconfig', __name__)
+HistogramConfigDialogBase = qtsupport.getuiform('histoconfig', __name__)
 
 
 class HistogramConfigDialog(QtWidgets.QDialog, HistogramConfigDialogBase):
@@ -1102,7 +1102,7 @@ class HistogramConfigDialog(QtWidgets.QDialog, HistogramConfigDialogBase):
         self.maxSpinBox.setMaximum(vmax)
 
 
-BandInfoDialogBase = qt4support.getuiform('banddialog', __name__)
+BandInfoDialogBase = qtsupport.getuiform('banddialog', __name__)
 
 
 class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
@@ -1144,7 +1144,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         super(BandInfoDialog, self).__init__(band, parent, flags, **kwargs)
 
         # Set tab icons
-        geticon = qt4support.geticon
+        geticon = qtsupport.geticon
         self.tabWidget.setTabIcon(0, geticon('info.svg', 'gsdview'))
         self.tabWidget.setTabIcon(1, geticon('metadata.svg', __name__))
         self.tabWidget.setTabIcon(2, geticon('statistics.svg', __name__))
@@ -1161,8 +1161,8 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
                               self.tr('Overviews'))
 
         # Context menu actions
-        qt4support.setViewContextActions(self.histogramTableWidget)
-        qt4support.setViewContextActions(self.colorTableWidget)
+        qtsupport.setViewContextActions(self.histogramTableWidget)
+        qtsupport.setViewContextActions(self.colorTableWidget)
 
         if not hasattr(gdal.Band, 'GetDefaultHistogram'):
             self.histogramGroupBox.hide()
@@ -1345,7 +1345,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.stdValue.setText(str(stddev))
 
     @QtCore.Slot()
-    @qt4support.overrideCursor
+    @qtsupport.overrideCursor
     def updateStatistics(self):
         if self.band is None:
             self.resetStatistics()
@@ -1371,7 +1371,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
     def resetHistogram(self):
         tablewidget = self.histogramTableWidget
         self.numberOfClassesValue.setText('0')
-        qt4support.clearTable(tablewidget)
+        qtsupport.clearTable(tablewidget)
 
     def setHistogram(self, vmin, vmax, nbuckets, hist):
         self.numberOfClassesValue.setText(str(nbuckets))
@@ -1448,7 +1448,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
     def resetColorTable(self):
         self.ctInterpretationValue.setText('')
         self.colorsNumberValue.setText('')
-        qt4support.clearTable(self.colorTableWidget)
+        qtsupport.clearTable(self.colorTableWidget)
 
     def setColorTable(self, colortable):
         if colortable is None:
@@ -1540,7 +1540,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.overviewComputationRequest.emit(self.band)
 
 
-DatasetInfoDialogBase = qt4support.getuiform('datasetdialog', __name__)
+DatasetInfoDialogBase = qtsupport.getuiform('datasetdialog', __name__)
 
 
 class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
@@ -1550,7 +1550,7 @@ class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
                                                 **kwargs)
 
         # Set icons
-        geticon = qt4support.geticon
+        geticon = qtsupport.geticon
         self.tabWidget.setTabIcon(0, geticon('info.svg', 'gsdview'))
         self.tabWidget.setTabIcon(1, geticon('metadata.svg', __name__))
         self.tabWidget.setTabIcon(2, geticon('gcp.svg', __name__))
@@ -1565,8 +1565,8 @@ class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
         layout.addWidget(self.driverMetadataWidget)
 
         # Context menu actions
-        qt4support.setViewContextActions(self.gcpsTableWidget)
-        qt4support.setViewContextActions(self.fileListWidget)
+        qtsupport.setViewContextActions(self.gcpsTableWidget)
+        qtsupport.setViewContextActions(self.fileListWidget)
 
         if not hasattr(gdal.Dataset, 'GetFileList'):
             self.tabWidget.setTabEnabled(4, False)
@@ -1703,7 +1703,7 @@ p, li { white-space: pre-wrap; }
 
     def resetGCPs(self):
         tablewidget = self.gcpsTableWidget
-        qt4support.clearTable(tablewidget)
+        qtsupport.clearTable(tablewidget)
         self.gcpsNumValue.setText('')
         self.gcpsProjectionValue.setText('')
 

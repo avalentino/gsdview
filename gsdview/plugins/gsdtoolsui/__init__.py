@@ -37,15 +37,15 @@ _instance = None
 
 
 def init(app):
-    from gsdview import qt4support
+    from gsdview import qtsupport
     from .core import GSDToolsController
 
     controller = GSDToolsController(app)
 
     app.toolsmenu.addSeparator()
     app.toolsmenu.addActions(controller.actions.actions())
-    toolbar = qt4support.actionGroupToToolbar(controller.actions,
-                                              app.tr('GSDTools toolbar'))
+    toolbar = qtsupport.actionGroupToToolbar(controller.actions,
+                                             app.tr('GSDTools toolbar'))
     app.addToolBar(toolbar)
 
     # @COMPATIBILITY: pyside 1.0.1

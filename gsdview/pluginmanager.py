@@ -317,10 +317,10 @@ import functools
 from qt import QtCore, QtWidgets
 
 # @TODO: check dependency - getuiform, geticon, setViewContextActions
-from gsdview import qt4support
+from gsdview import qtsupport
 
 
-PluginManagerGuiBase = qt4support.getuiform('pluginmanager', __name__)
+PluginManagerGuiBase = qtsupport.getuiform('pluginmanager', __name__)
 
 
 class PluginManagerGui(QtWidgets.QWidget, PluginManagerGuiBase):
@@ -333,7 +333,7 @@ class PluginManagerGui(QtWidgets.QWidget, PluginManagerGuiBase):
         self.setupUi(self)
 
         # Set icons
-        geticon = qt4support.geticon
+        geticon = qtsupport.geticon
         self.addButton.setIcon(geticon('add.svg', __name__))
         self.removeButton.setIcon(geticon('remove.svg', __name__))
         self.editButton.setIcon(geticon('edit.svg', __name__))
@@ -344,8 +344,8 @@ class PluginManagerGui(QtWidgets.QWidget, PluginManagerGuiBase):
         self.pluginmanager = pluginmanager
 
         # Context menu
-        qt4support.setViewContextActions(self.pathListWidget)
-        qt4support.setViewContextActions(self.pluginsTableWidget)
+        qtsupport.setViewContextActions(self.pathListWidget)
+        qtsupport.setViewContextActions(self.pluginsTableWidget)
 
         # @TODO: check edit triggers
         #int(self.pathListWidget.editTriggers() &
@@ -493,7 +493,7 @@ class PluginManagerGui(QtWidgets.QWidget, PluginManagerGuiBase):
                                 QtWidgets.QTableWidgetItem(short_description))
 
             # info
-            icon = qt4support.geticon('info.svg', __name__)
+            icon = qtsupport.geticon('info.svg', __name__)
             w = QtWidgets.QPushButton(
                 icon, '', tablewidget,
                 toolTip=self.tr('Show plugin info.'),
@@ -584,7 +584,7 @@ class PluginManagerGui(QtWidgets.QWidget, PluginManagerGuiBase):
         d.exec_()
 
 
-PluginInfoFormBase = qt4support.getuiform('plugininfo', __name__)
+PluginInfoFormBase = qtsupport.getuiform('plugininfo', __name__)
 
 
 class PluginInfoForm(QtWidgets.QFrame, PluginInfoFormBase):

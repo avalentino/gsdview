@@ -28,7 +28,7 @@ from osgeo import gdal
 
 from qt import QtCore, QtWidgets, QtGui
 
-from gsdview import qt4support
+from gsdview import qtsupport
 from gsdview.five import string_types
 
 from gsdview.gdalbackend import widgets
@@ -145,7 +145,7 @@ class GDALBackend(QtCore.QObject):
                 pass
         return None
 
-    @qt4support.overrideCursor
+    @qtsupport.overrideCursor
     def openFile(self, filename):
         item = self.findItemFromFilename(filename)
         if item:
@@ -171,7 +171,7 @@ class GDALBackend(QtCore.QObject):
     def itemContextMenu(self, item):
         actions = self.itemActions(item)
         if actions:
-            return qt4support.actionGroupToMenu(actions,
+            return qtsupport.actionGroupToMenu(actions,
                                                 self.tr('Context menu'),
                                                 self._app.treeview)
 
@@ -206,7 +206,7 @@ class GDALBackend(QtCore.QObject):
             actionsgroup = QtWidgets.QActionGroup(self)
 
         # open metadata view
-        icon = qt4support.geticon('metadata.svg', __name__)
+        icon = qtsupport.geticon('metadata.svg', __name__)
         QtWidgets.QAction(
             icon, self.tr('Open &Metadata View'), actionsgroup,
             objectName='actionOpenItemMetadataView',
@@ -218,7 +218,7 @@ class GDALBackend(QtCore.QObject):
 
         # show properties
         # @TODO: standard info icon from gdsview package
-        icon = qt4support.geticon('info.svg', 'gsdview')
+        icon = qtsupport.geticon('info.svg', 'gsdview')
         QtWidgets.QAction(
             icon, self.tr('&Show Properties'), actionsgroup,
             objectName='actionShowItemProperties',
@@ -234,7 +234,7 @@ class GDALBackend(QtCore.QObject):
             actionsgroup = QtWidgets.QActionGroup(self)
 
         # open image view
-        icon = qt4support.geticon('open.svg', __name__)
+        icon = qtsupport.geticon('open.svg', __name__)
         QtWidgets.QAction(
             icon, self.tr('&Open Image View'), actionsgroup,
             objectName='actionOpenImageView',
@@ -272,7 +272,7 @@ class GDALBackend(QtCore.QObject):
 
         # open RGB
         # @TODO: find an icon for RGB
-        icon = qt4support.geticon('rasterband.svg', __name__)
+        icon = qtsupport.geticon('rasterband.svg', __name__)
         QtWidgets.QAction(
             icon, self.tr('Open as RGB'), actionsgroup,
             objectName='actionOpenRGBImageView',
@@ -282,7 +282,7 @@ class GDALBackend(QtCore.QObject):
             triggered=self.openRGBImageView)
 
         # build overviews
-        icon = qt4support.geticon('overview.svg', __name__)
+        icon = qtsupport.geticon('overview.svg', __name__)
         QtWidgets.QAction(
             icon, self.tr('&Build overviews'),
             actionsgroup, objectName='actionBuidOverviews',
@@ -294,7 +294,7 @@ class GDALBackend(QtCore.QObject):
         # @TODO: add band, add virtual band, open GCPs view
 
         # close
-        icon = qt4support.geticon('close.svg', 'gsdview')
+        icon = qtsupport.geticon('close.svg', 'gsdview')
         QtWidgets.QAction(
             icon, self.tr('Close'), actionsgroup,
             objectName='actionCloseItem',
@@ -312,7 +312,7 @@ class GDALBackend(QtCore.QObject):
             actionsgroup = QtWidgets.QActionGroup(self)
 
         # open
-        icon = qt4support.geticon('open.svg', __name__)
+        icon = qtsupport.geticon('open.svg', __name__)
         QtWidgets.QAction(
             icon, self.tr('Open Sub Dataset'), actionsgroup,
             objectName='actionOpenSubDatasetItem',
@@ -576,7 +576,7 @@ class GDALBackend(QtCore.QObject):
     # Raster Band ###########################################################
     @QtCore.Slot()
     @QtCore.Slot(QtGui.QStandardItem)  # @TODO: check
-    @qt4support.overrideCursor
+    @qtsupport.overrideCursor
     def openImageView(self, item=None):
         if item is None:
             item = self._app.currentItem()

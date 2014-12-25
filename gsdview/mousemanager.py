@@ -33,7 +33,7 @@ making the system expandible, and also methods to register objects
 
 from qt import QtCore, QtWidgets, QtGui
 
-from gsdview import qt4support
+from gsdview import qtsupport
 from gsdview.five import string_types
 
 
@@ -114,7 +114,7 @@ class MouseMode(QtCore.QObject):
 class PointerMode(MouseMode):
     dragmode = QtWidgets.QGraphicsView.NoDrag
     cursor = None
-    icon = qt4support.geticon('arrow.svg', __name__)
+    icon = qtsupport.geticon('arrow.svg', __name__)
     label = 'Pointer'
     name = 'pointer'
 
@@ -122,7 +122,7 @@ class PointerMode(MouseMode):
 class ScrollHandMode(MouseMode):
     dragmode = QtWidgets.QGraphicsView.ScrollHandDrag
     cursor = None
-    icon = qt4support.geticon('hand.svg', __name__)
+    icon = qtsupport.geticon('hand.svg', __name__)
     label = 'Scroll hand'
     name = 'hand'
 
@@ -177,7 +177,7 @@ class RubberBandMode(MouseMode):
 
     dragmode = QtWidgets.QGraphicsView.RubberBandDrag
     cursor = QtCore.Qt.CrossCursor
-    icon = qt4support.geticon('area.svg', __name__)
+    icon = qtsupport.geticon('area.svg', __name__)
     label = 'Rubber band'
     name = 'rubberband'
 

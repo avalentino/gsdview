@@ -52,7 +52,7 @@ def init(app):
     from osgeo import gdal
 
     from gsdview import utils
-    from gsdview import qt4support
+    from gsdview import qtsupport
 
     from gsdview.gdalbackend import widgets
     from gsdview.gdalbackend import gdalsupport
@@ -69,7 +69,7 @@ def init(app):
                                        'http://www.gdal.org')
 
     # GDAL icon
-    icon = qt4support.geticon('GDALLogoColor.svg', __name__)
+    icon = qtsupport.geticon('GDALLogoColor.svg', __name__)
 
     # update the settings dialog
     #page = widgets.GDALPreferencesPage(app.preferencesdialog)

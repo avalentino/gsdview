@@ -33,7 +33,7 @@ from qt import QtCore, QtWidgets, QtGui
 
 from gsdview import info
 from gsdview import utils
-from gsdview import qt4support
+from gsdview import qtsupport
 from gsdview.five import string_types
 
 
@@ -82,7 +82,7 @@ def _choosedir(dirname, dialog=None,):
     return _choosefile(dirname, dialog, QtWidgets.QFileDialog.DirectoryOnly)
 
 
-AboutDialogBase = qt4support.getuiform('aboutdialog', __name__)
+AboutDialogBase = qtsupport.getuiform('aboutdialog', __name__)
 
 
 class AboutDialog(QtWidgets.QDialog, AboutDialogBase):
@@ -92,10 +92,10 @@ class AboutDialog(QtWidgets.QDialog, AboutDialogBase):
         self.setupUi(self)
 
         # Context menu actions
-        qt4support.setViewContextActions(self.versionsTableWidget)
+        qtsupport.setViewContextActions(self.versionsTableWidget)
 
         # Set icons
-        logofile = qt4support.geticonfile('GSDView.png', __name__)
+        logofile = qtsupport.geticonfile('GSDView.png', __name__)
         self.setLogo(logofile)
 
         # Set contents
@@ -158,7 +158,7 @@ class FileEntryWidget(QtWidgets.QWidget):
         if contents:
             self.lineEdit.setText(contents)
 
-        icon = qt4support.geticon('open.svg', __name__)
+        icon = qtsupport.geticon('open.svg', __name__)
         self.button = QtWidgets.QPushButton(
             icon, '', toolTip=self.tr('select from file dialog'))
 
@@ -212,7 +212,7 @@ class FileEntryWidget(QtWidgets.QWidget):
         self.lineEdit.setText(text)
 
 
-GeneralPreferencesPageBase = qt4support.getuiform('general-page', __name__)
+GeneralPreferencesPageBase = qtsupport.getuiform('general-page', __name__)
 
 
 class GeneralPreferencesPage(QtWidgets.QWidget, GeneralPreferencesPageBase):
@@ -318,7 +318,7 @@ class GeneralPreferencesPage(QtWidgets.QWidget, GeneralPreferencesPageBase):
         self.loglevelComboBox.setCurrentIndex(index)
 
 
-PreferencesDialogBase = qt4support.getuiform('preferences', __name__)
+PreferencesDialogBase = qtsupport.getuiform('preferences', __name__)
 
 
 class PreferencesDialog(QtWidgets.QDialog, PreferencesDialogBase):
@@ -342,14 +342,14 @@ class PreferencesDialog(QtWidgets.QDialog, PreferencesDialogBase):
         super(PreferencesDialog, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
-        self.setWindowIcon(qt4support.geticon('preferences.svg', __name__))
+        self.setWindowIcon(qtsupport.geticon('preferences.svg', __name__))
 
         # remove empty page
         page = self.stackedWidget.widget(0)
         self.stackedWidget.removeWidget(page)
 
         # app pages
-        icon = qt4support.geticon('preferences.svg', __name__)
+        icon = qtsupport.geticon('preferences.svg', __name__)
         self.addPage(GeneralPreferencesPage(), icon, self.tr('General'))
 
         #~ icon = qt4support.geticon('harddisk.svg', __name__)
@@ -402,7 +402,7 @@ class PreferencesDialog(QtWidgets.QDialog, PreferencesDialogBase):
             page.save(settings)
 
 
-ExceptionDialogBase = qt4support.getuiform('exceptiondialog', __name__)
+ExceptionDialogBase = qtsupport.getuiform('exceptiondialog', __name__)
 
 
 class ExceptionDialog(QtWidgets.QDialog, ExceptionDialogBase):

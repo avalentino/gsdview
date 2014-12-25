@@ -25,7 +25,7 @@
 from qt import QtCore, QtWidgets
 
 
-# @TODO: move to gdalqt4.py
+# @TODO: move to gdalqt.py
 # @TODO: maybe this is not the best solution. Maybe a custom GraphicsItem
 #        would be better
 # @TODO: use event filters instead

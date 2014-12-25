@@ -28,7 +28,7 @@ from osgeo import ogr, osr
 
 from qt import QtCore, QtWidgets
 
-from gsdview import qt4draw
+from gsdview import qtdraw
 
 
 # Graphics Items ############################################################
@@ -130,7 +130,7 @@ def singleGeometryToGraphicsItem(geom, transform=None):
         point = geom.GetPoint()
         if transform:
             point = transform(*point)
-        qitem = qt4draw.GraphicsPointItem(point[0], point[1], RADIUS)
+        qitem = qtdraw.GraphicsPointItem(point[0], point[1], RADIUS)
 
         # @TODO: style options should be set in a more general way.
         #        Probably it is better to set them in an external function.
@@ -221,7 +221,7 @@ def geometryToGraphicsItem(geom, transform=None):
 
     if geom.GetGeometryCount() > 1:
         #qitem = QtWidgets.QGraphicsItemGroup()
-        qitem = qt4draw.GraphicsItemGroup()
+        qitem = qtdraw.GraphicsItemGroup()
         for index, subgeom in enumerate(geom):
             qsubitem = geometryToGraphicsItem(subgeom, transform)
             if qsubitem:
@@ -294,11 +294,11 @@ def layerToGraphicsItem(layer, srs=None, transform=None):
 
     #~ print 'extent:', layer.GetExtent() # @TODO: check
     #qlayer = GraphicsLayerItem(layer.GetName())
-    qlayer = qt4draw.GraphicsItemGroup()
+    qlayer = qtdraw.GraphicsItemGroup()
     qlayer.setData(DATAKEY['name'], layer.GetName())
     for feature in layer:
         #qfeature = GraphicsFeatureItem(feature.GetFID())
-        qfeature = qt4draw.GraphicsItemGroup()
+        qfeature = qtdraw.GraphicsItemGroup()
         qfeature.setData(DATAKEY['FID'], feature.GetFID())
 
         geom = feature.GetGeometryRef()

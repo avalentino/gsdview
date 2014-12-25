@@ -24,7 +24,7 @@
 
 from qt import QtCore, QtWidgets
 
-from gsdview import qt4support
+from gsdview import qtsupport
 
 from .widgets import StretchDialog
 
@@ -55,7 +55,7 @@ class StretchTool(QtCore.QObject):
         self.toolbar.addAction(self.action)
 
     def _setupAction(self):
-        icon = qt4support.geticon('stretching.svg', __name__)
+        icon = qtsupport.geticon('stretching.svg', __name__)
         action = QtWidgets.QAction(
             icon, self.tr('Stretch'), self,
             objectName='stretchAction',

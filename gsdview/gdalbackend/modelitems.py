@@ -29,10 +29,10 @@ from osgeo import gdal
 
 from qt import QtCore, QtWidgets, QtGui
 
-from gsdview import qt4support
+from gsdview import qtsupport
 from gsdview.errors import OpenError
 from gsdview.gdalbackend import info
-from gsdview.gdalbackend import gdalqt4
+from gsdview.gdalbackend import gdalqt
 from gsdview.gdalbackend import gdalsupport
 
 
@@ -40,7 +40,7 @@ VISIBLE_OVERVIEW_ITEMS = False
 
 
 class MajorObjectItem(QtGui.QStandardItem):
-    iconfile = qt4support.geticon('metadata.svg', __name__)
+    iconfile = qtsupport.geticon('metadata.svg', __name__)
     _type = QtGui.QStandardItem.UserType + 100
     backend = info.name
 
@@ -96,7 +96,7 @@ class BandItem(MajorObjectItem):
 
     '''
 
-    iconfile = qt4support.geticon('rasterband.svg', __name__)
+    iconfile = qtsupport.geticon('rasterband.svg', __name__)
     _type = MajorObjectItem._type + 10
 
     def __init__(self, band, **kwargs):
@@ -170,7 +170,7 @@ class BandItem(MajorObjectItem):
         try:
             # @TODO: check for scenes with no parent
             scene = QtWidgets.QGraphicsScene(parent)
-            graphicsitem = gdalqt4.graphicsItemFactory(self)
+            graphicsitem = gdalqt.graphicsItemFactory(self)
             scene.addItem(graphicsitem)
             return scene, graphicsitem
         except NotImplementedError:  # (NoImplementedError, TypeError):
@@ -238,7 +238,7 @@ class BandItem(MajorObjectItem):
 
 
 class OverviewItem(BandItem):
-    iconfile = qt4support.geticon('overview.svg', __name__)
+    iconfile = qtsupport.geticon('overview.svg', __name__)
     _type = BandItem._type + 1
 
 
@@ -258,7 +258,7 @@ class DatasetItem(MajorObjectItem):
 
     '''
 
-    iconfile = qt4support.geticon('dataset.svg', __name__)
+    iconfile = qtsupport.geticon('dataset.svg', __name__)
     _type = MajorObjectItem._type + 100
 
     def __init__(self, filename, mode=gdal.GA_ReadOnly, **kwargs):
@@ -307,7 +307,7 @@ class DatasetItem(MajorObjectItem):
         try:
             # @TODO: check
             #graphicsitem = gdalqt4.graphicsItemFactory(self)
-            graphicsitem = gdalqt4.GdalRgbGraphicsItem(self)
+            graphicsitem = gdalqt.GdalRgbGraphicsItem(self)
         except TypeError:
             # dataset is not an RGB image
             return None, None
@@ -572,7 +572,7 @@ def datasetitem(filename):
 
 
 class SubDatasetItem(CachedDatasetItem):
-    iconfile = qt4support.geticon('subdataset.svg', __name__)
+    iconfile = qtsupport.geticon('subdataset.svg', __name__)
     _type = DatasetItem._type + 10
 
     def __init__(self, gdalfilename, extrainfo='', **kwargs):

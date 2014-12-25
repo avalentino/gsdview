@@ -37,15 +37,15 @@ _instance = None
 
 
 def init(app):
-    from gsdview import qt4support
+    from gsdview import qtsupport
     from .core import AppZoomTool
 
     tool = AppZoomTool(app)
 
     app.imagemenu.addSeparator()
     app.imagemenu.addActions(tool.actions.actions())
-    toolbar = qt4support.actionGroupToToolbar(tool.actions,
-                                              app.tr('Zoom toolbar'))
+    toolbar = qtsupport.actionGroupToToolbar(tool.actions,
+                                             app.tr('Zoom toolbar'))
     app.addToolBar(toolbar)
 
     # @COMPATIBILITY: pyside 1.0.1

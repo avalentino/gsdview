@@ -32,7 +32,7 @@ sys.path.insert(0, GSDVIEWROOT)
 from qt import QtCore, QtWidgets
 
 from gsdview.mdi import MdiMainWindow
-from gsdview.qt4support import geticon
+from gsdview.qtsupport import geticon
 
 
 class MdiChild(QtWidgets.QTextEdit):

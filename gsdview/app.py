@@ -33,7 +33,7 @@ from exectools.qt import QtToolController, QtDialogLoggingHandler
 from gsdview import info
 from gsdview import utils
 from gsdview import errors
-from gsdview import qt4support
+from gsdview import qtsupport
 from gsdview import graphicsview
 from gsdview import mousemanager
 from gsdview import pluginmanager
@@ -61,7 +61,7 @@ class GSDView(ItemModelMainWindow):
 
         logger.debug('Main window base classes initialization ...')
         QtWidgets.QApplication.setWindowIcon(
-            qt4support.geticon('GSDView.png', __name__))
+            qtsupport.geticon('GSDView.png', __name__))
 
         super(GSDView, self).__init__(parent, flags, **kwargs)
         title = self.tr('GSDView Open Source Edition v. %s') % info.version
@@ -131,7 +131,7 @@ class GSDView(ItemModelMainWindow):
         self.pluginmanager = pluginmanager.PluginManager(self, SYSPLUGINSDIR)
         self.preferencesdialog.addPage(
             pluginmanager.PluginManagerGui(self.pluginmanager, self),
-            qt4support.geticon('plugin.svg', __name__),
+            qtsupport.geticon('plugin.svg', __name__),
             label='Plugins')
 
         # Settings
@@ -327,7 +327,7 @@ class GSDView(ItemModelMainWindow):
         actionsgroup = QtWidgets.QActionGroup(self)
 
         # Open
-        icon = qt4support.geticon('open.svg', __name__)
+        icon = qtsupport.geticon('open.svg', __name__)
         QtWidgets.QAction(
             icon, self.tr('&Open'), actionsgroup,
             objectName='openAction',
@@ -337,7 +337,7 @@ class GSDView(ItemModelMainWindow):
             triggered=self.openFile)
 
         # Close
-        icon = qt4support.geticon('close.svg', __name__)
+        icon = qtsupport.geticon('close.svg', __name__)
         QtWidgets.QAction(
             icon, self.tr('&Close'), actionsgroup,
             objectName='closeAction',
@@ -352,7 +352,7 @@ class GSDView(ItemModelMainWindow):
         # objectName='separator')
 
         # Exit
-        icon = qt4support.geticon('quit.svg', __name__)
+        icon = qtsupport.geticon('quit.svg', __name__)
         QtWidgets.QAction(
             icon, self.tr('&Exit'), actionsgroup,
             objectName='exitAction',
@@ -367,7 +367,7 @@ class GSDView(ItemModelMainWindow):
         actionsgroup = QtWidgets.QActionGroup(self)
 
         # Preferences
-        icon = qt4support.geticon('preferences.svg', __name__)
+        icon = qtsupport.geticon('preferences.svg', __name__)
         QtWidgets.QAction(
             icon, self.tr('&Preferences'), actionsgroup,
             objectName='preferencesAction',
@@ -375,7 +375,7 @@ class GSDView(ItemModelMainWindow):
             statusTip=self.tr('Open the program preferences dialog'),
             triggered=self.showPreferencesDialog)
 
-        icon = qt4support.geticon('full-screen.svg', __name__)
+        icon = qtsupport.geticon('full-screen.svg', __name__)
         QtWidgets.QAction(
             icon, self.tr('&Full Screen'), actionsgroup,
             objectName='fullScreenAction',
@@ -390,7 +390,7 @@ class GSDView(ItemModelMainWindow):
         actionsgroup = QtWidgets.QActionGroup(self)
 
         # About
-        icon = qt4support.geticon('about.svg', __name__)
+        icon = qtsupport.geticon('about.svg', __name__)
         QtWidgets.QAction(
             icon, self.tr('&About'), actionsgroup,
             objectName='aboutAction',
@@ -418,12 +418,12 @@ class GSDView(ItemModelMainWindow):
         # @TODO: stop action
 
     def _addMenuFromActions(self, actions, name):
-        menu = qt4support.actionGroupToMenu(actions, name, self)
+        menu = qtsupport.actionGroupToMenu(actions, name, self)
         self.menuBar().addMenu(menu)
         return menu
 
     def _addToolBarFromActions(self, actions, name):
-        toolbar = qt4support.actionGroupToToolbar(actions, name)
+        toolbar = qtsupport.actionGroupToToolbar(actions, name)
         self.addToolBar(toolbar)
 
         # @COMPATIBILITY: pyside 1.0.1
@@ -506,7 +506,7 @@ class GSDView(ItemModelMainWindow):
                 if winstate and winstate != QtCore.Qt.WindowNoState:
                     # @COMPATIBILITY: presumably a bug in PyQt4 4.7.2
                     # @TODO: check
-                    winstate = qt4support.intToWinState[winstate]
+                    winstate = qtsupport.intToWinState[winstate]
                     self.setWindowState(winstate)
             except KeyError:
                 logging.debug('unable to restore the window state',

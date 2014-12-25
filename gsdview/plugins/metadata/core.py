@@ -24,7 +24,7 @@
 
 from qt import QtCore, QtWidgets
 
-from gsdview import qt4support
+from gsdview import qtsupport
 
 
 class MetadataViewer(QtWidgets.QDockWidget):
@@ -44,7 +44,7 @@ class MetadataViewer(QtWidgets.QDockWidget):
             QtWidgets.QAbstractItemView.NoEditTriggers)
         self.infoTable.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
-        qt4support.setViewContextActions(self.infoTable)
+        qtsupport.setViewContextActions(self.infoTable)
 
         self.setWidget(self.infoTable)
 

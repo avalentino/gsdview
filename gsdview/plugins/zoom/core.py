@@ -26,7 +26,7 @@ import logging
 
 from qt import QtCore, QtWidgets, QtGui
 
-from gsdview import qt4support
+from gsdview import qtsupport
 
 
 class ZoomTool(QtCore.QObject):
@@ -44,7 +44,7 @@ class ZoomTool(QtCore.QObject):
         actions = QtWidgets.QActionGroup(self)
 
         # Zoom in
-        icon = qt4support.geticon('zoom-in.svg', 'gsdview')
+        icon = qtsupport.geticon('zoom-in.svg', 'gsdview')
         QtWidgets.QAction(
             icon, self.tr('Zoom In'), actions,
             objectName='zoomInAction',
@@ -53,7 +53,7 @@ class ZoomTool(QtCore.QObject):
             triggered=self.zoomIn)
 
         # Zoom out
-        icon = qt4support.geticon('zoom-out.svg', 'gsdview')
+        icon = qtsupport.geticon('zoom-out.svg', 'gsdview')
         QtWidgets.QAction(
             icon, self.tr('Zoom Out'), actions,
             objectName='zoomOutAction',
@@ -62,7 +62,7 @@ class ZoomTool(QtCore.QObject):
             triggered=self.zoomOut)
 
         # Zoom fit
-        icon = qt4support.geticon('zoom-fit.svg', 'gsdview')
+        icon = qtsupport.geticon('zoom-fit.svg', 'gsdview')
         QtWidgets.QAction(
             icon, self.tr('Zoom Fit'), actions,
             objectName='zoomFitAction',
@@ -70,7 +70,7 @@ class ZoomTool(QtCore.QObject):
             triggered=self.zoomFit)
 
         # Zoom 100
-        icon = qt4support.geticon('zoom-100.svg', 'gsdview')
+        icon = qtsupport.geticon('zoom-100.svg', 'gsdview')
         QtWidgets.QAction(
             icon, self.tr('Zoom 100%'), actions,
             objectName='zoom100Action',
