@@ -136,6 +136,10 @@ class ScrollHandMode(MouseMode):
             except AttributeError:
                 delta = event.delta() / 8.  # degree
 
+            if delta == 0:
+                event.accept()
+                return True
+
             # Conversion from degrees to zoom factor
             if abs(delta) < 15:
                 # fine resolution mouse
