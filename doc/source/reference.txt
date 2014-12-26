@@ -21,8 +21,8 @@ Main Application
    gsdview.mdi
    gsdview.mousemanager
    gsdview.pluginmanager
-   gsdview.qt4draw
-   gsdview.qt4support
+   gsdview.qtdraw
+   gsdview.qtsupport
    gsdview.qtwindowlistmenu
    gsdview.utils
    gsdview.widgets
@@ -30,12 +30,12 @@ Main Application
    gsdview.gdalbackend
    gsdview.gdalbackend.core
    gsdview.gdalbackend.gdalexectools
-   gsdview.gdalbackend.gdalqt4
+   gsdview.gdalbackend.gdalqt
    gsdview.gdalbackend.gdalsupport
    gsdview.gdalbackend.helpers
    gsdview.gdalbackend.info
    gsdview.gdalbackend.modelitems
-   gsdview.gdalbackend.ogrqt4
+   gsdview.gdalbackend.ogrqt
    gsdview.gdalbackend.widgets
 
 
@@ -47,7 +47,7 @@ Libraries
 
    exectools
    exectools.std
-   exectools.qt4
+   exectools.qt
    exectools.gtk2
 
    gsdtools
@@ -65,7 +65,7 @@ Plugins
 .. autosummary::
    :toctree: api/
 
-   logplane
+   logpane
 
    gsdtoolsui
    gsdtoolsui.core

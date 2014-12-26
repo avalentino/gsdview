@@ -5,7 +5,8 @@
 ### :Revision: $Revision$
 ### :Date: $Date$
 
-BUILDDIR    = build
+PYTHON = python3
+BUILDDIR = build
 DOCBUILDDIR = $(BUILDDIR)/sphinx
 #SIGNKEYID = antonio.valentino@tiscai.it
 DEBUILD_OPTIONS = -us -uc
@@ -33,11 +34,11 @@ doc/gsdview.1: doc/source/manpage.txt
 
 
 sdist: ui html man
-	python setup.py sdist --formats=gztar,zip
+	$(PYTHON) setup.py sdist --formats=gztar,zip
 
 # Not available in setuptools (??)
-#	python setup.py sdist --manifest-only
-#	python setup.py sdist --force-manifest
+#	$(PYTHON) setup.py sdist --manifest-only
+#	$(PYTHON) setup.py sdist --force-manifest
 
 bdist: deb rpm
 
@@ -51,16 +52,18 @@ deb: ui docs sdist
 	mv $(BUILDDIR)/deb/gsdview_?.?.* dist
 
 rpmspec:
-	python setup.py bdist_rpm --spec-only
+	$(PYTHON) setup.py bdist_rpm --spec-only
 
 rpm: sdist
-	python setup.py bdist_rpm
+	$(PYTHON) setup.py bdist_rpm
 
 
+PYUIC=pyuic5
+ifeq ($(QT_API),pyqt4)
+	PYUIC=pyuic4
+endif
 ifeq ($(QT_API),pyside)
-PYUIC=pyside-uic
-else
-PYUIC=pyuic4
+	PYUIC=pyside-uic
 endif
 
 UIFILES = $(wildcard gsdview/ui/*.ui)\
@@ -69,6 +72,7 @@ UIFILES = $(wildcard gsdview/ui/*.ui)\
 PYUIFILES = $(patsubst %.ui,%.py,$(UIFILES))
 
 ui: $(PYUIFILES)
+	echo "PYUIC: $(PYUIC)"
 	touch gsdview/ui/__init__.py
 	touch gsdview/gdalbackend/ui/__init__.py
 	touch gsdview/plugins/stretch/ui/__init__.py

@@ -1,7 +1,7 @@
-gsdview.qt4support
-==================
+gsdview.qtsupport
+=================
 
-.. automodule:: gsdview.qt4support
+.. automodule:: gsdview.qtsupport
 
    
    
@@ -9,7 +9,6 @@ gsdview.qt4support
 
    .. autosummary::
    
-      StringIO
       actionGroupToMenu
       actionGroupToToolbar
       callExpensiveFunc
@@ -42,6 +41,7 @@ gsdview.qt4support
    .. autosummary::
    
       ConfigParser
+      StringIO
    
    
 

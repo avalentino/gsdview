@@ -1,7 +1,7 @@
-exectools.qt4
-=============
+exectools.qt
+============
 
-.. automodule:: exectools.qt4
+.. automodule:: exectools.qt
 
    
    
@@ -9,6 +9,7 @@ exectools.qt4
 
    .. autosummary::
    
+      callable
       level2tag
    
    
@@ -21,12 +22,12 @@ exectools.qt4
    
       BaseOutputHandler
       BaseToolController
-      Qt4Blinker
-      Qt4DialogLoggingHandler
-      Qt4LoggingHandler
-      Qt4OutputHandler
-      Qt4OutputPlane
-      Qt4ToolController
+      QtBlinker
+      QtDialogLoggingHandler
+      QtLoggingHandler
+      QtOutputHandler
+      QtOutputPane
+      QtToolController
    
    
 

@@ -18,8 +18,8 @@ gsdview.app
       GSDView
       ItemModelMainWindow
       PreferencesDialog
-      Qt4DialogLoggingHandler
-      Qt4ToolController
+      QtDialogLoggingHandler
+      QtToolController
    
    
 

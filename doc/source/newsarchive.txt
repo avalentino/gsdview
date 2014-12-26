@@ -149,11 +149,10 @@ __ `GSDView project page`_
              This is still an alpha release with a minimal set of features.
 
 
+.. _PyQt5: http://pyqt.sourceforge.net/Docs/PyQt5
 .. _Git: http://git-scm.com
 .. _Allura: https://sourceforge.net/p/allura/wiki
-.. _PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt
 .. _SIP: http://www.riverbankcomputing.co.uk/software/sip
-.. _PySide: http://www.pyside.org
 .. _Qt4: http://qt-project.org
 .. _Fedora: http://fedoraproject.org
 .. _Launchpad: https://www.launchpad.net
@@ -163,4 +162,3 @@ __ `GSDView project page`_
 .. _download: http://sourceforge.net/projects/gsdview/files
 .. _sphinx: http://sphinx-doc.org
 .. _SourceForge: http://sourceforge.net
-

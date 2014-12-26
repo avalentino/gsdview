@@ -31,7 +31,6 @@ gsdview.widgets
       GeneralPreferencesPageBase
       PreferencesDialog
       PreferencesDialogBase
-      QsciExceptionDialog
    
    
 

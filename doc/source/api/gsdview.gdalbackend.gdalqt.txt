@@ -1,7 +1,7 @@
-gsdview.gdalbackend.gdalqt4
-===========================
+gsdview.gdalbackend.gdalqt
+==========================
 
-.. automodule:: gsdview.gdalbackend.gdalqt4
+.. automodule:: gsdview.gdalbackend.gdalqt
 
    
    

@@ -1,7 +1,7 @@
-gsdview.qt4draw
-===============
+gsdview.qtdraw
+==============
 
-.. automodule:: gsdview.qt4draw
+.. automodule:: gsdview.qtdraw
 
    
    

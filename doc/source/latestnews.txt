@@ -1,9 +1,15 @@
+:26/12/2014: Switch to PyQt5_
+
+             PyQt5_ is now the default binding for Qt and also the reference API.
+             PyQt4_ is still supported while support for PySide_ is considered
+             experimental.
+
 :21/06/2013: Development site moved to GitHub_.
 
              The `development site`_ of GSDView has been moved to GitHub_.
              Now the source code repository, the wiki, and the issue tracker
              can be found at https://github.com/avalentino/gsdview.
-             The main project page togeter with the the home page and file
+             The main project page together with the the home page and file
              download hosting are still on SourceForge_.
 
 :26/12/2012: Renewed sphinx_ theme.
@@ -23,6 +29,8 @@
              Contextually support for Python < 2.6 has been dropped.
 
 
+.. _PyQt4: http://pyqt.sourceforge.net/Docs/PyQt4
+.. _PySide: http://www.pyside.org
 .. _GitHub: https://github.com
 .. _`development site`: https://github.com/avalentino/gsdview
 .. _SourceForge: http://sourceforge.net

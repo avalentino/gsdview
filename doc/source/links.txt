@@ -306,8 +306,11 @@ Free EO Data
 Optical and SAR imagery
 ~~~~~~~~~~~~~~~~~~~~~~~
 
+Sentinel1_
+    * `Sentinel1 data access <https://sentinel.esa.int/web/sentinel/sentinel-data-access>`_
+
 ESA_ Sample data
-    * https://earth.esa.int/web/nest/downloads/sample-data
+    * `NEST smaple data <https://earth.esa.int/web/nest/downloads/sample-data>`_
 
 ERS_
     * `Earthquakes <http://earth.esa.int/category/index.cfm?fcategoryid=37>`_
@@ -376,6 +379,8 @@ misc
     * http://asterweb.jpl.nasa.gov/TerraLook_download.asp
     * ftp://tl:tl@asterweb.jpl.nasa.gov/Collections
 
+.. _Sentinel1: https://sentinel.esa.int/web/sentinel/missions/sentinel-1
+.. _ESA: https://earth.esa.int
 .. _ERS: http://earth.esa.int/ers
 .. _ENVISAT: http://envisat.esa.int
 .. _`COSMO-SkyMed`: http://www.cosmo-skymed.it
@@ -432,6 +437,9 @@ GETASSE_ 3.0 DEM
     The Getasse 3.0 Digital Elevation Model for use with Amorgos consists
     of 288 files of 12 MB each. If you prefer to receive a copy of the DEM
     on DVD-ROM please contact Eohelp.
+`ASTER DEM`_
+    High resolution (~30m) global DEM.
+
 
 .. _SRTM: http://www2.jpl.nasa.gov/srtm
 .. _SRTM4: http://srtm.csi.cgiar.org
@@ -439,7 +447,7 @@ GETASSE_ 3.0 DEM
 .. _GTOPO30: http://www1.gsi.go.jp/geowww/globalmap-gsi/gtopo30/gtopo30.html
 .. _NOAA: http://www.ngdc.noaa.gov/mgg/topo/globe.html
 .. _GETASSE: http://earth.esa.int/services/amorgos/download/getasse
-
+.. _`ASTER DEM`: http://gdem.ersdac.jspacesystems.or.jp
 
 Other
 ~~~~~
