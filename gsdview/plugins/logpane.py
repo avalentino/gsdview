@@ -19,7 +19,7 @@
 ### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
 
 
-'''Log plane.'''
+'''Log pane.'''
 
 __version__ = (0, 7, 0)
 __requires__ = []
@@ -32,7 +32,7 @@ __all__ = [
 ]
 
 # Info
-name = 'logplane'
+name = 'logpane'
 version = '.'.join(map(str, __version__)) + '.dev'
 
 short_description = 'Log plane for GSDView'
@@ -56,19 +56,19 @@ def init(app):
     panel = QtWidgets.QDockWidget('Output Log', app, objectName='outputPanel')
     # @TODO: try to add actions to a QTextEdit widget instead of using a
     #        custom widget
-    logplane = QtOutputPane()
-    panel.setWidget(logplane)
+    logpane = QtOutputPane()
+    panel.setWidget(logpane)
 
     app.addDockWidget(QtCore.Qt.BottomDockWidgetArea, panel)
 
     # setupLogger
     formatter = logging.Formatter('%(levelname)s: %(message)s')
-    handler = QtLoggingHandler(logplane)
+    handler = QtLoggingHandler(logpane)
     handler.setFormatter(formatter)
     app.logger.addHandler(handler)
 
     # Connect signals
-    logplane.planeHideRequest.connect(panel.hide)
+    logpane.planeHideRequest.connect(panel.hide)
 
 
 def close(app):
