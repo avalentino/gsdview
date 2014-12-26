@@ -7,13 +7,13 @@ DISTROOT=../dist
 ONEDIRBUNDLE=$(DISTROOT)/GSDView.app
 ONEFILEBUNDLE=$(DISTROOT)/onefile/GSDView.app
 
-.PHONY: onedir onefile clean distclean html env
+.PHONY: onedir onefile clean distclean html env qt
 
 html:
 	$(MAKE) -C .. html
 
 qt:
-	$(CP) -R ../qt .
+	cp -R ../qt .
 
 onedir: gsdview-onedir.spec html qt
 	$(PYTHON) $(PYINSTALLERROOT)/pyinstaller.py $<
@@ -38,11 +38,11 @@ pyinstaller:
 	#git clone -b master git://github.com/pyinstaller/pyinstaller.git
 
 # @TODO: see http://www.pyinstaller.org/ticket/657
-env: pyinstaller
+env: pyinstaller qt
 	cd pyinstaller && git pull
 	#cd pyinstaller/source && python waf configure build install
-	if ! [ -f pyinstaller/gsdview_patches_applied ]; then \
-		cd pyinstaller;\
-		patch -b -N -p0 < ../patches/qt4-api2.patch;\
-		touch gsdview_patches_applied;\
-	fi
+	#if ! [ -f pyinstaller/gsdview_patches_applied ]; then \
+	#	cd pyinstaller;\
+	#	patch -b -N -p0 < ../patches/qt4-api2.patch;\
+	#	touch gsdview_patches_applied;\
+	#fi
