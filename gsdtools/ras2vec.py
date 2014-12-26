@@ -81,11 +81,8 @@ def makesrs(srs):
     return srs
 
 
-def create_box_layer(ds, name='', srs=None, gtype=ogr.wkbUnknown, opt=None):
+def create_box_layer(ds, name='', srs=None, gtype=ogr.wkbUnknown, opt=tuple()):
     srs = makesrs(srs)
-
-    if opt is None:
-        opt = ''
 
     layer = ds.CreateLayer(name, srs, gtype, opt)
 
@@ -101,11 +98,9 @@ def create_box_layer(ds, name='', srs=None, gtype=ogr.wkbUnknown, opt=None):
     return layer
 
 
-def create_GCP_layer(ds, name='', srs=None, gtype=ogr.wkbPoint25D, opt=None):
+def create_GCP_layer(ds, name='', srs=None, gtype=ogr.wkbPoint25D,
+                     opt=tuple()):
     srs = makesrs(srs)
-
-    if opt is None:
-        opt = ''
 
     layer = ds.CreateLayer(name, srs, gtype, opt)
 
