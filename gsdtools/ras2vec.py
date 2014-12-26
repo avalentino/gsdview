@@ -228,7 +228,7 @@ def export_bounding_box(layer, corners, description='', mark_corners=True):
             feature.SetField('Name', '(%.1f, %.1f)' % (line, pixel))
             feature.SetField('Description',
                              'row = %.1f\ncol = %.1f' % (line, pixel))
-            feature.SetStyleString('SYMBOL(c:#FF0000)')     # red
+            feature.SetStyleString('SYMBOL(s:1,c:#FF0000)')     # red
 
             feature.SetGeometry(point)
 
