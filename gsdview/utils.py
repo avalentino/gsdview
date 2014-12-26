@@ -48,8 +48,8 @@ def default_workdir():
 
     if sys.platform[:3] == 'win':
         return 'C:\\'
-        #return QtWidgets.QDesktopServices.storageLocation(
-        #                           QtWidgets.QDesktopServices.DocumentsLocation)
+        #return QtGui.QDesktopServices.storageLocation(
+        #                           QtGui.QDesktopServices.DocumentsLocation)
     else:
         return os.path.expanduser('~')
 

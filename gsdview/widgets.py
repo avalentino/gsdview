@@ -464,7 +464,7 @@ class ExceptionDialog(QtWidgets.QDialog, ExceptionDialogBase):
         if 'mailto' in str(link):
             self.sendBugReport()
         else:
-            QtWidgets.QDesktopServices.openUrl(QtCore.QUrl(link))
+            QtGui.QDesktopServices.openUrl(QtCore.QUrl(link))
 
     def errorMsg(self):
         self.errormsgLabel.text()
@@ -550,7 +550,7 @@ class ExceptionDialog(QtWidgets.QDialog, ExceptionDialogBase):
         url.addQueryItem('subject', subject)
         url.addQueryItem('body', body)
 
-        ret = QtWidgets.QDesktopServices.openUrl(url)
+        ret = QtGui.QDesktopServices.openUrl(url)
         if not ret:
             msg = self.tr('Unable to send the bug-report.\n'
                           'Please save the bug-report on file and send it '

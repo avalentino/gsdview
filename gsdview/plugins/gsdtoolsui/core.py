@@ -27,7 +27,7 @@ import sys
 import logging
 import tempfile
 
-from qt import QtCore, QtWidgets
+from qt import QtCore, QtWidgets, QtGui
 
 from gsdview import utils
 from gsdview import qtsupport
@@ -226,7 +226,7 @@ class GSDToolsController(QtCore.QObject):
         url.addQueryItem('t', 'h')                      # map type (hybrid)
         url.addQueryItem('z', '9')                      # zoom level (1, 20)
 
-        success = QtWidgets.QDesktopServices.openUrl(url)
+        success = QtGui.QDesktopServices.openUrl(url)
         if not success:
             logging.warning('unable to open URL: "%s"' % str(url))
             # @TODO: check
