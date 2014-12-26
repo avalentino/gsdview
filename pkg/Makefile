@@ -12,10 +12,13 @@ ONEFILEBUNDLE=$(DISTROOT)/onefile/GSDView.app
 html:
 	$(MAKE) -C .. html
 
-onedir: gsdview-onedir.spec html
+qt:
+	$(CP) -R ../qt .
+
+onedir: gsdview-onedir.spec html qt
 	$(PYTHON) $(PYINSTALLERROOT)/pyinstaller.py $<
 
-onefile: gsdview-onefile.spec html
+onefile: gsdview-onefile.spec html qt
 	$(PYTHON) $(PYINSTALLERROOT)/pyinstaller.py $<
 
 clean:
@@ -27,6 +30,7 @@ clean:
 	#if [ -d ../dist ]; then rmdir --ignore-fail-on-non-empty ../dist; fi
 
 distclean: clean
+	$(RM) -r qt
 	$(RM) -r pyinstaller gsdview_patches_applied
 
 pyinstaller:
@@ -42,4 +46,3 @@ env: pyinstaller
 		patch -b -N -p0 < ../patches/qt4-api2.patch;\
 		touch gsdview_patches_applied;\
 	fi
-
