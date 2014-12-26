@@ -399,7 +399,12 @@ class GSDView(ItemModelMainWindow):
             triggered=lambda: self.aboutdialog.exec_())
 
         # AboutQt
-        icon = QtGui.QIcon(':/trolltech/qmessagebox/images/qtlogo-64.png')
+        # @COMPATIBILITY: Qt4 --> Qt5
+        icon = QtGui.QIcon(':/qt-project.org/qmessagebox/images/qtlogo-64.png')
+        if not icon.availableSizes():
+            icon = QtGui.QIcon(':/trolltech/qmessagebox/images/qtlogo-64.png')
+        if not icon.availableSizes():
+            icon = QtGui.QIcon.fromTheme('qtlogo-64')
         QtWidgets.QAction(
             icon, self.tr('About &Qt'), actionsgroup,
             objectName='aboutQtAction',
