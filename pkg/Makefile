@@ -30,8 +30,7 @@ clean:
 	#if [ -d ../dist ]; then rmdir --ignore-fail-on-non-empty ../dist; fi
 
 distclean: clean
-	$(RM) -r qt
-	$(RM) -r pyinstaller gsdview_patches_applied
+	$(RM) -r dist qt pyinstaller gsdview_patches_applied
 
 pyinstaller:
 	git clone git://github.com/pyinstaller/pyinstaller.git
@@ -41,8 +40,8 @@ pyinstaller:
 env: pyinstaller qt
 	cd pyinstaller && git pull
 	#cd pyinstaller/source && python waf configure build install
-	#if ! [ -f pyinstaller/gsdview_patches_applied ]; then \
-	#	cd pyinstaller;\
-	#	patch -b -N -p0 < ../patches/qt4-api2.patch;\
-	#	touch gsdview_patches_applied;\
-	#fi
+	if ! [ -f pyinstaller/gsdview_patches_applied ]; then \
+		cd pyinstaller;\
+		patch -b -N -p1 < ../patches/qt4-api2.patch;\
+		touch gsdview_patches_applied;\
+	fi

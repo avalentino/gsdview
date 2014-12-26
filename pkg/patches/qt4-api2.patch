@@ -1,8 +1,8 @@
-Index: support/rthooks/pyi_rth_qt4plugins.py
-===================================================================
---- support/rthooks/pyi_rth_qt4plugins.py	(revision 1804)
-+++ support/rthooks/pyi_rth_qt4plugins.py	(working copy)
-@@ -9,6 +9,17 @@
+diff --git a/PyInstaller/loader/rthooks/pyi_rth_qt4plugins.py b/PyInstaller/loader/rthooks/pyi_rth_qt4plugins.py
+index 43b8ded..fee7ebc 100644
+--- a/PyInstaller/loader/rthooks/pyi_rth_qt4plugins.py
++++ b/PyInstaller/loader/rthooks/pyi_rth_qt4plugins.py
+@@ -19,6 +19,17 @@ d = "qt4_plugins"
  d = os.path.join(sys._MEIPASS, d)
  
  
