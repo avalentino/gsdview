@@ -92,7 +92,7 @@ __all__ = [
     'QItemEditorCreatorBase',
     'QItemEditorFactory',
     'QKeyEventTransition',
-    'QKeySequenceEdit',
+    #'QKeySequenceEdit',
     'QLCDNumber',
     'QLabel',
     'QLayout',
@@ -119,8 +119,8 @@ __all__ = [
     'QRubberBand',
     'QScrollArea',
     'QScrollBar',
-    'QScroller',
-    'QScrollerProperties',
+    #'QScroller',
+    #'QScrollerProperties',
     'QShortcut',
     'QSizeGrip',
     'QSizePolicy',
@@ -211,7 +211,7 @@ if qt_api == 'pyqt5':
 
 elif qt_api == 'pyqt4':
     import PyQt4.QtGui as _QtGui
-    locals().update(dict(k, getattr(_QtGui, name)) for name in __all__)
+    locals().update(dict((name, getattr(_QtGui, name)) for name in __all__))
     del _QtGui
     QFileDialog.getOpenFileName = QFileDialog.getOpenFileNameAndFilter
     QFileDialog.getOpenFileNames = QFileDialog.getOpenFileNamesAndFilter
@@ -219,7 +219,7 @@ elif qt_api == 'pyqt4':
 
 elif qt_api == 'pyside':
     import PySide.QtGui as _QtGui
-    locals().update(dict(k, getattr(_QtGui, name)) for name in __all__)
+    locals().update(dict((name, getattr(_QtGui, name)) for name in __all__))
     del _QtGui
 
     #QFileDialog.getOpenFileName = QFileDialog.getOpenFileNameAndFilter

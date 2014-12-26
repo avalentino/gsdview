@@ -20,6 +20,8 @@
 '''Tools for running external processes in a Qt GUI.'''
 
 
+from __future__ import absolute_import
+
 import time
 import logging
 
