@@ -45,16 +45,13 @@ class StretchTool(QtCore.QObject):
 
         self.dialog.finished.connect(lambda: self.action.setChecked(False))
         self.app.mdiarea.subWindowActivated.connect(self.onSubWindowChanged)
+        #~ self.app.treeview.clicked.connect(self.onItemClicked)
+        #~ self.app.subWindowClosed(self.onModelChanged)
         self.dialog.valueChanged.connect(self.onStretchChanged)
-        self.dialog.accepted.connect(self.saveDialogState)
 
         self.toolbar = QtWidgets.QToolBar(self.tr('Stretching Toolbar'))
         self.toolbar.setObjectName('stretchingToolbar')
         self.toolbar.addAction(self.action)
-
-        self._state_registry = {}
-        #self.app.subWindowClosed(self.onItemClosed)
-        self.app.datamodel.rowsAboutToBeRemoved.connect(self.onItemClosed)
 
     def _setupAction(self):
         icon = qtsupport.geticon('stretching.svg', __name__)
@@ -67,17 +64,10 @@ class StretchTool(QtCore.QObject):
 
         return action
 
-    @QtCore.Slot(QtCore.QModelIndex, int, int)
-    def onItemClosed(self, index, start, end):
-        for i in range(start, end+1):
-            subindex = index.child(i, 0)
-            item = self.app.datamodel.itemFromIndex(subindex)
-            self._state_registry.pop(item.filename, None)
-
     @QtCore.Slot(bool)
     def onButtonToggled(self, checked=True):
         if checked:
-            self.restoreDialogState()
+            self.reset()
             self.dialog.show()
             #self.action.setChecked(True)
         else:
@@ -85,38 +75,7 @@ class StretchTool(QtCore.QObject):
             self.saveDialogState()
             self.action.setChecked(False)
 
-    @QtCore.Slot()
-    def saveDialogState(self):
-        item = self.currentGraphicsItem()
-        if item:
-            self.dialog.saveState()
-            key = item.filename
-            self._state_registry[key] = self.sialog.state
-        #else:
-        #    logging.debug('no item')
-
-    def restoreDialogState(self, item=None):
-        if item is None:
-            item = self.currentGraphicsItem()
-        if item is None or not hasattr(item, 'stretch'):
-            self.dialog.setEnabled(False)
-            return
-
-        self.dialog.setEnabled(True)
-
-        imin, imax = item.stretch.range
-
-        itemId = item.path()
-        if itemId in self._state_registry:
-            state = self._data[itemId]
-            state['low'] = imin
-            state['high'] = imax
-            self.dialog.setState(state)
-        else:
-            minimum, maximum = item.dataRange()
-            self._setDialogState(imin, imax, minimum, maximum)
-
-    def resetDialogState(self, item=None):
+    def reset(self, item=None):
         if item is None:
             item = self.currentGraphicsItem()
         if item is None or not hasattr(item, 'stretch'):
@@ -128,9 +87,9 @@ class StretchTool(QtCore.QObject):
         imin, imax = item.stretch.range
         minimum, maximum = item.dataRange()
 
-        self._setDialogState(imin, imax, minimum, maximum)
+        # @TODO: remove this
+        #minimum = None
 
-    def _setDialogState(self, imin, imax, minimum=None, maximum=None):
         if minimum is not None:
             self.dialog.stretchwidget.setMinimum(minimum)
         else:
@@ -175,7 +134,7 @@ class StretchTool(QtCore.QObject):
             self.action.setEnabled(True)
             if self.dialog.isVisible():
                 self.dialog.setEnabled(True)
-                self.restoreDialogtate(item)
+                self.reset(item)
         else:
             if self.dialog.isVisible():
                 self.action.setEnabled(True)
