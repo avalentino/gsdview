@@ -38,7 +38,6 @@ if qt_api is None:
         import PyQt5
         qt_api = 'pyqt5'
     except ImportError:
-        raise
         try:
             prepare_pyqt4()
             import PyQt4
