@@ -221,11 +221,22 @@ class GSDToolsController(QtCore.QObject):
         lon, lat = cmapper.imgToGeoPoints(pixel, line)
 
         url = QtCore.QUrl('http://maps.google.com/maps')
-        query = QtCore.QUrlQuery()
+
+        # @COMPATIBILITY: PyQt4 --> PyQt5
+        try:
+            query = QtCore.QUrlQuery()
+        except AttributeError:
+            query = url
+
         query.addQueryItem('q', '%fN,%fE' % (lat, lon))   # coordinates
         query.addQueryItem('t', 'h')                      # map type (hybrid)
         query.addQueryItem('z', '9')                      # zoom level (1, 20)
-        url.setQuery(query)
+
+        # @COMPATIBILITY: PyQt4 --> PyQt5
+        try:
+            url.setQuery(query)
+        except AttributeError:
+            pass
 
         success = QtGui.QDesktopServices.openUrl(url)
         if not success:
