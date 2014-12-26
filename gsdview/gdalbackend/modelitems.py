@@ -1,22 +1,21 @@
 # -*- coding: utf-8 -*-
 
-### Copyright (C) 2008-2014 Antonio Valentino <antonio.valentino@tiscali.it>
-
-### This file is part of GSDView.
-
-### GSDView is free software; you can redistribute it and/or modify
-### it under the terms of the GNU General Public License as published by
-### the Free Software Foundation; either version 2 of the License, or
-### (at your option) any later version.
-
-### GSDView is distributed in the hope that it will be useful,
-### but WITHOUT ANY WARRANTY; without even the implied warranty of
-### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-### GNU General Public License for more details.
-
-### You should have received a copy of the GNU General Public License
-### along with GSDView; if not, write to the Free Software
-### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
+# GSDView - Geo-Spatial Data Viewer
+# Copyright (C) 2008-2014 Antonio Valentino <antonio.valentino@tiscali.it>
+#
+# This module is free software you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation either version 2 of the License, or
+# (at your option) any later version.
+#
+# This module is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this module if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
 '''GDAL items for Qt QStandardItemModel.'''
@@ -85,6 +84,11 @@ class MajorObjectItem(QtGui.QStandardItem):
         self._closeChildren()
         self._obj = None
 
+    def path(self):
+        parent = self.partet()
+        parentpath = parent.path() if parent else ''
+        return '/'.join(parentpath, str(self.row))
+
 
 class BandItem(MajorObjectItem):
     '''Raster band item.
@@ -92,7 +96,7 @@ class BandItem(MajorObjectItem):
     This class implements both the QStandardItem and the
     gdal.Band interface.
 
-    It also as attatched a graphics scene containing a GdalGraphicsItem
+    It also as attached a graphics scene containing a GdalGraphicsItem
 
     '''
 
@@ -394,6 +398,11 @@ class DatasetItem(MajorObjectItem):
             #        underlying C/C++ object is deleted before all sub-windows
             #        that hold a reference to the stditem are destroyed
             parent.takeRow(self.row())
+
+    def path(self):
+        parent = self.partet()
+        parentpath = parent.path() if parent else ''
+        return '/'.join(parentpath, self.filemame + ':')
 
 
 class CachedDatasetItem(DatasetItem):
