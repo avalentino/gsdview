@@ -62,7 +62,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'GSDView'
-copyright = '2008-2014, Antonio Valentino'
+copyright = '2008-2015, Antonio Valentino'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -320,7 +320,7 @@ texinfo_documents = [
 epub_title = 'GSDView Open Edition'
 epub_author = 'Antonio Valentino'
 epub_publisher = 'Antonio Valentino'
-epub_copyright = '2008-2014, Antonio Valentino'
+epub_copyright = '2008-2015, Antonio Valentino'
 
 # The basename for the epub file. It defaults to the project name.
 #epub_basename = u'GSDview'

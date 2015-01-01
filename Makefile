@@ -1,9 +1,7 @@
-### :Source: Makefile
-### :Author: Antonio Valentino
-### :Contact: antonio.valentino@tiscali.it
-### :URL: http://gsdview.sourceforge.net
-### :Revision: $Revision$
-### :Date: $Date$
+# :Source: Makefile
+# :Author: Antonio Valentino
+# :Contact: antonio.valentino@tiscali.it
+# :URL: http://gsdview.sourceforge.net
 
 PYTHON = python3
 BUILDDIR = build

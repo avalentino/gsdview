@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # GSDView - Geo-Spatial Data Viewer
-# Copyright (C) 2011-2014 Antonio Valentino <antonio.valentino@tiscali.it>
+# Copyright (C) 2011-2015 Antonio Valentino <antonio.valentino@tiscali.it>
 #
 # This module is free software you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
