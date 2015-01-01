@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Core modue for position tracker plugin.'''
+'''Core module for position tracker plugin.'''
 
 
 from qt import QtCore
