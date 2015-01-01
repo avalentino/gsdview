@@ -170,14 +170,14 @@ class GtkBlinker(gtk.Image):
 
 
 # @TODO: check
-class GtkOutputPlane(gtk.TextView):
+class GtkOutputPane(gtk.TextView):
 
     __gsignals__ = {
         'hide-request': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (),),
     }
 
     def __init__(self, buffer=None, hide_button=True, formats=None):
-        super(GtkOutputPlane, self).__init__(buffer)
+        super(GtkOutputPane, self).__init__(buffer)
         #self.stream = GtkOStream(self)
         self.hide_button = hide_button
         self.connect('populate-popup', self.on_populate_popup)

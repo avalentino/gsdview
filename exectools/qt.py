@@ -95,8 +95,8 @@ class QtOutputPane(QtWidgets.QTextEdit):
 
     #: SIGNAL: emits a hide request.
     #:
-    #: :C++ signature: `void planeHideRequest()`
-    planeHideRequest = QtCore.Signal()
+    #: :C++ signature: `void paneHideRequest()`
+    paneHideRequest = QtCore.Signal()
 
     def __init__(self, parent=None, **kwargs):
         super(QtOutputPane, self).__init__(parent, **kwargs)
@@ -133,8 +133,8 @@ class QtOutputPane(QtWidgets.QTextEdit):
         self.actionHide = QtWidgets.QAction(
             icon, self.tr('&Hide'), self,
             shortcut=self.tr('Ctrl+W'),
-            statusTip=self.tr('Hide the text plane'),
-            triggered=self.planeHideRequest)
+            statusTip=self.tr('Hide the text pane'),
+            triggered=self.paneHideRequest)
         self.actions.addAction(self.actionHide)
 
     def contextMenuEvent(self, event):

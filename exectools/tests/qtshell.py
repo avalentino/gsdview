@@ -84,13 +84,13 @@ class QtShell(QtWidgets.QMainWindow):
         hLayout.addWidget(self.cmdbox, 1)
         hLayout.addWidget(self.cmdbutton)
 
-        # Output plane
-        outputplane = QtOutputPane()
-        outputplane.setReadOnly(True)
-        outputplane.actions.removeAction(outputplane.actionHide)
+        # Output pane
+        outputpane = QtOutputPane()
+        outputpane.setReadOnly(True)
+        outputpane.actions.removeAction(outputpane.actionHide)
         vLayout = QtWidgets.QVBoxLayout()
         vLayout.addLayout(hLayout)
-        vLayout.addWidget(outputplane)
+        vLayout.addWidget(outputpane)
 
         # Main window
         centralWidget = QtWidgets.QWidget()
@@ -117,7 +117,7 @@ class QtShell(QtWidgets.QMainWindow):
         self.logger = logging.getLogger()
 
         formatter = logging.Formatter('%(levelname)s: %(message)s')
-        handler = QtLoggingHandler(outputplane)
+        handler = QtLoggingHandler(outputpane)
         handler.setLevel(level)
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)

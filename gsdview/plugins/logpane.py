@@ -34,7 +34,7 @@ __all__ = [
 name = 'logpane'
 version = '.'.join(map(str, __version__)) + '.dev'
 
-short_description = 'Log plane for GSDView'
+short_description = 'Log pane for GSDView'
 description = __doc__
 
 author = 'Antonio Valentino'
@@ -67,7 +67,7 @@ def init(app):
     app.logger.addHandler(handler)
 
     # Connect signals
-    logpane.planeHideRequest.connect(panel.hide)
+    logpane.paneHideRequest.connect(panel.hide)
 
 
 def close(app):

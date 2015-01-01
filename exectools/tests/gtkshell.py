@@ -27,7 +27,7 @@ import logging
 import gtk
 
 import exectools
-from exectools.gtk2 import (GtkOutputPlane, GtkOutputHandler,
+from exectools.gtk2 import (GtkOutputPane, GtkOutputHandler,
                             GtkToolController, GtkDialogLoggingHandler,
                             GtkLoggingHandler)
 
@@ -63,12 +63,12 @@ class GtkShell(object):
         hbox.pack_start(self.cmdbox)
         hbox.pack_start(self.cmdbutton, fill=False, expand=False)
 
-        # Output plane
-        outputplane = GtkOutputPlane(hide_button=False)
-        outputplane.set_editable(False)
+        # Output pane
+        outputpane = GtkOutputPane(hide_button=False)
+        outputpane.set_editable(False)
         scrolledwin = gtk.ScrolledWindow()
         scrolledwin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        scrolledwin.add(outputplane)
+        scrolledwin.add(outputpane)
 
         # Status bar
         self.statusbar = gtk.Statusbar()
@@ -107,7 +107,7 @@ class GtkShell(object):
         self.logger = logging.getLogger()
 
         formatter = logging.Formatter('%(levelname)s: %(message)s')
-        handler = GtkLoggingHandler(outputplane)
+        handler = GtkLoggingHandler(outputpane)
         handler.setLevel(level)
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
