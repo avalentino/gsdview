@@ -22,8 +22,10 @@
 
 
 import logging
+import contextlib
 
-from qt import QtCore, QtWidgets
+import numpy as np
+from qt import QtCore, QtWidgets, QtGui
 
 from gsdview import qtsupport
 
@@ -45,14 +47,26 @@ class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
     #: :C++ signature: `void valueChanged()`
     valueChanged = QtCore.Signal()
 
+    #: SIGNAL: it is emitted when the stretch range changes
+    #:
+    #: :C++ signature: `void rangeChanged(int, int)`
+    #rangeChanged = QtCore.Signal(int, int)
+
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  floatmode=True, **kwargs):
         super(StretchWidget, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
         self._floatmode = floatmode
+        self._kslider = self._computeKSlider()
 
+        self._connectSignals()
+
+    def _connectSignals(self):
         self.lowSlider.valueChanged.connect(self._onLowSliderChanged)
         self.highSlider.valueChanged.connect(self._onHighSliderChanged)
+
+        #self.rangeChanged.connect(self._onRangeChanged)
+
         self.minSpinBox.valueChanged[float].connect(self._onMinimumChanged)
         self.maxSpinBox.valueChanged[float].connect(self._onMaximumChanged)
         self.lowSpinBox.valueChanged[float].connect(self.setLow)
@@ -60,6 +74,26 @@ class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
 
         self.lowSpinBox.valueChanged.connect(self.valueChanged)
         self.highSpinBox.valueChanged.connect(self.valueChanged)
+
+    def _disconnectSignals(self):
+        self.lowSlider.valueChanged.disconnect(self._onLowSliderChanged)
+        self.highSlider.valueChanged.disconnect(self._onHighSliderChanged)
+
+        #self.rangeChanged.disconnect(self._onRangeChanged)
+
+        self.minSpinBox.valueChanged[float].disconnect(self._onMinimumChanged)
+        self.maxSpinBox.valueChanged[float].disconnect(self._onMaximumChanged)
+        self.lowSpinBox.valueChanged[float].disconnect(self.setLow)
+        self.highSpinBox.valueChanged[float].disconnect(self.setHigh)
+
+        self.lowSpinBox.valueChanged.disconnect(self.valueChanged)
+        self.highSpinBox.valueChanged.disconnect(self.valueChanged)
+
+    @contextlib.contextmanager
+    def _disconnectedSignals(self):
+        self._disconnectSignals()
+        yield
+        self._connectSignals()
 
     @QtCore.Property(bool)
     def floatmode(self):
@@ -73,39 +107,135 @@ class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
         if floatmode == self._floatmode:
             return
 
+        vmin = self.minSpinBox.value()
+        vmax = self.maxSpinBox.value()
+
         self._floatmode = floatmode
         if self._floatmode:
             self.lowSlider.setRange(0, 1000000)
             self.highSlider.setRange(0, 1000000)
-            self.lowSlider.setValue(self._pos(self.lowSpinBox.value()))
-            self.highSlider.setValue(self._pos(self.highSpinBox.value()))
         else:
-            vmin = self.minSpinBox.value()
-            vmax = self.maxSpinBox.value()
             self.lowSlider.setRange(vmin, vmax)
             self.highSlider.setRange(vmin, vmax)
-            self.lowSlider.setValue(self.lowSpinBox.value())
-            self.highSlider.setValue(self.highSpinBox.value())
 
-    @property
-    def _scale(self):
+        self.setRange(vmin, vmax)
+
+    def setRange(self, vmin, vmax):
+        if vmin >= vmax:
+            raise ValueError('vmin (%f) >= vmax (%f)' % (vmin, vmax))
+
+        low = self.lowSpinBox.value()
+        if low < vmin:
+            low = vmin
+        elif low > vmax:
+            low = vmax
+        high = self.highSpinBox.value()
+        if high < vmin:
+            high = vmin
+        elif high > vmax:
+            high = vmax
+
+        with self._disconnectedSignals():
+            self.minSpinBox.setValue(vmin)
+            self.maxSpinBox.setValue(vmax)
+
+            self._kslider = self._computeKSlider(vmin, vmax)
+
+            if not self._floatmode:
+                self.lowSlider.setRange(vmin, vmax)
+                self.highSlider.setRange(vmin, vmax)
+
+                self.lowSlider.setValue(low)
+                self.highSlider.setValue(high)
+            else:
+                self.lowSlider.setValue(self._pos(low))
+                self.highSlider.setValue(self._pos(high))
+
+        self._updateSteps(self.maximum(), self.minimum())
+
+    def _computeSteps(self, vmin, vmax):
+        vmax = max(abs(vmax), abs(vmin))
+        if vmax == 0:
+            # @TODO: check
+            return 1, 10
+
+        if not self._floatmode and vmax < 32:
+            return 1, min(5, vmax)
+
+        kmax = np.log10(vmax)
+        singleStep = 10**(np.round(kmax) - 2)
+        pageStep = 10 * singleStep
+
+        return singleStep, pageStep
+
+    def _updateSteps(self, vmin, vmax):
+        singleStep, pageStep = self._computeSteps(vmin, vmax)
+
+        self.lowSpinBox.setSingleStep(singleStep)
+        self.highSpinBox.setSingleStep(singleStep)
+
+        if self._floatmode:
+            decimals = 3
+            self.lowSpinBox.setDecimals(decimals)
+            self.highSpinBox.setDecimals(decimals)
+
+            step = np.round(singleStep * self._kslider)
+            self.lowSlider.setSingleStep(step)
+            self.highSlider.setSingleStep(step)
+
+            step = np.round(pageStep * self._kslider)
+            self.lowSlider.setSingleStep(step)
+            self.highSlider.setSingleStep(step)
+
+        else:
+            self.lowSpinBox.setDecimals(0)
+            self.highSpinBox.setDecimals(0)
+
+            self.lowSlider.setSingleStep(singleStep)
+            self.highSlider.setSingleStep(singleStep)
+
+            self.lowSlider.setSingleStep(pageStep)
+            self.highSlider.setSingleStep(pageStep)
+
+        # @TODO: update all steps
+        self.maxSpinBox.setSingleStep(pageStep)
+        if self.minimum() != 0:
+            step = 10**(np.round(np.log10(abs(self.minimum()))))
+        else:
+            step = singleStep
+        self.minSpinBox.setSingleStep(step)
+
+    @staticmethod
+    def _fixSpinBoxStep(spinbox):
+        newstep = abs(spinbox.value()) / 10
+        newstep = max(int(newstep), 1)
+        spinbox.setSingleStep(newstep)
+
+    def _computeKSlider(self, vmin=None, vmax=None):
         if not self._floatmode:
             return 1
 
-        N = self.highSlider.maximum() - self.lowSlider.minimum()
-        k = (self.maxSpinBox.value() - self.minSpinBox.value()) / float(N)
+        if vmin is None:
+            vmin = self.lowSlider.minimum()
 
-        return k
+        if vmax is None:
+            vmax = self.highSlider.maximum()
+
+        span = float(vmax - vmin)
+
+        if span == 0:
+            return 0
+        else:
+            return (self.maxSpinBox.value() - self.minSpinBox.value()) / span
 
     def _pos(self, value):
-        k = self._scale
-        if k == 0:
+        if self._kslider == 0:
             return self.minSpinBox.value()
 
-        return (value - self.minSpinBox.value()) / k
+        return (value - self.minSpinBox.value()) / self._kslider
 
     def _value(self, pos):
-        return self.minSpinBox.value() + self._scale * pos
+        return self.minSpinBox.value() + self._kslider * pos
 
     def _setValue(self, value, spinbox, slider):
         spinbox.setValue(value)
@@ -159,7 +289,7 @@ class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
         return self.highSpinBox.singleStep()
 
     def setSingleStep(self, step):
-        k = self._scale if self._scale else 1
+        k = self._kslider if self._kslider else 1
         self.lowSlider.setSingleStep(step / k)
         self.highSlider.setSingleStep(step / k)
         self.lowSpinBox.setSingleStep(step)
@@ -167,74 +297,110 @@ class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
 
     def pageStep(self):
         #assert self.lowSlider.pageStep() == self.highSlider.pageStep()
-        return self.highSlider.pageStep() * self._scale
+        return self.highSlider.pageStep() * self._kslider
 
     def setPageStep(self, step):
-        k = self._scale if self._scale else 1
+        k = self._kslider if self._kslider else 1
         self.lowSlider.setPageStep(step / k)
         self.highSlider.setPageStep(step / k)
-
-    @staticmethod
-    def _fixSpinBoxStep(spinbox):
-        newstep = abs(spinbox.value()) / 10
-        newstep = max(int(newstep), 1)
-        spinbox.setSingleStep(newstep)
 
     def minimum(self):
         return self.minSpinBox.value()
 
     def setMinimum(self, value):
+        if value >= self.maximum():
+            raise ValueError("can't set a minimum value greater that maximum")
         self.minSpinBox.setValue(value)
 
     @QtCore.Slot(float)
     def _onMinimumChanged(self, value):
-        if self.minSpinBox.value() > self.maxSpinBox.value():
-            self.maxSpinBox.setValue(self.minSpinBox.value())
+        if value >= self.maxSpinBox.value():
+            value = self.maxSpinBox.value() - self.singleStep()
+            self.minSpinBox.setValue(value)
+            return
 
-        self.lowSpinBox.setMinimum(value)
-        self.highSpinBox.setMinimum(value)
+        stretch_changed = False
 
-        if self.floatmode:
-            vmin = self._pos(self.lowSpinBox.value())
-            self.lowSlider.setValue(vmin)
-            vmax = self._pos(self.highSpinBox.value())
-            self.highSlider.setValue(vmax)
-        else:
-            self.lowSlider.setMinimum(value)
-            self.highSlider.setMinimum(value)
+        with self._disconnectedSignals():
+            self.maxSpinBox.setMinimum(value)
+            self.lowSpinBox.setMinimum(value)
+            self.highSpinBox.setMinimum(value)
 
-        if self.lowSpinBox.value() > self.highSpinBox.value():
-            self.highSpinBox.setValue(self.lowSpinBox.value())
+            if self.floatmode:
+                self._kslider = self._computeKSlider()
 
-        self._fixSpinBoxStep(self.minSpinBox)
+                vmin = self._pos(self.lowSpinBox.value())
+                vmax = self._pos(self.highSpinBox.value())
+
+                self.lowSlider.setValue(vmin)
+                self.highSlider.setValue(vmax)
+            else:
+                self.lowSlider.setMinimum(value)
+                self.highSlider.setMinimum(value)
+
+            if self.lowSpinBox.value() < self.minSpinBox.value():
+                self.lowSpinBox.setValue(self.minSpinBox.value())
+                stretch_changed = True
+
+            if self.highSpinBox.value() < self.minSpinBox.value():
+                high = self.minSpinBox.value() + self.lowSpinBox.singleStep()
+                high = min(high, self.maxSpinBox.value())
+                self.highSpinBox.setValue(high)
+                stretch_changed = True
+
+        self._updateSteps(self.minimum(), self.maximum())
+
+        if stretch_changed:
+            self.valueChanged.emit()
 
     def maximum(self):
         return self.maxSpinBox.value()
 
     def setMaximum(self, value):
+        if value <= self.minimum():
+            raise ValueError("can't set a maximum value smaller that minimum")
         self.maxSpinBox.setValue(value)
 
     @QtCore.Slot(float)
     def _onMaximumChanged(self, value):
-        if self.minSpinBox.value() > self.maxSpinBox.value():
-            self.minSpinBox.setValue(self.maxSpinBox.value())
+        if value <= self.minSpinBox.value():
+            value = self.minSpinBox.value() + self.singleStep()
+            self.maxSpinBox.setValue(value)
+            return
 
-        self.lowSpinBox.setMaximum(value)
-        self.highSpinBox.setMaximum(value)
+        stretch_changed = False
 
-        if self.floatmode:
-            vmin = self._pos(self.lowSpinBox.value())
-            self.lowSlider.setValue(vmin)
-            vmax = self._pos(self.highSpinBox.value())
-            self.highSlider.setValue(vmax)
-        else:
-            self.lowSlider.setMaximum(value)
-            self.highSlider.setMaximum(value)
+        with self._disconnectedSignals():
+            self.minSpinBox.setMaximum(value)
+            self.lowSpinBox.setMaximum(value)
+            self.highSpinBox.setMaximum(value)
 
-        if self.lowSpinBox.value() > self.highSpinBox.value():
-            self.lowSpinBox.setValue(self.highSpinBox.value())
+            if self.floatmode:
+                self._kslider = self._computeKSlider()
 
-        self._fixSpinBoxStep(self.maxSpinBox)
+                vmin = self._pos(self.lowSpinBox.value())
+                vmax = self._pos(self.highSpinBox.value())
+
+                self.lowSlider.setValue(vmin)
+                self.highSlider.setValue(vmax)
+            else:
+                self.lowSlider.setMaximum(value)
+                self.highSlider.setMaximum(value)
+
+            if self.lowSpinBox.value() > self.maxSpinBox.value():
+                low = self.maxSpinBox.value() + self.highSpinBox.singleStep()
+                low = max(low, self.minSpinBox.value())
+                self.lowSpinBox.setValue(low)
+                stretch_changed = True
+
+            if self.highSpinBox.value() > self.maxSpinBox.value():
+                self.highSpinBox.setValue(self.maxSpinBox.value())
+                stretch_changed = True
+
+        self._updateSteps(self.minimum(), self.maximum())
+
+        if stretch_changed:
+            self.valueChanged.emit()
 
     def setState(self, d):
         self.minSpinBox.setMinimum(d['minSpinBox.minimum'])

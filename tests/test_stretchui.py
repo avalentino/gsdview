@@ -32,42 +32,26 @@ sys.path.insert(0, GSDVIEWROOT)
 
 
 from qt import QtWidgets
+from qt.QtTest import QTest
 
 from gsdview.plugins.stretch.widgets import StretchWidget, StretchDialog
 
 
 class StretchWidgetTestCase(unittest.TestCase):
-    FLOATMODE = True
     app = QtWidgets.QApplication(sys.argv)
+    FLOATMODE = False
 
     def setUp(self):
-        #self.app = QtWidgets.QApplication(sys.argv)
         self.stretch = StretchWidget(floatmode=self.FLOATMODE)
+        self.stretch.setLow(10)
 
     def test_defaults(self):
-        self.assertEqual(self.stretch.low(), 0)
+        self.assertEqual(self.stretch.low(), 10)
         self.assertEqual(self.stretch.high(), 100)
         self.assertEqual(self.stretch.minimum(), 0)
         self.assertEqual(self.stretch.maximum(), 255)
 
-    def test_floatmode_change_to_false(self):
-        self.stretch.floatmode = True
-
-        low = self.stretch.low()
-        high = self.stretch.high()
-        minimum = self.stretch.minimum()
-        maximum = self.stretch.maximum()
-
-        self.stretch.floatmode = not self.stretch.floatmode
-
-        self.assertAlmostEqual(self.stretch.low(), low, 2)
-        self.assertAlmostEqual(self.stretch.high(), high, 2)
-        self.assertAlmostEqual(self.stretch.minimum(), minimum, 2)
-        self.assertAlmostEqual(self.stretch.maximum(), maximum, 2)
-
-    def test_floatmode_change_to_true(self):
-        self.stretch.floatmode = False
-
+    def test_floatmode_change(self):
         low = self.stretch.low()
         high = self.stretch.high()
         minimum = self.stretch.minimum()
@@ -99,6 +83,215 @@ class StretchWidgetTestCase(unittest.TestCase):
         self.assertAlmostEqual(self.stretch.high(), high, 2)
         self.assertAlmostEqual(self.stretch.minimum(), minimum, 2)
         self.assertAlmostEqual(self.stretch.maximum(), maximum, 2)
+
+    def test_decrease_minimum(self):
+        low, high = self.stretch.values()
+        minimum = self.stretch.minimum()
+        delta = 1000 * max(abs(minimum), 1)
+        self.stretch.setMinimum(minimum - delta)
+        self.assertEqual(low, self.stretch.low())
+        self.assertEqual(high, self.stretch.high())
+
+    def test_increase_minimum(self):
+        low, high = self.stretch.values()
+        minimum = self.stretch.minimum()
+        delta = low - minimum
+        self.stretch.setMinimum(minimum + delta / 2)
+        self.assertEqual(low, self.stretch.low())
+        self.assertEqual(high, self.stretch.high())
+
+    def test_increase_minimum_above_low(self):
+        low, high = self.stretch.values()
+        minimum = 0.5 * (low + high)
+        self.assertGreater(minimum, low)
+        self.assertLess(minimum, high)
+        self.stretch.setMinimum(minimum)
+        self.assertEqual(self.stretch.low(), minimum)
+        self.assertEqual(high, self.stretch.high())
+
+    def test_increase_minimum_above_high(self):
+        low, high = self.stretch.values()
+        delta = min(abs(low), abs(high))/2
+        minimum = high + delta
+        self.assertGreater(minimum, high)
+        self.assertLess(minimum, self.stretch.maximum())
+        self.stretch.setMinimum(minimum)
+        self.assertEqual(self.stretch.low(), minimum)
+        self.assertEqual(self.stretch.high(), minimum)
+        #self.assertGreaterEqual(high, minimum)
+
+    def test_increase_minimum_above_maximum(self):
+        delta = max(abs(self.stretch.minimum()), abs(self.stretch.maximum()))
+        minimum = self.stretch.maximum() + delta
+        self.assertRaises(ValueError, self.stretch.setMinimum, minimum)
+
+    def test_decrease_maximum_below_minimum(self):
+        delta = max(abs(self.stretch.minimum()), abs(self.stretch.maximum()))
+        maximum = self.stretch.minimum() - delta
+        self.assertRaises(ValueError, self.stretch.setMaximum, maximum)
+
+    def test_decrease_maximum_below_low(self):
+        low, high = self.stretch.values()
+        delta = min(abs(low), abs(high))/2
+        maximum = low - delta
+        self.assertLess(maximum, low)
+        self.assertGreater(maximum, self.stretch.minimum())
+        self.stretch.setMaximum(maximum)
+        self.assertEqual(self.stretch.low(), maximum)
+        self.assertEqual(self.stretch.high(), maximum)
+        #self.assertLessEqual(low, maximum)
+
+    def test_decrease_maximum_below_high(self):
+        low, high = self.stretch.values()
+        maximum = 0.5 * (low + high)
+        self.assertGreater(maximum, low)
+        self.assertLess(maximum, high)
+        self.stretch.setMaximum(maximum)
+        self.assertEqual(low, self.stretch.low())
+        self.assertEqual(self.stretch.high(), maximum)
+
+    def test_decrease_maximum(self):
+        low, high = self.stretch.values()
+        maximum = self.stretch.maximum()
+        delta = maximum - high
+        self.stretch.setMaximum(maximum + delta / 2)
+        self.assertEqual(low, self.stretch.low())
+        self.assertEqual(high, self.stretch.high())
+
+    def test_increase_maximum(self):
+        low, high = self.stretch.values()
+        maximum = self.stretch.maximum()
+        delta = 1000 * max(abs(maximum), 1)
+        self.stretch.setMaximum(maximum + delta)
+        self.assertEqual(low, self.stretch.low())
+        self.assertEqual(high, self.stretch.high())
+
+    # broken tests
+    if False:
+        def test_ui_decrease_minimum(self):
+            low, high = self.stretch.values()
+            minimum = self.stretch.minimum()
+            delta = 1000 * max(abs(minimum), 1)
+            value = minimum - delta
+            QTest.keyClicks(self.stretch.minSpinBox, str(value))
+            self.assertEqual(self.stretch.minimum(), value)
+            self.assertEqual(low, self.stretch.low())
+            self.assertEqual(high, self.stretch.high())
+
+        def test_ui_increase_minimum(self):
+            low, high = self.stretch.values()
+            minimum = self.stretch.minimum()
+            delta = low - minimum
+            value = minimum + delta / 2
+            QTest.keyClicks(self.stretch.minSpinBox, str(value))
+            self.assertEqual(self.stretch.minimum(), value)
+            self.assertEqual(low, self.stretch.low())
+            self.assertEqual(high, self.stretch.high())
+
+        def test_ui_increase_minimum_above_low(self):
+            low, high = self.stretch.values()
+            minimum = 0.5 * (low + high)
+            self.assertGreater(minimum, low)
+            self.assertLess(minimum, high)
+            QTest.keyClicks(self.stretch.minSpinBox, str(minimum))
+            self.assertEqual(self.stretch.minimum(), minimum)
+            self.assertEqual(self.stretch.low(), minimum)
+            self.assertEqual(high, self.stretch.high())
+
+        def test_ui_increase_minimum_above_high(self):
+            low, high = self.stretch.values()
+            delta = min(abs(low), abs(high))/2
+            minimum = high + delta
+            self.assertGreater(minimum, high)
+            self.assertLess(minimum, self.stretch.maximum())
+            QTest.keyClicks(self.stretch.minSpinBox, str(minimum))
+            self.assertEqual(self.stretch.minimum(), minimum)
+            self.assertEqual(self.stretch.low(), minimum)
+            self.assertEqual(self.stretch.high(), minimum)
+            #self.assertGreaterEqual(high, minimum)
+
+        @unittest.skip('incomplete')
+        def test_ui_increase_minimum_above_maximum(self):
+            delta = max(abs(self.stretch.minimum()), abs(self.stretch.maximum()))
+            minimum = self.stretch.maximum() + delta
+            QTest.keyClicks(self.stretch.minSpinBox, str(minimum))
+            self.assertEqual(self.stretch.minimum(), minimum)
+            #self.assertRaises(ValueError, self.stretch.setMinimum, minimum)
+
+        @unittest.skip('incomplete')
+        def test_ui_decrease_maximum_below_minimum(self):
+            delta = max(abs(self.stretch.minimum()), abs(self.stretch.maximum()))
+            maximum = self.stretch.minimum() - delta
+            QTest.keyClicks(self.stretch.maxSpinBox, str(maximum))
+            self.assertEqual(self.stretch.maximum(), maximum)
+            #self.assertRaises(ValueError, self.stretch.setMaximum, maximum)
+
+        def test_ui_decrease_maximum_below_low(self):
+            low, high = self.stretch.values()
+            delta = min(abs(low), abs(high))/2
+            maximum = low - delta
+            self.assertLess(maximum, low)
+            self.assertGreater(maximum, self.stretch.minimum())
+            QTest.keyClicks(self.stretch.maxSpinBox, str(maximum))
+            self.assertEqual(self.stretch.maximum(), maximum)
+            self.assertEqual(self.stretch.low(), maximum)
+            self.assertEqual(self.stretch.high(), maximum)
+            #self.assertLessEqual(low, maximum)
+
+        def test_ui_decrease_maximum_below_high(self):
+            low, high = self.stretch.values()
+            maximum = 0.5 * (low + high)
+            self.assertGreater(maximum, low)
+            self.assertLess(maximum, high)
+            QTest.keyClicks(self.stretch.maxSpinBox, str(maximum))
+            self.assertEqual(self.stretch.maximum(), maximum)
+            self.assertEqual(low, self.stretch.low())
+            self.assertEqual(self.stretch.high(), maximum)
+
+        def test_ui_decrease_maximum(self):
+            low, high = self.stretch.values()
+            maximum = self.stretch.maximum()
+            delta = maximum - high
+            value = maximum + delta / 2
+            QTest.keyClicks(self.stretch.maxSpinBox, str(value))
+            self.assertEqual(self.stretch.maximum(), value)
+            self.assertEqual(low, self.stretch.low())
+            self.assertEqual(high, self.stretch.high())
+
+        def test_ui_increase_maximum(self):
+            low, high = self.stretch.values()
+            maximum = self.stretch.maximum()
+            delta = 1000 * max(abs(maximum), 1)
+            value = maximum + delta
+            QTest.keyClicks(self.stretch.maxSpinBox, str(value))
+            self.assertEqual(self.stretch.maximum(), value)
+            self.assertEqual(low, self.stretch.low())
+            self.assertEqual(high, self.stretch.high())
+
+
+class StretchWidgetFloatModeTestCase(StretchWidgetTestCase):
+    FLOATMODE = True
+
+
+class StretchWidgetSmallFloatModeTestCase(StretchWidgetTestCase):
+    FLOATMODE = True
+    LOW = -0.02
+    HIGH = +0.01
+    MINIMUM = -0.7
+    MAXIMUM = +0.3
+
+    def setUp(self):
+        super(StretchWidgetSmallFloatModeTestCase, self).setUp()
+        self.stretch.setMinimum(self.MINIMUM)
+        self.stretch.setMaximum(self.MAXIMUM)
+        self.stretch.setLow(self.LOW)
+        self.stretch.setHigh(self.HIGH)
+
+    def test_defaults(self):
+        self.assertEqual(self.stretch.low(), self.LOW)
+        self.assertEqual(self.stretch.high(), self.HIGH)
+        self.assertEqual(self.stretch.minimum(), self.MINIMUM)
+        self.assertEqual(self.stretch.maximum(), self.MAXIMUM)
 
 
 def _test_stretchingdialog(floatmode=False):

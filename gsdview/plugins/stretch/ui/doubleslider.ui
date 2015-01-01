@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>DoubleSlider</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -74,7 +74,7 @@
         <double>-100000.000000000000000</double>
        </property>
        <property name="maximum">
-        <double>100000.000000000000000</double>
+        <double>255.000000000000000</double>
        </property>
        <property name="value">
         <double>0.000000000000000</double>
