@@ -56,10 +56,12 @@ class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
                  floatmode=True, **kwargs):
         super(StretchWidget, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
-        self._floatmode = floatmode
+        self._floatmode = False
         self._kslider = self._computeKSlider()
 
         self._connectSignals()
+
+        self.floatmode = floatmode
 
     def _connectSignals(self):
         self.lowSlider.valueChanged.connect(self._onLowSliderChanged)
@@ -112,8 +114,8 @@ class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
 
         self._floatmode = floatmode
         if self._floatmode:
-            self.lowSlider.setRange(0, 1000000)
-            self.highSlider.setRange(0, 1000000)
+            self.lowSlider.setRange(0, 10000000)
+            self.highSlider.setRange(0, 10000000)
         else:
             self.lowSlider.setRange(vmin, vmax)
             self.highSlider.setRange(vmin, vmax)
