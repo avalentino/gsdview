@@ -72,7 +72,6 @@ UIFILES = $(wildcard gsdview/ui/*.ui)\
 PYUIFILES = $(patsubst %.ui,%.py,$(UIFILES))
 
 ui: $(PYUIFILES)
-	echo "PYUIC: $(PYUIC)"
 	touch gsdview/ui/__init__.py
 	touch gsdview/gdalbackend/ui/__init__.py
 	touch gsdview/plugins/stretch/ui/__init__.py
