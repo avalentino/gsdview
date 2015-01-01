@@ -58,11 +58,14 @@ class StretchWidgetTestCase(unittest.TestCase):
         maximum = self.stretch.maximum()
 
         self.stretch.floatmode = not self.stretch.floatmode
+        if not self.stretch.floatmode:
+            low = int(low)
+            high = int(high)
 
-        self.assertAlmostEqual(self.stretch.low(), low, 2)
-        self.assertAlmostEqual(self.stretch.high(), high, 2)
-        self.assertAlmostEqual(self.stretch.minimum(), minimum, 2)
-        self.assertAlmostEqual(self.stretch.maximum(), maximum, 2)
+        self.assertAlmostEqual(self.stretch.low(), low)
+        self.assertAlmostEqual(self.stretch.high(), high)
+        self.assertAlmostEqual(self.stretch.minimum(), minimum)
+        self.assertAlmostEqual(self.stretch.maximum(), maximum)
 
     def test_floatmode_change_and_back(self):
         low = self.stretch.low()
@@ -71,18 +74,21 @@ class StretchWidgetTestCase(unittest.TestCase):
         maximum = self.stretch.maximum()
 
         self.stretch.floatmode = not self.stretch.floatmode
+        if not self.stretch.floatmode:
+            low = int(low)
+            high = int(high)
 
-        self.assertAlmostEqual(self.stretch.low(), low, 2)
-        self.assertAlmostEqual(self.stretch.high(), high, 2)
-        self.assertAlmostEqual(self.stretch.minimum(), minimum, 2)
-        self.assertAlmostEqual(self.stretch.maximum(), maximum, 2)
+        self.assertAlmostEqual(self.stretch.low(), low)
+        self.assertAlmostEqual(self.stretch.high(), high)
+        self.assertAlmostEqual(self.stretch.minimum(), minimum)
+        self.assertAlmostEqual(self.stretch.maximum(), maximum)
 
         self.stretch.floatmode = not self.stretch.floatmode
 
-        self.assertAlmostEqual(self.stretch.low(), low, 2)
-        self.assertAlmostEqual(self.stretch.high(), high, 2)
-        self.assertAlmostEqual(self.stretch.minimum(), minimum, 2)
-        self.assertAlmostEqual(self.stretch.maximum(), maximum, 2)
+        self.assertAlmostEqual(self.stretch.low(), low)
+        self.assertAlmostEqual(self.stretch.high(), high)
+        self.assertAlmostEqual(self.stretch.minimum(), minimum)
+        self.assertAlmostEqual(self.stretch.maximum(), maximum)
 
     def test_decrease_minimum(self):
         low, high = self.stretch.values()
@@ -116,8 +122,8 @@ class StretchWidgetTestCase(unittest.TestCase):
         self.assertGreater(minimum, high)
         self.assertLess(minimum, self.stretch.maximum())
         self.stretch.setMinimum(minimum)
-        self.assertEqual(self.stretch.low(), minimum)
-        self.assertEqual(self.stretch.high(), minimum)
+        self.assertAlmostEqual(self.stretch.low(), minimum)
+        self.assertAlmostEqual(self.stretch.high(), minimum)
         #self.assertGreaterEqual(high, minimum)
 
     def test_increase_minimum_above_maximum(self):

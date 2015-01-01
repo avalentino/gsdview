@@ -175,7 +175,7 @@ class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
         self.highSpinBox.setSingleStep(singleStep)
 
         if self._floatmode:
-            decimals = 3
+            decimals = 7
             self.lowSpinBox.setDecimals(decimals)
             self.highSpinBox.setDecimals(decimals)
 
@@ -238,10 +238,11 @@ class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
         return self.minSpinBox.value() + self._kslider * pos
 
     def _setValue(self, value, spinbox, slider):
-        spinbox.setValue(value)
-        if self.floatmode:
-            value = self._pos(spinbox.value())
-        slider.setValue(value)
+        with self._disconnectedSignals():
+            spinbox.setValue(value)
+            if self.floatmode:
+                value = self._pos(spinbox.value())
+            slider.setValue(value)
 
     def low(self):
         return self.lowSpinBox.value()
