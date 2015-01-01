@@ -207,12 +207,6 @@ class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
             step = singleStep
         self.minSpinBox.setSingleStep(step)
 
-    @staticmethod
-    def _fixSpinBoxStep(spinbox):
-        newstep = abs(spinbox.value()) / 10
-        newstep = max(int(newstep), 1)
-        spinbox.setSingleStep(newstep)
-
     def _computeKSlider(self, vmin=None, vmax=None):
         if not self._floatmode:
             return 1
@@ -282,9 +276,6 @@ class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
         if self.floatmode:
             value = self._value(value)
         self.lowSpinBox.setValue(value)
-        #N = 10. ** self.lowSpinBox.decimals()
-        #if abs(value - self.lowSpinBox.value()) >= 1. / N:
-        #    self.lowSpinBox.setValue(value)
 
     @QtCore.Slot(int)
     def _onHighSliderChanged(self, value):
@@ -294,9 +285,6 @@ class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
         if self.floatmode:
             value = self._value(value)
         self.highSpinBox.setValue(value)
-        #N = 10. ** self.highSpinBox.decimals()
-        #if abs(value - self.highSpinBox.value()) >= 1. / N:
-        #    self.highSpinBox.setValue(value)
 
     def values(self):
         return self.low(), self.high()
