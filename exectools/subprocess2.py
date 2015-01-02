@@ -24,11 +24,6 @@ sub-process and allow asynchronous I/O both on Windows and Posix platforms.
 
 '''
 
-# @TODO: use ctypes instead of pywin32
-# @TODO: update to the new subprocess API (signal, kill, terminate)
-
-
-import os
 import time
 import errno
 import warnings
@@ -39,15 +34,11 @@ __all__ = subprocess.__all__
 
 from exectools import recipe_440544
 
-if subprocess.mswindows:
-    from win32api import OpenProcess, TerminateProcess, CloseHandle
-else:
+if not subprocess.mswindows:
     import signal
 
 
 class Popen(recipe_440544.Popen):
-    # @TODO: see subprocess.Popen.terminate(), subprocess.Popen.kill(), and
-    #        subprocess.Popen.send_signal() from Python 2.6
     delay_after_stop = 0.2
 
     if subprocess.mswindows:
@@ -57,11 +48,8 @@ class Popen(recipe_440544.Popen):
                 return True
 
             try:
-                PROCESS_TERMINATE = 1
-                handle = OpenProcess(PROCESS_TERMINATE, False, self.pid)
-                TerminateProcess(handle, -1)
-                CloseHandle(handle)
-            except subprocess.pywintypes.error as e:
+                self.terminate()
+            except WindowsError as e:
                 # @TODO: check error code
                 warnings.warn(e)
 
@@ -73,14 +61,6 @@ class Popen(recipe_440544.Popen):
 
     else:
 
-        def _kill(self, sigid):
-            '''Ignore the exception when the process doesn't exist.'''
-            try:
-                os.kill(self.pid, sigid)
-            except OSError as e:
-                if e.errno != errno.ESRCH:
-                    raise
-
         def stop(self, force=True):
             '''This forces a child process to terminate.
 
@@ -90,27 +70,36 @@ class Popen(recipe_440544.Popen):
             This returns False if the child could not be terminated.
             '''
 
-            # Stop shell dependent sub-procsses
-            # @TODO: check
             if self.poll() is not None:
                 return True
-            self._kill(signal.SIGINT)
-            if self.poll() is None:
-                time.sleep(self.delay_after_stop)
+
+            try:
+                # Stop shell dependent sub-procsses
+                # @TODO: check
+                self.send_signal(signal.SIGINT)
+                if self.poll() is None:
+                    time.sleep(self.delay_after_stop)
+
+                if self.poll() is not None:
+                    return True
+
+                self.terminate()
+                if self.poll() is None:
+                    time.sleep(self.delay_after_stop)
+
+                if force:
+                    if self.poll() is not None:
+                        return True
+
+                    self.kill()
+                    if self.poll() is None:
+                        time.sleep(self.delay_after_stop)
+            except OSError as e:
+                if e.errno != errno.ESRCH:
+                    raise
+                return True
 
             if self.poll() is not None:
                 return True
-            self._kill(signal.SIGTERM)
-            if self.poll() is None:
-                time.sleep(self.delay_after_stop)
-            if self.poll() is not None:
-                return True
-            if force:
-                self._kill(signal.SIGKILL)
-                if self.poll() is None:
-                    time.sleep(self.delay_after_stop)
-                if self.poll() is not None:
-                    return True
-                else:
-                    return False
+
             return False
