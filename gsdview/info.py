@@ -62,12 +62,27 @@ download_url = 'http://sourceforge.net/projects/gsdview/files'
 
 all_versions = [
     ('GSDView', version, website),
-    ('Python', '.'.join(map(str, sys.version_info[:3])), 'www.python.org'),
-    ('Qt', QtCore.qVersion(), 'http://qt.nokia.com'),
+    ('Python', '.'.join(map(str, sys.version_info[:3])), 'https://www.python.org'),
+    ('Qt', QtCore.qVersion(), 'http://qt-project.org'),
     ('numpy', np.version.version, 'http://www.scipy.org'),
 ]
 
-if qt.qt_api == 'pyqt':
+if qt.qt_api == 'pyqt5':
+    import sip
+    all_versions.append(('sip', sip.SIP_VERSION_STR,
+                         'http://www.riverbankcomputing.co.uk/software/sip'))
+    all_versions.append(('PyQt5', QtCore.PYQT_VERSION_STR,
+                         'http://www.riverbankcomputing.co.uk/software/pyqt'))
+    try:
+        from PyQt5 import Qsci
+    except ImportError:
+        pass
+    else:
+        all_versions.append((
+            'QScintilla', Qsci.QSCINTILLA_VERSION_STR,
+            'http://www.riverbankcomputing.co.uk/software/qscintilla'))
+
+elif qt.qt_api == 'pyqt4':
     import sip
     all_versions.append(('sip', sip.SIP_VERSION_STR,
                          'http://www.riverbankcomputing.co.uk/software/sip'))

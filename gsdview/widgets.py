@@ -121,11 +121,9 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview">http://sourcefor
         tablewidget = self.versionsTableWidget
         tablewidget.verticalHeader().hide()
         tablewidget.horizontalHeader().setStretchLastSection(True)
-        tablewidget.setRowCount(len(info.all_versions))
+        tablewidget.setRowCount(0)
         for row, (sw, version, link) in enumerate(info.all_versions):
-            tablewidget.setItem(row, 0, QtWidgets.QTableWidgetItem(sw))
-            tablewidget.setItem(row, 1, QtWidgets.QTableWidgetItem(version))
-            tablewidget.setItem(row, 2, QtWidgets.QTableWidgetItem(link))
+            self.addSoftwareVersion(sw, version, link)
 
     def addSoftwareVersion(self, sw, version, link=''):
         tablewidget = self.versionsTableWidget
@@ -134,7 +132,11 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview">http://sourcefor
 
         tablewidget.setItem(index, 0, QtWidgets.QTableWidgetItem(sw))
         tablewidget.setItem(index, 1, QtWidgets.QTableWidgetItem(version))
-        tablewidget.setItem(index, 2, QtWidgets.QTableWidgetItem(link))
+        #tablewidget.setItem(row, 2, QtWidgets.QTableWidgetItem(link))
+        linkLabel = QtWidgets.QLabel('<a href="{0}">{0}</a>'.format(link))
+        linkLabel.linkActivated.connect(
+            lambda text: QtGui.QDesktopServices.openUrl(QtCore.QUrl(text)))
+        tablewidget.setCellWidget(index, 2, linkLabel)
 
 
 class FileEntryWidget(QtWidgets.QWidget):
