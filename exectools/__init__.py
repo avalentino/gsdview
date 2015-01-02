@@ -26,7 +26,7 @@ import sys
 import logging
 from io import StringIO
 
-# @COMPATIBILITY: PY3
+# @COMPATIBILITY: Python 3
 if sys.version_info < (3, 0):
     string_types = (basestring,)
 else:
@@ -345,7 +345,8 @@ class ToolDescriptor(object):
         #: output encoding, it is used to decode the subprocess ouput
         self.output_encoding = output_encoding
 
-    def _getenv(self):
+    @property
+    def env(self):
         if self.envmerge:
             env = os.environ.copy()
             if self._env:
@@ -354,25 +355,9 @@ class ToolDescriptor(object):
         else:
             return self._env
 
-    def _setenv(self, env):
+    @env.setter
+    def env(self, env):
         self._env = env
-
-    env = property(_getenv, _setenv, doc='the tool environment')
-
-    # @COMPATIBILITY: property.setter nedds Python >= 2.6
-    #@property
-    #def env(self):
-    #    if self.envmerge:
-    #        env = os.environ.copy()
-    #        if self._env:
-    #            env.update(self._env)
-    #        return env
-    #    else:
-    #        return self._env
-    #
-    #@env.setter
-    #def env(self, env):
-    #    self._env = env
 
     def cmdline(self, *args, **kwargs):
         '''Generate the complete command-line for the tool.
