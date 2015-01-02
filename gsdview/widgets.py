@@ -580,11 +580,7 @@ class ExceptionDialog(QtWidgets.QDialog, ExceptionDialogBase):
                 fd.close()
 
 try:
-    import qt
-    if qt.qt_api != 'pyqt':
-        raise ImportError
-
-    from PyQt4 import Qsci
+    from qt import Qsci
 
     class QsciExceptionDialog(ExceptionDialog):
 
