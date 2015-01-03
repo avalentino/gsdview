@@ -120,12 +120,6 @@ class BandItem(MajorObjectItem):
         self.scene = scene
         self.graphicsitem = graphicsitem
 
-    # @COMPATIBILITY: GetBand requires GDAL >= 1.7
-    if not hasattr(gdal.Band, 'GetBand'):
-
-        def GetBand(self):
-            return self.row() + 1
-
     def footprint(self):
         return self.parent().footprint()
 

@@ -535,16 +535,6 @@ class OverviewWidget(QtWidgets.QWidget, OverviewWidgetBase):
         super(OverviewWidget, self).__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
-        # @COMPATIBILITY: GDAL >= 1.7.0
-        if gdal.VersionInfo() < '1700':
-            index = self.resamplingMethodComboBox.findText('cubic')
-            self.resamplingMethodComboBox.removeItem(index)
-
-        # @COMPATIBILITY: GDAL >= 1.7.0
-        if not hasattr(gdal.Band, 'HasArbitraryOverviews'):
-            self.hasArbitraryOverviewsLabel.hide()
-            self.hasArbitraryOverviewsValue.hide()
-
         model = QtGui.QStandardItemModel(self)
         model.setColumnCount(3)
         model.itemChanged.connect(self._updateStartButton)
@@ -639,10 +629,8 @@ class OverviewWidget(QtWidgets.QWidget, OverviewWidgetBase):
 
         self.overviewCountValue.setText(str(ovrcount))
         self.fullSizeValue.setText('%dx%d' % (item.YSize, item.XSize))
-        # @COMPATIBILITY: GDAL >= 1.7.0
-        if hasattr(gdal.Band, 'HasArbitraryOverviews'):
-            self.hasArbitraryOverviewsValue.setText(
-                str(item.HasArbitraryOverviews()))
+        self.hasArbitraryOverviewsValue.setText(
+            str(item.HasArbitraryOverviews()))
 
         view = self.ovrTreeView
 
@@ -1288,26 +1276,15 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
         # Info
         self.descriptionValue.setText(band.GetDescription().strip())
-
-        # @COMPATIBILITY: GetBand requires GDAL >= 1.7
-        try:
-            bandno = band.GetBand()
-        except AttributeError:
-            bandno = self.tr('Unknown')
-
+        bandno = band.GetBand()
         self.bandNumberValue.setText(str(bandno))
         self.colorInterpretationValue.setText(colorint)
         self.overviewCountValue.setText(str(band.GetOverviewCount()))
-
-        # @COMPATIBILITY: HasArbitraryOverviews requires GDAL >= 1.7
-        if hasattr(gdal.Band, 'HasArbitraryOverviews'):
-            hasArbitaryOvr = band.HasArbitraryOverviews()
-            self.hasArbitraryOverviewsValue.setText(str(hasArbitaryOvr))
-        else:
-            self.hasArbitraryOverviewsValue.setText('')
+        hasArbitaryOvr = band.HasArbitraryOverviews()
+        self.hasArbitraryOverviewsValue.setText(str(hasArbitaryOvr))
 
         # @TODO: checksum
-        #~ band.Checksum                   ??
+        # band.Checksum                   ??
 
         # Data
         self.xSizeValue.setText(str(band.XSize))
@@ -1317,12 +1294,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
         self.dataTypeValue.setText(gdal.GetDataTypeName(band.DataType))
 
-        # @COMPATIBILITY: GetUnitType requires GDAL >= 1.7
-        if hasattr(gdal.Band, 'GetUnitType'):
-            unitType = band.GetUnitType()
-            self.unitTypeValue.setText(str(unitType))
-        else:
-            self.unitTypeValue.setText('')
+        self.unitTypeValue.setText(str(band.GetUnitType()))
         self.offsetValue.setText(str(band.GetOffset()))
         self.scaleValue.setText(str(band.GetScale()))
 

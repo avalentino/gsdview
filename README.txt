@@ -54,7 +54,7 @@ In order to run GSDView you should have the following software installed:
 * SIP_ 4.7.5 or higher
 * PyQt5_ or PyQt4 4.6 or higher
 * numpy_ 1.3.0  or higher
-* gdal_ 1.6.1 or higher
+* gdal_ 1.7.0 or higher
 
 In replacement of PyQt5_ or PyQt4 and SIP_ it is possible to use:
 
