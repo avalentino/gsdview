@@ -224,13 +224,13 @@ __all__ = [
     'QWizard',
     'QWizardPage',
     'qApp',
-    'qDrawBorderPixmap',
-    'qDrawPlainRect',
-    'qDrawShadeLine',
-    'qDrawShadePanel',
-    'qDrawShadeRect',
-    'qDrawWinButton',
-    'qDrawWinPanel',
+    #'qDrawBorderPixmap',       # not available in pyside
+    #'qDrawPlainRect',          # not available in pyside
+    #'qDrawShadeLine',          # not available in pyside
+    #'qDrawShadePanel',         # not available in pyside
+    #'qDrawShadeRect',          # not available in pyside
+    #'qDrawWinButton',          # not available in pyside
+    #'qDrawWinPanel',           # not available in pyside
 ]
 
 if qt_api == 'pyqt5':

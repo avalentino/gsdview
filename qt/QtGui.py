@@ -59,7 +59,7 @@ __all__ = [
     'QFontInfo',
     'QFontMetrics',
     'QFontMetricsF',
-    'QGlyphRun',
+    #'QGlyphRun',               # not available in pyside
     'QGradient',
     #'QGuiApplication',
     'QHelpEvent',
@@ -131,7 +131,7 @@ __all__ = [
     'QPolygonF',
     'QQuaternion',
     'QRadialGradient',
-    'QRawFont',
+    #'QRawFont',                # not available in pyside
     'QRegExpValidator',
     'QRegion',
     #'QRegularExpressionValidator',
@@ -144,7 +144,7 @@ __all__ = [
     'QShowEvent',
     'QStandardItem',
     'QStandardItemModel',
-    'QStaticText',
+    #'QStaticText',             # not available in pyside
     'QStatusTipEvent',
     #'QStyleHints',
     #'QSurface',
@@ -159,7 +159,7 @@ __all__ = [
     'QTextCursor',
     'QTextDocument',
     'QTextDocumentFragment',
-    'QTextDocumentWriter',
+    #'QTextDocumentWriter',     # not available in pyside
     'QTextFormat',
     'QTextFragment',
     'QTextFrame',
@@ -192,7 +192,7 @@ __all__ = [
     'QWindowStateChangeEvent',
     'qAlpha',
     'qBlue',
-    'qFuzzyCompare',
+    #'qFuzzyCompare',           # not available in pyside
     'qGray',
     'qGreen',
     'qIsGray',
