@@ -40,7 +40,7 @@ class StdToolController(BaseToolController):
     def isbusy(self):
         '''If True then the controller is already running a subprocess.'''
 
-        return self.subclasses is not None
+        return self.subprocess is not None
 
     def run_tool(self, tool, *args, **kwargs):
         '''Run an external tool in controlled way.
@@ -67,7 +67,7 @@ class StdToolController(BaseToolController):
         if self._tool.stderr_handler:
             self._tool.stderr_handler.reset()
         cmd = self._tool.cmdline(*args, **kwargs)
-        self.prerun_hook(*cmd)
+        self.prerun_hook(cmd)
 
         try:
             self.subprocess = subprocess2.Popen(cmd,
