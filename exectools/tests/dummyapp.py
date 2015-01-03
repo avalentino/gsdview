@@ -24,8 +24,9 @@ import os
 import sys
 import time
 import signal
-import optparse
+import argparse
 import warnings
+
 
 # register the signal handlers
 sigmap = dict()
@@ -44,20 +45,21 @@ for sig_id in sigmap:
     signal.signal(sig_id, handler)
 
 # parse the command line arguments
-parser = optparse.OptionParser()
-parser.add_option('-m', '--mode', dest='mode', default='percentage',
-                  choices=['elapsed', 'percentage', 'pulse', 'mixed'],
-                  help='select the execution mode (elapsed, percentage, '
-                  'pulse, mixed)')
-parser.add_option('-d', '--duration', action='store', type='float',
-                  dest='duration', default=3.,
-                  help='specify the duration of the run')
-parser.add_option('-r', '--refresh-rate', action='store', type='float',
-                  dest='refresh_rate', default=None,
-                  help='specify the refresh rate')
-parser.add_option('-v', '--verbose', action='store_true', dest='verbose',
-                  help='set the verbose mode')
-(options, args) = parser.parse_args()
+parser = argparse.ArgumentParser(
+    description='dummy application that prints progress messages')
+parser.add_argument('-m', '--mode', dest='mode', default='percentage',
+                    choices=['elapsed', 'percentage', 'pulse', 'mixed'],
+                    help='select the execution mode (elapsed, percentage, '
+                    'pulse, mixed). Default: %(default)s')
+parser.add_argument('-d', '--duration', action='store', type=float,
+                    dest='duration', default=3.,
+                    help='specify the duration of the run')
+parser.add_argument('-r', '--refresh-rate', action='store', type=float,
+                    dest='refresh_rate', default=None,
+                    help='specify the refresh rate')
+parser.add_argument('-v', '--verbose', action='store_true', dest='verbose',
+                    help='set the verbose mode')
+options = parser.parse_args()
 
 mode = options.mode
 duration = options.duration
