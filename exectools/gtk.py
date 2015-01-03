@@ -126,7 +126,9 @@ class Popen(GObject.GObject, subprocess2.Popen):
 
         for tag in set(self._watch_tags):
             GLib.source_remove(tag)
-        self._watch_tags.clear()
+        # @COMPATIBILITY with Python 2
+        #self._watch_tags.clear()
+        del self._watch_tags[:]
 
     if sys.platform[:3] == 'win':
         import errno
