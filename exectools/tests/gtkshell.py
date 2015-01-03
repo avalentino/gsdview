@@ -48,9 +48,9 @@ except ImportError:
 
 
 import exectools
-from exectools.gtk2 import (GtkOutputPane, GtkOutputHandler,
-                            GtkToolController, GtkDialogLoggingHandler,
-                            GtkLoggingHandler)
+from exectools.gtk import (GtkOutputPane, GtkOutputHandler,
+                           GtkToolController, GtkDialogLoggingHandler,
+                           GtkLoggingHandler)
 
 
 class GtkShell(object):
