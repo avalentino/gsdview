@@ -33,6 +33,8 @@ from exectools.gtk import (GtkOutputPane, GtkOutputHandler,
 
 
 class GtkShell(object):
+    '''GTK+ interactive shell using tool controller.'''
+
     historyfile = 'history.txt'
 
     def __init__(self, debug=False):
