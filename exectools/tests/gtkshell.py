@@ -24,28 +24,7 @@
 import time
 import logging
 
-try:
-    from gi.repository import Gtk, Gdk
-
-    GTK_POLICY_AUTOMATIC = Gtk.PolicyType.AUTOMATIC
-    GTK_ICON_SIZE_LARGE_TOOLBAR = Gtk.IconSize.LARGE_TOOLBAR
-    GTK_ACCEL_VISIBLE = Gtk.AccelFlags.VISIBLE
-    GDK_CONTROL_MASK = Gdk.ModifierType.CONTROL_MASK
-
-except ImportError:
-    print('failed to import from gi.repository')
-
-    import pygtk
-    pyGtk.require('2.0')
-
-    import gtk as Gtk
-    from gtk import gdk as Gdk
-
-    GTK_POLICY_AUTOMATIC = Gtk.POLICY_AUTOMATIC
-    GTK_ICON_SIZE_LARGE_TOOLBAR = Gtk.ICON_SIZE_LARGE_TOOLBAR
-    GTK_ACCEL_VISIBLE = Gtk.ACCEL_VISIBLE
-    GDK_CONTROL_MASK = Gdk.CONTROL_MASK
-
+from gi.repository import Gtk, Gdk
 
 import exectools
 from exectools.gtk import (GtkOutputPane, GtkOutputHandler,
@@ -79,6 +58,11 @@ class GtkShell(object):
         #self.cmdbutton = Gtk.Button.new_with_mnemonic('_Execute')
         self.cmdbutton = Gtk.Button(stock=Gtk.STOCK_EXECUTE)
         self.cmdbutton.connect('clicked', self.on_cmdbutton_clicked)
+        # @COMPATIBILITY: set_always_show_image is new in Gtk 3.6
+        try:
+            self.cmdbutton.set_always_show_image(True)
+        except AttributeErrror:
+            pass
 
         hbox = Gtk.Box.new(Gtk.Orientation.HORIZONTAL, spacing=3)
         hbox.pack_start(cmdlabel, expand=False, fill=False, padding=0)
@@ -89,7 +73,8 @@ class GtkShell(object):
         outputpane = GtkOutputPane(hide_button=False)
         outputpane.set_editable(False)
         scrolledwin = Gtk.ScrolledWindow()
-        scrolledwin.set_policy(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC)
+        scrolledwin.set_policy(
+            Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         scrolledwin.add(outputpane)
 
         # Status bar
@@ -105,14 +90,14 @@ class GtkShell(object):
         vbox.pack_start(self.statusbar, expand=False, fill=True, padding=0)
 
         accelgroup = Gtk.AccelGroup()
-        accelgroup.connect(ord('d'), GDK_CONTROL_MASK,
-                           GTK_ACCEL_VISIBLE, self.quit)
+        accelgroup.connect(ord('d'), Gdk.ModifierType.CONTROL_MASK,
+                           Gtk.AccelFlags.VISIBLE, self.quit)
 
         self.mainwin = Gtk.Window()
         self.mainwin.set_title('GTK Shell')
         theme = Gtk.IconTheme.get_default()
         icon = theme.load_icon(Gtk.STOCK_EXECUTE,
-                               GTK_ICON_SIZE_LARGE_TOOLBAR,
+                               Gtk.IconSize.LARGE_TOOLBAR,
                                Gtk.IconLookupFlags(0))
         self.mainwin.set_icon(icon)
         self.mainwin.add(vbox)
@@ -227,7 +212,7 @@ class GtkShell(object):
             try:
                 self.state = 'running'
                 self.controller.run_tool(self.tool, *cmd)
-                #~ raise RuntimeError('simulated runtime error')
+                #raise RuntimeError('simulated runtime error')
             except (KeyboardInterrupt, SystemExit):
                 raise
             except Exception as e:

@@ -20,69 +20,14 @@
 '''Tools for running external processes in a GTK GUI.'''
 
 
+from __future__ import absolute_import
+
 import os
 import sys
 import time
 import logging
 
-try:
-    from gi.repository import Gtk, Pango, GObject, GLib
-
-    GTK_MESSAGE_ERROR = Gtk.MessageType.ERROR
-    GTK_MESSAGE_WARNING = Gtk.MessageType.WARNING
-    GTK_MESSAGE_INFO = Gtk.MessageType.INFO
-    GTK_MESSAGE_QUESTION = Gtk.MessageType.QUESTION
-
-    GTK_FILE_CHOOSER_ACTION_SAVE = Gtk.FileChooserAction.SAVE
-
-    GTK_DIALOG_MODAL = Gtk.DialogFlags.MODAL
-    GTK_DIALOG_DESTROY_WITH_PARENT = Gtk.DialogFlags.DESTROY_WITH_PARENT
-
-    GTK_BUTTONS_CLOSE = Gtk.ButtonsType.CLOSE
-    GTK_BUTTONS_YES_NO = Gtk.ButtonsType.YES_NO
-
-    GTK_RESPONSE_OK = Gtk.ResponseType.OK
-    GTK_RESPONSE_CANCEL = Gtk.ResponseType.CANCEL
-    GTK_RESPONSE_YES = Gtk.ResponseType.YES
-    GTK_RESPONSE_NO = Gtk.ResponseType.NO
-
-    GTK_ICON_SIZE_SMALL_TOOLBAR = Gtk.IconSize.SMALL_TOOLBAR
-
-    PANGO_WEIGHT_BOLD = Pango.Weight.BOLD
-
-except ImportError:
-    print('failed to import from gi.repository')
-
-    import pygtk
-    pygtk.require('2.0')
-
-    import gtk as Gtk
-    import glib as GLib
-    import pango as Pango
-    import gobject as GObject
-
-    GTK_MESSAGE_ERROR = Gtk.MESSAGE_ERROR
-    GTK_MESSAGE_WARNING = Gtk.MESSAGE_WARNING
-    GTK_MESSAGE_INFO = Gtk.MESSAGE_INFO
-    GTK_MESSAGE_QUESTION = Gtk.MESSAGE_QUESTION
-
-    GTK_BUTTONS_CLOSE = Gtk.BUTTONS_CLOSE
-    GTK_BUTTONS_YES_NO = Gtk.BUTTONS_YES_NO
-
-    GTK_FILE_CHOOSER_ACTION_SAVE = Gtk.FILE_CHOOSER_ACTION_SAVE
-
-    GTK_DIALOG_MODAL = Gtk.DIALOG_MODAL
-    GTK_DIALOG_DESTROY_WITH_PARENT = Gtk.DIALOG_DESTROY_WITH_PARENT
-
-    GTK_RESPONSE_OK = Gtk.RESPONSE_OK
-    GTK_RESPONSE_CANCEL = Gtk.RESPONSE_CANCEL
-    GTK_RESPONSE_YES = Gtk.RESPONSE_YES
-    GTK_RESPONSE_NO = Gtk.RESPONSE_NO
-
-    GTK_ICON_SIZE_SMALL_TOOLBAR = Gtk.ICON_SIZE_SMALL_TOOLBAR
-
-    PANGO_WEIGHT_BOLD = Pango.WEIGHT_BOLD
-
+from gi.repository import Gtk, Pango, GObject, GLib
 
 from exectools import subprocess2, string_types, callable
 from exectools import BaseOutputHandler, level2tag
@@ -205,7 +150,7 @@ class GtkBlinker(Gtk.Image):
     def __init__(self):
         Gtk.Image.__init__(self)
         self.set_from_stock(Gtk.STOCK_MEDIA_RECORD,
-                            GTK_ICON_SIZE_SMALL_TOOLBAR)
+                            Gtk.IconSize.SMALL_TOOLBAR)
 
     def pulse(self):
         '''A blinker pulse'''
@@ -237,7 +182,7 @@ class GtkOutputPane(Gtk.TextView):
         super(GtkOutputPane, self).__init__()
         if buffer is not None:
             self.set_buffer(buffer)
-        #self.stream = GtkOStream(self)
+        #self.stream = Gio.IOStream(self)
         self.hide_button = hide_button
         self.connect('populate-popup', self.on_populate_popup)
         self._filedialog = self._setup_filedialog()
@@ -250,7 +195,7 @@ class GtkOutputPane(Gtk.TextView):
                 'warning': {'foreground': 'orange'},
                 'info': {'foreground': 'blue'},
                 'debug': {'foreground': 'gray'},
-                'cmd': {'weight': PANGO_WEIGHT_BOLD},
+                'cmd': {'weight': Pango.Weight.BOLD},
             }
             #'message':{}
 
@@ -262,9 +207,9 @@ class GtkOutputPane(Gtk.TextView):
         dialog = Gtk.FileChooserDialog(
             title='Save Output Log',
             #parent=self.textview.get_toplevel(),
-            action=GTK_FILE_CHOOSER_ACTION_SAVE)
-        dialog.add_buttons(Gtk.STOCK_OK, GTK_RESPONSE_OK,
-                           Gtk.STOCK_CANCEL, GTK_RESPONSE_CANCEL)
+            action=Gtk.FileChooserAction.SAVE)
+        dialog.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.OK,
+                           Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
 
         patterns = [('*.txt', 'Text files'), ('*', 'All Files')]
         for pattern, name in patterns:
@@ -275,7 +220,7 @@ class GtkOutputPane(Gtk.TextView):
 
         dialog.set_current_name('outputlog.txt')
         dialog.set_select_multiple(False)
-        dialog.set_default_response(GTK_RESPONSE_OK)
+        dialog.set_default_response(Gtk.ResponseType.OK)
 
         return dialog
 
@@ -302,7 +247,7 @@ class GtkOutputPane(Gtk.TextView):
         filename = None
         while not filename:
             response = dialog.run()
-            if response == GTK_RESPONSE_CANCEL:
+            if response == Gtk.ResponseType.CANCEL:
                 dialog.hide()
                 return
             filename = dialog.get_filename()
@@ -311,16 +256,15 @@ class GtkOutputPane(Gtk.TextView):
                        'Are you sure you want overwrite it?' % filename)
                 msgdialog = Gtk.MessageDialog(
                     transient_for=dialog,
-                    #flags=GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
                     modal=True,
                     destroy_with_parent=True,
-                    message_type=GTK_MESSAGE_QUESTION,
-                    buttons=GTK_BUTTONS_YES_NO,
+                    message_type=Gtk.MessageType.QUESTION,
+                    buttons=Gtk.ButtonsType.YES_NO,
                     text=msg)
-                msgdialog.set_default_response(GTK_RESPONSE_NO)
+                msgdialog.set_default_response(Gtk.ResponseType.NO)
                 response = msgdialog.run()
                 msgdialog.destroy()
-                if(response != GTK_RESPONSE_YES):
+                if(response != Gtk.ResponseType.YES):
                     filename = None
 
         dialog.hide()
@@ -530,14 +474,14 @@ class GtkDialogLoggingHandler(logging.Handler):
     '''GTK handler for logging message dialog'''
 
     levelsmap = {
-        logging.CRITICAL: GTK_MESSAGE_ERROR,
+        logging.CRITICAL: Gtk.MessageType.ERROR,
         # FATAL = CRITICAL
-        logging.ERROR: GTK_MESSAGE_ERROR,
-        logging.WARNING: GTK_MESSAGE_WARNING,
+        logging.ERROR: Gtk.MessageType.ERROR,
+        logging.WARNING: Gtk.MessageType.WARNING,
         # WARN = WARNING
-        logging.INFO: GTK_MESSAGE_INFO,
-        logging.DEBUG: GTK_MESSAGE_INFO,
-        logging.NOTSET: GTK_MESSAGE_INFO,
+        logging.INFO: Gtk.MessageType.INFO,
+        logging.DEBUG: Gtk.MessageType.INFO,
+        logging.NOTSET: Gtk.MessageType.INFO,
     }
 
     def __init__(self, dialog=None, parent=None):
@@ -549,7 +493,7 @@ class GtkDialogLoggingHandler(logging.Handler):
                 except IndexError:
                     pass
             dialog = Gtk.MessageDialog(transient_for=parent,
-                                       buttons=GTK_BUTTONS_CLOSE)
+                                       buttons=Gtk.ButtonsType.CLOSE)
         self.dialog = dialog
         self.formatter = None
 
