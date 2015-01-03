@@ -46,15 +46,15 @@ Libraries
    :toctree: api/
 
    exectools
-   exectools.std
    exectools.qt
-   exectools.gtk2
 
    gsdtools
    gsdtools.stats
    gsdtools.ras2vec
 
 ..
+   exectools.std
+   exectools.gtk
    exectools.recipe_440544
    exectools.subprocess2
 
