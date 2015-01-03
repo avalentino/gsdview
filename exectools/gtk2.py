@@ -25,33 +25,88 @@ import sys
 import time
 import logging
 
-import gtk
-import pango
-import gobject
+try:
+    from gi.repository import Gtk, Pango, GObject, GLib
+
+    GTK_MESSAGE_ERROR = Gtk.MessageType.ERROR
+    GTK_MESSAGE_WARNING = Gtk.MessageType.WARNING
+    GTK_MESSAGE_INFO = Gtk.MessageType.INFO
+    GTK_MESSAGE_QUESTION = Gtk.MessageType.QUESTION
+
+    GTK_FILE_CHOOSER_ACTION_SAVE = Gtk.FileChooserAction.SAVE
+
+    GTK_DIALOG_MODAL = Gtk.DialogFlags.MODAL
+    GTK_DIALOG_DESTROY_WITH_PARENT = Gtk.DialogFlags.DESTROY_WITH_PARENT
+
+    GTK_BUTTONS_CLOSE = Gtk.ButtonsType.CLOSE
+    GTK_BUTTONS_YES_NO = Gtk.ButtonsType.YES_NO
+
+    GTK_RESPONSE_OK = Gtk.ResponseType.OK
+    GTK_RESPONSE_CANCEL = Gtk.ResponseType.CANCEL
+    GTK_RESPONSE_YES = Gtk.ResponseType.YES
+    GTK_RESPONSE_NO = Gtk.ResponseType.NO
+
+    GTK_ICON_SIZE_SMALL_TOOLBAR = Gtk.IconSize.SMALL_TOOLBAR
+
+    PANGO_WEIGHT_BOLD = Pango.Weight.BOLD
+
+except ImportError:
+    print('failed to import from gi.repository')
+
+    import pygtk
+    pygtk.require('2.0')
+
+    import gtk as Gtk
+    import glib as GLib
+    import pango as Pango
+    import gobject as GObject
+
+    GTK_MESSAGE_ERROR = Gtk.MESSAGE_ERROR
+    GTK_MESSAGE_WARNING = Gtk.MESSAGE_WARNING
+    GTK_MESSAGE_INFO = Gtk.MESSAGE_INFO
+    GTK_MESSAGE_QUESTION = Gtk.MESSAGE_QUESTION
+
+    GTK_BUTTONS_CLOSE = Gtk.BUTTONS_CLOSE
+    GTK_BUTTONS_YES_NO = Gtk.BUTTONS_YES_NO
+
+    GTK_FILE_CHOOSER_ACTION_SAVE = Gtk.FILE_CHOOSER_ACTION_SAVE
+
+    GTK_DIALOG_MODAL = Gtk.DIALOG_MODAL
+    GTK_DIALOG_DESTROY_WITH_PARENT = Gtk.DIALOG_DESTROY_WITH_PARENT
+
+    GTK_RESPONSE_OK = Gtk.RESPONSE_OK
+    GTK_RESPONSE_CANCEL = Gtk.RESPONSE_CANCEL
+    GTK_RESPONSE_YES = Gtk.RESPONSE_YES
+    GTK_RESPONSE_NO = Gtk.RESPONSE_NO
+
+    GTK_ICON_SIZE_SMALL_TOOLBAR = Gtk.ICON_SIZE_SMALL_TOOLBAR
+
+    PANGO_WEIGHT_BOLD = Pango.WEIGHT_BOLD
+
 
 from exectools import subprocess2, string_types, callable
 from exectools import BaseOutputHandler, level2tag
 from exectools.std import StdToolController
 
 
-class Popen(gobject.GObject, subprocess2.Popen):
+class Popen(GObject.GObject, subprocess2.Popen):
 
     _timeout = 100  # ms
 
     __gsignals__ = {
-        'stdout-ready': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (),),
-        'stderr-ready': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (),),
-        'io-error': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (),),
-        'connection-broken': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (),),
-        'finished': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (),),
+        'stdout-ready': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, (),),
+        'stderr-ready': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, (),),
+        'io-error': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, (),),
+        'connection-broken': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, (),),
+        'finished': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, (),),
     }
 
     def __init__(self, *args, **kwargs):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         subprocess2.Popen.__init__(self, *args, **kwargs)
         self._watch_tags = []
 
-        id_ = gobject.timeout_add(self._timeout, self._check_finished)
+        id_ = GLib.timeout_add(self._timeout, self._check_finished)
         self._watch_tags.append(id_)
 
         self._setup_io_watch()
@@ -69,24 +124,24 @@ class Popen(gobject.GObject, subprocess2.Popen):
         #if self.stderr:
         #    self.stderr.close()
 
-        for tag in self._watch_tags:
-            gobject.source_remove(tag)
+        for tag in set(self._watch_tags):
+            GLib.source_remove(tag)
+        self._watch_tags.clear()
 
     if sys.platform[:3] == 'win':
         import errno
         import msvcrt
-        from subprocess import pywintypes
         from win32pipe import PeekNamedPipe
 
         def _setup_io_watch(self):
             # @TODO: signal.set_wakeup_fd from Python 2.6
             if self.stdout:
-                id_ = gobject.timeout_add(self._timeout, self._check_ready,
-                                          self.stdout)
+                id_ = GLib.timeout_add(self._timeout, self._check_ready,
+                                       self.stdout)
                 self._watch_tags.append(id_)
             if self.stderr:
-                id_ = gobject.timeout_add(self._timeout, self._check_ready,
-                                          self.stderr)
+                id_ = GLib.timeout_add(self._timeout, self._check_ready,
+                                       self.stderr)
                 self._watch_tags.append(id_)
 
         def _check_ready(self, conn, maxsize=1024):
@@ -108,8 +163,8 @@ class Popen(gobject.GObject, subprocess2.Popen):
                         self.emit('stderr-ready')
             except ValueError:
                 return conn.close()
-            except (pywintypes.error, Exception) as why:
-                if why[0] in (109, errno.ESHUTDOWN):
+            except (WindowsError, Exception) as ex:
+                if ex[0] in (109, errno.ESHUTDOWN):
                     return conn.close()
                 raise
 
@@ -118,37 +173,37 @@ class Popen(gobject.GObject, subprocess2.Popen):
     else:   # POSIX
 
         def _setup_io_watch(self):
-            cond = (gobject.IO_IN | gobject.IO_PRI | gobject.IO_ERR |
-                    gobject.IO_HUP)
+            cond = (GObject.IO_IN | GObject.IO_PRI | GObject.IO_ERR |
+                    GObject.IO_HUP)
             if self.stdout:
-                id_ = gobject.io_add_watch(self.stdout, cond,
-                                           self._io_callback)
+                id_ = GLib.io_add_watch(self.stdout, GLib.PRIORITY_DEFAULT,
+                                        cond, self._io_callback)
                 self._watch_tags.append(id_)
             if self.stderr:
-                id_ = gobject.io_add_watch(self.stderr, cond,
+                id_ = GObject.io_add_watch(self.stderr, cond,
                                            self._io_callback)
                 self._watch_tags.append(id_)
 
         def _io_callback(self, source, condition):
-            if condition in (gobject.IO_IN, gobject.IO_PRI):
+            if condition in (GObject.IO_IN, GObject.IO_PRI):
                 if source == self.stdout:
                     self.emit('stdout-ready')
                 elif source == self.stderr:
                     self.emit('stderr-ready')
                 return True
 
-            if condition == gobject.IO_ERR:
+            if condition == GObject.IO_ERR:
                 self.emit('io-error')
-            if condition == gobject.IO_HUP:
+            if condition == GObject.IO_HUP:
                 self.emit('connection-broken')
             return False
 
 
-class GtkBlinker(gtk.Image):
+class GtkBlinker(Gtk.Image):
     def __init__(self):
-        gtk.Image.__init__(self)
-        self.set_from_stock(gtk.STOCK_MEDIA_RECORD,
-                            gtk.ICON_SIZE_SMALL_TOOLBAR)
+        Gtk.Image.__init__(self)
+        self.set_from_stock(Gtk.STOCK_MEDIA_RECORD,
+                            GTK_ICON_SIZE_SMALL_TOOLBAR)
 
     def pulse(self):
         '''A blinker pulse'''
@@ -160,8 +215,8 @@ class GtkBlinker(gtk.Image):
     def flush(self):
         '''Flush the blinker'''
 
-        while gtk.events_pending():
-            gtk.main_iteration(False)
+        while Gtk.events_pending():
+            Gtk.main_iteration(False)
 
     def reset(self):
         '''Reset the blinker'''
@@ -170,14 +225,16 @@ class GtkBlinker(gtk.Image):
 
 
 # @TODO: check
-class GtkOutputPane(gtk.TextView):
+class GtkOutputPane(Gtk.TextView):
 
     __gsignals__ = {
-        'hide-request': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (),),
+        'hide-request': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, (),),
     }
 
     def __init__(self, buffer=None, hide_button=True, formats=None):
-        super(GtkOutputPane, self).__init__(buffer)
+        super(GtkOutputPane, self).__init__()
+        if buffer is not None:
+            self.set_buffer(buffer)
         #self.stream = GtkOStream(self)
         self.hide_button = hide_button
         self.connect('populate-popup', self.on_populate_popup)
@@ -191,7 +248,7 @@ class GtkOutputPane(gtk.TextView):
                 'warning': {'foreground': 'orange'},
                 'info': {'foreground': 'blue'},
                 'debug': {'foreground': 'gray'},
-                'cmd': {'weight': pango.WEIGHT_BOLD},
+                'cmd': {'weight': PANGO_WEIGHT_BOLD},
             }
             #'message':{}
 
@@ -200,23 +257,23 @@ class GtkOutputPane(gtk.TextView):
             buffer_.create_tag(key, **value)
 
     def _setup_filedialog(self):
-        dialog = gtk.FileChooserDialog(
+        dialog = Gtk.FileChooserDialog(
             title='Save Output Log',
             #parent=self.textview.get_toplevel(),
-            action=gtk.FILE_CHOOSER_ACTION_SAVE,
-            buttons=(gtk.STOCK_OK, gtk.RESPONSE_OK, gtk.STOCK_CANCEL,
-                     gtk.RESPONSE_CANCEL))
+            action=GTK_FILE_CHOOSER_ACTION_SAVE)
+        dialog.add_buttons(Gtk.STOCK_OK, GTK_RESPONSE_OK,
+                           Gtk.STOCK_CANCEL, GTK_RESPONSE_CANCEL)
 
         patterns = [('*.txt', 'Text files'), ('*', 'All Files')]
         for pattern, name in patterns:
-            filefilter = gtk.FileFilter()
+            filefilter = Gtk.FileFilter()
             filefilter.set_name(name)
             filefilter.add_pattern(pattern)
             dialog.add_filter(filefilter)
 
         dialog.set_current_name('outputlog.txt')
         dialog.set_select_multiple(False)
-        dialog.set_default_response(gtk.RESPONSE_OK)
+        dialog.set_default_response(GTK_RESPONSE_OK)
 
         return dialog
 
@@ -229,7 +286,7 @@ class GtkOutputPane(gtk.TextView):
             header = '# Output log generated on %s' % time.asctime()
 
         buf = self.get_buffer()
-        text = buf.get_text(buf.get_start_iter(), buf.get_end_iter())
+        text = buf.get_text(buf.get_start_iter(), buf.get_end_iter(), False)
 
         return '%s\n\n%s' % (header, text)
 
@@ -243,23 +300,25 @@ class GtkOutputPane(gtk.TextView):
         filename = None
         while not filename:
             response = dialog.run()
-            if response == gtk.RESPONSE_CANCEL:
+            if response == GTK_RESPONSE_CANCEL:
                 dialog.hide()
                 return
             filename = dialog.get_filename()
             if filename and os.path.exists(filename):
                 msg = ('File "%s" already exists.\n\n'
                        'Are you sure you want overwrite it?' % filename)
-                msgdialog = gtk.MessageDialog(
-                    parent=dialog,
-                    flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                    type=gtk.MESSAGE_QUESTION,
-                    buttons=gtk.BUTTONS_YES_NO,
-                    message_format=msg)
-                msgdialog.set_default_response(gtk.RESPONSE_NO)
+                msgdialog = Gtk.MessageDialog(
+                    transient_for=dialog,
+                    #flags=GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                    modal=True,
+                    destroy_with_parent=True,
+                    message_type=GTK_MESSAGE_QUESTION,
+                    buttons=GTK_BUTTONS_YES_NO,
+                    text=msg)
+                msgdialog.set_default_response(GTK_RESPONSE_NO)
                 response = msgdialog.run()
                 msgdialog.destroy()
-                if(response != gtk.RESPONSE_YES):
+                if(response != GTK_RESPONSE_YES):
                     filename = None
 
         dialog.hide()
@@ -271,20 +330,20 @@ class GtkOutputPane(gtk.TextView):
 
     def on_populate_popup(self, widget, menu):
         # Separator
-        item = gtk.SeparatorMenuItem()
+        item = Gtk.SeparatorMenuItem()
         item.set_name('separator')
         item.show()
         menu.append(item)
 
         # Save As
-        item = gtk.ImageMenuItem(gtk.STOCK_SAVE_AS)
+        item = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_SAVE_AS)
         item.set_name('save_as')
         item.connect('activate', lambda item, w: self.save(), None)
         item.show()
         menu.append(item)
 
         # Clear OutputLog
-        item = gtk.ImageMenuItem(gtk.STOCK_CLEAR)
+        item = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_CLEAR)
         item.set_name('clear')
         item.connect('activate', lambda item, w: self.clear(), None)
         item.show()
@@ -292,28 +351,28 @@ class GtkOutputPane(gtk.TextView):
 
         # Hide OutputLog
         if self.hide_button:
-            item = gtk.ImageMenuItem(gtk.STOCK_CLOSE)
+            item = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_CLOSE)
             item.set_name('close')
             item.connect('activate', lambda self, w: self.emit('hide-request'))
             item.show()
             menu.append(item)
 
 
-class GtkOutputHandler(gobject.GObject, BaseOutputHandler):
+class GtkOutputHandler(GObject.GObject, BaseOutputHandler):
     '''GTK progress handler'''
 
     __gsignals__ = {
         'pulse': (
-            gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_STRING,),
+            GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, (GObject.TYPE_STRING,),
         ),
         'percentage-changed': (
-            gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_FLOAT,),
+            GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, (GObject.TYPE_FLOAT,),
         ),
     }
 
     def __init__(self, logger=None, statusbar=None, progressbar=None,
                  blinker=None):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         BaseOutputHandler.__init__(self, logger)
 
         self.statusbar = statusbar
@@ -322,15 +381,17 @@ class GtkOutputHandler(gobject.GObject, BaseOutputHandler):
 
             if blinker is None:
                 blinker = GtkBlinker()
-                statusbar.pack_end(blinker, expand=False)
+                statusbar.pack_end(
+                    blinker, expand=False, fill=False, padding=0)
                 blinker.hide()
             self.connect('pulse', lambda obj, text: blinker.show())
             self.connect('pulse', lambda obj, text: blinker.pulse())
             self.connect('pulse', self._update_statusbar)
 
             if progressbar is None:
-                progressbar = gtk.ProgressBar()
-                statusbar.pack_end(progressbar)
+                progressbar = Gtk.ProgressBar()
+                statusbar.pack_end(
+                    progressbar, expand=False, fill=False, padding=0)
                 progressbar.hide()
             self.connect(
                 'percentage-changed', lambda obj, perc: progressbar.show())
@@ -413,8 +474,8 @@ class GtkOutputHandler(gobject.GObject, BaseOutputHandler):
             self.emit('percentage-changed', percentage)
 
         # Flush events
-        #while gtk.events_pending():
-        #    gtk.main_iteration(False)
+        #while Gtk.events_pending():
+        #    Gtk.main_iteration(False)
 
 
 class GtkLoggingHandler(logging.Handler):
@@ -447,8 +508,8 @@ class GtkLoggingHandler(logging.Handler):
         self.textview.scroll_mark_onscreen(buf.get_mark('insert'))
 
     def _flush(self):
-        while gtk.events_pending():
-            gtk.main_iteration(False)
+        while Gtk.events_pending():
+            Gtk.main_iteration(False)
 
     def emit(self, record):
         try:
@@ -467,14 +528,14 @@ class GtkDialogLoggingHandler(logging.Handler):
     '''GTK handler for logging message dialog'''
 
     levelsmap = {
-        logging.CRITICAL: gtk.MESSAGE_ERROR,
+        logging.CRITICAL: GTK_MESSAGE_ERROR,
         # FATAL = CRITICAL
-        logging.ERROR: gtk.MESSAGE_ERROR,
-        logging.WARNING: gtk.MESSAGE_WARNING,
+        logging.ERROR: GTK_MESSAGE_ERROR,
+        logging.WARNING: GTK_MESSAGE_WARNING,
         # WARN = WARNING
-        logging.INFO: gtk.MESSAGE_INFO,
-        logging.DEBUG: gtk.MESSAGE_INFO,
-        logging.NOTSET: gtk.MESSAGE_INFO,
+        logging.INFO: GTK_MESSAGE_INFO,
+        logging.DEBUG: GTK_MESSAGE_INFO,
+        logging.NOTSET: GTK_MESSAGE_INFO,
     }
 
     def __init__(self, dialog=None, parent=None):
@@ -482,10 +543,11 @@ class GtkDialogLoggingHandler(logging.Handler):
         if dialog is None:
             if parent is None:
                 try:
-                    parent = gtk.window_list_toplevels()[0]
+                    parent = Gtk.window_list_toplevels()[0]
                 except IndexError:
                     pass
-            dialog = gtk.MessageDialog(parent, buttons=gtk.BUTTONS_CLOSE)
+            dialog = Gtk.MessageDialog(transient_for=parent,
+                                       buttons=GTK_BUTTONS_CLOSE)
         self.dialog = dialog
         self.formatter = None
 
@@ -518,16 +580,16 @@ class GtkDialogLoggingHandler(logging.Handler):
             self.handleError(record)
 
 
-class GtkToolController(gobject.GObject, StdToolController):
+class GtkToolController(GObject.GObject, StdToolController):
     '''GTK tool controller'''
 
     __gsignals__ = {
         'finished': (
-            gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_INT,),),
+            GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, (GObject.TYPE_INT,),),
     }
 
     def __init__(self, logger=None):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         StdToolController.__init__(self, logger)
         self._handlers = []
 

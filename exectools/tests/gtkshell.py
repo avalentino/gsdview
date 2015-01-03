@@ -24,7 +24,28 @@
 import time
 import logging
 
-import gtk
+try:
+    from gi.repository import Gtk, Gdk
+
+    GTK_POLICY_AUTOMATIC = Gtk.PolicyType.AUTOMATIC
+    GTK_ICON_SIZE_LARGE_TOOLBAR = Gtk.IconSize.LARGE_TOOLBAR
+    GTK_ACCEL_VISIBLE = Gtk.AccelFlags.VISIBLE
+    GDK_CONTROL_MASK = Gdk.ModifierType.CONTROL_MASK
+
+except ImportError:
+    print('failed to import from gi.repository')
+
+    import pygtk
+    pyGtk.require('2.0')
+
+    import gtk as Gtk
+    from gtk import gdk as Gdk
+
+    GTK_POLICY_AUTOMATIC = Gtk.POLICY_AUTOMATIC
+    GTK_ICON_SIZE_LARGE_TOOLBAR = Gtk.ICON_SIZE_LARGE_TOOLBAR
+    GTK_ACCEL_VISIBLE = Gtk.ACCEL_VISIBLE
+    GDK_CONTROL_MASK = Gdk.CONTROL_MASK
+
 
 import exectools
 from exectools.gtk2 import (GtkOutputPane, GtkOutputHandler,
@@ -37,15 +58,15 @@ class GtkShell(object):
 
     def __init__(self, debug=False):
         # Command box
-        cmdlabel = gtk.Label('cmd >')
+        cmdlabel = Gtk.Label(label='cmd >')
         cmdlabel.set_padding(5, 0)
 
-        self.cmdbox = gtk.combo_box_entry_new_text()
+        self.cmdbox = Gtk.ComboBoxText.new_with_entry()
         self.cmdbox.set_active(0)
         self.cmdbox.set_focus_on_click(False)
         self.cmdbox.connect('changed', self.on_item_selected)
 
-        completion = gtk.EntryCompletion()
+        completion = Gtk.EntryCompletion()
         completion.set_model(self.cmdbox.get_model())
         completion.set_text_column(0)
 
@@ -55,42 +76,45 @@ class GtkShell(object):
         self.entry.connect('key-press-event', self.on_key_pressed)
         self.entry.connect('populate-popup', self.on_populate_popup)
 
-        self.cmdbutton = gtk.Button(stock=gtk.STOCK_EXECUTE)
+        #self.cmdbutton = Gtk.Button.new_with_mnemonic('_Execute')
+        self.cmdbutton = Gtk.Button(stock=Gtk.STOCK_EXECUTE)
         self.cmdbutton.connect('clicked', self.on_cmdbutton_clicked)
 
-        hbox = gtk.HBox(spacing=3)
-        hbox.pack_start(cmdlabel, fill=False, expand=False)
-        hbox.pack_start(self.cmdbox)
-        hbox.pack_start(self.cmdbutton, fill=False, expand=False)
+        hbox = Gtk.Box.new(Gtk.Orientation.HORIZONTAL, spacing=3)
+        hbox.pack_start(cmdlabel, expand=False, fill=False, padding=0)
+        hbox.pack_start(self.cmdbox, expand=True, fill=True, padding=0)
+        hbox.pack_start(self.cmdbutton, expand=False, fill=False, padding=0)
 
         # Output pane
         outputpane = GtkOutputPane(hide_button=False)
         outputpane.set_editable(False)
-        scrolledwin = gtk.ScrolledWindow()
-        scrolledwin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrolledwin = Gtk.ScrolledWindow()
+        scrolledwin.set_policy(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC)
         scrolledwin.add(outputpane)
 
         # Status bar
-        self.statusbar = gtk.Statusbar()
+        self.statusbar = Gtk.Statusbar()
         id_ = self.statusbar.get_context_id('ready')
         self.statusbar.push(id_, 'Ready.')
 
         # Main window
-        vbox = gtk.VBox(spacing=3)
+        vbox = Gtk.Box.new(Gtk.Orientation.VERTICAL, spacing=3)
         vbox.set_border_width(3)
-        vbox.pack_start(hbox, fill=True, expand=False)
-        vbox.pack_start(scrolledwin)
-        vbox.pack_start(self.statusbar, fill=True, expand=False)
+        vbox.pack_start(hbox, expand=False, fill=True, padding=0)
+        vbox.pack_start(scrolledwin, expand=True, fill=True, padding=0)
+        vbox.pack_start(self.statusbar, expand=False, fill=True, padding=0)
 
-        accelgroup = gtk.AccelGroup()
-        accelgroup.connect_group(ord('d'), gtk.gdk.CONTROL_MASK,
-                                 gtk.ACCEL_VISIBLE, self.quit)
+        accelgroup = Gtk.AccelGroup()
+        accelgroup.connect(ord('d'), GDK_CONTROL_MASK,
+                           GTK_ACCEL_VISIBLE, self.quit)
 
-        self.mainwin = gtk.Window()
+        self.mainwin = Gtk.Window()
         self.mainwin.set_title('GTK Shell')
-        self.mainwin.set_icon(
-            self.mainwin.render_icon(gtk.STOCK_EXECUTE,
-                                     gtk.ICON_SIZE_LARGE_TOOLBAR))
+        theme = Gtk.IconTheme.get_default()
+        icon = theme.load_icon(Gtk.STOCK_EXECUTE,
+                               GTK_ICON_SIZE_LARGE_TOOLBAR,
+                               Gtk.IconLookupFlags(0))
+        self.mainwin.set_icon(icon)
         self.mainwin.add(vbox)
         self.mainwin.set_default_size(650, 500)
         self.mainwin.add_accel_group(accelgroup)
@@ -133,7 +157,7 @@ class GtkShell(object):
         self.load_history()
 
     def main(self):
-        gtk.main()
+        Gtk.main()
 
     def quit(self, *data):
         try:
@@ -141,11 +165,11 @@ class GtkShell(object):
         finally:
             self.logger.debug(
                 'gtkshell session stopped at %s.' % time.asctime())
-            gtk.main_quit()
+            Gtk.main_quit()
 
     def load_history(self):
         try:
-            for cmd in open(self.historyfile, 'rU'):
+            for cmd in open(self.historyfile, 'r'):
                 self.cmdbox.append_text(cmd.rstrip())
             self.logger.debug('history file "%s" loaded.' % self.historyfile)
         except (OSError, IOError) as e:
@@ -166,7 +190,7 @@ class GtkShell(object):
 
     def _reset(self):
         self.controller._reset()
-        self.cmdbutton.set_label(gtk.STOCK_EXECUTE)
+        self.cmdbutton.set_label(Gtk.STOCK_EXECUTE)
         self.cmdbox.set_sensitive(True)
         self.entry.grab_focus()
 
@@ -186,7 +210,7 @@ class GtkShell(object):
             self.cmdbox.set_sensitive(False)
             id_ = self.statusbar.get_context_id('running')
             self.statusbar.push(id_, 'Running ...')
-            self.cmdbutton.set_label(gtk.STOCK_STOP)
+            self.cmdbutton.set_label(Gtk.STOCK_STOP)
         else:
             raise ValueError('invalid status: "%s".' % state)
         self._state = state
@@ -211,7 +235,7 @@ class GtkShell(object):
                 self.state = 'ready'
 
     def on_key_pressed(self, widget, event):
-        key = gtk.gdk.keyval_name(event.keyval)
+        key = Gdk.keyval_name(event.keyval)
         if key in ('Up', 'Down', 'Page_Up', 'Page_Down'):
             self.cmdbox.popup()
             return True
@@ -232,12 +256,12 @@ class GtkShell(object):
 
     def on_populate_popup(self, widget, menu):
         # separator
-        item = gtk.SeparatorMenuItem()
+        item = Gtk.SeparatorMenuItem()
         item.show()
         menu.append(item)
 
         # Clear history
-        item = gtk.ImageMenuItem(gtk.STOCK_CLEAR)
+        item = Gtk.ImageMenuItem(Gtk.STOCK_CLEAR)
         item.set_name('clear_history')
         item.connect('activate', self.on_clear_history, None)
         item.connect('activate', self.on_clear_entry, None)
