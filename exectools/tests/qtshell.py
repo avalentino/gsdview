@@ -25,7 +25,7 @@ import time
 import logging
 
 try:
-    from qt import QtCore, QtWidgets
+    from qt import QtCore, QtWidgets, QtGui
 except ImportError:
     # Select the PyQt API 2
     import sip
@@ -73,7 +73,8 @@ class QtShell(QtWidgets.QMainWindow):
         # @TODO: complete
         #self.entry.populate_popup.connect(self.on_populate_popup)
 
-        self.cmdbutton = QtWidgets.QPushButton('Run')
+        icon = self.style().standardIcon(QtWidgets.QStyle.SP_MediaPlay)
+        self.cmdbutton = QtWidgets.QPushButton(icon, 'Run')
         self.cmdbutton.clicked.connect(self.execute)
 
         lineedit = self.cmdbox.lineEdit()
@@ -97,15 +98,14 @@ class QtShell(QtWidgets.QMainWindow):
         centralWidget.setLayout(vLayout)
         self.setCentralWidget(centralWidget)
 
-        # @TODO: complete
-        #~ accelgroup = gtk.AccelGroup()
-        #~ accelgroup.connect_group(ord('d'), gtk.gdk.CONTROL_MASK,
-                                 #~ gtk.ACCEL_VISIBLE, self.quit)
+        self.quit_shortcut = QtWidgets.QShortcut(QtGui.QKeySequence.Quit, self)
+        self.eof_shortcut = QtWidgets.QShortcut(
+            QtGui.QKeySequence(QtCore.Qt.CTRL + QtCore.Qt.Key_D), self)
 
         self.setWindowTitle('Qt Shell')
         self.setGeometry(0, 0, 800, 600)
-        #~ self.mainwin.add_accel_group(accelgroup)
-        #~ self.mainwin.destroy.connect(self.quit)
+        self.quit_shortcut.activated.connect(self.close)
+        self.eof_shortcut.activated.connect(self.close)
 
         # Setup the log system
         if debug:
@@ -153,7 +153,7 @@ class QtShell(QtWidgets.QMainWindow):
     def load_history(self):
         self.cmdbox.clear()
         try:
-            for cmd in open(self.historyfile, 'rU'):
+            for cmd in open(self.historyfile, 'r'):
                 self.cmdbox.addItem(cmd.rstrip())
 
             self.logger.debug('history file "%s" loaded.' % self.historyfile)
@@ -180,7 +180,7 @@ class QtShell(QtWidgets.QMainWindow):
 
     def _reset(self):
         self.controller.reset()
-        # @TOD: use icons here
+        # @TODO: use icons here
         self.cmdbutton.setText('Run')
         self.cmdbox.setEnabled(True)
         try:
