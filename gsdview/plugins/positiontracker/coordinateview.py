@@ -53,11 +53,6 @@ class CoordinateView(QtWidgets.QWidget):
         self.xedit.setText(str(scenepos.x()))
         self.yedit.setText(str(scenepos.y()))
 
-    # @COMPATIBILITY: pyside 1.0.1
-    def hide(self, *args):
-        # @NOTE: ignore extra arguments
-        super(CoordinateView, self).hide()
-
 
 class GeoCoordinateView(CoordinateView):
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):

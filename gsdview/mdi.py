@@ -129,7 +129,7 @@ class ItemModelMainWindow(MdiMainWindow):
             except AttributeError:
                 # the window has not an associated item in the datamodel
                 pass
-            # @COMPATIBILITY: pyside 1.0.1
+            # @COMPATIBILITY: pyside 1.2.2
             except NotImplementedError:
                 if id(window.item) == id(item):
                     self.mdiarea.setActiveSubWindow(window)
@@ -174,7 +174,7 @@ class ItemModelMainWindow(MdiMainWindow):
                 #    # just une window per run (??)
                 #    break
 
-                # @COMPATIBILITY: pyside 1.0.1
+                # @COMPATIBILITY: pyside 1.2.2
                 try:
                     if subwin.item == item:
                         subwin.close()
@@ -190,7 +190,7 @@ class ItemModelMainWindow(MdiMainWindow):
             #    # just une window per run (??)
             #    break
 
-            # @COMPATIBILITY: pyside 1.0.1
+            # @COMPATIBILITY: pyside 1.2.2
             try:
                 if subwin.item == parentitem:
                     subwin.close()

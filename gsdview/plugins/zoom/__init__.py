@@ -47,7 +47,7 @@ def init(app):
                                              app.tr('Zoom toolbar'))
     app.addToolBar(toolbar)
 
-    # @COMPATIBILITY: pyside 1.0.1
+    # @COMPATIBILITY: pyside 1.2.2
     #                 without the call to toolbar.parent() the tolbar is not
     #                 actually added
     assert toolbar.parent()

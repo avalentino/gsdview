@@ -128,7 +128,7 @@ class ScrollHandMode(MouseMode):
     def viewEventFilter(self, obj, event):
         if event.type() == QtCore.QEvent.Wheel:
 
-            # @COMPATIBILITY: Qt4 <--> Qt5
+            # @COMPATIBILITY: Qt4 --> Qt5
             # Delta is expressed in 1/8 degree
             try:
                 delta = event.angleDelta().y() / 8.  # degree

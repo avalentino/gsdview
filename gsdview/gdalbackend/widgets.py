@@ -27,7 +27,7 @@ import logging
 try:
     from configparser import ConfigParser
 except ImportError:
-    # @COMPATIBILITY: python 2.x
+    # @COMPATIBILITY: Python 2
     from ConfigParser import ConfigParser
 
 import numpy as np

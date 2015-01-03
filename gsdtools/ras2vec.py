@@ -49,7 +49,7 @@ import logging
 
 from osgeo import gdal, ogr, osr
 
-# @COMPATIBILITY: PY3
+# @COMPATIBILITY: Python 2
 if sys.version_info < (3, 0):
     string_types = (basestring,)
 else:

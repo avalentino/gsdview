@@ -398,8 +398,8 @@ class GSDView(ItemModelMainWindow):
             triggered=lambda: self.aboutdialog.exec_())
 
         # AboutQt
-        # @COMPATIBILITY: Qt4 --> Qt5
         icon = QtGui.QIcon(':/qt-project.org/qmessagebox/images/qtlogo-64.png')
+        # @COMPATIBILITY: Qt4 --> Qt5
         if not icon.availableSizes():
             icon = QtGui.QIcon(':/trolltech/qmessagebox/images/qtlogo-64.png')
         if not icon.availableSizes():
@@ -430,7 +430,7 @@ class GSDView(ItemModelMainWindow):
         toolbar = qtsupport.actionGroupToToolbar(actions, name)
         self.addToolBar(toolbar)
 
-        # @COMPATIBILITY: pyside 1.0.1
+        # @COMPATIBILITY: pyside 1.2.2
         #                 without the call to toolbar.parent() the toolbar is
         #                 not actually added
         assert toolbar.parent()

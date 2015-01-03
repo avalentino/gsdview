@@ -361,7 +361,7 @@ class GDALBackend(QtCore.QObject):
                     #    action.setEnabled(False)
                     #    break
 
-                    # @COMPATIBILITY: pyside 1.0.1
+                    # @COMPATIBILITY: pyside 1.2.2
                     try:
                         if subwin.item == item:
                             action.setEnabled(False)
@@ -387,7 +387,7 @@ class GDALBackend(QtCore.QObject):
                 #    action.setEnabled(False)
                 #    break
 
-                # @COMPATIBILITY: pyside 1.0.1
+                # @COMPATIBILITY: pyside 1.2.2
                 try:
                     if subwin.item == item:
                         action.setEnabled(False)

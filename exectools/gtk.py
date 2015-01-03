@@ -71,7 +71,7 @@ class Popen(GObject.GObject, subprocess2.Popen):
 
         for tag in set(self._watch_tags):
             GLib.source_remove(tag)
-        # @COMPATIBILITY with Python 2
+        # @COMPATIBILITY: list.clear() is not available in Python 2
         #self._watch_tags.clear()
         del self._watch_tags[:]
 

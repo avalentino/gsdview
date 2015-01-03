@@ -66,7 +66,7 @@ elif qt_api == 'pyside':
 
         """
 
-        # @COMPATIBILITY: Python 3
+        # @COMPATIBILITY: Python 2
         import sys
         if sys.version_info >= (3, 0):
             from io import StringIO

@@ -36,9 +36,12 @@ class StretchTool(QtCore.QObject):
         self.dialog = StretchDialog(parent=app)
         self.dialog.hide()
 
+        # @COMPATIBILITY: pyside 1.2.2
+        qApp = QtWidgets.QApplication.instance()
+
         # This should not be necessary since tha main window (app) is set
         # as parent of the StretchDialog
-        QtWidgets.qApp.lastWindowClosed.connect(self.dialog.close)
+        qApp.lastWindowClosed.connect(self.dialog.close)
 
         self.action = self._setupAction()
         self.action.setEnabled(False)

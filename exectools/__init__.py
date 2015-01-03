@@ -26,7 +26,7 @@ import sys
 import logging
 from io import StringIO
 
-# @COMPATIBILITY: Python 3
+# @COMPATIBILITY: Python 2
 if sys.version_info < (3, 0):
     string_types = (basestring,)
 else:

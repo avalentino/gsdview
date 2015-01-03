@@ -29,7 +29,7 @@ from io import StringIO
 try:
     from configparser import ConfigParser
 except ImportError:
-    # @COMPATIBILITY: python 2.x
+    # @COMPATIBILITY: Python 2
     from ConfigParser import ConfigParser
 
 from qt import QtCore, QtWidgets, QtGui, QtSvg, QtPrintSupport, uic

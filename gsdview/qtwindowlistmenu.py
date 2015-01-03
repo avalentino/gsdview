@@ -115,7 +115,7 @@ class QtWindowListMenu(QtWidgets.QMenu):
         self._winGroup = QtWidgets.QActionGroup(self, exclusive=True)
                                             #, triggered=self.activateWindow)
 
-        # @COMPATIBILITY: with pyside 1.0.1
+        # @COMPATIBILITY: pyside 1.2.2
         self._winGroup.triggered.connect(self.activateWindow)
 
         # Create the standard menu items.
