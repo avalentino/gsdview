@@ -31,8 +31,8 @@ GSDVIEWROOT = os.path.abspath(
 sys.path.insert(0, GSDVIEWROOT)
 
 
-from qt import QtWidgets
-from qt.QtTest import QTest
+from qtsix import QtWidgets
+from qtsix.QtTest import QTest
 
 from gsdview.plugins.stretch.widgets import StretchWidget, StretchDialog
 

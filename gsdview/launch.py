@@ -44,7 +44,7 @@ class SplashLogHandler(logging.Handler):
     def __init__(self, splash, app=None, level=logging.NOTSET):
         logging.Handler.__init__(self, level)
         if not app:
-            from qt.QtWidgets import qApp as app
+            from qtsix.QtWidgets import qApp as app
         self._app = app
         self._splash = splash
 
@@ -67,7 +67,7 @@ MODULES = [
     'os', 're', 'sys', 'itertools',
     'numpy',
     'osgeo.gdal', 'osgeo.osr',
-    'qt.QtCore', 'qt.QtWidgets',
+    'qtsix.QtCore', 'qtsix.QtWidgets',
     'exectools', 'exectools.qt',
     'gsdview.info', 'gsdview.utils', 'gsdview.apptools',
     'gsdview.imgutils', 'gsdview.qt4support', 'gsdview.widgets',
@@ -81,7 +81,7 @@ MODULES = [
 
 def preload(modules, app=None):
     if not app:
-        from qt import QtWidgets
+        from qtsix import QtWidgets
         app = QtWidgets.qApp
 
     timer = Timer()
@@ -150,7 +150,7 @@ def main():
     timer = Timer()
 
     # splash screen #########################################################
-    from qt import QtWidgets, QtGui
+    from qtsix import QtWidgets, QtGui
     logging.debug('Qt import: %d.%06ds' % timer.update())
 
     import sys

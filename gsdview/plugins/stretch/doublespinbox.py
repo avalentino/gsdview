@@ -20,7 +20,7 @@
 
 import re
 
-from qt import QtWidgets, QtGui
+from qtsix import QtWidgets, QtGui
 
 
 class DoubleSpinBox(QtWidgets.QDoubleSpinBox):

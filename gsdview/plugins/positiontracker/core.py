@@ -21,7 +21,7 @@
 '''Core module for position tracker plugin.'''
 
 
-from qt import QtCore
+from qtsix import QtCore
 
 from .coordinateview import CoordinateView, GeoCoordinateView
 

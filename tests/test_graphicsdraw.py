@@ -30,7 +30,7 @@ GSDVIEWROOT = os.path.abspath(
 sys.path.insert(0, GSDVIEWROOT)
 
 
-from qt import QtCore, QtWidgets, QtGui, QtSvg
+from qtsix import QtCore, QtWidgets, QtGui, QtSvg
 
 from gsdview import qtsupport
 from gsdview import qtdraw

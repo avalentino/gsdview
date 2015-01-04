@@ -36,7 +36,7 @@ _instance = None
 
 
 def init(app):
-    from qt import QtCore
+    from qtsix import QtCore
 
     from .core import MetadataController
 

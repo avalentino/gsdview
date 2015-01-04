@@ -21,7 +21,7 @@
 '''Browser component for geo-datasets metadata.'''
 
 
-from qt import QtCore, QtWidgets
+from qtsix import QtCore, QtWidgets
 
 from gsdview import qtsupport
 

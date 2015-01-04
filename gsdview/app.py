@@ -25,7 +25,7 @@ import os
 import sys
 import logging
 
-from qt import QtCore, QtWidgets, QtGui
+from qtsix import QtCore, QtWidgets, QtGui
 
 from exectools.qt import QtToolController, QtDialogLoggingHandler
 

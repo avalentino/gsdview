@@ -21,7 +21,7 @@
 '''Core module for image stretch control.'''
 
 
-from qt import QtCore, QtWidgets
+from qtsix import QtCore, QtWidgets
 
 from gsdview import qtsupport
 

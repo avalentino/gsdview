@@ -32,7 +32,7 @@ except ImportError:
     # @COMPATIBILITY: Python 2
     from ConfigParser import ConfigParser
 
-from qt import QtCore, QtWidgets, QtGui, QtSvg, QtPrintSupport, uic
+from qtsix import QtCore, QtWidgets, QtGui, QtSvg, QtPrintSupport, uic
 
 from gsdview import utils
 

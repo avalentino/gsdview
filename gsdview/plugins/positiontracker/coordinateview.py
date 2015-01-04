@@ -21,7 +21,7 @@
 '''Position tool.'''
 
 
-from qt import QtCore, QtWidgets
+from qtsix import QtCore, QtWidgets
 
 
 class CoordinateView(QtWidgets.QWidget):

@@ -32,7 +32,7 @@ GSDVIEWROOT = os.path.abspath(
 sys.path.insert(0, GSDVIEWROOT)
 
 
-from qt import QtCore, QtWidgets, QtGui
+from qtsix import QtCore, QtWidgets, QtGui
 
 from gsdview.mousemanager import MouseManager
 from gsdview.layermanager import LayerManager

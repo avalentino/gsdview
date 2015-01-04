@@ -34,7 +34,7 @@ GSDVIEWROOT = os.path.abspath(
 sys.path.insert(0, GSDVIEWROOT)
 
 
-from qt import QtWidgets
+from qtsix import QtWidgets
 
 from gsdview.gdalbackend.widgets import (
     GDALInfoWidget, GDALPreferencesPage, DatasetInfoDialog, BandInfoDialog,

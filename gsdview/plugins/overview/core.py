@@ -23,7 +23,7 @@
 
 import logging
 
-from qt import QtCore, QtWidgets, QtGui
+from qtsix import QtCore, QtWidgets, QtGui
 
 from gsdview.qtsupport import overrideCursor
 from gsdview.gdalbackend import gdalsupport

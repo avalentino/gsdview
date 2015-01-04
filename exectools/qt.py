@@ -26,7 +26,7 @@ import time
 import logging
 
 try:
-    from qt import QtCore, QtWidgets, QtGui
+    from qtsix import QtCore, QtWidgets, QtGui
 except ImportError:
     # Select the PyQt API 2
     import sip

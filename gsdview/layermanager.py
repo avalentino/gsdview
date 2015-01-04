@@ -24,7 +24,7 @@
 import logging
 import itertools
 
-from qt import QtCore, QtWidgets, QtGui
+from qtsix import QtCore, QtWidgets, QtGui
 
 
 SelectCurrentRows = (

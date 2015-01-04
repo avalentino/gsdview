@@ -28,7 +28,7 @@ import tempfile
 
 from osgeo import gdal
 
-from qt import QtWidgets
+from qtsix import QtWidgets
 
 from gsdview.gdalbackend import modelitems
 from gsdview.gdalbackend import gdalsupport
