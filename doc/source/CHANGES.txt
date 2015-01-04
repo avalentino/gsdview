@@ -16,8 +16,9 @@ Changes from 0.6.5 to 0.7.0 (in development)
   In order to run GSDView with Python 3 it is necessary to have GDAL >= 1.10.
   GSDView now requires Python >= 2.6.
 * Switch to PyQt5_. Now the reference API used in GSDView is the one provided
-  by the PyQt5 package. PyQt4_ is still supported via the :mod:`qt` adapter
-  package.  Support for PySide_ is considered experimental
+  by the PyQt5 package. PyQt4_ is still supported via the :mod:`qtsix`
+  adapter package (internal copy updated to v1.1).
+  Support for PySide_ is considered experimental
 * Now it is possible to toggle the full-screen mode using a tool-button or a
   keyboard shortcut.
 * The exectools package now uses unicode buffers.
