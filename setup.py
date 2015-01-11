@@ -43,31 +43,11 @@ try:
     from setuptools import setup, find_packages
     from setuptools.command.install_lib import install_lib
 
-    if sys.version_info[0] >= 3:
-        kwargs['use_2to3'] = True
-        kwargs['use_2to3_fixers'] = []
-        kwargs['use_2to3_exclude_fixers'] = ['lib2to3.fixes.fix_standarderror']
-
 except ImportError:
     has_setuptools = False
 
     from distutils.core import setup
     from distutils.command.install_lib import install_lib
-
-    try:
-        from distutils.command.build_py import build_py_2to3
-        from distutils.command.build_scripts import build_scripts_2to3
-    except ImportError:
-        pass
-    else:
-        from lib2to3.refactor import get_fixers_from_package
-
-        fixers = get_fixers_from_package('lib2to3.fixes')
-        fixers.remove('lib2to3.fixes.fix_standarderror')
-
-        cmdclass['build_py'] = build_py_2to3
-        cmdclass['build_scripts'] = build_scripts_2to3
-
 
 try:
     from sphinx.setup_command import BuildDoc
