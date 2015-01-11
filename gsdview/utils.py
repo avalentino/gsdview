@@ -38,8 +38,10 @@ from gsdview import info
 from gsdview import appsite
 
 
-__all__ = ['which', 'isexecutable', 'isscript', 'scriptcmd', 'default_workdir',
-           'getresource', 'format_platform_info', 'foramt_bugreport']
+__all__ = [
+    'which', 'isexecutable', 'isscript', 'scriptcmd', 'default_workdir',
+    'getresource', 'format_platform_info', 'foramt_bugreport',
+]
 
 
 def default_workdir():
