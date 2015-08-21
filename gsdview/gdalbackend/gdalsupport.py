@@ -22,7 +22,13 @@
 
 
 import os
+import shutil
 import logging
+
+try:
+    from lxml import etree
+except ImportError:
+    from xml.etree import ElementTree as etree
 
 import numpy as np
 
@@ -996,3 +1002,24 @@ def has_complex_bands(dataset):
         if result:
             break
     return result
+
+
+def safe_vrt_copy(src, dst):
+    if isinstance(src, gdal.Dataset):
+        driver = gdal.GetDriverByName('VRT')
+        driver.CreateCopy(dst, src)
+        srcpath = os.path.dirname(src.GetDescription())
+    else:
+        # assume src is a path
+        shutil.copy(src, dst)
+        srcpath = os.path.dirname(src)
+
+    xml = etree.parse(dst)
+    for srcfile in xml.iter('SourceFilename'):
+        relativeToVRT = int(srcfile.get('relativeToVRT', 0))
+        if relativeToVRT and not os.path.isabs(srcfile.text):
+            srcfile.text = os.path.join(srcpath, srcfile.text)
+        srcfile.set('relativeToVRT', '0')
+
+    with open(dst, 'wb') as fd:
+        fd.write(etree.tostring(xml.getroot()))

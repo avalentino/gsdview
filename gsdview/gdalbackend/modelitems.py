@@ -461,10 +461,14 @@ class CachedDatasetItem(DatasetItem):
             vrtdataset = gdal.Open(vrtfilename, gdal.GA_Update)
 
         if vrtdataset is None:
-            # Hendle both non existing self.vrtfilename and errors in opening
+            # Handle both non existing self.vrtfilename and errors in opening
             # existing self.vrtfilename
-            driver = gdal.GetDriverByName('VRT')
-            vrtdataset = driver.CreateCopy(vrtfilename, gdalobj)
+            if gdalobj.GetDriver().ShortName.upper() == 'VRT':
+                gdalsupport.safe_vrt_copy(gdalobj, vrtfilename)
+                vrtdataset = gdal.Open(vrtfilename, gdal.GA_Update)
+            else:
+                driver = gdal.GetDriverByName('VRT')
+                vrtdataset = driver.CreateCopy(vrtfilename, gdalobj)
 
         if vrtdataset is None:
             raise ValueError('unable to open the GDAL virtual dataset: "%s"' %
