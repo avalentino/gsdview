@@ -185,15 +185,17 @@ class GtkShell(object):
         self._reset()
         self.state = 'ready'
 
-    def get_state(self):
+    @property
+    def state(self):
         return self._state
 
-    def set_state(self, state):
-        if(state == 'ready'):
+    @state.setter
+    def state(self, state):
+        if state == 'ready':
             self._reset()
             id_ = self.statusbar.get_context_id('running')
             self.statusbar.pop(id_)
-        elif(state == 'running'):
+        elif state == 'running':
             self.cmdbox.set_sensitive(False)
             id_ = self.statusbar.get_context_id('running')
             self.statusbar.push(id_, 'Running ...')
@@ -201,8 +203,6 @@ class GtkShell(object):
         else:
             raise ValueError('invalid status: "%s".' % state)
         self._state = state
-
-    state = property(get_state, set_state)
 
     def execute(self):
         cmd = self.entry.get_text()

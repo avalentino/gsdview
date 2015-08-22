@@ -85,10 +85,14 @@ class NavigationGraphicsView(QtWidgets.QGraphicsView):
         self._pen.setColor(self.BOXCOLOR)
         self._pen.setWidth(self.BOXWIDTH)
 
-    def getbox(self):
+    @property
+    def viewbox(self):
+        '''Viewport box in scene coordinates'''
         return self._viewbox
 
-    def setbox(self, box):
+    @viewbox.setter
+    def viewbox(self, box):
+        '''Set the viewport box in scene coordinates'''
         assert isinstance(box, (QtCore.QRect, QtCore.QRectF))
         self._viewbox = box
         if self.isVisible():
@@ -104,8 +108,6 @@ class NavigationGraphicsView(QtWidgets.QGraphicsView):
             #self.invalidateScene(self.sceneRect(),
             #                     QtWidgets.QGraphicsScene.ForegroundLayer)
             self.scene().update()
-
-    viewbox = property(getbox, setbox, doc='viewport box in scene coordinates')
 
     def drawForeground(self, painter, rect):
         if not self.viewbox:
@@ -129,18 +131,18 @@ class NavigationGraphicsView(QtWidgets.QGraphicsView):
                 return
         QtWidgets.QGraphicsView.fitInView(self, rect, aspectRatioMode)
 
-    def _getAutoscale(self):
+    @property
+    def autoscale(self):
         return self._autoscale
 
-    def _setAutoscale(self, flag):
+    @autoscale.setter
+    def autoscale(self, flag):
         self._autoscale = bool(flag)
         if self._autoscale:
             self.fitInView()
         else:
             self.setTransform(QtGui.QTransform())
             self.update()
-
-    autoscale = property(_getAutoscale, _setAutoscale)
 
     def resizeEvent(self, event):
         if self.autoscale:

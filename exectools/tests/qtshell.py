@@ -194,15 +194,17 @@ class QtShell(QtWidgets.QMainWindow):
     def reset(self):
         self.state = 'ready'
 
-    def _get_state(self):
+    @property
+    def state(self):
         return self._state
 
-    def _set_state(self, state):
-        if(state == 'ready'):
+    @state.setter
+    def state(self, state):
+        if state == 'ready':
             self._reset()
             self.statusBar().showMessage('Ready')  # , 2000) # ms
             self.cmdbox.setFocus()
-        elif(state == 'running'):
+        elif state == 'running':
             self.cmdbox.setEnabled(False)
             self.cmdbutton.setText('Stop')
             self.cmdbutton.clicked.disconnect(self.execute)
@@ -211,8 +213,6 @@ class QtShell(QtWidgets.QMainWindow):
         else:
             raise ValueError('invalid status: "%s".' % state)
         self._state = state
-
-    state = property(_get_state, _set_state)
 
     def get_command(self):
         cmd = str(self.cmdbox.currentText())
