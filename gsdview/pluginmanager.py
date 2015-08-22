@@ -607,7 +607,7 @@ class PluginInfoForm(QtWidgets.QFrame, PluginInfoFormBase):
             '&lt;<a href="mailto:%(email)s">%(email)s</a>&gt;' %
             dict(email=plugin.author_email))
         self.versionValue.setText(plugin.version)
-        self.revisionValue.setText(plugin.__revision__)
+        #self.revisionValue.setText(plugin.__revision__)
         self.licenseValue.setText(plugin.license_type)
         self.copyrightValue.setText(plugin.copyright)
         self.websiteValue.setText('<a href="%s">%s</a>' %
