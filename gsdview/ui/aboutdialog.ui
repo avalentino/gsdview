@@ -115,7 +115,7 @@ p, li { white-space: pre-wrap; }
             </font>
            </property>
            <property name="text">
-            <string>GSDView v. 0.6.x</string>
+            <string>GSDView v. 0.7.x</string>
            </property>
           </widget>
          </item>
