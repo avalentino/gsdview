@@ -44,7 +44,7 @@ class NavigationGraphicsView(QtWidgets.QGraphicsView):
     '''
 
     BOXCOLOR = QtGui.QColor(QtCore.Qt.red)
-    BOXWIDTH = 30
+    BOXWIDTH = 50
 
     #: SIGNAL: it is emitted when a mouse button is presses on the view
     #:
