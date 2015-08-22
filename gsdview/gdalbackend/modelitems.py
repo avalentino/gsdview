@@ -442,14 +442,21 @@ class CachedDatasetItem(DatasetItem):
         #: graphics item representing the dataset
         self.graphicsitem = graphicsitem
 
+    def _get_cachedir(self, gdalobj):
+        id_ = gdalsupport.uniqueDatasetID(gdalobj)
+        cachedir = self.CACHEDIR
+        cachedir = os.path.join(cachedir, id_)
+
+        return cachedir
+
     def _vrtinit(self, gdalobj, cachedir=None):
         # Build the virtual dataset filename
         if cachedir is None:
-            id_ = gdalsupport.uniqueDatasetID(gdalobj)
-            cachedir = self.CACHEDIR
-            cachedir = os.path.join(cachedir, id_)
+            cachedir = self._get_cachedir(gdalobj)
+
         if not os.path.isdir(cachedir):
             os.makedirs(cachedir)
+
         vrtfilename = os.path.join(cachedir, 'virtual-dataset.vrt')
 
         # Create the virtual dataset
