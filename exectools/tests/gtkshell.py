@@ -63,7 +63,7 @@ class GtkShell(object):
         # @COMPATIBILITY: set_always_show_image is new in Gtk 3.6
         try:
             self.cmdbutton.set_always_show_image(True)
-        except AttributeErrror:
+        except AttributeError:
             pass
 
         hbox = Gtk.Box.new(Gtk.Orientation.HORIZONTAL, spacing=3)
