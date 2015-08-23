@@ -423,36 +423,44 @@ def raster_tree_index(src, dst, boxlayer=None, gcplayer=None,
 
 # Command line tool #########################################################
 def handlecmd(argv=None):
-    import optparse
+    import argparse
+
+    if argv is None:
+        argv = sys.argv
+    argv = argv[1:]
 
     # @NOTE: ogr.GeneralCmdLineProcessor is not available in GDAL 1.6.x
-    argv = gdal.GeneralCmdLineProcessor(argv)
+    if argv:
+        argv = gdal.GeneralCmdLineProcessor(argv)
 
-    parser = optparse.OptionParser(
-        usage='%prog [options] OUTPUT INPUT [INPUT [...]]',
-        version='%%prog %s' % __version__,
-        description=__doc__)
-    #parser.add_option('-o', '--outfile', type='str',
+    parser = argparse.ArgumentParser(prog='ras2vec', description=__doc__)
+    parser.add_argument(
+        '--version', action='version',
+        version='%(prog)s {}'.format(__version__),
+    )
+    #parser.add_argument('-o', '--outfile', type='str',
     #                  help='output file name (default: generated)')
-    #parser.add_option('-f', '--format', type='str', default='KML',
-    #                  help='output vector format (default: %default)')
-    #parser.add_option('-s', '--t_srs', type='str', default='EPSG:4326'
+    #parser.add_argument('-f', '--format', type='str', default='KML',
+    #                  help='output vector format (default: %(default)s)')
+    #parser.add_argument('-s', '--t_srs', type='str', default='EPSG:4326'
     #                  help='target spatial reference system '
-    #                       '(default: %default)')
-    parser.add_option('-g', '--gcps', action='store_true', default=False,
-                      help='generate an additional layer for GCPs '
-                           '(default: %default)')
-    parser.add_option('-c', '--corners', action='store_true', default=False,
-                      help='generate markers for bounding box corners '
-                           '(default: %default)')
-    parser.add_option('-a', '--abspath', action='store_true', default=False,
-                      help='store absolute path in bounding box feature '
-                           'description (default: %default)')
+    #                       '(default: %(default)s)')
+    parser.add_argument(
+        '-g', '--gcps', action='store_true', default=False,
+        help='generate an additional layer for GCPs (default: %(default)s)')
+    parser.add_argument(
+        '-c', '--corners', action='store_true', default=False,
+        help='generate markers for bounding box corners '
+             '(default: %(default)s)')
+    parser.add_argument(
+        '-a', '--abspath', action='store_true', default=False,
+        help='store absolute path in bounding box feature description '
+             '(default: %(default)s)')
 
-    options, args = parser.parse_args()
+    parser.add_argument('output', help='output vector file')
+    parser.add_argument('inputs', nargs='+', help='input raster products')
 
-    if len(args) < 2:
-        parser.error('at least two arguments are required.')
+    args = parser.parse_args(argv)
 
     #~ if options.t_srs and options.format in ('KML', 'LIBKML'):
         #~ epsg4326 = osr.SpatialReference()
@@ -468,7 +476,7 @@ def handlecmd(argv=None):
         #~ else:
             #~ options.t_srs = tsrs
 
-    return options, args
+    return args
 
 
 def main(*argv):
@@ -479,47 +487,50 @@ def main(*argv):
         if not argv:
             argv = sys.argv
 
-        options, args = handlecmd(argv)
-        outfile = args.pop(0)
-        if os.path.exists(outfile):
-            logging.error('the output file ("%s") already exists.' % outfile)
+        args = handlecmd(argv)
+        if os.path.exists(args.output):
+            logging.error(
+                'the output file ("%s") already exists.', args.output)
             sys.exit(EX_USAGE)
-        dst = create_datasource(outfile)    # , options.format)
+        dst = create_datasource(args.output)    # , options.format)
 
-        if len(args) > 1:
-            if options.abspath:
-                args = [os.path.abspath(name) for name in args]
-
-            if options.gcps or options.corners:
-                raster_index(args, dst, options.gcps, options.corners)
+        if len(args.inputs) > 1:
+            if args.abspath:
+                inputs = [os.path.abspath(name) for name in args.inputs]
             else:
-                compact_index(args, dst)
+                inputs = args.inputs
+
+            if args.gcps or args.corners:
+                raster_index(args, dst, args.gcps, args.corners)
+            else:
+                compact_index(inputs, dst)
         else:
-            inputpath = args[0]
-            if options.abspath:
+            inputpath = args.inputs[0]
+            if args.abspath:
                 inputpath = os.path.abspath(inputpath)
 
-            if options.gcps:
+            if args.gcps:
                 gcplayer = 'GCPs'
             else:
                 gcplayer = False
 
             if os.path.isdir(inputpath):
-                if options.gcps or options.corners:
+                if args.gcps or args.corners:
                     boxlayer = None
                 else:
                     boxlayer = os.path.basename(os.path.normpath(inputpath))
                 raster_tree_index(inputpath, dst,
-                                  boxlayer=boxlayer, gcplayer=options.gcps,
-                                  mark_corners=options.corners)
+                                  boxlayer=boxlayer, gcplayer=args.gcps,
+                                  mark_corners=args.corners)
             else:
                 export_raster(inputpath, dst,
                               boxlayer='box', gcplayer=gcplayer,
-                              mark_corners=options.corners)
+                              mark_corners=args.corners)
 
     except Exception as e:
         logging.error(str(e), exc_info=True)
         sys.exit(1)
+
 
 if __name__ == '__main__':
     main()

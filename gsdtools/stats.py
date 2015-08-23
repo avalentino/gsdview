@@ -275,86 +275,93 @@ def computestats(dataset, bands=None, computestats=True, histreq=None,
 
 # Command line tool #########################################################
 def handlecmd(argv=None):
-    import optparse
+    import argparse
 
     if argv is None:
-        argv = sys.argv
+        argv = sys.argv[1:]
 
-    argv = gdal.GeneralCmdLineProcessor(argv)
+    if argv:
+        argv = gdal.GeneralCmdLineProcessor(argv)
 
-    parser = optparse.OptionParser(
-        usage='%prog [options] FILENAME',
-        version='%%prog %s' % __version__,
-        description=__doc__)
-    parser.add_option('--no-stats', dest='stats', action='store_false',
-                      default=True,
-                      help='disable statistics computation (default: False)')
-    parser.add_option('--hist', action='store_true', default=False,
-                      help='enable histogram computation (default: %default)')
-    parser.add_option('-b', '--band', type='int',
-                      help='compute statistics for a specific raster band '
-                           '(default: all bands are precessed)')
-    parser.add_option('-a', '--approxok', action='store_true', default=False,
-                      help='if set then statistics may be computed based on '
-                           'overviews or a subset of all tiles '
-                           '(default: %default)')
-    parser.add_option('--minmax-only', action='store_true', default=False,
-                      help='only print minimum and maximum on the same line.')
-    parser.add_option('--histreq', nargs=3, type='float',
-                      metavar='MIN MAX NBUCKETS',
-                      help='specify lower bound, upper bound and the number '
-                           'of buckets for histogram computation '
-                           '(automatically computed otherwise)')
-    parser.add_option('-i', '--include_out_of_range', action='store_true',
-                      default=False,
-                      help='if set then values below the histogram range will '
-                           'be mapped into the first bucket, and values above '
-                           'will be mapped into last one. '
-                           'Otherwise out of range values are discarded.')
-    parser.add_option('--srcwin', nargs=4, type='int',
-                      metavar='XOFFSET YOFFSET XSIZE YSIZE',
-                      help='specify source window in image coordinates: '
-                           '(default: the entire image is processed)')
-    parser.add_option('-o', '--outfile', metavar='FILE',
-                      help='write results to FILE (default: stdout)', )
-    parser.add_option('-q', '--quiet', action='store_true',
-                      help='suppress progress messages')
+    parser = argparse.ArgumentParser(prog='stats', description=__doc__)
+    parser.add_argument(
+        '--version', action='version',
+        version='%(prog)s {}'.format(__version__))
+    parser.add_argument(
+        '--no-stats', dest='stats', action='store_false', default=True,
+        help='disable statistics computation (default: False)')
+    parser.add_argument(
+        '--hist', action='store_true', default=False,
+        help='enable histogram computation (default: %(default)s)')
+    parser.add_argument(
+        '-b', '--band', type=int,
+        help='compute statistics for a specific raster band '
+             '(default: all bands are precessed)')
+    parser.add_argument(
+        '-a', '--approxok', action='store_true', default=False,
+        help='if set then statistics may be computed based on overviews or '
+             'a subset of all tiles (default: %(default)s)')
+    parser.add_argument(
+        '--minmax-only', action='store_true', default=False,
+        help='only print minimum and maximum on the same line.')
+    parser.add_argument(
+        '--histreq', nargs=3, type=float, metavar=('MIN', 'MAX', 'NBUCKETS'),
+        help='specify lower bound, upper bound and the number of buckets for '
+             'histogram computation (automatically computed otherwise)')
+    parser.add_argument(
+        '-i', '--include_out_of_range', action='store_true', default=False,
+        help='if set then values below the histogram range will be mapped '
+             'into the first bucket, and values above will be mapped into '
+             'last one. Otherwise out of range values are discarded.')
+    parser.add_argument(
+        '--srcwin', nargs=4, type=int,
+        metavar=('XOFFSET', 'YOFFSET', 'XSIZE', 'YSIZE'),
+        help='specify source window in image coordinates: '
+             '(default: the entire image is processed)')
+    parser.add_argument(
+        '-o', '--outfile', metavar='FILE',
+        help='write results to FILE (default: stdout)', )
+    parser.add_argument(
+        '-q', '--quiet', action='store_true',
+        help='suppress progress messages')
+    parser.add_argument('filename', help='input file name')
 
-    options, args = parser.parse_args()
+    args = parser.parse_args(argv)
 
-    if options.histreq and not options.hist:
-        options.hist = True
+    if args.histreq and not args.hist:
+        args.hist = True
         #parser.error('"histreq" option requires "hist"')
-    if options.include_out_of_range and not options.hist:
+
+    if args.include_out_of_range and not args.hist:
         parser.error('"include_out_of_range" option requires "hist"')
-    if options.band is not None and options.band < 1:
-        parser.error('the "band" parameter shoulb be a not null positive '
+
+    if args.band is not None and args.band < 1:
+        parser.error('the "band" parameter should be a not null positive '
                      'integer.')
-    histonly = bool(options.hist and not options.stats)
-    if histonly and options.approxok and not options.histreq:
+
+    histonly = bool(args.hist and not args.stats)
+    if histonly and args.approxok and not args.histreq:
         logging.warning('the "approxok" option is ignored if "histreq" '
                         'is not set.')
 
-    if not options.stats and not options.hist:
+    if not args.stats and not args.hist:
         parser.error('nothing to compute: '
-                     'please check "--hist" and "--no-stats" optoions.')
-    if len(args) != 1:
-        parser.error('at least one argument is required.')
+                     'please check "--hist" and "--no-stats" options.')
 
-    return options, args
+    return args
 
 
 def main(*argv):
     logging.basicConfig(format='%(levelname)s: %(message)s',
                         level=logging.INFO)
 
+    if not argv:
+        argv = sys.argv[1:]
+
     try:
-        if not argv:
-            argv = sys.argv
+        args = handlecmd(argv)
 
-        options, args = handlecmd(argv)
-
-        if options.outfile:
+        if args.outfile:
             logger = logging.getLogger()
 
             streamhandler = logger.handlers[0]
@@ -362,25 +369,26 @@ def main(*argv):
 
             formatter = streamhandler.formatter
 
-            filehandler = logging.FileHandler(options.outfile, 'w')
+            filehandler = logging.FileHandler(args.outfile, 'w')
             filehandler.setLevel(logging.INFO)
             filehandler.setFormatter(formatter)
 
             logger.addHandler(filehandler)
 
-        filename = args[0]
+        filename = args.filename
 
-        if options.quiet:
+        if args.quiet:
             progressfunc = None
         else:
             progressfunc = gdal.TermProgress
 
-        if options.hist:
+        if args.hist:
             histreq = HistogramRequest()
-            if options.histreq:
-                histreq.hmin, histreq.hmax, histreq.nbuckets = options.histreq
-            if options.include_out_of_range:
-                histreq.include_out_of_range = options.include_out_of_range
+            if args.histreq:
+                histreq.hmin, histreq.hmax, histreq.nbuckets = args.histreq
+
+            if args.include_out_of_range:
+                histreq.include_out_of_range = args.include_out_of_range
         else:
             histreq = None
 
@@ -388,26 +396,26 @@ def main(*argv):
         if not ds:
             raise RuntimeError('unable to open "%s"' % filename)
 
-        if options.band is not None:
-            if options.band > ds.RasterCount:
+        if args.band is not None:
+            if args.band > ds.RasterCount:
                 raise ValueError('band %d requested, but only bands 1 to %d '
-                                 'are available.' % (options.band,
+                                 'are available.' % (args.band,
                                                      ds.RasterCount))
-            bands = [options.band]
+            bands = [args.band]
         else:
             bands = range(1, ds.RasterCount + 1)
 
-        if options.srcwin:
-            ds = copy_dataset_subwin(ds, options.srcwin)
+        if args.srcwin:
+            ds = copy_dataset_subwin(ds, args.srcwin)
 
         # core
-        computestats(ds, bands, options.stats, histreq, options.approxok,
-                     options.minmax_only, progressfunc)
+        computestats(ds, bands, args.stats, histreq, args.approxok,
+                     args.minmax_only, progressfunc)
 
         ds = None
 
     except Exception as e:
-        logging.error(str(e))   # , exc_info=True)
+        logging.error(str(e), exc_info=True)
         sys.exit(1)
 
 

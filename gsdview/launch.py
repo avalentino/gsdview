@@ -93,39 +93,42 @@ def preload(modules, app=None):
 
 
 def cmdline_ui():
-    from optparse import OptionParser
+    from argparse import ArgumentParser
 
     from gsdview import info
 
     # filter out arguments that cause errors in Mac bundles
     import sys
-    args = [arg for arg in sys.argv[1:] if not arg.startswith('-psn_')]
+    argv = [arg for arg in sys.argv[1:] if not arg.startswith('-psn_')]
 
-    parser = OptionParser(
+    parser = ArgumentParser(
         prog='gsdview',
-        #usage='%prog [options] [FILENAME [FILENAME [...]]]',
-        usage='%prog [options]',
-        version='%%prog Open Source Edition %s' % info.version,
         description=info.description,
-        epilog='Home Page: %s' % info.website)
+        epilog='Home Page: %s' % info.website,
+    )
+
+    parser.add_argument(
+        '--version', action='version',
+        version='%(prog)s {}'.format(info.version)
+    )
 
     # @TODO: complete
-    #~ parser.add_option(
+    #~ parser.add_argument(
         #~ '-c', '--config-file', dest='configfile', metavar='FILE',
         #~ help='use specified cnfig file instead of default one')
-    #~ parser.add_option(
+    #~ parser.add_argument(
         #~ '-d', '--debug', action='store_true', dest='debug',
         #~ help='print debug messages')
-    #~ parser.add_option(
+    #~ parser.add_argument(
         #~ '-p', '--plugins-path', dest='plugins_path',
         #~ metavar='PATH',
         #~ help='prepend the specified path to default ones. '
         #~ 'A "%s" separated list can be used to specify '
         #~ 'multile paths. ' % os.pathsep)
 
-    options, args = parser.parse_args(args)
+    args = parser.parse_args(argv)
 
-    return options, args
+    return args
 
 
 def main():
@@ -135,7 +138,8 @@ def main():
     import os
     os.environ['LC_NUMERIC'] = 'C'
 
-    options, args = cmdline_ui()
+    args = cmdline_ui()
+
     # logging.basicConfig(level=logging.DEBUG,
     logging.basicConfig(level=logging.INFO,
                         format='%(levelname)s: %(message)s')
