@@ -57,6 +57,7 @@ class GSDView(ItemModelMainWindow):
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         logger = logging.getLogger('gsdview')
+        loglevel = kwargs.pop('loglevel', logging.NOTSET)
 
         logger.debug('Main window base classes initialization ...')
         QtWidgets.QApplication.setWindowIcon(
@@ -155,7 +156,7 @@ class GSDView(ItemModelMainWindow):
         logger.debug('Complete logging setup...')
         # @TODO: logevel could be set from command line
         #: application sandard logger
-        self.logger = self.setupLogging()
+        self.logger = self.setupLogging(loglevel=loglevel)
 
         logger.debug('Setting up external tool controller ...')
 
@@ -219,9 +220,7 @@ class GSDView(ItemModelMainWindow):
 
         # @NOTE: the window state setup must happen after the plugins loading
         logger.info('Load settings ...')
-        self.loadSettings()  # @TODO: pass settings
-        # @TODO: force the log level set from command line
-        #self.logger.setLevel(level)
+        self.loadSettings(loglevel=loglevel)  # @TODO: pass cachedir
 
         self.treeview.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.treeview.customContextMenuRequested.connect(self.itemContextMenu)
@@ -449,8 +448,8 @@ class GSDView(ItemModelMainWindow):
         # save initial state
         self.pluginmanager.save_settings(self.settings)
 
-    def setupLogging(self):
-        logger = logging.getLogger()    # 'gsdview' # @TODO: fix
+    def setupLogging(self, loglevel=None):
+        logger = logging.getLogger('gsdview')
 
         # move this to launch.py
         fmt = ('%(levelname)s: %(asctime)s %(filename)s line %(lineno)d in '
@@ -469,14 +468,15 @@ class GSDView(ItemModelMainWindow):
         logger.addHandler(handler)
 
         # set log level
-        # @WARNING: duplicate loadSettings
-        level = self.settings.value('preferences/loglevel', 'INFO')
-        levelno = logging.getLevelName(str(level))
-        if isinstance(levelno, int):
-            logger.setLevel(levelno)
-            logger.info('"%s" loglevel set' % level)
-        else:
-            logging.debug('invalid log level: "%s"' % level)
+        if loglevel in (None, logging.NOTSET, 'NOTSET'):
+            # @WARNING: duplicate loadSettings
+            level = self.settings.value('preferences/loglevel', 'INFO')
+            levelno = logging.getLevelName(str(level))
+            if isinstance(levelno, int):
+                logger.setLevel(levelno)
+                logger.info('"%s" loglevel set' % level)
+            else:
+                logger.debug('invalid log level: "%s"' % level)
 
         return logger
 
@@ -536,7 +536,7 @@ class GSDView(ItemModelMainWindow):
                     # QFileDialog.restoreState is new in Qt 4.3
                     self.filedialog.restoreState(state)
                 except AttributeError:
-                    logging.debug('unable to save the file dialog state')
+                    logging.debug('unable to restore the file dialog state')
 
             # workdir
             workdir = settings.value('workdir', utils.default_workdir())
@@ -561,7 +561,7 @@ class GSDView(ItemModelMainWindow):
         finally:
             settings.endGroup()
 
-    def loadSettings(self, settings=None):
+    def loadSettings(self, settings=None, loglevel=None):
         # @TODO: split app saveSettings frlm plugins one
         if settings is None:
             settings = self.settings
@@ -573,14 +573,16 @@ class GSDView(ItemModelMainWindow):
         settings.beginGroup('preferences')
         try:
             # log level
-            level = settings.value('loglevel', 'INFO')
-            levelno = logging.getLevelName(level)
-            if isinstance(levelno, int):
-                self.logger.setLevel(levelno)
-                self.logger.debug('"%s" loglevel set' % level)
-            else:
-                logging.debug('invalid log level: "%s"' % level)
+            if loglevel in (None, logging.NOTSET, 'NOTSET'):
+                level = settings.value('loglevel', 'INFO')
+                levelno = logging.getLevelName(level)
+                if isinstance(levelno, int):
+                    self.logger.setLevel(levelno)
+                    self.logger.debug('"%s" loglevel set' % level)
+                else:
+                    self.logger.debug('invalid log level: "%s"' % level)
 
+            # cache location
             default = os.path.join(USERCONFIGDIR, 'cache')
             cachedir = settings.value('cachedir', default)
             self.cachedir = os.path.expanduser(os.path.expandvars(cachedir))

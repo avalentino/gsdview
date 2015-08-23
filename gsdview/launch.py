@@ -89,7 +89,7 @@ def preload(modules, app=None):
     for modname in modules:
         logger.info(app.tr('Importing %s module ...') % modname)
         app.processEvents()
-        logging.debug('%s import: %d.%06ds' % ((modname,) + timer.update()))
+        logger.debug('%s import: %d.%06ds' % ((modname,) + timer.update()))
 
 
 def get_parser():
@@ -112,9 +112,14 @@ def get_parser():
     #~ parser.add_argument(
         #~ '-c', '--config-file', dest='configfile', metavar='FILE',
         #~ help='use specified cnfig file instead of default one')
-    #~ parser.add_argument(
-        #~ '-d', '--debug', action='store_true', dest='debug',
-        #~ help='print debug messages')
+    parser.add_argument(
+        '-d', '--debug', action='store_const', dest='log_level',
+        const='DEBUG', default='NOTSET', help='print debug messages')
+    parser.add_argument(
+        '--log-level', default='NOTSET',
+        choices=('DEBUG', 'INFO', 'WARNING', 'CRITICAL', 'ERROR'),
+        help='set the logging level (by default the logging level stored in '
+             'the application settings is used)')
     #~ parser.add_argument(
         #~ '-p', '--plugins-path', dest='plugins_path',
         #~ metavar='PATH',
@@ -149,11 +154,24 @@ def main():
 
     args = parse_args()
 
-    # logging.basicConfig(level=logging.DEBUG,
-    logging.basicConfig(level=logging.INFO,
-                        format='%(levelname)s: %(message)s')
+    if args.log_level != 'NOTSET':
+        loglevel = logging.getLevelName(args.log_level)
+    else:
+        loglevel = logging.INFO
+
+    logging.basicConfig(
+        level=loglevel,
+        #format='%(levelname)s: %(message)s')
+        format='%(asctime)s %(name)s %(levelname)s: %(message)s')
     logger = logging.getLogger('gsdview')
-    logger.setLevel(logging.DEBUG)
+    # set the logging level explicitly on the gsdview logger
+    logger.setLevel(loglevel)
+    logger.debug('log level set to %s', logging.getLevelName(logger.level))
+
+    # PyQt loggers
+    qtlogger = logging.getLogger('PyQt5.uic')
+    #qtlogger = logging.getLogger('PyQt5.uic.uiparser')
+    qtlogger.setLevel(logging.WARNING)
 
     # @TODO:
     # * config logging using options.configfile, USER_CFG, SYS_CFG
@@ -164,7 +182,7 @@ def main():
 
     # splash screen #########################################################
     from qtsix import QtWidgets, QtGui
-    logging.debug('Qt import: %d.%06ds' % timer.update())
+    logger.debug('Qt import: %d.%06ds' % timer.update())
 
     import sys
     from gsdview.info import name as NAME
@@ -186,19 +204,22 @@ def main():
 
     logger.addHandler(splash_loghandler)
 
-    logger.debug('Splash screen setup completed')
-    logging.debug('splash screen setup: %d.%06ds' % timer.update())
+    logger.info('Splash screen setup completed')
+    logger.debug('splash screen setup: %d.%06ds' % timer.update())
 
     # modules loading #######################################################
     preload(MODULES, app)
 
     # GUI ###################################################################
     logger.info('Build GUI ...')
+
     from gsdview.app import GSDView
-    mainwin = GSDView()    # @TODO: pass plugins_path, loglevel??
+
+    # @TODO: pass plugins_path??
+    mainwin = GSDView(loglevel=args.log_level)
     mainwin.show()
     logger.info('GUI setup completed')
-    logging.debug('GUI setup: %d.%06ds' % timer.update())
+    logger.debug('GUI setup: %d.%06ds' % timer.update())
 
     # close splash and run app ##############################################
     logger.removeHandler(splash_loghandler)
