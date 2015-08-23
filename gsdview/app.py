@@ -269,8 +269,10 @@ class GSDView(ItemModelMainWindow):
             if event.oldState() == QtCore.Qt.WindowNoState:
                 # save window size and position
                 self.settings.beginGroup('mainwindow')
-                self.settings.setValue('position', self.pos())
-                self.settings.setValue('size', self.size())
+                self.settings.setValue('geometry', self.saveGeometry())
+                # @TODO: clean
+                #self.settings.setValue('position', self.pos())
+                #self.settings.setValue('size', self.size())
                 self.settings.endGroup()
                 event.accept()
         except AttributeError:
@@ -495,26 +497,38 @@ class GSDView(ItemModelMainWindow):
 
         settings.beginGroup('mainwindow')
         try:
-            position = settings.value('position')
-            if position is not None:
-                self.move(position)
-            size = settings.value('size')
-            if size is not None:
-                self.resize(size)
-            else:
+            # @TODO: clean
+            #position = settings.value('position')
+            #if position is not None:
+            #    self.move(position)
+            #size = settings.value('size')
+            #if size is not None:
+            #    self.resize(size)
+            #else:
+            #    # default size
+            #    self.resize(800, 600)
+
+            geometry = settings.value('geometry')
+            if (not geometry or
+                    (geometry and not self.restoreGeometry(geometry))):
                 # default size
                 self.resize(800, 600)
 
-            try:
-                winstate = settings.value('winstate', QtCore.Qt.WindowNoState)
-                if winstate and winstate != QtCore.Qt.WindowNoState:
-                    # @COMPATIBILITY: presumably a bug in PyQt4 4.7.2
-                    # @TODO: check
-                    winstate = qtsupport.intToWinState[winstate]
-                    self.setWindowState(winstate)
-            except KeyError:
-                logging.debug('unable to restore the window state',
-                              exc_info=True)
+            state = settings.value('state')
+            if state:
+                self.restoreState(state)
+
+            # @TODO: clean
+            #try:
+            #    winstate = settings.value('winstate', QtCore.Qt.WindowNoState)
+            #    winstate = int(winstate)
+            #    if winstate and winstate != QtCore.Qt.WindowNoState:
+            #        # @COMPATIBILITY: presumably a bug in PyQt4 4.7.2
+            #        winstate = qtsupport.intToWinState[winstate]
+            #        self.setWindowState(winstate)
+            #except (KeyError, ValueError) as e:
+            #    self.logger.info('unable to restore the window state')
+            #    self.logger.debug('', exc_info=True)
 
             # State of toolbars ad docks
             state = settings.value('state')
@@ -603,10 +617,12 @@ class GSDView(ItemModelMainWindow):
         settings.beginGroup('mainwindow')
         try:
             settings.setValue('winstate', self.windowState())
-            if self.windowState() == QtCore.Qt.WindowNoState:
-                settings.setValue('position', self.pos())
-                settings.setValue('size', self.size())
+            # @TODO: clean
+            #if self.windowState() == QtCore.Qt.WindowNoState:
+            #    settings.setValue('position', self.pos())
+            #    settings.setValue('size', self.size())
 
+            settings.setValue('geometry', self.saveGeometry())
             settings.setValue('state', self.saveState())
         finally:
             settings.endGroup()
