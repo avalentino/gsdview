@@ -63,8 +63,8 @@ download_url = 'http://sourceforge.net/projects/gsdview/files'
 all_versions = [
     ('GSDView', version, website),
     ('Python', '.'.join(map(str, sys.version_info[:3])), 'https://www.python.org'),
-    ('Qt', QtCore.qVersion(), 'http://qt-project.org'),
-    ('numpy', np.version.version, 'http://www.scipy.org'),
+    ('Qt', QtCore.qVersion(), 'http://www.qt.io/'),
+    ('numpy', np.version.version, 'http://www.numpy.org'),
 ]
 
 if qtsix.qt_api.startswith('pyqt'):

@@ -32,7 +32,7 @@ GSDView is modular and has a simple plug-in architecture.
 
 
 .. _Python: https://www.python.org
-.. _Qt: http://qt-project.org
+.. _Qt: http://www.qt.io
 .. _`GSDView Open Edition`: http://gsdview.sourceforge.net
 __ gdal_
 
