@@ -42,6 +42,8 @@ from gsdview.widgets import get_filedialog, FileEntryWidget
 from gsdview.gdalbackend import gdalsupport
 
 
+logger = logging.getLogger(__name__)
+
 GDALInfoWidgetBase = qtsupport.getuiform('gdalinfo', __name__)
 
 
@@ -1717,9 +1719,9 @@ p, li { white-space: pre-wrap; }
             try:
                 gcplist = self.dataset.GetGCPs()
             except SystemError:
-                logging.debug('unable to read GCPs from dataset %s' %
-                              self.dataset.GetDescription())
-                              #, exc_info=True)
+                logger.debug('unable to read GCPs from dataset %s',
+                             self.dataset.GetDescription())
+                             #, exc_info=True)
             else:
                 if not gcplist:
                     # Disable the GCPs tab

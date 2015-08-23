@@ -38,6 +38,8 @@ from osgeo import osr
 from gsdview.five import string_types
 
 
+logger = logging.getLogger(__name__)
+
 GDAL_CONFIG_OPTIONS = '''\
 GDAL_DATA
 GDAL_SKIP
@@ -158,7 +160,7 @@ def uniqueDatasetID(prod):
 
     d = prod.GetDriver()
     driver_name = d.GetDescription()
-    logging.debug('driver_name = %s' % driver_name)
+    logger.debug('driver_name = %s', driver_name)
     if driver_name == 'SAR_CEOS':
         try:
             # 'CEOS_LOGICAL_VOLUME_ID'
@@ -200,7 +202,7 @@ def uniqueDatasetID(prod):
     else:
         prod_id = os.path.basename(prod.GetDescription())
 
-    logging.debug('prod_id = %s' % prod_id)
+    logger.debug('prod_id = %s', prod_id)
     return prod_id
 
 
@@ -626,8 +628,8 @@ class CoordinateMapper(object):
                 gcps = _fixedGCPs(gcps)      # @TODO: remove
                 self._geotransform = gdal.GCPsToGeoTransform(gcps)
             except Exception:
-                logging.warning('unable to retrieve geo-transform and '
-                                'projection from GCPs for %s' % dataset)
+                logger.warning('unable to retrieve geo-transform and '
+                               'projection from GCPs for %s', dataset)
 
         if not self._geotransform:
             projection = dataset.GetProjection()
@@ -658,7 +660,7 @@ class CoordinateMapper(object):
         # | Ygeo |   | m21 m22 |   | Yline  |   | yoffset |
         # --    --   --       --   --      --   --       --
         xoffset, m11, m12, yoffset, m21, m22 = self._geotransform
-        logging.debug('geotransform = %s' % str(self._geotransform))
+        logger.debug('geotransform = %s', self._geotransform)
 
         # Direct transform
         M = np.array(((m11, m12), (m21, m22)))
@@ -738,7 +740,7 @@ def coordinate_mapper(dataset):
             mapper = None
 
     if mapper is None:
-        logging.debug('unable to setup the coordinate mapper')
+        logger.debug('unable to setup the coordinate mapper')
     return mapper
 
 

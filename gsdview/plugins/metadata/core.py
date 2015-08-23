@@ -85,6 +85,10 @@ class MetadataController(QtCore.QObject):
         app.mdiarea.subWindowActivated.connect(self.onSubWindowChanged)
         app.subWindowClosed.connect(self.onSubWindowChanged)
 
+    @property
+    def _logger(self):
+        return self.app.logger
+
     def setItemMetadata(self, item):
         if not item:
             self.panel.clear()
@@ -93,9 +97,8 @@ class MetadataController(QtCore.QObject):
         # @TODO: fix
         # @WARNING: this method contains backend specific code
         if item.backend != 'gdalbackend':
-            import logging
-            logging.warning('only "gdalbackend" is supported by "overview" '
-                            'plugin')
+            self._logger.warning(
+                'only "gdalbackend" is supported by "overview" plugin')
             return
 
         try:

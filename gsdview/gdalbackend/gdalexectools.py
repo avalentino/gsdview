@@ -24,7 +24,6 @@
 from __future__ import print_function
 
 import re
-import logging
 
 import exectools
 from exectools.qt import QtOutputHandler
@@ -403,8 +402,9 @@ class GdalOutputHandler(QtOutputHandler):
             data['percentage'] = self._percentage
         if percentage is not None:
             if percentage < self._percentage:
-                logging.debug('new percentage (%d) is lower than previous '
-                              'one (%f)' % (percentage, self._percentage))
+                self.logger.debug(
+                    'new percentage (%d) is lower than previous one (%f)',
+                    percentage, self._percentage)
 
             self._percentage = percentage
         #~ if text and not pulse and percentage is None:

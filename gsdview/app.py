@@ -318,8 +318,8 @@ class GSDView(ItemModelMainWindow):
         if ret == QtWidgets.QDialog.Rejected:
             self.close()
         else:
-            logging.warning('ignoring an unhandled exception may cause '
-                            'program malfunctions.')
+            self.logger.warning('ignoring an unhandled exception may cause '
+                                'program malfunctions.')
 
     # Setup helpers #########################################################
     def _setupFileActions(self):
@@ -550,7 +550,8 @@ class GSDView(ItemModelMainWindow):
                     # QFileDialog.restoreState is new in Qt 4.3
                     self.filedialog.restoreState(state)
                 except AttributeError:
-                    logging.debug('unable to restore the file dialog state')
+                    self.logger.debug(
+                        'unable to restore the file dialog state')
 
             # workdir
             workdir = settings.value('workdir', utils.default_workdir())
@@ -570,8 +571,8 @@ class GSDView(ItemModelMainWindow):
                     sidebarurls = [QtCore.QUrl(item) for item in sidebarurls]
                     self.filedialog.setSidebarUrls(sidebarurls)
             except AttributeError:
-                logging.debug('unable to restore sidebar URLs of the file '
-                              'dialog')
+                self.logger.debug(
+                    'unable to restore sidebar URLs of the file dialog')
         finally:
             settings.endGroup()
 
@@ -638,7 +639,7 @@ class GSDView(ItemModelMainWindow):
                 # QFileDialog.saveState is new in Qt 4.3
                 settings.setValue('state', self.filedialog.saveState())
             except AttributeError:
-                logging.debug('unable to save the file dialog state')
+                self.logger.debug('unable to save the file dialog state')
 
             # workdir
             # @NOTE: uncomment to preserve the session value
@@ -655,7 +656,8 @@ class GSDView(ItemModelMainWindow):
                 if sidebarurls:
                     settings.setValue('sidebarurls', sidebarurls)
             except AttributeError:
-                logging.debug('unable to save sidebar URLs of the file dialog')
+                self.logger.debug(
+                    'unable to save sidebar URLs of the file dialog')
         finally:
             settings.endGroup()
 

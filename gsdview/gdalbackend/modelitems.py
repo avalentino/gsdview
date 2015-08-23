@@ -37,6 +37,8 @@ from gsdview.gdalbackend import gdalsupport
 
 VISIBLE_OVERVIEW_ITEMS = False
 
+logger = logging.getLogger(__name__)
+
 
 class MajorObjectItem(QtGui.QStandardItem):
     iconfile = qtsupport.geticon('metadata.svg', __name__)
@@ -73,8 +75,8 @@ class MajorObjectItem(QtGui.QStandardItem):
             try:
                 self.child(0).close()
             except AttributeError:
-                logging.debug('unexpected child item class: "%s"' %
-                              type(self.child(0)).__name__)
+                logger.debug('unexpected child item class: "%s"',
+                             type(self.child(0)).__name__)
             # @NOTE: use takeRow instead of removeRow in order to avoid the
             #        underlying C/C++ object is deleted before all sub-windows
             #        that hold a reference to the stditem are destroyed
@@ -189,8 +191,8 @@ class BandItem(MajorObjectItem):
             self._obj = gdalobj
 
         if self.rowCount() > gdalobj.GetOverviewCount():
-            logging.warning('unable to reopen raster band: '
-                            'unexpected number of overviews')
+            logger.warning(
+                'unable to reopen raster band: unexpected number of overviews')
             return
 
         if VISIBLE_OVERVIEW_ITEMS:
@@ -407,7 +409,7 @@ class CachedDatasetItem(DatasetItem):
     def __init__(self, filename, mode=gdal.GA_Update, **kwargs):
         # @TODO: check
         if mode == gdal.GA_ReadOnly:
-            logging.warning('GDAL open mode ignored in cached datasets.')
+            logger.warning('GDAL open mode ignored in cached datasets.')
             mode = gdal.GA_Update
 
         filename = os.path.abspath(filename)
@@ -558,8 +560,8 @@ class CachedDatasetItem(DatasetItem):
         gdalobj = gdal.Open(self.vrtfilename, gdal.GA_Update)
 
         if gdalobj.RasterCount < self.RasterCount:
-            logging.warning('unable to reopen dataset: '
-                            'unexpected number of raster bands')
+            logger.warning(
+                'unable to reopen dataset: unexpected number of raster bands')
             return
 
         # @WARNING: an error here would require node removal
@@ -634,7 +636,7 @@ class SubDatasetItem(CachedDatasetItem):
                                     self._normalize(self.filename))
 
         if self._mode == gdal.GA_ReadOnly:
-            logging.warning('GDAL open mode ignored in cached datasets.')
+            logger.warning('GDAL open mode ignored in cached datasets.')
             self._mode = gdal.GA_Update
 
         # @TODO: don't use "os.path.abspath" because the filename id to be

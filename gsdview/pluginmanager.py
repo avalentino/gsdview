@@ -45,6 +45,10 @@ class PluginManager(object):
         self._app = app
 
     @property
+    def _logger(self):
+        return self._app.logger
+
+    @property
     def allplugins(self):
         '''List of all available plugins.'''
 
@@ -94,15 +98,15 @@ class PluginManager(object):
             vp = VersionPredicate(depstring)
         except ValueError as e:
             # @TODO: remove dependency from self._app
-            self._app.logger.error(
-                'invalid version predicate "%s": %s' % (depstring, e))
+            self._logger.error(
+                'invalid version predicate "%s": %s', depstring, e)
             return False
 
         if vp.name in modules:
             try:
                 return vp.satisfied_by(modules[vp.name].version)
             except ValueError as e:
-                logging.warning(str(e))  # , exc_info=True)
+                self._logger.warning(str(e))  # , exc_info=True)
                 return False
         else:
             return False
@@ -113,15 +117,12 @@ class PluginManager(object):
                 if not self._check_dependency(depstring):
                     return False
         except Exception:
-            logger = logging.getLogger('gsdview')
-            logger.error('error checking dependencies for module: %s' % module)
+            self._logger.error(
+                'error checking dependencies for module: %s', module)
             raise
         return True
 
     def load_module(self, module, name=None):
-        # @TODO: make the module independent from gsdview
-        logger = logging.getLogger('gsdview')
-
         if not name:
             name = module.__name__
 
@@ -129,7 +130,7 @@ class PluginManager(object):
             # @TODO: find a more general form to pass arguments to plugins
             module.init(self._app)
         except Exception as e:   # AttributeError:
-            logger.warning('error loading "%s" plugin: %s' % (name, e))
+            self._logger.warning('error loading "%s" plugin: %s', name, e)
             logging.debug(str(e), exc_info=True)
             try:
                 module.close(self._app)
@@ -138,7 +139,7 @@ class PluginManager(object):
                 pass
         else:
             self.plugins[name] = module
-            logger.info('"%s" plugin loaded.' % name)
+            self._logger.info('"%s" plugin loaded.', name)
 
     # @WARNING: (pychecker) Parameter (type_) not used
     def load(self, names, paths=None, info_only=False, type_='plugins'):
@@ -157,8 +158,6 @@ class PluginManager(object):
         elif isinstance(names, string_types):
             names = [names]
 
-        # @TODO: make the module independent from gsdview
-        logger = logging.getLogger('gsdview')
         delayed = {}
         for path in paths:
             importer = pkgutil.get_importer(path)
@@ -184,11 +183,12 @@ class PluginManager(object):
                             egg.activate()
                             module = __import__(name)
                         else:
-                            logger.warning('unable to find "%s" plugin' % name)
+                            self._logger.warning(
+                                'unable to find "%s" plugin', name)
                             continue
                     except ImportError as e:
-                        logger.warning(
-                            'unable to import "%s" plugin: %s' % (name, e))
+                        self._logger.warning(
+                            'unable to import "%s" plugin: %s', name, e)
                         continue
 
                 if not info_only:
@@ -208,8 +208,8 @@ class PluginManager(object):
             while delayed_again and loaded_count != 0:
                 # check for max number of iterations
                 if iter_count > MAXATTEMPTS:
-                    logger.warning('max number of attempts reached for '
-                                   'delayed plugins loading')
+                    self._logger.warning('max number of attempts reached for '
+                                         'delayed plugins loading')
                     break
                 else:
                     iter_count += 1
@@ -221,15 +221,15 @@ class PluginManager(object):
                 for name, module in delayed.items():
                     if not self._check_deps(module):
                         delayed_again[name] = module
-                        logging.debug('loading of "%s" plugin delayed '
-                                      'again' % name)
+                        self._logger.debug(
+                            'loading of "%s" plugin delayed again', name)
 
                     else:
                         self.load_module(module, name)
                         loaded_count += 1
             if len(delayed_again):
-                logger.info('%d modules not loaded because of unmet '
-                            'dependency' % len(delayed_again))
+                self._logger.info('%d modules not loaded because of unmet '
+                                  'dependency', len(delayed_again))
 
                 # @TODO: log more verbose info: per module dependency failure
 

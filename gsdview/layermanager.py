@@ -27,6 +27,8 @@ import itertools
 from qtsix import QtCore, QtWidgets, QtGui
 
 
+logger = logging.getLogger(__name__)
+
 SelectCurrentRows = (
     QtCore.QItemSelectionModel.SelectCurrent |
     QtCore.QItemSelectionModel.Rows
@@ -157,8 +159,8 @@ class BaseLayerManager(QtCore.QObject):
             if qitem:
                 qitem.setZValue(nrows + offset - row - 1)
             else:
-                logging.warning('no graphics item associated to layer '
-                                'n. %d' % row)
+                logger.warning('no graphics item associated to layer '
+                               'n. %d' % row)
 
     # @TODO: beginMoveRows, endMoveRows
     def _takeRowsRange(self, selectionrange):
@@ -370,7 +372,7 @@ class BaseLayerManager(QtCore.QObject):
                 item.setCheckState(QtCore.Qt.Checked)
                 update = True
             else:
-                logging.debug('unexpected check state: "%s"' % state)
+                logger.debug('unexpected check state: "%s"' % state)
                 continue
 
             self.updateVisibility(index)

@@ -36,6 +36,8 @@ from gsdview import qtsupport
 from gsdview.five import string_types
 
 
+logger = logging.getLogger(__name__)
+
 def get_mainwin():
     #mainwin = QtWidgets.qApp.findChild(
     #    QtWidgets.QMainWindow,  'gsdview-mainwin')
@@ -55,7 +57,7 @@ def get_filedialog(parent=None):
         mainwin = get_mainwin()
         dialog = mainwin.filedialog
     except AttributeError:
-        logging.debug('unable to find the GDSView main window widget')
+        logger.debug('unable to find the GDSView main window widget')
         dialog = QtWidgets.QFileDialog(parent)
     return dialog
 
@@ -238,7 +240,6 @@ class GeneralPreferencesPage(QtWidgets.QWidget, GeneralPreferencesPageBase):
         self.loglevelComboBox.setFocus()
 
         # Log level
-        logger = logging.getLogger()  # @TODO: fix
         level = logging.getLevelName(logger.level)
         self.setLoglevel(level)
 
@@ -261,7 +262,7 @@ class GeneralPreferencesPage(QtWidgets.QWidget, GeneralPreferencesPageBase):
             if 0 <= index < self.loglevelComboBox.count():
                 self.loglevelComboBox.setCurrentIndex(index)
             else:
-                logging.debug('invalid log level: "%s"' % level)
+                logger.debug('invalid log level: "%s"', level)
 
             # cache directory
             cachedir = settings.value('cachedir')

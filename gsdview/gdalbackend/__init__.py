@@ -123,9 +123,8 @@ def init(app):
                 PATH = os.pathsep.join((binpath, PATH))
                 os.environ['PATH'] = PATH
 
-                import logging
-                logging.info('GDAL binary path added to system path: '
-                             '%s' % binpath)
+                app.logger.info(
+                    'GDAL binary path added to system path: %s', binpath)
     #elif sys.platform[:3] == 'win':
     #    gdaladdobin = utils.which('gdaladdo')
     #    if not gdaladdobin:

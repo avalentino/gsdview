@@ -30,6 +30,8 @@ from qtsix import QtCore, QtWidgets
 from gsdview import qtdraw
 
 
+logger = logging.getLogger(__name__)
+
 # Graphics Items ############################################################
 #~ class GraphicsLayerItem(qt4draw.GraphicsItemGroup):
     #~ '''Qt graphics item representing an OGR Layer.'''
@@ -227,8 +229,8 @@ def geometryToGraphicsItem(geom, transform=None):
                 qsubitem.setData(DATAKEY['index'], index)
                 qitem.addToGroup(qsubitem)
             else:
-                logging.debug('unable to instantiate a graphics item from '
-                              'OGR geometry "%s"' % subgeom)
+                logger.debug('unable to instantiate a graphics item from '
+                             'OGR geometry "%s"', subgeom)
         #qitem.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable)
         return qitem
     elif geom.GetGeometryCount() == 1:
@@ -322,20 +324,20 @@ def layerToGraphicsItem(layer, srs=None, transform=None):
             if qitem:
                 qfeature.addToGroup(qitem)
             else:
-                logging.warning('unable to instantiate a graphics '
-                                'item from OGR geometry "%s"' % geom)
+                logger.warning('unable to instantiate a graphics '
+                               'item from OGR geometry "%s"', geom)
         else:
-            logging.info('feature %d has no geometry' % feature.GetFID())
+            logger.info('feature %d has no geometry', feature.GetFID())
         qlayer.addToGroup(qfeature)
 
     nfeatures = len(qlayer.childItems())
     if nfeatures != layer.GetFeatureCount():
-        logging.warning('only %d of %d geometries converted to graphics items '
-                        'for layer "%s"' % (nfeatures, layer.GetFeatureCount(),
-                                            layer.GetName()))
+        logger.warning(
+            'only %d of %d geometries converted to graphics items for layer '
+            '"%s"', nfeatures, layer.GetFeatureCount(), layer.GetName())
 
-    qlayer.setToolTip('Layer "%s": %d features.' % (layer.GetName(),
-                                                    nfeatures))
+    qlayer.setToolTip(
+        'Layer "%s": %d features.' % (layer.GetName(), nfeatures))
 
     return qlayer
 

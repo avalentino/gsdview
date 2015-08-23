@@ -36,6 +36,8 @@ from gsdview.qtsupport import numpy2qimage
 from gsdview.gdalbackend import gdalsupport
 
 
+logger = logging.getLogger(__name__)
+
 def gdalcolorentry2qcolor(colrentry, interpretation=gdal.GPI_RGB):
     qcolor = QtGui.QColor()
 
@@ -434,14 +436,14 @@ def graphicsItemFactory(gdalobj, parent=None):
     '''
 
     if gdalsupport.isRGB(gdalobj):
-        logging.debug('new GdalRgbGraphicsItem')
+        logger.debug('new GdalRgbGraphicsItem')
         return GdalRgbGraphicsItem(gdalobj, parent)
     elif gdalobj.DataType in (gdal.GDT_Byte, gdal.GDT_UInt16):
-        logging.debug('new GdalUIntGraphicsItem')
+        logger.debug('new GdalUIntGraphicsItem')
         return UIntGdalGraphicsItem(gdalobj, parent)
     elif gdal.DataTypeIsComplex(gdalobj.DataType):
-        logging.debug('new GdalComplexGraphicsItem')
+        logger.debug('new GdalComplexGraphicsItem')
         return GdalComplexGraphicsItem(gdalobj, parent)
     else:
-        logging.debug('new GdalGraphicsItem')
+        logger.debug('new GdalGraphicsItem')
         return GdalGraphicsItem(gdalobj, parent)
