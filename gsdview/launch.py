@@ -92,14 +92,10 @@ def preload(modules, app=None):
         logging.debug('%s import: %d.%06ds' % ((modname,) + timer.update()))
 
 
-def cmdline_ui():
+def get_parser():
     from argparse import ArgumentParser
-
     from gsdview import info
 
-    # filter out arguments that cause errors in Mac bundles
-    import sys
-    argv = [arg for arg in sys.argv[1:] if not arg.startswith('-psn_')]
 
     parser = ArgumentParser(
         prog='gsdview',
@@ -126,6 +122,19 @@ def cmdline_ui():
         #~ 'A "%s" separated list can be used to specify '
         #~ 'multile paths. ' % os.pathsep)
 
+    return parser
+
+
+def parse_args(argv=None):
+    import sys
+
+    if argv is None:
+        argv = sys.argv[1:]
+
+    # filter out arguments that cause errors in Mac bundles
+    argv = [arg for arg in sys.argv[1:] if not arg.startswith('-psn_')]
+
+    parser = get_parser()
     args = parser.parse_args(argv)
 
     return args
@@ -138,7 +147,7 @@ def main():
     import os
     os.environ['LC_NUMERIC'] = 'C'
 
-    args = cmdline_ui()
+    args = parse_args()
 
     # logging.basicConfig(level=logging.DEBUG,
     logging.basicConfig(level=logging.INFO,

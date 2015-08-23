@@ -36,6 +36,8 @@ from osgeo import gdal
 
 __version__ = '1.0'
 
+EX_FAILURE = 1
+
 GDAL_STATS_KEYS = ('STATISTICS_MINIMUM', 'STATISTICS_MAXIMUM',
                    'STATISTICS_MEAN', 'STATISTICS_STDDEV')
 
@@ -274,14 +276,8 @@ def computestats(dataset, bands=None, computestats=True, histreq=None,
 
 
 # Command line tool #########################################################
-def handlecmd(argv=None):
+def get_parser():
     import argparse
-
-    if argv is None:
-        argv = sys.argv[1:]
-
-    if argv:
-        argv = gdal.GeneralCmdLineProcessor(argv)
 
     parser = argparse.ArgumentParser(prog='stats', description=__doc__)
     parser.add_argument(
@@ -326,6 +322,17 @@ def handlecmd(argv=None):
         help='suppress progress messages')
     parser.add_argument('filename', help='input file name')
 
+    return parser
+
+
+def parse_args(argv=None):
+    if argv is None:
+        argv = sys.argv[1:]
+
+    if argv:
+        argv = gdal.GeneralCmdLineProcessor(argv)
+
+    parser = get_parser()
     args = parser.parse_args(argv)
 
     if args.histreq and not args.hist:
@@ -351,15 +358,12 @@ def handlecmd(argv=None):
     return args
 
 
-def main(*argv):
+def main(argv=None):
     logging.basicConfig(format='%(levelname)s: %(message)s',
                         level=logging.INFO)
 
-    if not argv:
-        argv = sys.argv[1:]
-
     try:
-        args = handlecmd(argv)
+        args = parse_args(argv)
 
         if args.outfile:
             logger = logging.getLogger()
@@ -412,11 +416,13 @@ def main(*argv):
         computestats(ds, bands, args.stats, histreq, args.approxok,
                      args.minmax_only, progressfunc)
 
+        ds.FlushCache()
         ds = None
 
     except Exception as e:
-        logging.error(str(e), exc_info=True)
-        sys.exit(1)
+        logging.error(str(e))
+        logging.debug(str(e), exc_info=True)
+        sys.exit(EX_FAILURE)
 
 
 if __name__ == '__main__':

@@ -57,6 +57,7 @@ else:
 
 __version__ = '1.0'
 
+EX_FAILURE = 1
 if hasattr(os, 'EX_USAGE'):
     EX_USAGE = os.EX_USAGE
 else:
@@ -422,16 +423,8 @@ def raster_tree_index(src, dst, boxlayer=None, gcplayer=None,
 
 
 # Command line tool #########################################################
-def handlecmd(argv=None):
+def get_parser():
     import argparse
-
-    if argv is None:
-        argv = sys.argv
-    argv = argv[1:]
-
-    # @NOTE: ogr.GeneralCmdLineProcessor is not available in GDAL 1.6.x
-    if argv:
-        argv = gdal.GeneralCmdLineProcessor(argv)
 
     parser = argparse.ArgumentParser(prog='ras2vec', description=__doc__)
     parser.add_argument(
@@ -460,6 +453,18 @@ def handlecmd(argv=None):
     parser.add_argument('output', help='output vector file')
     parser.add_argument('inputs', nargs='+', help='input raster products')
 
+    return parser
+
+
+def parse_args(argv=None):
+    if argv is None:
+        argv = argv[1:]
+
+    # @NOTE: ogr.GeneralCmdLineProcessor is not available in GDAL 1.6.x
+    if argv:
+        argv = gdal.GeneralCmdLineProcessor(argv)
+
+    parser = get_parser()
     args = parser.parse_args(argv)
 
     #~ if options.t_srs and options.format in ('KML', 'LIBKML'):
@@ -479,15 +484,12 @@ def handlecmd(argv=None):
     return args
 
 
-def main(*argv):
+def main(argv=None):
     logging.basicConfig(format='%(levelname)s: %(message)s',
                         level=logging.INFO)
 
     try:
-        if not argv:
-            argv = sys.argv
-
-        args = handlecmd(argv)
+        args = parse_args(argv)
         if os.path.exists(args.output):
             logging.error(
                 'the output file ("%s") already exists.', args.output)
@@ -528,8 +530,9 @@ def main(*argv):
                               mark_corners=args.corners)
 
     except Exception as e:
-        logging.error(str(e), exc_info=True)
-        sys.exit(1)
+        logging.error(str(e))
+        logging.debug(str(e), exc_info=True)
+        sys.exit(EX_FAILURE)
 
 
 if __name__ == '__main__':
