@@ -77,10 +77,18 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
         'average',
         'gauss',
         'cubic',
+        # 'cubicspline',    # GDAL 2.0
+        # 'lanczos',        # GDAL 2.0
         'average_mp',
         'average_magphase',
         'mode',
     ]
+
+    if gdal.VersionInfo() > '2000000':
+        RESAMPLING_METHODS.extend((
+            'cubicspline',
+            'lanczos',
+        ))
 
     #: TIFF compression methods
     TIFF_COMPRESSION_METHODS = (
