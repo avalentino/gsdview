@@ -21,9 +21,14 @@
 '''Zoom tool.'''
 
 
+import logging
+
 from qtsix import QtCore, QtWidgets, QtGui
 
 from gsdview import qtsupport
+
+
+_log = logging.getLogger(__name__)
 
 
 class ZoomTool(QtCore.QObject):
@@ -117,16 +122,12 @@ class AppZoomTool(ZoomTool):
         super(AppZoomTool, self).__init__(None, app, **kwargs)
         self.app = app
 
-    @property
-    def _logger(self):
-        return self.app.logger
-
     def currentview(self):
         subwin = self.app.mdiarea.currentSubWindow()
         try:
             view = subwin.widget()
         except AttributeError as e:
-            self._logger.debug(str(e))
+            _log.debug(str(e))
         else:
             if isinstance(view, QtWidgets.QGraphicsView):
                 return view

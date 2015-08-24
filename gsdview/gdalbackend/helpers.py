@@ -24,6 +24,7 @@
 import os
 import glob
 import shutil
+import logging
 import tempfile
 
 from osgeo import gdal
@@ -32,6 +33,9 @@ from qtsix import QtWidgets
 
 from gsdview.gdalbackend import modelitems
 from gsdview.gdalbackend import gdalsupport
+
+
+_log = logging.getLogger(__name__)
 
 
 class GdalHelper(object):
@@ -73,10 +77,6 @@ class GdalHelper(object):
         return self.app.controller
 
     @property
-    def logger(self):
-        return self.app.logger
-
-    @property
     def gdalbackend(self):
         return self.app.pluginmanager.plugins['gdalbackend']
 
@@ -105,7 +105,7 @@ class GdalHelper(object):
             shutil.rmtree(self._tmpdir)
 
             if os.path.exists(self._tmpdir):
-                self.logger.warning('unable ro remove remporary dir: '
+                _log.warning('unable ro remove remporary dir: '
                                     '"%s"' % self._tmpdir)
             self._tmpdir = None
 
@@ -143,13 +143,12 @@ class GdalHelper(object):
 
     def start(self, *args, **kwargs):
         if self.controller.isbusy:
-            self.logger.warning('unable to perform overview computation: '
-                                'the subprocess controller is currently '
-                                'busy.')
+            _log.warning('unable to perform overview computation: '
+                         'the subprocess controller is currently busy.')
             return
         else:
-            self.logger.debug('run the "%s" subprocess.' %
-                              os.path.basename(self.tool.executable))
+            _log.debug('run the "%s" subprocess.',
+                       os.path.basename(self.tool.executable))
 
         # @TODO: check: this instruuctin in this position don' seems to work
         #        (the progressbar hangs)
@@ -164,8 +163,8 @@ class GdalHelper(object):
         try:
             startfailure = self.do_start(*args, **kwargs)
         except Exception as e:
-            #self.logger.error(str(e), exc_info=True)
-            self.logger.debug(str(e), exc_info=True)
+            #_log.error(str(e), exc_info=True)
+            _log.debug(str(e), exc_info=True)
             startfailure = True
 
         if startfailure:
@@ -302,7 +301,7 @@ class AddoHelper(GdalHelper):
         #        Maybe ths is not the best policy and overviews should be
         #        computed only when needed instead
         if levels:
-            self.logger.debug('requested levels: %s' % levels)
+            _log.debug('requested levels: %s', levels)
 
             # Run an external process for overviews computation
             self.app.statusBar().showMessage('Quick look image generation ...')
@@ -331,7 +330,7 @@ class AddoHelper(GdalHelper):
 
         dataset = self._datasetitem
         if not dataset:
-            self.logger.debug('unable to retrieve dataset for finalization')
+            _log.debug('unable to retrieve dataset for finalization')
             return
 
         # move ovr files in the cache dir
@@ -396,7 +395,7 @@ class StatsHelper(GdalHelper):
         #        (gdal.GA_Update) is a better solution
         dataset = self._datasetitem
         if not dataset:
-            self.logger.debug('unable to retrieve dataset for finalization')
+            _log.debug('unable to retrieve dataset for finalization')
             return
 
         # set computed statisstic values
@@ -405,13 +404,13 @@ class StatsHelper(GdalHelper):
                               os.path.basename(dataset.vrtfilename))
         ds = gdal.Open(tmpvrt)
         if not ds:
-            self.logger.warning('unable to open temporary virtual file for '
-                                'getting statistics.')
+            _log.warning('unable to open temporary virtual file for '
+                         'getting statistics.')
             return
 
         vrtband = ds.GetRasterBand(bandno)
         if not vrtband:
-            self.logger.warning('unable to open raster band n. %d.' % bandno)
+            _log.warning('unable to open raster band n. %d.', bandno)
             return
 
         self.copy_data(vrtband)
@@ -425,7 +424,7 @@ class StatsHelper(GdalHelper):
     def copy_data(self, vrtband):
         stats = gdalsupport.GetCachedStatistics(vrtband)
         if None in stats:
-            self.logger.warning('unable to retrieve statistics.')
+            _log.warning('unable to retrieve statistics.')
             return
 
         for name, value in zip(gdalsupport.GDAL_STATS_KEYS, stats):

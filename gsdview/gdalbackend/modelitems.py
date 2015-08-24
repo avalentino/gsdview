@@ -37,7 +37,7 @@ from gsdview.gdalbackend import gdalsupport
 
 VISIBLE_OVERVIEW_ITEMS = False
 
-logger = logging.getLogger(__name__)
+_log = logging.getLogger(__name__)
 
 
 class MajorObjectItem(QtGui.QStandardItem):
@@ -75,8 +75,8 @@ class MajorObjectItem(QtGui.QStandardItem):
             try:
                 self.child(0).close()
             except AttributeError:
-                logger.debug('unexpected child item class: "%s"',
-                             type(self.child(0)).__name__)
+                _log.debug('unexpected child item class: "%s"',
+                           type(self.child(0)).__name__)
             # @NOTE: use takeRow instead of removeRow in order to avoid the
             #        underlying C/C++ object is deleted before all sub-windows
             #        that hold a reference to the stditem are destroyed
@@ -191,7 +191,7 @@ class BandItem(MajorObjectItem):
             self._obj = gdalobj
 
         if self.rowCount() > gdalobj.GetOverviewCount():
-            logger.warning(
+            _log.warning(
                 'unable to reopen raster band: unexpected number of overviews')
             return
 
@@ -409,7 +409,7 @@ class CachedDatasetItem(DatasetItem):
     def __init__(self, filename, mode=gdal.GA_Update, **kwargs):
         # @TODO: check
         if mode == gdal.GA_ReadOnly:
-            logger.warning('GDAL open mode ignored in cached datasets.')
+            _log.warning('GDAL open mode ignored in cached datasets.')
             mode = gdal.GA_Update
 
         filename = os.path.abspath(filename)
@@ -560,7 +560,7 @@ class CachedDatasetItem(DatasetItem):
         gdalobj = gdal.Open(self.vrtfilename, gdal.GA_Update)
 
         if gdalobj.RasterCount < self.RasterCount:
-            logger.warning(
+            _log.warning(
                 'unable to reopen dataset: unexpected number of raster bands')
             return
 
@@ -636,7 +636,7 @@ class SubDatasetItem(CachedDatasetItem):
                                     self._normalize(self.filename))
 
         if self._mode == gdal.GA_ReadOnly:
-            logger.warning('GDAL open mode ignored in cached datasets.')
+            _log.warning('GDAL open mode ignored in cached datasets.')
             self._mode = gdal.GA_Update
 
         # @TODO: don't use "os.path.abspath" because the filename id to be

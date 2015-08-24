@@ -44,6 +44,7 @@ from gsdview.widgets import GSDViewExceptionDialog as ExceptionDialog
 
 
 __all__ = ['GSDView']
+_log = logging.getLogger(__name__)
 
 
 class GSDView(ItemModelMainWindow):
@@ -56,10 +57,9 @@ class GSDView(ItemModelMainWindow):
     '''Main window class for GSDView application.'''
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
-        logger = logging.getLogger('gsdview')
         loglevel = kwargs.pop('loglevel', logging.NOTSET)
 
-        logger.debug('Main window base classes initialization ...')
+        _log.debug('Main window base classes initialization ...')
         QtWidgets.QApplication.setWindowIcon(
             qtsupport.geticon('GSDView.png', __name__))
 
@@ -69,26 +69,26 @@ class GSDView(ItemModelMainWindow):
         self.setObjectName('gsdview-mainwin')
 
         # Dialogs
-        logger.debug('Setting up file dialog ...')
+        _log.debug('Setting up file dialog ...')
 
         #: application global file dialog instance
         self.filedialog = QtWidgets.QFileDialog(self)
         self.filedialog.setFileMode(QtWidgets.QFileDialog.ExistingFile)
         self.filedialog.setViewMode(QtWidgets.QFileDialog.Detail)
 
-        logger.debug('Setting up the about dialog ...')
+        _log.debug('Setting up the about dialog ...')
 
         #: application global about dialog instance
         self.aboutdialog = AboutDialog(self)
 
-        logger.debug('Setting up the preferences dialog ...')
+        _log.debug('Setting up the preferences dialog ...')
 
         #: prefernces dialog instance
         self.preferencesdialog = PreferencesDialog(self,
                                                    apply=self.applySettings)
 
         # Stop button
-        logger.debug('Setting up the stop button ...')
+        _log.debug('Setting up the stop button ...')
         qstyle = QtWidgets.QApplication.style()
         icon = qstyle.standardIcon(QtWidgets.QStyle.SP_BrowserStop)
 
@@ -98,7 +98,7 @@ class GSDView(ItemModelMainWindow):
         self.stopbutton.hide()
 
         # Progressbar
-        logger.debug('Setting up the progress bar ...')
+        _log.debug('Setting up the progress bar ...')
 
         #: application progress bar
         self.progressbar = QtWidgets.QProgressBar(self)
@@ -107,13 +107,13 @@ class GSDView(ItemModelMainWindow):
         self.progressbar.hide()
 
         # Miscellanea
-        logger.debug('Miscellanea setup ...')
+        _log.debug('Miscellanea setup ...')
 
         #: cache directory path
         self.cachedir = None
 
         # GraphicsViewMonitor and mouse manager
-        logger.debug('Setting up "monitor" components ...')
+        _log.debug('Setting up "monitor" components ...')
 
         #: graphics scenes/views monitor
         self.monitor = graphicsview.GraphicsViewMonitor()
@@ -139,13 +139,13 @@ class GSDView(ItemModelMainWindow):
             os.makedirs(USERCONFIGDIR)
 
         # @TODO: fix filename
-        logger.debug('Read application settings ...')
+        _log.debug('Read application settings ...')
         #self.settings = QtCore.QSettings('gsdview-soft', 'gsdview', self)
         #self.settings = QtCore.QSettings(QtCore.QSettings.IniFormat,
         #                                 QtCore.QSettings.UserScope,
         #                                 'gsdview', 'gsdview', self)
         cfgfile = os.path.join(USERCONFIGDIR, 'gsdview.ini')
-        logger.info('Configuration file: "%s".', cfgfile)
+        _log.info('Configuration file: "%s".', cfgfile)
 
         #: application settings
         self.settings = QtCore.QSettings(cfgfile,
@@ -153,19 +153,19 @@ class GSDView(ItemModelMainWindow):
                                          self)
 
         # Setup the log system and the external tools controller
-        logger.debug('Complete logging setup...')
+        _log.debug('Complete logging setup...')
         # @TODO: logevel could be set from command line
-        #: application sandard logger
+        #: application standard logger
         self.logger = self.setupLogging(loglevel=loglevel)
 
-        logger.debug('Setting up external tool controller ...')
+        _log.debug('Setting up external tool controller ...')
 
         #: external tool controller
         self.controller = self.setupController(self.logger, self.statusBar(),
                                                self.progressbar)
 
         # Actions
-        logger.debug('Setting up actions ...')
+        _log.debug('Setting up actions ...')
 
         #: actions associated to file menu
         self.fileActions = None
@@ -194,11 +194,11 @@ class GSDView(ItemModelMainWindow):
         self.toolsmenu.hide()
 
         # Setup plugins
-        logger.debug(self.tr('Setup plugins ...'))
+        _log.debug(self.tr('Setup plugins ...'))
         self.setupPlugins()
 
         # Settings menu end toolbar
-        logger.debug(self.tr('Settings menu setup ...'))
+        _log.debug(self.tr('Settings menu setup ...'))
         menu = self._addMenuFromActions(self.settingsActions,
                                         self.tr('&Settings'))
         self._addToolBarFromActions(self.settingsActions,
@@ -210,16 +210,16 @@ class GSDView(ItemModelMainWindow):
         menu.addSeparator()
         menu.addMenu(self.settings_submenu)
 
-        logger.debug(self.tr('Window menu setup ...'))
+        _log.debug(self.tr('Window menu setup ...'))
         self.menuBar().addMenu(self.windowmenu)
 
         # Help menu end toolbar
-        logger.debug('Help menu setup ...')
+        _log.debug('Help menu setup ...')
         self._addMenuFromActions(self.helpActions, self.tr('&Help'))
         self._addToolBarFromActions(self.helpActions, self.tr('Help toolbar'))
 
         # @NOTE: the window state setup must happen after the plugins loading
-        logger.info('Load settings ...')
+        _log.info('Load settings ...')
         self.loadSettings(loglevel=loglevel)  # @TODO: pass cachedir
 
         self.treeview.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
@@ -260,7 +260,7 @@ class GSDView(ItemModelMainWindow):
         self.pluginmanager.save_settings(self.settings)
         self.closeAll()
         self.pluginmanager.reset()
-        self.logger.info('Closing application')
+        _log.info('Closing application')
         #event.accept()
         super(GSDView, self).closeEvent(event)
 
@@ -298,7 +298,7 @@ class GSDView(ItemModelMainWindow):
             msg = str(excvalue)
             if not msg:
                 msg = excvalue.__class__.__name__
-            self.logger.info(msg)
+            _log.info(msg)
             self.close()
             return
 
@@ -318,8 +318,8 @@ class GSDView(ItemModelMainWindow):
         if ret == QtWidgets.QDialog.Rejected:
             self.close()
         else:
-            self.logger.warning('ignoring an unhandled exception may cause '
-                                'program malfunctions.')
+            _log.warning('ignoring an unhandled exception may cause '
+                         'program malfunctions.')
 
     # Setup helpers #########################################################
     def _setupFileActions(self):
@@ -476,9 +476,9 @@ class GSDView(ItemModelMainWindow):
             levelno = logging.getLevelName(str(level))
             if isinstance(levelno, int):
                 logger.setLevel(levelno)
-                logger.info('"%s" loglevel set' % level)
+                _log.info('"%s" loglevel set', level)
             else:
-                logger.debug('invalid log level: "%s"' % level)
+                _log.debug('invalid log level: "%s"', level)
 
         return logger
 
@@ -527,8 +527,8 @@ class GSDView(ItemModelMainWindow):
             #        winstate = qtsupport.intToWinState[winstate]
             #        self.setWindowState(winstate)
             #except (KeyError, ValueError) as e:
-            #    self.logger.info('unable to restore the window state')
-            #    self.logger.debug('', exc_info=True)
+            #    _log.info('unable to restore the window state')
+            #    _log.debug('', exc_info=True)
 
             # State of toolbars ad docks
             state = settings.value('state')
@@ -550,8 +550,7 @@ class GSDView(ItemModelMainWindow):
                     # QFileDialog.restoreState is new in Qt 4.3
                     self.filedialog.restoreState(state)
                 except AttributeError:
-                    self.logger.debug(
-                        'unable to restore the file dialog state')
+                    _log.debug('unable to restore the file dialog state')
 
             # workdir
             workdir = settings.value('workdir', utils.default_workdir())
@@ -571,8 +570,7 @@ class GSDView(ItemModelMainWindow):
                     sidebarurls = [QtCore.QUrl(item) for item in sidebarurls]
                     self.filedialog.setSidebarUrls(sidebarurls)
             except AttributeError:
-                self.logger.debug(
-                    'unable to restore sidebar URLs of the file dialog')
+                _log.debug('unable to restore sidebar URLs of the file dialog')
         finally:
             settings.endGroup()
 
@@ -593,9 +591,9 @@ class GSDView(ItemModelMainWindow):
                 levelno = logging.getLevelName(level)
                 if isinstance(levelno, int):
                     self.logger.setLevel(levelno)
-                    self.logger.debug('"%s" loglevel set' % level)
+                    _log.debug('"%s" loglevel set', level)
                 else:
-                    self.logger.debug('invalid log level: "%s"' % level)
+                    _log.debug('invalid log level: "%s"', level)
 
             # cache location
             default = os.path.join(USERCONFIGDIR, 'cache')
@@ -639,7 +637,7 @@ class GSDView(ItemModelMainWindow):
                 # QFileDialog.saveState is new in Qt 4.3
                 settings.setValue('state', self.filedialog.saveState())
             except AttributeError:
-                self.logger.debug('unable to save the file dialog state')
+                _log.debug('unable to save the file dialog state')
 
             # workdir
             # @NOTE: uncomment to preserve the session value
@@ -656,8 +654,7 @@ class GSDView(ItemModelMainWindow):
                 if sidebarurls:
                     settings.setValue('sidebarurls', sidebarurls)
             except AttributeError:
-                self.logger.debug(
-                    'unable to save sidebar URLs of the file dialog')
+                _log.debug('unable to save sidebar URLs of the file dialog')
         finally:
             settings.endGroup()
 
@@ -735,18 +732,17 @@ class GSDView(ItemModelMainWindow):
                         if item:
                             self.datamodel.appendRow(item)
                             self.treeview.expand(item.index())
-                            self.logger.debug('File "%s" opened with backend '
-                                              '"%s"' % (filename, backendname))
+                            _log.debug('File "%s" opened with backend "%s"',
+                                       filename, backendname)
                         else:
-                            self.logger.info(
-                                'file %s" already open' % filename)
+                            _log.info('file %s" already open', filename)
                         break
                     except errors.OpenError:
-                        #self.logger.exception('exception caught')
-                        self.logger.debug('Backend "%s" failed to open file '
-                                          '"%s"' % (backendname, filename))
+                        #_log.exception('exception caught')
+                        _log.debug('Backend "%s" failed to open file "%s"',
+                                   backendname, filename)
                 else:
-                    self.logger.error('Unable to open file "%s"' % filename)
+                    _log.error('Unable to open file "%s"', filename)
 
     @QtCore.Slot()
     def closeItem(self):

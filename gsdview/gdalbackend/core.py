@@ -22,6 +22,7 @@
 
 
 import os
+import logging
 
 from osgeo import gdal
 
@@ -38,6 +39,8 @@ from gsdview.gdalbackend import gdalexectools
 
 
 __all__ = ['GDALBackend']
+
+_log = logging.getLogger(__name__)
 
 
 class GDALBackend(QtCore.QObject):
@@ -442,7 +445,7 @@ class GDALBackend(QtCore.QObject):
     @QtCore.Slot()
     def openItemMatadataView(self):
         # @TODO: implementation
-        self._app.logger.info('method not yet implemented')
+        _log.info('method not yet implemented')
 
     def _infoDialogFactory(self, item):
         for itemtype in item.__class__.__mro__:
@@ -497,8 +500,8 @@ class GDALBackend(QtCore.QObject):
         if dialog:
             dialog.exec_()
         else:
-            self._app.logger.debug('unable to show info dialog for "%s" '
-                                   'item class' % (item.__class__.__name__))
+            _log.debug('unable to show info dialog for "%s" item class',
+                       item.__class__.__name__)
 
     # Driver ################################################################
     # Dataset ###############################################################
@@ -512,7 +515,7 @@ class GDALBackend(QtCore.QObject):
 
         if not item.scene:
             msg = "This dataset can't be opened in RGB mode."
-            self._app.logger.info(msg)
+            _log.info(msg)
             #title = self.tr('WARNING')
             #msg = self.tr(msg)
             #QtWidgets.QMessageBox.warning(self._app, title, msg)
@@ -591,7 +594,7 @@ class GDALBackend(QtCore.QObject):
                 msg = 'band "%s" is not visualizable' % (item.row() + 1)
             else:
                 msg = 'band "%s" is not visualizable' % item.GetDescription()
-            self._app.logger.warning(msg)
+            _log.warning(msg)
             return
 
         # only open a new view if there is no other on the item selected
@@ -640,21 +643,19 @@ class GDALBackend(QtCore.QObject):
     # Overview ##############################################################
     # Virtualband ###########################################################
     def loadGDALSettings(self, settings):
-        logger = self._app.logger
-
         settings.beginGroup('gdal')
         try:
             cachesize = settings.value('GDAL_CACHEMAX')
             if cachesize is not None:
                 cachesize = int(cachesize)
                 gdal.SetCacheMax(cachesize)
-                logger.debug('GDAL cache size det to %d' % cachesize)
+                _log.debug('GDAL cache size det to %d', cachesize)
 
             value = settings.value('GDAL_DATA')
             if value:
                 value = os.path.expanduser(os.path.expandvars(value))
                 gdal.SetConfigOption('GDAL_DATA', value)
-                logger.debug('GDAL_DATA directory set to "%s"' % value)
+                _log.debug('GDAL_DATA directory set to "%s"', value)
 
             for optname in ('GDAL_SKIP', 'GDAL_DRIVER_PATH',
                             'OGR_DRIVER_PATH'):
@@ -664,10 +665,10 @@ class GDALBackend(QtCore.QObject):
                     # @NOTE: type of arg 2 of SetConfigOption must be str,
                     #        not an unicode
                     gdal.SetConfigOption(optname, str(value))
-                    logger.debug('%s set to "%s"' % (optname, value))
+                    _log.debug('%s set to "%s"', optname, value)
 
             gdal.AllRegister()
-            logger.debug('run "gdal.AllRegister()"')
+            _log.debug('run "gdal.AllRegister()"')
 
             # update the about dialog
             tabWidget = self._app.aboutdialog.tabWidget
@@ -677,7 +678,7 @@ class GDALBackend(QtCore.QObject):
                     gdalinfowidget.setGdalDriversTab()
                     break
             else:
-                logger.debug('GDAL page ot found in the about dialog')
+                _log.debug('GDAL page ot found in the about dialog')
                 return
         finally:
             settings.endGroup()

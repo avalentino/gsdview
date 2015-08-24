@@ -37,7 +37,7 @@ from qtsix import QtCore, QtWidgets, QtGui, QtSvg, QtPrintSupport, uic
 from gsdview import utils
 
 
-logger = logging.getLogger(__name__)
+_log = logging.getLogger(__name__)
 
 # @TODO: simply use QtCore.Qt.WindowState(int_arg)
 # @TODO: check compatibility with PyQt4 and PySide
@@ -601,12 +601,12 @@ def getuiform(name, package=None):
         ]
         formname = formnames[0]
         FormClass = getattr(module, formname)
-        logger.debug('load "%s" form base class from pre-compiled python '
-                     'module' % formname)
+        _log.debug('load "%s" form base class from pre-compiled python module',
+                   formname)
     except ImportError:
         uifile = getuifile(name + '.ui', package)
         FormClass, QtBaseClass = uic.loadUiType(uifile)
-        logger.debug('load "%s" form class from ui file' % FormClass.__name__)
+        _log.debug('load "%s" form class from ui file', FormClass.__name__)
 
     return FormClass
 

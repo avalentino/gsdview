@@ -30,7 +30,7 @@ from qtsix import QtCore, QtWidgets
 from gsdview import qtdraw
 
 
-logger = logging.getLogger(__name__)
+_log = logging.getLogger(__name__)
 
 # Graphics Items ############################################################
 #~ class GraphicsLayerItem(qt4draw.GraphicsItemGroup):
@@ -229,8 +229,8 @@ def geometryToGraphicsItem(geom, transform=None):
                 qsubitem.setData(DATAKEY['index'], index)
                 qitem.addToGroup(qsubitem)
             else:
-                logger.debug('unable to instantiate a graphics item from '
-                             'OGR geometry "%s"', subgeom)
+                _log.debug('unable to instantiate a graphics item from '
+                           'OGR geometry "%s"', subgeom)
         #qitem.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable)
         return qitem
     elif geom.GetGeometryCount() == 1:
@@ -324,15 +324,15 @@ def layerToGraphicsItem(layer, srs=None, transform=None):
             if qitem:
                 qfeature.addToGroup(qitem)
             else:
-                logger.warning('unable to instantiate a graphics '
-                               'item from OGR geometry "%s"', geom)
+                _log.warning('unable to instantiate a graphics item from '
+                             'OGR geometry "%s"', geom)
         else:
-            logger.info('feature %d has no geometry', feature.GetFID())
+            _log.info('feature %d has no geometry', feature.GetFID())
         qlayer.addToGroup(qfeature)
 
     nfeatures = len(qlayer.childItems())
     if nfeatures != layer.GetFeatureCount():
-        logger.warning(
+        _log.warning(
             'only %d of %d geometries converted to graphics items for layer '
             '"%s"', nfeatures, layer.GetFeatureCount(), layer.GetName())
 

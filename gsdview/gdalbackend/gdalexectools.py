@@ -24,6 +24,7 @@
 from __future__ import print_function
 
 import re
+import logging
 
 import exectools
 from exectools.qt import QtOutputHandler
@@ -31,6 +32,9 @@ from exectools.qt import QtOutputHandler
 from osgeo import gdal
 
 from gsdview.five import string_types
+
+
+_log = logging.getLogger(__name__)
 
 
 class BaseGdalToolDescriptor(exectools.ToolDescriptor):
@@ -402,7 +406,7 @@ class GdalOutputHandler(QtOutputHandler):
             data['percentage'] = self._percentage
         if percentage is not None:
             if percentage < self._percentage:
-                self.logger.debug(
+                _log.debug(
                     'new percentage (%d) is lower than previous one (%f)',
                     percentage, self._percentage)
 

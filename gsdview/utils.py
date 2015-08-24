@@ -32,7 +32,7 @@ try:
     import pkg_resources
 except ImportError:
     import logging
-    logging.getLogger('gsdview').debug('"pkg_resources" not found.')
+    logging.getLogger(__name__).debug('"pkg_resources" not found.')
 
 from gsdview import info
 from gsdview import appsite

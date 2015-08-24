@@ -23,6 +23,7 @@
 
 import os
 import sys
+import logging
 import tempfile
 
 from qtsix import QtCore, QtWidgets, QtGui
@@ -33,6 +34,9 @@ from gsdview import qtsupport
 from gsdtools import ras2vec
 
 from . import info
+
+
+_log = logging.getLogger(__name__)
 
 
 class GSDToolsController(QtCore.QObject):
@@ -50,10 +54,6 @@ class GSDToolsController(QtCore.QObject):
         #~    self.self.onItemChanged)
         #~ ##void currentChanged(const QModelIndex& current,
         #~ ##                    const QModelIndex& previous)
-
-    @property
-    def _logger(self):
-        return self.app.logger
 
     def _googleEarthBin(self):
         pass
@@ -135,7 +135,7 @@ class GSDToolsController(QtCore.QObject):
         item = self._currentDatasetItem()
 
         if item is None:
-            self._logger.info('no item to export.')
+            _log.info('no item to export.')
             QtWidgets.QMessageBox.information(
                 self.app, self.tr('Information'),
                 self.tr('No item to export.'))
@@ -161,15 +161,14 @@ class GSDToolsController(QtCore.QObject):
                                       gcplayer='GCPs', mark_corners=True)
             except (OSError, RuntimeError):
                 # @TODO: QtWidgets.QMessageBox.error(...)
-                self._logger.error(
-                    'unable to export "%s" to "%s".', src, dst)
+                _log.error('unable to export "%s" to "%s".', src, dst)
 
     @QtCore.Slot()
     def openInGoogleEarth(self):
         item = self._currentDatasetItem()
 
         if item is None:
-            self._logger.info('no item selected.')
+            _log.info('no item selected.')
             QtWidgets.QMessageBox.information(
                 self.app, self.tr('Information'),
                 self.tr('No item selected.'))
@@ -185,15 +184,15 @@ class GSDToolsController(QtCore.QObject):
                                   mark_corners=True)
         except (OSError, RuntimeError):
             # @TODO: QtWidgets.QMessageBox.error(...)
-            self._logger.error('unable to export "%s" to "%s".', src, dst)
+            _log.error('unable to export "%s" to "%s".', src, dst)
 
         #success = QtCore.QProcess.startDetached(self.googleearth, [dst])
-        self._logger.info('GoogleEarth: %s', self.googleearth)
-        self._logger.info('KML: %s', dst)
+        _log.info('GoogleEarth: %s', self.googleearth)
+        _log.info('KML: %s', dst)
         success = QtCore.QProcess.startDetached(
             'sh', [self.googleearth, dst], os.path.dirname(self.googleearth))
         if not success:
-            self._logger.warning('unable to open "%s" in GoogleEarth.', dst)
+            _log.warning('unable to open "%s" in GoogleEarth.', dst)
             # @TODO: check
             QtWidgets.QMessageBox.warning(
                 self.app, self.tr('Warning'),
@@ -209,7 +208,7 @@ class GSDToolsController(QtCore.QObject):
 
         item = self._currentDatasetItem()
         if item is None:
-            self._logger.info('no item selected.')
+            _log.info('no item selected.')
             QtWidgets.QMessageBox.information(
                 self.app, self.tr('Information'),
                 self.tr('No item selected.'))
@@ -218,8 +217,8 @@ class GSDToolsController(QtCore.QObject):
         try:
             cmapper = item.cmapper
         except AttributeError:
-            self._logger.error(
-                'item "%s" seems to heve no geographic info.', item.filename)
+            _log.error(
+                'item "%s" seems to have no geographic info.', item.filename)
             return
 
         lon, lat = cmapper.imgToGeoGrid([0.5, item.RasterXSize - 0.5],
@@ -253,7 +252,7 @@ class GSDToolsController(QtCore.QObject):
 
         success = QtGui.QDesktopServices.openUrl(url)
         if not success:
-            self._logger.warning('unable to open URL: "%s"', url)
+            _log.warning('unable to open URL: "%s"', url)
             # @TODO: check
             QtWidgets.QMessageBox.warning(
                 self.app, self.tr('Warning'),

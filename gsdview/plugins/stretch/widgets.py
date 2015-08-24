@@ -30,7 +30,7 @@ from qtsix import QtCore, QtWidgets, QtGui
 from gsdview import qtsupport
 
 
-logger = logging.getLevelName(__name__)
+_log = logging.getLevelName(__name__)
 
 StretchWidgetBase = qtsupport.getuiform('doubleslider', __name__)
 
@@ -520,7 +520,7 @@ class StretchDialog(QtWidgets.QDialog, StretchDialogBase):
         try:
             self.stretchwidget.setState(d)
         except KeyError as e:
-            logger.info('unable to set state: %s' % str(e))
+            _log.info('unable to set state: %s', e)
 
     def values(self):
         return self.stretchwidget.values()

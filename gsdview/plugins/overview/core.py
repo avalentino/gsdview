@@ -21,10 +21,15 @@
 '''Overview pannel for GDAL raster bands.'''
 
 
+import logging
+
 from qtsix import QtCore, QtWidgets, QtGui
 
 from gsdview.qtsupport import overrideCursor
 from gsdview.gdalbackend import gdalsupport
+
+
+_log = logging.getLogger(__name__)
 
 
 class NavigationGraphicsView(QtWidgets.QGraphicsView):
@@ -172,10 +177,6 @@ class BandOverviewDock(QtWidgets.QDockWidget):
         self.graphicsview = NavigationGraphicsView(self)
         self.setWidget(self.graphicsview)
 
-    @property
-    def _logger(self):
-        return self.app.logger
-
     # @TODO: understand why this doewn't work
     #
     #    self.graphicsview.installEventFilter(self)
@@ -203,9 +204,8 @@ class BandOverviewDock(QtWidgets.QDockWidget):
                 #        size smaller than OVRMAXSIZE
                 ovrindex = gdalsupport.ovrBestIndex(item, level, 'GREATER')
             except gdalsupport.MissingOvrError:
-                self._logger.info(
-                    'no overview available or available overviews are too '
-                    'large')
+                _log.info('no overview available or available overviews are '
+                          'too large')
                 return
 
             scene = item.scene

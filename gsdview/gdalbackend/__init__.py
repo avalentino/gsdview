@@ -47,6 +47,7 @@ _backendobj = None
 def init(app):
     import os
     import sys
+    import logging
 
     from osgeo import gdal
 
@@ -56,6 +57,9 @@ def init(app):
     from gsdview.gdalbackend import widgets
     from gsdview.gdalbackend import gdalsupport
 
+
+    _log = logging.getLogger(__name__)
+
     # @TODO: check
     #UseExceptions()
 
@@ -63,9 +67,8 @@ def init(app):
     app.filedialog.setNameFilters(gdalsupport.gdalFilters())
 
     # update versions info in about dialog
-    app.aboutdialog.addSoftwareVersion('GDAL',
-                                       gdal.VersionInfo('RELEASE_NAME'),
-                                       'http://www.gdal.org')
+    app.aboutdialog.addSoftwareVersion(
+        'GDAL', gdal.VersionInfo('RELEASE_NAME'), 'http://www.gdal.org')
 
     # GDAL icon
     icon = qtsupport.geticon('GDALLogoColor.svg', __name__)
@@ -123,8 +126,7 @@ def init(app):
                 PATH = os.pathsep.join((binpath, PATH))
                 os.environ['PATH'] = PATH
 
-                app.logger.info(
-                    'GDAL binary path added to system path: %s', binpath)
+                _log.info('GDAL binary path added to system path: %s', binpath)
     #elif sys.platform[:3] == 'win':
     #    gdaladdobin = utils.which('gdaladdo')
     #    if not gdaladdobin:

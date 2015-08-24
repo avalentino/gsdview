@@ -366,7 +366,7 @@ def main(argv=None):
         args = parse_args(argv)
 
         if args.outfile:
-            logger = logging.getLogger()
+            logger = logging.getLogger('gsdtools.stats')
 
             streamhandler = logger.handlers[0]
             streamhandler.setLevel(logging.WARNING)

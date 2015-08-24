@@ -85,11 +85,11 @@ def preload(modules, app=None):
         app = QtWidgets.qApp
 
     timer = Timer()
-    logger = logging.getLogger('gsdview')
+    log = logging.getLogger(__name__)
     for modname in modules:
-        logger.info(app.tr('Importing %s module ...') % modname)
+        log.info(app.tr('Importing %s module ...'), modname)
         app.processEvents()
-        logger.debug('%s import: %d.%06ds' % ((modname,) + timer.update()))
+        log.debug('%s import: %d.%06ds', modname, *timer.update())
 
 
 def get_parser():
@@ -163,15 +163,15 @@ def main():
         level=loglevel,
         #format='%(levelname)s: %(message)s')
         format='%(asctime)s %(name)s %(levelname)s: %(message)s')
-    logger = logging.getLogger('gsdview')
+
     # set the logging level explicitly on the gsdview logger
-    logger.setLevel(loglevel)
-    logger.debug('log level set to %s', logging.getLevelName(logger.level))
+    logging.getLogger('gsdview').setLevel(loglevel)
 
     # PyQt loggers
-    qtlogger = logging.getLogger('PyQt5.uic')
-    #qtlogger = logging.getLogger('PyQt5.uic.uiparser')
-    qtlogger.setLevel(logging.WARNING)
+    logging.getLogger('PyQt5.uic').setLevel(logging.WARNING)
+
+    log = logging.getLogger(__name__)
+    log.debug('log level set to %s', logging.getLevelName(log.level))
 
     # @TODO:
     # * config logging using options.configfile, USER_CFG, SYS_CFG
@@ -182,7 +182,7 @@ def main():
 
     # splash screen #########################################################
     from qtsix import QtWidgets, QtGui
-    logger.debug('Qt import: %d.%06ds' % timer.update())
+    log.debug('Qt import: %d.%06ds', *timer.update())
 
     import sys
     from gsdview.info import name as NAME
@@ -202,34 +202,34 @@ def main():
     splash_loghandler = SplashLogHandler(splash, app)
     splash_loghandler.setFormatter(logging.Formatter('%(message)s'))
 
-    logger.addHandler(splash_loghandler)
+    log.addHandler(splash_loghandler)
 
-    logger.info('Splash screen setup completed')
-    logger.debug('splash screen setup: %d.%06ds' % timer.update())
+    log.info('Splash screen setup completed')
+    log.debug('splash screen setup: %d.%06ds', *timer.update())
 
     # modules loading #######################################################
     preload(MODULES, app)
 
     # GUI ###################################################################
-    logger.info('Build GUI ...')
+    log.info('Build GUI ...')
 
     from gsdview.app import GSDView
 
     # @TODO: pass plugins_path??
     mainwin = GSDView(loglevel=args.log_level)
     mainwin.show()
-    logger.info('GUI setup completed')
-    logger.debug('GUI setup: %d.%06ds' % timer.update())
+    log.info('GUI setup completed')
+    log.debug('GUI setup: %d.%06ds', *timer.update())
 
     # close splash and run app ##############################################
-    logger.removeHandler(splash_loghandler)
+    log.removeHandler(splash_loghandler)
     splash.finish(mainwin)
     app.processEvents()
 
-    logger.info('Install the exception hook')
+    log.info('Install the exception hook')
     sys.excepthook = mainwin.excepthook     # @TODO: check
 
-    logger.info('Enter main event loop')
+    log.info('Enter main event loop')
 
     # @COMPATIBILITY: this will raise the window on Mac OS X
     mainwin.raise_()
