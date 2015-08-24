@@ -591,9 +591,9 @@ class GDALBackend(QtCore.QObject):
 
         if not item.scene:
             if not item.GetDescription():
-                msg = 'band "%s" is not visualizable' % (item.row() + 1)
+                msg = 'band "%s" cannot be visualized' % (item.row() + 1)
             else:
-                msg = 'band "%s" is not visualizable' % item.GetDescription()
+                msg = 'band "%s" cannot be visualized' % item.GetDescription()
             _log.warning(msg)
             return
 
