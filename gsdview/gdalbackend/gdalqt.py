@@ -32,7 +32,7 @@ from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
 from qtsix import QtCore, QtWidgets, QtGui
 
 from gsdview import imgutils
-from gsdview.qtsupport import numpy2qimage
+from gsdview.qtsupport import numpy2qimage, GRAY_COLORTABLE, JET_COLORTABLE
 from gsdview.gdalbackend import gdalsupport
 
 
@@ -101,9 +101,11 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
         #self.read_threshold = 1600*1200
 
         self.stretch = imgutils.LinearStretcher()
-        # @TODO: use lazy gaphicsitem inirialization
-        # @TODO: initilize stretching explicitly
+        # @TODO: use lazy gaphicsitem initialization
+        # @TODO: initialize stretching explicitly
         self._stretch_initialized = False
+        self._data_preproc = None
+        self.colortable = None
 
     def type(self):
         return self.Type
@@ -265,6 +267,27 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
     def dataRange(self, data=None):
         return None, None
 
+    def paint(self, painter, option, widget):
+        levelOfDetail = self._levelOfDetail(option, painter)
+        ovrband, ovrlevel, ovrindex = self._bestOvrLevel(self.gdalobj,
+                                                         levelOfDetail)
+        x, y, w, h = self._clipRect(ovrband,
+                                    option.exposedRect.toAlignedRect(),
+                                    ovrlevel)
+
+        data = ovrband.ReadAsArray(x, y, w, h)
+
+        if self._data_preproc:
+            data = self._data_preproc(data)
+
+        if not self._stretch_initialized:
+            self.setDefaultStretch(data)
+        data = self.stretch(data)
+
+        rect = self._targetRect(x, y, w, h, ovrlevel)
+        image = numpy2qimage(data, self.colortable)
+        painter.drawImage(rect, image)
+
 
 class UIntGdalGraphicsItem(BaseGdalGraphicsItem):
     '''GDAL graphics item specialized for 8 and 16 it unsigned integers.
@@ -286,35 +309,12 @@ class UIntGdalGraphicsItem(BaseGdalGraphicsItem):
         dtype = np.dtype(GDALTypeCodeToNumericTypeCode(band.DataType))
         self.stretch = imgutils.LUTStretcher(fill=2 ** (8 * dtype.itemsize))
         self._stretch_initialized = False
+        self.colortable = GRAY_COLORTABLE
 
     def dataRange(self, data=None):
+        if data and self._data_preproc:
+            data = self._data_preproc(data)
         return self._dataRange(self.gdalobj, data)
-
-    def paint(self, painter, option, widget):
-        levelOfDetail = self._levelOfDetail(option, painter)
-        ovrband, ovrlevel, ovrindex = self._bestOvrLevel(self.gdalobj,
-                                                         levelOfDetail)
-        x, y, w, h = self._clipRect(ovrband,
-                                    option.exposedRect.toAlignedRect(),
-                                    ovrlevel)
-
-        # @TODO: threshold check
-        # @WARNING: option.levelOfDetail is no more usable
-        #threshold = 1600*1600
-        #if w * h > threshold:
-        #    newoption = QtWidgets.QStyleOptionGraphicsItem(option)
-        #    newoption.levelOfDetail = option.levelOfDetail*threshold/(w*h)
-        #    return self.paint(painter, newoption, widget)
-
-        data = ovrband.ReadAsArray(x, y, w, h)
-
-        if not self._stretch_initialized:
-            self.setDefaultStretch(data)
-        data = self.stretch(data)
-        image = numpy2qimage(data)
-
-        rect = self._targetRect(x, y, w, h, ovrlevel)
-        painter.drawImage(rect, image)
 
 
 class GdalGraphicsItem(BaseGdalGraphicsItem):
@@ -323,42 +323,18 @@ class GdalGraphicsItem(BaseGdalGraphicsItem):
 
     def __init__(self, band, parent=None, **kwargs):
         super(GdalGraphicsItem, self).__init__(band, parent, **kwargs)
+        self.colortable = GRAY_COLORTABLE
 
         if gdal.DataTypeIsComplex(band.DataType):
             # @TODO: raise ItemTypeError or NotImplementedError
             typename = gdal.GetDataTypeName(band.DataType)
-            raise NotImplementedError('support for "%s" data type not '
-                                      'avalable' % typename)
+            raise NotImplementedError(
+                'support for "%s" data type not avalable' % typename)
 
     def dataRange(self, data=None):
+        if data and self._data_preproc:
+            data = self._data_preproc(data)
         return self._dataRange(self.gdalobj, data)
-
-    def paint(self, painter, option, widget):
-        levelOfDetail = self._levelOfDetail(option, painter)
-        ovrband, ovrlevel, ovrindex = self._bestOvrLevel(self.gdalobj,
-                                                         levelOfDetail)
-        x, y, w, h = self._clipRect(ovrband,
-                                    option.exposedRect.toAlignedRect(),
-                                    ovrlevel)
-
-        # @TODO: threshold check
-        # @WARNING: option.levelOfDetail is no more usable
-        #threshold = 1600*1600
-        #if w * h > threshold:
-        #    newoption = QtWidgets.QStyleOptionGraphicsItem(option)
-        #    newoption.levelOfDetail = (option.levelOfDetail *
-        #                                               threshold / (w * h))
-        #    return self.paint(painter, newoption, widget)
-
-        data = ovrband.ReadAsArray(x, y, w, h)
-
-        if not self._stretch_initialized:
-            self.setDefaultStretch(data)
-        data = self.stretch(data)
-
-        rect = self._targetRect(x, y, w, h, ovrlevel)
-        image = numpy2qimage(data)
-        painter.drawImage(rect, image)
 
 
 class GdalComplexGraphicsItem(GdalGraphicsItem):
@@ -368,44 +344,13 @@ class GdalComplexGraphicsItem(GdalGraphicsItem):
     def __init__(self, band, parent=None, **kwargs):
         # @NOTE: skip GdalGraphicsItem __init__
         BaseGdalGraphicsItem.__init__(self, band, parent, **kwargs)
-
-    def dataRange(self, data=None):
-        if data:
-            data = np.abs(data)
-        return self._dataRange(self.gdalobj, data)
-
-    def paint(self, painter, option, widget):
-        levelOfDetail = self._levelOfDetail(option, painter)
-        ovrband, ovrlevel, ovrindex = self._bestOvrLevel(self.gdalobj,
-                                                         levelOfDetail)
-        x, y, w, h = self._clipRect(ovrband,
-                                    option.exposedRect.toAlignedRect(),
-                                    ovrlevel)
-
-        # @TODO: threshold check
-        #threshold = 1600*1600
-        #if w * h > threshold:
-        #    newoption = QtWidgets.QStyleOptionGraphicsItem(option)
-        #    newoption.levelOfDetail = (option.levelOfDetail *
-        #                                               threshold / (w * h))
-        #    return self.paint(painter, newoption, widget)
-
-        data = ovrband.ReadAsArray(x, y, w, h)
-
-        data = np.abs(data)
-        if not self._stretch_initialized:
-            self.setDefaultStretch(data)
-
-        data = self.stretch(data)
-
-        rect = self._targetRect(x, y, w, h, ovrlevel)
-        image = numpy2qimage(data)
-        painter.drawImage(rect, image)
+        self._data_preproc = np.abs
+        self.colortable = GRAY_COLORTABLE
 
 
 class GdalRgbGraphicsItem(BaseGdalGraphicsItem):
 
-    Type = BaseGdalGraphicsItem.Type + 3
+    Type = BaseGdalGraphicsItem.Type + 10
 
     def __init__(self, dataset, parent=None, **kwargs):
         if not gdalsupport.isRGB(dataset):
