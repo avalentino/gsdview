@@ -22,6 +22,7 @@
 
 
 import logging
+import collections
 
 import numpy as np
 from numpy import ma
@@ -32,7 +33,7 @@ from osgeo.gdal_array import GDALTypeCodeToNumericTypeCode
 from qtsix import QtCore, QtWidgets, QtGui
 
 from gsdview import imgutils
-from gsdview.qtsupport import numpy2qimage, GRAY_COLORTABLE, JET_COLORTABLE
+from gsdview import qtsupport
 from gsdview.gdalbackend import gdalsupport
 
 
@@ -285,8 +286,98 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
         data = self.stretch(data)
 
         rect = self._targetRect(x, y, w, h, ovrlevel)
-        image = numpy2qimage(data, self.colortable)
+        image = qtsupport.numpy2qimage(data, self.colortable)
         painter.drawImage(rect, image)
+
+    def _setupContextMenu(self, parent=None):
+        menu = QtWidgets.QMenu(parent)
+        tr = menu.tr
+
+        # Data pre-processing
+        funcs = collections.OrderedDict()
+        funcs['None'] = None
+        funcs['Abs'] = np.abs
+        funcs['Angle'] = np.angle
+        #funcs['Pow'] = lambda x: np.abs(x * x)
+        #funcs['dB'] = lambda x: 20 * np.log10(np.abs(x))
+
+        inverse_fmap = dict((v, k) for k, v in funcs.items())
+        current_func = inverse_fmap.get(self._data_preproc, 'unknown')
+        if current_func == 'unknown':
+            try:
+                current_func = self._data_preproc.__name__
+            except AttributeError:
+                pass
+            funcs[current_func] = self._data_preproc
+
+        menu.addSection(tr('Transformation functions'))
+        actiongroup = QtWidgets.QActionGroup(menu)
+        actiongroup.setExclusive(True)
+        for name in funcs.keys():
+            def set_proc_func(checked, key=name):
+                # @TODO: also adjust the stretch object
+                func = funcs[key]
+                if func != self._data_preproc:
+                    self._data_preproc = func
+                    self.update()
+
+            action = QtWidgets.QAction(
+                name,
+                actiongroup,
+                checkable=True,
+                enabled=(self._data_preproc is not None and name != 'None'),
+                objectName='actionDataPreProc' + name.capitalize(),
+                toolTip=tr('Transformation function applied to data'),
+                triggered=set_proc_func)
+            action.setChecked(bool(name == current_func))
+            menu.addAction(action)
+
+        # Colormap
+        colortables = collections.OrderedDict()
+        colortables['None'] = None
+        colortables['Gray'] = qtsupport.GRAY_COLORTABLE
+        colortables['Jet'] = qtsupport.JET_COLORTABLE
+
+        inverse_ctmap = dict((id(v), k) for k, v in colortables.items())
+        current_colortable = inverse_ctmap.get(id(self.colortable), 'unknown')
+        if current_colortable == 'unknown':
+            colortables[current_colortable] = self.colortable
+
+        menu.addSection(tr('Color table'))
+        actiongroup = QtWidgets.QActionGroup(menu)
+        actiongroup.setExclusive(True)
+        for name in colortables.keys():
+            def set_colortable(checked, key=name):
+                ct = colortables[key]
+                if id(ct) != id(self.colortable):
+                    self.colortable = ct
+                    self.update()
+
+            action = QtWidgets.QAction(
+                name,
+                actiongroup,
+                checkable=True,
+                enabled=bool(self.colortable is not None and name != 'None'),
+                objectName='actionColorTable' + name.capitalize(),
+                toolTip=tr('Set the color table to %s') % name,
+                triggered=set_colortable)
+            action.setChecked(bool(name == current_colortable))
+            menu.addAction(action)
+
+        return menu
+
+    def _parent(self):
+        scene = self.scene()
+        if scene:
+            parent = scene.parent()
+        else:
+            parent = None
+        return parent
+
+    def contextMenuEvent(self, event):
+        context_menu = self._setupContextMenu(self._parent())
+        context_menu.exec_(event.screenPos())
+        event.accept()
 
 
 class UIntGdalGraphicsItem(BaseGdalGraphicsItem):
@@ -309,7 +400,7 @@ class UIntGdalGraphicsItem(BaseGdalGraphicsItem):
         dtype = np.dtype(GDALTypeCodeToNumericTypeCode(band.DataType))
         self.stretch = imgutils.LUTStretcher(fill=2 ** (8 * dtype.itemsize))
         self._stretch_initialized = False
-        self.colortable = GRAY_COLORTABLE
+        self.colortable = qtsupport.GRAY_COLORTABLE
 
     def dataRange(self, data=None):
         if data and self._data_preproc:
@@ -323,7 +414,7 @@ class GdalGraphicsItem(BaseGdalGraphicsItem):
 
     def __init__(self, band, parent=None, **kwargs):
         super(GdalGraphicsItem, self).__init__(band, parent, **kwargs)
-        self.colortable = GRAY_COLORTABLE
+        self.colortable = qtsupport.GRAY_COLORTABLE
 
         if gdal.DataTypeIsComplex(band.DataType):
             # @TODO: raise ItemTypeError or NotImplementedError
@@ -345,7 +436,7 @@ class GdalComplexGraphicsItem(GdalGraphicsItem):
         # @NOTE: skip GdalGraphicsItem __init__
         BaseGdalGraphicsItem.__init__(self, band, parent, **kwargs)
         self._data_preproc = np.abs
-        self.colortable = GRAY_COLORTABLE
+        self.colortable = qtsupport.GRAY_COLORTABLE
 
 
 class GdalRgbGraphicsItem(BaseGdalGraphicsItem):
@@ -369,7 +460,7 @@ class GdalRgbGraphicsItem(BaseGdalGraphicsItem):
         dataset = self.gdalobj
         data = gdalsupport.ovrRead(dataset, x, y, w, h, ovrindex)
         rect = self._targetRect(x, y, w, h, ovrlevel)
-        image = numpy2qimage(data)
+        image = qtsupport.numpy2qimage(data)
         painter.drawImage(rect, image)
 
 
