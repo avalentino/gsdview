@@ -93,7 +93,7 @@ def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0,
 
     lut = np.arange(nout)
     if vmin:
-        lut = lut - float(vmin)
+        lut -= float(vmin)
 
     scale = float(omax - omin) / (vmax - vmin)
     if scale != 1.0:
@@ -159,7 +159,7 @@ def histogram_equalized_lut(hist, dtype='uint8', fill=False):
     lut.resize(nout)
     lut[nbins:] = lut[nbins - 1]
 
-    return lut.asarray(dtype)
+    return lut.astype(dtype)
 
 
 def log_lut(dtype='uint8'):
@@ -276,9 +276,9 @@ class LinearStretcher(BaseStretcher):
     def __call__(self, data):
         data = np.asarray(data)
         if self.offset:
-            data = data - self.offset
+            data -= self.offset
         if self.scale != 1.0:
-            data = self.scale * data
+            data *= self.scale
         return super(LinearStretcher, self).__call__(data)
 
     @property
@@ -300,8 +300,8 @@ class LinearStretcher(BaseStretcher):
         return self.offset, self.scale
 
     # @TODO:
-    #@property
-    #def outmax(self):
+    # @property
+    # def outmax(self):
     #    return self.__call__(self.max)
 
 
@@ -328,7 +328,7 @@ class LUTStretcher(BaseStretcher):
     def __call__(self, data):
         data = np.asarray(data)
         if self.offset:
-            data = data - self.offset
+            data -= self.offset
         if data.dtype != self.dtype:
             data = data.clip(0, len(self.lut) - 1, out=data)
             data = data.astype('uint32')
@@ -397,13 +397,13 @@ class LogarithmicStretcher(BaseStretcher):
         super(LogarithmicStretcher, self).__init__(vmin, vmax, dtype)
         self.offset = offset
         self.scale = scale
-        assert base in self.logfunctions
+        assert(base in self._logfunctions)
         self.base = base
 
     def __call__(self, data):
         data = np.asarray(data)
         if self.offset:
-            data = data - self.offset
+            data -= self.offset
 
         base = self._bases[self.base]
         clipmin = base ** (self.min / self.scale)
@@ -415,5 +415,6 @@ class LogarithmicStretcher(BaseStretcher):
         data = logfunc(data)
 
         if self.scale != 1.0:
-            data = self.scale * data
+            data *= self.scale
+
         return super(LogarithmicStretcher, self).__call__(data)
