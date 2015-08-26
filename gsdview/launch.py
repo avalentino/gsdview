@@ -164,7 +164,8 @@ def main():
         #format='%(levelname)s: %(message)s')
         format='%(asctime)s %(name)s %(levelname)s: %(message)s')
 
-    # set the logging level explicitly on the gsdview logger
+    # set the logging level explicitly on gsdview logger
+    #logging.getLogger().setLevel(loglevel)
     logging.getLogger('gsdview').setLevel(loglevel)
 
     # PyQt loggers

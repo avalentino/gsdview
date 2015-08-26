@@ -129,11 +129,11 @@ class PluginManager(object):
             module.init(self._app)
         except Exception as e:   # AttributeError:
             _log.warning('error loading "%s" plugin: %s', name, e)
-            logging.debug(str(e), exc_info=True)
+            _log.debug(str(e), exc_info=True)
             try:
                 module.close(self._app)
             except Exception as e:
-                #logging.debug(repr(e))
+                #_log.debug(repr(e), exc_info=True)
                 pass
         else:
             self.plugins[name] = module
