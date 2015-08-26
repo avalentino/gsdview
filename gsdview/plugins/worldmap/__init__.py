@@ -36,9 +36,12 @@ _instance = None
 
 
 def init(app):
-    from qtsix import QtCore
+    from qtsix import QtCore, QtGui
 
     from .core import WorldmapController
+
+    if b'jpg' not in QtGui.QImageReader.supportedImageFormats():
+        raise RuntimeError('JPEG image format not supported')
 
     controller = WorldmapController(app)
     app.addDockWidget(QtCore.Qt.BottomDockWidgetArea, controller.panel)
