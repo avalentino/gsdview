@@ -64,18 +64,48 @@ class SplashLogHandler(logging.Handler):
 
 
 MODULES = [
-    'os', 're', 'sys', 'itertools',
     'numpy',
-    'osgeo.gdal', 'osgeo.osr',
-    'qtsix.QtCore', 'qtsix.QtWidgets',
-    'exectools', 'exectools.qt',
-    'gsdview.info', 'gsdview.utils', 'gsdview.apptools',
-    'gsdview.imgutils', 'gsdview.qt4support', 'gsdview.widgets',
-    'gsdview.graphicsview', 'gsdview.mainwin', 'gsdview.app',
-    'gsdview.gdalbackend', 'gsdview.gdalbackend.core',
-    'gsdview.gdalbackend.gdalqt4', 'gsdview.gdalbackend.widgets',
-    'gsdview.gdalbackend.modelitems', 'gsdview.gdalbackend.gdalsupport',
+    'numpy.ma',
+    'osgeo.gdal',
+    'osgeo.osr',
+    #'osgeo.ogr',
+    'osgeo.gdal_array',
+    'qtsix',
+    'qtsix.QtCore',
+    'qtsix.QtGui',
+    'qtsix.QtWidgets',
+    'qtsix.QtSvg',
+    'qtsix.QtPrintSupport',
+    #'qtsix.QSci',
+    'qtsix.uic',
+    'exectools',
+    'exectools.qt',
+    'gsdview',
+    'gsdview.appsite',
+    'gsdview.app',
+    'gsdview.errors',
+    'gsdview.five',
+    'gsdview.graphicsview',
+    'gsdview.imgutils',
+    'gsdview.info',
+    'gsdview.launch',
+    'gsdview.mdi',
+    'gsdview.mousemanager',
+    'gsdview.pluginmanager',
+    #'gsdview.qtdraw',
+    'gsdview.qtsupport',
+    'gsdview.qtwindowlistmenu',
+    'gsdview.utils',
+    'gsdview.widgets',
+    'gsdview.gdalbackend',
+    'gsdview.gdalbackend.core',
     'gsdview.gdalbackend.gdalexectools',
+    'gsdview.gdalbackend.gdalsupport',
+    'gsdview.gdalbackend.gdalqt',
+    'gsdview.gdalbackend.helpers',
+    'gsdview.gdalbackend.info',
+    'gsdview.gdalbackend.modelitems',
+    'gsdview.gdalbackend.widgets',
 ]
 
 
@@ -89,7 +119,9 @@ def preload(modules, app=None):
     for modname in modules:
         log.info(app.tr('Importing %s module ...'), modname)
         app.processEvents()
+        __import__(modname)
         log.debug('%s import: %d.%06ds', modname, *timer.update())
+        app.processEvents()
 
 
 def get_parser():
