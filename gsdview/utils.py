@@ -110,7 +110,7 @@ def format_platform_info():
         'machine: %s\n' % platform.machine(),
         'platform: %s\n' % platform.platform(),
     ]
-    libc_ver = '%s %s\n' % platform.libc_ver()
+    libc_ver = '%s: %s\n' % platform.libc_ver()
     if libc_ver.strip():
         platform_info.append(libc_ver)
 
