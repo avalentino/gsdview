@@ -310,7 +310,10 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
                 pass
             funcs[current_func] = self._data_preproc
 
-        menu.addSection(tr('Transformation functions'))
+        # @COMPATIBILITY: addSection is new in Qt 5.1
+        #menu.addSection(tr('Transformation functions'))
+        menu.addSeparator().setText(tr('Transformation functions'))
+
         actiongroup = QtWidgets.QActionGroup(menu)
         actiongroup.setExclusive(True)
         for name in funcs.keys():
@@ -343,7 +346,10 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
         if current_colortable == 'unknown':
             colortables[current_colortable] = self.colortable
 
-        menu.addSection(tr('Color table'))
+        # @COMPATIBILITY: addSection is new in Qt 5.1
+        #menu.addSection(tr('Color table'))
+        menu.addSeparator().setText(tr('Color table'))
+
         actiongroup = QtWidgets.QActionGroup(menu)
         actiongroup.setExclusive(True)
         for name in colortables.keys():
