@@ -20,7 +20,7 @@
 
 import re
 
-from qtsix import QtWidgets, QtGui
+from qtsix import QtWidgets, QtGui, QtCore
 
 
 class DoubleSpinBox(QtWidgets.QDoubleSpinBox):
@@ -30,11 +30,12 @@ class DoubleSpinBox(QtWidgets.QDoubleSpinBox):
         self.setDecimals(7)
         self.setRange(-1e50, 1e50)
 
+        qlocale = QtCore.QLocale('C')
+        qlocale.setNumberOptions(QtCore.QLocale.OmitGroupSeparator)
+        self.setLocale(qlocale)
+
     def validate(self, text, position):
         return self.lineEdit().validator().validate(text, position)
-
-    def valueFromText(self, text):
-        return float(text)
 
     def textFromValue(self, value):
         text = self.locale().toString(value, 'g', self.decimals())
