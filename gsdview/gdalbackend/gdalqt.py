@@ -298,6 +298,8 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
         funcs['None'] = None
         funcs['Abs'] = np.abs
         funcs['Angle'] = np.angle
+        funcs['Real'] = np.real
+        funcs['Imag'] = np.imag
         #funcs['Pow'] = lambda x: np.abs(x * x)
         #funcs['dB'] = lambda x: 20 * np.log10(np.abs(x))
 
