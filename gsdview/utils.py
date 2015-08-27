@@ -24,9 +24,10 @@
 import os
 import sys
 import stat
+import locale
 import platform
 import traceback
-import email.utils
+import email.utils  # @TODO: check
 
 try:
     import pkg_resources
@@ -40,7 +41,7 @@ from gsdview import appsite
 
 __all__ = [
     'which', 'isexecutable', 'isscript', 'scriptcmd', 'default_workdir',
-    'getresource', 'format_platform_info', 'foramt_bugreport',
+    'getresource', 'format_platform_info', 'format_bugreport',
 ]
 
 
@@ -106,8 +107,8 @@ def getresource(resource, package=None):
 def format_platform_info():
     platform_info = [
         'architecture: %s %s\n' % platform.architecture(),
-        'machine: %s' % platform.machine(),
-        'platform: %s' % platform.platform(),
+        'machine: %s\n' % platform.machine(),
+        'platform: %s\n' % platform.platform(),
     ]
     libc_ver = '%s %s\n' % platform.libc_ver()
     if libc_ver.strip():
@@ -124,10 +125,15 @@ def format_platform_info():
     platform_info.append(
         'python_implementation: %s\n' % platform.python_implementation())
 
+    platform_info.append('locale: %s\n' % (locale.getlocale(),))
+    platform_info.append('default encoding: %s\n' % sys.getdefaultencoding())
+    platform_info.append('file system encoding: %s\n' % sys.getfilesystemencoding())
+
     return platform_info
 
 
-def foramt_bugreport(exctype=None, excvalue=None, tracebackobj=None):
+def format_bugreport(exctype=None, excvalue=None, tracebackobj=None,
+                     extra_info=None):
     if (exctype, excvalue, tracebackobj) == (None, None, None):
         exctype, excvalue, tracebackobj = sys.exc_info()
 
@@ -143,6 +149,8 @@ def foramt_bugreport(exctype=None, excvalue=None, tracebackobj=None):
     msg.extend(info.all_versions_str().splitlines(True))
     msg[-1] = msg[-1] + '\n'
     msg.extend(format_platform_info())
+    if extra_info:
+        msg.extend(extra_info)
 
     return msg
 

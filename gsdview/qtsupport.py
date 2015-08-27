@@ -1072,3 +1072,23 @@ def imgexport(obj, parent=None):
                 parent,
                 obj.tr('Warning'),
                 obj.tr('Unable initialize painting device.'))
+
+# Qt info
+def format_qt_info():
+    qlocale = QtCore.QLocale()
+    supported_image_formats = [
+        bytes(fmt).decode('utf-8')
+        for fmt in QtGui.QImageReader.supportedImageFormats()
+    ]
+    qt_info = [
+        'Qt system locale: %s\n' % qlocale.system().name(),
+        'Qt locale name: %s\n' % qlocale.name(),
+        'Qt locale country: %s\n' % qlocale.countryToString(qlocale.country()),
+        'Qt locale language: %s\n' % qlocale.languageToString(
+            qlocale.language()),
+        'Qt locale decimal point: "%s"\n' % qlocale.decimalPoint(),
+        'Qt UI languages: %s\n' % qlocale.uiLanguages(),
+        'Qt supported image formats: %s\n' % ', '.join(supported_image_formats),
+    ]
+
+    return qt_info

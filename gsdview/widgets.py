@@ -114,10 +114,27 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview">http://sourcefor
             info.copyright)
         self.aboutTextBrowser.setText(description)
 
+        self.setPlatformInfo()
         self.setVersions()
 
     def setLogo(self, logofile):
         self.gsdviewLogoLabel.setPixmap(QtGui.QPixmap(logofile))
+
+    def setPlatformInfo(self):
+        tablewidget = self.platformTableWidget
+
+        platform_info = utils.format_platform_info()
+        platform_info.extend(qtsupport.format_qt_info())
+
+        tablewidget.setRowCount(len(platform_info))
+        for index, line in enumerate(platform_info):
+            name, value = line.split(':', 1)
+            tablewidget.setItem(index, 0, QtWidgets.QTableWidgetItem(name))
+            tablewidget.setItem(index, 1, QtWidgets.QTableWidgetItem(value))
+
+        header = tablewidget.horizontalHeader()
+        header.resizeSections(QtWidgets.QHeaderView.ResizeToContents)
+        header.setStretchLastSection(True)
 
     def setVersions(self):
         self.platformValue.setText(platform.platform())
@@ -125,7 +142,7 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview">http://sourcefor
         tablewidget.verticalHeader().hide()
         tablewidget.horizontalHeader().setStretchLastSection(True)
         tablewidget.setRowCount(0)
-        for row, (sw, version, link) in enumerate(info.all_versions):
+        for sw, version, link in info.all_versions:
             self.addSoftwareVersion(sw, version, link)
 
     def addSoftwareVersion(self, sw, version, link=''):
@@ -546,8 +563,9 @@ class ExceptionDialog(QtWidgets.QDialog, ExceptionDialogBase):
             subject = 'Bug report - %s' % error
         body = '[Please insert your comments and additional info here.]'
         body += '\n\n' + '-' * 80 + '\n'
-        body += ''.join(utils.foramt_bugreport(exctype, excvalue,
-                                               tracebackobj))
+        body += ''.join(utils.format_bugreport(
+            exctype, excvalue, tracebackobj,
+            extra_info=qtsupport.format_qt_info()))
 
         url = QtCore.QUrl('mailto:%s <%s>' % (info.author, info.author_email))
         url.addQueryItem('subject', subject)
@@ -568,7 +586,7 @@ class ExceptionDialog(QtWidgets.QDialog, ExceptionDialogBase):
             excvalue = self.excvalue
             tracebackobj = self.tracebackobj
 
-        lines = utils.foramt_bugreport(exctype, excvalue, tracebackobj)
+        lines = utils.format_bugreport(exctype, excvalue, tracebackobj)
         report = ''.join(lines)
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(self)
         if filename:
