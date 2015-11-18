@@ -394,8 +394,8 @@ def setViewContextActions(widget):
 
 # Printing helpers ##########################################################
 def coreprint(obj, printer):
-    painter = QtWidgets.QPainter(printer)
-    painter.setRenderHint(QtWidgets.QPainter.Antialiasing)
+    painter = QtGui.QPainter(printer)
+    painter.setRenderHint(QtGui.QPainter.Antialiasing)
     obj.render(painter)
     painter.end()
 
@@ -1060,9 +1060,9 @@ def imgexport(obj, parent=None):
             # @TODO: check
             device.fill(QtCore.Qt.white)
 
-        painter = QtWidgets.QPainter()
+        painter = QtGui.QPainter()
         if painter.begin(device):
-            #painter.setRenderHint(QtWidgets.QPainter.Antialiasing)
+            #painter.setRenderHint(QtGui.QPainter.Antialiasing)
             obj.render(painter)
             painter.end()
             if hasattr(device, 'save'):

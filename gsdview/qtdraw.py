@@ -68,12 +68,12 @@ def _highlightSelectedGraphicsItem(item, painter, option, boundingrect=None):
         0 if fgcolor.green() > 127 else 255,
         0 if fgcolor.blue() > 127 else 255)
 
-    painter.setPen(QtGio.QPen(bgcolor, penWidth, QtCore.Qt.SolidLine))
+    painter.setPen(QtGui.QPen(bgcolor, penWidth, QtCore.Qt.SolidLine))
     painter.setBrush(QtCore.Qt.NoBrush)
     painter.drawRect(boundingrect.adjusted(pad, pad, -pad, -pad))
 
     painter.setPen(
-        QtGio.QPen(option.palette.windowText(), 0, QtCore.Qt.DashLine))
+        QtGui.QPen(option.palette.windowText(), 0, QtCore.Qt.DashLine))
     painter.setBrush(QtCore.Qt.NoBrush)
     painter.drawRect(boundingrect.adjusted(pad, pad, -pad, -pad))
 

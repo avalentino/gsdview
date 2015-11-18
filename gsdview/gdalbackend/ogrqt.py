@@ -25,7 +25,7 @@ import logging
 
 from osgeo import ogr, osr
 
-from qtsix import QtCore, QtWidgets
+from qtsix import QtCore, QtGui, QtWidgets
 
 from gsdview import qtdraw
 
@@ -170,7 +170,7 @@ def singleGeometryToGraphicsItem(geom, transform=None):
             qitem = QtWidgets.QGraphicsPolygonItem(qpoly)
             #qitem.setFillRule(QtCore.Qt.WindingFill)    # @TODO: check
         else:
-            qpath = QtWidgets.QPainterPath()
+            qpath = QtGui.QPainterPath()
             #qpath.setFillRule(QtCore.Qt.WindingFill)    # @TODO: check
             point = geom.GetPoint(0)
             if transform:

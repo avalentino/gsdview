@@ -1047,12 +1047,12 @@ class HistogramConfigDialog(QtWidgets.QDialog, HistogramConfigDialogBase):
 
         # Colors
         self._default_palette = self.minSpinBox.palette()
-        self._error_palette = QtWidgets.QPalette(self._default_palette)
+        self._error_palette = QtGui.QPalette(self._default_palette)
 
         color = QtGui.QColor(QtCore.Qt.red)
-        self._error_palette.setColor(QtWidgets.QPalette.Text, color)
+        self._error_palette.setColor(QtGui.QPalette.Text, color)
         color.setAlpha(50)
-        self._error_palette.setColor(QtWidgets.QPalette.Base, color)
+        self._error_palette.setColor(QtGui.QPalette.Base, color)
 
         self.minSpinBox.editingFinished.connect(self.validate)
         self.maxSpinBox.editingFinished.connect(self.validate)
@@ -1460,7 +1460,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         else:
             raise ValueError('invalid color intepretatin: "%s"' % colorint)
 
-        brush = QtWidgets.QBrush()
+        brush = QtGui.QBrush()
         brush.setStyle(QtCore.Qt.SolidPattern)
 
         for row, color in enumerate(colors):

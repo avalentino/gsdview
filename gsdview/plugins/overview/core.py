@@ -214,7 +214,7 @@ class BandOverviewDock(QtWidgets.QDockWidget):
 
             if not self.graphicsview.autoscale:
                 ovrlevel = gdalsupport.ovrLevels(item)[ovrindex]
-                matrix = QtCore.QMatirx(ovrlevel, 0, 0, ovrlevel, 0, 0)
+                matrix = QtGui.QMatirx3x3(ovrlevel, 0, 0, ovrlevel, 0, 0)
                 self.graphicsview.setMatrix(matrix)
             else:
                 self.graphicsview.fitInView()
