@@ -36,6 +36,7 @@ from osgeo import gdal
 from osgeo import osr
 
 from gsdview.five import string_types
+from gsdview.utils import data_uuid
 
 
 _log = logging.getLogger(__name__)
@@ -176,6 +177,7 @@ def uniqueDatasetID(prod):
         #~ # ERS BTIF
         #~ pass
     elif driver_name.startswith('HDF5') or driver_name.startswith('CSK'):
+        # @TODO: update this case using data_uuid
         prod_id = prod.GetDescription()
         parts = prod_id.split(':')
         if len(parts) == 4:
@@ -200,7 +202,7 @@ def uniqueDatasetID(prod):
         parts[-1] = parts[-1].replace(':', '_')
         prod_id = '-'.join(parts)
     else:
-        prod_id = os.path.basename(prod.GetDescription())
+        prod_id = data_uuid(prod.GetDescription())
 
     _log.debug('prod_id = %s', prod_id)
     return prod_id

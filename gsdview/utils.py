@@ -24,6 +24,7 @@
 import os
 import sys
 import stat
+import uuid
 import locale
 import platform
 import traceback
@@ -246,6 +247,50 @@ def scriptcmd(scriptname):
                 cmd = shebang[2:].split() + scriptname
 
     return cmd
+
+
+# Cache #####################################################################
+if hasattr(os, 'scandir'):
+    def get_tree_size(path):
+        '''Return total size of files in given path and subdirs.'''
+
+        total = 0
+
+        for entry in os.scandir(path):
+            if entry.is_dir(follow_symlinks=False):
+                total += get_tree_size(entry.path)
+            else:
+                total += entry.stat(follow_symlinks=False).st_size
+
+        return total
+else:
+    def get_tree_size(path):
+        '''Return total size of files in given path and subdirs.'''
+
+        total = 0
+
+        for dirpath, dirnames, filenames in os.walk(path):
+            for filename in filenames:
+                filename = os.path.join(dirpath, filename)
+                total += os.path.getsize(filename)
+
+        return total
+
+
+def data_uuid(path, prefixlen=23):
+    path = os.path.normpath(os.path.abspath(os.path.expanduser(path)))
+    st = os.stat(path)
+    if os.path.isdir(path):
+        size = get_tree_size(path)
+    else:
+        size = st[stat.ST_SIZE]
+    uid = '{}:{}:{}'.format(path, st[stat.ST_MTIME], size)
+    uid = uuid.uuid5(uuid.NAMESPACE_URL, uid)
+    if prefixlen > 0:
+        prefix = os.path.basename(path)[:prefixlen]
+        return '{}-{}'.format(prefix, uid)
+    else:
+        return str(uid)
 
 
 # Geographic tools ##########################################################
