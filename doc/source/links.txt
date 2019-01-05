@@ -229,6 +229,27 @@ IDIOT_
     for topography and can work with both the coarse header orbits or precise
     orbit information. All interferometric processing steps are implemented
     having maximum interferogram quality and precision in mind.
+GMTSAR_
+    GMTSAR is an open source (GNU General Public License) InSAR processing
+    system designed for users familiar with Generic Mapping Tools (GMT).
+    The code is written in C and will compile on any computer where GMT and
+    NETCDF are installed. The system has three main components:
+
+    * a preprocessor for each satellite data type (ERS-1/2, Envisat, ALOS-1,
+      TerraSAR-X, COSMOS-SkyMed, Radarsat-2, Sentinel-1A/B, and ALOS-2) to
+      convert the native format and orbital information into a generic format;
+    * an InSAR processor to focus and align stacks of images, map topography
+      into phase, and form the complex interferogram;
+    * a postprocessor, mostly based on GMT, to filter the interferogram and
+      construct interferometric products of phase, coherence, phase gradient,
+      and line-of sight displacement in both radar and geographic coordinates;
+
+    GMT is used to display all the products as pdf files and KML images for
+    Google Earth. A set of shell scripts has been developed for standard
+    2-pass processing as well as geometric image alignment for stacking and
+    time series. Users are welcome to contribute to this effort.
+
+    See also the developer site at http://gmt.soest.hawaii.edu/projects/gmt5sar
 
 .. _DORIS: http://doris.tudelft.nl
 .. _StaMPS: http://enterprise.lr.tudelft.nl/%7Eahooper/stamps/index.html
@@ -238,6 +259,7 @@ IDIOT_
 .. _Varres: http://earthdef.caltech.edu/projects/varres/wiki
 .. _ROI_PAC: http://roipac.org
 .. _IDIOT: http://srv-43-200.bv.tu-berlin.de/idiot
+.. _GMTSAR: https://topex.ucsd.edu/gmtsar
 
 
 Libraries
@@ -308,6 +330,7 @@ Optical and SAR imagery
 
 Sentinel1_
     * `Sentinel1 data access <https://sentinel.esa.int/web/sentinel/sentinel-data-access>`_
+    * `Sentinel1 QC site <https://qc.sentinel1.eo.esa.int>`_
 
 ESA_ Sample data
     * `NEST smaple data <https://earth.esa.int/web/nest/downloads/sample-data>`_
