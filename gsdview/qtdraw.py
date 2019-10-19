@@ -21,7 +21,7 @@
 '''Drawing components for Qt4.'''
 
 
-from qtsix import QtCore, QtWidgets, QtGui
+from qtpy import QtCore, QtWidgets, QtGui
 
 from gsdview.mousemanager import MouseMode  # , RubberBandMode
 

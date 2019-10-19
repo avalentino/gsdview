@@ -23,7 +23,7 @@
 # @TODO: move this to widgets sub-package or qt4freesolutions subpackage
 
 
-from qtsix import QtCore, QtWidgets, QtGui
+from qtpy import QtCore, QtWidgets, QtGui
 
 from gsdview.qtwindowlistmenu import QtWindowListMenu
 

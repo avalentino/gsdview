@@ -26,7 +26,7 @@ import logging
 
 from osgeo import gdal
 
-from qtsix import QtCore, QtWidgets, QtGui
+from qtpy import QtCore, QtWidgets, QtGui
 
 from gsdview import qtsupport
 from gsdview.five import string_types

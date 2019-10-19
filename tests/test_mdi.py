@@ -29,7 +29,7 @@ GSDVIEWROOT = os.path.abspath(
 sys.path.insert(0, GSDVIEWROOT)
 
 
-from qtsix import QtCore, QtWidgets
+from qtpy import QtCore, QtWidgets
 
 from gsdview.mdi import MdiMainWindow
 from gsdview.qtsupport import geticon

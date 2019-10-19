@@ -21,7 +21,7 @@
 '''Custom QGraphicsView component.'''
 
 
-from qtsix import QtCore, QtWidgets
+from qtpy import QtCore, QtWidgets
 
 
 # @TODO: move to gdalqt.py

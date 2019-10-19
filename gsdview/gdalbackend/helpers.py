@@ -29,7 +29,7 @@ import tempfile
 
 from osgeo import gdal
 
-from qtsix import QtWidgets
+from qtpy import QtWidgets
 
 from gsdview.gdalbackend import modelitems
 from gsdview.gdalbackend import gdalsupport
@@ -442,15 +442,14 @@ class StatsDialogHelper(StatsHelper):
     def __init__(self, app, tool):
         super(StatsDialogHelper, self).__init__(app, tool)
         self.dialog = None
-        if self._PROGRESS_DIALOD_MSG:
-            self.setup_progress_dialog(app.tr(self._PROGRESS_DIALOD_MSG))
+        # self.setup_progress_dialog(app.tr(self._PROGRESS_DIALOD_MSG))
 
     def start(self, item, dialog=None):
         if dialog:
             self.dialog = dialog
 
         if not self.dialog:
-            raise ValueError('"dialog" attribute not set')
+            self.setup_progress_dialog(self.app.tr(self._PROGRESS_DIALOD_MSG))
 
         super(StatsDialogHelper, self).start(item)
 
@@ -474,7 +473,7 @@ class HistDialogHelper(StatsDialogHelper):
 
     def apply(self):
         hist = self._banditem.GetDefaultHistogram()
-        #self.dialog.updateHistogram()
+        # self.dialog.updateHistogram()
         self.dialog.setHistogram(*hist)
 
 
@@ -490,7 +489,7 @@ class AddoDialogHelper(AddoHelper):
     def __init__(self, app, tool):
         super(AddoDialogHelper, self).__init__(app, tool)
         self.dialog = None
-        self.setup_progress_dialog(app.tr(self._PROGRESS_DIALOD_MSG))
+        # self.setup_progress_dialog(app.tr(self._PROGRESS_DIALOD_MSG))
 
     def target_levels(self, dataset):
         return self.dialog.overviewWidget.levels()
@@ -500,7 +499,7 @@ class AddoDialogHelper(AddoHelper):
             self.dialog = dialog
 
         if not self.dialog:
-            raise ValueError('"dialog" attribute not set')
+            self.setup_progress_dialog(self.app.tr(self._PROGRESS_DIALOD_MSG))
 
         super(AddoDialogHelper, self).start(item)
 

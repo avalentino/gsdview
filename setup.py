@@ -234,8 +234,7 @@ if has_setuptools:
         install_requires=[
             'GDAL >= 1.6.1',
             'numpy >= 1.3.0',
-            #'sip (>= 4.7.5)',
-            #'PyQt >= 4.6'
+            'qtpy',
         ],
         #extras_require = {},
         keywords='gsdview gdal',
@@ -289,9 +288,7 @@ setup(
     requires=[
         'GDAL (>= 1.6.1)',
         'numpy (>= 1.3.0)',
-        'sip (>= 4.7.5)',
-        #'PyQt4 (>= 4.6)',
-        #'PyQt5',
+        'qtpy',
     ],
     provides=[
         '%s (%d.%d.%d)' % ((PKGNAME,) + info.__version__),

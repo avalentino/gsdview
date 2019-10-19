@@ -32,7 +32,7 @@ GSDVIEWROOT = os.path.abspath(
 sys.path.insert(0, GSDVIEWROOT)
 
 
-from qtsix import QtCore, QtWidgets, QtGui
+from qtpy import QtCore, QtWidgets, QtGui
 
 from gsdview.mousemanager import MouseManager
 from gsdview.layermanager import LayerManager
@@ -357,7 +357,8 @@ class VectorGraphicsApp(QtWidgets.QMainWindow):
 
 
 def main(*argv):
-    # @NOTE: basic config doesn't work since sip use it before this line
+    # @NOTE: basic config doesn't work since other modules (e.g. sip)
+    #        use it before this line
     #logging.basicConfig(level=logging.DEBUG,
     #                    format='%(levelname): %(message)s')
     logging.getLogger().setLevel(logging.DEBUG)

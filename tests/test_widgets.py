@@ -29,7 +29,7 @@ GSDVIEWROOT = os.path.abspath(
     os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.insert(0, GSDVIEWROOT)
 
-from qtsix import QtWidgets
+from qtpy import QtWidgets
 
 from gsdview.widgets import (
     AboutDialog, FileEntryWidget, GeneralPreferencesPage, PreferencesDialog,

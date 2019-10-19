@@ -25,22 +25,7 @@ from __future__ import absolute_import
 import time
 import logging
 
-try:
-    from qtsix import QtCore, QtWidgets, QtGui
-except ImportError:
-    # Select the PyQt API 2
-    import sip
-    sip.setapi('QDate', 2)
-    sip.setapi('QDateTime', 2)
-    sip.setapi('QString', 2)
-    sip.setapi('QTextStream', 2)
-    sip.setapi('QTime', 2)
-    sip.setapi('QUrl', 2)
-    sip.setapi('QVariant', 2)
-
-    from PyQt5 import QtCore, QtWidgets
-    QtCore.Signal = QtCore.pyqtSignal
-    QtCore.Slot = QtCore.pyqtSlot
+from qtpy import QtCore, QtWidgets, QtGui
 
 from exectools import (
     BaseOutputHandler, BaseToolController, EX_OK, level2tag, string_types,

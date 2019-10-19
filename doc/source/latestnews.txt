@@ -1,8 +1,8 @@
-:26/12/2014: Switch to PyQt5_
+:26/12/2014: Switch to QtPy_
 
-             PyQt5_ is now the default binding for Qt and also the reference API.
-             PyQt4_ is still supported while support for PySide_ is considered
-             experimental.
+             QtPy_ is now the used to access the Qt API.
+             The default Qt binding is PyQt5_ but also PySide2_ and
+             bindings supported by QtPy_ can be used as well.
 
 :21/06/2013: Development site moved to GitHub_.
 
@@ -29,8 +29,9 @@
              Contextually support for Python < 2.6 has been dropped.
 
 
-.. _PyQt4: http://pyqt.sourceforge.net/Docs/PyQt4
-.. _PySide: http://www.pyside.org
+.. _QtPy: https://github.com/spyder-ide/qtpy
+.. _PyQt5: https://www.riverbankcomputing.com/software/pyqt
+.. _PySide2: http://www.pyside.org
 .. _GitHub: https://github.com
 .. _`development site`: https://github.com/avalentino/gsdview
 .. _SourceForge: http://sourceforge.net

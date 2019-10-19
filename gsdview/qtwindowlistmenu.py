@@ -25,7 +25,7 @@ Python port of the Window Wenu component from Qt Solutions.
 '''
 
 
-from qtsix import QtCore, QtWidgets, QtGui
+from qtpy import QtCore, QtWidgets, QtGui
 
 
 class QtWindowListMenu(QtWidgets.QMenu):

@@ -25,7 +25,7 @@ import logging
 
 from osgeo import ogr, osr
 
-from qtsix import QtCore, QtGui, QtWidgets
+from qtpy import QtCore, QtGui, QtWidgets
 
 from gsdview import qtdraw
 

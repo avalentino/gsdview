@@ -28,7 +28,7 @@ import logging
 import platform
 import traceback
 
-from qtsix import QtCore, QtWidgets, QtGui
+from qtpy import QtCore, QtWidgets, QtGui
 
 from gsdview import info
 from gsdview import utils
@@ -600,7 +600,7 @@ class ExceptionDialog(QtWidgets.QDialog, ExceptionDialogBase):
                 fd.close()
 
 try:
-    from qtsix import Qsci
+    from qtpy import Qsci
 
     class QsciExceptionDialog(ExceptionDialog):
 

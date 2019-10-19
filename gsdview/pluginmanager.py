@@ -310,7 +310,7 @@ class PluginManager(object):
 # @TODO: move Qt specific implementation elsewhere
 import functools
 
-from qtsix import QtCore, QtWidgets
+from qtpy import QtCore, QtWidgets
 
 # @TODO: check dependency - getuiform, geticon, setViewContextActions
 from gsdview import qtsupport

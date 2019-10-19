@@ -23,7 +23,7 @@
 
 import sys
 
-from qtsix import QtCore, QtWidgets
+from qtpy import QtCore, QtWidgets
 
 
 class Assistant(object):

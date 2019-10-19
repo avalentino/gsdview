@@ -26,8 +26,8 @@ import platform
 
 import numpy as np
 
-import qtsix
-from qtsix import QtCore
+import qtpy
+from qtpy import QtCore
 
 
 __version__ = (0, 7, 0)
@@ -67,14 +67,14 @@ all_versions = [
     ('numpy', np.version.version, 'http://www.numpy.org'),
 ]
 
-if qtsix.qt_api.startswith('pyqt'):
+if qtpy.API.startswith('pyqt'):
     import sip
     all_versions.append(('sip', sip.SIP_VERSION_STR,
                          'http://www.riverbankcomputing.co.uk/software/sip'))
     all_versions.append(('PyQt', QtCore.PYQT_VERSION_STR,
                          'http://www.riverbankcomputing.co.uk/software/pyqt'))
     try:
-        from qtsix import Qsci
+        from qtpy import Qsci
     except ImportError:
         pass
     else:
@@ -82,10 +82,15 @@ if qtsix.qt_api.startswith('pyqt'):
             'QScintilla', Qsci.QSCINTILLA_VERSION_STR,
             'http://www.riverbankcomputing.co.uk/software/qscintilla'))
 
-elif qtsix.qt_api == 'pyside':
+elif qtpy.API == 'pyside':
     import PySide
     all_versions.append(
         ('PySide', PySide.__version__, 'http://www.pyside.org'))
+
+elif qtpy.API == 'pyside2':
+    import PySide2
+    all_versions.append(
+        ('PySide2', PySide2.__version__, 'http://www.pyside.org'))
 
 if platform.dist() != ('', '', ''):
     all_versions.append(('GNU/Linux', ' '.join(platform.dist()), ''))

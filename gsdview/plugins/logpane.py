@@ -48,7 +48,7 @@ website_label = website
 def init(app):
     import logging
 
-    from qtsix import QtCore, QtWidgets
+    from qtpy import QtCore, QtWidgets
 
     from exectools.qt import QtOutputPane, QtLoggingHandler
 

@@ -24,7 +24,7 @@
 import logging
 import itertools
 
-from qtsix import QtCore, QtWidgets, QtGui
+from qtpy import QtCore, QtWidgets, QtGui
 
 
 _log = logging.getLogger(__name__)

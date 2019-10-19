@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Overview Configuration</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
@@ -399,9 +399,6 @@
         <property name="indentation">
          <number>0</number>
         </property>
-        <attribute name="headerVisible">
-         <bool>false</bool>
-        </attribute>
         <attribute name="headerVisible">
          <bool>false</bool>
         </attribute>

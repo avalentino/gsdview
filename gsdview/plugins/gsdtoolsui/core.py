@@ -26,7 +26,7 @@ import sys
 import logging
 import tempfile
 
-from qtsix import QtCore, QtWidgets, QtGui
+from qtpy import QtCore, QtWidgets, QtGui
 import numpy as np
 
 from gsdview import utils

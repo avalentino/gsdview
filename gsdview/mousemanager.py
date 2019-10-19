@@ -30,7 +30,7 @@ making the system expandible, and also methods to register objects
 
 '''
 
-from qtsix import QtCore, QtWidgets, QtGui
+from qtpy import QtCore, QtWidgets, QtGui
 
 from gsdview import qtsupport
 from gsdview.five import string_types

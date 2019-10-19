@@ -15,10 +15,8 @@ Changes from 0.6.5 to 0.7.0 (in development)
 * Implemented support for Python 3.x (closes: :issue:`76`).
   In order to run GSDView with Python 3 it is necessary to have GDAL >= 1.10.
   GSDView now requires Python >= 2.7.
-* Switch to PyQt5_. Now the reference API used in GSDView is the one provided
-  by the PyQt5 package. PyQt4_ is still supported via the :mod:`qtsix`
-  adapter package (internal copy updated to v1.1).
-  Support for PySide_ is considered experimental
+* Now the reference Qt API used in GSDView is the one provided by the
+  QtPy_ package.
 * Now it is possible to toggle the full-screen mode using a tool-button or a
   keyboard shortcut.
 * The exectools package now uses unicode buffers.
@@ -29,8 +27,7 @@ Changes from 0.6.5 to 0.7.0 (in development)
   PyInstaller_ 2.0.
 
 .. _sphinx: http://sphinx-doc.org
-.. _PyQt5: http://pyqt.sourceforge.net/Docs/PyQt5
-.. _PyQt4: http://pyqt.sourceforge.net/Docs/PyQt4
+.. _QtPy: https://github.com/spyder-ide/qtpy
 
 
 Changes from 0.6.4 to 0.6.5 (13/11/2011)

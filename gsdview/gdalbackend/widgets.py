@@ -33,7 +33,7 @@ except ImportError:
 import numpy as np
 from osgeo import gdal
 
-from qtsix import QtCore, QtWidgets, QtGui
+from qtpy import QtCore, QtWidgets, QtGui
 
 from gsdview import utils
 from gsdview import qtsupport

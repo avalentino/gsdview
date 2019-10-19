@@ -36,7 +36,7 @@ _instance = None
 
 
 def init(app):
-    from qtsix import QtCore, QtGui
+    from qtpy import QtCore, QtGui
 
     from .core import WorldmapController
 

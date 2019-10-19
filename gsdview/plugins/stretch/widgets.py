@@ -25,7 +25,7 @@ import logging
 import contextlib
 
 import numpy as np
-from qtsix import QtCore, QtWidgets, QtGui
+from qtpy import QtCore, QtWidgets, QtGui
 
 from gsdview import qtsupport
 

@@ -23,7 +23,7 @@
 
 import logging
 
-from qtsix import QtCore, QtWidgets
+from qtpy import QtCore, QtWidgets
 
 from gsdview import qtsupport
 
