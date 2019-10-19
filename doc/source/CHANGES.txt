@@ -25,6 +25,7 @@ Changes from 0.6.5 to 0.7.0 (in development)
   It is now based on the pydoctheme.
 * The packaging scripts have been updated to run with the new
   PyInstaller_ 2.0.
+* Removed stuff related Debian packaging (moved elsewhere).
 
 .. _sphinx: http://sphinx-doc.org
 .. _QtPy: https://github.com/spyder-ide/qtpy

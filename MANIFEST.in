@@ -16,6 +16,5 @@ recursive-include doc/html *
 recursive-include doc/themes *
 
 include scripts/*.pyw
-recursive-include debian *
 recursive-include pkg Makefile *.py *.spec *.patch
 prune pkg/pyinstaller
