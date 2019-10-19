@@ -117,7 +117,7 @@ Changes from 0.6.0 to 0.6.1 (09/05/2010)
   - image structure metadata
   - histograms (only in table form at the moment)
   - color tables
-  - metadata for ˆIMAGE_STRUCTUREˆ, ˆSUBDATASETSˆ and ˆRPCˆ domains
+  - metadata for `IMAGE_STRUCTURE`, `SUBDATASETS` and `RPC` domains
     (standard domain was already available)
 
 * Plugins re-factoring

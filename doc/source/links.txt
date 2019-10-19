@@ -337,13 +337,13 @@ ESA_ Sample data
 
 ERS_
     * `Earthquakes <http://earth.esa.int/category/index.cfm?fcategoryid=37>`_
-      (L’Aquila, Haiti and Sichuan)
+      (L'Aquila, Haiti and Sichuan)
     * Sample ERS products can be found at Acres_
 ENVISAT_
     * `ENVISAT sample products <http://earth.esa.int/services/sample_products>`_
     * `Envisat auxiliary data <http://earth.esa.int/services/auxiliary_data>`_
     * `Earthquakes <http://earth.esa.int/category/index.cfm?fcategoryid=37>`_
-      (L’Aquila, Haiti and Sichuan)
+      (L'Aquila, Haiti and Sichuan)
 `COSMO-SkyMed`_
     * `Demo products <http://www.e-geos.it/products/demos.html>`_
 TerraSAR-X_
@@ -361,7 +361,7 @@ ALOS_
       `ALOS Restec <http://www.alos-restec.jp/sampledata_e.html>`_,
       Acres_ and `ASF/ALOS <https://www.asf.alaska.edu/aadn/sample_data>`_
     * `Earthquakes <http://earth.esa.int/category/index.cfm?fcategoryid=37>`_
-      (L’Aquila, Haiti and Sichuan)
+      (L'Aquila, Haiti and Sichuan)
 JERS_
     Sample JERS products can be found at Acres_
 ASTER_
