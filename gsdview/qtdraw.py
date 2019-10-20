@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Drawing components for Qt4.'''
+"""Drawing components for Qt4."""
 
 
 from qtpy import QtCore, QtWidgets, QtGui
@@ -28,13 +28,13 @@ from gsdview.mousemanager import MouseMode  # , RubberBandMode
 
 # Graphics Items ############################################################
 def _highlightSelectedGraphicsItem(item, painter, option, boundingrect=None):
-    '''Highlights item as selected.
+    """Highlights item as selected.
 
     .. note:: This function is a duplicate of
               qt_graphicsItem_highlightSelected() in
               qgraphicssvgitem.cpp!
 
-    '''
+    """
 
     murect = painter.transform().mapRect(QtCore.QRectF(0, 0, 1, 1))
     if abs(max(murect.width(), murect.height())) <= 0.000000000001:
@@ -79,7 +79,7 @@ def _highlightSelectedGraphicsItem(item, painter, option, boundingrect=None):
 
 
 class GraphicsPointItem(QtWidgets.QAbstractGraphicsShapeItem):
-    '''Qt graphics item for point merkers.
+    """Qt graphics item for point merkers.
 
     Draw a symbol that scales its size according to the zoom level in
     order to keep approximatively constant size.
@@ -91,7 +91,7 @@ class GraphicsPointItem(QtWidgets.QAbstractGraphicsShapeItem):
     .. note:: this class don't depends on OGR so it can be moved in a
               module out of the gdalbackend.
 
-    '''
+    """
 
     Type = QtWidgets.QGraphicsItem.UserType + 100
 
@@ -169,7 +169,7 @@ class GraphicsPointItem(QtWidgets.QAbstractGraphicsShapeItem):
 
 
 class GraphicsItemGroup(QtWidgets.QGraphicsItemGroup):
-    '''Qt graphics item group with common style.'''
+    """Qt graphics item group with common style."""
 
     Type = QtWidgets.QGraphicsItem.UserType + 101
 

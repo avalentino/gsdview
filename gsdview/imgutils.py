@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Tools for geo-spatial images handling and visualization.'''
+"""Tools for geo-spatial images handling and visualization."""
 
 
 import numpy as np
@@ -27,7 +27,7 @@ import numpy as np
 # LUT utils ################################################################
 def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0,
                omax=None):
-    '''Compute a linear LUT.
+    """Compute a linear LUT.
 
     The returned LUT maps the imput domain (vmin, vmax) onto the output
     one (0, vout) using a linear low. The value of vout depends on
@@ -63,7 +63,7 @@ def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0,
         @TBW
     :returns:     the look up tabe (LUT)
 
-    '''
+    """
 
     dtype = np.dtype(dtype)
     if dtype not in (np.uint8, np.uint16):
@@ -105,7 +105,7 @@ def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0,
 
 
 def histogram_equalized_lut(hist, dtype='uint8', fill=False):
-    '''Compute a histogram equalized LUT.
+    """Compute a histogram equalized LUT.
 
     :param hist:
         histogram to be equalized
@@ -126,7 +126,7 @@ def histogram_equalized_lut(hist, dtype='uint8', fill=False):
         bool
     :returns: the llok up table (LUT)
 
-    '''
+    """
 
     dtype = np.dtype(dtype)
     if dtype not in (np.uint8, np.uint16):
@@ -215,7 +215,7 @@ def square(dtype='uint8'):
 
 # Stretching utils #########################################################
 class BaseStretcher(object):
-    '''Base class for stretcher objects.
+    """Base class for stretcher objects.
 
     The base implementation of the *__call__* method just performs
     clipping and type conversion (both are optional).
@@ -229,7 +229,7 @@ class BaseStretcher(object):
         stretch = BaseStretch(0, 255, 'uint8')
         data = stretch(data)
 
-    '''
+    """
 
     stretchtype = 'clip'
 
@@ -255,7 +255,7 @@ class BaseStretcher(object):
 
 
 class LinearStretcher(BaseStretcher):
-    '''Linear stretch.
+    """Linear stretch.
 
     Perform linear scaling (including offest application) and clipping.
 
@@ -264,7 +264,7 @@ class LinearStretcher(BaseStretcher):
 
         .. math:: output = scale \cdot (data - offset)
 
-    '''
+    """
 
     stretchtype = 'linear'
 
@@ -306,14 +306,14 @@ class LinearStretcher(BaseStretcher):
 
 
 class LUTStretcher(BaseStretcher):
-    '''Stretch using LUT.
+    """Stretch using LUT.
 
     Perform an arbitrary scaling on unsigned data using a look-up table
     (LUT).
 
     An optional offset is applied before LUT application.
 
-    '''
+    """
 
     stretchtype = 'lut'
 
@@ -363,7 +363,7 @@ class LUTStretcher(BaseStretcher):
 
 
 class LogarithmicStretcher(BaseStretcher):
-    '''Linear stretch.
+    """Linear stretch.
 
     Perform logarithmic stretching and clipping:
 
@@ -375,7 +375,7 @@ class LogarithmicStretcher(BaseStretcher):
               value for *offset* is 0 so the strecher returns values
               expressed in *dB*: :math:`output = 10 \cdot log_{10}(data)`
 
-    '''
+    """
 
     stretchtype = 'logarithmic'
     _logfunctions = {

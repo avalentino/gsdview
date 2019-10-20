@@ -17,7 +17,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-'''Tools for running external processes in a Qt GUI.'''
+"""Tools for running external processes in a Qt GUI."""
 
 
 from __future__ import absolute_import
@@ -38,13 +38,13 @@ __all__ = ['QtBlinker', 'QtOutputPane', 'QtOutputHandler',
 
 
 class QtBlinker(QtWidgets.QLabel):
-    '''Qt linker.
+    """Qt linker.
 
     :SLOTS:
 
         * :meth:`pulse`
 
-    '''
+    """
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(QtBlinker, self).__init__(parent, flags, **kwargs)
@@ -56,11 +56,11 @@ class QtBlinker(QtWidgets.QLabel):
 
     @QtCore.Slot()
     def pulse(self):
-        '''A blinker pulse.
+        """A blinker pulse.
 
         :C++ signature: `void pulse()`
 
-        '''
+        """
 
         sensitive = self.isEnabled()
         sensitive = not sensitive
@@ -71,7 +71,7 @@ class QtBlinker(QtWidgets.QLabel):
         pass
 
     def reset(self):
-        '''Reset the blinker.'''
+        """Reset the blinker."""
 
         self.setEnabled(True)
 
@@ -141,7 +141,7 @@ class QtOutputPane(QtWidgets.QTextEdit):
     # def clear(self): # it is a standard QtWidgets.QTextEdit method
 
     def save(self):
-        '''Save a file.'''
+        """Save a file."""
 
         filter_ = self.tr('Text files (*.txt)')
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -154,14 +154,14 @@ class QtOutputPane(QtWidgets.QTextEdit):
 
 
 class QtOutputHandler(QtCore.QObject, BaseOutputHandler):
-    '''Qt Output Handler.
+    """Qt Output Handler.
 
     :SIGNALS:
 
         * :attr:`pulse`
         * :attr:`percentageChanged`
 
-    '''
+    """
 
     _statusbar_timeout = 2000  # ms
 
@@ -214,32 +214,32 @@ class QtOutputHandler(QtCore.QObject, BaseOutputHandler):
         self.blinker = blinker
 
     def feed(self, data):
-        '''Feed some data to the parser.
+        """Feed some data to the parser.
 
         It is processed insofar as it consists of complete elements;
         incomplete data is buffered until more data is fed or close()
         is called.
 
-        '''
+        """
 
         if self.blinker:
             self.blinker.show()
         super(QtOutputHandler, self).feed(data)
 
     def close(self):
-        '''Reset the instance.'''
+        """Reset the instance."""
 
         if self.statusbar:
             self.statusbar.clearMessage()
         super(QtOutputHandler, self).close()
 
     def reset(self):
-        '''Reset the handler instance.
+        """Reset the handler instance.
 
         Loses all unprocessed data. This is called implicitly at
         instantiation time.
 
-        '''
+        """
 
         super(QtOutputHandler, self).reset()
         if self.progressbar:
@@ -251,7 +251,7 @@ class QtOutputHandler(QtCore.QObject, BaseOutputHandler):
             self.blinker.hide()
 
     def handle_progress(self, data):
-        '''Handle progress data.
+        """Handle progress data.
 
         :param data:
             a list containing an item for each named group in the
@@ -259,7 +259,7 @@ class QtOutputHandler(QtCore.QObject, BaseOutputHandler):
             for the default implementation.
             Each item can be None.
 
-        '''
+        """
 
         #pulse = data.get('pulse')
         percentage = data.get('percentage')
@@ -273,7 +273,7 @@ class QtOutputHandler(QtCore.QObject, BaseOutputHandler):
 
 
 class QtLoggingHandler(logging.Handler):
-    '''Custom handler for logging on Qt textviews.'''
+    """Custom handler for logging on Qt textviews."""
 
     def __init__(self, textview):
         logging.Handler.__init__(self)
@@ -281,7 +281,7 @@ class QtLoggingHandler(logging.Handler):
         self._formats = self._setupFormats()
 
     def _setupFormats(self):
-        '''Setup a different format for the different message types.'''
+        """Setup a different format for the different message types."""
 
         fmap = {}
 
@@ -311,7 +311,7 @@ class QtLoggingHandler(logging.Handler):
         QtWidgets.qApp.processEvents()
 
     def _write(self, data, format_=None):
-        '''Write data on the textview.'''
+        """Write data on the textview."""
 
         if isinstance(format_, string_types):
             format_ = self._formats.get(format_, '')
@@ -342,7 +342,7 @@ class QtLoggingHandler(logging.Handler):
 
 
 class QtDialogLoggingHandler(logging.Handler):
-    '''Qt handler for the logging dialog.'''
+    """Qt handler for the logging dialog."""
 
     levelsmap = {
         logging.CRITICAL: QtWidgets.QMessageBox.Critical,
@@ -402,7 +402,7 @@ class QtDialogLoggingHandler(logging.Handler):
 
 
 class QtToolController(QtCore.QObject, BaseToolController):
-    '''Qt tool controller.
+    """Qt tool controller.
 
     :SIGNALS:
 
@@ -416,7 +416,7 @@ class QtToolController(QtCore.QObject, BaseToolController):
         * :meth:`handle_stderr`
         * :meth:`handle_error`
 
-    '''
+    """
 
     _delay_after_stop = 200    # ms
 
@@ -442,13 +442,13 @@ class QtToolController(QtCore.QObject, BaseToolController):
 
     @property
     def isbusy(self):
-        '''If True then the controller is already running a subprocess.'''
+        """If True then the controller is already running a subprocess."""
 
         return self.subprocess.state() != self.subprocess.NotRunning
 
     @QtCore.Slot(int, QtCore.QProcess.ExitStatus)
     def finalize_run(self, exitCode=None, exitStatus=None):
-        '''Perform finalization actions.
+        """Perform finalization actions.
 
         This method is called when the controlled process terminates
         to perform finalization actions like:
@@ -465,7 +465,7 @@ class QtToolController(QtCore.QObject, BaseToolController):
 
         :C++ signature: `finalize_run(int, QProcess::ExitStatus)`
 
-        '''
+        """
 
         if not self._tool:
             return
@@ -508,7 +508,7 @@ class QtToolController(QtCore.QObject, BaseToolController):
             self.finished.emit(exitCode)
 
     def _reset(self):
-        '''Internal reset.'''
+        """Internal reset."""
 
         if self.subprocess.state() != self.subprocess.NotRunning:
             self._stop(force=True)
@@ -531,11 +531,11 @@ class QtToolController(QtCore.QObject, BaseToolController):
 
     @QtCore.Slot()
     def handle_stdout(self):
-        '''Handle standard output.
+        """Handle standard output.
 
         :C++ signature: `void handle_stdout()`
 
-        '''
+        """
 
         byteArray = self.subprocess.readAllStandardOutput()
         if not byteArray.isEmpty():
@@ -544,11 +544,11 @@ class QtToolController(QtCore.QObject, BaseToolController):
 
     @QtCore.Slot()
     def handle_stderr(self):
-        '''Handle standard error.
+        """Handle standard error.
 
         :C++ signature: `void handle_stderr()`
 
-        '''
+        """
 
         byteArray = self.subprocess.readAllStandardError()
         if not byteArray.isEmpty():
@@ -557,7 +557,7 @@ class QtToolController(QtCore.QObject, BaseToolController):
 
     @QtCore.Slot(QtCore.QProcess.ProcessError)
     def handle_error(self, error):
-        '''Handle a error in process execution.
+        """Handle a error in process execution.
 
         Can be handle different types of errors:
 
@@ -570,7 +570,7 @@ class QtToolController(QtCore.QObject, BaseToolController):
 
         :C++ signature: `void handle_error(QProcess::ProcessError)`
 
-        '''
+        """
 
         msg = ''
         level = logging.DEBUG
@@ -618,13 +618,13 @@ class QtToolController(QtCore.QObject, BaseToolController):
 
     #QtCore.Slot() # @TODO: check how to handle varargs
     def run_tool(self, tool, *args, **kwargs):
-        '''Run an external tool in controlled way.
+        """Run an external tool in controlled way.
 
         The output of the child process is handled by the controller
         and, optionally, notifications can be achieved at sub-process
         termination.
 
-        '''
+        """
 
         assert self.subprocess.state() == self.subprocess.NotRunning
         self.reset()
@@ -667,7 +667,7 @@ class QtToolController(QtCore.QObject, BaseToolController):
     @QtCore.Slot()
     @QtCore.Slot(bool)
     def stop_tool(self, force=True):
-        '''Stop the execution of controlled subprocess.
+        """Stop the execution of controlled subprocess.
 
         When this method is invoked the controller instance is always
         reset even if the controller is unable to stop the subprocess.
@@ -679,7 +679,7 @@ class QtToolController(QtCore.QObject, BaseToolController):
 
         :C++ signature: `void stop_tool(bool)`
 
-        '''
+        """
 
         if self._userstop:
             return

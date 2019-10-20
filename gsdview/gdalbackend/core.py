@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Core GDAL backend functions and classes.'''
+"""Core GDAL backend functions and classes."""
 
 
 import os
@@ -124,11 +124,11 @@ class GDALBackend(QtCore.QObject):
         return hmap
 
     def findItemFromFilename(self, filename):
-        '''Serch for and return the (dataset) item corresponding to filename.
+        """Serch for and return the (dataset) item corresponding to filename.
 
         If no item is found retirn None.
 
-        '''
+        """
 
         # @NOTE: linear complexity
         # @NOTE: only scan toplevel items

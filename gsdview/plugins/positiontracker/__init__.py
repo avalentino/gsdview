@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Position tracker.'''
+"""Position tracker."""
 
 
 from .info import *

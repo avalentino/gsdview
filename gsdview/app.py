@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''GUI front-end for the Geospatial Data Abstracton Library (GDAL).'''
+"""GUI front-end for the Geospatial Data Abstracton Library (GDAL)."""
 
 
 import os
@@ -54,7 +54,7 @@ class GSDView(ItemModelMainWindow):
     #   * disable actions when the external tool is running
     #   * /usr/share/doc/python-qt4-doc/examples/mainwindows/recentfiles.py
 
-    '''Main window class for GSDView application.'''
+    """Main window class for GSDView application."""
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         loglevel = kwargs.pop('loglevel', logging.NOTSET)
@@ -280,7 +280,7 @@ class GSDView(ItemModelMainWindow):
 
     # Custom exception hook #################################################
     def excepthook(self, exctype, excvalue, tracebackobj):
-        '''Global function to catch unhandled exceptions.
+        """Global function to catch unhandled exceptions.
 
         :param exctype:
             exception class
@@ -289,7 +289,7 @@ class GSDView(ItemModelMainWindow):
         :param tracebackobj:
             traceback object
 
-        '''
+        """
 
         sys.__excepthook__(exctype, excvalue, tracebackobj)
         # No messages for keyboard interruts

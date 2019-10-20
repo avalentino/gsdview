@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Helper tools and custom components for binding OGR and Qt.'''
+"""Helper tools and custom components for binding OGR and Qt."""
 
 
 import logging
@@ -73,7 +73,7 @@ _log = logging.getLogger(__name__)
 
 # Helpers for geometry management ###########################################
 def transformGeometry(geom, transform):
-    '''Apply an OSR transform to an OGR geometry.
+    """Apply an OSR transform to an OGR geometry.
 
     This function is almost equal to the ogr.Geometry.Transform method
     but raises an exception if the conversion fails and clone the
@@ -87,7 +87,7 @@ def transformGeometry(geom, transform):
     :returns:
         a new geometry instance with transforation applied
 
-    '''
+    """
 
     geom = geom.Clone()  # @TODO: check
     err = geom.Transform(transform)
@@ -98,7 +98,7 @@ def transformGeometry(geom, transform):
 
 
 def singleGeometryToGraphicsItem(geom, transform=None):
-    '''Convert a single OGR geometry into a Qt4 graphics item.
+    """Convert a single OGR geometry into a Qt4 graphics item.
 
     A "single geometry" is an OGR gemetry that don't include other
     geometries (GetGeometryCount() == 0).
@@ -118,7 +118,7 @@ def singleGeometryToGraphicsItem(geom, transform=None):
 
     .. seealso:: :func:`geometryToGraphicsItem`
 
-    '''
+    """
 
     assert geom.GetGeometryCount() == 0
 
@@ -201,7 +201,7 @@ def singleGeometryToGraphicsItem(geom, transform=None):
 
 
 def geometryToGraphicsItem(geom, transform=None):
-    '''Convert an OGR geometry into a Qt4 graphics item.
+    """Convert an OGR geometry into a Qt4 graphics item.
 
     If the *transform* callable is provided then each point in the
     geometry is converted using the `transform(x, y, z)` call before
@@ -218,7 +218,7 @@ def geometryToGraphicsItem(geom, transform=None):
 
     .. seealso:: :func:`singleGeometryToGraphicsItem`
 
-    '''
+    """
 
     if geom.GetGeometryCount() > 1:
         #qitem = QtWidgets.QGraphicsItemGroup()
@@ -255,7 +255,7 @@ DATAKEY = {
 
 
 def layerToGraphicsItem(layer, srs=None, transform=None):
-    '''Convert an OGR layer into a Qt4 graphics item.
+    """Convert an OGR layer into a Qt4 graphics item.
 
     If the *srs* parameter is provided each feature is converted into
     the target spatial reference system before generating the graphics
@@ -280,7 +280,7 @@ def layerToGraphicsItem(layer, srs=None, transform=None):
                  :func:`geometryToGraphicsItem` and
                  :data:`MAX_FEATURE_COUNT`
 
-    '''
+    """
 
     layer_srs = layer.GetSpatialRef()
     if (srs is not None and layer_srs is not None and

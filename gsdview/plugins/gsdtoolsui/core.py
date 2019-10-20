@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''UI front-end for GSDTools.'''
+"""UI front-end for GSDTools."""
 
 
 import os
@@ -200,11 +200,11 @@ class GSDToolsController(QtCore.QObject):
 
     @QtCore.Slot()
     def openInGoogleMaps(self):
-        '''Open google-maps centering the map on scene centre.
+        """Open google-maps centering the map on scene centre.
 
         .. seealso:: http://mapki.com/wiki/Google_Map_Parameters
 
-        '''
+        """
 
         item = self._currentDatasetItem()
         if item is None:

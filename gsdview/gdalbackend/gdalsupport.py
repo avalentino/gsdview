@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Support tools and classes for the GDAL library.'''
+"""Support tools and classes for the GDAL library."""
 
 
 import os
@@ -209,7 +209,7 @@ def uniqueDatasetID(prod):
 
 
 def driverList(drivertype='raster'):
-    '''Return the list of available GDAL/OGR drivers'''
+    """Return the list of available GDAL/OGR drivers"""
 
     if not drivertype:
         types = ['gdal']
@@ -235,7 +235,7 @@ def driverList(drivertype='raster'):
 
 
 def gdalFilters(mode='r'):
-    '''Returns the list of GDAL file filters as expected by Qt.'''
+    """Returns the list of GDAL file filters as expected by Qt."""
 
     # @TODO: move to gdalqt4
     filters = []
@@ -266,7 +266,7 @@ def gdalFilters(mode='r'):
 
 
 def ogrFilters():   # mode='r'):
-    '''Returns the list of OGR file filters as expected by Qt'''
+    """Returns the list of OGR file filters as expected by Qt"""
 
     # @TODO: move to an OGR specific module (??)
     filters = [
@@ -320,7 +320,7 @@ def ogrFilters():   # mode='r'):
 
 
 def isRGB(dataset, strict=False):
-    '''Return True if a dataset is compatible with RGB representaion.
+    """Return True if a dataset is compatible with RGB representaion.
 
     Conditions tested are:
 
@@ -335,7 +335,7 @@ def isRGB(dataset, strict=False):
 
         GCI_Undefined color interpretation is allowed in non strict mode.
 
-    '''
+    """
 
     if not hasattr(dataset, 'RasterCount'):
         # It is not a GDAL dataset
@@ -378,7 +378,7 @@ GDAL_STATS_KEYS = ('STATISTICS_MINIMUM', 'STATISTICS_MAXIMUM',
 
 
 def GetCachedStatistics(band):
-    '''Retrieve cached statistics from a raster band.
+    """Retrieve cached statistics from a raster band.
 
     GDAL usually stores pre-computed statistics in the raster band
     metadata: STATISTICS_MINIMUM, STATISTICS_MAXIMUM, STATISTICS_MEAN
@@ -387,7 +387,7 @@ def GetCachedStatistics(band):
     This function retrieves cached statistics and returns them as a
     four items tuple: (MINIMUM, MAXIMUM, MEAN, STDDEV).
 
-    '''
+    """
 
     metadata = band.GetMetadata()
     stats = [metadata.get(name) for name in GDAL_STATS_KEYS]
@@ -404,7 +404,7 @@ def GetCachedStatistics(band):
 
 
 def SafeGetStatistics(band, approx_ok=False, force=True):
-    '''Safe replacement of gdal.Band.GetSrtatistics.
+    """Safe replacement of gdal.Band.GetSrtatistics.
 
     The standard version of GetSrtatistics not always allows to know
     whenever statistics have beed actually computed or not (e.g. "force"
@@ -435,7 +435,7 @@ def SafeGetStatistics(band, approx_ok=False, force=True):
         be computer according to input flags or if some error occurs
         during computation.
 
-    '''
+    """
 
     # @NOTE: the band.GetStatistics method called with the second argument
     #        set to False (no image rescanning) has been fixed in
@@ -467,7 +467,7 @@ def SafeGetStatistics(band, approx_ok=False, force=True):
 
 
 def hasFastStats(band, approx_ok=True):
-    '''Return true if band statistics can be retrieved quickly.
+    """Return true if band statistics can be retrieved quickly.
 
     If precomputed stistics are in band metadata or small enough band
     overviews does exist then it is assumed that band statistics can
@@ -476,7 +476,7 @@ def hasFastStats(band, approx_ok=True):
     if the *approx_ok* only precomputed statistics are taken into
     account.
 
-    '''
+    """
 
     if SAFE_GDAL_STATS:
         stats = band.GetStatistics(True, False)
@@ -573,13 +573,13 @@ def colortable2numpy(colortable):
 # @NOTE: bugs #3160 and #3709 have been fixed upstream with commits r22289
 #        and r22290 (1.8 branch). The fix should be included in GDAL v1.8.1.
 def _fixedGCPs(gcps):
-    '''Fix Envisat GCPs
+    """Fix Envisat GCPs
 
     For products with multiple slices the GCPLine coordinate
     refers to the one of the slice so we need to fix it in order
     to have the image coordinate.
 
-    '''
+    """
 
     lines = np.asarray([gcp.GCPLine for gcp in gcps])
 
@@ -682,7 +682,7 @@ class CoordinateMapper(object):
         return np.dot(M, Pin) + C
 
     def imgToGeoPoints(self, pixel, line):
-        '''Coordinate conversion: (pixel,line) --> (lon,lat).'''
+        """Coordinate conversion: (pixel,line) --> (lon,lat)."""
 
         M, C = self._direct_transform
         xy = self._transform(pixel, line, M, C)
@@ -693,7 +693,7 @@ class CoordinateMapper(object):
         return xy[0], xy[1]  # , 0    # @TODO: h
 
     def geoToImgPoints(self, lon, lat, h=0):
-        '''Coordinate conversion: (lon,lat) --> (pixel,line).'''
+        """Coordinate conversion: (lon,lat) --> (pixel,line)."""
 
         M, C = self._inverse_transform
         rc = self._transform(lon, lat, M, C)
@@ -701,12 +701,12 @@ class CoordinateMapper(object):
         return rc[0], rc[1]
 
     def imgToGeoGrid(self, pixel, line):
-        '''Coordinate conversion: (pixel,line) --> (lon,lat) on regular grids.
+        """Coordinate conversion: (pixel,line) --> (lon,lat) on regular grids.
 
         Elements of the return (lon, lat) touple are 2D array with shape
         (len(pixels), len(line)).
 
-        '''
+        """
 
         # @TODO: check single point
         px, py = np.meshgrid(pixel, line)
@@ -716,12 +716,12 @@ class CoordinateMapper(object):
         return lon, lat  # , 0    # @TODO: h
 
     def geoToImgGrid(self, lon, lat):
-        '''Coordinate conversion: (lon,lat) --> (pixel,line) on regular grids.
+        """Coordinate conversion: (lon,lat) --> (pixel,line) on regular grids.
 
         Elements of the return (pixel,line) touple are 2D array with shape
         (len(lon), len(lat)).
 
-        '''
+        """
 
         # @TODO: check single point
         px, py = np.meshgrid(lon, lat)
@@ -760,7 +760,7 @@ class MissingOvrError(Exception):
 
 
 def ovrLevelAdjust(ovrlevel, xsize):
-    '''Adjust the overview level
+    """Adjust the overview level
 
     Replicate the GDALOvLevelAdjust function from
     gdal/gcore/gdaldefaultoverviews.cpp:
@@ -770,19 +770,19 @@ def ovrLevelAdjust(ovrlevel, xsize):
         int nOXSize = (nXSize + nOvLevel - 1) / nOvLevel;
         return (int) (0.5 + nXSize / (double) nOXSize);
 
-    '''
+    """
 
     oxsize = int(xsize + ovrlevel - 1) // ovrlevel
     return int(round(xsize / float(oxsize)))
 
 
 def ovrLevelForSize(gdalobj, ovrsize=OVRMEMSIE):
-    '''Compute the overview factor that fits the ovrsize request.
+    """Compute the overview factor that fits the ovrsize request.
 
     Default ovrsize = 300 KBytes ==> about 640x640 pixels paletted or
     320x320 pixels RGB32.
 
-    '''
+    """
 
     if hasattr(gdalobj, 'GetOverviewCount'):
         # gdalobj is a raster band
@@ -804,7 +804,7 @@ def ovrLevelForSize(gdalobj, ovrsize=OVRMEMSIE):
 
 
 def ovrLevels(gdalobj, raw=False):
-    '''Return availabe overview levels.'''
+    """Return availabe overview levels."""
 
     if hasattr(gdalobj, 'GetOverviewCount'):
         # gdalobj is a raster band
@@ -827,7 +827,7 @@ def ovrLevels(gdalobj, raw=False):
 
 
 def ovrBestIndex(gdalobj, ovrlevel=None, policy='NEAREST'):
-    '''Return the overview index that best fits *ovrlevel*.
+    """Return the overview index that best fits *ovrlevel*.
 
     If *ovrlevel* is `None` it is used the level returner by the
     `ovrLevelForSize` function i.e. the lavel ensures that the data
@@ -846,7 +846,7 @@ def ovrBestIndex(gdalobj, ovrlevel=None, policy='NEAREST'):
               larger reduction factor hence a smaller image (and vice
               versa).
 
-    '''
+    """
 
     if hasattr(gdalobj, 'GetOverviewCount'):
         # gdalobj is a raster band
@@ -885,7 +885,7 @@ def ovrBestIndex(gdalobj, ovrlevel=None, policy='NEAREST'):
 
 
 def ovrComputeLevels(gdalobj, ovrsize=OVRMEMSIE, estep=3, threshold=0.1):
-    '''Compute the overview levels to be generated.
+    """Compute the overview levels to be generated.
 
     GSDView relies on overviews to provide a confortable image
     navigation experience (scroll, pan, zoom etc).
@@ -903,7 +903,7 @@ def ovrComputeLevels(gdalobj, ovrsize=OVRMEMSIE, estep=3, threshold=0.1):
         if already exist overview levels close (with respect to
         threshold) to requested ones then computation is skipped
 
-    '''
+    """
 
     maxfactor = ovrLevelForSize(gdalobj, ovrsize)
     if maxfactor == 1:
@@ -944,7 +944,7 @@ def ovrComputeLevels(gdalobj, ovrsize=OVRMEMSIE, estep=3, threshold=0.1):
 
 def ovrRead(dataset, x=0, y=0, w=None, h=None, ovrindex=None,
             bstart=1, bcount=None, dtype=None):
-    '''Read an image block from overviews of all spacified bands.
+    """Read an image block from overviews of all spacified bands.
 
     This function read a data block from the overview corresponding to
     *ovrindex* for all *bcount* raster bands starting drom the
@@ -972,7 +972,7 @@ def ovrRead(dataset, x=0, y=0, w=None, h=None, ovrindex=None,
     data: ndarray
         the array of data read with shape (h, w, bcount)
 
-    '''
+    """
 
     # @TODO: check RasterColorInterpretation
 

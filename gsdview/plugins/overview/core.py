@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Overview pannel for GDAL raster bands.'''
+"""Overview pannel for GDAL raster bands."""
 
 
 import logging
@@ -33,7 +33,7 @@ _log = logging.getLogger(__name__)
 
 
 class NavigationGraphicsView(QtWidgets.QGraphicsView):
-    '''Graphics view for dataset navigation.
+    """Graphics view for dataset navigation.
 
     The view usually displays an auto-scalled low resolution overview
     of the scene with a red box indicating the area currently displayed
@@ -44,7 +44,7 @@ class NavigationGraphicsView(QtWidgets.QGraphicsView):
         * :attr:`mousePressed`
         * :attr:`mouseMoved`
 
-    '''
+    """
 
     BOXCOLOR = QtGui.QColor(QtCore.Qt.red)
     BOXWIDTH = 60
@@ -90,12 +90,12 @@ class NavigationGraphicsView(QtWidgets.QGraphicsView):
 
     @property
     def viewbox(self):
-        '''Viewport box in scene coordinates'''
+        """Viewport box in scene coordinates"""
         return self._viewbox
 
     @viewbox.setter
     def viewbox(self, box):
-        '''Set the viewport box in scene coordinates'''
+        """Set the viewport box in scene coordinates"""
         assert isinstance(box, (QtCore.QRect, QtCore.QRectF))
         self._viewbox = box
         if self.isVisible():

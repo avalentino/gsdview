@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Utility functions and classes for Qt4 applicaions.'''
+"""Utility functions and classes for Qt4 applicaions."""
 
 
 import os
@@ -93,7 +93,7 @@ def callExpensiveFunc(func, *args, **kwargs):
 
 # Table model/view helpers ##################################################
 def clearTable(tablewidget):
-    '''Remove contents from a table widget preserving labels. '''
+    """Remove contents from a table widget preserving labels. """
 
     labels = [
         str(tablewidget.horizontalHeaderItem(col).text())
@@ -105,7 +105,7 @@ def clearTable(tablewidget):
 
 
 def selectAllItems(itemview):
-    '''Select all items in an QAbstractItemView.'''
+    """Select all items in an QAbstractItemView."""
 
     model = itemview.model()
     topleft = model.index(0, 0)
@@ -125,8 +125,8 @@ def selectAllItems(itemview):
 
 #@QtCore.Slot(QtWidgets.QWidget) # @TODO: check
 def copySelectedItems(itemview):
-    '''Copy selected items of an QAbstractItemView to the clipboard and
-    also return copied data.'''
+    """Copy selected items of an QAbstractItemView to the clipboard and
+    also return copied data."""
 
     selection = itemview.selectionModel().selection()
     lines = []
@@ -756,11 +756,11 @@ def _aligned(data, nbyes=4):
 
 
 def numpy2qimage(data, colortable=GRAY_COLORTABLE):
-    '''Convert a numpy array into a QImage.
+    """Convert a numpy array into a QImage.
 
     .. note:: requires sip >= 4.7.5.
 
-    '''
+    """
 
     has_colortable = False
 
@@ -815,20 +815,20 @@ def numpy2qimage(data, colortable=GRAY_COLORTABLE):
 
 # Resources helpers #########################################################
 def getuifile(name, package=None):
-    '''Return the ui file path.
+    """Return the ui file path.
 
     It is assumed that Qt UI files are located in the "ui" subfolfer of
     the package.
 
     .. seealso:: :func:`gsdview.utils.getresource`
 
-    '''
+    """
 
     return utils.getresource(os.path.join('ui', name), package)
 
 
 def getuiform(name, package=None):
-    '''Return the ui form class.
+    """Return the ui form class.
 
     If it is available a pre-built python module the form class is
     imported from it (assuming that the module contains a single UI
@@ -850,7 +850,7 @@ def getuiform(name, package=None):
     .. seealso:: :func:`gsdview.utils.getresource`,
                  :func:`gsdview.qt4support.getuifile`
 
-    '''
+    """
 
     try:
         fromlist = package.rsplit('.')[:-1]
@@ -873,27 +873,27 @@ def getuiform(name, package=None):
 
 
 def geticonfile(name, package=None):
-    '''Return the icon file path.
+    """Return the icon file path.
 
     It is assumed that icon files are located in the "images" subfolder
     of the package.
 
     .. seealso:: :func:`gsdview.utils.getresource`
 
-    '''
+    """
 
     return utils.getresource(os.path.join('images', name), package)
 
 
 def geticon(name, package=None):
-    '''Build and return requested icon.
+    """Build and return requested icon.
 
     It is assumed that icon files are located in the "images" subfolder
     of the package.
 
     .. seealso:: :func:`gsdview.utils.getresource`
 
-    '''
+    """
 
     iconfile = utils.getresource(os.path.join('images', name), package)
 

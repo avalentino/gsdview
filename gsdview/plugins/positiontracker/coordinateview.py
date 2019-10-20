@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Position tool.'''
+"""Position tool."""
 
 
 from qtpy import QtCore, QtWidgets

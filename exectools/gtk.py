@@ -17,7 +17,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-'''Tools for running external processes in a GTK GUI.'''
+"""Tools for running external processes in a GTK GUI."""
 
 
 from __future__ import absolute_import
@@ -153,20 +153,20 @@ class GtkBlinker(Gtk.Image):
                             Gtk.IconSize.SMALL_TOOLBAR)
 
     def pulse(self):
-        '''A blinker pulse'''
+        """A blinker pulse"""
 
         sensitive = self.get_property('sensitive')
         sensitive = not sensitive
         self.set_sensitive(sensitive)
 
     def flush(self):
-        '''Flush the blinker'''
+        """Flush the blinker"""
 
         while Gtk.events_pending():
             Gtk.main_iteration(False)
 
     def reset(self):
-        '''Reset the blinker'''
+        """Reset the blinker"""
 
         self.set_sensitive(True)
 
@@ -305,7 +305,7 @@ class GtkOutputPane(Gtk.TextView):
 
 
 class GtkOutputHandler(GObject.GObject, BaseOutputHandler):
-    '''GTK progress handler'''
+    """GTK progress handler"""
 
     __gsignals__ = {
         'pulse': (
@@ -361,13 +361,13 @@ class GtkOutputHandler(GObject.GObject, BaseOutputHandler):
             self.statusbar.push(self.context_id, text)
 
     def feed(self, data):
-        '''Feed some data to the parser.
+        """Feed some data to the parser.
 
         It is processed insofar as it consists of complete elements;
         incomplete data is buffered until more data is fed or close()
         is called.
 
-        '''
+        """
 
         if self.blinker:
             self.blinker.show()
@@ -375,19 +375,19 @@ class GtkOutputHandler(GObject.GObject, BaseOutputHandler):
         super(GtkOutputHandler, self).feed(data)
 
     def close(self):
-        '''Force processing of all buffered data and reset the instance'''
+        """Force processing of all buffered data and reset the instance"""
 
         if self.statusbar:
             self.statusbar.pop(self.context_id)
         super(GtkOutputHandler, self).close()
 
     def reset(self):
-        '''Reset the handler instance.
+        """Reset the handler instance.
 
         Loses all unprocessed data. This is called implicitly at
         instantiation time.
 
-        '''
+        """
 
         super(GtkOutputHandler, self).reset()
         if self.progressbar:
@@ -398,7 +398,7 @@ class GtkOutputHandler(GObject.GObject, BaseOutputHandler):
             self.blinker.hide()
 
     def handle_progress(self, data):
-        '''Handle progress data.
+        """Handle progress data.
 
         :param data:
             a list containing an item for each named group in the
@@ -406,7 +406,7 @@ class GtkOutputHandler(GObject.GObject, BaseOutputHandler):
             for the default implementation.
             Each item can be None.
 
-        '''
+        """
 
         #pulse = data.get('pulse')
         percentage = data.get('percentage')
@@ -425,7 +425,7 @@ class GtkOutputHandler(GObject.GObject, BaseOutputHandler):
 
 
 class GtkLoggingHandler(logging.Handler):
-    '''Custom handler for logging on GTK+ textviews'''
+    """Custom handler for logging on GTK+ textviews"""
 
     def __init__(self, textview):
         assert textview is not None
@@ -471,7 +471,7 @@ class GtkLoggingHandler(logging.Handler):
 
 
 class GtkDialogLoggingHandler(logging.Handler):
-    '''GTK handler for logging message dialog'''
+    """GTK handler for logging message dialog"""
 
     levelsmap = {
         logging.CRITICAL: Gtk.MessageType.ERROR,
@@ -527,7 +527,7 @@ class GtkDialogLoggingHandler(logging.Handler):
 
 
 class GtkToolController(GObject.GObject, StdToolController):
-    '''GTK tool controller'''
+    """GTK tool controller"""
 
     __gsignals__ = {
         'finished': (
@@ -540,7 +540,7 @@ class GtkToolController(GObject.GObject, StdToolController):
         self._handlers = []
 
     def finalize_run(self, *args, **kwargs):
-        '''Perform finalization actions.
+        """Perform finalization actions.
 
         This method is called when the controlled process terminates
         to perform finalization actions like:
@@ -554,19 +554,19 @@ class GtkToolController(GObject.GObject, StdToolController):
         Additional finalization actions are performed using a custom
         "finalize_run_hook" instead of overriging "finalize_run".
 
-        '''
+        """
 
         returncode = self.subprocess.returncode
         super(GtkToolController, self).finalize_run()
         self.emit('finished', returncode)
 
     def _reset(self):
-        '''Internal reset.
+        """Internal reset.
 
         Kill the controlled subprocess and reset I/O channels loosing
         all unprocessed data.
 
-        '''
+        """
 
         for handler_id in self._handlers:
             self.disconnect(handler_id)
@@ -576,7 +576,7 @@ class GtkToolController(GObject.GObject, StdToolController):
         super(GtkToolController, self)._reset()
 
     def connect_output_handlers(self):
-        '''Connect output handlers'''
+        """Connect output handlers"""
 
         for handler_id in self._handlers:
             self.subprocess.disconnect(handler_id)
@@ -589,13 +589,13 @@ class GtkToolController(GObject.GObject, StdToolController):
         self.subprocess.connect('finished', self.handle_finished)
 
     def run_tool(self, tool, *args, **kwargs):
-        '''Run an external tool in controlled way
+        """Run an external tool in controlled way
 
         The output of the child process is handled by the controller
         and, optionally, notifications can be achieved at sub-process
         termination.
 
-        '''
+        """
 
         self.reset()
         self._tool = tool
@@ -641,7 +641,7 @@ class GtkToolController(GObject.GObject, StdToolController):
             raise
 
     def handle_finished(self, *args):
-        '''Handle process termination'''
+        """Handle process termination"""
 
         if not self._userstop:
             self.logger.debug('finished PID=%d' % self.subprocess.pid)
@@ -649,7 +649,7 @@ class GtkToolController(GObject.GObject, StdToolController):
         self.finalize_run()
 
     def handle_ioerror(self, *args):
-        '''Handle a IO error while process execution'''
+        """Handle a IO error while process execution"""
 
         if not self._userstop:
             msg = 'I/O error from sub-process PID=%d' % self.subprocess.pid
@@ -657,7 +657,7 @@ class GtkToolController(GObject.GObject, StdToolController):
             self.logger.debug(msg)
 
     def handle_connection_broken(self, *args):
-        '''Handle a connection broken'''
+        """Handle a connection broken"""
 
         if not self._userstop:
             msg = ('Connection broken with sub-process PID=%d' %

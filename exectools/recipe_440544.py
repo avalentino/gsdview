@@ -1,7 +1,7 @@
 # Recipe 440554 from the Python Cookbok online:
 # http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/440554
 
-'''
+"""
 Title:          Module to allow Asynchronous subprocess use on Windows and
                 Posix platforms
 Submitter:      Josiah Carlson
@@ -46,7 +46,7 @@ v. 1.8      Fixed missing self. parameter in non-windows _recv method thanks
             to comment.
 v. 1.9      Fixed fcntl calls for closed handles.
 
-'''
+"""
 
 from __future__ import print_function
 

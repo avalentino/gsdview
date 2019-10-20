@@ -18,7 +18,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-'''Simple interactive shell implementation using exectools and Qt.'''
+"""Simple interactive shell implementation using exectools and Qt."""
 
 
 import time
@@ -32,13 +32,13 @@ from exectools.qt import (QtOutputPane, QtOutputHandler, QtToolController,
 
 
 class QtShell(QtWidgets.QMainWindow):
-    '''Qt interactive shell using tool controller.
+    """Qt interactive shell using tool controller.
 
     :SLOTS:
 
         * :meth:`execute`
 
-    '''
+    """
 
     historyfile = 'history.txt'
 
@@ -212,11 +212,11 @@ class QtShell(QtWidgets.QMainWindow):
 
     @QtCore.Slot()
     def execute(self):
-        '''Execute the command line using the tool controller.
+        """Execute the command line using the tool controller.
 
         :C++ signature: `void execute()`
 
-        '''
+        """
 
         cmd = self.get_command()
         if cmd:

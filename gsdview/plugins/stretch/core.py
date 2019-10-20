@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Core module for image stretch control.'''
+"""Core module for image stretch control."""
 
 
 from qtpy import QtCore, QtWidgets

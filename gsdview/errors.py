@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Custom GSDView exceptions.'''
+"""Custom GSDView exceptions."""
 
 
 class OpenError(RuntimeError):

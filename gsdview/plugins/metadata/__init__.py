@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Metadata viewer component for geo-datasets.'''
+"""Metadata viewer component for geo-datasets."""
 
 
 from .info import *

@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Custom exectools components for GDAL.'''
+"""Custom exectools components for GDAL."""
 
 
 from __future__ import print_function
@@ -38,7 +38,7 @@ _log = logging.getLogger(__name__)
 
 
 class BaseGdalToolDescriptor(exectools.ToolDescriptor):
-    '''Base class for GDAL tool descriprors.'''
+    """Base class for GDAL tool descriprors."""
 
     def gdal_config_options(self, cmd=''):
         extra_args = []
@@ -72,7 +72,7 @@ class BaseGdalToolDescriptor(exectools.ToolDescriptor):
 
 
 class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
-    '''Tool descriptor for the gdaladdo utility program.'''
+    """Tool descriptor for the gdaladdo utility program."""
 
     #: resampling methods
     RESAMPLING_METHODS = [
@@ -109,7 +109,7 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
 
     def __init__(self, cwd=None, env=None,
                  stdout_handler=None, stderr_handler=None):
-        '''Initialization:
+        """Initialization:
 
         :param cwd:
             program working directory
@@ -125,7 +125,7 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
 
         .. seealso:: :class:`exectools.BaseOutputHandler`
 
-        '''
+        """
 
         super(GdalAddOverviewDescriptor, self).__init__(
             'gdaladdo', [], cwd, env, stdout_handler, stderr_handler)
@@ -149,7 +149,7 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
         self._use_bigtiff_mode = None
 
     def resampling_method(self):
-        '''Resampling method for overviews computation.'''
+        """Resampling method for overviews computation."""
 
         return self._resampling_method
 
@@ -169,12 +169,12 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
         self._resampling_method = method
 
     def compression_method(self):
-        '''TIFF compression method.
+        """TIFF compression method.
 
         This attribute is only used if external overviews are
         stored in GeoTIFF format.
 
-        '''
+        """
 
         return self._compression_method
 
@@ -285,11 +285,11 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
 
 
 class GdalInfoDescriptor(BaseGdalToolDescriptor):
-    '''Tool descriptor for the gdalinfo utility program.'''
+    """Tool descriptor for the gdalinfo utility program."""
 
     def __init__(self, cwd=None, env=None,
                  stdout_handler=None, stderr_handler=None):
-        '''
+        """
         :param cwd:
             program working directory
         :param env:
@@ -304,7 +304,7 @@ class GdalInfoDescriptor(BaseGdalToolDescriptor):
 
         .. seealso:: :class:`exectools.BaseOutputHandler`
 
-        '''
+        """
 
         super(GdalInfoDescriptor, self).__init__('gdalinfo', [], cwd, env,
                                                  stdout_handler,
@@ -359,7 +359,7 @@ class GdalInfoDescriptor(BaseGdalToolDescriptor):
 
 
 class GdalOutputHandler(QtOutputHandler):
-    '''Handler for the GDAL simple progress report to terminal.
+    """Handler for the GDAL simple progress report to terminal.
 
     This progress reporter prints simple progress report to the
     terminal window.
@@ -372,7 +372,7 @@ class GdalOutputHandler(QtOutputHandler):
     .. seealso:: :class:`exectools.BaseOutputHandler`,
                  :class:`exectools.qt.QtOutputHandler`
 
-    '''
+    """
 
     def __init__(self, logger=None, statusbar=None, progressbar=None,
                  blinker=None, **kwargs):
@@ -387,7 +387,7 @@ class GdalOutputHandler(QtOutputHandler):
                                 #        to 1000 instead.
 
     def handle_progress(self, data):
-        '''Handle progress data.
+        """Handle progress data.
 
         :param data:
             a list containing an item for each named group in the
@@ -395,7 +395,7 @@ class GdalOutputHandler(QtOutputHandler):
             for the default implementation.
             Each item can be None.
 
-        '''
+        """
 
         pulse = data.get('pulse')
         percentage = data.get('percentage')

@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Qt Assistant helper.'''
+"""Qt Assistant helper."""
 
 
 import sys
@@ -27,7 +27,7 @@ from qtpy import QtCore, QtWidgets
 
 
 class Assistant(object):
-    '''Helper class controllig an external QAssistant proces.'''
+    """Helper class controllig an external QAssistant proces."""
 
     # @TODO: fix
     APP_DOC_PATH = "qthelp://com.trolltech.examples.simpletextviewer/doc/"

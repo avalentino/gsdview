@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''GDAL items for Qt QStandardItemModel.'''
+"""GDAL items for Qt QStandardItemModel."""
 
 
 import os
@@ -93,14 +93,14 @@ class MajorObjectItem(QtGui.QStandardItem):
 
 
 class BandItem(MajorObjectItem):
-    '''Raster band item.
+    """Raster band item.
 
     This class implements both the QStandardItem and the
     gdal.Band interface.
 
     It also as attached a graphics scene containing a GdalGraphicsItem
 
-    '''
+    """
 
     iconfile = qtsupport.geticon('rasterband.svg', __name__)
     _type = MajorObjectItem._type + 10
@@ -128,7 +128,7 @@ class BandItem(MajorObjectItem):
     # readonly
     @property
     def cmapper(self):
-        '''Coordinate mapper object.'''
+        """Coordinate mapper object."""
 
         return self.parent().cmapper
 
@@ -251,12 +251,12 @@ class OverviewItem(BandItem):
 
 
 class DatasetItem(MajorObjectItem):
-    '''Dataset item
+    """Dataset item
 
     This class implements both the QStandardItem and the gdal.Dataset
     interface.
 
-    '''
+    """
 
     iconfile = qtsupport.geticon('dataset.svg', __name__)
     _type = MajorObjectItem._type + 100
@@ -317,14 +317,14 @@ class DatasetItem(MajorObjectItem):
             return scene, graphicsitem
 
     def footprint(self):
-        '''Return the dataset geographic footprint as a QPolygonF.
+        """Return the dataset geographic footprint as a QPolygonF.
 
         The geographic footprint is a QPolygonF containing the four
         vertices of the image in geographic coordinates.
         If no geographic info is available in the dataset None is
         returned.
 
-        '''
+        """
 
         if not self.cmapper:
             return
@@ -575,7 +575,7 @@ class CachedDatasetItem(DatasetItem):
 
 
 def datasetitem(filename):
-    '''Factory for dataset items.'''
+    """Factory for dataset items."""
 
     # Some dataset has only sub-datasets (no raster band).
     # In this case it is not possible to use a virtual datasets like

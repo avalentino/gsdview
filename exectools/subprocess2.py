@@ -17,12 +17,12 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-'''Enhanced version of the subprocess module.
+"""Enhanced version of the subprocess module.
 
 The Popen class provides a cross-platform stop method for stopping the child
 sub-process and allow asynchronous I/O both on Windows and Posix platforms.
 
-'''
+"""
 
 import time
 import errno
@@ -62,13 +62,13 @@ class Popen(recipe_440544.Popen):
     else:
 
         def stop(self, force=True):
-            '''This forces a child process to terminate.
+            """This forces a child process to terminate.
 
             It starts nicely with SIGTERM.
             If "force" is True then moves onto SIGKILL.
             This returns True if the child was terminated.
             This returns False if the child could not be terminated.
-            '''
+            """
 
             if self.poll() is not None:
                 return True

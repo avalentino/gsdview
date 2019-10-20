@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Browser component for geo-datasets metadata.'''
+"""Browser component for geo-datasets metadata."""
 
 
 import logging

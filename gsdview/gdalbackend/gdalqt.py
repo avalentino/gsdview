@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Helper tools and custom components for binding GDAL and Qt.'''
+"""Helper tools and custom components for binding GDAL and Qt."""
 
 
 import logging
@@ -389,11 +389,11 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
 
 
 class UIntGdalGraphicsItem(BaseGdalGraphicsItem):
-    '''GDAL graphics item specialized for 8 and 16 it unsigned integers.
+    """GDAL graphics item specialized for 8 and 16 it unsigned integers.
 
     Uses an unchecked LUT for transformations.
 
-    '''
+    """
 
     Type = BaseGdalGraphicsItem.Type + 1
 
@@ -473,12 +473,12 @@ class GdalRgbGraphicsItem(BaseGdalGraphicsItem):
 
 
 def graphicsItemFactory(gdalobj, parent=None):
-    '''Factory function for GDAL graphics items.
+    """Factory function for GDAL graphics items.
 
     Instantiates on object of the GDAL graphics item class taht best
     fits the *gdalobj* passed as argument.
 
-    '''
+    """
 
     if gdalsupport.isRGB(gdalobj):
         _log.debug('new GdalRgbGraphicsItem')

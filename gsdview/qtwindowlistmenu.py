@@ -18,18 +18,18 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Window Menu
+"""Window Menu
 
 Python port of the Window Wenu component from Qt Solutions.
 
-'''
+"""
 
 
 from qtpy import QtCore, QtWidgets, QtGui
 
 
 class QtWindowListMenu(QtWidgets.QMenu):
-    '''The QtWindowListMenu class is a menu that provides navigation
+    """The QtWindowListMenu class is a menu that provides navigation
     commands for the subwindows in a QMdiArea.
 
     It is typically used as the conventional "Windows" item in an MDI
@@ -84,7 +84,7 @@ class QtWindowListMenu(QtWidgets.QMenu):
         * :meth:`activateWindow`
         * :meth:`windowDestroyed`
 
-    '''
+    """
 
     CloseAction = 0
     CloseAllAction = 1
@@ -94,7 +94,7 @@ class QtWindowListMenu(QtWidgets.QMenu):
     PrevAction = 7
 
     def __init__(self, parent, **kwargs):
-        '''Constructs a QtWindowListMenu object.
+        """Constructs a QtWindowListMenu object.
 
         The *parent* parameter is passed to the QMenu constructor.
         Although this parameter has the conventional default of 0,
@@ -103,7 +103,7 @@ class QtWindowListMenu(QtWidgets.QMenu):
         container (e.g. QMenuBar) does not cause a reparenting.
         The container is normally the natural choice for *parent*.
 
-        '''
+        """
 
         super(QtWindowListMenu, self).__init__(parent, **kwargs)
 
@@ -161,7 +161,7 @@ class QtWindowListMenu(QtWidgets.QMenu):
         self._defIcon = QtGui.QIcon()
 
     def attachToMdiArea(self, mdiArea):
-        '''Instructs this menu to display navigation actions for the
+        """Instructs this menu to display navigation actions for the
         QMdiArea *mdiArea*.
 
         This should be done before this menu is shown.
@@ -171,7 +171,7 @@ class QtWindowListMenu(QtWidgets.QMenu):
         For special usecases, see the note about auto-attachment in the
         class description.
 
-        '''
+        """
 
         if mdiArea == self.mdi:
             return
@@ -207,17 +207,17 @@ class QtWindowListMenu(QtWidgets.QMenu):
             self.mdi.activatePreviousSubWindow)
 
     def attachedMdiArea(self):
-        '''Returns the QMdiArea this menu is currently attached to,
+        """Returns the QMdiArea this menu is currently attached to,
         or None if not yet attached.
 
         .. seealso:: attachToMdiArea()
 
-        '''
+        """
 
         return self.mdi
 
     def _attachToClosestMdiAreaObject(self):
-        '''Attach the menu to the most likely intended MDI area object
+        """Attach the menu to the most likely intended MDI area object
 
         Heuristic method to auto-attach to the most likely intended
         mdiArea object, i.e. the closest "sibling" mdiArea widget.
@@ -225,7 +225,7 @@ class QtWindowListMenu(QtWidgets.QMenu):
         In the typical case, there will be only one in the mainwindow
         that owns this menu, and this method will find it.
 
-        '''
+        """
 
         if self.mdi:
             return True
@@ -246,7 +246,7 @@ class QtWindowListMenu(QtWidgets.QMenu):
 
     @QtCore.Slot()
     def syncWithMdiArea(self):
-        '''Syncronize with MDI area
+        """Syncronize with MDI area
 
         This slot is executed immediately prior to each opening of this
         menu. It removes the previous subwindow navigation actions and
@@ -255,7 +255,7 @@ class QtWindowListMenu(QtWidgets.QMenu):
 
         :C++ signature: `void syncWithMdiArea()`
 
-        '''
+        """
 
         if not self.mdi and not self._attachToClosestMdiAreaObject():
             return
@@ -292,7 +292,7 @@ class QtWindowListMenu(QtWidgets.QMenu):
 
     @QtCore.Slot(QtWidgets.QAction)
     def activateWindow(self, act):
-        '''Activate the corresponding sub-window in the MDI area
+        """Activate the corresponding sub-window in the MDI area
 
         This slot is executed when the user selects one of the subwindow
         navigation actions, given in *act*. It causes the corresponding
@@ -300,7 +300,7 @@ class QtWindowListMenu(QtWidgets.QMenu):
 
         :C++ signature: `void activateWindow(QAction *act)``
 
-        '''
+        """
 
         if not self.mdi and not self._attachToClosestMdiAreaObject():
             return
@@ -308,24 +308,24 @@ class QtWindowListMenu(QtWidgets.QMenu):
 
     @QtCore.Slot(QtCore.QObject)
     def windowDestroyed(self, obj):
-        '''This slot is executed whenever a subwindow (*obj*) of the
+        """This slot is executed whenever a subwindow (*obj*) of the
         attached QMdiArea, for which an icon has been, is deleted.
         It clears that icon.
 
         :C++ signature: `void windowDestroyed(QObject *obj)`
 
-        '''
+        """
 
         del self._iconMap[obj]
 
     def setWindowIcon(self, window, icon):
-        '''Sets *icon* as the icon of the menu item corresponding to
+        """Sets *icon* as the icon of the menu item corresponding to
         the mdi subwindow *window*. If *icon* is a null icon, the
         current item icon will be cleared.
 
         .. seealso:: windowIcon()
 
-        '''
+        """
         if not window:
             return
         if icon is None:
@@ -335,41 +335,41 @@ class QtWindowListMenu(QtWidgets.QMenu):
             window.destroyed.connect(self.windowDestroyed)
 
     def windowIcon(self, window):
-        '''Returns the icon of the menu item corresponding to the mdi
+        """Returns the icon of the menu item corresponding to the mdi
         subwindow *window*. This will be a null icon if none has been
         explicitly set.
 
         .. seealso:: setWindowIcon()
 
-        '''
+        """
 
         #return self._iconMap.get(window)
         return self._iconMap[window]
 
     def setDefaultIcon(self, icon):
-        '''Sets *icon* as the default icon for the subwindow navigation
+        """Sets *icon* as the default icon for the subwindow navigation
         items in this QtWindowListMenu. If *icon* is a null icon, then
         the default icon will be cleared.
 
         .. seealso:: defaultIcon()
 
-        '''
+        """
 
         self._defIcon = icon
 
     def defaultIcon(self):
-        '''Returns the default icon for the subwindow navigation items
+        """Returns the default icon for the subwindow navigation items
         in this QtWindowListMenu. This will be a null icon if none has
         been explicitly set.
 
         .. seealso:: setDefaultIcon()
 
-        '''
+        """
 
         return self._defIcon
 
     def standardAction(self, item):
-        '''Returns a pointer to the standard navigation action of this
+        """Returns a pointer to the standard navigation action of this
         menu specified by *item*. This can be used to customize the
         look, shortcut, tool tip, etc. of this item, or to provide
         alternative access to it through a tool button etc.
@@ -378,6 +378,6 @@ class QtWindowListMenu(QtWidgets.QMenu):
         not be deleted. If you want QtWindowListMenu to not display this
         action, set its "visible" property to false.
 
-        '''
+        """
 
         return self._stdGroup.actions()[item]

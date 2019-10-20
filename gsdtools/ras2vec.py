@@ -19,7 +19,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Generate a vector file containing the bounding box of raster data.
+"""Generate a vector file containing the bounding box of raster data.
 
 Take in input one or more raster datasets and generate a vector file
 containing the bounding box polygon and, optionally, a GCP layer of
@@ -32,7 +32,7 @@ gdaltindex utility.
 
 .. seealso: http://www.gdal.org/gdaltindex.html
 
-'''
+"""
 
 # @TODO:
 #

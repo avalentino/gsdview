@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Widgets and dialogs for GSDView.'''
+"""Widgets and dialogs for GSDView."""
 
 
 import logging
@@ -36,13 +36,13 @@ StretchWidgetBase = qtsupport.getuiform('doubleslider', __name__)
 
 
 class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
-    '''Stretch widget.
+    """Stretch widget.
 
     :SIGNALS:
 
         * :attr:`valueChanged`
 
-    '''
+    """
 
     #: SIGNAL: it is emitted when the stretch value changes
     #:
@@ -105,7 +105,7 @@ class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
 
     @floatmode.setter
     def floatmode(self, floatmode=True):
-        '''Set the stretch widget in floating point mode.'''
+        """Set the stretch widget in floating point mode."""
 
         floatmode = bool(floatmode)
         if floatmode == self._floatmode:
@@ -453,13 +453,13 @@ StretchDialogBase = qtsupport.getuiform('stretchdialog', __name__)
 
 
 class StretchDialog(QtWidgets.QDialog, StretchDialogBase):
-    '''Stretch dialog.
+    """Stretch dialog.
 
     :SIGNALS:
 
         * :attr:`valueChanged`
 
-    '''
+    """
 
     #: SIGNAL: it is emitted when the stretch value changes
     #:

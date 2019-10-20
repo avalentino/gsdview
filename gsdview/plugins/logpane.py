@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Log pane.'''
+"""Log pane."""
 
 __version__ = (0, 7, 0)
 __requires__ = []

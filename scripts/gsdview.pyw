@@ -18,7 +18,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-'''Launcher script for gsdview.'''
+"""Launcher script for gsdview."""
 
 from gsdview import main
 main()

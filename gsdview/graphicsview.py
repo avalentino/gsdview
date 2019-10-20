@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Custom QGraphicsView component.'''
+"""Custom QGraphicsView component."""
 
 
 from qtpy import QtCore, QtWidgets
@@ -99,7 +99,7 @@ class GraphicsView(QtWidgets.QGraphicsView):
 
 
 class GraphicsViewMonitor(QtCore.QObject):
-    '''Emit signals when a registered graphics view changes status.
+    """Emit signals when a registered graphics view changes status.
 
     :SIGNALS:
 
@@ -109,7 +109,7 @@ class GraphicsViewMonitor(QtCore.QObject):
         * :attr:`viewportResized`
         * :attr:`mouseMoved`
 
-    '''
+    """
 
     ##: SIGNAL: it is emitted when the mouse pointer enterss the scene
     ##:

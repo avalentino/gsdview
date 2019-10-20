@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Plugin manager.'''
+"""Plugin manager."""
 
 
 import os
@@ -50,7 +50,7 @@ class PluginManager(object):
 
     @property
     def allplugins(self):
-        '''List of all available plugins.'''
+        """List of all available plugins."""
 
         plugins = set(self.plugins.keys())
         plugins.update(self._scanpaths())

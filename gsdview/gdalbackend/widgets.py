@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Widgets and dialogs for GSDView.'''
+"""Widgets and dialogs for GSDView."""
 
 
 import os
@@ -398,13 +398,13 @@ MetadataWidgetBase = qtsupport.getuiform('metadata', __name__)
 
 
 class MetadataWidget(QtWidgets.QWidget, MetadataWidgetBase):
-    '''Widget for matadata display.
+    """Widget for matadata display.
 
     :SIGNALS:
 
         * :attr:`domainChanged`
 
-    '''
+    """
 
     #: SIGNAL: it is emitted when metadata domain changes
     #:
@@ -515,7 +515,7 @@ OverviewWidgetBase = qtsupport.getuiform('overview', __name__)
 
 
 class OverviewWidget(QtWidgets.QWidget, OverviewWidgetBase):
-    '''Widget for overview management.
+    """Widget for overview management.
 
     Display existing overview levels and allow to to sibmit overview
     compitation requests.
@@ -524,7 +524,7 @@ class OverviewWidget(QtWidgets.QWidget, OverviewWidgetBase):
 
         * :attr:`overviewComputationRequest`
 
-    '''
+    """
 
     #: SIGNAL: it is emitted when a time expensive computation of overviews
     #: is required
@@ -785,11 +785,11 @@ class OverviewWidget(QtWidgets.QWidget, OverviewWidgetBase):
 
 
 class SpecialOverviewWidget(OverviewWidget):
-    '''An overview widget that always performs overview recomputation.
+    """An overview widget that always performs overview recomputation.
 
     .. seealso:: :class:`OverviewWidget`
 
-    '''
+    """
 
     def reset(self):
         super(SpecialOverviewWidget, self).reset()
@@ -814,7 +814,7 @@ class SpecialOverviewWidget(OverviewWidget):
 
 
 class OverviewDialog(QtWidgets.QDialog):
-    '''Dialog for overview management.
+    """Dialog for overview management.
 
     Display existing overview levels and allow to to sibmit overview
     compitation requests.
@@ -823,7 +823,7 @@ class OverviewDialog(QtWidgets.QDialog):
 
         * :attr:`overviewComputationRequest`
 
-    '''
+    """
 
     #: SIGNAL: it is emitted when a time expensive computation of overviews
     #: is required
@@ -1095,7 +1095,7 @@ BandInfoDialogBase = qtsupport.getuiform('banddialog', __name__)
 
 
 class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
-    '''Info dialog for GDAL raster bands.
+    """Info dialog for GDAL raster bands.
 
     :SIGNALS:
 
@@ -1103,7 +1103,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         * :attr:`histogramComputationRequest`
         * :attr:`overviewComputationRequest`
 
-    '''
+    """
 
     #: SIGNAL: it is emitted when a time expensive computation of statistics
     #: is required
@@ -1303,7 +1303,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.updateImageStructure()
 
     def resetStatistics(self):
-        '''Reset statistics.'''
+        """Reset statistics."""
 
         value = self.tr('Not computed')
         self.minimumValue.setText(value)

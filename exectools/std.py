@@ -17,7 +17,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-'''Tools for running external processes using the subprocess module.'''
+"""Tools for running external processes using the subprocess module."""
 
 import sys
 
@@ -25,7 +25,7 @@ from exectools import BaseToolController, EX_OK, subprocess2, string_types
 
 
 class StdToolController(BaseToolController):
-    '''Class for controlling command line tools.
+    """Class for controlling command line tools.
 
     A tool controller runs an external tool in controlled way.
     The output of the child process is handled by the controller and,
@@ -34,22 +34,22 @@ class StdToolController(BaseToolController):
 
     A tool controller also allow to stop the controlled process.
 
-    '''
+    """
 
     @property
     def isbusy(self):
-        '''If True then the controller is already running a subprocess.'''
+        """If True then the controller is already running a subprocess."""
 
         return self.subprocess is not None
 
     def run_tool(self, tool, *args, **kwargs):
-        '''Run an external tool in controlled way.
+        """Run an external tool in controlled way.
 
         The output of the child process is handled by the controller
         and, optionally, notifications can be achieved at sub-process
         termination.
 
-        '''
+        """
 
         self.reset()
         self._tool = tool
@@ -92,7 +92,7 @@ class StdToolController(BaseToolController):
             raise
 
     def finalize_run(self, *args, **kwargs):
-        '''Perform finalization actions.
+        """Perform finalization actions.
 
         This method is called when the controlled process terminates
         to perform finalization actions like:
@@ -110,7 +110,7 @@ class StdToolController(BaseToolController):
         it should be better to use a custom "finalize_run_hook" instead
         of overriging "finalize_run".
 
-        '''
+        """
 
         try:
             if self.subprocess:
@@ -178,12 +178,12 @@ class StdToolController(BaseToolController):
             self._reset()
 
     def _reset(self):
-        '''Internal reset.
+        """Internal reset.
 
         Kill the controlled subprocess and reset I/O channels loosing
         all unprocessed data.
 
-        '''
+        """
 
         if self.subprocess:
             self.subprocess.stop(force=True)
@@ -195,25 +195,25 @@ class StdToolController(BaseToolController):
         super(StdToolController, self)._reset()
 
     def reset(self):
-        '''Reset the tool controller instance.
+        """Reset the tool controller instance.
 
         Kill the controlled subprocess and reset the controller
         instance loosing all unprocessed data.
 
-        '''
+        """
 
         super(StdToolController, self).reset()
         self.subprocess = None
 
     def handle_stdout(self, *args):
-        '''Handle standard output data.
+        """Handle standard output data.
 
         This method is not meant to be directly called by the user.
 
         The user, anyway, can provide a custom implementation in
         derived classes.
 
-        '''
+        """
 
         if self.subprocess is None or self.subprocess.poll() is not None:
             # NOTE: 'self.subprocess is None' should never happen at this point
@@ -227,14 +227,14 @@ class StdToolController(BaseToolController):
             return True
 
     def handle_stderr(self, *args):
-        '''Handle standard  error.
+        """Handle standard  error.
 
         This method is not meant to be directly called by the user.
 
         The user, anyway, can provide a custom implementation in
         derived classes.
 
-        '''
+        """
 
         if self.subprocess is None or self.subprocess.poll() is not None:
             # NOTE: 'self.subprocess is None' should never happen ar this point
@@ -248,7 +248,7 @@ class StdToolController(BaseToolController):
             return True
 
     def stop_tool(self, force=True):
-        '''Stop the execution of controlled subprocess.
+        """Stop the execution of controlled subprocess.
 
         When this method is invoked the controller instance is always
         reset even if the controller is unable to stop the subprocess.
@@ -258,7 +258,7 @@ class StdToolController(BaseToolController):
         default (force=True).  This behaviour can be controlled using
         the `force` parameter.
 
-        '''
+        """
 
         # @TODO: fix stop function with shell=True
         if self.subprocess:

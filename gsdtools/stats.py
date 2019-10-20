@@ -19,7 +19,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Compute statistics and histograms of geo-spatial data.'''
+"""Compute statistics and histograms of geo-spatial data."""
 
 
 import sys
@@ -56,7 +56,7 @@ HAS_GETSTATS_FORCE_BUG = (('1640' <= gdal.VersionInfo() < '1700') or
 
 
 def SafeGetStatistics(band, approxok, force):
-    '''Retriewe statistics form a GDAL raster band in a safe way.
+    """Retriewe statistics form a GDAL raster band in a safe way.
 
     If it is not possible to get statistics (e.g. because the force
     flag is set to false and statistics are not available, or because
@@ -81,7 +81,7 @@ def SafeGetStatistics(band, approxok, force):
     .. _`ticket #3572`: http://trac.osgeo.org/gdal/ticket/3572
     .. _`GDAL Trac`: http://trac.osgeo.org/gdal
 
-    '''
+    """
 
     if force is False and not HAS_GETSTATS_FORCE_BUG:
         raise RuntimeError('it is not safe to use gada.Band.GetStatistics '

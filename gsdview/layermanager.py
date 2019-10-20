@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Components for layers management.'''
+"""Components for layers management."""
 
 
 import logging

@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Widgets and dialogs for GSDView.'''
+"""Widgets and dialogs for GSDView."""
 
 
 import os
@@ -342,13 +342,13 @@ PreferencesDialogBase = qtsupport.getuiform('preferences', __name__)
 
 
 class PreferencesDialog(QtWidgets.QDialog, PreferencesDialogBase):
-    '''Extendible preferences dialogg for GSDView.
+    """Extendible preferences dialogg for GSDView.
 
     :SIGNALS:
 
     * :attr:`apply`
 
-    '''
+    """
 
     #: SIGNAL: it is emitted when modifications are applied
     #:

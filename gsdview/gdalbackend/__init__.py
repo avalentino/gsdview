@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''GDAL backend for GSDView.'''
+"""GDAL backend for GSDView."""
 
 
 from gsdview.gdalbackend.info import *

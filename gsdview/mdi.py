@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Specialized MainWindow classes and mixins.'''
+"""Specialized MainWindow classes and mixins."""
 
 # @TODO: move this to widgets sub-package or qt4freesolutions subpackage
 
@@ -29,13 +29,13 @@ from gsdview.qtwindowlistmenu import QtWindowListMenu
 
 
 class MdiMainWindow(QtWidgets.QMainWindow):
-    '''Base class for MDI applications.
+    """Base class for MDI applications.
 
     :SIGNALS:
 
         * :attr:`subWindowClosed`
 
-    '''
+    """
 
     # @TODO: should the subWindowClosed signal be emitted by mdiarea?
     #: SIGNAL: it is emitted when an MDI subwindow is closed
@@ -108,11 +108,11 @@ class ItemModelMainWindow(MdiMainWindow):
 
     #@QtCore.Slot(QtCore.QModelIndex) # @TODO: check
     def setActiveWinFromIndex(self, index):
-        '''Set the active sub-window from index.
+        """Set the active sub-window from index.
 
         :C++ signature: `void setActiveWinFromIndex(const QModelIndex&)`
 
-        '''
+        """
 
         # @TODO: find a better name
         item = self.datamodel.itemFromIndex(index)
@@ -136,11 +136,11 @@ class ItemModelMainWindow(MdiMainWindow):
 
     @QtCore.Slot(QtWidgets.QMdiSubWindow)
     def setActiveIndexFromWin(self, window):
-        '''Set the active sub-window.
+        """Set the active sub-window.
 
         :C++ signature: `void setActiveIndexFromWin(QMdiSubWindow*)`
 
-        '''
+        """
 
         # @TODO: find a better name
         # @TODO: check and, if the case, remove
@@ -157,11 +157,11 @@ class ItemModelMainWindow(MdiMainWindow):
 
     #@QtCore.Slot(QtCore.QModelIndex, int, int) # @TODO: check
     def onItemsClosed(self, modelindex, start, end):
-        '''Closes sub-windows associated to the closed model items.
+        """Closes sub-windows associated to the closed model items.
 
         :C++ signature: `void onItemsClosed(const QModelIndex&, int, int)`
 
-        '''
+        """
 
         if not modelindex.isValid():
             return

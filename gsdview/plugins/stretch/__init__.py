@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Image stretch control for GSDView.'''
+"""Image stretch control for GSDView."""
 
 
 from .info import *

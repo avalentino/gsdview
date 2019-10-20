@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Site configuration module.
+"""Site configuration module.
 
 :DATADIR: system configuration, auxdata, images, etc.
 :DOCSDIR: doumentation
@@ -26,7 +26,7 @@
 :SYSPLUGINSDIR: system plugins directory
 :USERCONFIGDIR: user configuration directory (default `~/.gsdview`)
 
-'''
+"""
 
 
 import os

@@ -18,7 +18,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-'''Simple interactive shell implementation using exectools and GTK+.'''
+"""Simple interactive shell implementation using exectools and GTK+."""
 
 
 import time
@@ -33,7 +33,7 @@ from exectools.gtk import (GtkOutputPane, GtkOutputHandler,
 
 
 class GtkShell(object):
-    '''GTK+ interactive shell using tool controller.'''
+    """GTK+ interactive shell using tool controller."""
 
     historyfile = 'history.txt'
 

@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''GSDTools plugin for GSDView.'''
+"""GSDTools plugin for GSDView."""
 
 
 from .info import *

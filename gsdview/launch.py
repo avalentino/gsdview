@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Launcher script for gsdview.'''
+"""Launcher script for gsdview."""
 
 
 import logging

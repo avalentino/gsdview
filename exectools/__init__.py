@@ -17,7 +17,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-'''Tools for running external processes.'''
+"""Tools for running external processes."""
 
 
 import re
@@ -73,7 +73,7 @@ def level2tag(level):
 
 
 class BaseOutputHandler(object):
-    '''Base class for output handlers'''
+    """Base class for output handlers"""
 
     def __init__(self, logger=None):
         super(BaseOutputHandler, self).__init__()
@@ -108,19 +108,19 @@ class BaseOutputHandler(object):
         }
 
     def reset(self):
-        '''Reset the handler instance.
+        """Reset the handler instance.
 
         Loses all unprocessed data. This is called implicitly at
         instantiation time.
 
-        '''
+        """
 
         self._buffer.close()
         self._buffer = StringIO()
         self._wpos = self._buffer.tell()
 
     def close(self):
-        '''Force processing of all buffered data and reset the instance'''
+        """Force processing of all buffered data and reset the instance"""
 
         self._parse()
         data = self._buffer.read()
@@ -131,13 +131,13 @@ class BaseOutputHandler(object):
         self.reset()
 
     def feed(self, data):
-        '''Feed some data to the parser.
+        """Feed some data to the parser.
 
         It is processed insofar as it consists of complete elements;
         incomplete data is buffered until more data is fed or close()
         is called.
 
-        '''
+        """
 
         rpos = self._buffer.tell()
         self._buffer.seek(self._wpos)
@@ -147,7 +147,7 @@ class BaseOutputHandler(object):
         self._parse()
 
     def get_progress(self):
-        '''Search and decode progress patterns'''
+        """Search and decode progress patterns"""
 
         pos = self._buffer.tell()
         data = self._buffer.read()
@@ -174,7 +174,7 @@ class BaseOutputHandler(object):
         return result
 
     def get_line(self):
-        '''Extract complete lines'''
+        """Extract complete lines"""
 
         pos = self._buffer.tell()
         data = self._buffer.readline()
@@ -195,7 +195,7 @@ class BaseOutputHandler(object):
                 break
 
     def handle_progress(self, data):
-        '''Handle progress data.
+        """Handle progress data.
 
         This method is not meant to be called by the user.
 
@@ -208,7 +208,7 @@ class BaseOutputHandler(object):
             for the default implementation.
             Each item can be None.
 
-        '''
+        """
 
         pulse = data.get('pulse')
         percentage = data.get('percentage')
@@ -232,7 +232,7 @@ class BaseOutputHandler(object):
         self.logger.log(PROGRESS, ' '.join(result), extra=extra)
 
     def handle_line(self, data):
-        '''Handle output lines.
+        """Handle output lines.
 
         This method is not meant to be directly called by the user.
 
@@ -243,7 +243,7 @@ class BaseOutputHandler(object):
             an entire output line (including the trailing "end of line"
             character.
 
-        '''
+        """
 
         for tag_name, pattern in self._text_patterns.items():
             match = pattern.search(data)
@@ -255,7 +255,7 @@ class BaseOutputHandler(object):
 
 
 class ToolDescriptor(object):
-    '''Command line tool desctiptor.
+    """Command line tool desctiptor.
 
     A :class:`ToolDescriptor` instance describes a command line tool
     (:attr:`executable`), how to run it (:attr:`args`, :attr:`cwd`,
@@ -275,12 +275,12 @@ class ToolDescriptor(object):
         # The executable name is passed at execution time (first argument)
         controller.run_tool(cmd, 'ls', '-l')
 
-    '''
+    """
 
     def __init__(self, executable, args=None, cwd=None, env=None,
                  stdout_handler=None, stderr_handler=None,
                  output_encoding=None):
-        '''
+        """
         :param executable:
             full path of the tool executable or just the tool program
             name if it is in the system search path
@@ -304,7 +304,7 @@ class ToolDescriptor(object):
 
         .. seealso:: :class:`BaseOutputHandler`
 
-        '''
+        """
 
         super(ToolDescriptor, self).__init__()
 
@@ -360,7 +360,7 @@ class ToolDescriptor(object):
         self._env = env
 
     def cmdline(self, *args, **kwargs):
-        '''Generate the complete command-line for the tool.
+        """Generate the complete command-line for the tool.
 
         This method is meant to be used together with "subprocess"
         so the "comman-line" actually is a list of strings.
@@ -378,7 +378,7 @@ class ToolDescriptor(object):
 
           ' '.join(tool.cmdline(arg1, arg2, arg3))
 
-        '''
+        """
 
         if self.args is not None:
             args = list(self.args) + list(args)
@@ -407,7 +407,7 @@ class ToolDescriptor(object):
 
 
 class BaseToolController(object):
-    '''Base class for controlling command line tools.
+    """Base class for controlling command line tools.
 
     A tool controller runs an external tool in controlled way.
     The output of the child process is handled by the controller and,
@@ -424,7 +424,7 @@ class BaseToolController(object):
               info n executed process are no more needed or before
               executing a new process.
 
-    '''
+    """
 
     def __init__(self, logger=None):
         super(BaseToolController, self).__init__()
@@ -443,18 +443,18 @@ class BaseToolController(object):
 
     @property
     def isbusy(self):
-        '''If True then the controller is already running a subprocess.'''
+        """If True then the controller is already running a subprocess."""
 
         raise NotImplementedError('BaseToolController.busy')
 
     @property
     def userstop(self):
-        '''If True the process has been stopped by the user.'''
+        """If True the process has been stopped by the user."""
 
         return self._userstop
 
     def finalize_run_hook(self):
-        '''Hook method for extra finalization tasks.
+        """Hook method for extra finalization tasks.
 
         This method is always called after finalization and before
         controller reset.
@@ -464,7 +464,7 @@ class BaseToolController(object):
 
         This method is not meant to be called from the user.
 
-        '''
+        """
 
         pass
 
@@ -472,12 +472,12 @@ class BaseToolController(object):
         raise NotImplementedError('finalize_run')
 
     def _reset(self):
-        '''Internal reset.
+        """Internal reset.
 
         Kill the controlled subprocess and reset I/O channels loosing
         all unprocessed data.
 
-        '''
+        """
 
         if self._tool:
             if self._tool.stdout_handler:
@@ -486,14 +486,14 @@ class BaseToolController(object):
                 self._tool.stderr_handler.reset()
 
     def reset(self):
-        '''Reset the tool controller instance'''
+        """Reset the tool controller instance"""
 
         self._reset()
         self._userstop = False
         self._tool = None
 
     def prerun_hook(self, cmd):
-        '''Hook method for extra pre-run actions.
+        """Hook method for extra pre-run actions.
 
         This method is always called before the controlled subprocess
         is actually started.  The user can provide its own custom
@@ -502,7 +502,7 @@ class BaseToolController(object):
 
         This method is not meant to be called from the user.
 
-        '''
+        """
 
         if sys.platform[:3] == 'win':
             prompt = 'cmd >'

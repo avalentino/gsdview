@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Core GDAL backend functions and classes.'''
+"""Core GDAL backend functions and classes."""
 
 
 import os
@@ -39,7 +39,7 @@ _log = logging.getLogger(__name__)
 
 
 class GdalHelper(object):
-    '''Basee helper class for running external GDAL tools.
+    """Basee helper class for running external GDAL tools.
 
     Helper classes provide a common set of functionality for running
     GDAL tools in separate processes.
@@ -50,7 +50,7 @@ class GdalHelper(object):
         * temporay files and diractories cleanup
         * finalization actions
 
-    '''
+    """
 
     _PROGRESS_RANGE = (0, 100)
 
@@ -88,7 +88,7 @@ class GdalHelper(object):
         return files
 
     def setup_tmpdir(self, dataset):
-        '''Create a temporary diran copy the virtual file into it.'''
+        """Create a temporary diran copy the virtual file into it."""
 
         vrtdirname = os.path.dirname(dataset.vrtfilename)
         try:
@@ -198,7 +198,7 @@ class GdalHelper(object):
 
 
 class AddoHelper(GdalHelper):
-    '''Helper class for gdaladdo execution on live datasets.
+    """Helper class for gdaladdo execution on live datasets.
 
     In GSDView an external process running the gdaladdo is used to add
     oveviews to (virtual) dataset that are already open in GSDView
@@ -238,7 +238,7 @@ class AddoHelper(GdalHelper):
               existing overviews but ensure no data loss in case the
               operation is stopped by the user.
 
-    '''
+    """
 
     def __init__(self, app, tool):
         super(AddoHelper, self).__init__(app, tool)
@@ -354,7 +354,7 @@ class AddoHelper(GdalHelper):
 
 
 class StatsHelper(GdalHelper):
-    '''Helper class for statistics pre-computation on live raster bands.'''
+    """Helper class for statistics pre-computation on live raster bands."""
 
     _PROGRESS_RANGE = (0, 0)
 
@@ -435,7 +435,7 @@ class StatsHelper(GdalHelper):
 
 
 class StatsDialogHelper(StatsHelper):
-    '''Helper class for statistics computation on live raster bands.'''
+    """Helper class for statistics computation on live raster bands."""
 
     _PROGRESS_DIALOD_MSG = 'Statistics computation.'
 
@@ -462,7 +462,7 @@ class StatsDialogHelper(StatsHelper):
 
 
 class HistDialogHelper(StatsDialogHelper):
-    '''Helper class for histogram computation on live raster bands.'''
+    """Helper class for histogram computation on live raster bands."""
 
     _PROGRESS_RANGE = (0, 100)
     _PROGRESS_DIALOD_MSG = 'Histogram computation.'
@@ -478,11 +478,11 @@ class HistDialogHelper(StatsDialogHelper):
 
 
 class AddoDialogHelper(AddoHelper):
-    '''Helper class for overviews computation.
+    """Helper class for overviews computation.
 
     .. seealso:: :class:`AddoHelper`
 
-    '''
+    """
 
     _PROGRESS_DIALOD_MSG = 'Overviews computation.'
 

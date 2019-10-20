@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-'''Exectools tool descriptors for gsdtools .'''
+"""Exectools tool descriptors for gsdtools ."""
 
 
 import os
@@ -46,15 +46,15 @@ def _gsdtoolcmd(name):
 
 
 class StatsDescriptor(BaseGdalToolDescriptor):
-    '''Descriptor for gsdstats tool.
+    """Descriptor for gsdstats tool.
 
     .. seealso:: :class:`exectools.ToolDescriptor`
 
-    '''
+    """
 
     def __init__(self, cwd=None, env=None,
                  stdout_handler=None, stderr_handler=None):
-        '''
+        """
         :param cwd:
             program working directory
         :param env:
@@ -69,7 +69,7 @@ class StatsDescriptor(BaseGdalToolDescriptor):
 
         .. seealso:: :class:`exectools.BaseOutputHandler`
 
-        '''
+        """
 
         executable = utils.which('gsdstats')
         if executable:
@@ -113,7 +113,7 @@ class StatsDescriptor(BaseGdalToolDescriptor):
 
     @property
     def hist(self):
-        '''Histogram request.
+        """Histogram request.
 
         Histogram request objects allow to specifie parameters for
         historams computarion or disable histogram computation at all.
@@ -150,7 +150,7 @@ class StatsDescriptor(BaseGdalToolDescriptor):
 
             desctiptot.hist = None
 
-        '''
+        """
 
         return self._histreq
 
@@ -200,15 +200,15 @@ class StatsDescriptor(BaseGdalToolDescriptor):
 
 
 class Ras2vecDescriptor(BaseGdalToolDescriptor):
-    '''Descriptor for ras2vec tool.
+    """Descriptor for ras2vec tool.
 
     .. seealso:: :class:`exectools.ToolDescriptor`
 
-    '''
+    """
 
     def __init__(self, cwd=None, env=None,
                  stdout_handler=None, stderr_handler=None):
-        '''
+        """
         :param cwd:
             program working directory
         :param env:
@@ -223,7 +223,7 @@ class Ras2vecDescriptor(BaseGdalToolDescriptor):
 
         .. seealso:: :class:`exectools.BaseOutputHandler`
 
-        '''
+        """
 
         executable = utils.which('ras2vec')
         if executable:
