@@ -5,7 +5,7 @@
 
 PYTHON = python3
 BUILDDIR = build
-DOCBUILDDIR = $(BUILDDIR)/sphinx
+DOCBUILDDIR = doc/build
 #SIGNKEYID = antonio.valentino@tiscai.it
 DEBUILD_OPTIONS = -us -uc
 
@@ -17,6 +17,7 @@ docs: html pdf man
 
 html:
 	$(MAKE) -C doc html
+	ln -fs build/html doc/html
 
 pdf: doc/GSDView.pdf
 
@@ -24,11 +25,12 @@ doc/GSDView.pdf:
 	$(MAKE) -C doc latexpdf
 	cp $(DOCBUILDDIR)/latex/GSDView.pdf doc
 
-man: doc/gsdview.1
+man: doc/man/gsdview.1
 
-doc/gsdview.1: doc/source/manpage.txt
+doc/man/gsdview.1: doc/source/manpage.rst
 	$(MAKE) -C doc man
 	#gzip -c $@ > $@.gz
+	ln -fs build/man doc/man
 
 
 sdist: ui html man
@@ -79,8 +81,8 @@ clean:
 	-find . -name '__pycache__' -delete
 
 distclean: clean
-	$(MAKE) -C doc distclean
 	$(MAKE) -C pkg distclean
+	$(RM) doc/GSDView.pdf doc/man doc/html
 	$(RM) -r dist gsdview.egg-info
 	$(RM) $(PYUIFILES)
 	$(RM) gsdview/ui/__init__.py gsdview/gdalbackend/ui/__init__.py \
