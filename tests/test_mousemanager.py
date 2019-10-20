@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # GSDView - Geo-Spatial Data Viewer
-# Copyright (C) 2008-2015 Antonio Valentino <antonio.valentino@tiscali.it>
+# Copyright (C) 2008-2019 Antonio Valentino <antonio.valentino@tiscali.it>
 #
 # This module is free software you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -137,7 +137,7 @@ class MainWin(QtWidgets.QMainWindow):
         title = self.tr('MouseManager Example')
         text = ['<h1>Mouse Manager</h1>'
                 '<p>Example program for the Mouse manager component.</p>',
-                '<p>Copyright (C): 2009-2015 '
+                '<p>Copyright (C): 2009-2019 '
                 '<a href="mailto:antonio.valentino@tiscali.it">'
                 'Antonio Valentino'
                 '<a>.</p>']
