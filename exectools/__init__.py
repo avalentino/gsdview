@@ -530,7 +530,7 @@ class BaseToolController(object):
         raise NotImplementedError('stop_tool')
 
 
-if(__name__ == '__main__'):
+if __name__ == '__main__':
     import time
 
     logging.basicConfig(level=logging.DEBUG)

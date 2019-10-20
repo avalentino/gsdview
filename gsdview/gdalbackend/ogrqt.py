@@ -307,7 +307,7 @@ def layerToGraphicsItem(layer, srs=None, transform=None):
             geotransform = srs_transform
             geom_srs = geom.GetSpatialReference()
             if geom_srs:
-                if (layer_srs is not None and not geom_srs.IsSame(layer_srs)):
+                if layer_srs is not None and not geom_srs.IsSame(layer_srs):
                     if srs is not None:
                         geotransform = osr.CoordinateTransformation(geom_srs,
                                                                     srs)

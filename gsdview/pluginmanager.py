@@ -369,7 +369,7 @@ class PluginManagerGui(QtWidgets.QWidget, PluginManagerGuiBase):
         # @TODO: don't directly use _app attribute
         filedialog = self.pluginmanager._app.filedialog
         filedialog.setFileMode(filedialog.Directory)
-        if(filedialog.exec_()):
+        if filedialog.exec_():
             dirs = filedialog.selectedFiles()
             existingdirs = [
                 str(self.pathListWidget.item(row).text())
@@ -395,7 +395,7 @@ class PluginManagerGui(QtWidgets.QWidget, PluginManagerGuiBase):
             filedialog = self.pluginmanager._app.filedialog
             filedialog.setFileMode(filedialog.Directory)
             filedialog.selectFile(item.text())
-            if(filedialog.exec_()):
+            if filedialog.exec_():
                 dirs = filedialog.selectedFiles()
                 if dirs:
                     dir_ = dirs[0]

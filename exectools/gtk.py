@@ -264,7 +264,7 @@ class GtkOutputPane(Gtk.TextView):
                 msgdialog.set_default_response(Gtk.ResponseType.NO)
                 response = msgdialog.run()
                 msgdialog.destroy()
-                if(response != Gtk.ResponseType.YES):
+                if response != Gtk.ResponseType.YES:
                     filename = None
 
         dialog.hide()
