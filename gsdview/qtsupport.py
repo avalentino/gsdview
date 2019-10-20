@@ -123,7 +123,7 @@ def selectAllItems(itemview):
                                      QtCore.QItemSelectionModel.Select)
 
 
-#@QtCore.Slot(QtWidgets.QWidget) # @TODO: check
+# @QtCore.Slot(QtWidgets.QWidget)  # @TODO: check
 def copySelectedItems(itemview):
     """Copy selected items of an QAbstractItemView to the clipboard and
     also return copied data."""
@@ -149,15 +149,15 @@ def copySelectedItems(itemview):
         clipboard.setText(data, QtGui.QClipboard.Selection)
 
     # @TODO: check
-    #data = QtCore.QByteArray()
-    #data.append('\n'.join(lines))
+    # data = QtCore.QByteArray()
+    # data.append('\n'.join(lines))
 
-    #mimedata = QtCore.QMimeData()
-    #mimedata.setData('text/csv', data)
+    # mimedata = QtCore.QMimeData()
+    # mimedata.setData('text/csv', data)
 
-    #clipboard = QtWidgets.QApplication.clipboard()
-    #clipboard.setMimeData(mimedata, QtGui.QClipboard.Clipboard)
-    #clipboard.setMimeData(mimedata, QtGui.QClipboard.Selection)
+    # clipboard = QtWidgets.QApplication.clipboard()
+    # clipboard.setMimeData(mimedata, QtGui.QClipboard.Clipboard)
+    # clipboard.setMimeData(mimedata, QtGui.QClipboard.Selection)
 
     return data
 
@@ -217,7 +217,7 @@ def modelToTextDocument(model, doc=None):
         ncols = 1
     table = cursor.insertTable(nrows, ncols, format)
 
-    #textformat = QtWidgets.QTextFormat()
+    # textformat = QtWidgets.QTextFormat()
 
     for row in range(nrows):
         for col in range(ncols):
@@ -340,8 +340,8 @@ def exportTable(model, parent=None):
 def setViewContextActions(widget):
     assert (widget.contextMenuPolicy() == QtCore.Qt.ActionsContextMenu), \
         'menu policy is not "QtCore.Qt.ActionsContextMenu"'
-    #if widget.contextMenuPolicy() != QtCore.Qt.ActionsContextMenu:
-    #    widget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+    # if widget.contextMenuPolicy() != QtCore.Qt.ActionsContextMenu:
+    #     widget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
     icon = geticon('copy.svg', __name__)
     action = QtWidgets.QAction(
@@ -352,13 +352,13 @@ def setViewContextActions(widget):
         triggered=lambda: copySelectedItems(widget))
     widget.addAction(action)
 
-    #':/trolltech/dialogs/qprintpreviewdialog/images/view-page-multi-32.png'
+    # ':/trolltech/dialogs/qprintpreviewdialog/images/view-page-multi-32.png'
     icon = QtGui.QIcon(
         ':/trolltech/styles/commonstyle/images/viewlist-128.png')
     action = QtWidgets.QAction(
         icon, widget.tr('Select &All'), widget,
         objectName='selectAllAction',
-        #shortcut=widget.tr('Ctrl+A'),
+        # shortcut=widget.tr('Ctrl+A'),
         toolTip=widget.tr('Select all items'),
         triggered=lambda: selectAllItems(widget))
     widget.addAction(action)
@@ -382,14 +382,14 @@ def setViewContextActions(widget):
         triggered=lambda: printObject(widget))
     widget.addAction(action)
 
-    #~ icon = QtGui.QIcon(
-        #~ ':/trolltech/styles/commonstyle/images/filecontents-128.png')
-    #~ action = QtWidgets.QAction(icon, widget.tr('Print Preview'), widget,
-                           #~ objectName='printPreviewAction',
-                           #~ statusTip=widget.tr('Print Preview'))#,
-                           #~ #triggered=tablePrintPreview)
-                           #~ # @TODO: tablePrintPreview
-    #~ widget.addAction(action)
+    # icon = QtGui.QIcon(
+    #     ':/trolltech/styles/commonstyle/images/filecontents-128.png')
+    # action = QtWidgets.QAction(icon, widget.tr('Print Preview'), widget,
+    #                        objectName='printPreviewAction',
+    #                        statusTip=widget.tr('Print Preview'))#,
+    #                        #triggered=tablePrintPreview)
+    #                        # @TODO: tablePrintPreview
+    # widget.addAction(action)
 
 
 # Printing helpers ##########################################################
@@ -402,9 +402,10 @@ def coreprint(obj, printer):
 
 def printObject(obj, printer=None, parent=None):
     if printer is None:
-        printer = QtPrintSupport.QPrinter(QtPrintSupport.QPrinter.PrinterResolution)
-        #printer.setOutputFile(os.path.join(utils.default_workdir().
-        #                                   'filename.pdf'))
+        printer = QtPrintSupport.QPrinter(
+            QtPrintSupport.QPrinter.PrinterResolution)
+        # printer.setOutputFile(os.path.join(utils.default_workdir().
+        #                                    'filename.pdf'))
 
     # @TODO: check
     if parent is None:
@@ -413,15 +414,15 @@ def printObject(obj, printer=None, parent=None):
         except AttributeError:
             parent = None
 
-    #dialog = QtPrintSupport.QPrintDialog(printer)
-    #try:
-    #    window = obj.window()
-    #except AttributeError:
-    #    window = = None
-    #preview = QtWidgets.QPrintPreviewWidget(printer, window)
-    #preview.paintRequested.connect(coreprint)
-    #dialog.setOptionTabs([preview])
-    #ret = d.exec_()
+    # dialog = QtPrintSupport.QPrintDialog(printer)
+    # try:
+    #     window = obj.window()
+    # except AttributeError:
+    #     window = = None
+    # preview = QtWidgets.QPrintPreviewWidget(printer, window)
+    # preview.paintRequested.connect(coreprint)
+    # dialog.setOptionTabs([preview])
+    # ret = d.exec_()
 
     ret = QtPrintSupport.QPrintDialog(printer, parent).exec_()
     if ret == QtWidgets.QDialog.Accepted:
@@ -440,7 +441,8 @@ def printObject(obj, printer=None, parent=None):
 
 def printPreview(obj, printer=None, parent=None):
     if printer is None:
-        printer = QtPrintSupport.QPrinter(QtPrintSupport.QPrinter.PrinterResolution)
+        printer = QtPrintSupport.QPrinter(
+            QtPrintSupport.QPrinter.PrinterResolution)
 
     # @TODO: check
     if parent is None:
@@ -797,7 +799,7 @@ def numpy2qimage(data, colortable=GRAY_COLORTABLE):
     elif data.dtype == np.uint32 and data.ndim == 2:
         h, w = data.shape
         image = np.require(data, data.dtype, 'CO')  # 'CAO'
-        #format_ = QtGui.QImage.Format_ARGB32
+        # format_ = QtGui.QImage.Format_ARGB32
         format_ = QtGui.QImage.Format_RGB32
 
     else:
@@ -924,7 +926,7 @@ def cfgToTextDocument(cfg, doc=None):
 
     titleformat = QtGui.QTextCharFormat()
     titleformat.setFontWeight(QtGui.QFont.Bold)
-    #titleformat.setPointSze(12)
+    # titleformat.setPointSze(12)
 
     # headers style
     headerformat = QtGui.QTextCharFormat()
@@ -950,7 +952,7 @@ def cfgToTextDocument(cfg, doc=None):
         ncols = 2
         table = cursor.insertTable(nrows, ncols, tableformat)
 
-        #textformat = QtWidgets.QTextFormat()
+        # textformat = QtWidgets.QTextFormat()
 
         for index, (key, value) in enumerate(items):
             cell = table.cellAt(index, 0)
@@ -1034,14 +1036,15 @@ def imgexport(obj, parent=None):
         if hasattr(obj, 'viewport'):
             srcsize = obj.viewport().rect().size()
         elif hasattr(obj, 'sceneRect'):
-            # QGraphicsViews alsa has a viewport method so they should be
+            # QGraphicsViews also has a viewport method so they should be
             # trapped by the previous check
             srcsize = obj.sceneRect().toRect().size()
         else:
             srcsize = QtWidgets.QSize(800, 600)
 
         if ext in ('pdf', 'ps'):
-            device = QtPrintSupport.QPrinter(QtPrintSupport.QPrinter.HighResolution)
+            device = QtPrintSupport.QPrinter(
+                QtPrintSupport.QPrinter.HighResolution)
             device.setOutputFileName(filename)
             if ext == 'pdf':
                 device.setOutputFormat(QtPrintSupport.QPrinter.PdfFormat)
@@ -1052,9 +1055,9 @@ def imgexport(obj, parent=None):
             device = QtSvg.QSvgGenerator()
             device.setFileName(filename)
             device.setSize(srcsize)
-            #device.setViewBox(obj.sceneRect().toRect())
-            #device.setTitle(obj.tr('Graphics Draw'))
-            #device.setDescription(obj.tr('Qt SVG drawing.'))
+            # device.setViewBox(obj.sceneRect().toRect())
+            # device.setTitle(obj.tr('Graphics Draw'))
+            # device.setDescription(obj.tr('Qt SVG drawing.'))
         else:
             device = QtGui.QPixmap(srcsize)
             # @TODO: check
@@ -1062,7 +1065,7 @@ def imgexport(obj, parent=None):
 
         painter = QtGui.QPainter()
         if painter.begin(device):
-            #painter.setRenderHint(QtGui.QPainter.Antialiasing)
+            # painter.setRenderHint(QtGui.QPainter.Antialiasing)
             obj.render(painter)
             painter.end()
             if hasattr(device, 'save'):
@@ -1072,6 +1075,7 @@ def imgexport(obj, parent=None):
                 parent,
                 obj.tr('Warning'),
                 obj.tr('Unable initialize painting device.'))
+
 
 # Qt info
 def format_qt_info():

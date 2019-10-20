@@ -48,12 +48,12 @@ class GSDToolsController(QtCore.QObject):
         self.actions = self._setupActions()
         self.actions.setEnabled(False)
         app.mdiarea.subWindowActivated.connect(self.onSubWindowChanged)
-        #app.subWindowClosed.connect(self.onSubWindowChanged)
-        #~ app.treeview.clicked.connect(self.onItemChanged)
-        #~ app.treeview.selectionModel().selectionChanged(
-        #~    self.self.onItemChanged)
-        #~ ##void currentChanged(const QModelIndex& current,
-        #~ ##                    const QModelIndex& previous)
+        # app.subWindowClosed.connect(self.onSubWindowChanged)
+        # app.treeview.clicked.connect(self.onItemChanged)
+        # app.treeview.selectionModel().selectionChanged(
+        #    self.self.onItemChanged)
+        # ##void currentChanged(const QModelIndex& current,
+        # ##                    const QModelIndex& previous)
 
     def _googleEarthBin(self):
         pass
@@ -90,7 +90,7 @@ class GSDToolsController(QtCore.QObject):
     def loadSettings(self, settings):
         settings.beginGroup('plugins/%s' % info.name)
         try:
-            googleearth = settings.value('gogle_earth_path')
+            googleearth = settings.value('google_earth_path')
             if not googleearth:
                 if sys.platform.startswith('win'):
                     googleearth = utils.which('googleearth.exe')
@@ -186,7 +186,7 @@ class GSDToolsController(QtCore.QObject):
             # @TODO: QtWidgets.QMessageBox.error(...)
             _log.error('unable to export "%s" to "%s".', src, dst)
 
-        #success = QtCore.QProcess.startDetached(self.googleearth, [dst])
+        # success = QtCore.QProcess.startDetached(self.googleearth, [dst])
         _log.info('GoogleEarth: %s', self.googleearth)
         _log.info('KML: %s', dst)
         success = QtCore.QProcess.startDetached(
@@ -265,18 +265,18 @@ class GSDToolsController(QtCore.QObject):
         enabled = bool(item is not None and hasattr(item, 'cmapper'))
         self.actions.setEnabled(enabled)
 
-    #~ @QtCore.Slot(QtCore.QModelIndex)
-    #~ def onItemClicked(self, index):
-        #~ if not self.app.mdiarea.activeSubWindow():
-            #~ item = self.app.datamodel.itemFromIndex(index)
-            #~ self.setItemFootprint(item)
-
-    #~ @QtCore.Slot()
-    #~ @QtCore.Slot(QtCore.QModelIndex, int, int)
-    #~ def onModelChanged(self, index=None, start=None, stop=None):
-        #~ subwin = self.app.mdiarea.activeSubWindow()
-        #~ if subwin:
-            #~ self.onSubWindowChanged(subwin)
-        #~ else:
-            #~ item = self.app.currentItem()
-            #~ self.setItemFootprint(item)
+    # @QtCore.Slot(QtCore.QModelIndex)
+    # def onItemClicked(self, index):
+    #     if not self.app.mdiarea.activeSubWindow():
+    #         item = self.app.datamodel.itemFromIndex(index)
+    #         self.setItemFootprint(item)
+    #
+    # @QtCore.Slot()
+    # @QtCore.Slot(QtCore.QModelIndex, int, int)
+    # def onModelChanged(self, index=None, start=None, stop=None):
+    #     subwin = self.app.mdiarea.activeSubWindow()
+    #     if subwin:
+    #         self.onSubWindowChanged(subwin)
+    #     else:
+    #         item = self.app.currentItem()
+    #         self.setItemFootprint(item)

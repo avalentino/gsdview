@@ -128,10 +128,10 @@
      <item>
       <widget class="QPushButton" name="exportButton">
        <property name="toolTip">
-        <string>Save matadata to file.</string>
+        <string>Save metadata to file.</string>
        </property>
        <property name="statusTip">
-        <string>Save matadata to file.</string>
+        <string>Save metadata to file.</string>
        </property>
        <property name="text">
         <string>Export</string>

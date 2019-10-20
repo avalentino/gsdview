@@ -173,9 +173,9 @@ def uniqueDatasetID(prod):
     elif driver_name == 'ESAT':
         metadata = prod.GetMetadata()
         prod_id = os.path.splitext(metadata['MPH_PRODUCT'])[0]
-    #~ elif driver_name = 'GTiff':
-        #~ # ERS BTIF
-        #~ pass
+    # elif driver_name = 'GTiff':
+    #     # ERS BTIF
+    #     pass
     elif driver_name.startswith('HDF5') or driver_name.startswith('CSK'):
         # @TODO: update this case using data_uuid
         prod_id = prod.GetDescription()
@@ -320,7 +320,7 @@ def ogrFilters():   # mode='r'):
 
 
 def isRGB(dataset, strict=False):
-    """Return True if a dataset is compatible with RGB representaion.
+    """Return True if a dataset is compatible with RGB representation.
 
     Conditions tested are:
 
@@ -394,8 +394,8 @@ def GetCachedStatistics(band):
 
     # @TODO: remove.
     #        It is no more needed if the numeric locale is correctly set.
-    #if None not in stats:
-    #    stats = [float(item.replace(',', '.')) for item in stats]
+    # if None not in stats:
+    #     stats = [float(item.replace(',', '.')) for item in stats]
 
     if None not in stats:
         stats = [float(item) for item in stats]
@@ -411,7 +411,7 @@ def SafeGetStatistics(band, approx_ok=False, force=True):
     flag set to False and no statistics available).
 
     This function gracefully handles this case an also cases in which
-    an error happend during statistics computation (e.g. to many nodata
+    an error happen during statistics computation (e.g. to many nodata
     values).
 
     :param band:
@@ -427,10 +427,10 @@ def SafeGetStatistics(band, approx_ok=False, force=True):
         If force is False and results cannot be returned efficiently,
         the function will return four None instead of actual statistics
         values.
-        Dafault: True.
+        Default: True.
     :returns:
         a tuple containing (min, max, mean, stddev) if statistics can
-        be retriewed according to the input flags.
+        be retrieved according to the input flags.
         A tuple of four None if statistics are not available or can't
         be computer according to input flags or if some error occurs
         during computation.
@@ -469,9 +469,9 @@ def SafeGetStatistics(band, approx_ok=False, force=True):
 def hasFastStats(band, approx_ok=True):
     """Return true if band statistics can be retrieved quickly.
 
-    If precomputed stistics are in band metadata or small enough band
+    If precomputed statistics are in band metadata or small enough band
     overviews does exist then it is assumed that band statistics can
-    be retriewed in a very quick way.
+    be retrieved in a very quick way.
 
     if the *approx_ok* only precomputed statistics are taken into
     account.
@@ -494,6 +494,7 @@ def hasFastStats(band, approx_ok=True):
             result = True
 
     return result
+
 
 # Color table helpers #####################################################
 colorinterpretations = {
@@ -593,8 +594,8 @@ def _fixedGCPs(gcps):
 
         # @WARNING: here we are assuming that the distance between geolocation
         #           grid linse is constant
-        assert upsteps.max() == upsteps[:-1].min(), ('max = %f, min = %f' %
-                                                (upsteps.max(), upsteps.min()))
+        assert upsteps.max() == upsteps[:-1].min(), (
+                'max = %f, min = %f' % (upsteps.max(), upsteps.min()))
         linespacing = int(upsteps[0])
 
         downstepslocation = np.where(lines[1:] < lines[0:-1])[0] + 1
@@ -642,7 +643,7 @@ class CoordinateMapper(object):
         if not projection:
             raise InvalidProjection('unable to get a valid projection')
 
-        #sref = osr.SpatialReference(projection) # do not work for Pymod API
+        # sref = osr.SpatialReference(projection) # do not work for Pymod API
         sref = osr.SpatialReference()
         sref.ImportFromWkt(projection)
 
@@ -703,7 +704,7 @@ class CoordinateMapper(object):
     def imgToGeoGrid(self, pixel, line):
         """Coordinate conversion: (pixel,line) --> (lon,lat) on regular grids.
 
-        Elements of the return (lon, lat) touple are 2D array with shape
+        Elements of the return (lon, lat) tuple are 2D array with shape
         (len(pixels), len(line)).
 
         """
@@ -718,7 +719,7 @@ class CoordinateMapper(object):
     def geoToImgGrid(self, lon, lat):
         """Coordinate conversion: (lon,lat) --> (pixel,line) on regular grids.
 
-        Elements of the return (pixel,line) touple are 2D array with shape
+        Elements of the return (pixel,line) tuple are 2D array with shape
         (len(lon), len(lat)).
 
         """
@@ -789,7 +790,7 @@ def ovrLevelForSize(gdalobj, ovrsize=OVRMEMSIE):
 
         band = gdalobj
 
-        #bytePerPixel = gdal.GetDataTypeSize(band.DataType) / 8
+        # bytePerPixel = gdal.GetDataTypeSize(band.DataType) / 8
         bytesperpixel = 1   # the quicklook image is always converted to byte
         datasize = band.XSize * band.YSize * bytesperpixel
         ovrlevel = np.sqrt(datasize / float(ovrsize))
@@ -842,7 +843,7 @@ def ovrBestIndex(gdalobj, ovrlevel=None, policy='NEAREST'):
     :SMALLER: between available ovr factors it is returned the closest
               one that is smaller or equal to the requested *ovrlevel*
 
-    .. note:: plase note that *GREATER* for overview level implies a
+    .. note:: please note that *GREATER* for overview level implies a
               larger reduction factor hence a smaller image (and vice
               versa).
 
@@ -887,13 +888,13 @@ def ovrBestIndex(gdalobj, ovrlevel=None, policy='NEAREST'):
 def ovrComputeLevels(gdalobj, ovrsize=OVRMEMSIE, estep=3, threshold=0.1):
     """Compute the overview levels to be generated.
 
-    GSDView relies on overviews to provide a confortable image
+    GSDView relies on overviews to provide a comfortable image
     navigation experience (scroll, pan, zoom etc).
     This function evaluated the number and overview factors to be
-    pre-calculated in order to provide such a confortable experience.
+    pre-calculated in order to provide such a comfortable experience.
 
     :param ovrsize:
-        memory size that the smallest overview should not exceede
+        memory size that the smallest overview should not exceeds
     :param estep:
         step for overview levels computation::
 
@@ -921,7 +922,7 @@ def ovrComputeLevels(gdalobj, ovrsize=OVRMEMSIE, estep=3, threshold=0.1):
     missinglevels = estep ** exponents
     missinglevels = missinglevels.astype(np.int)
 
-    # Remove exixtng levels to avoid re-computation
+    # Remove existng levels to avoid re-computation
     levels = ovrLevels(gdalobj)
     missinglevels = sorted(set(missinglevels).difference(levels))
 
@@ -944,10 +945,10 @@ def ovrComputeLevels(gdalobj, ovrsize=OVRMEMSIE, estep=3, threshold=0.1):
 
 def ovrRead(dataset, x=0, y=0, w=None, h=None, ovrindex=None,
             bstart=1, bcount=None, dtype=None):
-    """Read an image block from overviews of all spacified bands.
+    """Read an image block from overviews of all specified bands.
 
     This function read a data block from the overview corresponding to
-    *ovrindex* for all *bcount* raster bands starting drom the
+    *ovrindex* for all *bcount* raster bands starting from the
     *bstart*\ th one.
 
     Parameters:
@@ -982,7 +983,7 @@ def ovrRead(dataset, x=0, y=0, w=None, h=None, ovrindex=None,
     assert bstart > 0
     assert bstart - 1 + bcount <= dataset.RasterCount
 
-    #data = np.zeros((h, w, dataset.RasterCount), np.ubyte)
+    # data = np.zeros((h, w, dataset.RasterCount), np.ubyte)
     channels = []
     for bandindex in range(bstart, bstart + bcount):
         band = dataset.GetRasterBand(bandindex)

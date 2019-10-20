@@ -92,7 +92,7 @@
    <item>
     <widget class="QGroupBox" name="filedialogGroupBox">
      <property name="title">
-      <string>File DIalog</string>
+      <string>File Dialog</string>
      </property>
      <layout class="QHBoxLayout" name="fileDialogHorizontalLayout">
       <item>

@@ -64,15 +64,15 @@ class Popen(GObject.GObject, subprocess2.Popen):
 
     def close(self):
         # @NOTE: don't close system stdout and stderr
-        #if self.stdout:
-        #    self.stdout.close()
-        #if self.stderr:
-        #    self.stderr.close()
+        # if self.stdout:
+        #     self.stdout.close()
+        # if self.stderr:
+        #     self.stderr.close()
 
         for tag in set(self._watch_tags):
             GLib.source_remove(tag)
         # @COMPATIBILITY: list.clear() is not available in Python 2
-        #self._watch_tags.clear()
+        # self._watch_tags.clear()
         del self._watch_tags[:]
 
     if sys.platform[:3] == 'win':
@@ -182,7 +182,7 @@ class GtkOutputPane(Gtk.TextView):
         super(GtkOutputPane, self).__init__()
         if buffer is not None:
             self.set_buffer(buffer)
-        #self.stream = Gio.IOStream(self)
+        # self.stream = Gio.IOStream(self)
         self.hide_button = hide_button
         self.connect('populate-popup', self.on_populate_popup)
         self._filedialog = self._setup_filedialog()
@@ -197,7 +197,7 @@ class GtkOutputPane(Gtk.TextView):
                 'debug': {'foreground': 'gray'},
                 'cmd': {'weight': Pango.Weight.BOLD},
             }
-            #'message':{}
+            # 'message':{}
 
         buffer_ = self.get_buffer()
         for key, value in formats.items():
@@ -206,7 +206,7 @@ class GtkOutputPane(Gtk.TextView):
     def _setup_filedialog(self):
         dialog = Gtk.FileChooserDialog(
             title='Save Output Log',
-            #parent=self.textview.get_toplevel(),
+            # parent=self.textview.get_toplevel(),
             action=Gtk.FileChooserAction.SAVE)
         dialog.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.OK,
                            Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
@@ -371,7 +371,7 @@ class GtkOutputHandler(GObject.GObject, BaseOutputHandler):
 
         if self.blinker:
             self.blinker.show()
-            #self.progressbar.show()
+            # self.progressbar.show()
         super(GtkOutputHandler, self).feed(data)
 
     def close(self):
@@ -408,7 +408,7 @@ class GtkOutputHandler(GObject.GObject, BaseOutputHandler):
 
         """
 
-        #pulse = data.get('pulse')
+        # pulse = data.get('pulse')
         percentage = data.get('percentage')
         text = data.get('text')
 
@@ -420,8 +420,8 @@ class GtkOutputHandler(GObject.GObject, BaseOutputHandler):
             self.emit('percentage-changed', percentage)
 
         # Flush events
-        #while Gtk.events_pending():
-        #    Gtk.main_iteration(False)
+        # while Gtk.events_pending():
+        #     Gtk.main_iteration(False)
 
 
 class GtkLoggingHandler(logging.Handler):
@@ -463,10 +463,10 @@ class GtkLoggingHandler(logging.Handler):
             tag = getattr(record, 'tag', level2tag(record.levelno))
             self._write('%s' % msg, tag)
             # @TODO: check
-            #self._flush()
+            # self._flush()
         except (KeyboardInterrupt, SystemExit):
             raise
-        except:
+        except Exception:
             self.handleError(record)
 
 
@@ -510,19 +510,19 @@ class GtkDialogLoggingHandler(logging.Handler):
                 msg = record.getMessage()
                 msg = msg.encode('UTF-8', 'replace')
                 # @TODO: check
-                #self.dialog.set_markup('<b>%s</b>' % msg)
+                # self.dialog.set_markup('<b>%s</b>' % msg)
                 self.dialog.set_markup(msg)
             else:
                 msg = logging.getLevelName(record.levelno)
                 # @TODO: check
-                #self.dialog.set_markup('<b>%s</b>' % msg)
+                # self.dialog.set_markup('<b>%s</b>' % msg)
                 self.dialog.set_markup(msg)
 
             self.dialog.run()
             self.dialog.hide()
         except (KeyboardInterrupt, SystemExit):
             raise
-        except:
+        except Exception:
             self.handleError(record)
 
 
@@ -636,7 +636,7 @@ class GtkToolController(GObject.GObject, StdToolController):
 
             # ..seealso:: http://tldp.org/LDP/abs/html/exitcodes.html
             self.emit('finished', 126)   # @TODO: check
-        except:
+        except Exception:
             self._reset()
             raise
 
@@ -653,7 +653,7 @@ class GtkToolController(GObject.GObject, StdToolController):
 
         if not self._userstop:
             msg = 'I/O error from sub-process PID=%d' % self.subprocess.pid
-            #self.logger.error(msg)
+            # self.logger.error(msg)
             self.logger.debug(msg)
 
     def handle_connection_broken(self, *args):
@@ -662,5 +662,5 @@ class GtkToolController(GObject.GObject, StdToolController):
         if not self._userstop:
             msg = ('Connection broken with sub-process PID=%d' %
                    self.subprocess.pid)
-            #self.logger.error(msg)
+            # self.logger.error(msg)
             self.logger.debug(msg)

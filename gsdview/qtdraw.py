@@ -48,12 +48,12 @@ def _highlightSelectedGraphicsItem(item, painter, option, boundingrect=None):
         return
 
     try:
-        #if item.type() in (QGraphicsEllipseItem.Type,
-        #                   QGraphicsPathItem.Type,
-        #                   QGraphicsPolygonItem.Type,
-        #                   QGraphicsRectItem.Type,
-        #                   QGraphicsSimpleTextItem.Type,
-        #                   QGraphicsLineItem.Type):
+        # if item.type() in (QGraphicsEllipseItem.Type,
+        #                    QGraphicsPathItem.Type,
+        #                    QGraphicsPolygonItem.Type,
+        #                    QGraphicsRectItem.Type,
+        #                    QGraphicsSimpleTextItem.Type,
+        #                    QGraphicsLineItem.Type):
         itemPenWidth = item.pen().widthF()
     except AttributeError:
         itemPenWidth = 1.0
@@ -135,7 +135,7 @@ class GraphicsPointItem(QtWidgets.QAbstractGraphicsShapeItem):
 
     def setMaxFactor(self, maxfact):
         if maxfact < 0:
-            raise ValueError('invalid saling factor: "%s"' % maxfact)
+            raise ValueError('invalid scaling factor: "%s"' % maxfact)
         self._maxfact = float(maxfact)
 
     def type(self):
@@ -301,56 +301,56 @@ class DrawLineMode(MouseMode):
         return False
 
 
-#~ class DrawPolygonMode(MouseMode):
-    #~ dragmode = QtWidgets.QGraphicsView.NoDrag
-    #~ cursor = QtCore.Qt.CrossCursor
-    #~ icon = ':/trolltech/dialogs/qprintpreviewdialog/images/fit-width-24.png'
-    #~ label = 'Draw Line'
-    #~ name = 'drawLine'
-
-    #~ def __init__(self, parent=None):
-        #~ super(DrawPolygonMode, self).__init__(parent)
-        #~ self.rubberband = None
-        #~ self.pen = QtGui.QPen()
-        #~ self.pen.setWidth(1)
-        #~ self.pen.setColor(QtCore.Qt.red)
-        #~ self.brush = QtWidgets.QBrush()
-        #~ #self.brush.setStyle(QtCore.Qt.SolidPattern)
-        #~ #self.brush.setColor(QtCore.Qt.red)
-
-    #~ def sceneEventFilter(self, obj, event):
-        #~ if (event.type() == QtCore.QEvent.GraphicsSceneMousePress and
-                                    #~ event.button() == QtCore.Qt.LeftButton):
-            #~ assert(self.rubberband is None)
-            #~ self.rubberband = QtWidgets.QRubberBand(QtWidgets.QRubberBand.Line)
-            #~ self.rubberband.setGeometry(QtCore.QRect(event.screenPos(),
-                                                     #~ QtCore.QSize()))
-            #~ self.rubberband.show()
-            #~ return True
-
-        #~ if (event.type() == QtCore.QEvent.GraphicsSceneMouseRelease and
-                                    #~ event.button() == QtCore.Qt.LeftButton):
-            #~ assert(self.rubberband is not None)
-            #~ self.rubberband.hide()
-            #~ self.rubberband = None
-            #~ line = QtCore.QLineF(
-                            #~ event.buttonDownScenePos(QtCore.Qt.LeftButton),
-                            #~ event.scenePos())
-            #~ item = obj.addLine(line, self.pen)
-            #~ item.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True)
-            #~ item.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, True)
-            #~ return True
-
-        #~ elif (event.type() == QtCore.QEvent.GraphicsSceneMouseMove and
-                    #~ bool(event.buttons() & QtCore.Qt.LeftButton)):
-            #~ assert(self.rubberband is not None)
-            #~ rect = QtCore.QRect(
-                            #~ event.buttonDownScreenPos(QtCore.Qt.LeftButton),
-                            #~ event.screenPos()).normalized()
-            #~ self.rubberband.setGeometry(rect)
-            #~ return True
-
-        #~ return False
+# class DrawPolygonMode(MouseMode):
+#     dragmode = QtWidgets.QGraphicsView.NoDrag
+#     cursor = QtCore.Qt.CrossCursor
+#     icon = ':/trolltech/dialogs/qprintpreviewdialog/images/fit-width-24.png'
+#     label = 'Draw Line'
+#     name = 'drawLine'
+#
+#     def __init__(self, parent=None):
+#         super(DrawPolygonMode, self).__init__(parent)
+#         self.rubberband = None
+#         self.pen = QtGui.QPen()
+#         self.pen.setWidth(1)
+#         self.pen.setColor(QtCore.Qt.red)
+#         self.brush = QtWidgets.QBrush()
+#         #self.brush.setStyle(QtCore.Qt.SolidPattern)
+#         #self.brush.setColor(QtCore.Qt.red)
+#
+#     def sceneEventFilter(self, obj, event):
+#         if (event.type() == QtCore.QEvent.GraphicsSceneMousePress and
+#                                     event.button() == QtCore.Qt.LeftButton):
+#             assert(self.rubberband is None)
+#             self.rubberband = QtWidgets.QRubberBand(QtWidgets.QRubberBand.Line)
+#             self.rubberband.setGeometry(QtCore.QRect(event.screenPos(),
+#                                                      QtCore.QSize()))
+#             self.rubberband.show()
+#             return True
+#
+#         if (event.type() == QtCore.QEvent.GraphicsSceneMouseRelease and
+#                                     event.button() == QtCore.Qt.LeftButton):
+#             assert(self.rubberband is not None)
+#             self.rubberband.hide()
+#             self.rubberband = None
+#             line = QtCore.QLineF(
+#                             event.buttonDownScenePos(QtCore.Qt.LeftButton),
+#                             event.scenePos())
+#             item = obj.addLine(line, self.pen)
+#             item.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True)
+#             item.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, True)
+#             return True
+#
+#         elif (event.type() == QtCore.QEvent.GraphicsSceneMouseMove and
+#                     bool(event.buttons() & QtCore.Qt.LeftButton)):
+#             assert(self.rubberband is not None)
+#             rect = QtCore.QRect(
+#                             event.buttonDownScreenPos(QtCore.Qt.LeftButton),
+#                             event.screenPos()).normalized()
+#             self.rubberband.setGeometry(rect)
+#             return True
+#
+#         return False
 
 
 class DrawRectMode(MouseMode):
@@ -367,8 +367,8 @@ class DrawRectMode(MouseMode):
         self.pen.setWidth(1)
         self.pen.setColor(QtCore.Qt.red)
         self.brush = QtWidgets.QBrush()
-        #self.brush.setStyle(QtCore.Qt.SolidPattern)
-        #self.brush.setColor(QtCore.Qt.red)
+        # self.brush.setStyle(QtCore.Qt.SolidPattern)
+        # self.brush.setColor(QtCore.Qt.red)
 
     def sceneEventFilter(self, obj, event):
         if (event.type() == QtCore.QEvent.GraphicsSceneMousePress and
@@ -420,14 +420,15 @@ class DrawEllipseMode(MouseMode):
         self.pen.setWidth(1)
         self.pen.setColor(QtCore.Qt.red)
         self.brush = QtWidgets.QBrush()
-        #self.brush.setStyle(QtCore.Qt.SolidPattern)
-        #self.brush.setColor(QtCore.Qt.red)
+        # self.brush.setStyle(QtCore.Qt.SolidPattern)
+        # self.brush.setColor(QtCore.Qt.red)
 
     def sceneEventFilter(self, obj, event):
         if (event.type() == QtCore.QEvent.GraphicsSceneMousePress and
                 event.button() == QtCore.Qt.LeftButton):
             assert(self.rubberband is None)
-            self.rubberband = QtWidgets.QRubberBand(QtWidgets.QRubberBand.Rectangle)
+            self.rubberband = QtWidgets.QRubberBand(
+                QtWidgets.QRubberBand.Rectangle)
             self.rubberband.setGeometry(
                 QtCore.QRect(event.screenPos(), QtCore.QSize()))
             self.rubberband.show()

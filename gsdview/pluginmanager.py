@@ -91,8 +91,8 @@ class PluginManager(object):
         modules = dict(self.plugins)
 
         # @TODO: use a cleaner way to provide extra modules for check
-        #import gsdview
-        #modules['gsdview'] = gsdview
+        # import gsdview
+        # modules['gsdview'] = gsdview
 
         try:
             vp = VersionPredicate(depstring)
@@ -133,7 +133,7 @@ class PluginManager(object):
             try:
                 module.close(self._app)
             except Exception as e:
-                #_log.debug(repr(e), exc_info=True)
+                # _log.debug(repr(e), exc_info=True)
                 pass
         else:
             self.plugins[name] = module
@@ -344,8 +344,8 @@ class PluginManagerGui(QtWidgets.QWidget, PluginManagerGuiBase):
         qtsupport.setViewContextActions(self.pluginsTableWidget)
 
         # @TODO: check edit triggers
-        #int(self.pathListWidget.editTriggers() &
-        #    self.pathListWidget.DoubleClicked)
+        # int(self.pathListWidget.editTriggers() &
+        #     self.pathListWidget.DoubleClicked)
 
         self.pathListWidget.itemSelectionChanged.connect(
             self.pathSelectionChanged)
@@ -494,7 +494,7 @@ class PluginManagerGui(QtWidgets.QWidget, PluginManagerGuiBase):
                 icon, '', tablewidget,
                 toolTip=self.tr('Show plugin info.'),
                 clicked=functools.partial(self.showPluginInfo, index))
-                #clicked=lambda index=index: self.showPluginInfo(index))
+                # clicked=lambda index=index: self.showPluginInfo(index))
             tablewidget.setCellWidget(index, 2, w)
 
             # active
@@ -604,7 +604,7 @@ class PluginInfoForm(QtWidgets.QFrame, PluginInfoFormBase):
             '&lt;<a href="mailto:%(email)s">%(email)s</a>&gt;' %
             dict(email=plugin.author_email))
         self.versionValue.setText(plugin.version)
-        #self.revisionValue.setText(plugin.__revision__)
+        # self.revisionValue.setText(plugin.__revision__)
         self.licenseValue.setText(plugin.license_type)
         self.copyrightValue.setText(plugin.copyright)
         self.websiteValue.setText('<a href="%s">%s</a>' %

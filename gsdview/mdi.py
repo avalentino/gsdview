@@ -78,7 +78,7 @@ class ItemModelMainWindow(MdiMainWindow):
         #: tree view for the main application data model
         self.treeview = QtWidgets.QTreeView()
         # @TODO
-        #self.treeview.setSelectionMode(QtWidgets.QTreeView.SingleSelection)
+        # self.treeview.setSelectionMode(QtWidgets.QTreeView.SingleSelection)
         self.treeview.setModel(self.datamodel)
         self.treeview.setEditTriggers(
             QtWidgets.QAbstractItemView.NoEditTriggers)
@@ -106,7 +106,7 @@ class ItemModelMainWindow(MdiMainWindow):
             item = item.parent()
         return item
 
-    #@QtCore.Slot(QtCore.QModelIndex) # @TODO: check
+    # @QtCore.Slot(QtCore.QModelIndex) # @TODO: check
     def setActiveWinFromIndex(self, index):
         """Set the active sub-window from index.
 
@@ -155,7 +155,7 @@ class ItemModelMainWindow(MdiMainWindow):
         else:
             self.treeview.setCurrentIndex(index)
 
-    #@QtCore.Slot(QtCore.QModelIndex, int, int) # @TODO: check
+    # @QtCore.Slot(QtCore.QModelIndex, int, int) # @TODO: check
     def onItemsClosed(self, modelindex, start, end):
         """Closes sub-windows associated to the closed model items.
 
@@ -169,10 +169,10 @@ class ItemModelMainWindow(MdiMainWindow):
         for row in range(start, end + 1):
             item = parentitem.child(row)
             for subwin in self.mdiarea.subWindowList():
-                #if subwin.item == item:
-                #    subwin.close()
-                #    # just une window per run (??)
-                #    break
+                # if subwin.item == item:
+                #     subwin.close()
+                #     # just une window per run (??)
+                #     break
 
                 # @COMPATIBILITY: pyside 1.2.2
                 try:
@@ -185,10 +185,10 @@ class ItemModelMainWindow(MdiMainWindow):
                         break
 
         for subwin in self.mdiarea.subWindowList():
-            #if subwin.item == parentitem:
-            #    subwin.close()
-            #    # just une window per run (??)
-            #    break
+            # if subwin.item == parentitem:
+            #     subwin.close()
+            #     # just une window per run (??)
+            #     break
 
             # @COMPATIBILITY: pyside 1.2.2
             try:

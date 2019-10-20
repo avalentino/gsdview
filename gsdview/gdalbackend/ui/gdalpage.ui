@@ -134,7 +134,7 @@
    <item>
     <widget class="QGroupBox" name="extraOptGroupBox">
      <property name="title">
-      <string>Extra configuration optons</string>
+      <string>Extra configuration options</string>
      </property>
      <property name="checkable">
       <bool>true</bool>

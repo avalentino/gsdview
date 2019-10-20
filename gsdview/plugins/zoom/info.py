@@ -32,7 +32,7 @@ __all__ = ['name', 'version', 'short_description', 'description',
 name = 'zoom'
 version = '.'.join(map(str, __version__)) + '.dev'
 
-short_description = 'GDAL dataser browser plugin for GSDView'
+short_description = 'GDAL dataset browser plugin for GSDView'
 description = '''The GDAL dataset browser plugin provides a dock widget
 with a tree view displaying the GDAL dataset contents.
 

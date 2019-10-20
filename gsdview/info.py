@@ -53,7 +53,7 @@ GSDView is modular and has a simple plug-in architecture.
 author = 'Antonio Valentino'
 author_email = 'antonio.valentino@tiscali.it'
 copyright = 'Copyright (C) 2008-2019 %s <%s>' % (author, author_email)
-#license = _get_license()
+# license = _get_license()
 license_type = 'GNU GPL'
 website = 'http://gsdview.sourceforge.net'
 website_label = website
@@ -62,7 +62,8 @@ download_url = 'http://sourceforge.net/projects/gsdview/files'
 
 all_versions = [
     ('GSDView', version, website),
-    ('Python', '.'.join(map(str, sys.version_info[:3])), 'https://www.python.org'),
+    ('Python', '.'.join(
+        map(str, sys.version_info[:3])), 'https://www.python.org'),
     ('Qt', QtCore.qVersion(), 'http://www.qt.io/'),
     ('numpy', np.version.version, 'http://www.numpy.org'),
 ]

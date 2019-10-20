@@ -33,7 +33,7 @@ def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0,
     one (0, vout) using a linear low. The value of vout depends on
     dtype: 2**8-1 if dtype='uint8', 2**16-1 dtype='uint16'
 
-    The *fill* parameter can be used to controll the length of returned
+    The *fill* parameter can be used to control the length of returned
     LUT (see below).
 
     :param vmin:
@@ -53,7 +53,7 @@ def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0,
 
             * vmax + 1 if bool(fill) == False
             * max(vmax + 1, 2**nbits) if fill == True
-            * max(vmax + 1, fill) id fille is an number
+            * max(vmax + 1, fill) if fill is an number
 
     :type fill:
         bool or int
@@ -61,7 +61,7 @@ def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0,
         @TBW
     :param omax:
         @TBW
-    :returns:     the look up tabe (LUT)
+    :returns:     the look up table (LUT)
 
     """
 
@@ -118,13 +118,13 @@ def histogram_equalized_lut(hist, dtype='uint8', fill=False):
     :param fill:
         if False (default) the returned LUT has
         :math:`length = len(hist)`.
-        Otherwise the LUT length has a lenght of 2**nbits with nbits
+        Otherwise the LUT length has a length of 2**nbits with nbits
         bein 8 or 16 depending on dtype and  LUT indices greater than
         the last histogram max value are filled with the maximum value
         itself.
     :type fill:
         bool
-    :returns: the llok up table (LUT)
+    :returns: the look up table (LUT)
 
     """
 
@@ -138,7 +138,7 @@ def histogram_equalized_lut(hist, dtype='uint8', fill=False):
 
     nbins = len(hist)
     if nbins == 0:
-        raise ValueError('empty histgram')
+        raise ValueError('empty histogram')
     if nbins > nmax:
         raise ValueError('number of bins (%s) is too large to fit in '
                          'selected data type (%s)' % (nbins, dtype.name))
@@ -220,7 +220,7 @@ class BaseStretcher(object):
     The base implementation of the *__call__* method just performs
     clipping and type conversion (both are optional).
 
-    .. note:: outout extrema (*min* and *max*) have to be compatible
+    .. note:: output extrema (*min* and *max*) have to be compatible
               with the data type (*dtype*) set.
 
     Example::
@@ -259,7 +259,7 @@ class LinearStretcher(BaseStretcher):
 
     Perform linear scaling (including offest application) and clipping.
 
-    .. note:: offset is applyed before scaling:
+    .. note:: offset is applied before scaling:
 
 
         .. math:: output = scale \cdot (data - offset)
@@ -349,7 +349,7 @@ class LUTStretcher(BaseStretcher):
 
         omax = self.max
         omin = self.min
-        #assert omin != omax
+        # assert omin != omax
         self.offset = imin
         if imin < 0:
             imin = 0
@@ -372,7 +372,7 @@ class LogarithmicStretcher(BaseStretcher):
         output = scale \cdot log_{base}(data - offset)
 
     .. note:: both *base* and *scale* default to 10 while the default
-              value for *offset* is 0 so the strecher returns values
+              value for *offset* is 0 so the stretcher returns values
               expressed in *dB*: :math:`output = 10 \cdot log_{10}(data)`
 
     """

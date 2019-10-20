@@ -57,11 +57,10 @@ def init(app):
     from gsdview.gdalbackend import widgets
     from gsdview.gdalbackend import gdalsupport
 
-
     _log = logging.getLogger(__name__)
 
     # @TODO: check
-    #UseExceptions()
+    # UseExceptions()
 
     # set file dialog filters
     app.filedialog.setNameFilters(gdalsupport.gdalFilters())
@@ -74,7 +73,7 @@ def init(app):
     icon = qtsupport.geticon('GDALLogoColor.svg', __name__)
 
     # update the settings dialog
-    #page = widgets.GDALPreferencesPage(app.preferencesdialog)
+    # page = widgets.GDALPreferencesPage(app.preferencesdialog)
     page = widgets.BackendPreferencesPage(app.preferencesdialog)
     app.preferencesdialog.addPage(page, icon, 'GDAL')
 
@@ -92,14 +91,14 @@ def init(app):
     _backendobj = GDALBackend(app)
 
     # @TODO: fix
-    #~ gdal.SetConfigOption('GDAL_PAM_ENABLED', 'YES')
-    #~ gdal.SetConfigOption('GDAL_PAM_PROXY_DIR',
-                         #~ os.path.expanduser(os.path.join('~', '.gsdview',
-                                                         #~ 'cache')))
+    # gdal.SetConfigOption('GDAL_PAM_ENABLED', 'YES')
+    # gdal.SetConfigOption('GDAL_PAM_PROXY_DIR',
+    #                      os.path.expanduser(os.path.join('~', '.gsdview',
+    #                                                     'cache')))
     # @TODO: fix
     # @NOTE: explicitly disable GDAL exceptions due to bug #3077
     #        (http://trac.osgeo.org/gdal/ticket/3077)
-    #UseExceptions()
+    # UseExceptions()
     DontUseExceptions()
 
     # Fix path for GDAL tools
@@ -110,10 +109,10 @@ def init(app):
         gdal.SetConfigOption('GDAL_DATA',
                              os.path.join(appsite.GSDVIEWROOT, 'data'))
         # @TODO: check
-        #if app.settings.value('GDAL_DATA').isValid():
-        #    msg = app.tr('"GDAL_DATA" from the user configuration file '
-        #                     'overrides the default value')
-        #    QtWidgets.QMessageBox.warning(app, app.tr('WARNING'), msg)
+        # if app.settings.value('GDAL_DATA').isValid():
+        #     msg = app.tr('"GDAL_DATA" from the user configuration file '
+        #                      'overrides the default value')
+        #     QtWidgets.QMessageBox.warning(app, app.tr('WARNING'), msg)
     elif sys.platform == 'darwin':
         gdaladdobin = utils.which('gdaladdo')
         if not gdaladdobin:
@@ -127,10 +126,10 @@ def init(app):
                 os.environ['PATH'] = PATH
 
                 _log.info('GDAL binary path added to system path: %s', binpath)
-    #elif sys.platform[:3] == 'win':
-    #    gdaladdobin = utils.which('gdaladdo')
-    #    if not gdaladdobin:
-    #        pass
+    # elif sys.platform[:3] == 'win':
+    #     gdaladdobin = utils.which('gdaladdo')
+    #     if not gdaladdobin:
+    #         pass
 
     return _backendobj
 

@@ -57,7 +57,7 @@ class GtkShell(object):
         self.entry.connect('key-press-event', self.on_key_pressed)
         self.entry.connect('populate-popup', self.on_populate_popup)
 
-        #self.cmdbutton = Gtk.Button.new_with_mnemonic('_Execute')
+        # self.cmdbutton = Gtk.Button.new_with_mnemonic('_Execute')
         self.cmdbutton = Gtk.Button(stock=Gtk.STOCK_EXECUTE)
         self.cmdbutton.connect('clicked', self.on_cmdbutton_clicked)
         # @COMPATIBILITY: set_always_show_image is new in Gtk 3.6
@@ -214,7 +214,7 @@ class GtkShell(object):
             try:
                 self.state = 'running'
                 self.controller.run_tool(self.tool, *cmd)
-                #raise RuntimeError('simulated runtime error')
+                # raise RuntimeError('simulated runtime error')
             except (KeyboardInterrupt, SystemExit):
                 raise
             except Exception as e:
@@ -264,6 +264,7 @@ class GtkShell(object):
 
     def on_finished(self, widget=None, returncode=0):
         self.reset()
+
 
 if __name__ == '__main__':
     GtkShell(debug=True).main()

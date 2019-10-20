@@ -56,7 +56,7 @@ HAS_GETSTATS_FORCE_BUG = (('1640' <= gdal.VersionInfo() < '1700') or
 
 
 def SafeGetStatistics(band, approxok, force):
-    """Retriewe statistics form a GDAL raster band in a safe way.
+    """Retrieve statistics form a GDAL raster band in a safe way.
 
     If it is not possible to get statistics (e.g. because the force
     flag is set to false and statistics are not available, or because
@@ -115,6 +115,7 @@ def GetStatisticsFromMetadata(band):
         stats = Statistics(*stats)
 
     return stats
+
 
 SOURCE_TEMPLATE = '''\
 <SimpleSource>
@@ -337,7 +338,7 @@ def parse_args(argv=None):
 
     if args.histreq and not args.hist:
         args.hist = True
-        #parser.error('"histreq" option requires "hist"')
+        # parser.error('"histreq" option requires "hist"')
 
     if args.include_out_of_range and not args.hist:
         parser.error('"include_out_of_range" option requires "hist"')

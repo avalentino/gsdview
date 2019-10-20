@@ -63,7 +63,7 @@ if hasattr(os, 'EX_USAGE'):
 else:
     EX_USAGE = 64
 
-#DEFAULT_OGRDRIVER = 'KML'   # compatibility with old GDAL versions
+# DEFAULT_OGRDRIVER = 'KML'   # compatibility with old GDAL versions
 DEFAULT_OGRDRIVER = 'LIBKML'
 
 
@@ -114,14 +114,14 @@ def create_GCP_layer(ds, name='', srs=None, gtype=ogr.wkbPoint25D,
     field = ogr.FieldDefn('Description', ogr.OFTString)
     layer.CreateField(field)
 
-    #field = ogr.FieldDefn('X', ogr.OFTReal)
-    #layer.CreateField(field)
+    # field = ogr.FieldDefn('X', ogr.OFTReal)
+    # layer.CreateField(field)
     #
-    #field = ogr.FieldDefn('Y', ogr.OFTReal)
-    #layer.CreateField(field)
+    # field = ogr.FieldDefn('Y', ogr.OFTReal)
+    # layer.CreateField(field)
     #
-    #field = ogr.FieldDefn('Z', ogr.OFTReal)
-    #layer.CreateField(field)
+    # field = ogr.FieldDefn('Z', ogr.OFTReal)
+    # layer.CreateField(field)
 
     field = ogr.FieldDefn('Pixel', ogr.OFTReal)
     layer.CreateField(field)
@@ -251,9 +251,9 @@ def export_gcps(layer, gcps):
         feature.SetField('Name', 'GCPs %s' % id_)
         feature.SetField('Description', gcp.Info)
 
-        #feature.SetField('X', gcp.GCPX)
-        #feature.SetField('Y', gcp.GCPY)
-        #feature.SetField('Z', gcp.GCPZ)
+        # feature.SetField('X', gcp.GCPX)
+        # feature.SetField('Y', gcp.GCPY)
+        # feature.SetField('Z', gcp.GCPZ)
 
         feature.SetField('Pixel', gcp.GCPPixel)
         feature.SetField('Line', gcp.GCPLine)
@@ -414,7 +414,7 @@ def raster_tree_index(src, dst, boxlayer=None, gcplayer=None,
                 export_raster(filename, dst, boxlayer, gcplayer,
                               mark_corners=mark_corners)
             except (RuntimeError, ValueError):
-                #logging.exception(str(e))
+                # logging.exception(str(e))
                 logging.info('skip "%s"' % filename)
             else:
                 logging.info('adding "%s"' % filename)
@@ -431,13 +431,13 @@ def get_parser():
         '--version', action='version',
         version='%(prog)s {}'.format(__version__),
     )
-    #parser.add_argument('-o', '--outfile', type='str',
-    #                  help='output file name (default: generated)')
-    #parser.add_argument('-f', '--format', type='str', default='KML',
-    #                  help='output vector format (default: %(default)s)')
-    #parser.add_argument('-s', '--t_srs', type='str', default='EPSG:4326'
-    #                  help='target spatial reference system '
-    #                       '(default: %(default)s)')
+    # parser.add_argument('-o', '--outfile', type='str',
+    #                   help='output file name (default: generated)')
+    # parser.add_argument('-f', '--format', type='str', default='KML',
+    #                   help='output vector format (default: %(default)s)')
+    # parser.add_argument('-s', '--t_srs', type='str', default='EPSG:4326'
+    #                   help='target spatial reference system '
+    #                        '(default: %(default)s)')
     parser.add_argument(
         '-g', '--gcps', action='store_true', default=False,
         help='generate an additional layer for GCPs (default: %(default)s)')
@@ -467,19 +467,19 @@ def parse_args(argv=None):
     parser = get_parser()
     args = parser.parse_args(argv)
 
-    #~ if options.t_srs and options.format in ('KML', 'LIBKML'):
-        #~ epsg4326 = osr.SpatialReference()
-        #~ epsg4326.SetWellKnownGeogCS('EPSG:4326')
-
-        #~ tsrs = osr.SpatialReference()
-        #~ tsrs.SetFromUserInput(oprions.t_srs)
-        #~ if not epsg4326.IsSame(tsrs):
-            #~ logging.warning('KML format only supports "EPSG:4326" as '
-                            #~ 'target spatial reference system: '
-                            #~ '"t_srs" parameter will be ignred.')
-            #~ options.t_srs = epsg4326
-        #~ else:
-            #~ options.t_srs = tsrs
+    # if options.t_srs and options.format in ('KML', 'LIBKML'):
+    #     epsg4326 = osr.SpatialReference()
+    #     epsg4326.SetWellKnownGeogCS('EPSG:4326')
+    #
+    #     tsrs = osr.SpatialReference()
+    #     tsrs.SetFromUserInput(oprions.t_srs)
+    #     if not epsg4326.IsSame(tsrs):
+    #         logging.warning('KML format only supports "EPSG:4326" as '
+    #                         'target spatial reference system: '
+    #                         '"t_srs" parameter will be ignred.')
+    #         options.t_srs = epsg4326
+    #     else:
+    #         options.t_srs = tsrs
 
     return args
 

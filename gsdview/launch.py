@@ -53,10 +53,10 @@ class SplashLogHandler(logging.Handler):
             msg = str(self.format(record))
             self._splash.showMessage(self._splash.tr(msg))
             # Causes an EOFError with pyside
-            #self.flush()
+            # self.flush()
         except (KeyboardInterrupt, SystemExit):
             raise
-        except:
+        except Exception:
             self.handleError(record)
 
     def flush(self):
@@ -68,7 +68,7 @@ MODULES = [
     'numpy.ma',
     'osgeo.gdal',
     'osgeo.osr',
-    #'osgeo.ogr',
+    # 'osgeo.ogr',
     'osgeo.gdal_array',
     'qtpy',
     'qtpy.QtCore',
@@ -91,7 +91,7 @@ MODULES = [
     'gsdview.mdi',
     'gsdview.mousemanager',
     'gsdview.pluginmanager',
-    #'gsdview.qtdraw',
+    # 'gsdview.qtdraw',
     'gsdview.qtsupport',
     'gsdview.qtwindowlistmenu',
     'gsdview.utils',
@@ -127,7 +127,6 @@ def get_parser():
     from argparse import ArgumentParser
     from gsdview import info
 
-
     parser = ArgumentParser(
         prog='gsdview',
         description=info.description,
@@ -140,9 +139,9 @@ def get_parser():
     )
 
     # @TODO: complete
-    #~ parser.add_argument(
-        #~ '-c', '--config-file', dest='configfile', metavar='FILE',
-        #~ help='use specified cnfig file instead of default one')
+    # parser.add_argument(
+    #     '-c', '--config-file', dest='configfile', metavar='FILE',
+    #     help='use specified cnfig file instead of default one')
     parser.add_argument(
         '-d', '--debug', action='store_const', dest='log_level',
         const='DEBUG', default='NOTSET', help='print debug messages')
@@ -151,12 +150,12 @@ def get_parser():
         choices=('DEBUG', 'INFO', 'WARNING', 'CRITICAL', 'ERROR'),
         help='set the logging level (by default the logging level stored in '
              'the application settings is used)')
-    #~ parser.add_argument(
-        #~ '-p', '--plugins-path', dest='plugins_path',
-        #~ metavar='PATH',
-        #~ help='prepend the specified path to default ones. '
-        #~ 'A "%s" separated list can be used to specify '
-        #~ 'multile paths. ' % os.pathsep)
+    # parser.add_argument(
+    #     '-p', '--plugins-path', dest='plugins_path',
+    #     metavar='PATH',
+    #     help='prepend the specified path to default ones. '
+    #     'A "%s" separated list can be used to specify '
+    #     'multile paths. ' % os.pathsep)
 
     return parser
 
@@ -192,11 +191,11 @@ def main():
 
     logging.basicConfig(
         level=loglevel,
-        #format='%(levelname)s: %(message)s')
+        # format='%(levelname)s: %(message)s')
         format='%(asctime)s %(name)s %(levelname)s: %(message)s')
 
     # set the logging level explicitly on gsdview logger
-    #logging.getLogger().setLevel(loglevel)
+    # logging.getLogger().setLevel(loglevel)
     logging.getLogger('gsdview').setLevel(loglevel)
 
     # PyQt loggers
@@ -267,6 +266,7 @@ def main():
     mainwin.raise_()
 
     sys.exit(app.exec_())
+
 
 if __name__ == '__main__':
     import os

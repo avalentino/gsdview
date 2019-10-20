@@ -48,8 +48,8 @@ class QtBlinker(QtWidgets.QLabel):
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(QtBlinker, self).__init__(parent, flags, **kwargs)
-        #qstyle = QtWidgets.QApplication.style()
-        #pixmap = qstyle.standardPixmap(QtWidgets.QStyle.SP_MediaStop)
+        # qstyle = QtWidgets.QApplication.style()
+        # pixmap = qstyle.standardPixmap(QtWidgets.QStyle.SP_MediaStop)
         pixmap = QtGui.QPixmap(
             ':/trolltech/styles/commonstyle/images/standardbutton-no-32.png')
         self.setPixmap(pixmap)
@@ -67,7 +67,7 @@ class QtBlinker(QtWidgets.QLabel):
         self.setEnabled(sensitive)
 
     def flush(self):
-        #QtWidgets.qApp.processEvents() # @TODO: check
+        # QtWidgets.qApp.processEvents() # @TODO: check
         pass
 
     def reset(self):
@@ -206,7 +206,7 @@ class QtOutputHandler(QtCore.QObject, BaseOutputHandler):
                 statusbar.addPermanentWidget(progressbar)  # , 1) # stretch=1
                 progressbar.hide()
             self.progressbar = progressbar
-            #self.percentageChanged[()].connect(progressbar.show)
+            # self.percentageChanged[()].connect(progressbar.show)
             self.percentageChanged.connect(progressbar.show)
             self.percentageChanged.connect(progressbar.setValue)
 
@@ -261,7 +261,7 @@ class QtOutputHandler(QtCore.QObject, BaseOutputHandler):
 
         """
 
-        #pulse = data.get('pulse')
+        # pulse = data.get('pulse')
         percentage = data.get('percentage')
         text = data.get('text')
 
@@ -334,10 +334,10 @@ class QtLoggingHandler(logging.Handler):
             tag = getattr(record, 'tag', level2tag(record.levelno))
             self._write('%s' % msg, tag)
             # @TODO: check
-            #self._flush()
+            # self._flush()
         except (KeyboardInterrupt, SystemExit):
             raise
-        except:
+        except Exception:
             self.handleError(record)
 
 
@@ -359,8 +359,8 @@ class QtDialogLoggingHandler(logging.Handler):
         logging.Handler.__init__(self)
         if dialog is None:
             # @TODO: check
-            #~ if parent is None:
-                #~ parent = QtWidgets.qApp.mainWidget()
+            # if parent is None:
+            #     parent = QtWidgets.qApp.mainWidget()
 
             dialog = QtWidgets.QMessageBox(parent)
             dialog.addButton(QtWidgets.QMessageBox.Close)
@@ -397,7 +397,7 @@ class QtDialogLoggingHandler(logging.Handler):
             self.dialog.hide()
         except (KeyboardInterrupt, SystemExit):
             raise
-        except:
+        except Exception:
             self.handleError(record)
 
 
@@ -423,7 +423,7 @@ class QtToolController(QtCore.QObject, BaseToolController):
     #: SIGNAL: it is emitted when the processing is finished.
     #:
     #: :param int exitcode:
-    #:     the external proces exit code
+    #:     the external process exit code
     #:
     #: :C++ signature: `void finished(int exitCode)`
     finished = QtCore.Signal(int)
@@ -459,9 +459,9 @@ class QtToolController(QtCore.QObject, BaseToolController):
         * run the "finalize_run_hook" method
         * reset the controller instance
 
-        If one just needs to perfor some additional finalization action
+        If one just needs to perform some additional finalization action
         it should be better to use a custom "finalize_run_hook" instead
-        of overriging "finalize_run".
+        of overriding "finalize_run".
 
         :C++ signature: `finalize_run(int, QProcess::ExitStatus)`
 
@@ -566,7 +566,7 @@ class QtToolController(QtCore.QObject, BaseToolController):
         * timeout elapsed
         * write error
         * read error
-        * unknow error
+        * unknown error
 
         :C++ signature: `void handle_error(QProcess::ProcessError)`
 
@@ -586,7 +586,7 @@ class QtToolController(QtCore.QObject, BaseToolController):
                    'invoke the program.')
             level = logging.ERROR
             # @TODO: check
-            #self._reset()
+            # self._reset()
         elif error == QtCore.QProcess.Crashed:
             if not self._userstop and self.subprocess.exitCode() == EX_OK:
                 msg = ('The process crashed some time after starting '
@@ -601,22 +601,22 @@ class QtToolController(QtCore.QObject, BaseToolController):
             msg = ('An error occurred when attempting to write to the process.'
                    ' For example, the process may not be running, or it may '
                    'have closed its input channel.')
-            #level = logging.ERROR # @TODO: check
+            # level = logging.ERROR # @TODO: check
         elif error == QtCore.QProcess.ReadError:
             msg = ('An error occurred when attempting to read from the '
                    'process. For example, the process may not be running.')
-            #level = logging.ERROR # @TODO: check
+            # level = logging.ERROR # @TODO: check
         elif error == QtCore.QProcess.UnknownError:
             msg = ('An unknown error occurred. This is the default return '
                    'value of error().')
-            #level = logging.ERROR # @TODO: check
+            # level = logging.ERROR # @TODO: check
 
         if msg:
             self.logger.log(level, msg)
 
         self.finished.emit(exit_code)
 
-    #QtCore.Slot() # @TODO: check how to handle varargs
+    # QtCore.Slot() # @TODO: check how to handle varargs
     def run_tool(self, tool, *args, **kwargs):
         """Run an external tool in controlled way.
 
@@ -673,7 +673,7 @@ class QtToolController(QtCore.QObject, BaseToolController):
         reset even if the controller is unable to stop the subprocess.
 
         When possible the controller try to kill the subprocess in a
-        polite way.  If this fails it also tryes brute killing by
+        polite way.  If this fails it also tries brute killing by
         default (force=True).  This behaviour can be controlled using
         the `force` parameter.
 

@@ -48,15 +48,15 @@ def init(app):
     app.addToolBar(toolbar)
 
     # @COMPATIBILITY: pyside 1.2.2
-    #                 without the call to toolbar.parent() the tolbar is not
+    #                 without the call to toolbar.parent() the toolbar is not
     #                 actually added
     assert toolbar.parent()
 
     # @TODO: move to tool (??)
-    #~ app.mdiarea.subWindowActivated.connect(
-        #~ lambda w: controller.actions.setEnabled(bool(w)))
-    #~ app.subWindowClosed.connect(lambda: controller.actions.setEnabled(
-        #~ bool(app.mdiarea.activeSubWindow())))
+    # app.mdiarea.subWindowActivated.connect(
+    #     lambda w: controller.actions.setEnabled(bool(w)))
+    # app.subWindowClosed.connect(lambda: controller.actions.setEnabled(
+    #     bool(app.mdiarea.activeSubWindow())))
 
     global _instance
     _instance = controller

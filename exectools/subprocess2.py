@@ -74,7 +74,7 @@ class Popen(recipe_440544.Popen):
                 return True
 
             try:
-                # Stop shell dependent sub-procsses
+                # Stop shell dependent sub-processes
                 # @TODO: check
                 self.send_signal(signal.SIGINT)
                 if self.poll() is None:

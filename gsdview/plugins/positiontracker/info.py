@@ -32,7 +32,7 @@ name = 'positiontracker'
 version = '.'.join(map(str, __version__)) + '.dev'
 
 short_description = 'Track the mouse position'
-description = '''Track mouse movements and pronts the position in scene
+description = '''Track mouse movements and prints the position in scene
 coordinates in the status bar.
 
 '''

@@ -47,12 +47,12 @@ __all__ = [
 
 
 def default_workdir():
-    """Return the defaut workinhg directory."""
+    """Return the default working directory."""
 
     if sys.platform[:3] == 'win':
         return 'C:\\'
-        #return QtGui.QDesktopServices.storageLocation(
-        #                           QtGui.QDesktopServices.DocumentsLocation)
+        # return QtGui.QDesktopServices.storageLocation(
+        #                            QtGui.QDesktopServices.DocumentsLocation)
     else:
         return os.path.expanduser('~')
 
@@ -74,17 +74,17 @@ def _getresource(resource, package):
 
 
 def getresource(resource, package=None):
-    """Return the resurce path.
+    """Return the resource path.
 
     If `package` is specified (usually passing `__name__` of the called
-    modile) the package resource name is returned.
+    module) the package resource name is returned.
 
     If no `package` is specified then it is assumed that resource is
     located in the common resource directory (e.g.
     `/usr/share/<PROJECTNAME>` on UNIX-like systems.
 
     .. note:: it is safe to use this function also if the package is
-              distributed as a compressed *egg* or as standalon package
+              distributed as a compressed *egg* or as standalone package
               generated using `pyinstaller <http://www.pyinstaller.org>`_.
 
     """
@@ -94,7 +94,7 @@ def getresource(resource, package=None):
             return _getresource(resource, package)
         else:
             m = __import__(package)
-            #if '.pyz' not in m.__file__:
+            # if '.pyz' not in m.__file__:
             if os.path.exists(m.__file__):
                 return _getresource(resource, package)
             else:
@@ -128,7 +128,8 @@ def format_platform_info():
 
     platform_info.append('locale: %s\n' % (locale.getlocale(),))
     platform_info.append('default encoding: %s\n' % sys.getdefaultencoding())
-    platform_info.append('file system encoding: %s\n' % sys.getfilesystemencoding())
+    platform_info.append(
+        'file system encoding: %s\n' % sys.getfilesystemencoding())
 
     return platform_info
 
@@ -238,7 +239,7 @@ def scriptcmd(scriptname):
             cmd = [comspec, '/c', scriptname]
         elif ext in ('.py', '.pyc', '.pyo', '.pyw'):
             # @WARNING: this doesn't work in case of frozen executables
-            #cmd = [sys.executable, '-u', scriptname] # no buffering
+            # cmd = [sys.executable, '-u', scriptname] # no buffering
             cmd = [sys.executable, scriptname]
     else:
         with open(scriptname, 'rb') as fd:

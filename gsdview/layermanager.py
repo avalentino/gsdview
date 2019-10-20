@@ -74,7 +74,7 @@ class BaseLayerManager(QtCore.QObject):
             statusTip=self.tr('Move to bottom'),
             shortcut=self.tr('Ctrl+PgDown'))
 
-        #~ #'standardbutton-closetab-16.png'
+        # 'standardbutton-closetab-16.png'
         icon = QtGui.QIcon(':/trolltech/styles/commonstyle/images/'
                            'standardbutton-cancel-128.png')
         QtWidgets.QAction(
@@ -125,12 +125,12 @@ class BaseLayerManager(QtCore.QObject):
                     model = lastitem.model()
                     topleft = model.index(
                         min(lastitem.top(), item.top()),
-                        #min(lastitem.left(), item.left()),
+                        # min(lastitem.left(), item.left()),
                         0,
                         lastitem.parent())
                     bottomright = model.index(
                         max(lastitem.bottom(), item.bottom()),
-                        #max(lastitem.right(), item.right()),
+                        # max(lastitem.right(), item.right()),
                         model.columnCount() - 1,
                         lastitem.parent())
                     ranges[-1] = QtCore.QItemSelectionRange(topleft,
@@ -170,7 +170,7 @@ class BaseLayerManager(QtCore.QObject):
                          selectionrange.top() - 1, -1):
             # @TODO: check
             if not self.isLayer(parent.child(row)):
-                #continue
+                # continue
                 break
             items = parent.takeRow(row)
             rows.insert(0, items)
@@ -205,7 +205,7 @@ class BaseLayerManager(QtCore.QObject):
         return QtCore.QItemSelectionRange(topleft, bottomright)
 
     def moveSelectionToTop(self, selectionmodel):
-        #assert selectionmodel.model() is self.model
+        # assert selectionmodel.model() is self.model
         selection = selectionmodel.selection()
         selectionmap = self._selectionmap(selection)
         newselection = QtCore.QItemSelection()
@@ -218,7 +218,7 @@ class BaseLayerManager(QtCore.QObject):
         selectionmodel.select(newselection, SelectCurrentRows)
 
     def moveSelectionUp(self, selectionmodel):
-        #assert selectionmodel.model() is self.model
+        # assert selectionmodel.model() is self.model
         selection = selectionmodel.selection()
         selectionmap = self._selectionmap(selection)
         newselection = QtCore.QItemSelection()
@@ -230,7 +230,7 @@ class BaseLayerManager(QtCore.QObject):
         selectionmodel.select(newselection, SelectCurrentRows)
 
     def moveSelectionDown(self, selectionmodel):
-        #assert selectionmodel.model() is self.model
+        # assert selectionmodel.model() is self.model
         selection = selectionmodel.selection()
         selectionmap = self._selectionmap(selection)
         newselection = QtCore.QItemSelection()
@@ -243,7 +243,7 @@ class BaseLayerManager(QtCore.QObject):
         selectionmodel.select(newselection, SelectCurrentRows)
 
     def moveSelectionToBottom(self, selectionmodel):
-        #assert selectionmodel.model() is self.model
+        # assert selectionmodel.model() is self.model
         selection = selectionmodel.selection()
         selectionmap = self._selectionmap(selection)
         newselection = QtCore.QItemSelection()
@@ -278,7 +278,7 @@ class BaseLayerManager(QtCore.QObject):
                                           selectionrange.height())
 
         # @TODO: check
-        #self.updateStackOrder(parent)
+        # self.updateStackOrder(parent)
 
     def _updateActions(self, selectionmodel):
         model = selectionmodel.model()
@@ -313,7 +313,7 @@ class BaseLayerManager(QtCore.QObject):
                 action.setEnabled(enabled)
 
     @QtCore.Slot(QtCore.QModelIndex)
-    #@QtCore.Slot(QtGui.QStandardItem)
+    # @QtCore.Slot(QtGui.QStandardItem)
     @QtCore.Slot('QStandardItem*')  # @TODO: fix
     def updateVisibility(self, index):
         if isinstance(index, QtCore.QModelIndex):
@@ -336,7 +336,7 @@ class BaseLayerManager(QtCore.QObject):
 
     def checkSelectedItems(self, selectionmodel, checked=True):
         model = selectionmodel.model()
-        #assert model is self.model
+        # assert model is self.model
 
         if checked:
             newstate = QtCore.Qt.Checked
@@ -357,7 +357,7 @@ class BaseLayerManager(QtCore.QObject):
 
     def toggleSelectedItems(self, selectionmodel):
         model = selectionmodel.model()
-        #assert model is self.model
+        # assert model is self.model
 
         update = False
         for index in selectionmodel.selectedRows():

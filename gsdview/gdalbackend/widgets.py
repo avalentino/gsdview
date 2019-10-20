@@ -72,7 +72,7 @@ class GDALInfoWidget(QtWidgets.QWidget, GDALInfoWidgetBase):
         tablewidget.verticalHeader().hide()
 
         hheader = tablewidget.horizontalHeader()
-        #hheader.resizeSections(QtWidgets.QHeaderView.ResizeToContents)
+        # hheader.resizeSections(QtWidgets.QHeaderView.ResizeToContents)
         fontinfo = QtGui.QFontInfo(tablewidget.font())
         hheader.setDefaultSectionSize(10 * fontinfo.pixelSize())
 
@@ -273,8 +273,8 @@ class GDALPreferencesPage(QtWidgets.QWidget, GDALPreferencesPageBase):
                 self.ogrDriverPathCheckBox.setChecked(False)
 
             # @TODO: complete
-            #~ gdal.GetConfigOption('CPL_DEBUG', 'OFF')
-            #~ gdal.GetConfigOption('GDAL_PAM_ENABLED', "NULL")
+            # gdal.GetConfigOption('CPL_DEBUG', 'OFF')
+            # gdal.GetConfigOption('GDAL_PAM_ENABLED', "NULL")
 
             # extra options
             # @TODO
@@ -321,8 +321,8 @@ class GDALPreferencesPage(QtWidgets.QWidget, GDALPreferencesPageBase):
                 settings.remove('OGR_DRIVER_PATH')
 
             # @TODO: complete
-            #~ gdal.GetConfigOption('CPL_DEBUG', 'OFF')
-            #~ gdal.GetConfigOption('GDAL_PAM_ENABLED', "NULL")
+            # gdal.GetConfigOption('CPL_DEBUG', 'OFF')
+            # gdal.GetConfigOption('GDAL_PAM_ENABLED', "NULL")
 
             # extra options
             # @TODO
@@ -333,7 +333,7 @@ class GDALPreferencesPage(QtWidgets.QWidget, GDALPreferencesPageBase):
 class BackendPreferencesPage(GDALPreferencesPage):
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super(BackendPreferencesPage, self).__init__(parent, flags, **kwargs)
-        #self.setupUi(self)
+        # self.setupUi(self)
 
         # GDAL backend
         msg = 'Show overview items in the tree view.'
@@ -343,7 +343,7 @@ class BackendPreferencesPage(GDALPreferencesPage):
 
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(checkbox)
-        #~ layout.addSpacerItem(QtWidgets.QSpacerItem(0, 20))
+        # layout.addSpacerItem(QtWidgets.QSpacerItem(0, 20))
 
         self.groupbox = QtWidgets.QGroupBox(
             self.tr('GDAL Backend Preferences'))
@@ -439,7 +439,7 @@ class MetadataWidget(QtWidgets.QWidget, MetadataWidgetBase):
         # @TODO:check
         self._keyeater = KeyPressEater(parent=self)
         self.installEventFilter(self._keyeater)
-        #self.domainComboBox.lineEdit().installEventFilter(self._keyeater)
+        # self.domainComboBox.lineEdit().installEventFilter(self._keyeater)
 
     def domainsEnabled(self):
         return self.domainLabel.isVisible()
@@ -606,8 +606,8 @@ class OverviewWidget(QtWidgets.QWidget, OverviewWidgetBase):
         model.appendRow([check, ovrfact, size])
 
         if locked:
-            #model.item(row, 0).setEnabled(False)
-            #model.item(row, 0).setEditable(False) # doesn't work
+            # model.item(row, 0).setEnabled(False)
+            # model.item(row, 0).setEditable(False) # doesn't work
             check.setEnabled(False)
             font = ovrfact.font()
             font.setBold(True)
@@ -831,7 +831,7 @@ class OverviewDialog(QtWidgets.QDialog):
     #: :C++ signature: `void overviewComputationRequest(
     #:                                          QtGui.QStandardItem)`
     overviewComputationRequest = QtCore.Signal(QtGui.QStandardItem)
-    #overviewComputationRequest = QtCore.Signal(object)
+    # overviewComputationRequest = QtCore.Signal(object)
 
     def __init__(self, item=None, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kargs):
@@ -1119,9 +1119,9 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
     histogramComputationRequest = QtCore.Signal(QtGui.QStandardItem)
 
     # @TODO: check
-    #self.emit(QtCore.SIGNAL(
-    #   'histogramComputationRequest(QtGui.QStandardItem, int, int, int)'),
-    #   band, hmin, nmax, nbuckets)
+    # self.emit(QtCore.SIGNAL(
+    #    'histogramComputationRequest(QtGui.QStandardItem, int, int, int)'),
+    #    band, hmin, nmax, nbuckets)
 
     #: SIGNAL: it is emitted when overview computation is required
     #:
@@ -1250,7 +1250,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.hasArbitraryOverviewsValue.setText('')
 
         # @TODO: checksum
-        #~ band.Checksum                   ??
+        # band.Checksum                   ??
 
         # Data
         self.xSizeValue.setText('0')
@@ -1701,7 +1701,7 @@ p, li { white-space: pre-wrap; }
             tablewidget.setItem(row, 3, Item(str(gcp.GCPY)))
             tablewidget.setItem(row, 4, Item(str(gcp.GCPZ)))
             tablewidget.setItem(row, 5, Item(gcp.Info))
-            #~ item.setToolTip(1, gcp.Info)
+            # item.setToolTip(1, gcp.Info)
 
         # Fix table header behaviour
         tablewidget.setSortingEnabled(sortingenabled)
@@ -1715,13 +1715,13 @@ p, li { white-space: pre-wrap; }
             # @TODO: check and, if the case, file a ticket on
             #        http://www.gdal.org
 
-            #self.setGCPs(dataset.GetGCPs(), dataset.GetGCPProjection())
+            # self.setGCPs(dataset.GetGCPs(), dataset.GetGCPProjection())
             try:
                 gcplist = self.dataset.GetGCPs()
             except SystemError:
                 _log.debug('unable to read GCPs from dataset %s',
-                             self.dataset.GetDescription())
-                             #, exc_info=True)
+                           self.dataset.GetDescription())
+                           # , exc_info=True)
             else:
                 if not gcplist:
                     # Disable the GCPs tab
@@ -1731,7 +1731,7 @@ p, li { white-space: pre-wrap; }
                     self.setGCPs(gcplist, self.dataset.GetGCPProjection())
 
     def resetFilesTab(self):
-        #qt4support.clearTable(self.fileListWidget) # @TODO: check
+        # qt4support.clearTable(self.fileListWidget) # @TODO: check
         self.fileListWidget.clear()
 
     def setFiles(self, files):
@@ -1748,9 +1748,9 @@ p, li { white-space: pre-wrap; }
             self.resetFilesTab()
             self.tabWidget.setTabEnabled(4, False)
 
-#~ class SubDatasetInfoDialog(DatasetInfoDialog):
-
-    #~ def __init__(self, subdataset, parent=None,
-                 #~ flags=QtCore.Qt.WindowFlags(0)):
-        #~ assert dataset, 'a valid GDAL dataset expected'
-        #~ DatasetInfoDialog.__init__(self, subdataset, parent, flags)
+# class SubDatasetInfoDialog(DatasetInfoDialog):
+#
+#     def __init__(self, subdataset, parent=None,
+#                  flags=QtCore.Qt.WindowFlags(0)):
+#         assert dataset, 'a valid GDAL dataset expected'
+#         DatasetInfoDialog.__init__(self, subdataset, parent, flags)

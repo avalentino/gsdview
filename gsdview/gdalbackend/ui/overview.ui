@@ -170,7 +170,7 @@
           <item row="2" column="0">
            <widget class="QLabel" name="compressionLabel">
             <property name="toolTip">
-             <string>Set the conpression mode for TIFF overviews.</string>
+             <string>Set the compression mode for TIFF overviews.</string>
             </property>
             <property name="text">
              <string>Compression</string>
@@ -180,7 +180,7 @@
           <item row="2" column="1">
            <widget class="QComboBox" name="compressionComboBox">
             <property name="toolTip">
-             <string>Set the conpression mode for TIFF overviews.</string>
+             <string>Set the compression mode for TIFF overviews.</string>
             </property>
             <item>
              <property name="text">
@@ -247,7 +247,7 @@
           <item row="4" column="0">
            <widget class="QLabel" name="interleavingLabel">
             <property name="toolTip">
-             <string>Set the ovetvire interleaving method for TIFF overviews.</string>
+             <string>Set the interleaving method for TIFF overviews.</string>
             </property>
             <property name="text">
              <string>Interleaving</string>
@@ -257,7 +257,7 @@
           <item row="4" column="1">
            <widget class="QComboBox" name="interleavingComboBox">
             <property name="toolTip">
-             <string>Set the ovetvire interleaving method for TIFF overviews.</string>
+             <string>Set the interleaving method for TIFF overviews.</string>
             </property>
             <item>
              <property name="text">
@@ -335,7 +335,7 @@
           <item row="7" column="0">
            <widget class="QLabel" name="recomputeLabel">
             <property name="toolTip">
-             <string>Also re-compute exixting overviews.</string>
+             <string>Also re-compute existing overviews.</string>
             </property>
             <property name="text">
              <string>Recompute all</string>
@@ -345,7 +345,7 @@
           <item row="7" column="1">
            <widget class="QCheckBox" name="recomputeCheckBox">
             <property name="toolTip">
-             <string>Also re-compute exixting overviews.</string>
+             <string>Also re-compute existing overviews.</string>
             </property>
             <property name="text">
              <string/>

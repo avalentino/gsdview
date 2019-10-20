@@ -87,7 +87,7 @@ class StdToolController(BaseToolController):
             msg = 'Unable to execute: "%s"' % args
             self.logger.error(msg, exc_info=True)
             self._reset()
-        except:
+        except Exception:
             self._reset()
             raise
 
@@ -217,7 +217,7 @@ class StdToolController(BaseToolController):
 
         if self.subprocess is None or self.subprocess.poll() is not None:
             # NOTE: 'self.subprocess is None' should never happen at this point
-            #self.finalize_run() # @TODO: check
+            # self.finalize_run()  # @TODO: check
             return False
         else:
             data = self.subprocess.recv()
@@ -238,7 +238,7 @@ class StdToolController(BaseToolController):
 
         if self.subprocess is None or self.subprocess.poll() is not None:
             # NOTE: 'self.subprocess is None' should never happen ar this point
-            #self.finalize_run() # @TODO: check
+            # self.finalize_run()  # @TODO: check
             return False
         else:
             data = self.subprocess.recv_err()

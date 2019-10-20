@@ -55,7 +55,7 @@ class QtShell(QtWidgets.QMainWindow):
         self.cmdbox.addItem('')
         self.cmdbox.setCurrentIndex(self.cmdbox.count() - 1)
         # @TODO: complete
-        #self.entry.populate_popup.connect(self.on_populate_popup)
+        # self.entry.populate_popup.connect(self.on_populate_popup)
 
         icon = self.style().standardIcon(QtWidgets.QStyle.SP_MediaPlay)
         self.cmdbutton = QtWidgets.QPushButton(icon, 'Run')
@@ -120,7 +120,7 @@ class QtShell(QtWidgets.QMainWindow):
         self.controller = QtToolController(self.logger, parent=self)
         self.controller.finished.connect(lambda returncode: self.reset())
 
-        #self.shell = True
+        # self.shell = True
         self._state = 'ready'   # or maybe __state
 
         self.logger.debug('qtshell session started at %s.' % time.asctime())
@@ -223,44 +223,45 @@ class QtShell(QtWidgets.QMainWindow):
             self.state = 'running'
             try:
                 self.controller.run_tool(self.tool, cmd)
-                #~ raise RuntimeError('simulated runtime error')
+                # raise RuntimeError('simulated runtime error')
             except (KeyboardInterrupt, SystemExit):
                 raise
             except Exception as e:
                 self.logger.exception(e)
                 self.reset()
 
-    #~ def on_cmdbutton_clicked(self, widget=None, data=None):
-        #~ if self.state == 'ready':
-            #~ self.execute()
-        #~ elif self.state == 'running':
-            #~ self.stop()
-
-    #~ def on_entry_activate(self, widget=None, data=None):
-        #~ if self.state == 'running':
-            #~ return
-        #~ self.execute()
+    # def on_cmdbutton_clicked(self, widget=None, data=None):
+    #     if self.state == 'ready':
+    #         self.execute()
+    #     elif self.state == 'running':
+    #         self.stop()
+    #
+    # def on_entry_activate(self, widget=None, data=None):
+    #     if self.state == 'running':
+    #         return
+    #     self.execute()
 
     # @TODO: complete
-    #~ def on_populate_popup(self, widget, menu, data=None):
-        #~ # separator
-        #~ item = gtk.SeparatorMenuItem()
-        #~ item.show()
-        #~ menu.append(item)
+    # def on_populate_popup(self, widget, menu, data=None):
+    #     # separator
+    #     item = gtk.SeparatorMenuItem()
+    #     item.show()
+    #     menu.append(item)
+    #
+    #     # Clear history
+    #     item = gtk.ImageMenuItem(gtk.STOCK_CLEAR)
+    #     item.set_name('clear_history')
+    #     item.activate.connect(self.on_clear_history)
+    #     item.activate.connect(self.on_clear_entry)
+    #     item.show()
+    #     menu.append(item)
 
-        #~ # Clear history
-        #~ item = gtk.ImageMenuItem(gtk.STOCK_CLEAR)
-        #~ item.set_name('clear_history')
-        #~ item.activate.connect(self.on_clear_history)
-        #~ item.activate.connect(self.on_clear_entry)
-        #~ item.show()
-        #~ menu.append(item)
+    # def on_clear_history(self):
+    #     self.cmdbox.clear()
 
-    #~ def on_clear_history(self):
-        #~ self.cmdbox.clear()
+    # def on_clear_entry(self):
+    #     self.cmdbox.clearEditText()
 
-    #~ def on_clear_entry(self):
-        #~ self.cmdbox.clearEdirText()
 
 if __name__ == '__main__':
     import sys

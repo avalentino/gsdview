@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-"""GUI front-end for the Geospatial Data Abstracton Library (GDAL)."""
+"""GUI front-end for the Geospatial Data Abstraction Library (GDAL)."""
 
 
 import os
@@ -83,7 +83,7 @@ class GSDView(ItemModelMainWindow):
 
         _log.debug('Setting up the preferences dialog ...')
 
-        #: prefernces dialog instance
+        #: preferences dialog instance
         self.preferencesdialog = PreferencesDialog(self,
                                                    apply=self.applySettings)
 
@@ -106,7 +106,7 @@ class GSDView(ItemModelMainWindow):
         self.statusBar().addPermanentWidget(self.progressbar)
         self.progressbar.hide()
 
-        # Miscellanea
+        # Miscellanea
         _log.debug('Miscellanea setup ...')
 
         #: cache directory path
@@ -140,10 +140,10 @@ class GSDView(ItemModelMainWindow):
 
         # @TODO: fix filename
         _log.debug('Read application settings ...')
-        #self.settings = QtCore.QSettings('gsdview-soft', 'gsdview', self)
-        #self.settings = QtCore.QSettings(QtCore.QSettings.IniFormat,
-        #                                 QtCore.QSettings.UserScope,
-        #                                 'gsdview', 'gsdview', self)
+        # self.settings = QtCore.QSettings('gsdview-soft', 'gsdview', self)
+        # self.settings = QtCore.QSettings(QtCore.QSettings.IniFormat,
+        #                                  QtCore.QSettings.UserScope,
+        #                                  'gsdview', 'gsdview', self)
         cfgfile = os.path.join(USERCONFIGDIR, 'gsdview.ini')
         _log.info('Configuration file: "%s".', cfgfile)
 
@@ -243,7 +243,7 @@ class GSDView(ItemModelMainWindow):
             return
         # @TODO: check
         # @NOTE: set the current index so that action callback can retrieve
-        #        the cottect item
+        #        the correct item
         self.treeview.setCurrentIndex(modelindex)
         item = self.datamodel.itemFromIndex(modelindex)
         backend = self.pluginmanager.plugins[item.backend]
@@ -254,14 +254,14 @@ class GSDView(ItemModelMainWindow):
     # Event handlers ########################################################
     def closeEvent(self, event):
         self.controller.stop_tool()
-        # @TODO: whait for finished (??)
+        # @TODO: wait for finished (??)
         # @TODO: save opened datasets (??)
         self.saveSettings()
         self.pluginmanager.save_settings(self.settings)
         self.closeAll()
         self.pluginmanager.reset()
         _log.info('Closing application')
-        #event.accept()
+        # event.accept()
         super(GSDView, self).closeEvent(event)
 
     def changeEvent(self, event):
@@ -271,8 +271,8 @@ class GSDView(ItemModelMainWindow):
                 self.settings.beginGroup('mainwindow')
                 self.settings.setValue('geometry', self.saveGeometry())
                 # @TODO: clean
-                #self.settings.setValue('position', self.pos())
-                #self.settings.setValue('size', self.size())
+                # self.settings.setValue('position', self.pos())
+                # self.settings.setValue('size', self.size())
                 self.settings.endGroup()
                 event.accept()
         except AttributeError:
@@ -293,8 +293,8 @@ class GSDView(ItemModelMainWindow):
 
         sys.__excepthook__(exctype, excvalue, tracebackobj)
         # No messages for keyboard interruts
+        # if issubclass(exctype, KeyboardInterrupt):
         if not issubclass(exctype, Exception):
-        #~ if issubclass(exctype, KeyboardInterrupt):
             msg = str(excvalue)
             if not msg:
                 msg = excvalue.__class__.__name__
@@ -313,7 +313,7 @@ class GSDView(ItemModelMainWindow):
         #        Try to build the dialog without parent (self) and check
         #        modality.
         dialog = ExceptionDialog(exctype, excvalue, tracebackobj, self)
-        #dialog.show()
+        # dialog.show()
         ret = dialog.exec_()
         if ret == QtWidgets.QDialog.Rejected:
             self.close()
@@ -341,8 +341,8 @@ class GSDView(ItemModelMainWindow):
         QtWidgets.QAction(
             icon, self.tr('&Close'), actionsgroup,
             objectName='closeAction',
-            # 'Ctrl+W' shortcu is used for closing windows
-            #shortcut=self.tr('Ctrl+W'),
+            # 'Ctrl+W' shortcut is used for closing windows
+            # shortcut=self.tr('Ctrl+W'),
             toolTip=self.tr('Close the current file'),
             statusTip=self.tr('Close the current file'),
             triggered=self.closeItem)
@@ -498,15 +498,15 @@ class GSDView(ItemModelMainWindow):
         settings.beginGroup('mainwindow')
         try:
             # @TODO: clean
-            #position = settings.value('position')
-            #if position is not None:
-            #    self.move(position)
-            #size = settings.value('size')
-            #if size is not None:
-            #    self.resize(size)
-            #else:
-            #    # default size
-            #    self.resize(800, 600)
+            # position = settings.value('position')
+            # if position is not None:
+            #     self.move(position)
+            # size = settings.value('size')
+            # if size is not None:
+            #     self.resize(size)
+            # else:
+            #     # default size
+            #     self.resize(800, 600)
 
             geometry = settings.value('geometry')
             if (not geometry or
@@ -519,16 +519,16 @@ class GSDView(ItemModelMainWindow):
                 self.restoreState(state)
 
             # @TODO: clean
-            #try:
-            #    winstate = settings.value('winstate', QtCore.Qt.WindowNoState)
-            #    winstate = int(winstate)
-            #    if winstate and winstate != QtCore.Qt.WindowNoState:
-            #        # @COMPATIBILITY: presumably a bug in PyQt4 4.7.2
-            #        winstate = qtsupport.intToWinState[winstate]
-            #        self.setWindowState(winstate)
-            #except (KeyError, ValueError) as e:
-            #    _log.info('unable to restore the window state')
-            #    _log.debug('', exc_info=True)
+            # try:
+            #     winstate = settings.value('winstate', QtCore.Qt.WindowNoState)
+            #     winstate = int(winstate)
+            #     if winstate and winstate != QtCore.Qt.WindowNoState:
+            #         # @COMPATIBILITY: presumably a bug in PyQt4 4.7.2
+            #         winstate = qtsupport.intToWinState[winstate]
+            #         self.setWindowState(winstate)
+            # except (KeyError, ValueError) as e:
+            #     _log.info('unable to restore the window state')
+            #     _log.debug('', exc_info=True)
 
             # State of toolbars ad docks
             state = settings.value('state')
@@ -558,9 +558,9 @@ class GSDView(ItemModelMainWindow):
             self.filedialog.setDirectory(workdir)
 
             # history
-            #history = settings.value('history')
-            #if history:
-            #    self.filedialog.setHistory(history)
+            # history = settings.value('history')
+            # if history:
+            #     self.filedialog.setHistory(history)
 
             # sidebar urls
             try:
@@ -575,7 +575,7 @@ class GSDView(ItemModelMainWindow):
             settings.endGroup()
 
     def loadSettings(self, settings=None, loglevel=None):
-        # @TODO: split app saveSettings frlm plugins one
+        # @TODO: split app saveSettings from plugins one
         if settings is None:
             settings = self.settings
 
@@ -617,9 +617,9 @@ class GSDView(ItemModelMainWindow):
         try:
             settings.setValue('winstate', self.windowState())
             # @TODO: clean
-            #if self.windowState() == QtCore.Qt.WindowNoState:
-            #    settings.setValue('position', self.pos())
-            #    settings.setValue('size', self.size())
+            # if self.windowState() == QtCore.Qt.WindowNoState:
+            #     settings.setValue('position', self.pos())
+            #     settings.setValue('size', self.size())
 
             settings.setValue('geometry', self.saveGeometry())
             settings.setValue('state', self.saveState())
@@ -641,11 +641,11 @@ class GSDView(ItemModelMainWindow):
 
             # workdir
             # @NOTE: uncomment to preserve the session value
-            #workdir = settings.setValue('workdir',
-            #                            self.filedialog.directory())
+            # workdir = settings.setValue('workdir',
+            #                             self.filedialog.directory())
 
             # history
-            #settings.setValue('history', self.filedialog.history())
+            # settings.setValue('history', self.filedialog.history())
 
             # sidebar urls
             try:
@@ -672,14 +672,14 @@ class GSDView(ItemModelMainWindow):
             settings.setValue('loglevel', level)
 
             # only changed via preferences
-            #settings.setValue('cachedir', self.cachedir)
+            # settings.setValue('cachedir', self.cachedir)
         finally:
             settings.endGroup()
 
         # @NOTE: cache preferences are only modified via preferences dialog
 
         for plugin in self.pluginmanager.plugins.values():
-            #logging.debug('save %s plugin preferences' % plugin.name)
+            # logging.debug('save %s plugin preferences' % plugin.name)
             plugin.saveSettings(settings)
 
     @QtCore.Slot()
@@ -738,7 +738,7 @@ class GSDView(ItemModelMainWindow):
                             _log.info('file %s" already open', filename)
                         break
                     except errors.OpenError:
-                        #_log.exception('exception caught')
+                        # _log.exception('exception caught')
                         _log.debug('Backend "%s" failed to open file "%s"',
                                    backendname, filename)
                 else:
@@ -747,7 +747,7 @@ class GSDView(ItemModelMainWindow):
     @QtCore.Slot()
     def closeItem(self):
         # @TODO: extend for multiple datasets
-        #~ self.closeGdalDataset.emit()
+        # self.closeGdalDataset.emit()
 
         item = self.currentItem()
         if item:
@@ -756,8 +756,8 @@ class GSDView(ItemModelMainWindow):
                 item = item.parent()
 
             try:
-                #~ backend = self.pluginmanager.plugins[item.backend]
-                #~ backend.closeFile(item)
+                # backend = self.pluginmanager.plugins[item.backend]
+                # backend.closeFile(item)
                 item.close()
             except AttributeError:
                 self.datamodel.invisibleRootItem().removeRow(item.row())
@@ -770,8 +770,8 @@ class GSDView(ItemModelMainWindow):
         while root.hasChildren():
             item = root.child(0)
             try:
-                #~ backend = self.pluginmanager.plugins[item.backend]
-                #~ backend.closeFile(item)
+                # backend = self.pluginmanager.plugins[item.backend]
+                # backend.closeFile(item)
                 item.close()
             except AttributeError:
                 root.removeRow(item.row())
@@ -793,7 +793,7 @@ class GSDView(ItemModelMainWindow):
 
     @QtCore.Slot(int)
     def processingDone(self, returncode=0):
-        #self.controller.reset() # @TODO: remove
+        # self.controller.reset()  # @TODO: remove
         try:
             if returncode != 0:
                 msg = ('An error occurred during the quicklook generation.\n'

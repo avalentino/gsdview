@@ -83,7 +83,7 @@ def test_exceptiondialog():
     except Exception:
         app = QtWidgets.QApplication(sys.argv)
         d = GSDViewExceptionDialog()
-        #d = ExceptionDialog()
+        # d = ExceptionDialog()
         d.show()
         app.exec_()
     print('done.')
@@ -91,8 +91,8 @@ def test_exceptiondialog():
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
-    #~ test_exceptiondialog()
-    #~ test_aboutdialog()
-    #~ test_fileentrywidget()
-    #~ test_generalpreferencespage()
+    # test_exceptiondialog()
+    # test_aboutdialog()
+    # test_fileentrywidget()
+    # test_generalpreferencespage()
     test_preferencesdialog()

@@ -255,7 +255,7 @@ class BaseOutputHandler(object):
 
 
 class ToolDescriptor(object):
-    """Command line tool desctiptor.
+    """Command line tool desctrptor.
 
     A :class:`ToolDescriptor` instance describes a command line tool
     (:attr:`executable`), how to run it (:attr:`args`, :attr:`cwd`,
@@ -300,7 +300,7 @@ class ToolDescriptor(object):
         :param stderr_handler:
             *OutputHandler* for the stderr of the tool
         :param output_encoding:
-            output encoding, it is used to decode the subprocess ouput
+            output encoding, it is used to decode the subprocess output
 
         .. seealso:: :class:`BaseOutputHandler`
 
@@ -318,7 +318,7 @@ class ToolDescriptor(object):
         #: program working directory
         self.cwd = cwd
 
-        #: if set to True (default) then the :attr:`env` dictionaty is used
+        #: if set to True (default) then the :attr:`env` dictionary is used
         #: to update the system environment
         self.envmerge = True
         self._env = env
@@ -342,7 +342,7 @@ class ToolDescriptor(object):
             if output_encoding == 'ascii':
                 output_encoding = 'utf-8'
 
-        #: output encoding, it is used to decode the subprocess ouput
+        #: output encoding, it is used to decode the subprocess output
         self.output_encoding = output_encoding
 
     @property
@@ -363,7 +363,7 @@ class ToolDescriptor(object):
         """Generate the complete command-line for the tool.
 
         This method is meant to be used together with "subprocess"
-        so the "comman-line" actually is a list of strings.
+        so the "command-line" actually is a list of strings.
 
         If the executable attribute is not set (evaluate false) then
         the first non-keyword argument is considered to be the
@@ -598,5 +598,5 @@ if __name__ == '__main__':
     h.feed('\rdone\n')
     h.close()
 
-    #~ import doctest
-    #~ doctest.testmod()
+    # import doctest
+    # doctest.testmod()

@@ -122,9 +122,9 @@ class TestLinearLUT(unittest.TestCase):
         self.assertEqual(len(lut), len(expected_lut))
         self.assertTrue(np.all(lut == expected_lut))
 
-#~ class TestHistogramEqualizedLUT(unittest.TestCase):
-    #~ def test_(self):
-        #~ pass
+# class TestHistogramEqualizedLUT(unittest.TestCase):
+#     def test_(self):
+#         pass
 
 
 if __name__ == '__main__':

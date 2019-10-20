@@ -36,7 +36,7 @@ description = '''The band overview plugin allows to display the overview of
 a GDAL raster band into GSDView.
 It provides a dock widget with a scrollable graphics view in which is showed
 the band preview.
-The ovrview is linked with the main view and a red box indicates the main view
+The overview is linked with the main view and a red box indicates the main view
 location in the overview.
 Moving the red box with the mouse updates the main view to show the boxed area.
 

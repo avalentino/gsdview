@@ -48,8 +48,8 @@ class StretchTool(QtCore.QObject):
 
         self.dialog.finished.connect(lambda: self.action.setChecked(False))
         self.app.mdiarea.subWindowActivated.connect(self.onSubWindowChanged)
-        #~ self.app.treeview.clicked.connect(self.onItemClicked)
-        #~ self.app.subWindowClosed(self.onModelChanged)
+        # self.app.treeview.clicked.connect(self.onItemClicked)
+        # self.app.subWindowClosed(self.onModelChanged)
         self.dialog.valueChanged.connect(self.onStretchChanged)
 
         self.toolbar = QtWidgets.QToolBar(self.tr('Stretching Toolbar'))
@@ -72,7 +72,7 @@ class StretchTool(QtCore.QObject):
         if checked:
             self.reset()
             self.dialog.show()
-            #self.action.setChecked(True)
+            # self.action.setChecked(True)
         else:
             self.dialog.hide()
             self.saveDialogState()
@@ -91,7 +91,7 @@ class StretchTool(QtCore.QObject):
         minimum, maximum = item.dataRange()
 
         # @TODO: remove this
-        #minimum = None
+        # minimum = None
 
         if minimum is not None:
             self.dialog.stretchwidget.setMinimum(minimum)
@@ -151,12 +151,12 @@ class StretchTool(QtCore.QObject):
         try:
             stretch = item.stretch
         except AttributeError:
-            #self.dialog.hide()
+            # self.dialog.hide()
             pass
         else:
             vmin, vmax = self.dialog.values()
             if vmin < vmax:
                 stretch.set_range(vmin, vmax)
                 item.update()
-            #else:
-            #    logging.warning('vmin: %f, vmax: %f' % (vmin, vmax))
+            # else:
+            #     logging.warning('vmin: %f, vmax: %f' % (vmin, vmax))

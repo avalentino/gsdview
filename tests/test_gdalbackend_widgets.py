@@ -19,7 +19,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-#from __future__ import print_function
+# from __future__ import print_function
 
 import os
 import sys
@@ -163,12 +163,12 @@ def test_ovrdialog():
 
 
 if __name__ == '__main__':
-    #~ test_gdalinfowidget()
-    #~ test_gdalpreferencespage()
-    #~ test_histogram_config()
+    # test_gdalinfowidget()
+    # test_gdalpreferencespage()
+    # test_histogram_config()
     testdriver('dataset', True)
-    #~ testdriver('dataset', False)
-    #~ testdriver('band', True)
-    #~ testdriver('band', False)
-    #~ test_ovrwidget()
-    #~ test_ovrdialog()
+    # testdriver('dataset', False)
+    # testdriver('band', True)
+    # testdriver('band', False)
+    # test_ovrwidget()
+    # test_ovrdialog()

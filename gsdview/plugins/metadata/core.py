@@ -33,17 +33,17 @@ _log = logging.getLogger(__name__)
 
 class MetadataViewer(QtWidgets.QDockWidget):
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
-        #title = self.tr('Dataset Browser')
+        # title = self.tr('Dataset Browser')
         super(MetadataViewer, self).__init__('Metadata Viewer', parent, flags,
                                              **kwargs)
-        #self.setObjectName('metadataViewerPanel') # @TODO: check
+        # self.setObjectName('metadataViewerPanel') # @TODO: check
 
         self.infoTable = QtWidgets.QTableWidget(5, 2, self)
         self.infoTable.verticalHeader().hide()
         self.infoTable.setHorizontalHeaderLabels(['Name', 'Value'])
         self.infoTable.horizontalHeader().setStretchLastSection(True)
-        #self.tableWidget.horizontalHeader().hide()
-        # @TODO: comment if you want allow the uset to edit items
+        # self.tableWidget.horizontalHeader().hide()
+        # @TODO: comment if you want allow the user to edit items
         self.infoTable.setEditTriggers(
             QtWidgets.QAbstractItemView.NoEditTriggers)
         self.infoTable.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
@@ -61,8 +61,8 @@ class MetadataViewer(QtWidgets.QDockWidget):
 
         for row, data in enumerate(metadatalist):
             name, value = data.split('=', 1)
-            #item = QtWidgets.QTableWidgetItem(name)
-            #item.setFlags(item.flags() ^ QtCore.Qt.ItemIsEditable)
+            # item = QtWidgets.QTableWidgetItem(name)
+            # item.setFlags(item.flags() ^ QtCore.Qt.ItemIsEditable)
             self.infoTable.setItem(row, 0, QtWidgets.QTableWidgetItem(name))
             self.infoTable.setItem(row, 1, QtWidgets.QTableWidgetItem(value))
 
@@ -111,7 +111,7 @@ class MetadataController(QtCore.QObject):
 
     @QtCore.Slot(QtCore.QModelIndex)
     def onItemClicked(self, index):
-        #if not app.mdiarea.activeSubWindow():
+        # if not app.mdiarea.activeSubWindow():
         item = self.app.datamodel.itemFromIndex(index)
         self.setItemMetadata(item)
 

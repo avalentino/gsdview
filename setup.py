@@ -69,14 +69,15 @@ class ExtendedBuild(Build):
             self.run_command('build_sphinx')
             if 'build_man' in cmdclass:
                 self.run_command('build_man')
-        except:
+        except Exception:
             log.warn("Couldn't build documentation:\n%s" %
                      traceback.format_exception(*sys.exc_info()))
 
 # @NOTE: temporary disabled because could break debian packaging.
 #        The man page and docs are included in the source package generated
 #        via makefile.
-#cmdclass['build'] = ExtendedBuild
+# cmdclass['build'] = ExtendedBuild
+
 
 if has_setuptools:
     from setuptools.command.bdist_egg import bdist_egg
@@ -87,7 +88,7 @@ if has_setuptools:
                 self.run_command('build_sphinx')
                 if 'build_man' in cmdclass:
                     self.run_command('build_man')
-            except:
+            except Exception:
                 log.warn("Couldn't build documentation:\n%s" %
                          traceback.format_exception(*sys.exc_info()))
             bdist_egg.run(self)
@@ -95,7 +96,7 @@ if has_setuptools:
     # @NOTE: temporary disabled because could break debian packaging.
     #        The man page and docs are included in the source package
     #        generated via makefile.
-    #cmdclass['bdist_egg'] = ExtendedBdistEgg
+    # cmdclass['bdist_egg'] = ExtendedBdistEgg
 
 
 # Fix the install_lib command in order to generate an updated appsite.py file
@@ -133,7 +134,7 @@ if not os.path.exists(DOCSDIR):
         import warnings
         warnings.warn(
             'Unable to locate the application data directory.\\n'
-            'Please check yout installation.\\n'
+            'Please check your installation.\\n'
             'If the error persists please file a bug report at:\\n'
             '  https://github.com/avalentino/gsdview')
 
@@ -177,6 +178,7 @@ del PKGNAME, LIBDIR, os
 
         return installed
 
+
 cmdclass['install_lib'] = InstallLib
 
 
@@ -200,8 +202,8 @@ Topic :: Scientific/Engineering :: Visualization
 datafiles = [
     (os.path.join('share', 'doc', PKGNAME), ['README.txt']),
     (os.path.join('share', 'doc', PKGNAME), ['LICENSE.txt']),
-    #(os.path.join('share', 'doc', PKGNAME),
-    #                [os.path.join('doc', 'GSDView.pdf')]),
+    # (os.path.join('share', 'doc', PKGNAME),
+    #                 [os.path.join('doc', 'GSDView.pdf')]),
 ]
 
 HTMLPREFIX = os.path.join('share', 'doc', PKGNAME)
@@ -236,7 +238,7 @@ if has_setuptools:
             'numpy >= 1.3.0',
             'qtpy',
         ],
-        #extras_require = {},
+        # extras_require = {},
         keywords='gsdview gdal',
         entry_points={
             'gui_scripts': ['gsdview = gsdview:main'],

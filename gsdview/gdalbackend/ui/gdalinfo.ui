@@ -69,7 +69,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Relaease Date:</string>
+           <string>Release Date:</string>
           </property>
          </widget>
         </item>

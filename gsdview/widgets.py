@@ -40,8 +40,8 @@ _log = logging.getLogger(__name__)
 
 
 def get_mainwin():
-    #mainwin = QtWidgets.qApp.findChild(
-    #    QtWidgets.QMainWindow,  'gsdview-mainwin')
+    # mainwin = QtWidgets.qApp.findChild(
+    #     QtWidgets.QMainWindow,  'gsdview-mainwin')
     for mainwin in QtWidgets.QApplication.topLevelWidgets():
         if mainwin.objectName() == 'gsdview-mainwin':
             break
@@ -53,8 +53,8 @@ def get_mainwin():
 
 def get_filedialog(parent=None):
     try:
-        #mainwin = QtWidgets.qApp.findChild(
-        #    QtWidgets.QMainWindow,  'gsdview-mainwin')
+        # mainwin = QtWidgets.qApp.findChild(
+        #     QtWidgets.QMainWindow,  'gsdview-mainwin')
         mainwin = get_mainwin()
         dialog = mainwin.filedialog
     except AttributeError:
@@ -152,7 +152,7 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview">http://sourcefor
 
         tablewidget.setItem(index, 0, QtWidgets.QTableWidgetItem(sw))
         tablewidget.setItem(index, 1, QtWidgets.QTableWidgetItem(version))
-        #tablewidget.setItem(row, 2, QtWidgets.QTableWidgetItem(link))
+        # tablewidget.setItem(row, 2, QtWidgets.QTableWidgetItem(link))
         linkLabel = QtWidgets.QLabel('<a href="{0}">{0}</a>'.format(link))
         linkLabel.linkActivated.connect(
             lambda text: QtGui.QDesktopServices.openUrl(QtCore.QUrl(text)))
@@ -167,11 +167,11 @@ class FileEntryWidget(QtWidgets.QWidget):
 
         self.__completer = QtWidgets.QCompleter(self)
         # @TODO: use QFileSystemModel instraed
-        #model = QtWidgets.QFileSystemModel(self.__completer)
+        # model = QtWidgets.QFileSystemModel(self.__completer)
         model = QtWidgets.QDirModel(self.__completer)
-        #model.setFilter(QtCore.QDir.AllEntries)
-        #self.completer.setCompletionMode(
-        #    QtWidgets.QCompleter.InlineCompletion)
+        # model.setFilter(QtCore.QDir.AllEntries)
+        # self.completer.setCompletionMode(
+        #     QtWidgets.QCompleter.InlineCompletion)
         self.__completer.setModel(model)
 
         self.lineEdit = QtWidgets.QLineEdit()
@@ -193,8 +193,8 @@ class FileEntryWidget(QtWidgets.QWidget):
         self.mode = mode
         self.dialog = dialog
 
-        #~ if not self.dialog:
-            #~ self.dialog = get_filedialog(self)
+        # if not self.dialog:
+        #     self.dialog = get_filedialog(self)
 
         self.button.clicked.connect(self.choose)
 
@@ -265,10 +265,10 @@ class GeneralPreferencesPage(QtWidgets.QWidget, GeneralPreferencesPageBase):
         dialog = get_filedialog(self)
         self.workdirEntryWidget.dialog = dialog
         self.workdirEntryWidget.mode = QtWidgets.QFileDialog.Directory
-        #self.workdirEntryWidget.mode = QtWidgets.QFileDialog.DirectoryOnly
+        # self.workdirEntryWidget.mode = QtWidgets.QFileDialog.DirectoryOnly
         self.cachedirEntryWidget.dialog = dialog
         self.cachedirEntryWidget.mode = QtWidgets.QFileDialog.Directory
-        #self.cachedirEntryWidget.mode = QtWidgets.QFileDialog.DirectoryOnly
+        # self.cachedirEntryWidget.mode = QtWidgets.QFileDialog.DirectoryOnly
 
     def load(self, settings):
         # general
@@ -372,8 +372,8 @@ class PreferencesDialog(QtWidgets.QDialog, PreferencesDialogBase):
         icon = qtsupport.geticon('preferences.svg', __name__)
         self.addPage(GeneralPreferencesPage(), icon, self.tr('General'))
 
-        #~ icon = qt4support.geticon('harddisk.svg', __name__)
-        #~ self.addPage(CachePreferencesPage(), icon, self.tr('Cache'))
+        # icon = qt4support.geticon('harddisk.svg', __name__)
+        # self.addPage(CachePreferencesPage(), icon, self.tr('Cache'))
 
         assert self.listWidget.count() == self.stackedWidget.count()
 
@@ -383,7 +383,7 @@ class PreferencesDialog(QtWidgets.QDialog, PreferencesDialogBase):
         applybutton.clicked.connect(self.apply)
 
     # @TODO: check
-    #@QtCore.Slot(QtWidgets.QListWidgetItem, QtWidgets.QListWidgetItem)
+    # @QtCore.Slot(QtWidgets.QListWidgetItem, QtWidgets.QListWidgetItem)
     def changePage(self, current, previous):
         if not current:
             current = previous
@@ -490,7 +490,7 @@ class ExceptionDialog(QtWidgets.QDialog, ExceptionDialogBase):
         self.errormsgLabel.text()
 
     def setErrorMsg(self, text):
-        #errormsg = traceback.format_exception_only(exctype, excvalue)
+        # errormsg = traceback.format_exception_only(exctype, excvalue)
         self.errorMsgLabel.setText(text)
 
     def traceback(self):
@@ -598,6 +598,7 @@ class ExceptionDialog(QtWidgets.QDialog, ExceptionDialogBase):
                 QtWidgets.QMessageBox.warning(self, self.tr('WARNING'), msg)
             finally:
                 fd.close()
+
 
 try:
     from qtpy import Qsci

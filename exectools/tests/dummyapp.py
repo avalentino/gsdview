@@ -41,6 +41,7 @@ def handler(signum, frame):
     print('Now exit the program.')
     sys.exit(signum)
 
+
 for sig_id in sigmap:
     signal.signal(sig_id, handler)
 

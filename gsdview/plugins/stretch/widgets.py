@@ -52,7 +52,7 @@ class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
     #: SIGNAL: it is emitted when the stretch range changes
     #:
     #: :C++ signature: `void rangeChanged(int, int)`
-    #rangeChanged = QtCore.Signal(int, int)
+    # rangeChanged = QtCore.Signal(int, int)
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  floatmode=True, **kwargs):
@@ -69,7 +69,7 @@ class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
         self.lowSlider.valueChanged.connect(self._onLowSliderChanged)
         self.highSlider.valueChanged.connect(self._onHighSliderChanged)
 
-        #self.rangeChanged.connect(self._onRangeChanged)
+        # self.rangeChanged.connect(self._onRangeChanged)
 
         self.minSpinBox.valueChanged[float].connect(self._onMinimumChanged)
         self.maxSpinBox.valueChanged[float].connect(self._onMaximumChanged)
@@ -83,12 +83,14 @@ class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
         self.lowSlider.valueChanged.disconnect(self._onLowSliderChanged)
         self.highSlider.valueChanged.disconnect(self._onHighSliderChanged)
 
-        #self.rangeChanged.disconnect(self._onRangeChanged)
+        # self.rangeChanged.disconnect(self._onRangeChanged)
 
         self.minSpinBox.valueChanged[float].disconnect(self._onMinimumChanged)
         self.maxSpinBox.valueChanged[float].disconnect(self._onMaximumChanged)
-        self.lowSpinBox.valueChanged[float].disconnect(self._onLowSpinBoxChanged)
-        self.highSpinBox.valueChanged[float].disconnect(self._onHighSpinBoxChanged)
+        self.lowSpinBox.valueChanged[float].disconnect(
+            self._onLowSpinBoxChanged)
+        self.highSpinBox.valueChanged[float].disconnect(
+            self._onHighSpinBoxChanged)
 
         self.lowSpinBox.valueChanged.disconnect(self.valueChanged)
         self.highSpinBox.valueChanged.disconnect(self.valueChanged)
@@ -292,9 +294,9 @@ class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
         return self.low(), self.high()
 
     def singleStep(self):
-        #assert self.lowSlider.singleStep() == self.highSlider.singleStep()
-        #assert self.lowSlider.singleStep() == self.lowSpinBox.singleStep()
-        #assert self.lowSlider.singleStep() == self.highSpinBox.singleStep()
+        # assert self.lowSlider.singleStep() == self.highSlider.singleStep()
+        # assert self.lowSlider.singleStep() == self.lowSpinBox.singleStep()
+        # assert self.lowSlider.singleStep() == self.highSpinBox.singleStep()
         return self.highSpinBox.singleStep()
 
     def setSingleStep(self, step):
@@ -305,7 +307,7 @@ class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
         self.highSpinBox.setSingleStep(step)
 
     def pageStep(self):
-        #assert self.lowSlider.pageStep() == self.highSlider.pageStep()
+        # assert self.lowSlider.pageStep() == self.highSlider.pageStep()
         return self.highSlider.pageStep() * self._kslider
 
     def setPageStep(self, step):
@@ -486,10 +488,10 @@ class StretchDialog(QtWidgets.QDialog, StretchDialogBase):
 
         self.stretchwidget.valueChanged.connect(self.valueChanged)
 
-        #~ self.stretchwidget.lowSpinBox.valueChanged.connect(
-        #~     self.valueChanged)
-        #~ self.stretchwidget.highSpinBox.valueChanged.connect(
-        #~     self.valueChanged)
+        # self.stretchwidget.lowSpinBox.valueChanged.connect(
+        #     self.valueChanged)
+        # self.stretchwidget.highSpinBox.valueChanged.connect(
+        #     self.valueChanged)
 
     def advanced(self):
         return self.stretchwidget.lowSpinBox.isVisible()
@@ -525,4 +527,4 @@ class StretchDialog(QtWidgets.QDialog, StretchDialogBase):
     def values(self):
         return self.stretchwidget.values()
         # @TODO: working on linux
-        #return 0, self.stretchwidget.maxStretch()
+        # return 0, self.stretchwidget.maxStretch()

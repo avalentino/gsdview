@@ -194,7 +194,7 @@ class VectorGraphicsApp(QtWidgets.QMainWindow):
             icon, self.tr('Zoom Fit'), actions,
             objectName='zoomFitAction',
             statusTip=self.tr('Zoom Fit'),
-            #checkable=True,
+            # checkable=True,
             triggered=lambda: self.graphicsview.fitInView(
                 self.graphicsview.sceneRect(),
                 QtCore.Qt.KeepAspectRatio))
@@ -269,17 +269,17 @@ class VectorGraphicsApp(QtWidgets.QMainWindow):
         affine_transform = None
 
         # @TODO: remove
-        #srs = osr.SpatialReference()
-        #srs.SetLCC(20, 20, 20, 0, 0, 0)
-        ##srs.SetUTM(33)
+        # srs = osr.SpatialReference()
+        # srs.SetLCC(20, 20, 20, 0, 0, 0)
+        # #srs.SetUTM(33)
 
         # @TODO: remove
-        #~ from math import sin, cos, radians
-        #~ a = radians(-45)
-        #~ qtransform = QtGui.QTransform(
-            #~ cos(a), -sin(a), sin(a), cos(a), 0, 0)
-        #~ #affine_transform = qtransform
-        #~ transform = lambda x, y, z: qtransform.map(x, y)
+        # from math import sin, cos, radians
+        # a = radians(-45)
+        # qtransform = QtGui.QTransform(
+        #     cos(a), -sin(a), sin(a), cos(a), 0, 0)
+        # #affine_transform = qtransform
+        # transform = lambda x, y, z: qtransform.map(x, y)
 
         ds = ogr.Open(filename)
         if ds is None:
@@ -290,8 +290,8 @@ class VectorGraphicsApp(QtWidgets.QMainWindow):
 
         for index, layer in enumerate(ds):
             qlayer = ogrqt.layerToGraphicsItem(layer, srs, transform)
-            #qlayer.datasource = ds.GetName()
-            #qlayer.index = index
+            # qlayer.datasource = ds.GetName()
+            # qlayer.index = index
             qlayer.setData(ogrqt.DATAKEY['datasource'], ds.GetName())
             qlayer.setData(ogrqt.DATAKEY['index'], index)
 
@@ -316,7 +316,7 @@ class VectorGraphicsApp(QtWidgets.QMainWindow):
 
     def _autocolor(self):
         COLORS = (
-            #QtCore.Qt.white,
+            # QtCore.Qt.white,
             QtCore.Qt.black,
             QtCore.Qt.red,
             QtCore.Qt.darkRed,
@@ -333,9 +333,9 @@ class VectorGraphicsApp(QtWidgets.QMainWindow):
             QtCore.Qt.gray,
             QtCore.Qt.darkGray,
             QtCore.Qt.lightGray,
-            #QtCore.Qt.transparent,
-            #QtCore.Qt.color0,
-            #QtCore.Qt.color1,
+            # QtCore.Qt.transparent,
+            # QtCore.Qt.color0,
+            # QtCore.Qt.color1,
         )
 
         ncolors = len(COLORS)
@@ -345,10 +345,10 @@ class VectorGraphicsApp(QtWidgets.QMainWindow):
 
             qlayer = self.model.item(row).data()
 
-            #~ pen = qlayer.pen()
-            #~ pen.setColor(color)
-            #~ #pen.setWidth(1)
-            #~ qlayer.setPen(pen)
+            # pen = qlayer.pen()
+            # pen.setColor(color)
+            # #pen.setWidth(1)
+            # qlayer.setPen(pen)
 
             brush = qlayer.brush()
             brush.setColor(color)
@@ -359,8 +359,8 @@ class VectorGraphicsApp(QtWidgets.QMainWindow):
 def main(*argv):
     # @NOTE: basic config doesn't work since other modules (e.g. sip)
     #        use it before this line
-    #logging.basicConfig(level=logging.DEBUG,
-    #                    format='%(levelname): %(message)s')
+    # logging.basicConfig(level=logging.DEBUG,
+    #                     format='%(levelname): %(message)s')
     logging.getLogger().setLevel(logging.DEBUG)
 
     if not argv:

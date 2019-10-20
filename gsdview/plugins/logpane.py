@@ -72,9 +72,9 @@ def init(app):
 
 def close(app):
     saveSettings(app.settings)
-    #app.logger.remove(_global_aux.pop('handler'))
-    #panel = app.findChild(QtWidgets.QDockWidget, 'outputPanel')
-    #app.removeDockWidget(panel)
+    # app.logger.remove(_global_aux.pop('handler'))
+    # panel = app.findChild(QtWidgets.QDockWidget, 'outputPanel')
+    # app.removeDockWidget(panel)
 
 
 def loadSettings(settings):

@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-"""Overview pannel for GDAL raster bands."""
+"""Overview panel for GDAL raster bands."""
 
 
 import logging
@@ -35,7 +35,7 @@ _log = logging.getLogger(__name__)
 class NavigationGraphicsView(QtWidgets.QGraphicsView):
     """Graphics view for dataset navigation.
 
-    The view usually displays an auto-scalled low resolution overview
+    The view usually displays an auto-scaled low resolution overview
     of the scene with a red box indicating the area currently displayed
     in the high resolution view.
 
@@ -70,7 +70,7 @@ class NavigationGraphicsView(QtWidgets.QGraphicsView):
     #: :param mousebutton:
     #:     the ID of the pressed button
     #: :param dragmode:
-    #:     current darg mode
+    #:     current drag mode
     #:
     #: :C++ signature: `void mouseMoved(QPointF, Qt::MouseButtons,
     #:                                    QGraphicsView::DragMode)`
@@ -108,8 +108,8 @@ class NavigationGraphicsView(QtWidgets.QGraphicsView):
             #           current view.
 
             # @TODO: check
-            #self.invalidateScene(self.sceneRect(),
-            #                     QtWidgets.QGraphicsScene.ForegroundLayer)
+            # self.invalidateScene(self.sceneRect(),
+            #                      QtWidgets.QGraphicsScene.ForegroundLayer)
             self.scene().update()
 
     def drawForeground(self, painter, rect):
@@ -121,7 +121,7 @@ class NavigationGraphicsView(QtWidgets.QGraphicsView):
             box = self.viewbox.intersected(self.sceneRect())
             painter.setPen(self._pen)
             painter.drawRect(box)
-            #painter.drawConvexPolygon(self.viewbox) #@TODO: check
+            # painter.drawConvexPolygon(self.viewbox) #@TODO: check
         finally:
             painter.setPen(pen)
 
@@ -168,27 +168,27 @@ class BandOverviewDock(QtWidgets.QDockWidget):
     OVRMAXSIZE = 10 * 1024 ** 2  # 10MB
 
     def __init__(self, app, flags=QtCore.Qt.WindowFlags(0), **kwargs):
-        #title = self.tr('Dataset Browser')
+        # title = self.tr('Dataset Browser')
         super(BandOverviewDock, self).__init__('Band Overview', app, flags,
                                                **kwargs)
-        #self.setObjectName('datasetBroeserPanel') # @TODO: check
+        # self.setObjectName('datasetBroeserPanel') # @TODO: check
 
         self.app = app  # @TODO: check
         self.graphicsview = NavigationGraphicsView(self)
         self.setWidget(self.graphicsview)
 
-    # @TODO: understand why this doewn't work
+    # @TODO: understand why this doesn't work
     #
     #    self.graphicsview.installEventFilter(self)
     #
-    #def eventFilter(self, obj, event):
-    #    if obj.scene():
-    #        if event.type() in (QtCore.QEvent.MouseButtonPress,
-    #                            QtCore.QEvent.MouseMove):
-    #            if event.buttons() & QtCore.Qt.LeftButton:
-    #                pos = obj.mapToScene(event.pos())
-    #                self.centerMainViewOn(pos)
-    #    return obj.eventFilter(obj, event)
+    # def eventFilter(self, obj, event):
+    #     if obj.scene():
+    #         if event.type() in (QtCore.QEvent.MouseButtonPress,
+    #                             QtCore.QEvent.MouseMove):
+    #             if event.buttons() & QtCore.Qt.LeftButton:
+    #                 pos = obj.mapToScene(event.pos())
+    #                 self.centerMainViewOn(pos)
+    #     return obj.eventFilter(obj, event)
 
     @overrideCursor
     def setItem(self, item):
@@ -253,11 +253,11 @@ class BandOverviewDock(QtWidgets.QDockWidget):
             # @TODO: bug report: mapping to scene seems to introduce a
             #        spurious offset "x1 = 2*x0" and y1 = 2*y0;
             #        this doesn't happen for "w" and "h"
-            #polygon = srcview.mapToScene(hbar.value(), vbar.value(),
-            #                             hbar.pageStep(), vbar.pageStep())
-            #@TODO: in case of rotations it should be better keep using
-            #       a polygon
-            #self.graphicsview.viewbox = polygon.boundingRect()
+            # polygon = srcview.mapToScene(hbar.value(), vbar.value(),
+            #                              hbar.pageStep(), vbar.pageStep())
+            # @TODO: in case of rotations it should be better keep using
+            #        a polygon
+            # self.graphicsview.viewbox = polygon.boundingRect()
 
             # @NOTE: this is a workaround; mapToScene should be used instead
             rect = QtCore.QRectF(hbar.value(), vbar.value(),
@@ -308,7 +308,7 @@ class OverviewController(QtCore.QObject):
         if len(self.app.mdiarea.subWindowList()) == 0:
             self.panel.reset()
 
-    #@QtCore.Slot(QtGui.QStandardItem)
+    # @QtCore.Slot(QtGui.QStandardItem)
     @QtCore.Slot('QStandardItem*')  # @TODO:check
     def onItemChanged(self, item):
         if hasattr(item, 'scene'):

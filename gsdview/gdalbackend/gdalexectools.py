@@ -38,7 +38,7 @@ _log = logging.getLogger(__name__)
 
 
 class BaseGdalToolDescriptor(exectools.ToolDescriptor):
-    """Base class for GDAL tool descriprors."""
+    """Base class for GDAL tool descriptors."""
 
     def gdal_config_options(self, cmd=''):
         extra_args = []
@@ -192,7 +192,7 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
         self._compression_method = method
 
     def interleaving_method(self):
-        '''Ovrviews interleaving method (%s).
+        '''Overviews interleaving method (%s).
 
         This attribute is only used if external overviews are
         stored in GeoTIFF format.
@@ -202,7 +202,7 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
         return self._interleaving_method
 
     def set_interleaving_method(self, method):
-        '''Set the ovrview interleaving method.
+        '''Set the overview interleaving method.
 
         This attribute is only used if external overviews are
         stored in GeoTIFF format.
@@ -295,7 +295,7 @@ class GdalInfoDescriptor(BaseGdalToolDescriptor):
         :param env:
             environment dictionary
         :param envmerge:
-            if set to True (default) it is the :attr:`env` dictionaty is
+            if set to True (default) it is the :attr:`env` dictionary is
             used to update the system environment
         :param stdout_handler:
             *OutputHandler* for the stdout of the tool
@@ -378,8 +378,8 @@ class GdalOutputHandler(QtOutputHandler):
                  blinker=None, **kwargs):
         super(GdalOutputHandler, self).__init__(logger, statusbar, progressbar,
                                                 blinker, **kwargs)
-        #pattern = ('(?P<percentage>\d{1,3})|(?P<pulse>\.)|'
-        #           '((?P<text> - done\.?)$)')
+        # pattern = ('(?P<percentage>\d{1,3})|(?P<pulse>\.)|'
+        #            '((?P<text> - done\.?)$)')
         pattern = ('(?P<percentage>\d{1,3})|(?P<pulse>\.)|'
                    '( - (?P<text>done\.?)\n)')
         self._progress_pattern = re.compile(pattern)
@@ -399,7 +399,7 @@ class GdalOutputHandler(QtOutputHandler):
 
         pulse = data.get('pulse')
         percentage = data.get('percentage')
-        #~ text = data.get('text')
+        # text = data.get('text')
 
         if pulse and percentage is None:
             self._percentage = min(100, self._percentage + 2.5)
@@ -411,9 +411,9 @@ class GdalOutputHandler(QtOutputHandler):
                     percentage, self._percentage)
 
             self._percentage = percentage
-        #~ if text and not pulse and percentage is None:
-            #~ # reset percentage
-            #~ self._percentage = 0.
+        # if text and not pulse and percentage is None:
+        #     # reset percentage
+        #     self._percentage = 0.
 
         super(GdalOutputHandler, self).handle_progress(data)
 
@@ -467,6 +467,6 @@ if __name__ == '__main__':
             h.feed(c)
         h.close()
 
-    #~ test_GdalOutputHandler_re()
-    #~ test_GdalOutputHandler1()
+    # test_GdalOutputHandler_re()
+    # test_GdalOutputHandler1()
     test_GdalOutputHandler2()

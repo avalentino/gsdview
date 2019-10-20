@@ -66,6 +66,7 @@ else:
     import select
     import fcntl
 
+
 class Popen(subprocess.Popen):
     def recv(self, maxsize=None):
         return self._recv('stdout', maxsize)
@@ -168,6 +169,7 @@ class Popen(subprocess.Popen):
                 if not conn.closed:
                     fcntl.fcntl(conn, fcntl.F_SETFL, flags)
 
+
 message = "Other end disconnected!"
 
 
@@ -203,6 +205,7 @@ def send_all(p, data):
             data = buffer(data, sent)
         except Exception:
             data = data[sent:]
+
 
 if __name__ == '__main__':
     if sys.platform == 'win32':

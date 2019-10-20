@@ -52,7 +52,7 @@ class MajorObjectItem(QtGui.QStandardItem):
             self._obj = gdalobj
 
         # @TODO: don't use self._obj if __getattr__ is set
-        #description = os.path.basename(self._obj.GetDescription())
+        # description = os.path.basename(self._obj.GetDescription())
         if self._obj:
             description = self._obj.GetDescription().strip()
         else:
@@ -179,8 +179,8 @@ class BandItem(MajorObjectItem):
     def close(self):
         self.scene.clear()
         self.graphicsitem = None
-        #self.scene = None    # @WARNINIG: causes problems in event filters
-        #self._obj.FlushCache() # @TODO: check
+        # self.scene = None    # @WARNING: causes problems in event filters
+        # self._obj.FlushCache() # @TODO: check
         super(BandItem, self).close()
 
     def _reopen(self, gdalobj=None):
@@ -205,7 +205,7 @@ class BandItem(MajorObjectItem):
             toremove = []
             for level, index in oldlevelsmap.items():
                 if level not in levelsmap:
-                    #self.removeRow(index)
+                    # self.removeRow(index)
                     toremove.append(index)
                 else:
                     item = self.GetOverview(index)
@@ -231,7 +231,7 @@ class BandItem(MajorObjectItem):
                 self.insertRow(index, item)
 
             # @TODO: complete
-            #self.sortChildren(0, QtCore.Qt.AscendngOrder)
+            # self.sortChildren(0, QtCore.Qt.AscendngOrder)
 
         self._obj = gdalobj
         self.model().itemChanged.emit(self)
@@ -242,12 +242,12 @@ class OverviewItem(BandItem):
     _type = BandItem._type + 1
 
 
-#~ class VirtualBandItem(BandItem):
-    #~ iconfile = qt4support.geticon('virtualband.svg', __name__)
-    #~ _type = BandItem._type + 2
-    # @TODO: remove
-    #~ actions = BandItem.actions + ('Delete',)
-    #~ #defaultaction = 'Open'
+# class VirtualBandItem(BandItem):
+#     iconfile = qt4support.geticon('virtualband.svg', __name__)
+#     _type = BandItem._type + 2
+#     # @TODO: remove
+#     actions = BandItem.actions + ('Delete',)
+#     #defaultaction = 'Open'
 
 
 class DatasetItem(MajorObjectItem):
@@ -306,7 +306,7 @@ class DatasetItem(MajorObjectItem):
     def _setup_scene(self, parent=None):
         try:
             # @TODO: check
-            #graphicsitem = gdalqt4.graphicsItemFactory(self)
+            # graphicsitem = gdalqt4.graphicsItemFactory(self)
             graphicsitem = gdalqt.GdalRgbGraphicsItem(self)
         except TypeError:
             # dataset is not an RGB image
@@ -378,17 +378,17 @@ class DatasetItem(MajorObjectItem):
         self._setup_child_subdatasets(self._obj)
 
     def close(self):
-        #self._obj.FlushCache() # @TODO: check
+        # self._obj.FlushCache() # @TODO: check
         self.filename = None
         self._mode = None
         self.cmapper = None
         self.graphicsitem = None
-        #self.scene = None    # @WARNINIG: causes problems in event filters
+        # self.scene = None    # @WARNING: causes problems in event filters
         super(DatasetItem, self).close()
 
         parent = self.parent()
         if not parent:
-            # only remone itself if it is a toplevel item
+            # only remove itself if it is a toplevel item
             parent = self.model().invisibleRootItem()
             # @NOTE: use takeRow instead of removeRow in order to avoid the
             #        underlying C/C++ object is deleted before all sub-windows
@@ -666,7 +666,7 @@ class SubDatasetItem(CachedDatasetItem):
         # @NOTE: preserve the filename, extrainfo and mode
         gdalfilename = self.filename
         mode = self._mode
-        #self.extrainfo = ''
+        # self.extrainfo = ''
 
         super(SubDatasetItem, self).close()
 

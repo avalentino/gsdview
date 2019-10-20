@@ -20,7 +20,7 @@
 
 """Window Menu
 
-Python port of the Window Wenu component from Qt Solutions.
+Python port of the Window Menu component from Qt Solutions.
 
 """
 
@@ -113,7 +113,7 @@ class QtWindowListMenu(QtWidgets.QMenu):
 
         self._stdGroup = QtWidgets.QActionGroup(self, exclusive=False)
         self._winGroup = QtWidgets.QActionGroup(self, exclusive=True)
-                                            #, triggered=self.activateWindow)
+                                            # , triggered=self.activateWindow)
 
         # @COMPATIBILITY: pyside 1.2.2
         self._winGroup.triggered.connect(self.activateWindow)
@@ -343,7 +343,7 @@ class QtWindowListMenu(QtWidgets.QMenu):
 
         """
 
-        #return self._iconMap.get(window)
+        # return self._iconMap.get(window)
         return self._iconMap[window]
 
     def setDefaultIcon(self, icon):

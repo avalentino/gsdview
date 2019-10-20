@@ -33,7 +33,7 @@ version = '.'.join(map(str, __version__)) + '.dev'
 
 short_description = 'Image stretch control for GSDView.'
 description = '''The stretch plugin provides a control dialog to modify
-the image stretch (pixel values resacling).
+the image stretch (pixel values rescaling).
 The plugin also installs a menu entry and a toolbar button.
 
 '''

@@ -39,15 +39,15 @@ _log = logging.getLogger(__name__)
 
 
 class GdalHelper(object):
-    """Basee helper class for running external GDAL tools.
+    """Base helper class for running external GDAL tools.
 
     Helper classes provide a common set of functionality for running
     GDAL tools in separate processes.
     Task performed are:
 
         * tool setup
-        * temporay files and diractories creation
-        * temporay files and diractories cleanup
+        * temporary files and directories creation
+        * temporary files and directories cleanup
         * finalization actions
 
     """
@@ -105,8 +105,8 @@ class GdalHelper(object):
             shutil.rmtree(self._tmpdir)
 
             if os.path.exists(self._tmpdir):
-                _log.warning('unable ro remove remporary dir: '
-                                    '"%s"' % self._tmpdir)
+                _log.warning(
+                    'unable ro remove temporary dir: "%s"' % self._tmpdir)
             self._tmpdir = None
 
     def setProgressRange(self, minimum, maximum):
@@ -150,20 +150,20 @@ class GdalHelper(object):
             _log.debug('run the "%s" subprocess.',
                        os.path.basename(self.tool.executable))
 
-        # @TODO: check: this instruuctin in this position don' seems to work
+        # @TODO: check: this instruuction in this position don' seems to work
         #        (the progressbar hangs)
-        #self.setProgressRange(*self._PROGRESS_RANGE)
-        #if self.progressdialog:
-        #    #self.progressdialog.reset()
-        #    self.progressdialog.show()
+        # self.setProgressRange(*self._PROGRESS_RANGE)
+        # if self.progressdialog:
+        #     #self.progressdialog.reset()
+        #     self.progressdialog.show()
 
-        # @TODO: connect signals after the process succefully started (??)
+        # @TODO: connect signals after the process successfully started (??)
         self._connect_signals()
 
         try:
             startfailure = self.do_start(*args, **kwargs)
         except Exception as e:
-            #_log.error(str(e), exc_info=True)
+            # _log.error(str(e), exc_info=True)
             _log.debug(str(e), exc_info=True)
             startfailure = True
 
@@ -172,7 +172,7 @@ class GdalHelper(object):
         else:
             self.setProgressRange(*self._PROGRESS_RANGE)
             if self.progressdialog:
-                #self.progressdialog.reset()
+                # self.progressdialog.reset()
                 self.progressdialog.show()
 
     def do_finalize(self):
@@ -181,8 +181,8 @@ class GdalHelper(object):
     def do_finalize_on_error(self):
         pass
 
-    #@QtCore.Slot()
-    #@QtCore.Slot(int)
+    # @QtCore.Slot()
+    # @QtCore.Slot(int)
     def finalize(self, returncode=0):
         try:
             self._disconnect_signals()
@@ -220,7 +220,7 @@ class AddoHelper(GdalHelper):
 
     .. note:: if one wants to add overviews to a vrt dataset that
               already has overviews (i.e. the ovr/aux file already
-              exists) then the ovr/aux file should be copyed in the
+              exists) then the ovr/aux file should be copied in the
               private gdaladdo environment before starting computation.
 
               In this way the pre-existing overview are preserved but
@@ -230,7 +230,7 @@ class AddoHelper(GdalHelper):
               mailing-list.
 
               An alternative solution, the one currently implemented,
-              is to force recomputation of all overview levels (exixting
+              is to force re-computation of all overview levels (existing
               ones and newly selected) and then replace the ol overview
               file.
 
@@ -267,7 +267,7 @@ class AddoHelper(GdalHelper):
         levels = gdalsupport.ovrComputeLevels(dataset, estep=estep,
                                               threshold=threshold)
 
-        # @NOTE: the GDAL band info is configured to force recomputation of
+        # @NOTE: the GDAL band info is configured to force re-computation of
         #        all levels checked
         if levels:
             levels.extend(oldlevels)
@@ -276,7 +276,7 @@ class AddoHelper(GdalHelper):
         return levels
 
     def do_start(self, item):
-        #levels = gdalsupport.ovrComputeLevels(item)
+        # levels = gdalsupport.ovrComputeLevels(item)
 
         # @NOTE: use dataset for levels computation because the
         #        IMAGE_STRUCTURE metadata are not propagated from
@@ -297,7 +297,7 @@ class AddoHelper(GdalHelper):
         levels = self.target_levels(dataset)
 
         # @NOTE: overviews are computed for all bands so I do this at
-        #        application level, before a specific band is choosen.
+        #        application level, before a specific band is chosen.
         #        Maybe ths is not the best policy and overviews should be
         #        computed only when needed instead
         if levels:

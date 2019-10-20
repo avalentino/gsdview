@@ -40,20 +40,22 @@ from gsdview.gdalbackend import gdalsupport
 _log = logging.getLogger(__name__)
 
 
-def gdalcolorentry2qcolor(colrentry, interpretation=gdal.GPI_RGB):
+def gdalcolorentry2qcolor(colorentry, interpretation=gdal.GPI_RGB):
     qcolor = QtGui.QColor()
 
     if interpretation == gdal.GPI_RGB:
-        qcolor.setRgb(colrentry.c1, colrentry.c2, colrentry.c3, colrentry.c4)
+        qcolor.setRgb(
+            colorentry.c1, colorentry.c2, colorentry.c3, colorentry.c4)
     elif interpretation == gdal.GPI_Gray:
-        qcolor.setRgb(colrentry.c1, colrentry.c1, colrentry.c1)
+        qcolor.setRgb(colorentry.c1, colorentry.c1, colorentry.c1)
     elif interpretation == gdal.GPI_CMYK:
-        qcolor.setCmyk(colrentry.c1, colrentry.c2, colrentry.c3, colrentry.c4)
+        qcolor.setCmyk(
+            colorentry.c1, colorentry.c2, colorentry.c3, colorentry.c4)
     elif interpretation == gdal.GPI_HLS:
-        qcolor.setHsv(colrentry.c1, colrentry.c2, colrentry.c3)
-                    # , colrentry.c4)
+        qcolor.setHsv(colorentry.c1, colorentry.c2, colorentry.c3)
+                      # , colorentry.c4)
     else:
-        raise ValueError('invalid color intepretatin: "%s"' % interpretation)
+        raise ValueError('invalid color interpretation: "%s"' % interpretation)
 
     return qcolor
 
@@ -99,7 +101,7 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
             h = gdalobj.YSize
 
         self._boundingRect = QtCore.QRectF(0, 0, w, h)
-        #self.read_threshold = 1600*1200
+        # self.read_threshold = 1600*1200
 
         self.stretch = imgutils.LinearStretcher()
         # @TODO: use lazy gaphicsitem initialization
@@ -201,7 +203,7 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
     @staticmethod
     def _defaultStretch(band, data=None, nsigma=5):
         # @NOTE: statistics computation is potentially slow so first check
-        #        if fast statistics retriewing is possible
+        #        if fast statistics retrieving is possible
 
         stats = (None, None, None, None)
 
@@ -300,8 +302,8 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
         funcs['Angle'] = np.angle
         funcs['Real'] = np.real
         funcs['Imag'] = np.imag
-        #funcs['Pow'] = lambda x: np.abs(x * x)
-        #funcs['dB'] = lambda x: 20 * np.log10(np.abs(x))
+        # funcs['Pow'] = lambda x: np.abs(x * x)
+        # funcs['dB'] = lambda x: 20 * np.log10(np.abs(x))
 
         inverse_fmap = dict((v, k) for k, v in funcs.items())
         current_func = inverse_fmap.get(self._data_preproc, 'unknown')
@@ -313,7 +315,7 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
             funcs[current_func] = self._data_preproc
 
         # @COMPATIBILITY: addSection is new in Qt 5.1
-        #menu.addSection(tr('Transformation functions'))
+        # menu.addSection(tr('Transformation functions'))
         menu.addSeparator().setText(tr('Transformation functions'))
 
         actiongroup = QtWidgets.QActionGroup(menu)
@@ -349,7 +351,7 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
             colortables[current_colortable] = self.colortable
 
         # @COMPATIBILITY: addSection is new in Qt 5.1
-        #menu.addSection(tr('Color table'))
+        # menu.addSection(tr('Color table'))
         menu.addSeparator().setText(tr('Color table'))
 
         actiongroup = QtWidgets.QActionGroup(menu)
@@ -400,7 +402,7 @@ class UIntGdalGraphicsItem(BaseGdalGraphicsItem):
     def __init__(self, band, parent=None, **kwargs):
         super(UIntGdalGraphicsItem, self).__init__(band, parent, **kwargs)
 
-        # @TODO: maybe it is batter to use a custo mexception: ItemTypeError
+        # @TODO: maybe it is batter to use a custom exception: ItemTypeError
         if band.DataType not in (gdal.GDT_Byte, gdal.GDT_UInt16):
             typename = gdal.GetDataTypeName(band.DataType)
             raise ValueError('invalid data type: "%s"' % typename)
@@ -475,7 +477,7 @@ class GdalRgbGraphicsItem(BaseGdalGraphicsItem):
 def graphicsItemFactory(gdalobj, parent=None):
     """Factory function for GDAL graphics items.
 
-    Instantiates on object of the GDAL graphics item class taht best
+    Instantiates on object of the GDAL graphics item class that best
     fits the *gdalobj* passed as argument.
 
     """

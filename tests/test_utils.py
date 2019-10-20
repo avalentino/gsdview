@@ -106,7 +106,7 @@ class TestDataUuid(unittest.TestCase):
             fd.write(data)
             data_uuid2 = utils.data_uuid(filename)
         # filename is unlinked by NamedTemporaryFile __del__ method
-        #os.remove(filename)
+        # os.remove(filename)
         self.assertNotEqual(data_uuid1, data_uuid2)
 
     def test_data_uuid_filechange(self):

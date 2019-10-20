@@ -124,15 +124,15 @@ class GDALBackend(QtCore.QObject):
         return hmap
 
     def findItemFromFilename(self, filename):
-        """Serch for and return the (dataset) item corresponding to filename.
+        """Search for and return the (dataset) item corresponding to filename.
 
-        If no item is found retirn None.
+        If no item is found return None.
 
         """
 
         # @NOTE: linear complexity
         # @NOTE: only scan toplevel items
-        # @TODO: use an internal regidtry (set or dict) in oder to perfotm
+        # @TODO: use an internal registry (set or dict) in oder to perform
         #        O(1) search over all nesting levels
 
         filename = os.path.abspath(filename)
@@ -174,8 +174,8 @@ class GDALBackend(QtCore.QObject):
         actions = self.itemActions(item)
         if actions:
             return qtsupport.actionGroupToMenu(actions,
-                                                self.tr('Context menu'),
-                                                self._app.treeview)
+                                               self.tr('Context menu'),
+                                               self._app.treeview)
 
     @QtCore.Slot(QtCore.QModelIndex)
     def onItemActivated(self, index):
@@ -225,8 +225,8 @@ class GDALBackend(QtCore.QObject):
             icon, self.tr('&Show Properties'), actionsgroup,
             objectName='actionShowItemProperties',
             shortcut=self.tr('Ctrl+S'),
-            toolTip=self.tr('Show the property dialog for the cutent item'),
-            statusTip=self.tr('Show the property dialog for the cutent item'),
+            toolTip=self.tr('Show the property dialog for the current item'),
+            statusTip=self.tr('Show the property dialog for the current item'),
             triggered=self.showItemProperties)
 
         return actionsgroup
@@ -257,16 +257,16 @@ class GDALBackend(QtCore.QObject):
     def _setupOverviewItemActions(self, actionsgroup=None):
         # @TODO: remove open
         # @TODO: remove overviews build
-        #~ actionsgroup = self._setupBandItemActions()
-        #~ action = actionsgroup.findChild(
-            #~ QtWidgets.QAction,'actionBuidOverviews')
-        #~ actionsgroup.removeAction(action)
-        #~ return actionsgroup
+        # actionsgroup = self._setupBandItemActions()
+        # action = actionsgroup.findChild(
+        #     QtWidgets.QAction,'actionBuildOverviews')
+        # actionsgroup.removeAction(action)
+        # return actionsgroup
         return self._setupBandItemActions(actionsgroup)
 
     # @TODO
-    #def _setupVirtualBandItemActions(self):
-    #    pass
+    # def _setupVirtualBandItemActions(self):
+    #     pass
 
     def _setupDatasetItemActions(self, actionsgroup=None):
         if actionsgroup is None:
@@ -278,7 +278,7 @@ class GDALBackend(QtCore.QObject):
         QtWidgets.QAction(
             icon, self.tr('Open as RGB'), actionsgroup,
             objectName='actionOpenRGBImageView',
-            #shortcut=self.tr('Ctrl+B'),
+            # shortcut=self.tr('Ctrl+B'),
             toolTip=self.tr('Display the dataset as an RGB image'),
             statusTip=self.tr('Open as RGB'),
             triggered=self.openRGBImageView)
@@ -287,7 +287,7 @@ class GDALBackend(QtCore.QObject):
         icon = qtsupport.geticon('overview.svg', __name__)
         QtWidgets.QAction(
             icon, self.tr('&Build overviews'),
-            actionsgroup, objectName='actionBuidOverviews',
+            actionsgroup, objectName='actionBuildOverviews',
             shortcut=self.tr('Ctrl+B'),
             toolTip=self.tr('Build overviews for all raster bands'),
             statusTip=self.tr('Build overviews for all raster bands'),
@@ -334,7 +334,7 @@ class GDALBackend(QtCore.QObject):
         actionsmap['MajorObjectItem'] = self._setupMajorObjectItemActions()
         actionsmap['BandItem'] = self._setupBandItemActions()
         actionsmap['OverviewItem'] = self._setupOverviewItemActions()
-        #actionsmap['VirtualBandItem'] = self._setupVirtualBandItemActions()
+        # actionsmap['VirtualBandItem'] = self._setupVirtualBandItemActions()
         actionsmap['DatasetItem'] = self._setupDatasetItemActions()
         actionsmap['CachedDatasetItem'] = actionsmap['DatasetItem']
         actionsmap['SubDatasetItem'] = self._setupSubDatasetItemActions()
@@ -360,9 +360,9 @@ class GDALBackend(QtCore.QObject):
             else:
                 # @TODO: remove this to allow multiple views on the same item
                 for subwin in self._app.mdiarea.subWindowList():
-                    #if subwin.item == item:
-                    #    action.setEnabled(False)
-                    #    break
+                    # if subwin.item == item:
+                    #     action.setEnabled(False)
+                    #     break
 
                     # @COMPATIBILITY: pyside 1.2.2
                     try:
@@ -386,9 +386,9 @@ class GDALBackend(QtCore.QObject):
         if gdalsupport.isRGB(item):
             # @TODO: remove this to allow multiple views on the same item
             for subwin in self._app.mdiarea.subWindowList():
-                #if subwin.item == item:
-                #    action.setEnabled(False)
-                #    break
+                # if subwin.item == item:
+                #     action.setEnabled(False)
+                #     break
 
                 # @COMPATIBILITY: pyside 1.2.2
                 try:
@@ -424,7 +424,7 @@ class GDALBackend(QtCore.QObject):
         propertyaction = actionsgroup.findChild(QtWidgets.QAction,
                                                 'actionShowItemProperties')
         ovraction = actionsgroup.findChild(
-            QtWidgets.QAction, 'actionBuidOverviews')
+            QtWidgets.QAction, 'actionBuildOverviews')
 
         if item is not None:
             assert isinstance(item, modelitems.SubDatasetItem)
@@ -516,9 +516,9 @@ class GDALBackend(QtCore.QObject):
         if not item.scene:
             msg = "This dataset can't be opened in RGB mode."
             _log.info(msg)
-            #title = self.tr('WARNING')
-            #msg = self.tr(msg)
-            #QtWidgets.QMessageBox.warning(self._app, title, msg)
+            # title = self.tr('WARNING')
+            # msg = self.tr(msg)
+            # QtWidgets.QMessageBox.warning(self._app, title, msg)
             return
 
         # only open a new view if there is no other on the item selected
@@ -569,11 +569,11 @@ class GDALBackend(QtCore.QObject):
         cachedir = os.path.join(cachedir, 'subdataset%02d' % index)
 
         item.open(cachedir)
-        #self._app.treeview.expand(item.index())
+        # self._app.treeview.expand(item.index())
 
-        #for row in range(item.rowCount()):
-        #    child = item.child(row)
-        #    self._app.treeview.expand(child.index())
+        # for row in range(item.rowCount()):
+        #     child = item.child(row)
+        #     self._app.treeview.expand(child.index())
 
     # Raster Band ###########################################################
     @QtCore.Slot()
@@ -608,7 +608,7 @@ class GDALBackend(QtCore.QObject):
     def newImageView(self, item=None):
         if item is None:
             item = self._app.currentItem()
-        #assert isinstance(item, modelitems.BandItem)
+        # assert isinstance(item, modelitems.BandItem)
         assert isinstance(item, (modelitems.BandItem, modelitems.DatasetItem))
 
         # @TODO: check if any graphics view is open on the selected item

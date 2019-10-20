@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-"""Overview pannel for GDAL raster bands."""
+"""Overview panel for GDAL raster bands."""
 
 
 from .info import *

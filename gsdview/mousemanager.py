@@ -22,10 +22,10 @@
 Mouse management for the Qt4 graphics framework is implemented by a set
 of MouseMode objects, that provide specific event handlers and behave
 like a descriptor, and a manager object that catches mouse events and
-dispatch them to the appropriate hendler.
+dispatch them to the appropriate handler.
 
-The MouseManager provides methods for eddeing/removing mouse modes,
-making the system expandible, and also methods to register objects
+The MouseManager provides methods for adding/removing mouse modes,
+making the system expandable, and also methods to register objects
 (QGraphicsScene and QGraphicsView) to be controlled.
 
 """
@@ -49,7 +49,7 @@ class MouseMode(QtCore.QObject):
     - label
     - icon
 
-    The first three properties (not to be intender as python progremming
+    The first three properties (not to be intended as Python programming
     language property) are strongly characterizing of the way the mouse
     works.
 
@@ -60,7 +60,7 @@ class MouseMode(QtCore.QObject):
               on both graphics scene and view and also on the scrollbars of
               the graphics view.
               So please always use the register method of MouseManager for
-              a proper installaton of al event filters.
+              a proper installation of al event filters.
 
     """
 
@@ -197,8 +197,8 @@ class RubberBandMode(MouseMode):
             self.rubberBandSeclection.emit(rect)
             return True
 
-        #return obj.eventFilter(obj, event)   # @TODO: check
-        #return QtWidgets.QGraphicsScene.eventFilter(self, obj, event)
+        # return obj.eventFilter(obj, event)   # @TODO: check
+        # return QtWidgets.QGraphicsScene.eventFilter(self, obj, event)
         return False
 
     def scrollbarEventFilter(self, obj, event):
@@ -266,8 +266,8 @@ class MouseManager(QtCore.QObject):
         action = self.actions.actions()[index]
         self.actions.removeAction(action)
         del self._moderegistry[index]
-        #~ if actin.checked() and self._moderegistry:
-            #~ self.actions.actions()[0].setChecked(True)
+        # if action.checked() and self._moderegistry:
+        #     self.actions.actions()[0].setChecked(True)
 
     mode = property(_getMode, _setMode, _delMode, 'mouse mode name')
 
@@ -295,7 +295,7 @@ class MouseManager(QtCore.QObject):
             return self._moderegistry[index]
         except IndexError:
             # @TODO: check
-            #raise ValueError('invalid mde nema: "%s"' % mode)
+            # raise ValueError('invalid mode name: "%s"' % mode)
             return None
 
     def eventFilter(self, obj, event):
@@ -306,7 +306,7 @@ class MouseManager(QtCore.QObject):
     def register(self, obj):
         """Register a Qt graphics object to be monitored by the mouse manager.
 
-        QGraphicsScene and QGrapgicsViews (and descending classes) objects
+        QGraphicsScene and QGraphicsViews (and descending classes) objects
         can be registered to be monitored by the mouse manager.
 
         Scene objects associated to views (passes as argument) are

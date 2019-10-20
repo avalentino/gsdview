@@ -33,42 +33,42 @@ from gsdview import qtdraw
 _log = logging.getLogger(__name__)
 
 # Graphics Items ############################################################
-#~ class GraphicsLayerItem(qt4draw.GraphicsItemGroup):
-    #~ '''Qt graphics item representing an OGR Layer.'''
+# class GraphicsLayerItem(qt4draw.GraphicsItemGroup):
+#     '''Qt graphics item representing an OGR Layer.'''
+#
+#     Type = QtWidgets.QGraphicsItem.UserType + 102
+#
+#     def __init__(self, name=None, index=None, datasource=None,
+#                  parent=None, scene=None, **kargs):
+#         super(GraphicsLayerItem, self).__init__(parent, scene, **kargs)
+#
+#         self.name = name
+#         self.index = index
+#         self.datasource = datasource
+#
+#         if name:
+#             self.setToolTip('Layer: %s' % name)
+#
+#     def graphicsFeature(self, fid):
+#         #return  self.childItems()[fid]
+#         for item in self.childItems():
+#             try:
+#                 if item.fid == fid:
+#                     return item
+#             except AttributeError:
+#                 logging.debug('item "%s" has no feature ID.' % item)
+#         return None
 
-    #~ Type = QtWidgets.QGraphicsItem.UserType + 102
 
-    #~ def __init__(self, name=None, index=None, datasource=None,
-                 #~ parent=None, scene=None, **kargs):
-        #~ super(GraphicsLayerItem, self).__init__(parent, scene, **kargs)
-
-        #~ self.name = name
-        #~ self.index = index
-        #~ self.datasource = datasource
-
-        #~ if name:
-            #~ self.setToolTip('Layer: %s' % name)
-
-    #~ def graphicsFeature(self, fid):
-        #~ #return  self.childItems()[fid]
-        #~ for item in self.childItems():
-            #~ try:
-                #~ if item.fid == fid:
-                    #~ return item
-            #~ except AttributeError:
-                #~ logging.debug('item "%s" has no feature ID.' % item)
-        #~ return None
-
-
-#~ class GraphicsFeatureItem(qt4draw.GraphicsItemGroup):
-    #~ '''Qt graphics item representing an OGR feature.'''
-
-    #~ Type = QtWidgets.QGraphicsItem.UserType + 103
-
-    #~ def __init__(self, fid=None, parent=None, scene=None, **kargs):
-        #~ super(GraphicsFeatureItem, self).__init__(parent, scene, **kargs)
-
-        #~ self.fid = fid
+# class GraphicsFeatureItem(qt4draw.GraphicsItemGroup):
+#     '''Qt graphics item representing an OGR feature.'''
+#
+#     Type = QtWidgets.QGraphicsItem.UserType + 103
+#
+#     def __init__(self, fid=None, parent=None, scene=None, **kargs):
+#         super(GraphicsFeatureItem, self).__init__(parent, scene, **kargs)
+#
+#         self.fid = fid
 
 
 # Helpers for geometry management ###########################################
@@ -85,14 +85,14 @@ def transformGeometry(geom, transform):
     :param transform:
         OSR transformer
     :returns:
-        a new geometry instance with transforation applied
+        a new geometry instance with transformation applied
 
     """
 
     geom = geom.Clone()  # @TODO: check
     err = geom.Transform(transform)
     if err:
-        raise ValueError('geomery coordinate transformation failed')
+        raise ValueError('geometry coordinate transformation failed')
 
     return geom
 
@@ -100,12 +100,12 @@ def transformGeometry(geom, transform):
 def singleGeometryToGraphicsItem(geom, transform=None):
     """Convert a single OGR geometry into a Qt4 graphics item.
 
-    A "single geometry" is an OGR gemetry that don't include other
+    A "single geometry" is an OGR geometry that don't include other
     geometries (GetGeometryCount() == 0).
 
     If the *transform* callable is provided then each point in the
     geometry is converted using the `transform(x, y, z)` call before
-    genereting the graphics item path.
+    generating the graphics item path.
 
     .. note: for 2.5D geometries the *z* value is ignored.
 
@@ -138,12 +138,12 @@ def singleGeometryToGraphicsItem(geom, transform=None):
         # Red point
         pen = qitem.pen()
         pen.setColor(QtCore.Qt.red)
-        #pen.setWidth(15)
+        # pen.setWidth(15)
         qitem.setPen(pen)
 
         brush = qitem.brush()
         brush.setColor(QtCore.Qt.red)
-        #brush.setStyle(QtCore.Qt.SolidPattern)
+        # brush.setStyle(QtCore.Qt.SolidPattern)
         qitem.setBrush(brush)
 
     elif (gtype in (ogr.wkbLineString, ogr.wkbLineString25D) and
@@ -168,10 +168,10 @@ def singleGeometryToGraphicsItem(geom, transform=None):
                     point = transform(*point)
                 qpoly[index] = QtCore.QPointF(point[0], point[1])
             qitem = QtWidgets.QGraphicsPolygonItem(qpoly)
-            #qitem.setFillRule(QtCore.Qt.WindingFill)    # @TODO: check
+            # qitem.setFillRule(QtCore.Qt.WindingFill)    # @TODO: check
         else:
             qpath = QtGui.QPainterPath()
-            #qpath.setFillRule(QtCore.Qt.WindingFill)    # @TODO: check
+            # qpath.setFillRule(QtCore.Qt.WindingFill)    # @TODO: check
             point = geom.GetPoint(0)
             if transform:
                 point = transform(*point)
@@ -191,11 +191,11 @@ def singleGeometryToGraphicsItem(geom, transform=None):
         raise ValueError('should not happen.')
 
     elif gtype in (ogr.wkbUnknown, ogr.wkbNone):
-        raise ValueError('invalid geopetry type: '
+        raise ValueError('invalid geometry type: '
                          '"%s"' % geom.GetGeometryName())
 
     else:
-        raise ValueError('invalid geopetry type: "%d"' % gtype)
+        raise ValueError('invalid geometry type: "%d"' % gtype)
 
     return qitem
 
@@ -205,7 +205,7 @@ def geometryToGraphicsItem(geom, transform=None):
 
     If the *transform* callable is provided then each point in the
     geometry is converted using the `transform(x, y, z)` call before
-    genereting the graphics item path.
+    generating the graphics item path.
 
     .. note: for 2.5D geometries the *z* value is ignored.
 
@@ -221,7 +221,7 @@ def geometryToGraphicsItem(geom, transform=None):
     """
 
     if geom.GetGeometryCount() > 1:
-        #qitem = QtWidgets.QGraphicsItemGroup()
+        # qitem = QtWidgets.QGraphicsItemGroup()
         qitem = qtdraw.GraphicsItemGroup()
         for index, subgeom in enumerate(geom):
             qsubitem = geometryToGraphicsItem(subgeom, transform)
@@ -231,7 +231,7 @@ def geometryToGraphicsItem(geom, transform=None):
             else:
                 _log.debug('unable to instantiate a graphics item from '
                            'OGR geometry "%s"', subgeom)
-        #qitem.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable)
+        # qitem.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable)
         return qitem
     elif geom.GetGeometryCount() == 1:
         subgeom = geom.GetGeometryRef(0)
@@ -243,7 +243,8 @@ def geometryToGraphicsItem(geom, transform=None):
 
     return qitem
 
-#: the max number of features that are converted whan the graphics item
+
+#: the max number of features that are converted when the graphics item
 #: for a layer is generated
 MAX_FEATURE_COUNT = 600
 DATAKEY = {
@@ -263,7 +264,7 @@ def layerToGraphicsItem(layer, srs=None, transform=None):
 
     If the *transform* callable is provided then each point in the
     geometry is converted using the `transform(x, y, z)` call before
-    genereting the graphics item path.
+    generating the graphics item path.
 
     .. note: for 2.5D geometries the *z* value is ignored.
 
@@ -290,15 +291,14 @@ def layerToGraphicsItem(layer, srs=None, transform=None):
         srs_transform = None
 
     if layer.GetFeatureCount() > MAX_FEATURE_COUNT:
-        raise RuntimeError('too many features in layed %s: %d' % (
+        raise RuntimeError('too many features in layer %s: %d' % (
                            layer.GetName(), layer.GetFeatureCount()))
 
-    #~ print 'extent:', layer.GetExtent() # @TODO: check
-    #qlayer = GraphicsLayerItem(layer.GetName())
+    # qlayer = GraphicsLayerItem(layer.GetName())
     qlayer = qtdraw.GraphicsItemGroup()
     qlayer.setData(DATAKEY['name'], layer.GetName())
     for feature in layer:
-        #qfeature = GraphicsFeatureItem(feature.GetFID())
+        # qfeature = GraphicsFeatureItem(feature.GetFID())
         qfeature = qtdraw.GraphicsItemGroup()
         qfeature.setData(DATAKEY['FID'], feature.GetFID())
 
@@ -343,55 +343,54 @@ def layerToGraphicsItem(layer, srs=None, transform=None):
 
 
 # Helpers for layers management #############################################
-#~ class LayerItemModel(QtGui.QStandardItemModel):
-    #~ #def __init__(self, parent=None, **kargs):
-    #~ #    super(LayerItemModel, self).__init__(parent, **kargs)
-    #~ #    # @TODO: spatial filter
-
-    #~ def addLayer(self, layer):
-        #~ '''Add a new layer on top of the stack.'''
-
-        #~ pass
-
-    #~ def insertLayer(self, row, layer):
-        #~ '''Insert a new layer in the specified position.'''
-
-        #~ pass
-
-    #~ def removeLayer(self, layer):
-        #~ '''Remove specified layer.'''
-
-        #~ if not isinstance(layer, basestring):
-            #~ name = layer.GetName()
-        #~ else:
-            #~ name = layer
-
-        #~ pass
-
-    #~ def move(self, src, dst):
-        #~ pass
-
-    #~ def move(self, itemselection, dst):
-        #~ #QItemSelection
-        #~ pass
-
-    #~ def moveToTop(self, row):
-        #~ pass
-
-    #~ def moveToTop(self, itemselection):
-        #~ #QItemSelection
-        #~ pass
-
-    #~ def moveToBottom(self, row):
-        #~ pass
-
-    #~ def moveToBottom(self, itemselection):
-        #~ #QItemSelection
-        #~ pass
-
-    #~ def _updateZValues(self):
-        #~ # ??
-        #~ pass
+# class LayerItemModel(QtGui.QStandardItemModel):
+#     #def __init__(self, parent=None, **kargs):
+#     #    super(LayerItemModel, self).__init__(parent, **kargs)
+#     #    # @TODO: spatial filter
+#
+#     def addLayer(self, layer):
+#         '''Add a new layer on top of the stack.'''
+#
+#         pass
+#
+#     def insertLayer(self, row, layer):
+#         '''Insert a new layer in the specified position.'''
+#
+#         pass
+#
+#     def removeLayer(self, layer):
+#         '''Remove specified layer.'''
+#
+#         if not isinstance(layer, basestring):
+#             name = layer.GetName()
+#         else:
+#             name = layer
+#
+#         pass
+#
+#     def move(self, src, dst):
+#         pass
+#
+#     def move(self, itemselection, dst):
+#         # QItemSelection
+#         pass
+#
+#     def moveToTop(self, row):
+#         pass
+#
+#     def moveToTop(self, itemselection):
+#         # QItemSelection
+#         pass
+#
+#     def moveToBottom(self, row):
+#         pass
+#
+#     def moveToBottom(self, itemselection):
+#         # QItemSelection
+#         pass
+#
+#     def _updateZValues(self):
+#         pass
 
 
 # OGR feature style #########################################################
@@ -431,7 +430,7 @@ graphical representation::
 '''
 
 
-#gdal-1.8.x/src/autotest/ogr/ogr_dgn.py
-#gdal-1.8.x/src/autotest/ogr/ogr_dxf.py
-#gdal-1.8.x/src/autotest/ogr/ogr_openir.py
-#gdal-1.8.x/src/autotest/ogr/ogr_sqltest.py
+# gdal-1.8.x/src/autotest/ogr/ogr_dgn.py
+# gdal-1.8.x/src/autotest/ogr/ogr_dxf.py
+# gdal-1.8.x/src/autotest/ogr/ogr_openir.py
+# gdal-1.8.x/src/autotest/ogr/ogr_sqltest.py

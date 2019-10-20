@@ -42,7 +42,7 @@ class MdiChild(QtWidgets.QTextEdit):
         super(MdiChild, self).__init__(None)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.isUntitled = True
-        #self.resize(600, 500) # doesn't work
+        # self.resize(600, 500) # doesn't work
 
         self.document().contentsChanged.connect(self.documentWasModified)
 

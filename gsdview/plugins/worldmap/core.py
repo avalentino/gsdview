@@ -35,10 +35,10 @@ class WorldmapPanel(QtWidgets.QDockWidget):
     bigBoxSize = 40
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
-        #title = self.tr('Worldmap Panel')
+        # title = self.tr('Worldmap Panel')
         super(WorldmapPanel, self).__init__('World Map Panel', parent, flags,
                                             **kwargs)
-        #self.setObjectName('worldmapPanel') # @TODO: check
+        # self.setObjectName('worldmapPanel') # @TODO: check
 
         scene = QtWidgets.QGraphicsScene(self)
         scene.setSceneRect(-180, -90, 360, 180)
@@ -52,7 +52,7 @@ class WorldmapPanel(QtWidgets.QDockWidget):
         self.actionZoomIn, self.actionZoomOut = self.actions.actions()
 
         toolbar = qtsupport.actionGroupToToolbar(self.actions,
-                                                  self.tr('Zoom toolbar'))
+                                                 self.tr('Zoom toolbar'))
         toolbar.setOrientation(QtCore.Qt.Vertical)
 
         mainlayout = QtWidgets.QHBoxLayout()
@@ -104,9 +104,9 @@ class WorldmapPanel(QtWidgets.QDockWidget):
         if self.worldmapitem is not None:
             scene.removeItem(self.worldmapitem)
 
-        #~ imgfile = qt4support.geticonfile('world_2160x1080.jpg', __name__)
+        # imgfile = qt4support.geticonfile('world_2160x1080.jpg', __name__)
         imgfile = qtsupport.geticonfile('world_4320x2160.jpg', __name__)
-        #~ imgfile = qt4support.geticonfile('world_5400x2700.jpg', __name__)
+        # imgfile = qt4support.geticonfile('world_5400x2700.jpg', __name__)
         worldmap = QtGui.QPixmap(imgfile)
 
         worldmapitem = scene.addPixmap(worldmap)
@@ -118,7 +118,7 @@ class WorldmapPanel(QtWidgets.QDockWidget):
                              0, -180. / worldmap.height(),
                              -180, 90))
         self.worldmapitem = worldmapitem
-        #~ return worldmapitem
+        # return worldmapitem
 
     def _zoom(self, increment):
         items = (self.worldmapitem, self.bigbox, self.box)
@@ -143,8 +143,8 @@ class WorldmapPanel(QtWidgets.QDockWidget):
                                     QtCore.Qt.KeepAspectRatio)
 
     def plot(self, polygon):
-        #~ if points[0] != points[-1]:
-            #~ poly.append(poly[0])
+        # if points[0] != points[-1]:
+        #     poly.append(poly[0])
 
         # View box on the overview
         pen = QtGui.QPen(QtCore.Qt.SolidLine)
@@ -275,6 +275,6 @@ if __name__ == '__main__':
     panel.setDataset(dataset)
 
     mainwin.addDockWidget(QtCore.Qt.LeftDockWidgetArea, panel)
-    #~ mainWin.showMaximized()
+    # mainWin.showMaximized()
     mainwin.show()
     sys.exit(app.exec_())

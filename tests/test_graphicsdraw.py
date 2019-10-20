@@ -45,7 +45,7 @@ class GraphicsDrawApp(QtWidgets.QMainWindow):
 
         self.scene = QtWidgets.QGraphicsScene(self)
         self.graphicsview = QtWidgets.QGraphicsView(self.scene, self)
-        #~ self.graphicsview.setMouseTracking(True)    # @TODO: check
+        # self.graphicsview.setMouseTracking(True)    # @TODO: check
         self.setCentralWidget(self.graphicsview)
 
         self.mousemanager = MouseManager(self)
@@ -53,7 +53,7 @@ class GraphicsDrawApp(QtWidgets.QMainWindow):
         self.mousemanager.addMode(RubberBandMode)
         self.mousemanager.addMode(qtdraw.DrawPointMode)
         self.mousemanager.addMode(qtdraw.DrawLineMode)
-        #self.mousemanager.addMode(qtdraw.DrawPolygonMode)
+        # self.mousemanager.addMode(qtdraw.DrawPolygonMode)
         self.mousemanager.addMode(qtdraw.DrawRectMode)
         self.mousemanager.addMode(qtdraw.DrawEllipseMode)
         self.mousemanager.mode = 'hand'
@@ -202,7 +202,7 @@ class GraphicsDrawApp(QtWidgets.QMainWindow):
             actions,
             objectName='zoomFitAction',
             statusTip=self.tr('Zoom Fit'),
-            #checkable=True,
+            # checkable=True,
             triggered=lambda: self.graphicsview.fitInView(
                 self.graphicsview.sceneRect(),
                 QtCore.Qt.KeepAspectRatio))
@@ -290,8 +290,8 @@ class GraphicsDrawApp(QtWidgets.QMainWindow):
 def main(*argv):
     # @NOTE: basic config doesn't work since other modules (e.g. sip)
     #        use it before this line
-    #logging.basicConfig(level=logging.DEBUG,
-    #                    format='%(levelname): %(message)s')
+    # logging.basicConfig(level=logging.DEBUG,
+    #                     format='%(levelname): %(message)s')
     logging.getLogger().setLevel(logging.DEBUG)
 
     if not argv:

@@ -21,7 +21,7 @@
 """Site configuration module.
 
 :DATADIR: system configuration, auxdata, images, etc.
-:DOCSDIR: doumentation
+:DOCSDIR: documentation
 :LICENSEFILE: license file
 :SYSPLUGINSDIR: system plugins directory
 :USERCONFIGDIR: user configuration directory (default `~/.gsdview`)
