@@ -33,7 +33,6 @@ making the system expandable, and also methods to register objects
 from qtpy import QtCore, QtWidgets, QtGui
 
 from gsdview import qtsupport
-from gsdview.five import string_types
 
 
 class MouseMode(QtCore.QObject):
@@ -234,7 +233,7 @@ class MouseManager(QtCore.QObject):
             self.actions.actions()[0].setChecked(True)
 
     def _newModeAction(self, mode, parent):
-        if isinstance(mode.icon, string_types):
+        if isinstance(mode.icon, str):
             icon = QtGui.QIcon(mode.icon)
         elif isinstance(mode.icon, QtWidgets.QStyle.StandardPixmap):
             style = QtWidgets.QApplication.style()

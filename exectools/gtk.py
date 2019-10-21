@@ -20,8 +20,6 @@
 """Tools for running external processes in a GTK GUI."""
 
 
-from __future__ import absolute_import
-
 import os
 import sys
 import time
@@ -29,7 +27,7 @@ import logging
 
 from gi.repository import Gtk, Pango, GObject, GLib
 
-from exectools import subprocess2, string_types, callable
+from exectools import subprocess2
 from exectools import BaseOutputHandler, level2tag
 from exectools.std import StdToolController
 
@@ -71,9 +69,7 @@ class Popen(GObject.GObject, subprocess2.Popen):
 
         for tag in set(self._watch_tags):
             GLib.source_remove(tag)
-        # @COMPATIBILITY: list.clear() is not available in Python 2
-        # self._watch_tags.clear()
-        del self._watch_tags[:]
+        self._watch_tags.clear()
 
     if sys.platform[:3] == 'win':
         import errno
@@ -628,7 +624,7 @@ class GtkToolController(GObject.GObject, StdToolController):
             self.subprocess.stdin.close()
             self.connect_output_handlers()
         except OSError:
-            if not isinstance(cmd, string_types):
+            if not isinstance(cmd, str):
                 cmd = ' '.join(cmd)
             msg = 'Unable to execute: "%s"' % cmd
             self.logger.error(msg, exc_info=True)

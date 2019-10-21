@@ -20,16 +20,13 @@
 """Tools for running external processes in a Qt GUI."""
 
 
-from __future__ import absolute_import
-
 import time
 import logging
 
 from qtpy import QtCore, QtWidgets, QtGui
 
 from exectools import (
-    BaseOutputHandler, BaseToolController, EX_OK, level2tag, string_types,
-    callable,
+    BaseOutputHandler, BaseToolController, EX_OK, level2tag
 )
 
 
@@ -313,7 +310,7 @@ class QtLoggingHandler(logging.Handler):
     def _write(self, data, format_=None):
         """Write data on the textview."""
 
-        if isinstance(format_, string_types):
+        if isinstance(format_, str):
             format_ = self._formats.get(format_, '')
 
         if data and not data.endswith('\n'):

@@ -21,8 +21,6 @@
 """Custom exectools components for GDAL."""
 
 
-from __future__ import print_function
-
 import re
 import logging
 
@@ -30,8 +28,6 @@ import exectools
 from exectools.qt import QtOutputHandler
 
 from osgeo import gdal
-
-from gsdview.five import string_types
 
 
 _log = logging.getLogger(__name__)
@@ -61,8 +57,7 @@ class BaseGdalToolDescriptor(exectools.ToolDescriptor):
 
         extra_args = self.gdal_config_options(parts)
         if extra_args:
-            if (not self.executable or
-                    isinstance(self.executable, string_types)):
+            if not self.executable or isinstance(self.executable, str):
                 parts = [parts[0]] + extra_args + parts[1:]
             else:
                 executable = list(self.executable)

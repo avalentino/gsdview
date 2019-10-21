@@ -83,7 +83,6 @@ MODULES = [
     'gsdview.appsite',
     'gsdview.app',
     'gsdview.errors',
-    'gsdview.five',
     'gsdview.graphicsview',
     'gsdview.imgutils',
     'gsdview.info',

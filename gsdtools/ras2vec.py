@@ -49,12 +49,6 @@ import logging
 
 from osgeo import gdal, ogr, osr
 
-# @COMPATIBILITY: Python 2
-if sys.version_info < (3, 0):
-    string_types = (basestring,)
-else:
-    string_types = (str,)
-
 __version__ = '1.0'
 
 EX_FAILURE = 1
@@ -74,7 +68,7 @@ def makesrs(srs):
     if srs is None:
         srs = osr.SpatialReference()
         srs.SetWellKnownGeogCS('EPSG:4326')
-    elif isinstance(srs, string_types):
+    elif isinstance(srs, str):
         spec = srs
         srs = osr.SpatialReference()
         srs.SetFromUserInput(spec)
@@ -286,14 +280,14 @@ def create_datasource(filename, drivername=None):
 
 def export_raster(src, dst, boxlayer=None, gcplayer=None, srsout=None,
                   mark_corners=True):
-    if isinstance(src, string_types):
+    if isinstance(src, str):
         filename = src
         src = gdal.Open(filename)
         if src is None:
             raise RuntimeError(
                 'unable to open source dataset: "%s"' % filename)
 
-    if isinstance(dst, string_types):
+    if isinstance(dst, str):
         dst = create_datasource(dst)
 
     # Set the target reference system
@@ -307,7 +301,7 @@ def export_raster(src, dst, boxlayer=None, gcplayer=None, srsout=None,
     if boxlayer is None or boxlayer == '':
         boxlayername = os.path.basename(description)
         boxlayer = create_box_layer(dst, boxlayername, srsout)
-    elif boxlayer and isinstance(boxlayer, string_types):
+    elif boxlayer and isinstance(boxlayer, str):
         boxlayername = boxlayer
         boxlayer = dst.GetLayerByName(boxlayername)
         if boxlayer is None:
@@ -323,7 +317,7 @@ def export_raster(src, dst, boxlayer=None, gcplayer=None, srsout=None,
         if gcplayer in (None, True, ''):
             gcplayername = 'gcps_%s' % os.path.basename(description)
             gcplayer = create_GCP_layer(dst, gcplayername, srsout)
-        elif gcplayer and isinstance(gcplayer, string_types):
+        elif gcplayer and isinstance(gcplayer, str):
             gcplayername = gcplayer
             gcplayer = dst.GetLayerByName(gcplayername)
             if gcplayer is None:
@@ -338,7 +332,7 @@ def export_raster(src, dst, boxlayer=None, gcplayer=None, srsout=None,
 
 
 def compact_index(srclist, dst):
-    if isinstance(dst, string_types):
+    if isinstance(dst, str):
         dst = create_datasource(dst)
 
     # Bounding box
@@ -351,7 +345,7 @@ def compact_index(srclist, dst):
     for src in srclist:
         logging.info('adding "%s"' % src)
 
-        if isinstance(src, string_types):
+        if isinstance(src, str):
             filename = src
             src = gdal.Open(filename)
             if src is None:
@@ -372,14 +366,14 @@ def compact_index(srclist, dst):
 
 
 def raster_index(srclist, dst, gcplayer=False, mark_corners=False):
-    if isinstance(dst, string_types):
+    if isinstance(dst, str):
         dst = create_datasource(dst)
 
     # Bounding box
     for src in srclist:
         logging.info('adding "%s"' % src)
 
-        if isinstance(src, string_types):
+        if isinstance(src, str):
             filename = src
             src = gdal.Open(filename)
             if src is None:
@@ -403,7 +397,7 @@ def raster_tree_index(src, dst, boxlayer=None, gcplayer=None,
                       mark_corners=False):
     assert os.path.isdir(src)
 
-    if isinstance(dst, string_types):
+    if isinstance(dst, str):
         dst = create_datasource(dst)
 
     gdal.PushErrorHandler('CPLQuietErrorHandler')

@@ -192,7 +192,7 @@ Intended Audience :: End Users/Desktop
 Intended Audience :: Science/Research
 License :: OSI Approved :: GNU General Public License (GPL)
 Operating System :: OS Independent
-Programming Language :: Python
+Programming Language :: Python :: 3
 Topic :: Education
 Topic :: Scientific/Engineering :: Astronomy
 Topic :: Scientific/Engineering :: GIS
@@ -245,6 +245,7 @@ if has_setuptools:
             'setuptools.installation': ['eggsecutable = gsdview:main'],
         },
         include_package_data=True,
+        python_requires='>=3.5',
     ))
 else:
     packages = [

@@ -25,12 +25,7 @@ import os
 import csv
 import logging
 from io import StringIO
-
-try:
-    from configparser import ConfigParser
-except ImportError:
-    # @COMPATIBILITY: Python 2
-    from ConfigParser import ConfigParser
+from configparser import ConfigParser
 
 from qtpy import QtCore, QtWidgets, QtGui, QtSvg, QtPrintSupport, uic
 

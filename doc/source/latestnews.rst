@@ -1,4 +1,9 @@
-:26/12/2014: Switch to QtPy_
+:21/10/2019: Drop compatibility with Python 2
+
+             GSDView now only supports Python 3.
+             In particular Python >= 3.5 is required to run GSDView.
+
+:20/10/2019: Switch to QtPy_
 
              QtPy_ is now the used to access the Qt API.
              The default Qt binding is PyQt5_ but also PySide2_ and

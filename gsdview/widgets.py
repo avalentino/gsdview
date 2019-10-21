@@ -33,7 +33,6 @@ from qtpy import QtCore, QtWidgets, QtGui
 from gsdview import info
 from gsdview import utils
 from gsdview import qtsupport
-from gsdview.five import string_types
 
 
 _log = logging.getLogger(__name__)
@@ -500,7 +499,7 @@ class ExceptionDialog(QtWidgets.QDialog, ExceptionDialogBase):
         self.tracebackTextEdit.document().setPlainText(text)
 
     def setTraceback(self, tb):
-        if not isinstance(tb, string_types):
+        if not isinstance(tb, str):
             self.tracebackobj = tb
             tb = ''.join(traceback.format_tb(tb))
         else:  # @TODO: check

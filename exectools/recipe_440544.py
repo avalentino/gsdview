@@ -48,8 +48,6 @@ v. 1.9      Fixed fcntl calls for closed handles.
 
 """
 
-from __future__ import print_function
-
 import os
 import subprocess
 import errno

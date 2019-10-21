@@ -26,20 +26,6 @@ import sys
 import logging
 from io import StringIO
 
-# @COMPATIBILITY: Python 2
-if sys.version_info < (3, 0):
-    string_types = (basestring,)
-else:
-    string_types = (str,)
-
-# callable
-try:
-    callable = callable
-except NameError:
-    from collections import Callable as _Callable
-
-    def callable(obj):
-        return isinstance(obj, _Callable)
 
 __version__ = (0, 7, 0)
 
@@ -80,7 +66,7 @@ class BaseOutputHandler(object):
         self._buffer = StringIO()
         self._wpos = self._buffer.tell()
 
-        if logger is None or isinstance(logger, string_types):
+        if logger is None or isinstance(logger, str):
             self.logger = logging.getLogger(logger)
         else:
             # @TODO: remove assertion
@@ -391,7 +377,7 @@ class ToolDescriptor(object):
             except IndexError:
                 raise ValueError('"executable" not set')
 
-        if isinstance(executable, string_types):
+        if isinstance(executable, str):
             parts = [executable]
         else:
             # handle cases like: executable = ['python', '-u', 'script.py']
@@ -435,7 +421,7 @@ class BaseToolController(object):
 
         self._tool = None
 
-        if logger is None or isinstance(logger, string_types):
+        if logger is None or isinstance(logger, str):
             self.logger = logging.getLogger(logger)
         else:
             assert isinstance(logger, logging.Logger)
@@ -509,7 +495,7 @@ class BaseToolController(object):
         else:
             prompt = '$'
 
-        if not isinstance(cmd, string_types):
+        if not isinstance(cmd, str):
             cmd = ' '.join(cmd)
 
         self.logger.info('%s %s' % (prompt, cmd), extra={'tag': 'cmd'})

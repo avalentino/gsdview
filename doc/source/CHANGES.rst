@@ -12,9 +12,9 @@ ChangeLog
 Changes from 0.6.5 to 0.7.0 (in development)
 --------------------------------------------
 
+* Python 2 is no longer supported by GSDView.
 * Implemented support for Python 3.x (closes: :issue:`76`).
   In order to run GSDView with Python 3 it is necessary to have GDAL >= 1.10.
-  GSDView now requires Python >= 2.7.
 * Now the reference Qt API used in GSDView is the one provided by the
   QtPy_ package.
 * Now it is possible to toggle the full-screen mode using a tool-button or a
