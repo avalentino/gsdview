@@ -1,5 +1,5 @@
 # hiddenimports = ['numpy.core.multiarray',]
-# hiddenimports = ['PyQt4.QtSvg',
+# hiddenimports = ['PyQt5.QtSvg',
 #                  'uuid',            # needed by enthought
 #                  'shelve',          # needed by enthought
 #                  'cgi',             # needed by enthought

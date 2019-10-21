@@ -104,9 +104,9 @@ class WorldmapPanel(QtWidgets.QDockWidget):
         if self.worldmapitem is not None:
             scene.removeItem(self.worldmapitem)
 
-        # imgfile = qt4support.geticonfile('world_2160x1080.jpg', __name__)
+        # imgfile = qtsupport.geticonfile('world_2160x1080.jpg', __name__)
         imgfile = qtsupport.geticonfile('world_4320x2160.jpg', __name__)
-        # imgfile = qt4support.geticonfile('world_5400x2700.jpg', __name__)
+        # imgfile = qtsupport.geticonfile('world_5400x2700.jpg', __name__)
         worldmap = QtGui.QPixmap(imgfile)
 
         worldmapitem = scene.addPixmap(worldmap)

@@ -399,12 +399,7 @@ class GSDView(ItemModelMainWindow):
             triggered=lambda: self.aboutdialog.exec_())
 
         # AboutQt
-        icon = QtGui.QIcon(':/qt-project.org/qmessagebox/images/qtlogo-64.png')
-        # @COMPATIBILITY: Qt4 --> Qt5
-        if not icon.availableSizes():
-            icon = QtGui.QIcon(':/trolltech/qmessagebox/images/qtlogo-64.png')
-        if not icon.availableSizes():
-            icon = QtGui.QIcon.fromTheme('qtlogo-64')
+        icon = QtGui.QIcon.fromTheme(':qtlogo-64')
         QtWidgets.QAction(
             icon, self.tr('About &Qt'), actionsgroup,
             objectName='aboutQtAction',
@@ -523,8 +518,6 @@ class GSDView(ItemModelMainWindow):
             #     winstate = settings.value('winstate', QtCore.Qt.WindowNoState)
             #     winstate = int(winstate)
             #     if winstate and winstate != QtCore.Qt.WindowNoState:
-            #         # @COMPATIBILITY: presumably a bug in PyQt4 4.7.2
-            #         winstate = qtsupport.intToWinState[winstate]
             #         self.setWindowState(winstate)
             # except (KeyError, ValueError) as e:
             #     _log.info('unable to restore the window state')

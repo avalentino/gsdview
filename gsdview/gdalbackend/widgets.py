@@ -351,9 +351,6 @@ class BackendPreferencesPage(GDALPreferencesPage):
             # show overviews in the treeview
             value = settings.value('visible_overview_items')
             if value is not None:
-                # @COMPATIBILITY: presumably a bug in PyQt4 (4.7.2)
-                value = True if value in ('true', 'True') else False
-
                 self.showOverviewCheckbox.setChecked(value)
         finally:
             settings.endGroup()
@@ -941,8 +938,6 @@ class MajorObjectInfoDialog(QtWidgets.QDialog):
     @QtCore.Slot(str)
     def updateMetadata(self, domain=''):
         if self._obj is not None:
-            # @COMPATIBILITY: presumably a bug in PyQt4 4.7.2
-            domain = str(domain)    # it could be a "char const *"
             metadatalist = self._obj.GetMetadata_List(domain)
 
             if metadatalist:
@@ -1726,7 +1721,7 @@ p, li { white-space: pre-wrap; }
                     self.setGCPs(gcplist, self.dataset.GetGCPProjection())
 
     def resetFilesTab(self):
-        # qt4support.clearTable(self.fileListWidget) # @TODO: check
+        # qtsupport.clearTable(self.fileListWidget)  # @TODO: check
         self.fileListWidget.clear()
 
     def setFiles(self, files):

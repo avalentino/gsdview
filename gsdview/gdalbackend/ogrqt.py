@@ -33,7 +33,7 @@ from gsdview import qtdraw
 _log = logging.getLogger(__name__)
 
 # Graphics Items ############################################################
-# class GraphicsLayerItem(qt4draw.GraphicsItemGroup):
+# class GraphicsLayerItem(qtdraw.GraphicsItemGroup):
 #     '''Qt graphics item representing an OGR Layer.'''
 #
 #     Type = QtWidgets.QGraphicsItem.UserType + 102
@@ -60,7 +60,7 @@ _log = logging.getLogger(__name__)
 #         return None
 
 
-# class GraphicsFeatureItem(qt4draw.GraphicsItemGroup):
+# class GraphicsFeatureItem(qtdraw.GraphicsItemGroup):
 #     '''Qt graphics item representing an OGR feature.'''
 #
 #     Type = QtWidgets.QGraphicsItem.UserType + 103
@@ -98,7 +98,7 @@ def transformGeometry(geom, transform):
 
 
 def singleGeometryToGraphicsItem(geom, transform=None):
-    """Convert a single OGR geometry into a Qt4 graphics item.
+    """Convert a single OGR geometry into a Qt5 graphics item.
 
     A "single geometry" is an OGR geometry that don't include other
     geometries (GetGeometryCount() == 0).
@@ -114,7 +114,7 @@ def singleGeometryToGraphicsItem(geom, transform=None):
     :param transform:
         callable object for arbitrary coordinate conversion
     :returns:
-        a Qt4 graphics item representing the geometry
+        a Qt5 graphics item representing the geometry
 
     .. seealso:: :func:`geometryToGraphicsItem`
 
@@ -201,7 +201,7 @@ def singleGeometryToGraphicsItem(geom, transform=None):
 
 
 def geometryToGraphicsItem(geom, transform=None):
-    """Convert an OGR geometry into a Qt4 graphics item.
+    """Convert an OGR geometry into a Qt5 graphics item.
 
     If the *transform* callable is provided then each point in the
     geometry is converted using the `transform(x, y, z)` call before
@@ -214,7 +214,7 @@ def geometryToGraphicsItem(geom, transform=None):
     :param transform:
         callable object for arbitrary coordinate conversion
     :returns:
-        a Qt4 graphics item representing the geometry
+        a Qt5 graphics item representing the geometry
 
     .. seealso:: :func:`singleGeometryToGraphicsItem`
 
@@ -256,7 +256,7 @@ DATAKEY = {
 
 
 def layerToGraphicsItem(layer, srs=None, transform=None):
-    """Convert an OGR layer into a Qt4 graphics item.
+    """Convert an OGR layer into a Qt5 graphics item.
 
     If the *srs* parameter is provided each feature is converted into
     the target spatial reference system before generating the graphics
@@ -275,7 +275,7 @@ def layerToGraphicsItem(layer, srs=None, transform=None):
     :param transform:
         callable object for arbitrary coordinate conversion
     :returns:
-        a Qt4 graphics item (QGraphicsItemGroup) representing the layer
+        a Qt5 graphics item (QGraphicsItemGroup) representing the layer
 
     .. seealso:: :func:`singleGeometryToGraphicsItem`,
                  :func:`geometryToGraphicsItem` and

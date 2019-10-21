@@ -236,7 +236,7 @@ def driverList(drivertype='raster'):
 def gdalFilters(mode='r'):
     """Returns the list of GDAL file filters as expected by Qt."""
 
-    # @TODO: move to gdalqt4
+    # @TODO: move to gdalqt
     filters = []
     filters.append('All files (*)')
 

@@ -2,7 +2,7 @@
     GSDView Home Page
     =================
     ---------------------------------------------------------------
-    A lightweight Geo-Spatial Data Viewer written in Python and Qt4
+    A lightweight Geo-Spatial Data Viewer written in Python and Qt5
     ---------------------------------------------------------------
 
 ..  :Source: doc/source/index.txt

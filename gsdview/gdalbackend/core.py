@@ -690,10 +690,6 @@ class GDALBackend(QtCore.QObject):
             # show overviews in the treeview
             value = settings.value('visible_overview_items')
 
-            # @COMPATIBILITY: presumably a bug in PyQt4 (4.7.2)
-            if isinstance(value, str):
-                value = True if value in ('true', 'True') else False
-
             modelitems.VISIBLE_OVERVIEW_ITEMS = value
             # @TODO: reload all items
         finally:

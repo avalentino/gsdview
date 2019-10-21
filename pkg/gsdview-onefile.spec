@@ -61,7 +61,7 @@ exe = EXE(pyz,
           a.zipfiles,
           a.datas,
 
-          # Packages resources: Qt4 UI files and images
+          # Packages resources: Qt5 UI files and images
           Tree(os.path.join(GSDVIEWROOT, 'gsdview', 'ui'), 'ui',
                excludes=['.svn']),
           Tree(os.path.join(GSDVIEWROOT, 'gsdview', 'images'), 'images',

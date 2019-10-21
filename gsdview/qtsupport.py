@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-"""Utility functions and classes for Qt4 applicaions."""
+"""Utility functions and classes for Qt5 applications."""
 
 
 import os
@@ -33,16 +33,6 @@ from gsdview import utils
 
 
 _log = logging.getLogger(__name__)
-
-# @TODO: simply use QtCore.Qt.WindowState(int_arg)
-# @TODO: check compatibility with PyQt4 and PySide
-intToWinState = {
-    int(QtCore.Qt.WindowNoState): QtCore.Qt.WindowNoState,
-    int(QtCore.Qt.WindowMinimized): QtCore.Qt.WindowMinimized,
-    int(QtCore.Qt.WindowMaximized): QtCore.Qt.WindowMaximized,
-    int(QtCore.Qt.WindowFullScreen): QtCore.Qt.WindowFullScreen,
-    int(QtCore.Qt.WindowActive): QtCore.Qt.WindowActive,
-}
 
 
 # Menus and toolbars helpers ###############################################
@@ -467,12 +457,6 @@ def printPreview(obj, printer=None, parent=None):
 
 
 # QImage helpers ###########################################################
-# from PyQt4.Qwt5 import toQImage as _toQImage
-# def numpy2qimage(data):
-#    # @NOTE: for Qwt5 < 5.2.0
-#    # return toQImage(data.transpose())
-#    return _toQImage(data)
-
 import numpy as np
 GRAY_COLORTABLE = [QtGui.QColor(i, i, i).rgba() for i in range(256)]
 RED_COLORTABLE = [QtGui.QColor(i, 0, 0).rgba() for i in range(256)]
@@ -832,20 +816,20 @@ def getuiform(name, package=None):
     class having a name that starts with `Ui_`).
 
     If no pre-build python module is available than the form call is
-    loaded directly from the ui file using the PyQt4.uic helper module.
+    loaded directly from the ui file using the PyQt5.uic helper module.
 
-    .. note:: in the pyside packege is used to provide bindings for Qt4
+    .. note:: in the pyside2 packege is used to provide bindings for Qt5
               then the uic module is not available and only pre-built
               modules are searched.
-              When pyside is used an :exc:`ImportError` is raised
+              When pyside2 is used an :exc:`ImportError` is raised
               if pre-built forms are not available.
 
-    .. note:: like :func:`gsdview.qt4support.getuifile` this
+    .. note:: like :func:`gsdview.qtsupport.getuifile` this
               function assumes that pre-build form modules and Qt UI
-              files are located in the "ui" subfolfer of the package.
+              files are located in the "ui" subfolder of the package.
 
     .. seealso:: :func:`gsdview.utils.getresource`,
-                 :func:`gsdview.qt4support.getuifile`
+                 :func:`gsdview.qtsupport.getuifile`
 
     """
 

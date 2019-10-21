@@ -15,8 +15,8 @@ Description
 
 *GSDView Open Source Edition* is a lightweight viewer for geo-spatial data and
 products.
-It is written in python and Qt4 and it is mainly intended to be a graphical
-frotend for the GDAL library and tools.
+It is written in python and Qt5 and it is mainly intended to be a graphical
+frontend for the GDAL library and tools.
 GSDView is modular and has a simple plug-in architecture.
 
 

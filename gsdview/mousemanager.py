@@ -17,9 +17,9 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-"""Mouse manager for the Qt4 graphics framework.
+"""Mouse manager for the Qt5 graphics framework.
 
-Mouse management for the Qt4 graphics framework is implemented by a set
+Mouse management for the Qt5 graphics framework is implemented by a set
 of MouseMode objects, that provide specific event handlers and behave
 like a descriptor, and a manager object that catches mouse events and
 dispatch them to the appropriate handler.
@@ -127,12 +127,8 @@ class ScrollHandMode(MouseMode):
     def viewEventFilter(self, obj, event):
         if event.type() == QtCore.QEvent.Wheel:
 
-            # @COMPATIBILITY: Qt4 --> Qt5
             # Delta is expressed in 1/8 degree
-            try:
-                delta = event.angleDelta().y() / 8.  # degree
-            except AttributeError:
-                delta = event.delta() / 8.  # degree
+            delta = event.angleDelta().y() / 8.  # degree
 
             if delta == 0:
                 event.accept()

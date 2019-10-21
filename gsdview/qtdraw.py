@@ -18,7 +18,7 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
 
-"""Drawing components for Qt4."""
+"""Drawing components for Qt5."""
 
 
 from qtpy import QtCore, QtWidgets, QtGui

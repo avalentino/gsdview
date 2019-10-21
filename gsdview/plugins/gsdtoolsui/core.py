@@ -234,21 +234,13 @@ class GSDToolsController(QtCore.QObject):
 
         url = QtCore.QUrl('http://maps.google.com/maps')
 
-        # @COMPATIBILITY: PyQt4 --> PyQt5
-        try:
-            query = QtCore.QUrlQuery()
-        except AttributeError:
-            query = url
+        query = QtCore.QUrlQuery()
 
         query.addQueryItem('q', '%fN,%fE' % (lat, lon))   # coordinates
         query.addQueryItem('t', 'h')                      # map type (hybrid)
         query.addQueryItem('z', str(zoomlevel))           # zoom level (1, 20)
 
-        # @COMPATIBILITY: PyQt4 --> PyQt5
-        try:
-            url.setQuery(query)
-        except AttributeError:
-            pass
+        url.setQuery(query)
 
         success = QtGui.QDesktopServices.openUrl(url)
         if not success:

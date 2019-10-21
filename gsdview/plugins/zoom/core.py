@@ -80,7 +80,7 @@ class ZoomTool(QtCore.QObject):
             triggered=self.zoom100)
 
         # Manual Zoom
-        # icon = QtGui.QIcon() #qt4support.geticon('zoom-100.svg', 'gsdview')
+        # icon = QtGui.QIcon()  # qtsupport.geticon('zoom-100.svg', 'gsdview')
         # QtWidgets.QWidgetAction(
         #     icon, self.tr('Zoom 100%'), actions,
         #     statusTip=self.tr('Original size'),

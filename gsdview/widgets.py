@@ -371,7 +371,7 @@ class PreferencesDialog(QtWidgets.QDialog, PreferencesDialogBase):
         icon = qtsupport.geticon('preferences.svg', __name__)
         self.addPage(GeneralPreferencesPage(), icon, self.tr('General'))
 
-        # icon = qt4support.geticon('harddisk.svg', __name__)
+        # icon = qtsupport.geticon('harddisk.svg', __name__)
         # self.addPage(CachePreferencesPage(), icon, self.tr('Cache'))
 
         assert self.listWidget.count() == self.stackedWidget.count()

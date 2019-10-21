@@ -243,7 +243,7 @@ class OverviewItem(BandItem):
 
 
 # class VirtualBandItem(BandItem):
-#     iconfile = qt4support.geticon('virtualband.svg', __name__)
+#     iconfile = qtsupport.geticon('virtualband.svg', __name__)
 #     _type = BandItem._type + 2
 #     # @TODO: remove
 #     actions = BandItem.actions + ('Delete',)
@@ -306,7 +306,7 @@ class DatasetItem(MajorObjectItem):
     def _setup_scene(self, parent=None):
         try:
             # @TODO: check
-            # graphicsitem = gdalqt4.graphicsItemFactory(self)
+            # graphicsitem = gdalqt.graphicsItemFactory(self)
             graphicsitem = gdalqt.GdalRgbGraphicsItem(self)
         except TypeError:
             # dataset is not an RGB image
