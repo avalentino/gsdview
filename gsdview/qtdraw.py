@@ -98,16 +98,7 @@ class GraphicsPointItem(QtWidgets.QAbstractGraphicsShapeItem):
     def __init__(self, x=None, y=None, radius=None, parent=None, scene=None,
                  **kargs):
         super(GraphicsPointItem, self).__init__(parent, scene, **kargs)
-
-        # @COMPATIBILITY: Qt >= 4.6.0 needs this flag to be set otherwise the
-        #                 exact exposedRect is not computed
-        # @SEEALSO: ItemUsesExtendedStyleOption item at
-        # http://doc.qt.nokia.com/4.6/qgraphicsitem.html#GraphicsItemFlag-enum
-        try:
-            self.setFlag(QtWidgets.QGraphicsItem.ItemUsesExtendedStyleOptions)
-        except AttributeError:
-            ItemUsesExtendedStyleOptions = 0x200
-            self.setFlag(ItemUsesExtendedStyleOptions)
+        self.setFlag(QtWidgets.QGraphicsItem.ItemUsesExtendedStyleOption)
 
         if None not in (x, y):
             self.setPos(x, y)

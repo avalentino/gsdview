@@ -80,15 +80,7 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
 
     def __init__(self, gdalobj, parent=None, **kwargs):
         super(BaseGdalGraphicsItem, self).__init__(parent, **kwargs)
-
-        # @COMPATIBILITY: Qt >= 4.6.0 needs this flag to be set otherwise the
-        #                 exact exposedRect is not computed
-        # @SEEALSO: ItemUsesExtendedStyleOption item at
-        # http://doc.qt.nokia.com/4.6/qgraphicsitem.html#GraphicsItemFlag-enum
-        try:
-            self.setFlag(QtWidgets.QGraphicsItem.ItemUsesExtendedStyleOptions)
-        except AttributeError:
-            self.setFlag(QtWidgets.QGraphicsItem.GraphicsItemFlag(0x200))
+        self.setFlag(QtWidgets.QGraphicsItem.ItemUsesExtendedStyleOption)
 
         self.gdalobj = gdalobj
         try:
@@ -104,7 +96,7 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
         # self.read_threshold = 1600*1200
 
         self.stretch = imgutils.LinearStretcher()
-        # @TODO: use lazy gaphicsitem initialization
+        # @TODO: use lazy graphicsitem initialization
         # @TODO: initialize stretching explicitly
         self._stretch_initialized = False
         self._data_preproc = None
@@ -144,37 +136,20 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
 
     @staticmethod
     def _levelOfDetailFromTransform(worldTransform):
-        # @COMPATIBILITY: since Qt v. 4.6.0 the levelOfDetail attribute of
-        # QStyleOptionGraphicsItem is deprecated
-        # @SEEALSO: ItemUsesExtendedStyleOption item at
-        # http://doc.qt.nokia.com/4.6/qgraphicsitem.html#GraphicsItemFlag-enum
-        #
-        # From qt/src/gui/styles/qstyleoption.cpp:5130
         if worldTransform.type() <= QtGui.QTransform.TxTranslate:
             return 1    # Translation only? The LOD is 1.
 
         # Two unit vectors.
         v1 = QtCore.QLineF(0, 0, 1, 0)
         v2 = QtCore.QLineF(0, 0, 0, 1)
+
         # LOD is the transformed area of a 1x1 rectangle.
         return np.sqrt(worldTransform.map(v1).length() *
                        worldTransform.map(v2).length())
 
     @staticmethod
     def _levelOfDetail(option, painter):
-        # @COMPATIBILITY: since Qt v. 4.6.0 the levelOfDetail attribute of
-        # QStyleOptionGraphicsItem is deprecated
-        # @SEEALSO: ItemUsesExtendedStyleOption item at
-        # http://doc.qt.nokia.com/4.6/qgraphicsitem.html#GraphicsItemFlag-enum
-        if hasattr(option, 'levelOfDetailFromTransform'):
-            levelOfDetail = option.levelOfDetailFromTransform(
-                painter.transform())
-        elif QtCore.qVersion() >= '4.6.0':
-            levelOfDetail = BaseGdalGraphicsItem._levelOfDetailFromTransform(
-                painter.transform())
-        else:
-            levelOfDetail = option.levelOfDetail
-        return levelOfDetail
+        return option.levelOfDetailFromTransform(painter.transform())
 
     @staticmethod
     def _bestOvrLevel(band, levelOfDetail):
@@ -314,9 +289,7 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
                 pass
             funcs[current_func] = self._data_preproc
 
-        # @COMPATIBILITY: addSection is new in Qt 5.1
-        # menu.addSection(tr('Transformation functions'))
-        menu.addSeparator().setText(tr('Transformation functions'))
+        menu.addSection(tr('Transformation functions'))
 
         actiongroup = QtWidgets.QActionGroup(menu)
         actiongroup.setExclusive(True)
@@ -350,9 +323,7 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
         if current_colortable == 'unknown':
             colortables[current_colortable] = self.colortable
 
-        # @COMPATIBILITY: addSection is new in Qt 5.1
-        # menu.addSection(tr('Color table'))
-        menu.addSeparator().setText(tr('Color table'))
+        menu.addSection(tr('Color table'))
 
         actiongroup = QtWidgets.QActionGroup(menu)
         actiongroup.setExclusive(True)

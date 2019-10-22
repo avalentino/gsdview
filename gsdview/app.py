@@ -426,11 +426,6 @@ class GSDView(ItemModelMainWindow):
         toolbar = qtsupport.actionGroupToToolbar(actions, name)
         self.addToolBar(toolbar)
 
-        # @COMPATIBILITY: pyside 1.2.2
-        #                 without the call to toolbar.parent() the toolbar is
-        #                 not actually added
-        assert toolbar.parent()
-
         return toolbar
 
     def setupPlugins(self):

@@ -112,14 +112,11 @@ class QtWindowListMenu(QtWidgets.QMenu):
         self.aboutToShow.connect(self.syncWithMdiArea)
 
         self._stdGroup = QtWidgets.QActionGroup(self, exclusive=False)
-        self._winGroup = QtWidgets.QActionGroup(self, exclusive=True)
-                                            # , triggered=self.activateWindow)
-
-        # @COMPATIBILITY: pyside 1.2.2
-        self._winGroup.triggered.connect(self.activateWindow)
+        self._winGroup = QtWidgets.QActionGroup(self, exclusive=True,
+                                                triggered=self.activateWindow)
 
         # Create the standard menu items.
-        # @Note: Creation order must match the StandardAction enum values ;-)
+        # @NOTE: Creation order must match the StandardAction enum values ;-)
         QtWidgets.QAction(
             self.tr('Cl&ose'), self._stdGroup,
             shortcut=self.tr('Ctrl+F4'),
@@ -246,7 +243,7 @@ class QtWindowListMenu(QtWidgets.QMenu):
 
     @QtCore.Slot()
     def syncWithMdiArea(self):
-        """Syncronize with MDI area
+        """Synchronize with MDI area
 
         This slot is executed immediately prior to each opening of this
         menu. It removes the previous subwindow navigation actions and

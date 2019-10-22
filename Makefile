@@ -50,6 +50,9 @@ rpm: sdist
 
 
 PYUIC=pyuic5
+ifeq ($(QT_API),pyside2)
+	PYUIC=pyside2-uic
+endif
 ifeq ($(QT_API),pyqt4)
 	PYUIC=pyuic4
 endif

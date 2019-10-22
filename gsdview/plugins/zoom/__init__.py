@@ -47,11 +47,6 @@ def init(app):
                                              app.tr('Zoom toolbar'))
     app.addToolBar(toolbar)
 
-    # @COMPATIBILITY: pyside 1.2.2
-    #                 without the call to toolbar.parent() the toolbar is not
-    #                 actually added
-    assert toolbar.parent()
-
     # @TODO: move to tool (??)
     tool.actions.setEnabled(False)
 

@@ -39,9 +39,7 @@ class DoubleSpinBox(QtWidgets.QDoubleSpinBox):
 
     def textFromValue(self, value):
         text = self.locale().toString(value, 'g', self.decimals())
-        # @COMPATIBILITY: isGroupSeparatorShown is new in Qt 5.3
-        if (not hasattr(self, 'isGroupSeparatorShown') or
-                not self.isGroupSeparatorShown()):
+        if not self.isGroupSeparatorShown():
             text = text.replace(self.locale().groupSeparator(), '')
         text = text.replace("e+", "e")
         return re.sub(r'e(-?)0*(\d+)', r'e\1\2', text)

@@ -359,19 +359,9 @@ class GDALBackend(QtCore.QObject):
             else:
                 # @TODO: remove this to allow multiple views on the same item
                 for subwin in self._app.mdiarea.subWindowList():
-                    # if subwin.item == item:
-                    #     action.setEnabled(False)
-                    #     break
-
-                    # @COMPATIBILITY: pyside 1.2.2
-                    try:
-                        if subwin.item == item:
-                            action.setEnabled(False)
-                            break
-                    except NotImplementedError:
-                        if id(subwin.item) == id(item):
-                            action.setEnabled(False)
-                            break
+                    if subwin.item == item:
+                        action.setEnabled(False)
+                        break
 
         return actionsgroup
 
@@ -385,20 +375,9 @@ class GDALBackend(QtCore.QObject):
         if gdalsupport.isRGB(item):
             # @TODO: remove this to allow multiple views on the same item
             for subwin in self._app.mdiarea.subWindowList():
-                # if subwin.item == item:
-                #     action.setEnabled(False)
-                #     break
-
-                # @COMPATIBILITY: pyside 1.2.2
-                try:
-                    if subwin.item == item:
-                        action.setEnabled(False)
-                        break
-                except NotImplementedError:
-                    if id(subwin.item) == id(item):
-                        action.setEnabled(False)
-                        break
-
+                if subwin.item == item:
+                    action.setEnabled(False)
+                    break
             else:
                 action.setEnabled(True)
         else:

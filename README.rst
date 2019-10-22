@@ -54,6 +54,7 @@ In order to run GSDView you should have the following software installed:
 * numpy_ 1.3.0  or higher
 * gdal_ 1.7.3 or higher
 * QtPy_ and  PyQt5_ or PySide2_
+* Qt5_ >= 5.3
 
 
 .. _numpy: http://www.numpy.org
@@ -61,6 +62,7 @@ In order to run GSDView you should have the following software installed:
 .. _QtPy: https://github.com/spyder-ide/qtpy
 .. _PyQt5: https://www.riverbankcomputing.com/software/pyqt
 .. _PySide2: http://www.pyside.org
+.. _Qt5: https://www.qt.io
 
 .. note:: in order to run GSDView with Python 3.x GDAL >= 1.10 is required.
 

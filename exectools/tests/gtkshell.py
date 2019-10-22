@@ -60,11 +60,9 @@ class GtkShell(object):
         # self.cmdbutton = Gtk.Button.new_with_mnemonic('_Execute')
         self.cmdbutton = Gtk.Button(stock=Gtk.STOCK_EXECUTE)
         self.cmdbutton.connect('clicked', self.on_cmdbutton_clicked)
-        # @COMPATIBILITY: set_always_show_image is new in Gtk 3.6
-        try:
-            self.cmdbutton.set_always_show_image(True)
-        except AttributeError:
-            pass
+
+        # Note: set_always_show_image is new in Gtk 3.6
+        self.cmdbutton.set_always_show_image(True)
 
         hbox = Gtk.Box.new(Gtk.Orientation.HORIZONTAL, spacing=3)
         hbox.pack_start(cmdlabel, expand=False, fill=False, padding=0)
