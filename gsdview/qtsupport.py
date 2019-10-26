@@ -23,6 +23,7 @@
 
 import os
 import csv
+import math
 import logging
 from io import StringIO
 from configparser import ConfigParser
@@ -188,11 +189,11 @@ def modelToTextDocument(model, doc=None):
     cursor.movePosition(QtGui.QTextCursor.End)
     cursor.beginEditBlock()
 
-    format = QtGui.QTextTableFormat()
-    format.setCellPadding(5)
-    format.setCellSpacing(0)
-    format.setBorderStyle(QtGui.QTextFrameFormat.BorderStyle_Solid)
-    format.setHeaderRowCount(1)
+    format_ = QtGui.QTextTableFormat()
+    format_.setCellPadding(5)
+    format_.setCellSpacing(0)
+    format_.setBorderStyle(QtGui.QTextFrameFormat.BorderStyle_Solid)
+    format_.setHeaderRowCount(1)
 
     nrows = model.rowCount()
     try:
@@ -200,7 +201,7 @@ def modelToTextDocument(model, doc=None):
     except TypeError:
         # columnCount is a private method in QAbstractListModel
         ncols = 1
-    table = cursor.insertTable(nrows, ncols, format)
+    table = cursor.insertTable(nrows, ncols, format_)
 
     # textformat = QtWidgets.QTextFormat()
 
@@ -726,7 +727,8 @@ def _aligned(data, nbyes=4):
     h, w = data.shape
 
     fact = nbyes / data.itemsize
-    shape = (h, np.ceil(w / float(fact)) * nbyes)
+    # math.ceil return int
+    shape = (h, math.ceil(w / fact) * nbyes)
     if shape != data.shape:
         # build aligned matrix
         image = np.zeros(shape, data.dtype)
