@@ -68,6 +68,7 @@ class MetadataViewer(QtWidgets.QDockWidget):
 
         # Fix table header behaviour
         header = self.infoTable.horizontalHeader()
+        header.setStretchLastSection(False)
         header.resizeSections(QtWidgets.QHeaderView.ResizeToContents)
         header.setStretchLastSection(True)
 
