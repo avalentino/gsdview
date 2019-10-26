@@ -22,6 +22,7 @@
 
 
 import os
+import shutil
 
 import gsdtools
 from gsdtools.stats import HistogramRequest
@@ -71,7 +72,7 @@ class StatsDescriptor(BaseGdalToolDescriptor):
 
         """
 
-        executable = utils.which('gsdstats')
+        executable = shutil.which('gsdstats')
         if executable:
             cmd = utils.scriptcmd(executable)
         else:
@@ -225,7 +226,7 @@ class Ras2vecDescriptor(BaseGdalToolDescriptor):
 
         """
 
-        executable = utils.which('ras2vec')
+        executable = shutil.which('ras2vec')
         if executable:
             cmd = utils.scriptcmd(executable)
         else:

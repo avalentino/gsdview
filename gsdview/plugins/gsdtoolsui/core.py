@@ -23,6 +23,7 @@
 
 import os
 import sys
+import shutil
 import logging
 import tempfile
 
@@ -93,10 +94,10 @@ class GSDToolsController(QtCore.QObject):
             googleearth = settings.value('google_earth_path')
             if not googleearth:
                 if sys.platform.startswith('win'):
-                    googleearth = utils.which('googleearth.exe')
+                    googleearth = shutil.which('googleearth.exe')
                 else:
                     for name in ('googleearth', 'google-earth'):
-                        googleearth = utils.which(name)
+                        googleearth = shutil.which(name)
                         if googleearth:
                             break
 

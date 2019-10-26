@@ -21,6 +21,8 @@
 """GDAL backend for GSDView."""
 
 
+import shutil
+
 from gsdview.gdalbackend.info import *
 from gsdview.gdalbackend.info import __version__, __requires__
 from gsdview.gdalbackend.core import GDALBackend
@@ -35,6 +37,7 @@ __all__ = [
     'openFile', 'openImageView', 'newImageView', 'openItemMatadataView',
     'openRGBImageView', 'openSubDataset', 'closeCurrentItem',
     'findItemFromFilename', 'itemActions', 'itemContextMenu',
+    '__version__', '__requires__',
 ]
 
 UseExceptions = GDALBackend.UseExceptions
@@ -114,7 +117,7 @@ def init(app):
         #                      'overrides the default value')
         #     QtWidgets.QMessageBox.warning(app, app.tr('WARNING'), msg)
     elif sys.platform == 'darwin':
-        gdaladdobin = utils.which('gdaladdo')
+        gdaladdobin = shutil.which('gdaladdo')
         if not gdaladdobin:
             frameworkroot = os.path.join(os.path.dirname(gdal.__file__),
                                          os.pardir, os.pardir, os.pardir)

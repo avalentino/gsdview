@@ -41,7 +41,7 @@ from gsdview import appsite
 
 
 __all__ = [
-    'which', 'isexecutable', 'isscript', 'scriptcmd', 'default_workdir',
+    'isexecutable', 'isscript', 'scriptcmd', 'default_workdir',
     'getresource', 'format_platform_info', 'format_bugreport',
 ]
 
@@ -180,23 +180,6 @@ else:
                     (mode & stat.S_IXOTH)):
                 return True
         return False
-
-
-def which(cmd, env=None):
-    """Return the full path of the program (*cmd*) or None.
-
-    >>> which('ls')
-    '/bin/ls'
-
-    """
-
-    if not env:
-        env = os.environ
-
-    for dir_ in env.get('PATH', '').split(os.pathsep):
-        exe = os.path.join(dir_, cmd)
-        if isexecutable(exe):
-            return exe
 
 
 def isscript(filename):
