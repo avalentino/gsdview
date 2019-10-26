@@ -92,19 +92,29 @@ class GSDToolsController(QtCore.QObject):
         settings.beginGroup('plugins/%s' % info.name)
         try:
             googleearth = settings.value('google_earth_path')
+
+            if googleearth is not None and shutil.which(googleearth) is None:
+                _log.warning('%r does not exists', googleearth)
+                googleearth = None
+
             if not googleearth:
                 if sys.platform.startswith('win'):
-                    googleearth = shutil.which('googleearth.exe')
+                    google_earth_names = ['googleearth.exe']
                 else:
-                    for name in ('googleearth', 'google-earth'):
-                        googleearth = shutil.which(name)
-                        if googleearth:
-                            break
+                    google_earth_names = [
+                        'googleearth', 'google-earth', 'google-earth-pro'
+                    ]
+
+                for name in google_earth_names:
+                    googleearth = shutil.which(name)
+                    if googleearth:
+                        break
 
             action = self.actions.findChild(QtWidgets.QAction,
                                             'openInGoogleEarthAction')
             if googleearth:
                 self.googleearth = googleearth
+                _log.debug('using %r', self.googleearth)
                 action.setEnabled(True)
             else:
                 self.googleearth = None
