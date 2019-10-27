@@ -48,7 +48,7 @@ class QtBlinker(QtWidgets.QLabel):
         # qstyle = QtWidgets.QApplication.style()
         # pixmap = qstyle.standardPixmap(QtWidgets.QStyle.SP_MediaStop)
         pixmap = QtGui.QPixmap(
-            ':/trolltech/styles/commonstyle/images/standardbutton-no-32.png')
+            ':/qt-project.org/styles/commonstyle/images/standardbutton-no-32')
         self.setPixmap(pixmap)
 
     @QtCore.Slot()
@@ -101,8 +101,7 @@ class QtOutputPane(QtWidgets.QTextEdit):
         self.actions.addAction(self.actionSaveAs)
 
         # Clear
-        icon = QtGui.QIcon(':/trolltech/styles/commonstyle/images/'
-                           'standardbutton-clear-32.png')
+        icon = QtGui.QIcon.fromTheme('edit-clear')
         self.actionClear = QtWidgets.QAction(
             icon, self.tr('&Clear'), self,
             shortcut=self.tr('Shift+F5'),

@@ -212,7 +212,7 @@ class GraphicsItemGroup(QtWidgets.QGraphicsItemGroup):
 class DrawPointMode(MouseMode):
     dragmode = QtWidgets.QGraphicsView.NoDrag
     cursor = QtCore.Qt.CrossCursor
-    icon = ':/trolltech/styles/commonstyle/images/standardbutton-yes-128.png'
+    icon = ':/qt-project.org/styles/commonstyle/images/standardbutton-yes-128'
     label = 'Draw Point'
     name = 'drawPoint'
 
@@ -246,7 +246,7 @@ class DrawPointMode(MouseMode):
 class DrawLineMode(MouseMode):
     dragmode = QtWidgets.QGraphicsView.NoDrag
     cursor = QtCore.Qt.CrossCursor
-    icon = ':/trolltech/dialogs/qprintpreviewdialog/images/fit-width-24.png'
+    icon = 'accessories-text-editor'
     label = 'Draw Line'
     name = 'drawLine'
 
@@ -313,7 +313,8 @@ class DrawLineMode(MouseMode):
 #         if (event.type() == QtCore.QEvent.GraphicsSceneMousePress and
 #                                     event.button() == QtCore.Qt.LeftButton):
 #             assert(self.rubberband is None)
-#             self.rubberband = QtWidgets.QRubberBand(QtWidgets.QRubberBand.Line)
+#             self.rubberband = QtWidgets.QRubberBand(
+#                 QtWidgets.QRubberBand.Line)
 #             self.rubberband.setGeometry(QtCore.QRect(event.screenPos(),
 #                                                      QtCore.QSize()))
 #             self.rubberband.show()
@@ -347,7 +348,7 @@ class DrawLineMode(MouseMode):
 class DrawRectMode(MouseMode):
     dragmode = QtWidgets.QGraphicsView.NoDrag
     cursor = QtCore.Qt.CrossCursor
-    icon = ':/trolltech/styles/commonstyle/images/media-stop-32.png'
+    icon = ':/qt-project.org/styles/commonstyle/images//media-stop-32'
     label = 'Draw Rect'
     name = 'drawRect'
 
@@ -400,7 +401,7 @@ class DrawRectMode(MouseMode):
 class DrawEllipseMode(MouseMode):
     dragmode = QtWidgets.QGraphicsView.NoDrag
     cursor = QtCore.Qt.CrossCursor
-    icon = ':/trolltech/styles/commonstyle/images/standardbutton-no-128.png'
+    icon = ':/qt-project.org/styles/commonstyle/images/standardbutton-no-128'
     label = 'Draw Ellipse'
     name = 'drawEllipse'
 

@@ -230,7 +230,10 @@ class MouseManager(QtCore.QObject):
 
     def _newModeAction(self, mode, parent):
         if isinstance(mode.icon, str):
-            icon = QtGui.QIcon(mode.icon)
+            if mode.icon.startswith(':'):
+                icon = QtGui.QIcon(mode.icon)
+            else:
+                icon = QtGui.QIcon.fromTheme(mode.icon)
         elif isinstance(mode.icon, QtWidgets.QStyle.StandardPixmap):
             style = QtWidgets.QApplication.style()
             icon = style.standardIcon(mode.icon)

@@ -338,9 +338,7 @@ def setViewContextActions(widget):
         triggered=lambda: copySelectedItems(widget))
     widget.addAction(action)
 
-    # ':/trolltech/dialogs/qprintpreviewdialog/images/view-page-multi-32.png'
-    icon = QtGui.QIcon(
-        ':/trolltech/styles/commonstyle/images/viewlist-128.png')
+    icon = QtGui.QIcon.fromTheme('edit-select-all')
     action = QtWidgets.QAction(
         icon, widget.tr('Select &All'), widget,
         objectName='selectAllAction',
@@ -358,8 +356,7 @@ def setViewContextActions(widget):
         triggered=lambda: exportTable(widget.model()))
     widget.addAction(action)
 
-    icon = QtGui.QIcon(
-        ':/trolltech/dialogs/qprintpreviewdialog/images/print-32.png')
+    icon = QtGui.QIcon.fromTheme('printer')
     action = QtWidgets.QAction(
         icon, widget.tr('&Print'), widget,
         objectName='printAction',

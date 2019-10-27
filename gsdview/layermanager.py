@@ -45,7 +45,7 @@ class BaseLayerManager(QtCore.QObject):
 
         actions = QtWidgets.QActionGroup(self)
 
-        icon = QtGui.QIcon(':/trolltech/styles/commonstyle/images/up-128.png')
+        icon = QtGui.QIcon.fromTheme('go-top')
         QtWidgets.QAction(
             icon, self.tr('Move to top'), actions,
             objectName='moveToTopAction',
@@ -66,32 +66,27 @@ class BaseLayerManager(QtCore.QObject):
             statusTip=self.tr('Move down'),
             shortcut=self.tr('Ctrl+Down'))
 
-        icon = QtGui.QIcon(
-            ':/trolltech/styles/commonstyle/images/down-128.png')
+        icon = QtGui.QIcon.fromTheme('go-bottom')
         QtWidgets.QAction(
             icon, self.tr('Move to bottom'), actions,
             objectName='moveToBottomAction',
             statusTip=self.tr('Move to bottom'),
             shortcut=self.tr('Ctrl+PgDown'))
 
-        # 'standardbutton-closetab-16.png'
-        icon = QtGui.QIcon(':/trolltech/styles/commonstyle/images/'
-                           'standardbutton-cancel-128.png')
+        icon = QtGui.QIcon.fromTheme('edit-delete')
         QtWidgets.QAction(
             icon, self.tr('Remove'), actions,
             objectName='removeLayerAction',
             statusTip=self.tr('Remove'),
             shortcut=self.tr('Del'))
 
-        icon = QtGui.QIcon(
-            ':/trolltech/styles/commonstyle/images/standardbutton-yes-128.png')
+        icon = QtGui.QIcon.fromTheme('zoom-fit-best')
         QtWidgets.QAction(
             icon, self.tr('Show'), actions,
             objectName='showLayerAction',
             statusTip=self.tr('Show the layer'))
 
-        icon = QtGui.QIcon(
-            ':/trolltech/styles/commonstyle/images/standardbutton-no-128.png')
+        icon = qstype.standardIcon(QtWidgets.QStyle.SP_DialogCloseButton)
         QtWidgets.QAction(
             icon, self.tr('Hide'), actions,
             objectName='hideLayerAction',
@@ -415,8 +410,7 @@ class LayerManager(BaseLayerManager):
     def _setupActions(self):
         actions = super(LayerManager, self)._setupActions()
 
-        icon = QtGui.QIcon(
-            ':/trolltech/styles/commonstyle/images/viewdetailed-128.png')
+        icon = QtGui.QIcon.fromTheme('edit-select-all')
         QtWidgets.QAction(
             icon, self.tr('Select all'), actions,
             objectName='selectAllAction',

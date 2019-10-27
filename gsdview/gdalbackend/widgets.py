@@ -412,8 +412,7 @@ class MetadataWidget(QtWidgets.QWidget, MetadataWidgetBase):
             self.domainChanged)
 
         # icons
-        icon = QtGui.QIcon(
-            ':/trolltech/dialogs/qprintpreviewdialog/images/print-24.png')
+        icon = QtGui.QIcon.fromTheme('printer')
         self.printButton.setIcon(icon)
         icon = self.style().standardIcon(QtWidgets.QStyle.SP_DialogSaveButton)
         self.exportButton.setIcon(icon)

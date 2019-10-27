@@ -110,11 +110,10 @@ class MainWin(QtWidgets.QMainWindow):
     def _setupHelpActions(self):
         actions = QtWidgets.QActionGroup(self)
 
-        icon = QtGui.QIcon(
-            ':/trolltech/styles/commonstyle/images/fileinfo-32.png')
+        icon = QtGui.QIcon.fromTheme('dialog-information')
         QtWidgets.QAction(icon, 'About', actions, triggered=self.about)
 
-        icon = QtGui.QIcon(':/trolltech/qmessagebox/images/qtlogo-64.png')
+        icon = QtGui.QIcon(':/qtlogo-64')
         QtWidgets.QAction(icon, 'About Qt', actions,
                           triggered=QtWidgets.QApplication.aboutQt)
 

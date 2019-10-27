@@ -161,8 +161,7 @@ class VectorGraphicsApp(QtWidgets.QMainWindow):
     def _setupViewActions(self):
         actions = QtWidgets.QActionGroup(self)
 
-        icon = QtGui.QIcon(
-            ':/trolltech/dialogs/qprintpreviewdialog/images/zoom-in-32.png')
+        icon = QtGui.QIcon.fromTheme('zoom-in')
         QtWidgets.QAction(
             icon, self.tr('Zoom In'), actions,
             objectName='zoomInAction',
@@ -170,8 +169,7 @@ class VectorGraphicsApp(QtWidgets.QMainWindow):
             shortcut=self.tr('Ctrl++'),
             triggered=lambda: self.graphicsview.scale(1.2, 1.2))
 
-        icon = QtGui.QIcon(
-            ':/trolltech/dialogs/qprintpreviewdialog/images/zoom-out-32.png')
+        icon = QtGui.QIcon.fromTheme('zoom-out')
         QtWidgets.QAction(
             icon, self.tr('Zoom Out'), actions,
             objectName='zoomOutAction',
@@ -179,8 +177,7 @@ class VectorGraphicsApp(QtWidgets.QMainWindow):
             shortcut=self.tr('Ctrl+-'),
             triggered=lambda: self.graphicsview.scale(1 / 1.2, 1 / 1.2))
 
-        icon = QtGui.QIcon(
-            ':/trolltech/dialogs/qprintpreviewdialog/images/page-setup-24.png')
+        icon = QtGui.QIcon.fromTheme('zoom-original')
         QtWidgets.QAction(
             icon, self.tr('Zoom 1:1'), actions,
             objectName='zoomResetAction',
@@ -188,8 +185,7 @@ class VectorGraphicsApp(QtWidgets.QMainWindow):
             triggered=lambda: self.graphicsview.setTransform(
                 QtGui.QTransform(1, 0, 0, -1, 0, 0)))
 
-        icon = QtGui.QIcon(
-            ':/trolltech/dialogs/qprintpreviewdialog/images/fit-page-32.png')
+        icon = QtGui.QIcon.fromTheme('zoom-fit-best')
         QtWidgets.QAction(
             icon, self.tr('Zoom Fit'), actions,
             objectName='zoomFitAction',
@@ -204,15 +200,14 @@ class VectorGraphicsApp(QtWidgets.QMainWindow):
     def _setupHelpActions(self):
         actions = QtWidgets.QActionGroup(self)
 
-        icon = QtGui.QIcon(
-            ':/trolltech/styles/commonstyle/images/fileinfo-32.png')
+        icon = QtGui.QIcon.fromTheme('dialog-information')
         QtWidgets.QAction(
             icon, self.tr('About'), actions,
             objectName='aboutAction',
             statusTip=self.tr('About'),
             triggered=self.about)
 
-        icon = QtGui.QIcon(':/trolltech/qmessagebox/images/qtlogo-64.png')
+        icon = QtGui.QIcon(':qtlogo-64')
         QtWidgets.QAction(
             icon, self.tr('About Qt'), actions,
             objectName='aboutQtAction',
