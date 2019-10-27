@@ -36,6 +36,56 @@ from gsdview import utils
 _log = logging.getLogger(__name__)
 
 
+# @COMPATIBILITY: PySide
+# Credit:
+# http://stackoverflow.com/questions/4442286/python-code-genration-with-pyside-uic/14195313#14195313
+if not hasattr(uic, 'loadUiType'):
+    def loadUiType(uifile, from_imports=False):
+        """Load a .ui file and return the generated form class and
+        the Qt base class.
+
+        The "loadUiType" command convert the ui file to py code
+        in-memory first and then execute it in a special frame to
+        retrieve the form_class.
+
+        """
+
+        from io import StringIO
+        from xml.etree.ElementTree import ElementTree
+        import qtpy
+        from qtpy import QtWidgets
+        if qtpy.PYSIDE2:
+            from pyside2uic import compileUi
+        elif qtpy.PYSIDE:
+            from pysideuic import compileUi
+        else:
+            raise RuntimeError('unexpected qtpy.API: {!r}'.format(qtpy.API))
+
+        # Parse the UI file
+        etree = ElementTree()
+        ui = etree.parse(uifile)
+
+        widget_class = ui.find('widget').get('class')
+        form_class = ui.find('class').text
+
+        with open(uifile, 'r') as fd:
+            code_stream = StringIO()
+            frame = {}
+
+            compileUi(fd, code_stream, indent=0, from_imports=from_imports)
+            pyc = compile(code_stream.getvalue(), '<string>', 'exec')
+            exec(pyc, frame)
+
+            # Fetch the base_class and form class based on their type in the
+            # xml from designer
+            form_class = frame['Ui_%s' % form_class]
+            base_class = getattr(QtWidgets, widget_class)
+
+        return form_class, base_class
+else:
+    loadUiType = uic.loadUiType
+
+
 # Menus and toolbars helpers ###############################################
 def actionGroupToMenu(actionGroup, label, mainwin):
     menu = QtWidgets.QMenu(label, mainwin)
@@ -846,7 +896,7 @@ def getuiform(name, package=None):
                    formname)
     except ImportError:
         uifile = getuifile(name + '.ui', package)
-        FormClass, QtBaseClass = uic.loadUiType(uifile)
+        FormClass, QtBaseClass = loadUiType(uifile)
         _log.debug('load "%s" form class from ui file', FormClass.__name__)
 
     return FormClass
@@ -1059,7 +1109,7 @@ def imgexport(obj, parent=None):
 def format_qt_info():
     qlocale = QtCore.QLocale()
     supported_image_formats = [
-        bytes(fmt).decode('utf-8')
+        fmt.data().decode('utf-8')
         for fmt in QtGui.QImageReader.supportedImageFormats()
     ]
     qt_info = [

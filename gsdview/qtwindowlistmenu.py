@@ -112,8 +112,10 @@ class QtWindowListMenu(QtWidgets.QMenu):
         self.aboutToShow.connect(self.syncWithMdiArea)
 
         self._stdGroup = QtWidgets.QActionGroup(self, exclusive=False)
-        self._winGroup = QtWidgets.QActionGroup(self, exclusive=True,
-                                                triggered=self.activateWindow)
+        self._winGroup = QtWidgets.QActionGroup(self, exclusive=True)
+                                            # , triggered=self.activateWindow)
+        # @COMPATIBILITY: PySide2
+        self._winGroup.triggered.connect(self.activateWindow)
 
         # Create the standard menu items.
         # @NOTE: Creation order must match the StandardAction enum values ;-)

@@ -124,7 +124,7 @@ class ItemModelMainWindow(MdiMainWindow):
 
         for window in windowlist:
             try:
-                if window.item == item:
+                if window.item is item:
                     self.mdiarea.setActiveSubWindow(window)
             except AttributeError:
                 # the window has not an associated item in the datamodel
@@ -165,11 +165,11 @@ class ItemModelMainWindow(MdiMainWindow):
         for row in range(start, end + 1):
             item = parentitem.child(row)
             for subwin in self.mdiarea.subWindowList():
-                if subwin.item == item:
+                if subwin.item is item:
                     subwin.close()
                     break
 
         for subwin in self.mdiarea.subWindowList():
-            if subwin.item == parentitem:
+            if subwin.item is parentitem:
                 subwin.close()
                 break
