@@ -8,7 +8,7 @@
     :Contact: antonio.valentino@tiscali.it
     :URL: http://gsdview.sourceforge.net
     :License: `GNU General Public License`__ (GPL)
-    :Copyright (C): 2008-2019 Antonio Valentino <antonio.valentino@tiscali.it>
+    :Copyright (C): 2008-2020 Antonio Valentino <antonio.valentino@tiscali.it>
 
     __ GPL_
 

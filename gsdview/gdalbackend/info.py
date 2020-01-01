@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # GSDView - Geo-Spatial Data Viewer
-# Copyright (C) 2008-2019 Antonio Valentino <antonio.valentino@tiscali.it>
+# Copyright (C) 2008-2020 Antonio Valentino <antonio.valentino@tiscali.it>
 #
 # This module is free software you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ description = __doc__
 
 author = 'Antonio Valentino'
 author_email = 'antonio.valentino@tiscali.it'
-copyright = 'Copyright (C) 2008-2019 %s <%s>' % (author, author_email)
+copyright = 'Copyright (C) 2008-2020 %s <%s>' % (author, author_email)
 license_type = 'GNU GPL'
 website = 'http://gsdview.sourceforge.net'
 website_label = website

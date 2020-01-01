@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # GSDView - Geo-Spatial Data Viewer
-# Copyright (C) 2008-2019 Antonio Valentino <antonio.valentino@tiscali.it>
+# Copyright (C) 2008-2020 Antonio Valentino <antonio.valentino@tiscali.it>
 #
 # This module is free software you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -222,7 +222,7 @@ class VectorGraphicsApp(QtWidgets.QMainWindow):
         text = [
             '<h1>Mouse Manager</h1>'
             '<p>Example program for the OGR proxy components.</p>',
-            '<p>Copyright (C): 2009-2019 '
+            '<p>Copyright (C): 2009-2020 '
             '<a href="mailto:antonio.valentino@tiscali.it">Antonio Valentino<a>.'
             '</p>'
         ]

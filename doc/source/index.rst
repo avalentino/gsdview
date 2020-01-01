@@ -10,7 +10,7 @@
     :Author: Antonio Valentino
     :Contact: antonio.valentino@tiscali.it
     :URL: http://gsdview.sourceforge.net
-    :Copyright (C): 2008-2019 Antonio Valentino
+    :Copyright (C): 2008-2020 Antonio Valentino
 
 
 News

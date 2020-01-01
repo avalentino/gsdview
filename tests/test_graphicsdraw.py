@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # GSDView - Geo-Spatial Data Viewer
-# Copyright (C) 2008-2019 Antonio Valentino <antonio.valentino@tiscali.it>
+# Copyright (C) 2008-2020 Antonio Valentino <antonio.valentino@tiscali.it>
 #
 # This module is free software you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -228,7 +228,7 @@ class GraphicsDrawApp(QtWidgets.QMainWindow):
         title = self.tr('Qt Graphics Draw Example')
         text = ['<h1>Graphics Draw</h1>'
                 '<p>Example program for the basic Qt graphics drawing.</p>',
-                '<p>Copyright (C): 2010-2019 '
+                '<p>Copyright (C): 2010-2020 '
                 '<a href="mailto:antonio.valentino@tiscali.it">'
                 'Antonio Valentino<a>.</p>']
         text = self.tr('\n'.join(text))
