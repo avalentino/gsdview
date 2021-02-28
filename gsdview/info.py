@@ -29,6 +29,8 @@ import numpy as np
 import qtpy
 from qtpy import QtCore
 
+from .compat import linux_distribution
+
 
 __version__ = (0, 7, 0)
 
@@ -93,8 +95,8 @@ elif qtpy.API == 'pyside2':
     all_versions.append(
         ('PySide2', PySide2.__version__, 'http://www.pyside.org'))
 
-if platform.dist() != ('', '', ''):
-    all_versions.append(('GNU/Linux', ' '.join(platform.dist()), ''))
+if linux_distribution() != ('', '', ''):
+    all_versions.append(('GNU/Linux', ' '.join(linux_distribution()), ''))
 elif platform.mac_ver() != ('', ('', '', ''), ''):
     all_versions.append(('Mac OS X', platform.mac_ver()[0],
                          'http://www.apple.com/macosx'))

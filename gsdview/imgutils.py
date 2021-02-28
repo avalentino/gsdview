@@ -274,7 +274,7 @@ class LinearStretcher(BaseStretcher):
         self.offset = offset
 
     def __call__(self, data):
-        data = np.asarray(data)
+        data = np.asarray(data, dtype='float32')
         if self.offset:
             data -= self.offset
         if self.scale != 1.0:

@@ -38,6 +38,7 @@ except ImportError:
 
 from gsdview import info
 from gsdview import appsite
+from gsdview.compat import linux_distribution
 
 
 __all__ = [
@@ -115,8 +116,8 @@ def format_platform_info():
     if libc_ver.strip():
         platform_info.append(libc_ver)
 
-    if platform.dist() != ('', '', ''):
-        platform_info.append('GNU/Linux: %s\n' % ' '.join(platform.dist()))
+    if linux_distribution() != ('', '', ''):
+        platform_info.append('GNU/Linux: %s\n' % ' '.join(linux_distribution()))
     elif platform.mac_ver() != ('', ('', '', ''), ''):
         platform_info.append('Mac OS X: %s\n' % platform.mac_ver()[0])
     elif platform.win32_ver() != ('', '', '', ''):
