@@ -250,6 +250,8 @@ if has_setuptools:
         include_package_data=True,
         python_requires='>=3.6',
     ))
+    if sys.version_info[:2] > (3, 7):
+        kwargs['install_requires'].append('distro')
 else:
     packages = [
         'exectools',
