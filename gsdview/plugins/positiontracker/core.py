@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -28,7 +26,7 @@ from .coordinateview import CoordinateView, GeoCoordinateView
 
 class TrackingTool(QtCore.QObject):
     def __init__(self, app, **kwargs):
-        super(TrackingTool, self).__init__(app, **kwargs)
+        super().__init__(app, **kwargs)
         self.app = app
 
         # image coordinates

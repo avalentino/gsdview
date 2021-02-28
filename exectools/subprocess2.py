@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -49,7 +47,7 @@ class Popen(recipe_440544.Popen):
 
             try:
                 self.terminate()
-            except WindowsError as e:
+            except OSError as e:
                 # @TODO: check error code
                 warnings.warn(e)
 

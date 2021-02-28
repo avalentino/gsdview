@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -34,8 +32,7 @@ _log = logging.getLogger(__name__)
 class MetadataViewer(QtWidgets.QDockWidget):
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         # title = self.tr('Dataset Browser')
-        super(MetadataViewer, self).__init__('Metadata Viewer', parent, flags,
-                                             **kwargs)
+        super().__init__('Metadata Viewer', parent, flags, **kwargs)
         # self.setObjectName('metadataViewerPanel') # @TODO: check
 
         self.infoTable = QtWidgets.QTableWidget(5, 2, self)
@@ -80,7 +77,7 @@ class MetadataViewer(QtWidgets.QDockWidget):
 
 class MetadataController(QtCore.QObject):
     def __init__(self, app, **kwargs):
-        super(MetadataController, self).__init__(app, **kwargs)
+        super().__init__(app, **kwargs)
         self.app = app
 
         self.panel = MetadataViewer(app)

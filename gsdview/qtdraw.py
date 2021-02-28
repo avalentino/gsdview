@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -97,7 +95,7 @@ class GraphicsPointItem(QtWidgets.QAbstractGraphicsShapeItem):
 
     def __init__(self, x=None, y=None, radius=None, parent=None, scene=None,
                  **kargs):
-        super(GraphicsPointItem, self).__init__(parent, scene, **kargs)
+        super().__init__(parent, scene, **kargs)
         self.setFlag(QtWidgets.QGraphicsItem.ItemUsesExtendedStyleOption)
 
         if None not in (x, y):
@@ -165,13 +163,13 @@ class GraphicsItemGroup(QtWidgets.QGraphicsItemGroup):
     Type = QtWidgets.QGraphicsItem.UserType + 101
 
     def __init__(self, parent=None, scene=None, **kargs):
-        super(GraphicsItemGroup, self).__init__(parent, scene, **kargs)
+        super().__init__(parent, scene, **kargs)
 
         self._pen = QtGui.QPen()
         self._brush = QtGui.QBrush()
 
     def addToGroup(self, item):
-        super(GraphicsItemGroup, self).addToGroup(item)
+        super().addToGroup(item)
         try:
             item.setPen(self._pen)
             item.setBrusH(self._brush)
@@ -251,7 +249,7 @@ class DrawLineMode(MouseMode):
     name = 'drawLine'
 
     def __init__(self, parent=None):
-        super(DrawLineMode, self).__init__(parent)
+        super().__init__(parent)
         self.rubberband = None
         self.pen = QtGui.QPen()
         self.pen.setWidth(1)
@@ -353,7 +351,7 @@ class DrawRectMode(MouseMode):
     name = 'drawRect'
 
     def __init__(self, parent=None):
-        super(DrawRectMode, self).__init__(parent)
+        super().__init__(parent)
         self.rubberband = None
         self.pen = QtGui.QPen()
         self.pen.setWidth(1)
@@ -406,7 +404,7 @@ class DrawEllipseMode(MouseMode):
     name = 'drawEllipse'
 
     def __init__(self, parent=None):
-        super(DrawEllipseMode, self).__init__(parent)
+        super().__init__(parent)
         self.rubberband = None
         self.pen = QtGui.QPen()
         self.pen.setWidth(1)

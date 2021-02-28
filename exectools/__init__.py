@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -58,11 +56,11 @@ def level2tag(level):
     return _LEVEL2TAG.get(level, '')
 
 
-class BaseOutputHandler(object):
+class BaseOutputHandler:
     """Base class for output handlers"""
 
     def __init__(self, logger=None):
-        super(BaseOutputHandler, self).__init__()
+        super().__init__()
         self._buffer = StringIO()
         self._wpos = self._buffer.tell()
 
@@ -78,14 +76,14 @@ class BaseOutputHandler(object):
 
         # NOTE: pulse, percentage and text are all optional. The regexp
         #       consumes the '\r' character in any case.
-        pattern = ('[ \t]*'
-                   '\r+'
-                   '[ \t]*'
-                   '(?P<pulse>[\\\|/-])?'
-                   '[ \t]*'
-                   '((?P<percentage>\d{1,3}(\.\d*)?)[ \t]*%)?'
-                   '[ \t]*'
-                   '((?P<text>.*?)(?=\r|\n))')
+        pattern = (r'[ \t]*'
+                   r'\r+'
+                   r'[ \t]*'
+                   r'(?P<pulse>[\\\|/-])?'
+                   r'[ \t]*'
+                   r'((?P<percentage>\d{1,3}(\.\d*)?)[ \t]*%)?'
+                   r'[ \t]*'
+                   r'((?P<text>.*?)(?=\r|\n))')
         self._progress_pattern = re.compile(pattern)
 
         self._text_patterns = {
@@ -240,7 +238,7 @@ class BaseOutputHandler(object):
             self.logger.info(data)
 
 
-class ToolDescriptor(object):
+class ToolDescriptor:
     """Command line tool desctrptor.
 
     A :class:`ToolDescriptor` instance describes a command line tool
@@ -292,7 +290,7 @@ class ToolDescriptor(object):
 
         """
 
-        super(ToolDescriptor, self).__init__()
+        super().__init__()
 
         #: full path of the tool executable or just the tool program name
         #  if it is in the system search path
@@ -383,7 +381,7 @@ class ToolDescriptor(object):
             # handle cases like: executable = ['python', '-u', 'script.py']
             parts = list(executable)
 
-        parts.extend('%s=%s' % (key, value) for key, value in kwargs.items())
+        parts.extend(f'{key}={value}' for key, value in kwargs.items())
         parts.extend(str(arg) for arg in args)
 
         return parts
@@ -392,7 +390,7 @@ class ToolDescriptor(object):
         return ' '.join(self.cmdline())
 
 
-class BaseToolController(object):
+class BaseToolController:
     """Base class for controlling command line tools.
 
     A tool controller runs an external tool in controlled way.
@@ -413,7 +411,7 @@ class BaseToolController(object):
     """
 
     def __init__(self, logger=None):
-        super(BaseToolController, self).__init__()
+        super().__init__()
 
         #: the subprocess instance
         self.subprocess = None
@@ -498,7 +496,7 @@ class BaseToolController(object):
         if not isinstance(cmd, str):
             cmd = ' '.join(cmd)
 
-        self.logger.info('%s %s' % (prompt, cmd), extra={'tag': 'cmd'})
+        self.logger.info(f'{prompt} {cmd}', extra={'tag': 'cmd'})
 
     def connect_output_handlers(self):
         pass

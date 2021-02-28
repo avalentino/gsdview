@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
@@ -220,9 +219,9 @@ def export_bounding_box(layer, corners, description='', mark_corners=True):
 
             line, pixel = gcp.GCPLine, gcp.GCPPixel
             feature = ogr.Feature(layer.GetLayerDefn())
-            feature.SetField('Name', '(%.1f, %.1f)' % (line, pixel))
+            feature.SetField('Name', f'({line:.1f}, {pixel:.1f})')
             feature.SetField('Description',
-                             'row = %.1f\ncol = %.1f' % (line, pixel))
+                             f'row = {line:.1f}\ncol = {pixel:.1f}')
             feature.SetStyleString('SYMBOL(s:1,c:#FF0000)')     # red
 
             feature.SetGeometry(point)
@@ -422,9 +421,7 @@ def get_parser():
 
     parser = argparse.ArgumentParser(prog='ras2vec', description=__doc__)
     parser.add_argument(
-        '--version', action='version',
-        version='%(prog)s {}'.format(__version__),
-    )
+        '--version', action='version', version=f'%(prog)s {__version__}')
     # parser.add_argument('-o', '--outfile', type='str',
     #                   help='output file name (default: generated)')
     # parser.add_argument('-f', '--format', type='str', default='KML',

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
@@ -39,7 +38,7 @@ class MdiChild(QtWidgets.QTextEdit):
     sequenceNumber = 1
 
     def __init__(self):
-        super(MdiChild, self).__init__(None)
+        super().__init__(None)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.isUntitled = True
         # self.resize(600, 500) # doesn't work
@@ -147,7 +146,7 @@ class MdiChild(QtWidgets.QTextEdit):
 
 class TestMdiMainWindow(MdiMainWindow):
     def __init__(self, parent=None):
-        super(TestMdiMainWindow, self).__init__(parent)
+        super().__init__(parent)
         self.mdiarea.subWindowActivated.connect(self.updateActions)
 
         self.createActions()

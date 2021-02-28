@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -44,7 +42,7 @@ GDALInfoWidgetBase = qtsupport.getuiform('gdalinfo', __name__)
 
 class GDALInfoWidget(QtWidgets.QWidget, GDALInfoWidgetBase):
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
-        super(GDALInfoWidget, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         # Context menu actions
@@ -105,7 +103,7 @@ class GDALInfoWidget(QtWidgets.QWidget, GDALInfoWidgetBase):
                 metadata.pop(gdal.DMD_HELPTOPIC, '')
                 metadata.pop(gdal.DMD_LONGNAME, '')
 
-                metadatalist = ['%s=%s' % (k, v) for k, v in metadata.items()]
+                metadatalist = [f'{k}={v}' for k, v in metadata.items()]
                 tableitem = QtWidgets.QTableWidgetItem(', '.join(metadatalist))
                 tableitem.setToolTip('\n'.join(metadatalist))
                 tablewidget.setItem(row, 8, tableitem)
@@ -129,7 +127,7 @@ GDALPreferencesPageBase = qtsupport.getuiform('gdalpage', __name__)
 
 class GDALPreferencesPage(QtWidgets.QWidget, GDALPreferencesPageBase):
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
-        super(GDALPreferencesPage, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         self.infoButton.setIcon(qtsupport.geticon('info.svg', 'gsdview'))
@@ -171,8 +169,8 @@ class GDALPreferencesPage(QtWidgets.QWidget, GDALPreferencesPageBase):
 
         # extra options
         self._extraoptions = {}
-        stdoptions = set(('GDAL_DATA', 'GDAL_SKIP', 'GDAL_DRIVER_PATH',
-                          'OGR_DRIVER_PATH', 'GDAL_CACHEMAX', ''))
+        stdoptions = {'GDAL_DATA', 'GDAL_SKIP', 'GDAL_DRIVER_PATH',
+                      'OGR_DRIVER_PATH', 'GDAL_CACHEMAX', ''}
 
         extraoptions = gdalsupport.GDAL_CONFIG_OPTIONS.splitlines()
         extraoptions = [opt for opt in extraoptions if opt not in stdoptions]
@@ -327,7 +325,7 @@ class GDALPreferencesPage(QtWidgets.QWidget, GDALPreferencesPageBase):
 
 class BackendPreferencesPage(GDALPreferencesPage):
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
-        super(BackendPreferencesPage, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
         # self.setupUi(self)
 
         # GDAL backend
@@ -355,7 +353,7 @@ class BackendPreferencesPage(GDALPreferencesPage):
         finally:
             settings.endGroup()
 
-        super(BackendPreferencesPage, self).load(settings)
+        super().load(settings)
 
     def save(self, settings):
         settings.beginGroup('gdalbackend')
@@ -366,12 +364,12 @@ class BackendPreferencesPage(GDALPreferencesPage):
         finally:
             settings.endGroup()
 
-        super(BackendPreferencesPage, self).save(settings)
+        super().save(settings)
 
 
 class KeyPressEater(QtCore.QObject):
     def __init__(self, keys=None, parent=None):
-        super(KeyPressEater, self).__init__(parent)
+        super().__init__(parent)
         if keys is not None:
             self.keys = keys
         else:
@@ -383,7 +381,7 @@ class KeyPressEater(QtCore.QObject):
                 return True
 
         # standard event processing
-        return super(KeyPressEater, self).eventFilter(obj, event)
+        return super().eventFilter(obj, event)
 
 
 MetadataWidgetBase = qtsupport.getuiform('metadata', __name__)
@@ -404,7 +402,7 @@ class MetadataWidget(QtWidgets.QWidget, MetadataWidgetBase):
     domainChanged = QtCore.Signal(str)
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
-        super(MetadataWidget, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         # signals
@@ -525,7 +523,7 @@ class OverviewWidget(QtWidgets.QWidget, OverviewWidgetBase):
 
     def __init__(self, item=None, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kwargs):
-        super(OverviewWidget, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         model = QtGui.QStandardItemModel(self)
@@ -783,7 +781,7 @@ class SpecialOverviewWidget(OverviewWidget):
     """
 
     def reset(self):
-        super(SpecialOverviewWidget, self).reset()
+        super().reset()
         self.recomputeCheckBox.setChecked(True)
         self.recomputeCheckBox.hide()
         self.recomputeLabel.hide()
@@ -826,7 +824,7 @@ class OverviewDialog(QtWidgets.QDialog):
 
     def __init__(self, item=None, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kargs):
-        super(OverviewDialog, self).__init__(parent, flags)
+        super().__init__(parent, flags)
         self.setWindowTitle(self.tr('Overview computation'))
 
         label = QtWidgets.QLabel(self.tr('Dataset:'))
@@ -899,7 +897,7 @@ class OverviewDialog(QtWidgets.QDialog):
 class MajorObjectInfoDialog(QtWidgets.QDialog):
     def __init__(self, gdalobj, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kwargs):
-        super(MajorObjectInfoDialog, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
         if hasattr(self, 'setupUi'):
             self.setupUi(self)
 
@@ -1026,7 +1024,7 @@ HistogramConfigDialogBase = qtsupport.getuiform('histoconfig', __name__)
 
 class HistogramConfigDialog(QtWidgets.QDialog, HistogramConfigDialogBase):
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
-        super(HistogramConfigDialog, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         # Make it not resizable
@@ -1119,7 +1117,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
     def __init__(self, band=None, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kwargs):
-        super(BandInfoDialog, self).__init__(band, parent, flags, **kwargs)
+        super().__init__(band, parent, flags, **kwargs)
 
         # Set tab icons
         geticon = qtsupport.geticon
@@ -1196,7 +1194,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
             self.reset()
 
     def reset(self):
-        super(BandInfoDialog, self).reset()
+        super().reset()
 
         self.resetInfoTab()
         self.resetStatistics()
@@ -1205,7 +1203,7 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
         self.overviewWidget.reset()
 
     def update(self):
-        super(BandInfoDialog, self).update()
+        super().update()
 
         self.updateInfoTab()
         self.updateStatistics()
@@ -1508,8 +1506,7 @@ DatasetInfoDialogBase = qtsupport.getuiform('datasetdialog', __name__)
 class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
     def __init__(self, dataset=None, parent=None,
                  flags=QtCore.Qt.WindowFlags(0), **kwargs):
-        super(DatasetInfoDialog, self).__init__(dataset, parent, flags,
-                                                **kwargs)
+        super().__init__(dataset, parent, flags, **kwargs)
 
         # Set icons
         geticon = qtsupport.geticon
@@ -1550,7 +1547,7 @@ class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
             self.reset()
 
     def reset(self):
-        super(DatasetInfoDialog, self).reset()
+        super().reset()
 
         self.resetInfoTab()
         self.resetDriverTab()
@@ -1558,7 +1555,7 @@ class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
         self.resetFilesTab()
 
     def update(self):
-        super(DatasetInfoDialog, self).update()
+        super().update()
 
         self.updateInfoTab()
         self.updateDriverTab()
@@ -1643,9 +1640,10 @@ class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
         if driver.HelpTopic:
             link = '''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
 <html><head><meta name="qrichtext" content="1" /><style type="text/css">
-p, li { white-space: pre-wrap; }
+p, li {{ white-space: pre-wrap; }}
 </style></head><body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;">
-<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><a href="http://www.gdal.org/%s"><span style=" text-decoration: underline; color:#0000ff;">%s</span></a></p></body></html>''' % (driver.HelpTopic, driver.HelpTopic)
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><a href="http://www.gdal.org/{}"><span style=" text-decoration: underline; color:#0000ff;">{}</span></a></p></body></html>'''.format(
+driver.HelpTopic, driver.HelpTopic)
         else:
             link = str(driver.HelpTopic)
 

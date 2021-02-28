@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -25,7 +23,7 @@ import logging
 import datetime
 
 
-class Timer(object):
+class Timer:
     def __init__(self):
         self.start = datetime.datetime.now()
         self.last = self.start
@@ -133,7 +131,7 @@ def get_parser():
 
     parser.add_argument(
         '--version', action='version',
-        version='%(prog)s {}'.format(info.version)
+        version=f'%(prog)s {info.version}'
     )
 
     # @TODO: complete

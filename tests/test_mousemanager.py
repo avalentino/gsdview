@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
@@ -37,7 +36,7 @@ from gsdview.mousemanager import MouseManager
 class MainWin(QtWidgets.QMainWindow):
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0)):
-        super(MainWin, self).__init__(parent, flags)
+        super().__init__(parent, flags)
 
         self.mousemanager = MouseManager(self)
 

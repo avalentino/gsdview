@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -58,8 +56,8 @@ class MajorObjectItem(QtGui.QStandardItem):
         else:
             description = ''
 
-        super(MajorObjectItem, self).__init__(QtGui.QIcon(self.iconfile),
-                                              description)  # , **kwargs)
+        super().__init__(QtGui.QIcon(self.iconfile), description)
+        # , **kwargs)
         self.setToolTip(description)
 
     # Give items the same iterface of GDAL objects.
@@ -107,7 +105,7 @@ class BandItem(MajorObjectItem):
 
     def __init__(self, band, **kwargs):
         assert band is not None
-        super(BandItem, self).__init__(band, **kwargs)
+        super().__init__(band, **kwargs)
         self._setup_children()
 
         #: graphics scene associated to the raster band
@@ -181,7 +179,7 @@ class BandItem(MajorObjectItem):
         self.graphicsitem = None
         # self.scene = None    # @WARNING: causes problems in event filters
         # self._obj.FlushCache() # @TODO: check
-        super(BandItem, self).close()
+        super().close()
 
     def _reopen(self, gdalobj=None):
         if not gdalobj:
@@ -264,7 +262,7 @@ class DatasetItem(MajorObjectItem):
     def __init__(self, filename, mode=gdal.GA_ReadOnly, **kwargs):
         filename = os.path.abspath(filename)
         gdalobj = self._checkedopen(filename, mode)
-        super(DatasetItem, self).__init__(gdalobj, **kwargs)
+        super().__init__(gdalobj, **kwargs)
         if os.path.basename(filename) in self.text():
             self.setText(os.path.basename(filename))
 
@@ -384,7 +382,7 @@ class DatasetItem(MajorObjectItem):
         self.cmapper = None
         self.graphicsitem = None
         # self.scene = None    # @WARNING: causes problems in event filters
-        super(DatasetItem, self).close()
+        super().close()
 
         parent = self.parent()
         if not parent:
@@ -551,7 +549,7 @@ class CachedDatasetItem(DatasetItem):
         self._setup_child_subdatasets(self._obj)
 
     def close(self):
-        super(CachedDatasetItem, self).close()
+        super().close()
         # @NOTE: close virtual object after closing all children
         self._vrtobj = None
         self.vrtfilename = None
@@ -668,7 +666,7 @@ class SubDatasetItem(CachedDatasetItem):
         mode = self._mode
         # self.extrainfo = ''
 
-        super(SubDatasetItem, self).close()
+        super().close()
 
         self.filename = gdalfilename
         self._mode = mode
@@ -677,11 +675,11 @@ class SubDatasetItem(CachedDatasetItem):
         if not self.isopen():
             self.open()
         else:
-            super(SubDatasetItem, self).reopen()
+            super().reopen()
 
     def __getattr__(self, name):
         if self._obj:
-            return super(SubDatasetItem, self).__getattr__(name)
+            return super().__getattr__(name)
         elif name in dir(gdal.Dataset):
             raise RuntimeError('unable to access "%s" on a non open '
                                'object' % name)
@@ -698,19 +696,19 @@ class SubDatasetItem(CachedDatasetItem):
         if not self.isopen():
             raise RuntimeError('unable to access "%s" on a non open '
                                'object' % 'GetMetadata')
-        return super(SubDatasetItem, self).GetMetadata(domain)
+        return super().GetMetadata(domain)
 
     def GetMetadata_Dict(self, domain=''):
         if not self.isopen():
             raise RuntimeError('unable to access "%s" on a non open '
                                'object' % 'GetMetadata_Dict')
-        return super(SubDatasetItem, self).GetMetadata_Dict(domain)
+        return super().GetMetadata_Dict(domain)
 
     def GetMetadata_List(self, domain=''):
         if not self.isopen():
             raise RuntimeError('unable to access "%s" on a non open '
                                'object' % 'GetMetadata_List')
-        return super(SubDatasetItem, self).GetMetadata_List(domain)
+        return super().GetMetadata_List(domain)
 
     if hasattr(gdal.Dataset, 'GetMetadataItem'):
 
@@ -718,4 +716,4 @@ class SubDatasetItem(CachedDatasetItem):
             if not self.isopen():
                 raise RuntimeError('unable to access "%s" on a non open '
                                    'object' % 'GetMetadataItem')
-            return super(SubDatasetItem, self).GetMetadataItem(name, domain)
+            return super().GetMetadataItem(name, domain)

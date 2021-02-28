@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -38,7 +36,7 @@ from gsdview.gdalbackend import gdalsupport
 _log = logging.getLogger(__name__)
 
 
-class GdalHelper(object):
+class GdalHelper:
     """Base helper class for running external GDAL tools.
 
     Helper classes provide a common set of functionality for running
@@ -55,7 +53,7 @@ class GdalHelper(object):
     _PROGRESS_RANGE = (0, 100)
 
     def __init__(self, app, tool):
-        super(GdalHelper, self).__init__()
+        super().__init__()
         self.app = app
         self.tool = tool
         self.progressdialog = None
@@ -241,7 +239,7 @@ class AddoHelper(GdalHelper):
     """
 
     def __init__(self, app, tool):
-        super(AddoHelper, self).__init__(app, tool)
+        super().__init__(app, tool)
         self._datasetitem = None
         self._band = None
 
@@ -348,7 +346,7 @@ class AddoHelper(GdalHelper):
             self.app.treeview.expand(item.index())
 
     def reset(self):
-        super(AddoHelper, self).reset()
+        super().reset()
         self._datasetitem = None
         self._band = None
 
@@ -361,7 +359,7 @@ class StatsHelper(GdalHelper):
     # @TODO: test error control and user stop handling
 
     def __init__(self, app, tool):
-        super(StatsHelper, self).__init__(app, tool)
+        super().__init__(app, tool)
         self._datasetitem = None
         self._banditem = None
 
@@ -417,7 +415,7 @@ class StatsHelper(GdalHelper):
         self.apply()
 
     def reset(self):
-        super(StatsHelper, self).reset()
+        super().reset()
         self._banditem = None
         self._datasetitem = None
 
@@ -440,7 +438,7 @@ class StatsDialogHelper(StatsHelper):
     _PROGRESS_DIALOD_MSG = 'Statistics computation.'
 
     def __init__(self, app, tool):
-        super(StatsDialogHelper, self).__init__(app, tool)
+        super().__init__(app, tool)
         self.dialog = None
         # self.setup_progress_dialog(app.tr(self._PROGRESS_DIALOD_MSG))
 
@@ -451,10 +449,10 @@ class StatsDialogHelper(StatsHelper):
         if not self.dialog:
             self.setup_progress_dialog(self.app.tr(self._PROGRESS_DIALOD_MSG))
 
-        super(StatsDialogHelper, self).start(item)
+        super().start(item)
 
     def reset(self):
-        super(StatsDialogHelper, self).reset()
+        super().reset()
         self.dialog = None
 
     def apply(self):
@@ -487,7 +485,7 @@ class AddoDialogHelper(AddoHelper):
     _PROGRESS_DIALOD_MSG = 'Overviews computation.'
 
     def __init__(self, app, tool):
-        super(AddoDialogHelper, self).__init__(app, tool)
+        super().__init__(app, tool)
         self.dialog = None
         # self.setup_progress_dialog(app.tr(self._PROGRESS_DIALOD_MSG))
 
@@ -501,12 +499,12 @@ class AddoDialogHelper(AddoHelper):
         if not self.dialog:
             self.setup_progress_dialog(self.app.tr(self._PROGRESS_DIALOD_MSG))
 
-        super(AddoDialogHelper, self).start(item)
+        super().start(item)
 
     def reset(self):
-        super(AddoDialogHelper, self).reset()
+        super().reset()
         self.dialog = None
 
     def do_finalize(self):
-        super(AddoDialogHelper, self).do_finalize()
+        super().do_finalize()
         self.dialog.updateOverviewInfo()

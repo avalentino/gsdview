@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -91,7 +89,7 @@ def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0,
     if nout > 2 ** 32:
         raise ValueError('requested LUT is too large: %d.' % nout)
 
-    lut = np.arange(nout)
+    lut = np.arange(nout, dtype='float32')
     if vmin:
         lut -= float(vmin)
 
@@ -214,7 +212,7 @@ def square(dtype='uint8'):
 
 
 # Stretching utils #########################################################
-class BaseStretcher(object):
+class BaseStretcher:
     """Base class for stretcher objects.
 
     The base implementation of the *__call__* method just performs
@@ -255,7 +253,7 @@ class BaseStretcher(object):
 
 
 class LinearStretcher(BaseStretcher):
-    """Linear stretch.
+    r"""Linear stretch.
 
     Perform linear scaling (including offest application) and clipping.
 
@@ -269,7 +267,7 @@ class LinearStretcher(BaseStretcher):
     stretchtype = 'linear'
 
     def __init__(self, scale=1.0, offset=0, vmin=0, vmax=255, dtype='uint8'):
-        super(LinearStretcher, self).__init__(vmin, vmax, dtype)
+        super().__init__(vmin, vmax, dtype)
         self.scale = scale
         self.offset = offset
 
@@ -279,7 +277,7 @@ class LinearStretcher(BaseStretcher):
             data -= self.offset
         if self.scale != 1.0:
             data *= self.scale
-        return super(LinearStretcher, self).__call__(data)
+        return super().__call__(data)
 
     @property
     def range(self):
@@ -320,7 +318,7 @@ class LUTStretcher(BaseStretcher):
     def __init__(self, offset=0, vmin=0, vmax=255, dtype='uint8', fill=True):
         if np.dtype(dtype) not in (np.uint8, np.uint16):
             raise ValueError('only "uint8" and "uint16" are allowed.')
-        super(LUTStretcher, self).__init__(vmin, vmax, dtype)
+        super().__init__(vmin, vmax, dtype)
         self.fill = fill
         self.offset = offset
         self.lut = linear_lut(offset, vmax, 'uint8', fill, vmin, vmax)
@@ -363,7 +361,7 @@ class LUTStretcher(BaseStretcher):
 
 
 class LogarithmicStretcher(BaseStretcher):
-    """Linear stretch.
+    r"""Linear stretch.
 
     Perform logarithmic stretching and clipping:
 
@@ -394,7 +392,7 @@ class LogarithmicStretcher(BaseStretcher):
 
     def __init__(self, scale=10, offset=0, base=10,
                  vmin=0, vmax=255, dtype='uint8'):
-        super(LogarithmicStretcher, self).__init__(vmin, vmax, dtype)
+        super().__init__(vmin, vmax, dtype)
         self.offset = offset
         self.scale = scale
         assert(base in self._logfunctions)
@@ -417,4 +415,4 @@ class LogarithmicStretcher(BaseStretcher):
         if self.scale != 1.0:
             data *= self.scale
 
-        return super(LogarithmicStretcher, self).__call__(data)
+        return super().__call__(data)

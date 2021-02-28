@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
@@ -287,7 +286,7 @@ class StretchWidgetSmallFloatModeTestCase(StretchWidgetTestCase):
     MAXIMUM = +0.3
 
     def setUp(self):
-        super(StretchWidgetSmallFloatModeTestCase, self).setUp()
+        super().setUp()
         self.stretch.setMinimum(self.MINIMUM)
         self.stretch.setMaximum(self.MAXIMUM)
         self.stretch.setLow(self.LOW)

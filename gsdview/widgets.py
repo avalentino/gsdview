@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -89,7 +87,7 @@ AboutDialogBase = qtsupport.getuiform('aboutdialog', __name__)
 class AboutDialog(QtWidgets.QDialog, AboutDialogBase):
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
-        super(AboutDialog, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         # Context menu actions
@@ -100,17 +98,15 @@ class AboutDialog(QtWidgets.QDialog, AboutDialogBase):
         self.setLogo(logofile)
 
         # Set contents
-        self.titleLabel.setText('%s v. %s' % (self.tr(info.name),
-                                              info.version))
+        self.titleLabel.setText(f'{self.tr(info.name)} v. {info.version}')
 
-        description = '''<p>%s</p>
-<p>Home Page: <a href="%s">%s</a>
+        description = f'''<p>{self.tr(info.description)}</p>
+<p>Home Page: <a href="{info.website}">{info.website_label}</a>
 <BR>
 Project Page: <a href="http://sourceforge.net/projects/gsdview">http://sourceforge.net/projects/gsdview</a></p>
 <par>
-<p><span style="font-size:9pt; font-style:italic;">%s</span></p>
-''' % (self.tr(info.description), info.website, info.website_label,
-            info.copyright)
+<p><span style="font-size:9pt; font-style:italic;">{info.copyright}</span></p>
+'''
         self.aboutTextBrowser.setText(description)
 
         self.setPlatformInfo()
@@ -238,7 +234,7 @@ GeneralPreferencesPageBase = qtsupport.getuiform('general-page', __name__)
 class GeneralPreferencesPage(QtWidgets.QWidget, GeneralPreferencesPageBase):
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
-        super(GeneralPreferencesPage, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         # Avoid promoted widgets
@@ -358,7 +354,7 @@ class PreferencesDialog(QtWidgets.QDialog, PreferencesDialogBase):
     # .../python-qt4-doc/examples/tools/settingseditor/settingseditor.py
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
-        super(PreferencesDialog, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         self.setWindowIcon(qtsupport.geticon('preferences.svg', __name__))
@@ -431,7 +427,7 @@ class ExceptionDialog(QtWidgets.QDialog, ExceptionDialogBase):
     def __init__(self, exctype=None, excvalue=None, tracebackobj=None,
                  parent=None, flags=QtCore.Qt.WindowFlags(0), fill=True,
                  **kwargs):
-        super(ExceptionDialog, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         title = 'Critical error: unhandled exception occurred'
@@ -557,7 +553,7 @@ class ExceptionDialog(QtWidgets.QDialog, ExceptionDialogBase):
         error = traceback.format_exception_only(exctype, excvalue)[-1].strip()
         appname = QtWidgets.QApplication.applicationName()
         if appname:
-            subject = '[%s] Bug report - %s' % (appname, error)
+            subject = f'[{appname}] Bug report - {error}'
         else:
             subject = 'Bug report - %s' % error
         body = '[Please insert your comments and additional info here.]'
@@ -566,7 +562,7 @@ class ExceptionDialog(QtWidgets.QDialog, ExceptionDialogBase):
             exctype, excvalue, tracebackobj,
             extra_info=qtsupport.format_qt_info()))
 
-        url = QtCore.QUrl('mailto:%s <%s>' % (info.author, info.author_email))
+        url = QtCore.QUrl(f'mailto:{info.author} <{info.author_email}>')
         url.addQueryItem('subject', subject)
         url.addQueryItem('body', body)
 
@@ -607,10 +603,8 @@ try:
         def __init__(self, exctype=None, excvalue=None, tracebackobj=None,
                      parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
 
-            super(QsciExceptionDialog, self).__init__(exctype, excvalue,
-                                                      tracebackobj,
-                                                      parent, flags, False,
-                                                      **kwargs)
+            super().__init__(exctype, excvalue, tracebackobj, parent, flags,
+                             False, **kwargs)
 
             self.groupboxVerticalLayout.removeWidget(self.tracebackTextEdit)
             self.tracebackTextEdit.setParent(None)
@@ -652,7 +646,7 @@ except ImportError:
 
 class GSDViewExceptionDialog(GSDViewExceptionDialogBase):
     def __init__(self, *args, **kwargs):
-        super(GSDViewExceptionDialog, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         text = (
             'Please file a bug report at '
             '<a href="%(website)s">%(website_label)s</a> '

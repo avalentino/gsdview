@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -53,7 +51,7 @@ class BaseGdalToolDescriptor(exectools.ToolDescriptor):
         return extra_args
 
     def cmdline(self, *args, **kwargs):
-        parts = super(BaseGdalToolDescriptor, self).cmdline(*args, **kwargs)
+        parts = super().cmdline(*args, **kwargs)
 
         extra_args = self.gdal_config_options(parts)
         if extra_args:
@@ -122,7 +120,7 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
 
         """
 
-        super(GdalAddOverviewDescriptor, self).__init__(
+        super().__init__(
             'gdaladdo', [], cwd, env, stdout_handler, stderr_handler)
 
         #: ensure that gdaladdo works in readonly mode
@@ -233,8 +231,7 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
         self._use_bigtiff_mode = mode
 
     def gdal_config_options(self, cmd=''):
-        extra_args = super(GdalAddOverviewDescriptor,
-                           self).gdal_config_options(cmd)
+        extra_args = super().gdal_config_options(cmd)
 
         if self.use_rrd is not None and 'USE_RRD' not in cmd:
             if self.use_rrd:
@@ -276,7 +273,7 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
         if self.readonly and '-ro' not in args:
             args.append('-ro')
 
-        return super(GdalAddOverviewDescriptor, self).cmdline(*args, **kwargs)
+        return super().cmdline(*args, **kwargs)
 
 
 class GdalInfoDescriptor(BaseGdalToolDescriptor):
@@ -301,9 +298,8 @@ class GdalInfoDescriptor(BaseGdalToolDescriptor):
 
         """
 
-        super(GdalInfoDescriptor, self).__init__('gdalinfo', [], cwd, env,
-                                                 stdout_handler,
-                                                 stderr_handler)
+        super().__init__('gdalinfo', [], cwd, env,
+                         stdout_handler, stderr_handler)
 
         #: force computation of the actual min/max values for each band in the
         #: dataset.
@@ -350,7 +346,7 @@ class GdalInfoDescriptor(BaseGdalToolDescriptor):
 
         args = extra_args + list(args)
 
-        return super(GdalInfoDescriptor, self).cmdline(*args, **kwargs)
+        return super().cmdline(*args, **kwargs)
 
 
 class GdalOutputHandler(QtOutputHandler):
@@ -371,12 +367,11 @@ class GdalOutputHandler(QtOutputHandler):
 
     def __init__(self, logger=None, statusbar=None, progressbar=None,
                  blinker=None, **kwargs):
-        super(GdalOutputHandler, self).__init__(logger, statusbar, progressbar,
-                                                blinker, **kwargs)
-        # pattern = ('(?P<percentage>\d{1,3})|(?P<pulse>\.)|'
-        #            '((?P<text> - done\.?)$)')
-        pattern = ('(?P<percentage>\d{1,3})|(?P<pulse>\.)|'
-                   '( - (?P<text>done\.?)\n)')
+        super().__init__(logger, statusbar, progressbar, blinker, **kwargs)
+        # pattern = (r'(?P<percentage>\d{1,3})|(?P<pulse>\.)|'
+        #            r'((?P<text> - done\.?)$)')
+        pattern = (r'(?P<percentage>\d{1,3})|(?P<pulse>\.)|'
+                   r'( - (?P<text>done\.?)\n)')
         self._progress_pattern = re.compile(pattern)
         self._percentage = 0.   # @TODO: remove.  Set the progressbar maximum
                                 #        to 1000 instead.
@@ -410,10 +405,10 @@ class GdalOutputHandler(QtOutputHandler):
         #     # reset percentage
         #     self._percentage = 0.
 
-        super(GdalOutputHandler, self).handle_progress(data)
+        super().handle_progress(data)
 
     def reset(self):
-        super(GdalOutputHandler, self).reset()
+        super().reset()
         self._percentage = 0.
 
 

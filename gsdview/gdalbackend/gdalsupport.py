@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -165,8 +163,9 @@ def uniqueDatasetID(prod):
         try:
             # 'CEOS_LOGICAL_VOLUME_ID'
             metadata = prod.GetMetadata()
-            prod_id = '%s-%s' % (metadata['CEOS_SOFTWARE_ID'].strip(),
-                                 metadata['CEOS_ACQUISITION_TIME'].strip())
+            prod_id = '{}-{}'.format(
+                metadata['CEOS_SOFTWARE_ID'].strip(),
+                metadata['CEOS_ACQUISITION_TIME'].strip())
         except KeyError:
             prod_id = os.path.basename(prod.GetDescription())
     elif driver_name == 'ESAT':
@@ -216,7 +215,7 @@ def driverList(drivertype='raster'):
         types = [drivertype]
     else:
         types = drivertype
-        if not set(('raster', 'vector')).issuperset(types):
+        if not {'raster', 'vector'}.issuperset(types):
             raise ValueError('invalid type list: "%s"' % types)
 
     drivers = []
@@ -257,7 +256,7 @@ def gdalFilters(mode='r'):
                     if not canwrite:
                         continue
 
-                filters.append('%s (*.%s)' % (name, ext))
+                filters.append(f'{name} (*.{ext})')
         except KeyError:
             pass
 
@@ -594,7 +593,7 @@ def _fixedGCPs(gcps):
         # @WARNING: here we are assuming that the distance between geolocation
         #           grid linse is constant
         assert upsteps.max() == upsteps[:-1].min(), (
-                'max = %f, min = %f' % (upsteps.max(), upsteps.min()))
+                f'max = {upsteps.max():f}, min = {upsteps.min():f}')
         linespacing = int(upsteps[0])
 
         downstepslocation = np.where(lines[1:] < lines[0:-1])[0] + 1
@@ -614,11 +613,11 @@ class InvalidProjection(ValueError):
     pass
 
 
-class CoordinateMapper(object):
+class CoordinateMapper:
     geogCS = 'WGS84'
 
     def __init__(self, dataset):
-        super(CoordinateMapper, self).__init__()
+        super().__init__()
 
         projection = ''
         self._geotransform = None
@@ -752,7 +751,7 @@ OVRMEMSIE = 400 * 1024  # 400 kbytes
 
 class MissingOvrError(Exception):
     def __init__(self, ovrlevel):
-        super(MissingOvrError, self).__init__(ovrlevel)
+        super().__init__(ovrlevel)
 
     def __str__(self):
         return ('Overview with level "%s" is not available in the '
@@ -944,7 +943,7 @@ def ovrComputeLevels(gdalobj, ovrsize=OVRMEMSIE, estep=3, threshold=0.1):
 
 def ovrRead(dataset, x=0, y=0, w=None, h=None, ovrindex=None,
             bstart=1, bcount=None, dtype=None):
-    """Read an image block from overviews of all specified bands.
+    r"""Read an image block from overviews of all specified bands.
 
     This function read a data block from the overview corresponding to
     *ovrindex* for all *bcount* raster bands starting from the

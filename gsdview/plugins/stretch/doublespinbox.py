@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2015-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -25,7 +23,7 @@ from qtpy import QtWidgets, QtGui, QtCore
 
 class DoubleSpinBox(QtWidgets.QDoubleSpinBox):
     def __init__(self, *args, **kwargs):
-        super(DoubleSpinBox, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.lineEdit().setValidator(QtGui.QDoubleValidator(self))
         self.setDecimals(7)
         self.setRange(-1e50, 1e50)

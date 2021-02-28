@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
@@ -43,7 +42,7 @@ class QtShell(QtWidgets.QMainWindow):
     historyfile = 'history.txt'
 
     def __init__(self, debug=False):
-        super(QtShell, self).__init__()
+        super().__init__()
 
         # Icon
         self.setWindowIcon(
@@ -137,11 +136,11 @@ class QtShell(QtWidgets.QMainWindow):
     def load_history(self):
         self.cmdbox.clear()
         try:
-            for cmd in open(self.historyfile, 'r'):
+            for cmd in open(self.historyfile):
                 self.cmdbox.addItem(cmd.rstrip())
 
             self.logger.debug('history file "%s" loaded.' % self.historyfile)
-        except (OSError, IOError) as e:
+        except OSError as e:
             self.logger.debug('unable to read the history file "%s": %s.' %
                               (self.historyfile, e))
         self.cmdbox.addItem('')
@@ -158,7 +157,7 @@ class QtShell(QtWidgets.QMainWindow):
             f.write(history)
             f.close()
             self.logger.debug('history saved in %s' % self.historyfile)
-        except (OSError, IOError) as e:
+        except OSError as e:
             self.logger.warning('unable to save the history file "%s": %s' %
                                 (self.historyfile, e))
 

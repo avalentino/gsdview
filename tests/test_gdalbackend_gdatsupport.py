@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2015-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -92,7 +90,7 @@ class SafeVrtCopyTestCase01(unittest.TestCase):
                 'LineOffset': pixel_offset * self.XSIZE,
                 'relativeToVRT': int(relativeToVRT),
             }
-            options = ['{}={}'.format(k, v) for k, v in options.items()]
+            options = [f'{k}={v}' for k, v in options.items()]
 
             ds.AddBand(gdtype, options)
 

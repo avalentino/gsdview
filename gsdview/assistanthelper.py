@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -26,14 +24,14 @@ import sys
 from qtpy import QtCore, QtWidgets
 
 
-class Assistant(object):
+class Assistant:
     """Helper class controlling an external QAssistant process."""
 
     # @TODO: fix
     APP_DOC_PATH = "qthelp://com.trolltech.examples.simpletextviewer/doc/"
 
     def __init__(self):
-        super(Assistant, self).__init__(self)
+        super().__init__(self)
 
         #: external process controller (QProcess)
         self.proc = None

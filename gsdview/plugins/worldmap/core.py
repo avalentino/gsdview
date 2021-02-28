@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -36,8 +34,7 @@ class WorldmapPanel(QtWidgets.QDockWidget):
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         # title = self.tr('Worldmap Panel')
-        super(WorldmapPanel, self).__init__('World Map Panel', parent, flags,
-                                            **kwargs)
+        super().__init__('World Map Panel', parent, flags, **kwargs)
         # self.setObjectName('worldmapPanel') # @TODO: check
 
         scene = QtWidgets.QGraphicsScene(self)
@@ -201,7 +198,7 @@ class WorldmapPanel(QtWidgets.QDockWidget):
 
 class WorldmapController(QtCore.QObject):
     def __init__(self, app, **kwargs):
-        super(WorldmapController, self).__init__(app, **kwargs)
+        super().__init__(app, **kwargs)
         self.app = app
 
         self.panel = WorldmapPanel(app)

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -78,7 +76,7 @@ class NavigationGraphicsView(QtWidgets.QGraphicsView):
                                QtWidgets.QGraphicsView.DragMode)
 
     def __init__(self, parent=None, **kwargs):
-        super(NavigationGraphicsView, self).__init__(parent, **kwargs)
+        super().__init__(parent, **kwargs)
         self._viewbox = None
         self._autoscale = True
         self.setMouseTracking(True)
@@ -169,8 +167,7 @@ class BandOverviewDock(QtWidgets.QDockWidget):
 
     def __init__(self, app, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         # title = self.tr('Dataset Browser')
-        super(BandOverviewDock, self).__init__('Band Overview', app, flags,
-                                               **kwargs)
+        super().__init__('Band Overview', app, flags, **kwargs)
         # self.setObjectName('datasetBroeserPanel') # @TODO: check
 
         self.app = app  # @TODO: check
@@ -271,7 +268,7 @@ class BandOverviewDock(QtWidgets.QDockWidget):
 
 class OverviewController(QtCore.QObject):
     def __init__(self, app, **kwargs):
-        super(OverviewController, self).__init__(app, **kwargs)
+        super().__init__(app, **kwargs)
         self.app = app
 
         self.panel = BandOverviewDock(app)

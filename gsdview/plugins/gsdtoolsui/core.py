@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -42,7 +40,7 @@ _log = logging.getLogger(__name__)
 
 class GSDToolsController(QtCore.QObject):
     def __init__(self, app, **kwargs):
-        super(GSDToolsController, self).__init__(app, **kwargs)
+        super().__init__(app, **kwargs)
         self.app = app
 
         self.googleearth = None
@@ -247,7 +245,7 @@ class GSDToolsController(QtCore.QObject):
 
         query = QtCore.QUrlQuery()
 
-        query.addQueryItem('q', '%fN,%fE' % (lat, lon))   # coordinates
+        query.addQueryItem('q', f'{lat:f}N,{lon:f}E')     # coordinates
         query.addQueryItem('t', 'h')                      # map type (hybrid)
         query.addQueryItem('z', str(zoomlevel))           # zoom level (1, 20)
 

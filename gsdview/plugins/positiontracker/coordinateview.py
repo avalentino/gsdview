@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -26,7 +24,7 @@ from qtpy import QtCore, QtWidgets
 
 class CoordinateView(QtWidgets.QWidget):
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
-        super(CoordinateView, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
 
         layout = QtWidgets.QHBoxLayout()
 
@@ -56,7 +54,7 @@ class CoordinateView(QtWidgets.QWidget):
 
 class GeoCoordinateView(CoordinateView):
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
-        super(GeoCoordinateView, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
 
         self.xlabel.setText('lon:')
         self.ylabel.setText('lat:')

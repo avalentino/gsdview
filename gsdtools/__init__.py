@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2011-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #

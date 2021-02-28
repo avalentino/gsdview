@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
@@ -32,7 +31,7 @@ from exectools.gtk import (GtkOutputPane, GtkOutputHandler,
                            GtkLoggingHandler)
 
 
-class GtkShell(object):
+class GtkShell:
     """GTK+ interactive shell using tool controller."""
 
     historyfile = 'history.txt'
@@ -154,10 +153,10 @@ class GtkShell(object):
 
     def load_history(self):
         try:
-            for cmd in open(self.historyfile, 'r'):
+            for cmd in open(self.historyfile):
                 self.cmdbox.append_text(cmd.rstrip())
             self.logger.debug('history file "%s" loaded.' % self.historyfile)
-        except (OSError, IOError) as e:
+        except OSError as e:
             self.logger.debug('unable to read the history file "%s": %s.' %
                               (self.historyfile, e))
 
@@ -169,7 +168,7 @@ class GtkShell(object):
             f.write(history)
             f.close()
             self.logger.debug('history saved in %s' % self.historyfile)
-        except (OSError, IOError) as e:
+        except OSError as e:
             self.logger.warning('unable to save the history file "%s": %s' %
                                 (self.historyfile, e))
 

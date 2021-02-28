@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -192,7 +190,7 @@ class StdToolController(BaseToolController):
                 self.subprocess.returncode is not None), \
             'the process is still running'
 
-        super(StdToolController, self)._reset()
+        super()._reset()
 
     def reset(self):
         """Reset the tool controller instance.
@@ -202,7 +200,7 @@ class StdToolController(BaseToolController):
 
         """
 
-        super(StdToolController, self).reset()
+        super().reset()
         self.subprocess = None
 
     def handle_stdout(self, *args):

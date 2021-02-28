@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -106,7 +104,7 @@ class Popen(GObject.GObject, subprocess2.Popen):
                         self.emit('stderr-ready')
             except ValueError:
                 return conn.close()
-            except (WindowsError, Exception) as ex:
+            except (OSError, Exception) as ex:
                 if ex[0] in (109, errno.ESHUTDOWN):
                     return conn.close()
                 raise
@@ -175,7 +173,7 @@ class GtkOutputPane(Gtk.TextView):
     }
 
     def __init__(self, buffer=None, hide_button=True, formats=None):
-        super(GtkOutputPane, self).__init__()
+        super().__init__()
         if buffer is not None:
             self.set_buffer(buffer)
         # self.stream = Gio.IOStream(self)
@@ -231,7 +229,7 @@ class GtkOutputPane(Gtk.TextView):
         buf = self.get_buffer()
         text = buf.get_text(buf.get_start_iter(), buf.get_end_iter(), False)
 
-        return '%s\n\n%s' % (header, text)
+        return f'{header}\n\n{text}'
 
     def clear(self):
         buf = self.get_buffer()
@@ -368,14 +366,14 @@ class GtkOutputHandler(GObject.GObject, BaseOutputHandler):
         if self.blinker:
             self.blinker.show()
             # self.progressbar.show()
-        super(GtkOutputHandler, self).feed(data)
+        super().feed(data)
 
     def close(self):
         """Force processing of all buffered data and reset the instance"""
 
         if self.statusbar:
             self.statusbar.pop(self.context_id)
-        super(GtkOutputHandler, self).close()
+        super().close()
 
     def reset(self):
         """Reset the handler instance.
@@ -385,7 +383,7 @@ class GtkOutputHandler(GObject.GObject, BaseOutputHandler):
 
         """
 
-        super(GtkOutputHandler, self).reset()
+        super().reset()
         if self.progressbar:
             self.progressbar.set_text('%.0f %%' % 0)
             self.progressbar.hide()
@@ -553,7 +551,7 @@ class GtkToolController(GObject.GObject, StdToolController):
         """
 
         returncode = self.subprocess.returncode
-        super(GtkToolController, self).finalize_run()
+        super().finalize_run()
         self.emit('finished', returncode)
 
     def _reset(self):
@@ -569,7 +567,7 @@ class GtkToolController(GObject.GObject, StdToolController):
         if self.subprocess:
             self.subprocess.close()
 
-        super(GtkToolController, self)._reset()
+        super()._reset()
 
     def connect_output_handlers(self):
         """Connect output handlers"""

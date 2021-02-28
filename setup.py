@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
@@ -193,6 +192,10 @@ Intended Audience :: Science/Research
 License :: OSI Approved :: GNU General Public License (GPL)
 Operating System :: OS Independent
 Programming Language :: Python :: 3
+Programming Language :: Python :: 3.6
+Programming Language :: Python :: 3.7
+Programming Language :: Python :: 3.8
+Programming Language :: Python :: 3.9
 Topic :: Education
 Topic :: Scientific/Engineering :: Astronomy
 Topic :: Scientific/Engineering :: GIS
@@ -245,7 +248,7 @@ if has_setuptools:
             'setuptools.installation': ['eggsecutable = gsdview:main'],
         },
         include_package_data=True,
-        python_requires='>=3.5',
+        python_requires='>=3.6',
     ))
 else:
     packages = [

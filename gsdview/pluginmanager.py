@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -37,9 +35,9 @@ except ImportError:
     _log.debug('"pkg_resources" not found.')
 
 
-class PluginManager(object):
+class PluginManager:
     def __init__(self, app, syspath=None):
-        super(PluginManager, self).__init__()
+        super().__init__()
         self.paths = []
         self.syspath = syspath
         self.plugins = {}
@@ -159,7 +157,7 @@ class PluginManager(object):
             importer = pkgutil.get_importer(path)
             try:
                 distributions = pkg_resources.find_distributions(path)
-                distributions = dict((egg.key, egg) for egg in distributions)
+                distributions = {egg.key: egg for egg in distributions}
             except NameError:
                 distributions = {}
 
@@ -323,7 +321,7 @@ class PluginManagerGui(QtWidgets.QWidget, PluginManagerGuiBase):
 
     def __init__(self, pluginmanager, parent=None,
                  flags=QtCore.Qt.WindowFlags(0), **kwargs):
-        super(PluginManagerGui, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         # Set icons
@@ -585,7 +583,7 @@ class PluginInfoForm(QtWidgets.QFrame, PluginInfoFormBase):
 
     def __init__(self, plugin=None, active=None, parent=None,
                  flags=QtCore.Qt.WindowFlags(0), **kwargs):
-        super(PluginInfoForm, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         if plugin is not None and active is not None:
@@ -639,7 +637,7 @@ class PluginInfoDialog(QtWidgets.QDialog):
 
     def __init__(self, plugin, active, parent=None,
                  flags=QtCore.Qt.WindowFlags(0), **kwargs):
-        super(PluginInfoDialog, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
         self.setModal(True)
 
         bbox = QtWidgets.QDialogButtonBox()

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -30,7 +28,7 @@ from .widgets import StretchDialog
 
 class StretchTool(QtCore.QObject):
     def __init__(self, app, **kwargs):
-        super(StretchTool, self).__init__(app, **kwargs)
+        super().__init__(app, **kwargs)
         self.app = app
 
         self.dialog = StretchDialog(parent=app)

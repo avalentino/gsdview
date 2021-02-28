@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2011-2021 Antonio Valentino <antonio.valentino@tiscali.it>
@@ -133,8 +132,8 @@ def copy_dataset_subwin(dataset, srcwin, bands=None, vrtfile=''):
     vrtds = driver.Create(vrtfile, xsize, ysize, 0)
     if not vrtds:
         if vrtfile:
-            msg = 'unable to create a vrtual dataset for "%s" in "%s".' % (
-                dataset.GetDescription(), vrtfile)
+            msg = (f'unable to create a vrtual dataset for '
+                   f'"{dataset.GetDescription()}" in "{vrtfile}".')
         else:
             msg = ('unable to create and anonymous vrtual dataset for "%s".' %
                    dataset.GetDescription())
@@ -166,7 +165,7 @@ def copy_dataset_subwin(dataset, srcwin, bands=None, vrtfile=''):
     return vrtds
 
 
-class HistogramRequest(object):
+class HistogramRequest:
     def __init__(self, hmin=None, hmax=None, nbuckets=None,
                  include_out_of_range=False, computehistogram=True):
 
@@ -240,7 +239,7 @@ def computestats(dataset, bands=None, computestats=True, histreq=None,
             vmin, vmax, mean, stddev = stats
 
             if minmax_only:
-                logging.info('%f %f' % (vmin, vmax))
+                logging.info(f'{vmin:f} {vmax:f}')
             else:
                 logging.info('Statistics for band n. %d' % bandno)
                 logging.info('Min:    %f' % vmin)
@@ -283,7 +282,7 @@ def get_parser():
     parser = argparse.ArgumentParser(prog='stats', description=__doc__)
     parser.add_argument(
         '--version', action='version',
-        version='%(prog)s {}'.format(__version__))
+        version=f'%(prog)s {__version__}')
     parser.add_argument(
         '--no-stats', dest='stats', action='store_false', default=True,
         help='disable statistics computation (default: False)')

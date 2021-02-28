@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -35,7 +33,7 @@ class ZoomTool(QtCore.QObject):
     DEFAULT_FACTOR = 1.2
 
     def __init__(self, view=None, parent=None, **kwargs):
-        super(ZoomTool, self).__init__(parent, **kwargs)
+        super().__init__(parent, **kwargs)
         self.factor = self.DEFAULT_FACTOR
 
         self._view = view
@@ -119,7 +117,7 @@ class ZoomTool(QtCore.QObject):
 
 class AppZoomTool(ZoomTool):
     def __init__(self, app, **kwargs):
-        super(AppZoomTool, self).__init__(None, app, **kwargs)
+        super().__init__(None, app, **kwargs)
         self.app = app
 
     def currentview(self):

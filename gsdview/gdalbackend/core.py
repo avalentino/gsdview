@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -694,8 +692,7 @@ from gsdview.mdi import ItemSubWindow
 class GraphicsViewSubWindow(ItemSubWindow):
     def __init__(self, item, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kwargs):
-        super(GraphicsViewSubWindow, self).__init__(item, parent, flags,
-                                                    **kwargs)
+        super().__init__(item, parent, flags, **kwargs)
         title = str(item.GetDescription()).strip()
         self.setWindowTitle(title)
 

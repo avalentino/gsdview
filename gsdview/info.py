@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -54,7 +52,7 @@ GSDView is modular and has a simple plug-in architecture.
 
 author = 'Antonio Valentino'
 author_email = 'antonio.valentino@tiscali.it'
-copyright = 'Copyright (C) 2008-2021 %s <%s>' % (author, author_email)
+copyright = f'Copyright (C) 2008-2021 {author} <{author_email}>'
 # license = _get_license()
 license_type = 'GNU GPL'
 website = 'http://gsdview.sourceforge.net'
@@ -107,5 +105,5 @@ elif platform.win32_ver() != ('', '', '', ''):
 
 def all_versions_str():
     return '\n'.join(
-        '%s v. %s %s' % (sw, version_, '(%s)' % link if link else '')
+        '{} v. {} {}'.format(sw, version_, '(%s)' % link if link else '')
         for sw, version_, link in all_versions)

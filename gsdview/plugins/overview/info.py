@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -44,7 +42,7 @@ Moving the red box with the mouse updates the main view to show the boxed area.
 
 author = 'Antonio Valentino'
 author_email = 'antonio.valentino@tiscali.it'
-copyright = 'Copyright (C) 2008-2021 %s <%s>' % (author, author_email)
+copyright = f'Copyright (C) 2008-2021 {author} <{author_email}>'
 license_type = 'GNU GPL'
 website = 'http://gsdview.sourceforge.net'
 website_label = website

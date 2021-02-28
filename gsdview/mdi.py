@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -44,7 +42,7 @@ class MdiMainWindow(QtWidgets.QMainWindow):
     subWindowClosed = QtCore.Signal()
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
-        super(MdiMainWindow, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
 
         #: MDI area instance (QMdiArea)
         self.mdiarea = QtWidgets.QMdiArea()
@@ -60,7 +58,7 @@ class MdiMainWindow(QtWidgets.QMainWindow):
 class ItemSubWindow(QtWidgets.QMdiSubWindow):
     def __init__(self, item, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kwargs):
-        super(ItemSubWindow, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
         #: datamodel item associated to the MDI sub-window
@@ -69,7 +67,7 @@ class ItemSubWindow(QtWidgets.QMdiSubWindow):
 
 class ItemModelMainWindow(MdiMainWindow):
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
-        super(ItemModelMainWindow, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
 
         #: main application datamodel (QStandardItemModel)
         self.datamodel = QtGui.QStandardItemModel(self)

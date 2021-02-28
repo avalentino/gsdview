@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -37,7 +35,7 @@ SelectCurrentRows = (
 
 class BaseLayerManager(QtCore.QObject):
     def __init__(self, parent=None, **kargs):
-        super(BaseLayerManager, self).__init__(parent, **kargs)
+        super().__init__(parent, **kargs)
         self.actions = self._setupActions()
 
     def _setupActions(self):
@@ -378,7 +376,7 @@ class BaseLayerManager(QtCore.QObject):
 class LayerManager(BaseLayerManager):
     def __init__(self, view, parent=None, **kargs):
         self.view = view
-        super(LayerManager, self).__init__(parent, **kargs)
+        super().__init__(parent, **kargs)
 
         view.addActions(self.actions.actions())
         view.installEventFilter(self)   # spacebar
@@ -408,7 +406,7 @@ class LayerManager(BaseLayerManager):
         return self.view.selectionModel()
 
     def _setupActions(self):
-        actions = super(LayerManager, self)._setupActions()
+        actions = super()._setupActions()
 
         icon = QtGui.QIcon.fromTheme('edit-select-all')
         QtWidgets.QAction(
@@ -442,43 +440,43 @@ class LayerManager(BaseLayerManager):
             self.toggleSelectedItems()
             return True
         else:
-            return super(LayerManager, self).eventFilter(obj, event)
+            return super().eventFilter(obj, event)
 
     @QtCore.Slot()
     def moveSelectionToTop(self, selectionmodel=None):
         if selectionmodel is None:
             selectionmodel = self.selectionmodel
-        super(LayerManager, self).moveSelectionToTop(selectionmodel)
+        super().moveSelectionToTop(selectionmodel)
 
     @QtCore.Slot()
     def moveSelectionUp(self, selectionmodel=None):
         if selectionmodel is None:
             selectionmodel = self.selectionmodel
-        super(LayerManager, self).moveSelectionUp(selectionmodel)
+        super().moveSelectionUp(selectionmodel)
 
     @QtCore.Slot()
     def moveSelectionDown(self, selectionmodel=None):
         if selectionmodel is None:
             selectionmodel = self.selectionmodel
-        super(LayerManager, self).moveSelectionDown(selectionmodel)
+        super().moveSelectionDown(selectionmodel)
 
     @QtCore.Slot()
     def moveSelectionToBottom(self, selectionmodel=None):
         if selectionmodel is None:
             selectionmodel = self.selectionmodel
-        super(LayerManager, self).moveSelectionToBottom(selectionmodel)
+        super().moveSelectionToBottom(selectionmodel)
 
     @QtCore.Slot()
     def removeSelectedLayers(self, selectionmodel=None):
         if selectionmodel is None:
             selectionmodel = self.selectionmodel
-        super(LayerManager, self).removeSelectedLayers(selectionmodel)
+        super().removeSelectedLayers(selectionmodel)
 
     @QtCore.Slot()
     def checkSelectedItems(self, selectionmodel=None, checked=True):
         if selectionmodel is None:
             selectionmodel = self.selectionmodel
-        super(LayerManager, self).checkSelectedItems(selectionmodel, checked)
+        super().checkSelectedItems(selectionmodel, checked)
 
     @QtCore.Slot()
     def uncheckSelectedItems(self, selectionmodel=None):
@@ -488,16 +486,16 @@ class LayerManager(BaseLayerManager):
     def toggleSelectedItems(self, selectionmodel=None):
         if selectionmodel is None:
             selectionmodel = self.selectionmodel
-        super(LayerManager, self).toggleSelectedItems(selectionmodel)
+        super().toggleSelectedItems(selectionmodel)
 
     @QtCore.Slot()
     def _updateActions(self, selectionmodel=None):
         if selectionmodel is None:
             selectionmodel = self.selectionmodel
-        super(LayerManager, self)._updateActions(selectionmodel)
+        super()._updateActions(selectionmodel)
 
     @QtCore.Slot()
     def updateStackOrder(self, rootitem=None):
         if rootitem is None:
             rootitem = self.model.invisibleRootItem()
-        super(LayerManager, self).updateStackOrder(rootitem)
+        super().updateStackOrder(rootitem)

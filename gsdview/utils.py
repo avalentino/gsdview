@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -127,7 +125,7 @@ def format_platform_info():
     platform_info.append(
         'python_implementation: %s\n' % platform.python_implementation())
 
-    platform_info.append('locale: %s\n' % (locale.getlocale(),))
+    platform_info.append(f'locale: {locale.getlocale()}\n')
     platform_info.append('default encoding: %s\n' % sys.getdefaultencoding())
     platform_info.append(
         'file system encoding: %s\n' % sys.getfilesystemencoding())
@@ -188,7 +186,7 @@ def isscript(filename):
 
     try:
         return open(filename, 'rb').read(2) == '#!'
-    except IOError:
+    except OSError:
         return False
 
 
@@ -273,7 +271,7 @@ def data_uuid(path, prefixlen=23):
     uid = uuid.uuid5(uuid.NAMESPACE_URL, uid)
     if prefixlen > 0:
         prefix = os.path.basename(path)[:prefixlen]
-        return '{}-{}'.format(prefix, uid)
+        return f'{prefix}-{uid}'
     else:
         return str(uid)
 

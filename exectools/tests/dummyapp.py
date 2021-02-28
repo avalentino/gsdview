@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
@@ -95,17 +94,17 @@ percentage = 0.
 index = 0
 while duration < 0 or elapsed < duration:
     if mode == 'percentage':
-        print('\r  %6.2f%%' % percentage, end=' ')
+        print(f'\r  {percentage:6.2f}%', end=' ')
     elif mode == 'pulse':
-        print('\r%s' % pulses[index % len(pulses)], end=' ')
+        print(f'\r{pulses[index % len(pulses)]}', end=' ')
     elif mode == 'mixed':
         if (index % 4) == 0:
-            print('\r%s %6.2f%%' % (pulses[index % len(pulses)], percentage),
+            print(f'\r{pulses[index % len(pulses)]} {percentage:6.2f}%',
                   end=' ')
         else:
-            print('\r%s' % pulses[index % len(pulses)], end=' ')
+            print(f'\r{pulses[index % len(pulses)]}', end=' ')
     else:  # 'elapsed'
-        print('\r%.2f' % elapsed, end=' ')
+        print(f'\r{elapsed:.2f}', end=' ')
     if verbose:
         print()
     index += 1

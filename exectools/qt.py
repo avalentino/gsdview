@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -44,7 +42,7 @@ class QtBlinker(QtWidgets.QLabel):
     """
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
-        super(QtBlinker, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
         # qstyle = QtWidgets.QApplication.style()
         # pixmap = qstyle.standardPixmap(QtWidgets.QStyle.SP_MediaStop)
         pixmap = QtGui.QPixmap(
@@ -81,7 +79,7 @@ class QtOutputPane(QtWidgets.QTextEdit):
     paneHideRequest = QtCore.Signal()
 
     def __init__(self, parent=None, **kwargs):
-        super(QtOutputPane, self).__init__(parent, **kwargs)
+        super().__init__(parent, **kwargs)
         self._setupActions()
         self.banner = None
 
@@ -132,7 +130,7 @@ class QtOutputPane(QtWidgets.QTextEdit):
         else:
             header = '# Output log generated on %s' % time.asctime()
         text = self.toPlainText()
-        return '%s\n\n%s' % (header, text)
+        return f'{header}\n\n{text}'
 
     # def clear(self): # it is a standard QtWidgets.QTextEdit method
 
@@ -220,14 +218,14 @@ class QtOutputHandler(QtCore.QObject, BaseOutputHandler):
 
         if self.blinker:
             self.blinker.show()
-        super(QtOutputHandler, self).feed(data)
+        super().feed(data)
 
     def close(self):
         """Reset the instance."""
 
         if self.statusbar:
             self.statusbar.clearMessage()
-        super(QtOutputHandler, self).close()
+        super().close()
 
     def reset(self):
         """Reset the handler instance.
@@ -237,7 +235,7 @@ class QtOutputHandler(QtCore.QObject, BaseOutputHandler):
 
         """
 
-        super(QtOutputHandler, self).reset()
+        super().reset()
         if self.progressbar:
             self.progressbar.setRange(0, 100)
             self.progressbar.reset()
@@ -522,7 +520,7 @@ class QtToolController(QtCore.QObject, BaseToolController):
         self.subprocess.closeReadChannel(QtCore.QProcess.StandardError)
         self.subprocess.closeWriteChannel()
 
-        super(QtToolController, self)._reset()
+        super()._reset()
         self.subprocess.close()
 
     @QtCore.Slot()

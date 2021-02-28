@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
@@ -254,7 +253,7 @@ class GraphicsDrawApp(QtWidgets.QMainWindow):
         filters = [
             self.tr('All files (*)'),
         ]
-        filters.extend('%s file (*.%s)' % (str(f).upper(), str(f))
+        filters.extend('{} file (*.{})'.format(str(f).upper(), str(f))
                        for f in QtGui.QImageReader.supportedImageFormats())
 
         filename, filter_ = QtWidgets.QFileDialog.getOpenFileName(

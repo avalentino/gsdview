@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -79,7 +77,7 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
     Type = QtGui.QStandardItem.UserType + 1
 
     def __init__(self, gdalobj, parent=None, **kwargs):
-        super(BaseGdalGraphicsItem, self).__init__(parent, **kwargs)
+        super().__init__(parent, **kwargs)
         self.setFlag(QtWidgets.QGraphicsItem.ItemUsesExtendedStyleOption)
 
         self.gdalobj = gdalobj
@@ -280,7 +278,7 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
         # funcs['Pow'] = lambda x: np.abs(x * x)
         # funcs['dB'] = lambda x: 20 * np.log10(np.abs(x))
 
-        inverse_fmap = dict((v, k) for k, v in funcs.items())
+        inverse_fmap = {v: k for k, v in funcs.items()}
         current_func = inverse_fmap.get(self._data_preproc, 'unknown')
         if current_func == 'unknown':
             try:
@@ -318,7 +316,7 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
         colortables['Gray'] = qtsupport.GRAY_COLORTABLE
         colortables['Jet'] = qtsupport.JET_COLORTABLE
 
-        inverse_ctmap = dict((id(v), k) for k, v in colortables.items())
+        inverse_ctmap = {id(v): k for k, v in colortables.items()}
         current_colortable = inverse_ctmap.get(id(self.colortable), 'unknown')
         if current_colortable == 'unknown':
             colortables[current_colortable] = self.colortable
@@ -371,7 +369,7 @@ class UIntGdalGraphicsItem(BaseGdalGraphicsItem):
     Type = BaseGdalGraphicsItem.Type + 1
 
     def __init__(self, band, parent=None, **kwargs):
-        super(UIntGdalGraphicsItem, self).__init__(band, parent, **kwargs)
+        super().__init__(band, parent, **kwargs)
 
         # @TODO: maybe it is batter to use a custom exception: ItemTypeError
         if band.DataType not in (gdal.GDT_Byte, gdal.GDT_UInt16):
@@ -394,7 +392,7 @@ class GdalGraphicsItem(BaseGdalGraphicsItem):
     Type = BaseGdalGraphicsItem.Type + 2
 
     def __init__(self, band, parent=None, **kwargs):
-        super(GdalGraphicsItem, self).__init__(band, parent, **kwargs)
+        super().__init__(band, parent, **kwargs)
         self.colortable = qtsupport.GRAY_COLORTABLE
 
         if gdal.DataTypeIsComplex(band.DataType):
@@ -427,7 +425,7 @@ class GdalRgbGraphicsItem(BaseGdalGraphicsItem):
     def __init__(self, dataset, parent=None, **kwargs):
         if not gdalsupport.isRGB(dataset):
             raise TypeError('RGB or RGBA iamge expected')
-        super(GdalRgbGraphicsItem, self).__init__(dataset, parent, **kwargs)
+        super().__init__(dataset, parent, **kwargs)
         self.stretch = None
 
     def paint(self, painter, option, widget):

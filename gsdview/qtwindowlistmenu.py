@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -105,7 +103,7 @@ class QtWindowListMenu(QtWidgets.QMenu):
 
         """
 
-        super(QtWindowListMenu, self).__init__(parent, **kwargs)
+        super().__init__(parent, **kwargs)
 
         self.mdi = None
         self.setTitle(self.tr('&Windows'))

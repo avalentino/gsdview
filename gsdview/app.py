@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -63,7 +61,7 @@ class GSDView(ItemModelMainWindow):
         QtWidgets.QApplication.setWindowIcon(
             qtsupport.geticon('GSDView.png', __name__))
 
-        super(GSDView, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
         title = self.tr('GSDView Open Source Edition v. %s') % info.version
         self.setWindowTitle(title)
         self.setObjectName('gsdview-mainwin')
@@ -262,7 +260,7 @@ class GSDView(ItemModelMainWindow):
         self.pluginmanager.reset()
         _log.info('Closing application')
         # event.accept()
-        super(GSDView, self).closeEvent(event)
+        super().closeEvent(event)
 
     def changeEvent(self, event):
         try:

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -56,7 +54,7 @@ class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  floatmode=True, **kwargs):
-        super(StretchWidget, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
         self.setupUi(self)
         self._floatmode = False
         self._kslider = self._computeKSlider()
@@ -128,7 +126,7 @@ class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
 
     def setRange(self, vmin, vmax):
         if vmin >= vmax:
-            raise ValueError('vmin (%f) >= vmax (%f)' % (vmin, vmax))
+            raise ValueError(f'vmin ({vmin:f}) >= vmax ({vmax:f})')
 
         low = self.lowSpinBox.value()
         if low < vmin:
@@ -470,7 +468,7 @@ class StretchDialog(QtWidgets.QDialog, StretchDialogBase):
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  floatmode=True, **kwargs):
-        super(StretchDialog, self).__init__(parent, flags, **kwargs)
+        super().__init__(parent, flags, **kwargs)
         self.setupUi(self)
 
         self.stretchwidget = StretchWidget(self, floatmode=floatmode)

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # GSDView - Geo-Spatial Data Viewer
 # Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
@@ -59,7 +57,7 @@ if not hasattr(uic, 'loadUiType'):
         elif qtpy.PYSIDE:
             from pysideuic import compileUi
         else:
-            raise RuntimeError('unexpected qtpy.API: {!r}'.format(qtpy.API))
+            raise RuntimeError(f'unexpected qtpy.API: {qtpy.API!r}')
 
         # Parse the UI file
         etree = ElementTree()
@@ -68,7 +66,7 @@ if not hasattr(uic, 'loadUiType'):
         widget_class = ui.find('widget').get('class')
         form_class = ui.find('class').text
 
-        with open(uifile, 'r') as fd:
+        with open(uifile) as fd:
             code_stream = StringIO()
             frame = {}
 
@@ -832,8 +830,8 @@ def numpy2qimage(data, colortable=GRAY_COLORTABLE):
 
     else:
         raise ValueError(
-            'unable to convert data: shape=%s, dtype="%s"' % (
-                data.shape, np.dtype(data.dtype)))
+            f'unable to convert data: shape={data.shape}, '
+            f'dtype="{np.dtype(data.dtype)}"')
 
     result = QtGui.QImage(image.data, w, h, format_)
     result.ndarray = image
@@ -1022,13 +1020,13 @@ def imgexport(obj, parent=None):
         obj.tr('PDF file (*.pdf)'),
         obj.tr('PostScript file (*.ps)'),
     ]
-    filters.extend('%s file (*.%s)' % (
+    filters.extend('{} file (*.{})'.format(
         str(fmt).upper(), str(fmt))
         for fmt in QtGui.QImageWriter.supportedImageFormats())
 
-    formats = set(
+    formats = {
         str(fmt).lower()
-        for fmt in QtGui.QImageWriter.supportedImageFormats())
+        for fmt in QtGui.QImageWriter.supportedImageFormats()}
     formats.update(('svg', 'pdf', 'ps'))
 
     # @TODO: check
