@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """GDAL backend for GSDView."""
-
 
 import shutil
 
@@ -140,6 +138,7 @@ def _definefunc(methodname):
         if _backendobj is None:
             raise RuntimeError('GDAL backend is still not initialized')
         return getattr(_backendobj, methodname)(*args, **kwargs)
+
     func.__name__ = methodname
     return func
 

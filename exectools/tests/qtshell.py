@@ -19,7 +19,6 @@
 
 """Simple interactive shell implementation using exectools and Qt."""
 
-
 import time
 import logging
 
@@ -120,7 +119,7 @@ class QtShell(QtWidgets.QMainWindow):
         self.controller.finished.connect(lambda returncode: self.reset())
 
         # self.shell = True
-        self._state = 'ready'   # or maybe __state
+        self._state = 'ready'  # or maybe __state
 
         self.logger.debug('qtshell session started at %s.' % time.asctime())
         self.load_history()

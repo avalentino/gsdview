@@ -17,7 +17,6 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 import os
 import sys
 import logging
@@ -116,7 +115,7 @@ class StretchWidgetTestCase(unittest.TestCase):
 
     def test_increase_minimum_above_high(self):
         low, high = self.stretch.values()
-        delta = min(abs(low), abs(high))/2
+        delta = min(abs(low), abs(high)) / 2
         minimum = high + delta
         self.assertGreater(minimum, high)
         self.assertLess(minimum, self.stretch.maximum())
@@ -137,7 +136,7 @@ class StretchWidgetTestCase(unittest.TestCase):
 
     def test_decrease_maximum_below_low(self):
         low, high = self.stretch.values()
-        delta = min(abs(low), abs(high))/2
+        delta = min(abs(low), abs(high)) / 2
         maximum = low - delta
         self.assertLess(maximum, low)
         self.assertGreater(maximum, self.stretch.minimum())
@@ -205,7 +204,7 @@ class StretchWidgetTestCase(unittest.TestCase):
 
         def test_ui_increase_minimum_above_high(self):
             low, high = self.stretch.values()
-            delta = min(abs(low), abs(high))/2
+            delta = min(abs(low), abs(high)) / 2
             minimum = high + delta
             self.assertGreater(minimum, high)
             self.assertLess(minimum, self.stretch.maximum())
@@ -217,7 +216,8 @@ class StretchWidgetTestCase(unittest.TestCase):
 
         @unittest.skip('incomplete')
         def test_ui_increase_minimum_above_maximum(self):
-            delta = max(abs(self.stretch.minimum()), abs(self.stretch.maximum()))
+            delta = max(abs(self.stretch.minimum()),
+                        abs(self.stretch.maximum()))
             minimum = self.stretch.maximum() + delta
             QTest.keyClicks(self.stretch.minSpinBox, str(minimum))
             self.assertEqual(self.stretch.minimum(), minimum)
@@ -225,7 +225,8 @@ class StretchWidgetTestCase(unittest.TestCase):
 
         @unittest.skip('incomplete')
         def test_ui_decrease_maximum_below_minimum(self):
-            delta = max(abs(self.stretch.minimum()), abs(self.stretch.maximum()))
+            delta = max(abs(self.stretch.minimum()),
+                        abs(self.stretch.maximum()))
             maximum = self.stretch.minimum() - delta
             QTest.keyClicks(self.stretch.maxSpinBox, str(maximum))
             self.assertEqual(self.stretch.maximum(), maximum)
@@ -233,7 +234,7 @@ class StretchWidgetTestCase(unittest.TestCase):
 
         def test_ui_decrease_maximum_below_low(self):
             low, high = self.stretch.values()
-            delta = min(abs(low), abs(high))/2
+            delta = min(abs(low), abs(high)) / 2
             maximum = low - delta
             self.assertLess(maximum, low)
             self.assertGreater(maximum, self.stretch.minimum())

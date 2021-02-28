@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Widgets and dialogs for GSDView."""
-
 
 import os
 import sys
@@ -77,7 +75,7 @@ def _choosefile(filename='', dialog=None, mode=None):
     return filename
 
 
-def _choosedir(dirname, dialog=None,):
+def _choosedir(dirname, dialog=None):
     return _choosefile(dirname, dialog, QtWidgets.QFileDialog.DirectoryOnly)
 
 
@@ -155,6 +153,7 @@ Project Page: <a href="http://sourceforge.net/projects/gsdview">http://sourcefor
 
 
 class FileEntryWidget(QtWidgets.QWidget):
+
     def __init__(self, contents='', mode=QtWidgets.QFileDialog.AnyFile,
                  dialog=None, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kwargs):
@@ -232,7 +231,6 @@ GeneralPreferencesPageBase = qtsupport.getuiform('general-page', __name__)
 
 
 class GeneralPreferencesPage(QtWidgets.QWidget, GeneralPreferencesPageBase):
-
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super().__init__(parent, flags, **kwargs)
         self.setupUi(self)

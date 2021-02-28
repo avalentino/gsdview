@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """UI front-end for GSDTools."""
-
 
 import os
 import sys
@@ -234,8 +232,8 @@ class GSDToolsController(QtCore.QObject):
                                         [0.5, item.RasterYSize - 0.5])
         deltalon = np.max(lon) - np.min(lon)
         deltalat = np.max(lat) - np.min(lat)
-        zoomlon = np.floor(np.log2(360/deltalon))
-        zoomlat = np.floor(np.log2(180/deltalat))
+        zoomlon = np.floor(np.log2(360 / deltalon))
+        zoomlat = np.floor(np.log2(180 / deltalat))
         zoomlevel = min(zoomlon, zoomlat) + 1
 
         pixel, line = item.RasterXSize / 2., item.RasterYSize / 2.

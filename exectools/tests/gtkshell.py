@@ -19,16 +19,14 @@
 
 """Simple interactive shell implementation using exectools and GTK+."""
 
-
 import time
 import logging
 
 from gi.repository import Gtk, Gdk
 
 import exectools
-from exectools.gtk import (GtkOutputPane, GtkOutputHandler,
-                           GtkToolController, GtkDialogLoggingHandler,
-                           GtkLoggingHandler)
+from exectools.gtk import (GtkOutputPane, GtkOutputHandler, GtkToolController,
+                           GtkDialogLoggingHandler, GtkLoggingHandler)
 
 
 class GtkShell:
@@ -72,8 +70,8 @@ class GtkShell:
         outputpane = GtkOutputPane(hide_button=False)
         outputpane.set_editable(False)
         scrolledwin = Gtk.ScrolledWindow()
-        scrolledwin.set_policy(
-            Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        scrolledwin.set_policy(Gtk.PolicyType.AUTOMATIC,
+                               Gtk.PolicyType.AUTOMATIC)
         scrolledwin.add(outputpane)
 
         # Status bar
@@ -95,8 +93,7 @@ class GtkShell:
         self.mainwin = Gtk.Window()
         self.mainwin.set_title('GTK Shell')
         theme = Gtk.IconTheme.get_default()
-        icon = theme.load_icon(Gtk.STOCK_EXECUTE,
-                               Gtk.IconSize.LARGE_TOOLBAR,
+        icon = theme.load_icon(Gtk.STOCK_EXECUTE, Gtk.IconSize.LARGE_TOOLBAR,
                                Gtk.IconLookupFlags(0))
         self.mainwin.set_icon(icon)
         self.mainwin.add(vbox)
@@ -135,7 +132,7 @@ class GtkShell:
         self.controller.connect('finished', self.on_finished)
 
         # Final setup
-        self._state = 'ready'   # or maybe __state
+        self._state = 'ready'  # or maybe __state
 
         self.logger.debug('gtkshell session started at %s.' % time.asctime())
         self.load_history()

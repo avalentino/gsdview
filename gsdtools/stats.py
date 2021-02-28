@@ -17,9 +17,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Compute statistics and histograms of geo-spatial data."""
-
 
 import sys
 import logging
@@ -40,7 +38,6 @@ EX_FAILURE = 1
 GDAL_STATS_KEYS = ('STATISTICS_MINIMUM', 'STATISTICS_MAXIMUM',
                    'STATISTICS_MEAN', 'STATISTICS_STDDEV')
 
-
 # @NOTE: the band.GetStatistics method called with the second argument
 #        set to False (no image rescanning) has been fixed in
 #        r19666_ (1.6 branch) and r19665_ (1.7 branch)
@@ -50,8 +47,8 @@ GDAL_STATS_KEYS = ('STATISTICS_MINIMUM', 'STATISTICS_MAXIMUM',
 # .. _r19665: http://trac.osgeo.org/gdal/changeset/19665
 # .. _`ticket #3572`: http://trac.osgeo.org/gdal/ticket/3572
 # .. _`GDAL Trac`: http://trac.osgeo.org/gdal
-HAS_GETSTATS_FORCE_BUG = (('1640' <= gdal.VersionInfo() < '1700') or
-                          (gdal.VersionInfo() > '1720'))
+HAS_GETSTATS_FORCE_BUG = (('1640' <= gdal.VersionInfo() < '1700')
+                          or (gdal.VersionInfo() > '1720'))
 
 
 def SafeGetStatistics(band, approxok, force):

@@ -17,18 +17,16 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 import os
 import shutil
 import tempfile
 import unittest
 
-
 from gsdview import utils
 
 
 class TestDirectorySize(unittest.TestCase):
-    DATASIZE = 1024     # 1 kbyte
+    DATASIZE = 1024  # 1 kbyte
 
     def setUp(self):
         self.dirname = tempfile.mkdtemp(prefix='gsdview_test_utils_')
@@ -51,7 +49,7 @@ class TestDirectorySize(unittest.TestCase):
     def test_directory_size(self):
         self._popuate_test_dir()
         dirsize = utils.get_tree_size(self.dirname)
-        self.assertEqual(dirsize, 2*self.DATASIZE)
+        self.assertEqual(dirsize, 2 * self.DATASIZE)
 
     def test_empty_directory_size(self):
         dirsize = utils.get_tree_size(self.dirname)
@@ -59,7 +57,7 @@ class TestDirectorySize(unittest.TestCase):
 
 
 class TestDataUuid(unittest.TestCase):
-    DATASIZE = 1024     # 1 kbyte
+    DATASIZE = 1024  # 1 kbyte
 
     def setUp(self):
         self.fd = tempfile.NamedTemporaryFile(

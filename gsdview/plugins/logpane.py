@@ -15,7 +15,6 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Log pane."""
 
 __version__ = (0, 7, 0)

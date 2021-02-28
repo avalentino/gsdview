@@ -15,7 +15,6 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Site configuration module.
 
 :DATADIR: system configuration, auxdata, images, etc.
@@ -26,14 +25,12 @@
 
 """
 
-
 import os
 import sys
 
-
-__all__ = ['DATADIR', 'DOCSDIR', 'LICENSEFILE', 'SYSPLUGINSDIR',
-           'USERCONFIGDIR']
-
+__all__ = [
+    'DATADIR', 'DOCSDIR', 'LICENSEFILE', 'SYSPLUGINSDIR', 'USERCONFIGDIR'
+]
 
 if not hasattr(sys, 'frozen'):
     # Source schema
@@ -42,10 +39,10 @@ if not hasattr(sys, 'frozen'):
     SYSPLUGINSDIR = os.path.join(LIBDIR, 'plugins')
     del LIBDIR
 else:
-    if hasattr(sys, '_MEIPASS'):   # one-file temp's directory
+    if hasattr(sys, '_MEIPASS'):  # one-file temp's directory
         # @WARNING: this also happens in one-dir case
         GSDVIEWROOT = os.path.abspath(sys._MEIPASS)
-    else:   # one-dir
+    else:  # one-dir
         GSDVIEWROOT = os.path.dirname(os.path.abspath(sys.executable))
     SYSPLUGINSDIR = os.path.join(GSDVIEWROOT, 'plugins')
 

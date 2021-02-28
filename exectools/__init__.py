@@ -17,7 +17,6 @@
 
 """Tools for running external processes."""
 
-
 import re
 import os
 import sys
@@ -27,8 +26,10 @@ from io import StringIO
 
 __version__ = (0, 7, 0)
 
-__all__ = ['EX_OK', 'PROGRESS', 'TAGS', 'level2tag',
-           'BaseOutputHandler', 'BaseToolController', 'ToolDescriptor']
+__all__ = [
+    'EX_OK', 'PROGRESS', 'TAGS', 'level2tag', 'BaseOutputHandler',
+    'BaseToolController', 'ToolDescriptor'
+]
 
 version = '.'.join(map(str, __version__)) + '.dev'
 
@@ -520,7 +521,6 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
     class DummyToolController(BaseToolController):
-
         def connect_output_handlers(self):
             while self.subprocess:
                 self.handle_stdout()

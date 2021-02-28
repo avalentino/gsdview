@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """World map component for GSDView."""
-
 
 import numpy as np
 
@@ -111,9 +109,8 @@ class WorldmapPanel(QtWidgets.QDockWidget):
 
         # @NOTE: reverse the y axis
         worldmapitem.setTransform(
-            QtGui.QTransform(360. / worldmap.width(), 0,
-                             0, -180. / worldmap.height(),
-                             -180, 90))
+            QtGui.QTransform(+360. / worldmap.width(), 0, 0,
+                             -180. / worldmap.height(), -180, 90))
         self.worldmapitem = worldmapitem
         # return worldmapitem
 
@@ -136,8 +133,7 @@ class WorldmapPanel(QtWidgets.QDockWidget):
             self.actionZoomOut.setEnabled(False)
 
     def _fitInView(self):
-        self.graphicsview.fitInView(self.fitItem,
-                                    QtCore.Qt.KeepAspectRatio)
+        self.graphicsview.fitInView(self.fitItem, QtCore.Qt.KeepAspectRatio)
 
     def plot(self, polygon):
         # if points[0] != points[-1]:
@@ -202,7 +198,7 @@ class WorldmapController(QtCore.QObject):
         self.app = app
 
         self.panel = WorldmapPanel(app)
-        self.panel.setObjectName('worldmapPanel')   # @TODO: check
+        self.panel.setObjectName('worldmapPanel')  # @TODO: check
 
         app.mdiarea.subWindowActivated.connect(self.onSubWindowChanged)
         app.treeview.clicked.connect(self.onItemClicked)

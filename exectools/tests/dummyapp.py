@@ -76,7 +76,7 @@ refresh_rate_defaults = {
 refresh_rate = options.refresh_rate
 if refresh_rate is None:
     refresh_rate = refresh_rate_defaults[mode]
-assert(refresh_rate > 0), 'invalid refresh_rate'
+assert refresh_rate > 0, 'invalid refresh_rate'
 
 verbose = options.verbose
 

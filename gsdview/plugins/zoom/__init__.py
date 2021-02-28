@@ -15,13 +15,10 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Zoom tool."""
-
 
 from .info import *
 from .info import __version__, __requires__
-
 
 __all__ = [
     'init', 'close', 'loadSettings', 'saveSettings',
@@ -51,8 +48,8 @@ def init(app):
     # @TODO: move to tool (??)
     app.mdiarea.subWindowActivated.connect(
         lambda w: tool.actions.setEnabled(bool(w)))
-    app.subWindowClosed.connect(lambda: tool.actions.setEnabled(
-        bool(app.mdiarea.activeSubWindow())))
+    app.subWindowClosed.connect(
+        lambda: tool.actions.setEnabled(bool(app.mdiarea.activeSubWindow())))
 
     global _instance
     _instance = tool

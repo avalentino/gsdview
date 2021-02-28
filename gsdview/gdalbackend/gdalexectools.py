@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Custom exectools components for GDAL."""
-
 
 import re
 import logging
@@ -120,8 +118,8 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
 
         """
 
-        super().__init__(
-            'gdaladdo', [], cwd, env, stdout_handler, stderr_handler)
+        super().__init__('gdaladdo', [], cwd, env, stdout_handler,
+                         stderr_handler)
 
         #: ensure that gdaladdo works in readonly mode
         self.readonly = False
@@ -240,26 +238,26 @@ class GdalAddOverviewDescriptor(BaseGdalToolDescriptor):
                 value = 'NO'
             extra_args.extend(('--config', 'USE_RRD', value))
 
-        if (self.photometric_interpretation is not None and
-                'PHOTOMETRIC_OVERVIEW' not in cmd):
+        if (self.photometric_interpretation is not None
+                and 'PHOTOMETRIC_OVERVIEW' not in cmd):
 
             extra_args.extend(('--config', 'PHOTOMETRIC_OVERVIEW',
                                self.photometric_interpretation))
 
-        if (self._compression_method is not None and
-                'COMPRESS_OVERVIEW' not in cmd):
+        if (self._compression_method is not None
+                and 'COMPRESS_OVERVIEW' not in cmd):
 
             extra_args.extend(('--config', 'COMPRESS_OVERVIEW',
                                self._compression_method))
 
-        if (self._interleaving_method is not None and
-                'INTERLEAVE_OVERVIEW' not in cmd):
+        if (self._interleaving_method is not None
+                and 'INTERLEAVE_OVERVIEW' not in cmd):
 
             extra_args.extend(('--config', 'INTERLEAVE_OVERVIEW',
                                self._interleaving_method))
 
-        if (self._use_bigtiff_mode is not None and
-                'BIGTIFF_OVERVIEW' not in cmd):
+        if (self._use_bigtiff_mode is not None
+                and 'BIGTIFF_OVERVIEW' not in cmd):
 
             extra_args.extend(('--config', 'BIGTIFF_OVERVIEW',
                                self._use_bigtiff_mode))
@@ -373,8 +371,8 @@ class GdalOutputHandler(QtOutputHandler):
         pattern = (r'(?P<percentage>\d{1,3})|(?P<pulse>\.)|'
                    r'( - (?P<text>done\.?)\n)')
         self._progress_pattern = re.compile(pattern)
-        self._percentage = 0.   # @TODO: remove.  Set the progressbar maximum
-                                #        to 1000 instead.
+        self._percentage = 0.  # @TODO: remove.  Set the progressbar maximum
+                               #        to 1000 instead.
 
     def handle_progress(self, data):
         """Handle progress data.

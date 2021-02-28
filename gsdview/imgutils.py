@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Tools for geo-spatial images handling and visualization."""
-
 
 import numpy as np
 
@@ -67,7 +65,7 @@ def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0,
     if dtype not in (np.uint8, np.uint16):
         raise ValueError(
             'invalid dtype "%s" (uint8 or uint16 expected)' % dtype)
-    nmax = 2 ** (8 * dtype.itemsize)
+    nmax = 2**(8 * dtype.itemsize)
 
     if omax is None:
         omax = nmax - 1
@@ -86,7 +84,7 @@ def linear_lut(vmin=0, vmax=None, dtype='uint8', fill=False, omin=0,
     elif fill:
         nout = max(nout, fill)
 
-    if nout > 2 ** 32:
+    if nout > 2**32:
         raise ValueError('requested LUT is too large: %d.' % nout)
 
     lut = np.arange(nout, dtype='float32')
@@ -130,7 +128,7 @@ def histogram_equalized_lut(hist, dtype='uint8', fill=False):
     if dtype not in (np.uint8, np.uint16):
         raise ValueError(
             'invalid dtype "%s" (uint8 or uint16 expected)' % dtype)
-    nmax = 2 ** (8 * dtype.itemsize)
+    nmax = 2**(8 * dtype.itemsize)
 
     hist = np.ravel(hist)
 
@@ -167,7 +165,7 @@ def log_lut(dtype='uint8'):
     if dtype not in (np.uint8, np.uint16):
         raise ValueError(
             'invalid dtype "%s" (uint8 or uint16 expected)' % dtype)
-    nmax = 2 ** (8 * dtype.itemsize)
+    nmax = 2**(8 * dtype.itemsize)
     vmax = nmax - 1
 
     lut = np.arange(nmax, 'float64')
@@ -184,7 +182,7 @@ def root(dtype='uint8'):
     if dtype not in (np.uint8, np.uint16):
         raise ValueError(
             'invalid dtype "%s" (uint8 or uint16 expected)' % dtype)
-    nmax = 2 ** (8 * dtype.itemsize)
+    nmax = 2**(8 * dtype.itemsize)
     vmax = nmax - 1
 
     lut = np.arange(nmax, 'float64')
@@ -201,11 +199,11 @@ def square(dtype='uint8'):
     if dtype not in (np.uint8, np.uint16):
         raise ValueError(
             'invalid dtype "%s" (uint8 or uint16 expected)' % dtype)
-    nmax = 8 ** dtype.itemsize
+    nmax = 8**dtype.itemsize
     vmax = nmax - 1
 
     lut = np.arange(nmax, 'float64')
-    lut = vmax * (lut / vmax) ** 2
+    lut = vmax * (lut / vmax)**2
     lut.clip(0, vmax)
 
     return lut.astype(dtype)
@@ -395,7 +393,7 @@ class LogarithmicStretcher(BaseStretcher):
         super().__init__(vmin, vmax, dtype)
         self.offset = offset
         self.scale = scale
-        assert(base in self._logfunctions)
+        assert base in self._logfunctions
         self.base = base
 
     def __call__(self, data):
@@ -404,8 +402,8 @@ class LogarithmicStretcher(BaseStretcher):
             data -= self.offset
 
         base = self._bases[self.base]
-        clipmin = base ** (self.min / self.scale)
-        clipmax = base ** (self.max / self.scale)
+        clipmin = base**(self.min / self.scale)
+        clipmax = base**(self.max / self.scale)
         assert clipmin > 0
         data = data.clip(clipmin, clipmax, out=data)
 

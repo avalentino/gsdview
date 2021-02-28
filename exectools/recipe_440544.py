@@ -87,6 +87,7 @@ class Popen(subprocess.Popen):
         setattr(self, which, None)
 
     if subprocess.mswindows:
+
         def send(self, input):
             if not self.stdin:
                 return None
@@ -127,6 +128,7 @@ class Popen(subprocess.Popen):
             return read
 
     else:
+
         def send(self, input):
             if not self.stdin:
                 return None

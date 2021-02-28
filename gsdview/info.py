@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Package info."""
-
 
 import sys
 import platform
@@ -32,9 +30,11 @@ from .compat import linux_distribution
 
 __version__ = (0, 7, 0)
 
-__all__ = ['name', 'version', 'short_description', 'description',
-           'author', 'author_email', 'copyright', 'license_type',
-           'website', 'website_label', 'all_versions', 'all_versions_str']
+__all__ = [
+    'name', 'version', 'short_description', 'description', 'author',
+    'author_email', 'copyright', 'license_type', 'website', 'website_label',
+    'all_versions', 'all_versions_str'
+]
 
 name = 'GSDView'
 version = '.'.join(str(v) for v in __version__) + '.dev2'
@@ -58,7 +58,6 @@ license_type = 'GNU GPL'
 website = 'http://gsdview.sourceforge.net'
 website_label = website
 download_url = 'http://sourceforge.net/projects/gsdview/files'
-
 
 all_versions = [
     ('GSDView', version, website),

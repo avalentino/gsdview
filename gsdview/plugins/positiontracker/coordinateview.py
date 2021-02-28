@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Position tool."""
-
 
 from qtpy import QtCore, QtWidgets
 
@@ -70,7 +68,7 @@ class GeoCoordinateView(CoordinateView):
 
         # @TODO: the imgToGeoPoints method should return the same type
         vlon, vlat = cmapper.imgToGeoPoints(scenepos.x(), scenepos.y())
-        lon, lat = vlon[0], vlat[0]    # @TODO: fix
+        lon, lat = vlon[0], vlat[0]  # @TODO: fix
 
         self.xedit.setText(str(lon))
         self.yedit.setText(str(lat))

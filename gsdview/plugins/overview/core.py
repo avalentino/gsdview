@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Overview panel for GDAL raster bands."""
-
 
 import logging
 
@@ -163,7 +161,7 @@ class NavigationGraphicsView(QtWidgets.QGraphicsView):
 
 
 class BandOverviewDock(QtWidgets.QDockWidget):
-    OVRMAXSIZE = 10 * 1024 ** 2  # 10MB
+    OVRMAXSIZE = 10 * 1024**2  # 10MB
 
     def __init__(self, app, flags=QtCore.Qt.WindowFlags(0), **kwargs):
         # title = self.tr('Dataset Browser')
@@ -257,8 +255,8 @@ class BandOverviewDock(QtWidgets.QDockWidget):
             # self.graphicsview.viewbox = polygon.boundingRect()
 
             # @NOTE: this is a workaround; mapToScene should be used instead
-            rect = QtCore.QRectF(hbar.value(), vbar.value(),
-                                 hbar.pageStep(), vbar.pageStep())
+            rect = QtCore.QRectF(hbar.value(), vbar.value(), hbar.pageStep(),
+                                 vbar.pageStep())
             transform = srcview.transform().inverted()[0]
             self.graphicsview.viewbox = transform.mapRect(rect)
 
@@ -272,7 +270,7 @@ class OverviewController(QtCore.QObject):
         self.app = app
 
         self.panel = BandOverviewDock(app)
-        self.panel.setObjectName('bandOverviewPanel')   # @TODO: check
+        self.panel.setObjectName('bandOverviewPanel')  # @TODO: check
         app.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.panel)
 
         # Connect signals
@@ -310,8 +308,8 @@ class OverviewController(QtCore.QObject):
     def onItemChanged(self, item):
         if hasattr(item, 'scene'):
             srcview = self.app.currentGraphicsView()
-            if (srcview and srcview.scene() is item.scene and
-                    not self.panel.graphicsview.scene()):
+            if (srcview and srcview.scene() is item.scene
+                    and not self.panel.graphicsview.scene()):
                 self.panel.setItem(item)
 
     # @TODO: translate into an event handler

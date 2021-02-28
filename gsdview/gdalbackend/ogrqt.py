@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Helper tools and custom components for binding OGR and Qt."""
-
 
 import logging
 
@@ -144,8 +142,8 @@ def singleGeometryToGraphicsItem(geom, transform=None):
         # brush.setStyle(QtCore.Qt.SolidPattern)
         qitem.setBrush(brush)
 
-    elif (gtype in (ogr.wkbLineString, ogr.wkbLineString25D) and
-            geom.GetPointCount() == 2):
+    elif (gtype in (ogr.wkbLineString, ogr.wkbLineString25D)
+          and geom.GetPointCount() == 2):
         p0 = geom.GetPoint(0)
         p1 = geom.GetPoint(1)
         if transform:
@@ -227,8 +225,9 @@ def geometryToGraphicsItem(geom, transform=None):
                 qsubitem.setData(DATAKEY['index'], index)
                 qitem.addToGroup(qsubitem)
             else:
-                _log.debug('unable to instantiate a graphics item from '
-                           'OGR geometry "%s"', subgeom)
+                _log.debug(
+                    'unable to instantiate a graphics item from '
+                    'OGR geometry "%s"', subgeom)
         # qitem.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable)
         return qitem
     elif geom.GetGeometryCount() == 1:
@@ -282,8 +281,8 @@ def layerToGraphicsItem(layer, srs=None, transform=None):
     """
 
     layer_srs = layer.GetSpatialRef()
-    if (srs is not None and layer_srs is not None and
-            not layer_srs.IsSame(srs)):
+    if (srs is not None and layer_srs is not None
+            and not layer_srs.IsSame(srs)):
         srs_transform = osr.CoordinateTransformation(layer_srs, srs)
     else:
         srs_transform = None
@@ -322,8 +321,9 @@ def layerToGraphicsItem(layer, srs=None, transform=None):
             if qitem:
                 qfeature.addToGroup(qitem)
             else:
-                _log.warning('unable to instantiate a graphics item from '
-                             'OGR geometry "%s"', geom)
+                _log.warning(
+                    'unable to instantiate a graphics item from '
+                    'OGR geometry "%s"', geom)
         else:
             _log.info('feature %d has no geometry', feature.GetFID())
         qlayer.addToGroup(qfeature)
@@ -426,7 +426,6 @@ graphical representation::
 .. seealso:: http://www.gdal.org/ogr/ogr_feature_style.html sect 2.2
 
 '''
-
 
 # gdal-1.8.x/src/autotest/ogr/ogr_dgn.py
 # gdal-1.8.x/src/autotest/ogr/ogr_dxf.py

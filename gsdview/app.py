@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """GUI front-end for the Geospatial Data Abstraction Library (GDAL)."""
-
 
 import os
 import sys
@@ -51,7 +49,6 @@ class GSDView(ItemModelMainWindow):
     #   * open internal product
     #   * disable actions when the external tool is running
     #   * /usr/share/doc/python-qt4-doc/examples/mainwindows/recentfiles.py
-
     """Main window class for GSDView application."""
 
     def __init__(self, parent=None, flags=QtCore.Qt.WindowFlags(0), **kwargs):
@@ -497,8 +494,8 @@ class GSDView(ItemModelMainWindow):
             #     self.resize(800, 600)
 
             geometry = settings.value('geometry')
-            if (not geometry or
-                    (geometry and not self.restoreGeometry(geometry))):
+            if (not geometry
+                    or (geometry and not self.restoreGeometry(geometry))):
                 # default size
                 self.resize(800, 600)
 
@@ -785,7 +782,7 @@ class GSDView(ItemModelMainWindow):
                 msg = ('An error occurred during the quicklook generation.\n'
                        'Now close the dataset.')
                 QtWidgets.QMessageBox.warning(self, '', msg)
-                self.closeItem()   # @TODO: check
+                self.closeItem()  # @TODO: check
         finally:
             self.progressbar.hide()
             self.stopbutton.setEnabled(False)

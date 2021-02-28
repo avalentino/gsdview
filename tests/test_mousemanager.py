@@ -17,7 +17,6 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 import os
 import sys
 
@@ -131,12 +130,14 @@ class MainWin(QtWidgets.QMainWindow):
     @QtCore.Slot()
     def about(self):
         title = self.tr('MouseManager Example')
-        text = ['<h1>Mouse Manager</h1>'
-                '<p>Example program for the Mouse manager component.</p>',
-                '<p>Copyright (C): 2009-2021 '
-                '<a href="mailto:antonio.valentino@tiscali.it">'
-                'Antonio Valentino'
-                '<a>.</p>']
+        text = [
+            '<h1>Mouse Manager</h1>'
+            '<p>Example program for the Mouse manager component.</p>',
+            '<p>Copyright (C): 2009-2021 '
+            '<a href="mailto:antonio.valentino@tiscali.it">'
+            'Antonio Valentino'
+            '<a>.</p>'
+        ]
         text = self.tr('\n'.join(text))
         QtWidgets.QMessageBox.about(self, title, text)
 

@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Helper tools and custom components for binding GDAL and Qt."""
-
 
 import logging
 import collections
@@ -111,8 +109,8 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
 
         x = int((rect.x() - boundingRect.x()) // ovrlevel)
         y = int((rect.y() - boundingRect.y()) // ovrlevel)
-        width = rect.width() // ovrlevel + 1        # @TODO: check
-        height = rect.height() // ovrlevel + 1      # @TODO: check
+        width = rect.width() // ovrlevel + 1    # @TODO: check
+        height = rect.height() // ovrlevel + 1  # @TODO: check
 
         if x < 0:
             x = 0
@@ -135,7 +133,7 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
     @staticmethod
     def _levelOfDetailFromTransform(worldTransform):
         if worldTransform.type() <= QtGui.QTransform.TxTranslate:
-            return 1    # Translation only? The LOD is 1.
+            return 1  # Translation only? The LOD is 1.
 
         # Two unit vectors.
         v1 = QtCore.QLineF(0, 0, 1, 0)
@@ -183,7 +181,7 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
         if band and gdalsupport.hasFastStats(band):
             stats = gdalsupport.SafeGetStatistics(band, True, True)
 
-        if None in stats and data is not None and data.size <= 4 * 1024 ** 2:
+        if None in stats and data is not None and data.size <= 4 * 1024**2:
             stats = safeDataStats(data, band.GetNoDataValue())
 
         if None in stats:
@@ -219,7 +217,7 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
                     vmin, vmax = 0, vmax * np.sqrt(2)
                 return vmin, vmax
 
-        if data is not None and data.size <= 4 * 1024 ** 2:
+        if data is not None and data.size <= 4 * 1024**2:
             vmin, vmax, mean, stddev = safeDataStats(band)
             if None not in (vmin, vmax, mean, stddev):
                 return data.min(), data.max()
@@ -227,12 +225,12 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
         if band:
             tmap = {
                 gdal.GDT_Byte: (0, 255),
-                gdal.GDT_UInt16: (0, 2 ** 16 - 1),
-                gdal.GDT_UInt32: (0, 2 ** 32 - 1),
-                gdal.GDT_Int16: (-2 ** 15, 2 ** 15 - 1),
-                gdal.GDT_Int32: (-2 ** 31, 2 ** 31 - 1),
-                gdal.GDT_CInt16: (0, 2 ** 15 * np.sqrt(2)),
-                gdal.GDT_CInt32: (0, 2 ** 31 * np.sqrt(2)),
+                gdal.GDT_UInt16: (0, 2**16 - 1),
+                gdal.GDT_UInt32: (0, 2**32 - 1),
+                gdal.GDT_Int16: (-2**15, 2**15 - 1),
+                gdal.GDT_Int32: (-2**31, 2**31 - 1),
+                gdal.GDT_CInt16: (0, 2**15 * np.sqrt(2)),
+                gdal.GDT_CInt32: (0, 2**31 * np.sqrt(2)),
                 gdal.GDT_CFloat32: (0, None),
                 gdal.GDT_CFloat64: (0, None),
             }
@@ -292,6 +290,7 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
         actiongroup = QtWidgets.QActionGroup(menu)
         actiongroup.setExclusive(True)
         for name in funcs.keys():
+
             def set_proc_func(checked, key=name):
                 # @TODO: also adjust the stretch object
                 func = funcs[key]
@@ -326,6 +325,7 @@ class BaseGdalGraphicsItem(QtWidgets.QGraphicsItem):
         actiongroup = QtWidgets.QActionGroup(menu)
         actiongroup.setExclusive(True)
         for name in colortables.keys():
+
             def set_colortable(checked, key=name):
                 ct = colortables[key]
                 if id(ct) != id(self.colortable):
@@ -377,7 +377,7 @@ class UIntGdalGraphicsItem(BaseGdalGraphicsItem):
             raise ValueError('invalid data type: "%s"' % typename)
 
         dtype = np.dtype(GDALTypeCodeToNumericTypeCode(band.DataType))
-        self.stretch = imgutils.LUTStretcher(fill=2 ** (8 * dtype.itemsize))
+        self.stretch = imgutils.LUTStretcher(fill=2**(8 * dtype.itemsize))
         self._stretch_initialized = False
         self.colortable = qtsupport.GRAY_COLORTABLE
 

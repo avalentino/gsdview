@@ -164,8 +164,8 @@ class StdToolController(BaseToolController):
                 if self._userstop:
                     self.logger.info('Execution stopped by the user.')
                 elif self.subprocess.returncode != EX_OK:
-                    msg = ('Process (PID=%d) exited with return code %d.' % (
-                        self.subprocess.pid, self.subprocess.returncode))
+                    msg = ('Process (PID=%d) exited with return code %d.' %
+                           (self.subprocess.pid, self.subprocess.returncode))
                     self.logger.warning(msg)
 
                 # Call finalize hook is available

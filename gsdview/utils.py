@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Utility functions and classes for GSDView."""
-
 
 import os
 import sys
@@ -40,8 +38,13 @@ from gsdview.compat import linux_distribution
 
 
 __all__ = [
-    'isexecutable', 'isscript', 'scriptcmd', 'default_workdir',
-    'getresource', 'format_platform_info', 'format_bugreport',
+    'isexecutable',
+    'isscript',
+    'scriptcmd',
+    'default_workdir',
+    'getresource',
+    'format_platform_info',
+    'format_bugreport',
 ]
 
 
@@ -89,7 +92,7 @@ def getresource(resource, package=None):
     """
 
     if package:
-        if not hasattr(sys, 'frozen'):   # not packed
+        if not hasattr(sys, 'frozen'):  # not packed
             return _getresource(resource, package)
         else:
             m = __import__(package)
@@ -175,8 +178,8 @@ else:
 
         if os.path.isfile(cmd):
             mode = os.stat(cmd)[stat.ST_MODE]
-            if ((mode & stat.S_IXUSR) or (mode & stat.S_IXGRP) or
-                    (mode & stat.S_IXOTH)):
+            if ((mode & stat.S_IXUSR) or (mode & stat.S_IXGRP)
+                    or (mode & stat.S_IXOTH)):
                 return True
         return False
 
@@ -234,6 +237,7 @@ def scriptcmd(scriptname):
 
 # Cache #####################################################################
 if hasattr(os, 'scandir'):
+
     def get_tree_size(path):
         """Return total size of files in given path and subdirs."""
 
@@ -247,6 +251,7 @@ if hasattr(os, 'scandir'):
 
         return total
 else:
+
     def get_tree_size(path):
         """Return total size of files in given path and subdirs."""
 

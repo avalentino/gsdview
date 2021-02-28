@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Core GDAL backend functions and classes."""
-
 
 import os
 import logging
@@ -690,6 +688,7 @@ from gsdview.mdi import ItemSubWindow
 
 # @TODO: move elsewhere
 class GraphicsViewSubWindow(ItemSubWindow):
+
     def __init__(self, item, parent=None, flags=QtCore.Qt.WindowFlags(0),
                  **kwargs):
         super().__init__(item, parent, flags, **kwargs)

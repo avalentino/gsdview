@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Utility functions and classes for Qt5 applications."""
-
 
 import os
 import csv
@@ -32,7 +30,6 @@ from gsdview import utils
 
 
 _log = logging.getLogger(__name__)
-
 
 # @COMPATIBILITY: PySide
 # Credit:
@@ -1026,7 +1023,8 @@ def imgexport(obj, parent=None):
 
     formats = {
         str(fmt).lower()
-        for fmt in QtGui.QImageWriter.supportedImageFormats()}
+        for fmt in QtGui.QImageWriter.supportedImageFormats()
+    }
     formats.update(('svg', 'pdf', 'ps'))
 
     # @TODO: check
@@ -1076,7 +1074,8 @@ def imgexport(obj, parent=None):
                 device.setOutputFormat(QtPrintSupport.QPrinter.PdfFormat)
             else:
                 # ext == 'ps'
-                device.setOutputFormat(QtPrintSupport.QPrinter.PostScriptFormat)
+                device.setOutputFormat(
+                    QtPrintSupport.QPrinter.PostScriptFormat)
         elif ext == 'svg':
             device = QtSvg.QSvgGenerator()
             device.setFileName(filename)

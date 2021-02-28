@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """GDAL items for Qt QStandardItemModel."""
-
 
 import os
 import logging
@@ -194,11 +192,13 @@ class BandItem(MajorObjectItem):
             return
 
         if VISIBLE_OVERVIEW_ITEMS:
-            levelsmap = dict(zip(gdalsupport.ovrLevels(gdalobj),
-                                 range(gdalobj.GetOverviewCount())))
+            levelsmap = dict(
+                zip(gdalsupport.ovrLevels(gdalobj),
+                    range(gdalobj.GetOverviewCount())))
 
-            oldlevelsmap = dict(zip(gdalsupport.ovrLevels(self._obj),
-                                range(self._obj.GetOverviewCount())))
+            oldlevelsmap = dict(
+                zip(gdalsupport.ovrLevels(self._obj),
+                    range(self._obj.GetOverviewCount())))
 
             toremove = []
             for level, index in oldlevelsmap.items():
@@ -347,8 +347,10 @@ class DatasetItem(MajorObjectItem):
 
     def GetSubDatasets(self):
         # @NOTE: raster bands are always inserted before subdatasets
-        return [self.child(index) for index in range(self.RasterCount,
-                                                     self.rowCount())]
+        return [
+            self.child(index)
+            for index in range(self.RasterCount, self.rowCount())
+        ]
 
     def _setup_child_bands(self, gdalobj):
         # @NOTE: raster bands are always inserted before subdatasets

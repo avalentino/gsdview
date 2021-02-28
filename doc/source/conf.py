@@ -148,8 +148,10 @@ html_static_path = ['_static']
 # 'searchbox.html']``.
 #
 html_sidebars = {
-    'index': ['localtoc.html', 'relations.html', 'sourcelink.html',
-              'sfpagesidebar.html', 'searchbox.html', 'ohlohsidebar.html'],
+    'index': [
+        'localtoc.html', 'relations.html', 'sourcelink.html',
+        'sfpagesidebar.html', 'searchbox.html', 'ohlohsidebar.html'
+    ],
 }
 
 # If false, no index is generated.
@@ -200,8 +202,7 @@ latex_logo = 'images/logo_large.pdf'
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('manpage', 'gsdview', 'Geo-spatial data viewer',
-     [author], 1)
+    ('manpage', 'gsdview', 'Geo-spatial data viewer', [author], 1),
 ]
 
 
@@ -241,8 +242,10 @@ epub_exclude_files = ['search.html']
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    'python': ('https://docs.python.org/3',
-               '/usr/share/doc/python3/html/objects.inv'),
+    'python': (
+        'https://docs.python.org/3',
+        '/usr/share/doc/python3/html/objects.inv',
+    ),
 }
 
 # -- Options for todo extension ----------------------------------------------

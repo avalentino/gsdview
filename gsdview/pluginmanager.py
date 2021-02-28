@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Plugin manager."""
-
 
 import os
 import sys
@@ -27,7 +25,6 @@ from distutils.versionpredicate import VersionPredicate
 
 
 _log = logging.getLogger(__name__)
-
 
 try:
     import pkg_resources
@@ -123,7 +120,7 @@ class PluginManager:
         try:
             # @TODO: find a more general form to pass arguments to plugins
             module.init(self._app)
-        except Exception as e:   # AttributeError:
+        except Exception as e:  # AttributeError:
             _log.warning('error loading "%s" plugin: %s', name, e)
             _log.debug(str(e), exc_info=True)
             try:
@@ -214,7 +211,8 @@ class PluginManager:
                 for name, module in delayed.items():
                     if not self._check_deps(module):
                         delayed_again[name] = module
-                        _log.debug('loading of "%s" plugin delayed again', name)
+                        _log.debug(
+                            f'loading of "{name}" plugin delayed again')
 
                     else:
                         self.load_module(module, name)
@@ -249,7 +247,7 @@ class PluginManager:
     def save_settings(self, settings):
         settings.beginGroup('pluginmanager')
         try:
-            paths = list(self.paths)    # @NOTE: copy
+            paths = list(self.paths)  # @NOTE: copy
             if self.syspath in paths:
                 paths.remove(self.syspath)
             settings.setValue('pluginspaths', paths)

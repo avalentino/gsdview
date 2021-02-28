@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Launcher script for gsdview."""
-
 
 import logging
 import datetime
@@ -254,7 +252,7 @@ def main():
     app.processEvents()
 
     log.info('Install the exception hook')
-    sys.excepthook = mainwin.excepthook     # @TODO: check
+    sys.excepthook = mainwin.excepthook  # @TODO: check
 
     log.info('Enter main event loop')
 

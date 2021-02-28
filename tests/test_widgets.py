@@ -75,6 +75,7 @@ def test_exceptiondialog():
         else:
             1 / depth
         return f(depth - 1, verbose)
+
     try:
         f(4)
     except Exception:

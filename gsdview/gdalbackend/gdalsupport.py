@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Support tools and classes for the GDAL library."""
-
 
 import os
 import shutil
@@ -246,7 +244,7 @@ def gdalFilters(mode='r'):
             ext = metadata['DMD_EXTENSION']
             if ext:
                 if name.endswith(' (.%s)' % ext):
-                    name = name[0: -len(ext) - 4]
+                    name = name[0:-len(ext) - 4]
 
                 if 'w' in mode:
                     CREATECOPY = metadata.get(gdal.DCAP_CREATECOPY)
@@ -263,7 +261,7 @@ def gdalFilters(mode='r'):
     return filters
 
 
-def ogrFilters():   # mode='r'):
+def ogrFilters():  # mode='r'):
     """Returns the list of OGR file filters as expected by Qt"""
 
     # @TODO: move to an OGR specific module (??)
@@ -368,8 +366,9 @@ def isRGB(dataset, strict=False):
 
 
 # Statistics helpers ########################################################
-SAFE_GDAL_STATS = (('1640' <= gdal.VersionInfo() < '1700') or
-                   (gdal.VersionInfo() > '1720'))
+# @COMPATIBILITY: GDAL
+SAFE_GDAL_STATS = (('1640' <= gdal.VersionInfo() < '1700')
+                   or (gdal.VersionInfo() > '1720'))
 
 GDAL_STATS_KEYS = ('STATISTICS_MINIMUM', 'STATISTICS_MAXIMUM',
                    'STATISTICS_MEAN', 'STATISTICS_STDDEV')
@@ -593,7 +592,7 @@ def _fixedGCPs(gcps):
         # @WARNING: here we are assuming that the distance between geolocation
         #           grid linse is constant
         assert upsteps.max() == upsteps[:-1].min(), (
-                f'max = {upsteps.max():f}, min = {upsteps.min():f}')
+            f'max = {upsteps.max():f}, min = {upsteps.min():f}')
         linespacing = int(upsteps[0])
 
         downstepslocation = np.where(lines[1:] < lines[0:-1])[0] + 1
@@ -626,7 +625,7 @@ class CoordinateMapper:
             try:
                 projection = dataset.GetGCPProjection()
                 gcps = dataset.GetGCPs()
-                gcps = _fixedGCPs(gcps)      # @TODO: remove
+                gcps = _fixedGCPs(gcps)  # @TODO: remove
                 self._geotransform = gdal.GCPsToGeoTransform(gcps)
             except Exception:
                 _log.warning('unable to retrieve geo-transform and '
@@ -789,7 +788,7 @@ def ovrLevelForSize(gdalobj, ovrsize=OVRMEMSIE):
         band = gdalobj
 
         # bytePerPixel = gdal.GetDataTypeSize(band.DataType) / 8
-        bytesperpixel = 1   # the quicklook image is always converted to byte
+        bytesperpixel = 1  # the quicklook image is always converted to byte
         datasize = band.XSize * band.YSize * bytesperpixel
         ovrlevel = np.sqrt(datasize / float(ovrsize))
         ovrlevel = max(round(ovrlevel), 1)
@@ -915,9 +914,9 @@ def ovrComputeLevels(gdalobj, ovrsize=OVRMEMSIE, estep=3, threshold=0.1):
     else:
         startexponent = 1
 
-    maxesponent = np.ceil(maxfactor ** (1. / estep))
+    maxesponent = np.ceil(maxfactor**(1. / estep))
     exponents = np.arange(startexponent, maxesponent + 1)
-    missinglevels = estep ** exponents
+    missinglevels = estep**exponents
     missinglevels = missinglevels.astype(np.int)
 
     # Remove existng levels to avoid re-computation

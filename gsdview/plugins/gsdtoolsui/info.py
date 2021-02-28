@@ -15,16 +15,15 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Package info."""
 
 __version__ = (0, 7, 0)
 __requires__ = ['gdalbackend']
 
-__all__ = ['name', 'version', 'short_description', 'description',
-           'author', 'author_email', 'copyright', 'license_type',
-           'website', 'website_label']
-
+__all__ = [
+    'name', 'version', 'short_description', 'description', 'author',
+    'author_email', 'copyright', 'license_type', 'website', 'website_label'
+]
 
 name = 'gsdtoolsui'
 version = '.'.join(map(str, __version__)) + '.dev'

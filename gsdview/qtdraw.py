@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Drawing components for Qt5."""
-
 
 from qtpy import QtCore, QtWidgets, QtGui
 
@@ -57,7 +55,7 @@ def _highlightSelectedGraphicsItem(item, painter, option, boundingrect=None):
         itemPenWidth = 1.0
 
     pad = itemPenWidth / 2
-    penWidth = 0            # cosmetic pen
+    penWidth = 0  # cosmetic pen
 
     fgcolor = option.palette.windowText().color()
     # ensure good contrast against fgcolor
@@ -215,12 +213,12 @@ class DrawPointMode(MouseMode):
     name = 'drawPoint'
 
     def sceneEventFilter(self, obj, event):
-        if (event.type() == QtCore.QEvent.GraphicsSceneMousePress and
-                event.button() == QtCore.Qt.LeftButton):
+        if (event.type() == QtCore.QEvent.GraphicsSceneMousePress
+                and event.button() == QtCore.Qt.LeftButton):
             return True
 
-        elif (event.type() == QtCore.QEvent.GraphicsSceneMouseRelease and
-                event.button() == QtCore.Qt.LeftButton):
+        elif (event.type() == QtCore.QEvent.GraphicsSceneMouseRelease
+              and event.button() == QtCore.Qt.LeftButton):
             pen = QtGui.QPen()
             pen.setColor(QtCore.Qt.red)
 
@@ -256,18 +254,18 @@ class DrawLineMode(MouseMode):
         self.pen.setColor(QtCore.Qt.red)
 
     def sceneEventFilter(self, obj, event):
-        if (event.type() == QtCore.QEvent.GraphicsSceneMousePress and
-                event.button() == QtCore.Qt.LeftButton):
-            assert(self.rubberband is None)
+        if (event.type() == QtCore.QEvent.GraphicsSceneMousePress
+                and event.button() == QtCore.Qt.LeftButton):
+            assert self.rubberband is None
             self.rubberband = QtWidgets.QRubberBand(QtWidgets.QRubberBand.Line)
             self.rubberband.setGeometry(
                 QtCore.QRect(event.screenPos(), QtCore.QSize()))
             self.rubberband.show()
             return True
 
-        if (event.type() == QtCore.QEvent.GraphicsSceneMouseRelease and
-                event.button() == QtCore.Qt.LeftButton):
-            assert(self.rubberband is not None)
+        if (event.type() == QtCore.QEvent.GraphicsSceneMouseRelease
+                and event.button() == QtCore.Qt.LeftButton):
+            assert self.rubberband is not None
             self.rubberband.hide()
             self.rubberband = None
             line = QtCore.QLineF(
@@ -278,9 +276,9 @@ class DrawLineMode(MouseMode):
             item.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, True)
             return True
 
-        elif (event.type() == QtCore.QEvent.GraphicsSceneMouseMove and
-                bool(event.buttons() & QtCore.Qt.LeftButton)):
-            assert(self.rubberband is not None)
+        elif (event.type() == QtCore.QEvent.GraphicsSceneMouseMove
+              and bool(event.buttons() & QtCore.Qt.LeftButton)):
+            assert self.rubberband is not None
             rect = QtCore.QRect(
                 event.buttonDownScreenPos(QtCore.Qt.LeftButton),
                 event.screenPos()).normalized()
@@ -361,9 +359,9 @@ class DrawRectMode(MouseMode):
         # self.brush.setColor(QtCore.Qt.red)
 
     def sceneEventFilter(self, obj, event):
-        if (event.type() == QtCore.QEvent.GraphicsSceneMousePress and
-                event.button() == QtCore.Qt.LeftButton):
-            assert(self.rubberband is None)
+        if (event.type() == QtCore.QEvent.GraphicsSceneMousePress
+                and event.button() == QtCore.Qt.LeftButton):
+            assert self.rubberband is None
             self.rubberband = QtWidgets.QRubberBand(
                 QtWidgets.QRubberBand.Rectangle)
             self.rubberband.setGeometry(
@@ -371,9 +369,9 @@ class DrawRectMode(MouseMode):
             self.rubberband.show()
             return True
 
-        if (event.type() == QtCore.QEvent.GraphicsSceneMouseRelease and
-                event.button() == QtCore.Qt.LeftButton):
-            assert(self.rubberband is not None)
+        if (event.type() == QtCore.QEvent.GraphicsSceneMouseRelease
+                and event.button() == QtCore.Qt.LeftButton):
+            assert self.rubberband is not None
             self.rubberband.hide()
             self.rubberband = None
             rect = QtCore.QRectF(
@@ -384,9 +382,9 @@ class DrawRectMode(MouseMode):
             item.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, True)
             return True
 
-        elif (event.type() == QtCore.QEvent.GraphicsSceneMouseMove and
-                bool(event.buttons() & QtCore.Qt.LeftButton)):
-            assert(self.rubberband is not None)
+        elif (event.type() == QtCore.QEvent.GraphicsSceneMouseMove
+              and bool(event.buttons() & QtCore.Qt.LeftButton)):
+            assert self.rubberband is not None
             rect = QtCore.QRect(
                 event.buttonDownScreenPos(QtCore.Qt.LeftButton),
                 event.screenPos()).normalized()
@@ -414,9 +412,9 @@ class DrawEllipseMode(MouseMode):
         # self.brush.setColor(QtCore.Qt.red)
 
     def sceneEventFilter(self, obj, event):
-        if (event.type() == QtCore.QEvent.GraphicsSceneMousePress and
-                event.button() == QtCore.Qt.LeftButton):
-            assert(self.rubberband is None)
+        if (event.type() == QtCore.QEvent.GraphicsSceneMousePress
+                and event.button() == QtCore.Qt.LeftButton):
+            assert self.rubberband is None
             self.rubberband = QtWidgets.QRubberBand(
                 QtWidgets.QRubberBand.Rectangle)
             self.rubberband.setGeometry(
@@ -424,9 +422,9 @@ class DrawEllipseMode(MouseMode):
             self.rubberband.show()
             return True
 
-        if (event.type() == QtCore.QEvent.GraphicsSceneMouseRelease and
-                event.button() == QtCore.Qt.LeftButton):
-            assert(self.rubberband is not None)
+        if (event.type() == QtCore.QEvent.GraphicsSceneMouseRelease
+                and event.button() == QtCore.Qt.LeftButton):
+            assert self.rubberband is not None
             self.rubberband.hide()
             self.rubberband = None
             rect = QtCore.QRectF(
@@ -437,9 +435,9 @@ class DrawEllipseMode(MouseMode):
             item.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, True)
             return True
 
-        elif (event.type() == QtCore.QEvent.GraphicsSceneMouseMove and
-                bool(event.buttons() & QtCore.Qt.LeftButton)):
-            assert(self.rubberband is not None)
+        elif (event.type() == QtCore.QEvent.GraphicsSceneMouseMove
+              and bool(event.buttons() & QtCore.Qt.LeftButton)):
+            assert self.rubberband is not None
             rect = QtCore.QRect(
                 event.buttonDownScreenPos(QtCore.Qt.LeftButton),
                 event.screenPos()).normalized()

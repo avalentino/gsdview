@@ -17,7 +17,6 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 import os
 import sys
 import logging
@@ -198,8 +197,7 @@ class GraphicsDrawApp(QtWidgets.QMainWindow):
             statusTip=self.tr('Zoom Fit'),
             # checkable=True,
             triggered=lambda: self.graphicsview.fitInView(
-                self.graphicsview.sceneRect(),
-                QtCore.Qt.KeepAspectRatio))
+                self.graphicsview.sceneRect(), QtCore.Qt.KeepAspectRatio))
 
         return actions
 
@@ -225,11 +223,13 @@ class GraphicsDrawApp(QtWidgets.QMainWindow):
     @QtCore.Slot()
     def about(self):
         title = self.tr('Qt Graphics Draw Example')
-        text = ['<h1>Graphics Draw</h1>'
-                '<p>Example program for the basic Qt graphics drawing.</p>',
-                '<p>Copyright (C): 2010-2021 '
-                '<a href="mailto:antonio.valentino@tiscali.it">'
-                'Antonio Valentino<a>.</p>']
+        text = [
+            '<h1>Graphics Draw</h1>'
+            '<p>Example program for the basic Qt graphics drawing.</p>',
+            '<p>Copyright (C): 2010-2021 '
+            '<a href="mailto:antonio.valentino@tiscali.it">'
+            'Antonio Valentino<a>.</p>'
+        ]
         text = self.tr('\n'.join(text))
         QtWidgets.QMessageBox.about(self, title, text)
 

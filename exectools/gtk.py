@@ -17,7 +17,6 @@
 
 """Tools for running external processes in a GTK GUI."""
 
-
 import os
 import sys
 import time
@@ -111,7 +110,7 @@ class Popen(GObject.GObject, subprocess2.Popen):
 
             return True
 
-    else:   # POSIX
+    else:  # POSIX
 
         def _setup_io_watch(self):
             cond = (GObject.IO_IN | GObject.IO_PRI | GObject.IO_ERR |
@@ -629,7 +628,7 @@ class GtkToolController(GObject.GObject, StdToolController):
             self._reset()
 
             # ..seealso:: http://tldp.org/LDP/abs/html/exitcodes.html
-            self.emit('finished', 126)   # @TODO: check
+            self.emit('finished', 126)  # @TODO: check
         except Exception:
             self._reset()
             raise

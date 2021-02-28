@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """GUI front-end for the Geospatial Data Abstraction Library (GDAL)."""
-
 
 from qtpy import API as qt_api
 

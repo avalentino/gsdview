@@ -17,7 +17,6 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 import os
 import sys
 import unittest
@@ -37,17 +36,17 @@ class TestLinearLUT(unittest.TestCase):
     def test_all_defaults(self):
         lut = linear_lut()
         self.assertEqual(lut.dtype, np.uint8)
-        self.assertTrue(np.all(lut == np.arange(2 ** 8, dtype='uint8')))
+        self.assertTrue(np.all(lut == np.arange(2**8, dtype='uint8')))
 
     def test_dtype_uint8(self):
         lut = linear_lut(dtype='uint8')
         self.assertEqual(lut.dtype, np.uint8)
-        self.assertTrue(np.all(lut == np.arange(2 ** 8, dtype='uint8')))
+        self.assertTrue(np.all(lut == np.arange(2**8, dtype='uint8')))
 
     def test_dtype_uint16(self):
         lut = linear_lut(dtype='uint16')
         self.assertEqual(lut.dtype, np.uint16)
-        self.assertTrue(np.all(lut == np.arange(2 ** 16, dtype='uint16')))
+        self.assertTrue(np.all(lut == np.arange(2**16, dtype='uint16')))
 
     def test_dtype_invalid(self):
         self.assertRaises(TypeError, linear_lut, dtype=0)
@@ -120,6 +119,7 @@ class TestLinearLUT(unittest.TestCase):
         expected_lut[:10] = 10
         self.assertEqual(len(lut), len(expected_lut))
         self.assertTrue(np.all(lut == expected_lut))
+
 
 # class TestHistogramEqualizedLUT(unittest.TestCase):
 #     def test_(self):

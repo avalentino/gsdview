@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Widgets and dialogs for GSDView."""
-
 
 import os
 import logging
@@ -87,12 +85,18 @@ class GDALInfoWidget(QtWidgets.QWidget, GDALInfoWidgetBase):
 
             metadata = driver.GetMetadata()
             if metadata:
-                tablewidget.setItem(row, 4, QtWidgets.QTableWidgetItem(
-                    str(metadata.pop(gdal.DMD_EXTENSION, ''))))
-                tablewidget.setItem(row, 5, QtWidgets.QTableWidgetItem(
-                    str(metadata.pop(gdal.DMD_MIMETYPE, ''))))
-                tablewidget.setItem(row, 6, QtWidgets.QTableWidgetItem(
-                    str(metadata.pop(gdal.DMD_CREATIONDATATYPES, ''))))
+                tablewidget.setItem(
+                    row, 4,
+                    QtWidgets.QTableWidgetItem(
+                        str(metadata.pop(gdal.DMD_EXTENSION, ''))))
+                tablewidget.setItem(
+                    row, 5,
+                    QtWidgets.QTableWidgetItem(
+                        str(metadata.pop(gdal.DMD_MIMETYPE, ''))))
+                tablewidget.setItem(
+                    row, 6,
+                    QtWidgets.QTableWidgetItem(
+                        str(metadata.pop(gdal.DMD_CREATIONDATATYPES, ''))))
 
                 data = metadata.pop(gdal.DMD_CREATIONOPTIONLIST, '')
                 # @TODO: parse xml
@@ -113,9 +117,9 @@ class GDALInfoWidget(QtWidgets.QWidget, GDALInfoWidgetBase):
 
     def updateCacheInfo(self):
         self.gdalCacheMaxValue.setText(
-            '%.3f MB' % (gdal.GetCacheMax() / 1024. ** 2))
+            '%.3f MB' % (gdal.GetCacheMax() / 1024.**2))
         self.gdalCacheUsedValue.setText(
-            '%.3f MB' % (gdal.GetCacheUsed() / 1024. ** 2))
+            '%.3f MB' % (gdal.GetCacheUsed() / 1024.**2))
 
     def showEvent(self, event):
         self.updateCacheInfo()
@@ -160,7 +164,7 @@ class GDALPreferencesPage(QtWidgets.QWidget, GDALPreferencesPageBase):
 
         # standard options
         cachesize = gdal.GetCacheMax()
-        self.cacheSpinBox.setValue(cachesize // 1024 ** 2)
+        self.cacheSpinBox.setValue(cachesize // 1024**2)
         dialog = get_filedialog(self)
         for name in ('gdalDataDir', 'gdalDriverPath', 'ogrDriverPath'):
             widget = getattr(self, name + 'EntryWidget')
@@ -169,8 +173,10 @@ class GDALPreferencesPage(QtWidgets.QWidget, GDALPreferencesPageBase):
 
         # extra options
         self._extraoptions = {}
-        stdoptions = {'GDAL_DATA', 'GDAL_SKIP', 'GDAL_DRIVER_PATH',
-                      'OGR_DRIVER_PATH', 'GDAL_CACHEMAX', ''}
+        stdoptions = {
+            'GDAL_DATA', 'GDAL_SKIP', 'GDAL_DRIVER_PATH', 'OGR_DRIVER_PATH',
+            'GDAL_CACHEMAX', ''
+        }
 
         extraoptions = gdalsupport.GDAL_CONFIG_OPTIONS.splitlines()
         extraoptions = [opt for opt in extraoptions if opt not in stdoptions]
@@ -214,11 +220,11 @@ class GDALPreferencesPage(QtWidgets.QWidget, GDALPreferencesPageBase):
             cachesize = settings.value('GDAL_CACHEMAX')
             if cachesize is not None:
                 self.cacheCheckBox.setChecked(True)
-                self.cacheSpinBox.setValue(int(cachesize) // 1024 ** 2)
+                self.cacheSpinBox.setValue(int(cachesize) // 1024**2)
             else:
                 # show the current value and disable the control
                 cachesize = gdal.GetCacheMax()
-                self.cacheSpinBox.setValue(cachesize // 1024 ** 2)
+                self.cacheSpinBox.setValue(cachesize // 1024**2)
                 self.cacheCheckBox.setChecked(False)
 
             # GDAL data dir
@@ -281,7 +287,7 @@ class GDALPreferencesPage(QtWidgets.QWidget, GDALPreferencesPageBase):
 
             # cache
             if self.cacheCheckBox.isChecked():
-                value = self.cacheSpinBox.value() * 1024 ** 2
+                value = self.cacheSpinBox.value() * 1024**2
                 settings.setValue('GDAL_CACHEMAX', value)
             else:
                 settings.remove('GDAL_CACHEMAX')
@@ -639,7 +645,7 @@ class OverviewWidget(QtWidgets.QWidget, OverviewWidgetBase):
             mexexp = min(xexp, yexp)
             mexexp = max(mexexp - 4, 1)
             for exp_ in range(1, mexexp):
-                level = 2 ** exp_
+                level = 2**exp_
                 if level in levels:
                     continue
 
@@ -684,8 +690,8 @@ class OverviewWidget(QtWidgets.QWidget, OverviewWidgetBase):
         levels = []
         for index in range(model.rowCount()):
             checkitem = model.item(index, 0)
-            if ((checkitem.checkState() == QtCore.Qt.Checked) and
-                    checkitem.isEnabled()):
+            if ((checkitem.checkState() == QtCore.Qt.Checked)
+                    and checkitem.isEnabled()):
                 item = model.item(index, 1)
                 levels.append(int(item.text()))
 
@@ -820,6 +826,7 @@ class OverviewDialog(QtWidgets.QDialog):
     #: :C++ signature: `void overviewComputationRequest(
     #:                                          QtGui.QStandardItem)`
     overviewComputationRequest = QtCore.Signal(QtGui.QStandardItem)
+
     # overviewComputationRequest = QtCore.Signal(object)
 
     def __init__(self, item=None, parent=None, flags=QtCore.Qt.WindowFlags(0),
@@ -909,13 +916,13 @@ class MajorObjectInfoDialog(QtWidgets.QDialog):
         layout.addWidget(self.metadataWidget)
         self.metadataWidget.domainChanged.connect(self.updateMetadata)
 
-        action = self.metadataWidget.findChild(
-            QtWidgets.QAction, 'saveAsAction')
+        action = self.metadataWidget.findChild(QtWidgets.QAction,
+                                               'saveAsAction')
         action.triggered.disconnect()
         action.triggered.connect(self.saveMetadata)
 
-        action = self.metadataWidget.findChild(
-            QtWidgets.QAction, 'printAction')
+        action = self.metadataWidget.findChild(QtWidgets.QAction,
+                                               'printAction')
         action.triggered.disconnect()
         action.triggered.connect(self.printMetadata)
 
@@ -977,9 +984,8 @@ class MajorObjectInfoDialog(QtWidgets.QDialog):
     @QtCore.Slot()
     def saveMetadata(self):
         if not self._obj:
-            QtWidgets.QMessageBox.information(
-                self.tr('Information'),
-                self.tr('Nothing to save.'))
+            QtWidgets.QMessageBox.information(self.tr('Information'),
+                                              self.tr('Nothing to save.'))
             return
 
         filters = [
@@ -1057,20 +1063,20 @@ class HistogramConfigDialog(QtWidgets.QDialog, HistogramConfigDialogBase):
         return True
 
     def setLimits(self, dtype):
-        vmin = -2 ** 15 - 0.5
-        vmax = 2 ** 16 - 0.5
+        vmin = -2**15 - 0.5
+        vmax = 2**16 - 0.5
         if dtype in (np.uint8, np.uint16, np.uint32, np.uint64):
             # Unsigned
             vmin = -0.5
             if dtype == np.uint8:
                 vmax = 255.5
             else:
-                vmax = 2 ** 16 - 0.5
+                vmax = 2**16 - 0.5
         elif dtype == np.int8:
             vmin = -128.5
             vmax = 127.5
         elif dtype == np.int16:
-            vmax = 2 ** 15 + 0.5
+            vmax = 2**15 + 0.5
 
         self.minSpinBox.setMinimum(vmin)
         self.minSpinBox.setMaximum(vmax)
@@ -1130,8 +1136,8 @@ class BandInfoDialog(MajorObjectInfoDialog, BandInfoDialogBase):
 
         #: overview widget
         self.overviewWidget = SpecialOverviewWidget(parent=self)
-        self.overviewWidget.addLevelButton.setIcon(geticon('add.svg',
-                                                           'gsdview'))
+        self.overviewWidget.addLevelButton.setIcon(
+            geticon('add.svg', 'gsdview'))
         self.tabWidget.addTab(self.overviewWidget,
                               geticon('overview.svg', __name__),
                               self.tr('Overviews'))
@@ -1504,6 +1510,7 @@ DatasetInfoDialogBase = qtsupport.getuiform('datasetdialog', __name__)
 
 
 class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
+
     def __init__(self, dataset=None, parent=None,
                  flags=QtCore.Qt.WindowFlags(0), **kwargs):
         super().__init__(dataset, parent, flags, **kwargs)
@@ -1515,7 +1522,7 @@ class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
         self.tabWidget.setTabIcon(2, geticon('gcp.svg', __name__))
         self.tabWidget.setTabIcon(3, geticon('driver.svg', __name__))
         self.tabWidget.setTabIcon(4, geticon('multiple-documents.svg',
-                                  __name__))
+                                             __name__))
 
         self.driverMetadataWidget = MetadataWidget(self)
         self.driverMetadataWidget.enableDomains(False)
@@ -1734,6 +1741,7 @@ driver.HelpTopic, driver.HelpTopic)
         else:
             self.resetFilesTab()
             self.tabWidget.setTabEnabled(4, False)
+
 
 # class SubDatasetInfoDialog(DatasetInfoDialog):
 #

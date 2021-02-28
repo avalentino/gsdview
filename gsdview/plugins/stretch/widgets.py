@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Widgets and dialogs for GSDView."""
-
 
 import logging
 import contextlib
@@ -72,7 +70,8 @@ class StretchWidget(QtWidgets.QWidget, StretchWidgetBase):
         self.minSpinBox.valueChanged[float].connect(self._onMinimumChanged)
         self.maxSpinBox.valueChanged[float].connect(self._onMaximumChanged)
         self.lowSpinBox.valueChanged[float].connect(self._onLowSpinBoxChanged)
-        self.highSpinBox.valueChanged[float].connect(self._onHighSpinBoxChanged)
+        self.highSpinBox.valueChanged[float].connect(
+            self._onHighSpinBoxChanged)
 
         self.lowSpinBox.valueChanged.connect(self.valueChanged)
         self.highSpinBox.valueChanged.connect(self.valueChanged)

@@ -17,7 +17,6 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 import os
 import sys
 import logging
@@ -191,8 +190,7 @@ class VectorGraphicsApp(QtWidgets.QMainWindow):
             statusTip=self.tr('Zoom Fit'),
             # checkable=True,
             triggered=lambda: self.graphicsview.fitInView(
-                self.graphicsview.sceneRect(),
-                QtCore.Qt.KeepAspectRatio))
+                self.graphicsview.sceneRect(), QtCore.Qt.KeepAspectRatio))
 
         return actions
 
@@ -250,7 +248,7 @@ class VectorGraphicsApp(QtWidgets.QMainWindow):
             ogrFilters[1])
 
         for filename in filenames:
-            filename = str(filename)    # unicode --> str
+            filename = str(filename)  # unicode --> str
             # @TODO: check if it is already open
             self.openvector(filename)
 

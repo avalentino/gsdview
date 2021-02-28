@@ -17,19 +17,17 @@
 
 """Tools for running external processes in a Qt GUI."""
 
-
 import time
 import logging
 
 from qtpy import QtCore, QtWidgets, QtGui
 
-from exectools import (
-    BaseOutputHandler, BaseToolController, EX_OK, level2tag
-)
+from exectools import BaseOutputHandler, BaseToolController, EX_OK, level2tag
 
-
-__all__ = ['QtBlinker', 'QtOutputPane', 'QtOutputHandler',
-           'QtLoggingHandler', 'QtDialogLoggingHandler', 'QtToolController']
+__all__ = [
+    'QtBlinker', 'QtOutputPane', 'QtOutputHandler', 'QtLoggingHandler',
+    'QtDialogLoggingHandler', 'QtToolController'
+]
 
 
 class QtBlinker(QtWidgets.QLabel):
@@ -412,7 +410,7 @@ class QtToolController(QtCore.QObject, BaseToolController):
 
     """
 
-    _delay_after_stop = 200    # ms
+    _delay_after_stop = 200  # ms
 
     #: SIGNAL: it is emitted when the processing is finished.
     #:
@@ -488,8 +486,8 @@ class QtToolController(QtCore.QObject, BaseToolController):
             if self._userstop:
                 self.logger.info('Execution stopped by the user.')
             elif exitCode != EX_OK:
-                msg = ('Process (PID=%d) exited with return code %d.' % (
-                    self.subprocess.pid(), self.subprocess.exitCode()))
+                msg = ('Process (PID=%d) exited with return code %d.' %
+                       (self.subprocess.pid(), self.subprocess.exitCode()))
                 self.logger.warning(msg)
 
             # Call finalize hook if available

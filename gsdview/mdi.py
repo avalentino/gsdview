@@ -15,11 +15,9 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Specialized MainWindow classes and mixins."""
 
 # @TODO: move this to widgets sub-package or qt4freesolutions subpackage
-
 
 from qtpy import QtCore, QtWidgets, QtGui
 

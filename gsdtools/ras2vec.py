@@ -17,7 +17,6 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Generate a vector file containing the bounding box of raster data.
 
 Take in input one or more raster datasets and generate a vector file
@@ -40,7 +39,6 @@ gdaltindex utility.
 #   * configurable database field for path storage (see gdaltindex)
 #   * colors
 #   * filling (with transparency)
-
 
 import os
 import sys
@@ -222,7 +220,7 @@ def export_bounding_box(layer, corners, description='', mark_corners=True):
             feature.SetField('Name', f'({line:.1f}, {pixel:.1f})')
             feature.SetField('Description',
                              f'row = {line:.1f}\ncol = {pixel:.1f}')
-            feature.SetStyleString('SYMBOL(s:1,c:#FF0000)')     # red
+            feature.SetStyleString('SYMBOL(s:1,c:#FF0000)')  # red
 
             feature.SetGeometry(point)
 
@@ -485,7 +483,7 @@ def main(argv=None):
             logging.error(
                 'the output file ("%s") already exists.', args.output)
             sys.exit(EX_USAGE)
-        dst = create_datasource(args.output)    # , options.format)
+        dst = create_datasource(args.output)  # , options.format)
 
         if len(args.inputs) > 1:
             if args.abspath:

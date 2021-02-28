@@ -15,9 +15,7 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
-
 """Components for layers management."""
-
 
 import logging
 import itertools
@@ -379,7 +377,7 @@ class LayerManager(BaseLayerManager):
         super().__init__(parent, **kargs)
 
         view.addActions(self.actions.actions())
-        view.installEventFilter(self)   # spacebar
+        view.installEventFilter(self)  # spacebar
 
         # connect signals
         model = self.view.model()
@@ -435,8 +433,8 @@ class LayerManager(BaseLayerManager):
         return actions
 
     def eventFilter(self, obj, event):
-        if (event.type() == QtCore.QEvent.KeyPress and
-                event.key() == QtCore.Qt.Key_Space):
+        if (event.type() == QtCore.QEvent.KeyPress
+                and event.key() == QtCore.Qt.Key_Space):
             self.toggleSelectedItems()
             return True
         else:
