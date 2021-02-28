@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # GSDView - Geo-Spatial Data Viewer
-# Copyright (C) 2008-2020 Antonio Valentino <antonio.valentino@tiscali.it>
+# Copyright (C) 2008-2021 Antonio Valentino <antonio.valentino@tiscali.it>
 #
 # This module is free software you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ __all__ = ['name', 'version', 'short_description', 'description',
            'website', 'website_label', 'all_versions', 'all_versions_str']
 
 name = 'GSDView'
-version = '.'.join(str(v) for v in __version__) + '.dev1'
+version = '.'.join(str(v) for v in __version__) + '.dev2'
 
 short_description = 'Geo-Spatial Data Viewer Open Source Edition'
 description = '''GSDView (Geo-Spatial Data Viewer) is a lightweight
@@ -52,7 +52,7 @@ GSDView is modular and has a simple plug-in architecture.
 
 author = 'Antonio Valentino'
 author_email = 'antonio.valentino@tiscali.it'
-copyright = 'Copyright (C) 2008-2020 %s <%s>' % (author, author_email)
+copyright = 'Copyright (C) 2008-2021 %s <%s>' % (author, author_email)
 # license = _get_license()
 license_type = 'GNU GPL'
 website = 'http://gsdview.sourceforge.net'
