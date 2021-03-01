@@ -22,6 +22,7 @@ import sys
 import logging
 
 from osgeo import ogr
+from qtpy import QtCore, QtWidgets, QtGui
 
 
 # Fix sys path
@@ -29,8 +30,6 @@ GSDVIEWROOT = os.path.abspath(
     os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.insert(0, GSDVIEWROOT)
 
-
-from qtpy import QtCore, QtWidgets, QtGui
 
 from gsdview.mousemanager import MouseManager
 from gsdview.layermanager import LayerManager

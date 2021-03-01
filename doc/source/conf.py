@@ -258,7 +258,7 @@ todo_include_todos = True
 
 autoclass_content = 'both'
 autodoc_default_flags = ['members', 'undoc-members', 'show-inheritance']
-                        # ,'inherited-members']
+#                        ,'inherited-members']
 
 # -- Options for autosummary extension ---------------------------------------
 

@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 import logging
-import exectools, exectools.std
+import exectools
+import exectools.std
 
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')

@@ -49,7 +49,7 @@ def gdalcolorentry2qcolor(colorentry, interpretation=gdal.GPI_RGB):
             colorentry.c1, colorentry.c2, colorentry.c3, colorentry.c4)
     elif interpretation == gdal.GPI_HLS:
         qcolor.setHsv(colorentry.c1, colorentry.c2, colorentry.c3)
-                      # , colorentry.c4)
+        #             , colorentry.c4)
     else:
         raise ValueError('invalid color interpretation: "%s"' % interpretation)
 

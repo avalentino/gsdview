@@ -21,14 +21,14 @@ import os
 import sys
 import logging
 
+from qtpy import QtCore, QtWidgets, QtGui, QtSvg
+
 
 # Fix sys path
 GSDVIEWROOT = os.path.abspath(
     os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.insert(0, GSDVIEWROOT)
 
-
-from qtpy import QtCore, QtWidgets, QtGui, QtSvg
 
 from gsdview import qtsupport
 from gsdview import qtdraw

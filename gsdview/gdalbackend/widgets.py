@@ -1650,7 +1650,7 @@ class DatasetInfoDialog(MajorObjectInfoDialog, DatasetInfoDialogBase):
 p, li {{ white-space: pre-wrap; }}
 </style></head><body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;">
 <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><a href="http://www.gdal.org/{}"><span style=" text-decoration: underline; color:#0000ff;">{}</span></a></p></body></html>'''.format(
-driver.HelpTopic, driver.HelpTopic)
+                driver.HelpTopic, driver.HelpTopic)
         else:
             link = str(driver.HelpTopic)
 

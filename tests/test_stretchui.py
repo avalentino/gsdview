@@ -22,15 +22,15 @@ import sys
 import logging
 import unittest
 
+from qtpy import QtWidgets
+from qtpy.QtTest import QTest
+
 
 # Fix sys path
 GSDVIEWROOT = os.path.abspath(
     os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.insert(0, GSDVIEWROOT)
 
-
-from qtpy import QtWidgets
-from qtpy.QtTest import QTest
 
 from gsdview.plugins.stretch.widgets import StretchWidget, StretchDialog
 

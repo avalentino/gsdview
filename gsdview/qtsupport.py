@@ -1117,7 +1117,8 @@ def format_qt_info():
             qlocale.language()),
         'Qt locale decimal point: "%s"\n' % qlocale.decimalPoint(),
         'Qt UI languages: %s\n' % qlocale.uiLanguages(),
-        'Qt supported image formats: %s\n' % ', '.join(supported_image_formats),
+        'Qt supported image formats: %s\n' % ', '.join(
+            supported_image_formats),
     ]
 
     return qt_info

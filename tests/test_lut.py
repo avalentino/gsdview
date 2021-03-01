@@ -17,9 +17,12 @@
 # with this module if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  US
 
+import numpy as np
 import os
 import sys
 import unittest
+
+import numpy as np
 
 
 # Fix sys path
@@ -28,7 +31,6 @@ GSDVIEWROOT = os.path.abspath(
 sys.path.insert(0, GSDVIEWROOT)
 
 
-import numpy as np
 from gsdview.imgutils import linear_lut
 
 

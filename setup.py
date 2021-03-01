@@ -22,6 +22,9 @@ import sys
 import platform
 import traceback
 
+from distutils import log
+from distutils.command.build import build as Build
+
 from gsdview import info
 from exectools import __version__ as exectools_version
 from gsdtools import __version__ as gsdtools_version
@@ -34,8 +37,6 @@ kwargs = {}
 
 
 # Using ``setuptools`` enables lots of goodies, such as building eggs.
-from distutils import log
-from distutils.command.build import build as Build
 try:
     has_setuptools = True
 

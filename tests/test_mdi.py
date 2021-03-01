@@ -20,14 +20,14 @@
 import os
 import sys
 
+from qtpy import QtCore, QtWidgets
+
 
 # Fix sys path
 GSDVIEWROOT = os.path.abspath(
     os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.insert(0, GSDVIEWROOT)
 
-
-from qtpy import QtCore, QtWidgets
 
 from gsdview.mdi import MdiMainWindow
 from gsdview.qtsupport import geticon

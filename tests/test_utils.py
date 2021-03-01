@@ -61,7 +61,7 @@ class TestDataUuid(unittest.TestCase):
 
     def setUp(self):
         self.fd = tempfile.NamedTemporaryFile(
-                prefix='gsdview_test_utils_', suffix='.dat')
+            prefix='gsdview_test_utils_', suffix='.dat')
         data = b'0' * self.DATASIZE
         self.fd.write(data)
         self.fd.flush()

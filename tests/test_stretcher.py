@@ -21,6 +21,8 @@ import os
 import sys
 import unittest
 
+import numpy as np
+
 
 # Fix sys path
 GSDVIEWROOT = os.path.abspath(
@@ -28,7 +30,6 @@ GSDVIEWROOT = os.path.abspath(
 sys.path.insert(0, GSDVIEWROOT)
 
 
-import numpy as np
 from gsdview.imgutils import LinearStretcher, LUTStretcher
 
 

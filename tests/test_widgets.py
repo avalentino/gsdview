@@ -21,12 +21,14 @@ import os
 import sys
 import logging
 
+from qtpy import QtWidgets
+
+
 # Fix sys path
 GSDVIEWROOT = os.path.abspath(
     os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.insert(0, GSDVIEWROOT)
 
-from qtpy import QtWidgets
 
 from gsdview.widgets import (
     AboutDialog, FileEntryWidget, GeneralPreferencesPage, PreferencesDialog,

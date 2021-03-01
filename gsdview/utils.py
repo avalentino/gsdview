@@ -118,7 +118,8 @@ def format_platform_info():
         platform_info.append(libc_ver)
 
     if linux_distribution() != ('', '', ''):
-        platform_info.append('GNU/Linux: %s\n' % ' '.join(linux_distribution()))
+        platform_info.append('GNU/Linux: %s\n' %
+                             ' '.join(linux_distribution()))
     elif platform.mac_ver() != ('', ('', '', ''), ''):
         platform_info.append('Mac OS X: %s\n' % platform.mac_ver()[0])
     elif platform.win32_ver() != ('', '', '', ''):
