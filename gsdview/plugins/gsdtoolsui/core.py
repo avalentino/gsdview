@@ -243,7 +243,7 @@ class GSDToolsController(QtCore.QObject):
 
         query = QtCore.QUrlQuery()
 
-        query.addQueryItem('q', f'{lat:f}N,{lon:f}E')     # coordinates
+        query.addQueryItem('q', f'{float(lat):f}N,{float(lon):f}E')  # coords
         query.addQueryItem('t', 'h')                      # map type (hybrid)
         query.addQueryItem('z', str(zoomlevel))           # zoom level (1, 20)
 
